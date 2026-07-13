@@ -5,6 +5,6 @@ import (
 )
 
 //go:embed metadatas
-//go:embed en-US
-//go:embed zh-CN
+//go:embed descriptions
+//go:embed products
 var Metadatas embed.FS
