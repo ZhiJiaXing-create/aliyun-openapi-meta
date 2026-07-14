@@ -1,5 +1,6 @@
 {
   "name": "UpdateLoadBalancerAddressTypeConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": true,
       "description": {
         "zh": "目标网络类型。取值：\n\n- **Internet**：负载均衡具有公网IP地址，DNS域名被解析到公网IP，因此可以在公网环境访问。\n\n- **Intranet**：负载均衡只有私网IP地址，DNS域名被解析到私网IP，因此只能被负载均衡所在VPC的内网环境访问。",
-        "en": "The new network type. Valid values:\n\n*   **Internet**: The ALB instance uses a public IP address. The domain name of the ALB instance is resolved to the public IP address. Therefore, the ALB instance can be accessed over the Internet.\n*   **Intranet**: The ALB instance uses a private IP address. The domain name of the ALB instance is resolved to the private IP address. In this case, the ALB instance can be accessed over the virtual private cloud (VPC) where the ALB instance is deployed."
+        "en": "The target network type. Valid values:\n\n- **Internet**: The load balancer is assigned a public IP address and can be accessed over the Internet. Its DNS domain name is resolved to the public IP address.\n\n- **Intranet**: The load balancer is assigned a private IP address and can be accessed only from the VPC where it is deployed. Its DNS domain name is resolved to the private IP address."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can generate a value from your client to make sure that the value is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each request is unique."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会更新实例的网络类型。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends the request. If the request passes the check, the system returns a 2xx HTTP status code and performs the operation."
       }
     },
     {
@@ -41,8 +42,14 @@
       "required": true,
       "description": {
         "zh": "应用型负载均衡实例ID。",
-        "en": "The ALB instance ID."
+        "en": "The ID of the Application Load Balancer (ALB) instance."
       }
+    },
+    {
+      "name": "RetainResourceType",
+      "position": "Query",
+      "type": "Array",
+      "required": false
     },
     {
       "name": "ZoneMappings",
@@ -51,10 +58,21 @@
       "required": false,
       "description": {
         "zh": "可用区及交换机映射列表，最多支持添加10个可用区。若当前地域支持2个及以上的可用区，至少需要添加2个可用区。",
-        "en": "The zones and the vSwitches in the zones. You can specify a maximum of 10 zones. If the selected region supports two or more zones, select at least two zones to ensure the high availability of your service."
+        "en": "The mappings between availability zones and vSwitches. You can specify up to 10 mappings. If the region supports two or more availability zones, you must specify mappings for at least two."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更负载均衡实例的网络类型配置",
+    "en": "UpdateLoadBalancerAddressTypeConfig"
+  },
+  "descriptions": {
+    "zh": "前提条件：\n\n- 您已经创建应用型负载均衡实例，具体操作，请参见[CreateLoadBalancer](~~214358~~)。\n- 当您需要通过此接口将应用型负载均衡实例的网络类型由私网变为公网时，您需要先创建一个弹性公网IP。具体操作，请参见[AllocateEipAddress](~~120192~~)。\n\n使用说明：\n\n**UpdateLoadBalancerAddressTypeConfig**接口属于异步接口，即系统返回一个请求ID，但该应用型负载均衡实例的网络类型尚未变更成功，系统后台的变更任务仍在进行。您可以调用[GetLoadBalancerAttribute](~~214362~~)查询应用型负载均衡实例的网络类型的变更状态：\n- 当应用型负载均衡实例处于**Configuring**状态时，表示应用型负载均衡实例的网络类型正在变更中。\n- 当应用型负载均衡实例处于**Active**状态时，表示应用型负载均衡实例的网络类型变更成功。",
+    "en": "Prerequisites\n\n- You have created an Application Load Balancer (ALB) instance. For more information, see [CreateLoadBalancer](~~214358~~).\n\n- To change the network type of an ALB instance from Intranet to Internet, you must create an elastic IP address. For more information, see [AllocateEipAddress](~~120192~~).\n\nUsage notes\n\nThe **UpdateLoadBalancerAddressTypeConfig** operation is an asynchronous task. After you send a request, the system returns a request ID and runs the task in the background. The network type of the ALB instance is not immediately modified. You can call the [GetLoadBalancerAttribute](~~214362~~) operation to query the status of the ALB instance:\n\n- If the ALB instance is in the **Configuring** state, its network type is being modified.\n\n- If the ALB instance is in the **Active** state, its network type has been modified."
+  },
   "example": {
     "unifiedCli": "aliyun alb update-load-balancer-address-type-config --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --load-balancer-id alb-bp1o94dp5i6ea0000 --address-type Internet --zone-mappings ZoneId=cn-hangzhou-a VSwitchId=vsw-bp10ttov87felojcn0000 AllocationId=eip-bp1aedxso6u80u0qf0000 EipType=Common --retain-resource-type eip --region cn-hangzhou",
     "legacyCli": "aliyun alb UpdateLoadBalancerAddressTypeConfig --region cn-hangzhou --ZoneMappings.1.EipType Common --ZoneMappings.1.ZoneId 'cn-hangzhou-a' --ZoneMappings.1.AllocationId 'eip-bp1aedxso6u80u0qf0000' --DryRun false --LoadBalancerId 'alb-bp1o94dp5i6ea0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AddressType Internet --ZoneMappings.1.VSwitchId 'vsw-bp10ttov87felojcn0000' --RetainResourceType.1 eip --method POST --force"

@@ -1,5 +1,6 @@
 {
   "name": "CreateTrail",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -115,6 +116,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建跟踪",
+    "en": "CreateTrail"
+  },
+  "descriptions": {
+    "zh": "> 通过API创建的跟踪默认处于**已关闭**状态，您需要调用接口[StartLogging](~~432246~~)开启跟踪，操作审计才能投递操作事件至目标云产品。\n\n### 前提条件\n创建跟踪之前，请您确保至少完成下列的一项存储配置：\n- 投递到对象存储OSS\n\n  请确保您已开通对象存储，且已创建存储空间（Bucket）。\n\n- 投递到日志服务SLS\n   \n  请确保您已开通日志服务，且已创建日志项目。  \n  > 创建跟踪时，操作审计会自动在目标日志项目下创建一个名为`actiontrail_<跟踪名称>`的日志库（Logstore），该日志库禁止其他数据写入，保证审计数据的准确性。\n\n- 投递到大数据计算服务MaxCompute\n\n  请确保您已开通大数据计算服务MaxCompute。\n\n  > 创建跟踪时，操作审计会自动在项目管理中创建一个名为`actiontrail_<账号ID>`的项目，该项目禁止其他数据写入，保证审计数据的准确性。\n\n### 使用说明\n本文将提供一个示例，为您创建一个名为`trail-test`的单账号跟踪，将操作事件投递到名为`audit-log`的OSS存储空间中。",
+    "en": "> By default, a trail that you create by using this API is in a **disabled** state. You must call the [StartLogging](~~432246~~) operation operation to enable the trail. After a trail is enabled, ActionTrail begins delivering events to your specified destination.\n\n### Prerequisites\n\nBefore you create a trail, you must have at least one of the following resources configured as a destination:\n\n- OSS\n\n  You must activate OSS and create a bucket.\n\n- SLS\n\n  You must activate SLS and create a Logstore.\n\n  > When you create a trail with an SLS destination, ActionTrail automatically creates a Logstore named `actiontrail_<trail_name>` in your specified project. To ensure the integrity of your audit data, this Logstore only accepts events delivered by ActionTrail.\n\n- MaxCompute\n\n  You must activate MaxCompute.\n\n  > When you create a trail with a MaxCompute destination, ActionTrail automatically creates a project named `actiontrail_<account_ID>`. To ensure the integrity of your audit data, this project only accepts events delivered by ActionTrail.\n\n### Usage notes\n\nThis example shows how to create a single-account trail named `trail-test` that delivers events to an OSS bucket named `audit-log`."
+  },
   "example": {
     "unifiedCli": "aliyun actiontrail create-trail --name trail-test --oss-bucket-name audit-log --oss-key-prefix at-product-account-audit-B --oss-write-role-arn acs:ram::151277876910000:role/aliyunserviceroleforactiontrail --sls-project-arn acs:log:cn-shanghai:1512666876910000:project/test-project --sls-write-role-arn acs:ram::1512666876910000:role/aliyunserviceroleforactiontrail --event-rw Write --trail-region All --is-organization-trail false --max-compute-project-arn acs:odps:cn-hangzhou:151277876910000:project/actiontrail_0000 --max-compute-write-role-arn acs:ram::151277876910000:role/aliyunserviceroleforactiontrail --api-version 2020-07-06 --region cn-hangzhou",
     "legacyCli": "aliyun actiontrail CreateTrail --region cn-hangzhou --SlsProjectArn 'acs:log:cn-shanghai:1512666876910000:project/test-project' --MaxComputeWriteRoleArn 'acs:ram::151277876910000:role/aliyunserviceroleforactiontrail' --EventRW Write --OssKeyPrefix 'at-product-account-audit-B' --OssBucketName 'audit-log' --OssWriteRoleArn 'acs:ram::151277876910000:role/aliyunserviceroleforactiontrail' --SlsWriteRoleArn 'acs:ram::1512666876910000:role/aliyunserviceroleforactiontrail' --TrailRegion All --Name 'trail-test' --IsOrganizationTrail false --MaxComputeProjectArn 'acs:odps:cn-hangzhou:151277876910000:project/actiontrail_0000'"

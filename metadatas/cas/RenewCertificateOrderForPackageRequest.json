@@ -1,5 +1,6 @@
 {
   "name": "RenewCertificateOrderForPackageRequest",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "您使用OpenSSL或Keytool工具为域名手动生成的CSR文件的内容。CSR文件的密钥类型必须是RSA、ECC算法，且RSA算法的密钥长度必须大于等于2048。关于CSR文件的制作方法，请参见[如何制作CSR文件](~~42218~~)。\n\n如果不设置该参数，表示使用待续费证书申请订单中的域名，由SSL证书服务自动为您生成新的CSR。\n\nCSR（Certificate Signing Request）是证书签名请求文件，包含了您的服务器信息和公司信息。申请证书时需要将您证书的CSR文件提交给CA认证中心审核，CA中心对CSR文件进行根证书私钥签名后，会生成证书公钥文件（即签发给您的SSL证书）。\n\n> CSR中的**CN**字段表示证书绑定的域名。",
-        "en": "The content of the certificate signing request (CSR) file that is manually generated for the domain name by using OpenSSL or Keytool. The key algorithm in the CSR file must be Rivest-Shamir-Adleman (RSA) or elliptic-curve cryptography (ECC), and the key length of the RSA algorithm must be greater than or equal to 2,048 characters. For more information about how to create a CSR file, see [How do I create a CSR file?](~~42218~~)\n\nIf you do not specify this parameter, Certificate Management Service automatically generates a CSR file for the domain name in the certificate application order that you want to renew.\n\nA CSR file contains the information about your server and company. When you apply for a certificate, you must submit the CSR file to the CA. The CA signs the CSR file by using the private key of the root certificate and generates a public key file to issue your certificate.\n\n>  The **CN** field in the CSR file specifies the domain name that is bound to the certificate."
+        "en": "The content of the certificate signing request (CSR) file that is manually generated for the domain name by using OpenSSL or Keytool. The key algorithm in the CSR file must be Rivest-Shamir-Adleman (RSA) or elliptic-curve cryptography (ECC), and the key length of the RSA algorithm must be greater than or equal to 2,048 characters. For more information about how to create a CSR file, see [How do I create a CSR file?](~~42218~~)\n\nIf you do not specify this parameter, Certificate Management Service automatically generates a CSR file for the domain name in the certificate application order that you want to renew.\n\nA CSR file contains the information about your server and company. When you apply for a certificate, you must submit the CSR file to the CA. The CA signs the CSR file by using the private key of the root certificate and generates a public key file to issue your certificate.\n\n> The **CN** field in the CSR file specifies the domain name that is bound to the certificate."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "要续费的证书申请订单的ID。\n> 证书订单ID一般是通过调用[CreateCertificateForPackageRequest](~~455296~~)、[CreateCertificateRequest](~~455292~~)或[CreateCertificateWithCsrRequest](~~455801~~)接口返回的证书申请订单ID（即**OrderId**）。此ID可通过调用[ListUserCertificateOrder](~~455804~~)获取。",
-        "en": "The ID of the certificate application order that you want to renew.\n\n>  After you call the [CreateCertificateForPackageRequest](~~455296~~), [CreateCertificateRequest](~~455292~~), or [CreateCertificateWithCsrRequest](~~455801~~) operation to submit a certificate application, you can obtain the ID of the certificate application order from the **OrderId** response parameter. You can also call the [ListUserCertificateOrder](~~455804~~) operation to obtain the order ID."
+        "en": "The ID of the certificate application order that you want to renew.\n\n> After you call the [CreateCertificateForPackageRequest](~~455296~~), [CreateCertificateRequest](~~455292~~), or [CreateCertificateWithCsrRequest](~~455801~~) operation to submit a certificate application, you can obtain the ID of the certificate application order from the **OrderId** response parameter. You can also call the [ListUserCertificateOrder](~~455804~~) operation to obtain the order ID."
       }
     },
     {
@@ -29,26 +30,45 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "A list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key. You can specify at most 20 tag keys. The tag key cannot be an empty string.\n\nA tag key can be up to 128 characters in length. It cannot start with aliyun or acs:, and cannot contain http\\:// or https\\://."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The value of the resource tag. A maximum of 20 tag values can be entered. If this value needs to be passed in, an empty string can be entered.\n\nA maximum of 128 characters are supported, it cannot start with 'aliyun' or 'acs:', and it cannot contain 'http\\://' or 'https\\://'."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签列表。",
-        "en": "The tags."
-      }
+      ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "续订证书订单",
+    "en": "RenewCertificateOrderForPackageRequest"
+  },
+  "descriptions": {
+    "zh": "只有当证书订单的状态为即将过期时，您才可以调用本接口为对应的证书申请续费。续费完成后，会生成待申请状态的证书订单。您需要为该证书订单提交证书申请，并在证书签发后，重新安装新证书。\n\n> 您可以调用[DescribeCertificateState](~~455800~~)查询证书申请订单的状态，如果返回数据中的**Type**参数取值为**certificate**，则表示证书已签发。",
+    "en": "You can call the RenewCertificateOrderForPackageRequest operation to submit a renewal application for a certificate only when the order of the certificate is in the expiring state. After the renewal is complete, a new certificate order whose status is pending application is generated. You must submit a certificate application for the new certificate order and install the new certificate after the new certificate is issued.\n\n> You can call the [DescribeCertificateState](~~164111~~) operation to query the status of a certificate application order. If the value of the **Type** response parameter is **certificate**, the certificate is issued."
+  },
   "example": {
     "unifiedCli": "aliyun cas renew-certificate-order-for-package-request --order-id 123451222 --csr -----BEGIN_CERTIFICATE_REQUEST-----_MIIC1TCCAb0CAQAwgY8xCzAJBgNVBAYTAkNOMRIwEAYDVQQIDAlHdWFuZ3pob3Ux_ETAPBgNVBAcMCFNoZW56aGVuMQ8wDQYDVQQKDAZDaGFjdW8xEDAOBgNVBAsMB0lU_IERlcHQxFzAVBgNVBAMMDnd3dy5jaGFjdW8ubmV0MR0wGwYJKoZIhvcNAQkBFg44_MjkyNjY5QHFxLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALo7_atRvQf9tKo1NJ/MQqzHvIjHNhU+0MMerDq+tRlJ+a7Ro1r6IWNF5MB0Z000000_-----END_CERTIFICATE_REQUEST----- --tags Value=test Key=account --api-version 2020-04-07 --region cn-hangzhou",
     "legacyCli": "aliyun cas RenewCertificateOrderForPackageRequest --region cn-hangzhou --Csr '-----BEGIN_CERTIFICATE_REQUEST-----_MIIC1TCCAb0CAQAwgY8xCzAJBgNVBAYTAkNOMRIwEAYDVQQIDAlHdWFuZ3pob3Ux_ETAPBgNVBAcMCFNoZW56aGVuMQ8wDQYDVQQKDAZDaGFjdW8xEDAOBgNVBAsMB0lU_IERlcHQxFzAVBgNVBAMMDnd3dy5jaGFjdW8ubmV0MR0wGwYJKoZIhvcNAQkBFg44_MjkyNjY5QHFxLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALo7_atRvQf9tKo1NJ/MQqzHvIjHNhU+0MMerDq+tRlJ+a7Ro1r6IWNF5MB0Z000000_-----END_CERTIFICATE_REQUEST-----' --Tags.1.Value test --Tags.1.Key account --OrderId 123451222"

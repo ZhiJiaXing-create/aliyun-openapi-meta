@@ -1,5 +1,6 @@
 {
   "name": "UpdateUserPermissions",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/permissions/users/[uid]/update",
@@ -9,42 +10,70 @@
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "请求体参数。",
+        "en": "The request body parameters."
+      },
       "sub_parameters": [
         {
           "name": "cluster",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "授权目标集群ID。\n\n当`role_type`参数选择为`all-clusters`时，该参数无需填写。",
+            "en": "The ID of the target cluster for authorization.\n\nIf the `role_type` parameter is set to `all-clusters`, you do not need to specify this parameter."
+          }
         },
         {
           "name": "is_custom",
           "position": "Body",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "该授权是否是自定义授权（`role_name`使用自定义的ClusterRole名称）。\n\n- true：授权角色为自定义的集群角色。\n\n- false：授权角色集群预置角色。",
+            "en": "Specifies whether the authorization is a custom authorization (the `role_name` uses a custom ClusterRole name).\n\n- true: The authorized role is a custom cluster role.\n\n- false: The authorized role is a cluster preset role."
+          }
         },
         {
           "name": "is_ram_role",
           "position": "Body",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否是RAM角色授权。\n\n- true：为RAM角色授权。\n\n- false：为RAM用户授权。",
+            "en": "Specifies whether the authorization is for a RAM role.\n\n- true: The authorization is for a RAM role.\n\n- false: The authorization is for a Resource Access Management (RAM) user."
+          }
         },
         {
           "name": "namespace",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "命名空间名称，集群维度授权时默认为空。",
+            "en": "The namespace name. This parameter is empty by default for cluster-level authorization."
+          }
         },
         {
           "name": "role_name",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "预置的角色名称，取值：\n\n- `admin`: 管理员。\n- `admin-view`: 只读管理员。\n- `ops`：运维人员。\n- `dev`：开发人员。\n- `restricted`: 受限用户。\n- 自定义的ClusterRole名称。\n\n\n> - `admin`、`admin-view`、`ops`：不支持**命名空间维度**的授予。\n> - `admin-view`： 暂不支持**所有集群维度**的授予。",
+            "en": "The name of the preset role. Valid values:\n\n- `admin`: administrator.\n- `admin-view`: read-only administrator.\n- `ops`: O&M engineer.\n- `dev`: developer.\n- `restricted`: restricted user.\n- A custom ClusterRole name.\n\n\n> - `admin`, `admin-view`, `ops`: These roles cannot be granted at the **namespace** level.\n> - `admin-view`: This role cannot be granted at the **all-clusters** level."
+          }
         },
         {
           "name": "role_type",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "授权类型，取值：\n\n- `cluster`：集群维度。\n- `namespace`: 命名空间维度。\n- `all-clusters`: 所有集群维度。",
+            "en": "The authorization type. Valid values:\n\n- `cluster`: cluster level.\n- `namespace`: namespace level.\n- `all-clusters`: all-clusters level."
+          }
         }
       ]
     },
@@ -52,15 +81,34 @@
       "name": "mode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "授权方式，取值：\n\n- `apply`：全量更新权限，全量更新RAM用户或RAM角色集群授权信息操作会覆盖目标RAM用户或RAM角色已有的集群权限，请求时需要包含想要授权给目标RAM用户或RAM角色的所有权限配置。\n- `delete`: 删除权限，只会删除请求时包含的集群授权信息，不影响RAM用户或RAM角色的其他集群权限。\n- `patch`: 新增权限，只会新增请求时包含的集群授权信息，不影响RAM用户或RAM角色的其他集群权限。\n\n默认值：`apply`。",
+        "en": "The authorization mode. Valid values:\n\n- `apply`: full update. A full update overwrites all existing cluster permissions of the target RAM user or RAM role. The request must include all permission configurations that you want to grant to the target RAM user or RAM role.\n- `delete`: delete permissions. Only the cluster authorization information included in the request is deleted. Other cluster Resource Access Management (RAM) user or RAM role are not affected.\n- `patch`: add permissions. Only the cluster authorization information included in the request is added. Other cluster Resource Access Management (RAM) user or RAM role are not affected.\n\nDefault value: `apply`."
+      }
     },
     {
       "name": "uid",
       "position": "Path",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "RAM用户或RAM角色的ID。",
+        "en": "The ID of the Resource Access Management (RAM) user or RAM role."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新指定RAM用户/角色的RBAC权限",
+    "en": "Update RBAC permissions of a specified RAM user or role"
+  },
+  "descriptions": {
+    "zh": "对目标RAM用户或RAM角色集群授权信息的更新方式包括全量更新与增量更新。全量更新RAM用户或RAM角色集群授权信息操作会覆盖目标RAM用户或RAM角色已有的集群权限，请求时需要包含想要授权给目标RAM用户或RAM角色的所有权限配置。增量更新RAM用户或RAM角色集群授权信息操作包括新增以及删除操作，只会针对请求时包含的集群授权信息进行权限变更，不影响RAM用户或RAM角色的其他集群权限。",
+    "en": "You can update the cluster authorization information of a target Resource Access Management (RAM) user or RAM role by using full update or incremental update. A full update overwrites all existing cluster permissions of the target RAM user or RAM role. The request must include all permission configurations that you want to grant to the target RAM user or RAM role. An incremental update includes add and delete operations. Only the cluster authorization information included in the request is changed, and other cluster permissions of the RAM user or RAM role are not affected."
+  },
   "example": {
     "unifiedCli": "aliyun cs update-user-permissions --uid 23670000 --biz-body role_name=ops cluster=c796c60000 role_type=cluster namespace=test is_custom=false is_ram_role=false --biz-mode apply --region cn-hangzhou",
     "legacyCli": "aliyun cs POST /permissions/users/23670000/update --region cn-hangzhou --mode apply --header \"Content-Type=application/json\" --body [{\"role_name\":\"ops\",\"cluster\":\"c796c60000\",\"role_type\":\"cluster\",\"namespace\":\"test\",\"is_custom\":false,\"is_ram_role\":false}]"

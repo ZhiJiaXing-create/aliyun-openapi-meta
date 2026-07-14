@@ -1,5 +1,6 @@
 {
   "name": "GetSpotPriceHistory",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/spots/[InstanceType]/pricehistory",
@@ -8,51 +9,90 @@
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询抢占式实例历史价格的结束时间。按照ISO 8601标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。默认值：空，空表示当前时间。",
+        "en": "The end time for querying historical spot instance prices. Specify the time in ISO 8601 format using UTC+0, as yyyy-MM-ddTHH:mm:ssZ. Default value: empty. An empty value means the current time."
+      }
     },
     {
       "name": "InstanceType",
       "position": "Path",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "抢占式实例的实例规格。支持ECS规格和灵骏规格",
+        "en": "The instance type of the spot instance. Supports ECS and Lingjun instance types."
+      }
     },
     {
       "name": "Order",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序顺序。默认值：asc，取值如下：\n- desc：降序。\n- asc：升序。\n\n仅查询灵骏规格的历史价格时该参数生效",
+        "en": "The sort order. Default value: asc. Valid values:\n\n- desc: descending order.\n\n- asc: ascending order.\n\nThis parameter applies only when you query historical prices for Lingjun instance types."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页参数：当前页码，默认值***1***。仅查询灵骏规格的历史价格时该参数生效",
+        "en": "The page number of the current page. Default value: ***1***. This parameter applies only when you query historical prices for Lingjun instance types."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页大小。默认值：**10**。仅查询灵骏规格的历史价格时该参数生效",
+        "en": "The number of entries per page. Default value: **10**. This parameter applies only when you query historical prices for Lingjun instance types."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于排序的字段名，默认值： GmtCreatedTime，可选字段：\n\n- GmtCreatedTime\n\n仅查询灵骏规格的历史价格时该参数生效",
+        "en": "The field to sort by. Default value: GmtCreatedTime. Valid values:\n\n- GmtCreatedTime\n\nThis parameter applies only when you query historical prices for Lingjun instance types."
+      }
     },
     {
       "name": "SpotDuration",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "抢占式实例的保留时长，单位为小时。 注意目前仅ECS规格支持设置抢占式实例保留时长，默认值：0。取值范围：\n- 1：创建后阿里云会保证实例运行1小时不会被自动释放；超过1小时后，系统会自动比较出价与市场价格、检查资源库存，来决定实例的持有和回收。\n- 0：创建后，阿里云不保证实例运行1小时，系统会自动比较出价与市场价格、检查资源库存，来决定实例的持有和回收。",
+        "en": "The retention period for the spot instance, in hours. Note that only ECS instance types support this parameter. Default value: 0. Valid values:\n\n- 1: Alibaba Cloud guarantees that the instance runs for at least one hour after creation. After one hour, the system compares your bid price with the current market price and checks resource inventory to decide whether to retain or revoke the instance.\n\n- 0: Alibaba Cloud does not guarantee one-hour runtime. The system compares your bid price with the current market price and checks resource inventory to decide whether to retain or revoke the instance."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询抢占式实例历史价格的起始时间，最大值不得超过指定的结束时间7天。按照ISO 8601标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。默认值：空，空代表结束时间前3天。",
+        "en": "The start time for querying historical spot instance prices. This time must be no more than seven days before the end time. Specify the time in ISO 8601 format using UTC+0, as yyyy-MM-ddTHH:mm:ssZ. Default value: empty. An empty value means three days before the end time."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取抢占式实例历史价格",
+    "en": "Retrieve spot instance historical prices"
+  },
   "example": {
     "unifiedCli": "aliyun paistudio get-spot-price-history --instance-type ml.gu7xf.8xlarge-gu108 --spot-duration 0 --start-time 2024-12-26T09:36:46Z --end-time 2024-12-30T09:36:46Z --page-number 1 --page-size 10 --sort-by GmtCreatedTime --order asc --api-version 2022-01-12 --region cn-hangzhou",
     "legacyCli": "aliyun paistudio GET /api/v1/spots/ml.gu7xf.8xlarge-gu108/pricehistory --region cn-hangzhou --Order asc --EndTime '2024-12-30T09:36:46Z' --PageSize 10 --PageNumber 1 --SortBy GmtCreatedTime --StartTime '2024-12-26T09:36:46Z' --SpotDuration 0 --header \"Content-Type=application/json\""

@@ -1,5 +1,6 @@
 {
   "name": "CreateServerGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,109 +9,181 @@
       "name": "AddressIPVersion",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议版本。取值：\n\n- **ipv4**（默认值）：IPv4类型。\n\n- **DualStack**：双栈类型。",
+        "en": "The protocol version. Valid values:\n\n- **ipv4** (default): IPv4.\n\n- **DualStack**: dual-stack."
+      }
     },
     {
       "name": "AnyPortEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启全端口转发。取值：\n\n- **true**：开启。\n\n- **false**（默认值）：关闭。",
+        "en": "Specifies whether to enable port forwarding for all ports. Valid values:\n\n- **true**\n\n- **false** (default)"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "A client-generated token that is used to ensure the idempotence of the request.\n\nMake sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each API request may be different."
+      }
     },
     {
       "name": "ConnectionDrainEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启连接优雅中断。取值：\n\n- **true**：开启。\n\n- **false**（默认值）：关闭。",
+        "en": "Specifies whether to enable connection draining. Valid values:\n\n- **true**\n\n- **false** (default)"
+      }
     },
     {
       "name": "ConnectionDrainTimeout",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置连接优雅中断超时时间。单位：秒。\n取值范围：**0**~**900**。",
+        "en": "The timeout period of connection draining. Unit: seconds.\nValid values: **0** to **900**."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建服务器组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends the request. If the request passes the check, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "HealthCheckConfig",
       "position": "Body",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "健康检查相关配置。",
+        "en": "The health check settings."
+      }
     },
     {
       "name": "IpVersionAffinityMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "双栈模式下的流量调度策略：\n\n- NonAffinity（默认）：无亲和模式，转发时不区分来源的IP协议版本，按照调度算法向健康的后端转发。\n- Affinity：亲和模式，转发时根据请求来源的IP协议版本亲和转发，IPv4请求仅转发至IPv4后端，IPv6请求仅转发至IPv6后端。\n> 仅**AddressIPVersion**为**DualStack**时，该参数生效。",
+        "en": "Traffic scheduling policy for dual-stack NLB instances:\n\n- NonAffinity (default): Forwards requests to healthy backend servers based on the configured scheduling algorithm, regardless of the source IP protocol version (IPv4 or IPv6).\n\n- Affinity: Forwards requests based on source IP protocol affinity. IPv4 requests are forwarded exclusively to IPv4 backend servers, and IPv6 requests are forwarded exclusively to IPv6 backend servers.\n\n> This parameter applies only when the **AddressIPVersion** is set to **DualStack**."
+      }
     },
     {
       "name": "PreserveClientIpEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启客户端地址保持功能。取值：\n\n- **true**（默认值）：开启。\n- **false**：关闭。\n\n\n> \n> 当**Protocol**取值为**TCP**且该参数取值为**true**时，该服务器组不支持关联**TCPSSL**监听。",
+        "en": "Specifies whether to preserve client IP addresses. Valid values:\n\n- **true** (default)\n\n- **false**\n\n> If **Protocol** is set to **TCP** and this parameter is set to **true**, the server group cannot be associated with TCP over SSL listeners."
+      }
     },
     {
       "name": "Protocol",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转发到后端服务器使用的通信协议。取值：\n\n- **TCP**（默认值）\n- **UDP**\n- **TCP_UDP**\n> \n> - 当该参数取值为**UDP**时，该服务器组只支持关联**UDP**监听。\n> - 当该参数取值为**TCP**且**PreserveClientIpEnabled**取值为**true**时，该服务器组只支持关联**TCP**监听。\n> - 当该参数取值为**TCP**且**PreserveClientIpEnabled**取值为**false**时，该服务器组支持关联**TCPSSL**监听和**TCP**监听。\n> - 当该参数取值为**TCP_UDP**时，该服务器组支持关联**TCP**监听和**UDP**监听。",
+        "en": "The protocol used to forward requests to the backend servers. Valid values:\n\n- **TCP** (default)\n\n- **UDP**\n\n- **TCP\\_UDP**\n\n> * If you set the value to **UDP**, the server group can be associated only with UDP listeners.\n>\n> * If you set the value to **TCP** and set **PreserveClientIpEnabled** to **true**, the server group can be associated only with TCP listeners.\n>\n> * If you set the value to **TCP** and set **PreserveClientIpEnabled** to **false**, the server group can be associated with TCP and TCP over Secure Sockets Layer (SSL) listeners.\n>\n> * If you set the value to **TCP\\_UDP**, the server group can be associated with TCP and UDP listeners."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The ID of the region where the Network Load Balancer (NLB) instance is deployed.\n\nYou can call the [](t2269514.xdita#)operation to obtain region IDs."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器组所属的资源组ID。",
+        "en": "The ID of the resource group to which the server group belongs."
+      }
     },
     {
       "name": "Scheduler",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度算法。取值：\n\n- **Wrr**（默认值）：加权轮询，权重值越高的后端服务器，被轮询到的概率也越高。\n\n- **Wlc**：加权最小连接数，除了根据每台后端服务器设定的权重值来进行轮询，同时还考虑后端服务器的实际负载（即连接数）。当权重值相同时，当前连接数越小的后端服务器被轮询到的概率也越高。\n\n- **rr**：轮询，按照访问顺序依次将外部请求分发到后端服务器。\n\n- **sch**：源IP哈希：相同的源地址会调度到相同的后端服务器。\n\n- **tch**：四元组哈希，基于四元组（源IP、目的IP、源端口和目的端口）的一致性哈希，相同的流会调度到相同的后端服务器。\n\n- **qch**：QUIC ID哈希，支持将同一个QUIC ID的请求哈希到同一台后端服务器上。\n\n>  仅后端协议为UDP时，支持选择QUIC ID哈希。",
+        "en": "The scheduling algorithm. Valid values:\n\n- **Wrr** (default): weighted round-robin. Backend servers with higher weights receive more requests than backend servers with lower weights.\n\n- **Wlc**: weighted least connections. Requests are distributed based on the weight and the number of connections of each backend server. If two backend servers have the same weight, the backend server that has fewer connections receives more requests.\n\n- **rr**: round-robin. Requests are distributed to backend servers in sequence.\n\n- **sch**: source IP hash. Requests from the same source IP address are distributed to the same backend server.\n\n- **tch**: four-tuple hash. Requests are distributed to backend servers based on a hash of the four-tuple: source IP address, destination IP address, source port, and destination port. This ensures that requests from the same flow are forwarded to the same backend server.\n\n- **qch**: QUIC ID hash. Requests that have the same QUIC ID are hashed to the same backend server.\n\n> You can set the value to qch only when the backend protocol is UDP."
+      }
     },
     {
       "name": "ServerGroupName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组名称。\n\n长度为2~128个字符，必须以大小写字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The name of the server group.\n\nThe name must be 2 to 128 characters in length, start with a letter or a Chinese character, and can contain digits, periods (.), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "ServerGroupType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器组类型。取值：\n\n- **Instance**（默认值）：服务器类型，该类型服务器组支持添加**Ecs**、**Eni**、**Eci**类型实例。\n\n- **Ip**：IP地址类型，该类型服务器组支持直接添加IP地址类型的后端服务器。",
+        "en": "The type of server group. Valid values:\n\n- **Instance** (default): a server group of the instance type. You can add Elastic Compute Service (ECS) instances, elastic network interfaces (ENIs), and elastic container instances (ECIs) to this type of server group.\n\n- **Ip**: a server group of the IP address type. You can add backend servers to this type of server group by specifying their IP addresses."
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。最多支持64个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。支持字符包括字母、数字、下划线 (_)、点 (.)、冒号 (:)、斜线 (/)、等号 (=)、加号 (+)、减号 (-)、@符号 (@) 。\n\n一次调用最多支持添加20个标签。",
+            "en": "The key of the tag. The key can be up to 64 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`. It can contain letters, digits, underscores (\\_), periods (.), colons (:), forward slashes (/), equal signs (=), plus signs (+), hyphens (-), and at signs (@).\n\nYou can add up to 20 tags in a single call."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。最多支持128个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。支持字符包括字母、数字、下划线 (_)、点 (.)、冒号 (:)、斜线 (/)、等号 (=)、加号 (+)、减号 (-)、@符号 (@) 。\n\n一次调用最多支持添加20个标签。",
+            "en": "The value of the tag. The value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`. It can contain letters, digits, underscores (\\_), periods (.), colons (:), forward slashes (/), equal signs (=), plus signs (+), hyphens (-), and at signs (@).\n\nYou can add up to 20 tags in a single call."
+          }
         }
       ]
     },
@@ -118,9 +191,24 @@
       "name": "VpcId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组所在VPC的ID。\n\n> 如果**ServerGroupType**取值为**Instance**时，只有该VPC下的服务器可以加入到该服务器组。",
+        "en": "The ID of the virtual private cloud (VPC) to which the server group belongs.\n\n> If **ServerGroupType** is set to **Instance**, only servers in this VPC can be added to the server group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建服务器组",
+    "en": "CreateServerGroup"
+  },
+  "descriptions": {
+    "zh": "**CreateServerGroup**接口属于异步接口，即系统返回一个请求ID，但该网络型负载均衡的服务器组尚未创建成功，系统后台的创建任务仍在进行。您可以调用[GetJobStatus](~~445904~~)查询服务器组的创建状态：\n   - 当任务状态处于**Succeeded**时，表示服务器组创建成功。\n   - 当任务状态处于**Processing**时，表示服务器组正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。",
+    "en": "**CreateServerGroup** is an asynchronous operation. After a request is sent, the system returns a request ID. However, the server group is still being created in the background. You can call the [](t2269512.xdita#)operation to query the creation status of a server group.\n\n- If a server group is in the **Succeeded** state, it is created.\n\n- If a server group is in the **Processing** state, it is being created. In this state, you can only perform query operations."
+  },
   "example": {
     "unifiedCli": "aliyun nlb create-server-group --server-group-type Instance --server-group-name NLB_ServerGroup --address-ip-version ipv4 --ip-version-affinity-mode Affinity --protocol TCP --vpc-id vpc-bp15zckdt37pq72zv0000 --any-port-enabled false --connection-drain-enabled false --connection-drain-timeout 10 --scheduler Wrr --preserve-client-ip-enabled true --health-check-config '{\"HealthCheckInterval\":5,\"HealthCheckUrl\":\"/test/index.html\",\"UnhealthyThreshold\":2,\"HealthCheckConnectTimeout\":5,\"HealthCheckHttpVersion\":\"HTTP1.0\",\"HealthCheckEnabled\":true,\"HealthCheckConnectPort\":0,\"HealthCheckReq\":\"hello\",\"HealthyThreshold\":2,\"HttpCheckMethod\":\"GET\",\"HealthCheckExp\":\"ok\",\"HealthCheckDomain\":\"SERVER_IP\",\"HealthCheckHttpCode\":[\"http_2xx\"],\"HealthCheckType\":\"TCP\"}' --resource-group-id rg-atstuj3rtop0000 --dry-run true --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --tag Value=product Key=env --region cn-hangzhou",
     "legacyCli": "aliyun nlb CreateServerGroup --region cn-hangzhou --HealthCheckConfig.HealthCheckConnectTimeout 5 --ResourceGroupId 'rg-atstuj3rtop0000' --Scheduler Wrr --AddressIPVersion ipv4 --HealthCheckConfig.HealthCheckType TCP --DryRun true --IpVersionAffinityMode Affinity --PreserveClientIpEnabled true --ConnectionDrainEnabled false --HealthCheckConfig.UnhealthyThreshold 2 --ConnectionDrainTimeout 10 --HealthCheckConfig.HealthCheckDomain SERVER_IP --HealthCheckConfig.HealthCheckUrl '/test/index.html' --HealthCheckConfig.HealthCheckEnabled true --HealthCheckConfig.HealthCheckConnectPort 0 --Protocol TCP --HealthCheckConfig.HealthyThreshold 2 --ServerGroupName NLB_ServerGroup --Tag.1.Key env --HealthCheckConfig.HealthCheckReq hello --HealthCheckConfig.HealthCheckExp ok --HealthCheckConfig.HealthCheckHttpCode.1 http_2xx --ServerGroupType Instance --HealthCheckConfig.HealthCheckHttpVersion 'HTTP1.0' --HealthCheckConfig.HealthCheckInterval 5 --VpcId 'vpc-bp15zckdt37pq72zv0000' --Tag.1.Value product --AnyPortEnabled false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --HealthCheckConfig.HttpCheckMethod GET --method POST --force"

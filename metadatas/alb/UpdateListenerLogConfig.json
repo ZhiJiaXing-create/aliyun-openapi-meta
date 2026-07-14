@@ -1,5 +1,6 @@
 {
   "name": "UpdateListenerLogConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "访问日志是否开启携带自定义头字段。取值：\n\n- **true**：是。\n- **false**（默认值）：否。\n\n> 只有实例访问日志开关**AccessLogEnabled**打开时，才能设置此参数为**true**。",
-        "en": "Specifies whether to record custom headers in the access log. Valid values:\n\n*   **true**\n*   **false** (default)\n\n> You can set this parameter to **true** only if the access log feature is enabled by specifying **AccessLogEnabled**."
+        "en": "Specifies whether to record custom headers in the access log. Valid values:\n\n- **true**\n\n- **false** (default)\n\n> You can set this parameter to **true** only if the access log feature is enabled by specifying **AccessLogEnabled**."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会更新监听的日志配置。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回**HTTP_2xx**状态码并直接进行操作。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false**: (default): performs a dry run and performs the actual request. If the request passes the dry run, a **2xx HTTP** status code is returned and the operation is performed."
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false**: (default): performs a dry run and performs the actual request. If the request passes the dry run, a **2xx HTTP** status code is returned and the operation is performed."
       }
     },
     {
@@ -55,6 +56,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新监听日志相关属性",
+    "en": "UpdateListenerLogConfig"
+  },
+  "descriptions": {
+    "zh": "**UpdateListenerLogConfig**接口属于异步接口，即系统返回一个请求ID，但该监听的日志配置尚未更新成功，系统后台的更新任务仍在进行。您可以调用[GetListenerAttribute](~~2254865~~)查询监听的日志配置的更新状态：\n- 当监听器处于**Configuring**状态时，表示监听的日志配置正在更新中。\n- 当监听器处于**Running**状态时，表示监听的日志配置更新成功。\n> 只有开启实例访问日志后，才能更新监听的日志配置。",
+    "en": "**UpdateListenerLogConfig** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call [GetListenerAttribute](~~2254865~~) to query the status of the task:\n\n- If a listener is in the **Configuring** state, the log configuration of the listener is being modified.\n\n- If a listener is in the **Running** state, the log configuration of the listener is modified.\n\n> You can update the log configuration of a listener only after you enable the access log feature."
+  },
   "example": {
     "unifiedCli": "aliyun alb update-listener-log-config --listener-id lsn-o4u54y73wq7b000000 --client-token 5A2CFF0E-5718-45B5-9D4D-70B000000 --dry-run true --access-log-record-customized-headers-enabled true --access-log-tracing-config TracingType=Zipkin TracingSample=100 TracingEnabled=true --region cn-hangzhou",
     "legacyCli": "aliyun alb UpdateListenerLogConfig --region cn-hangzhou --DryRun true --AccessLogRecordCustomizedHeadersEnabled true --AccessLogTracingConfig.TracingType Zipkin --AccessLogTracingConfig.TracingEnabled true --AccessLogTracingConfig.TracingSample 100 --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B000000' --ListenerId 'lsn-o4u54y73wq7b000000' --method POST --force"

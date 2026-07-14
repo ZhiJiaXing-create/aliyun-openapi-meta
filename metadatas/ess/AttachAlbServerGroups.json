@@ -1,5 +1,6 @@
 {
   "name": "AttachAlbServerGroups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "ALB服务器组列表。",
+        "en": "The list of ALB server groups."
+      },
       "sub_parameters": [
         {
           "name": "AlbServerGroupId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "ALB服务器组的ID。\n\nN为ALB服务器组的编号。一个伸缩组支持关联的ALB服务器组数量有限，如需查看或手动申请提升配额值，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)。",
+            "en": "The ID of the ALB server group.\n\nN specifies the number of the ALB server group. The number of ALB server groups that can be associated with a scaling group is limited. To view or request a quota increase, go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas)."
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "弹性伸缩将ECS实例或ECI实例添加到ALB服务器组后，ECS实例或ECI实例使用的端口号，取值范围：1~65535。\n\n> N为ALB服务器组的编号，如果N相同，Port不同，系统会默认向伸缩组关联多个不同Port的该ALB服务器组。",
+            "en": "The port number used by the ECS instance or elastic container instance after Auto Scaling adds the instance to the ALB server group. Valid values: 1 to 65535.\n\n> N specifies the number of the ALB server group. If the values of N are the same but the values of Port are different, the system associates the ALB server group with the scaling group multiple times, each with a different port."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "弹性伸缩将ECS实例或ECI实例添加到ALB服务器组后，ECS实例或ECI实例作为后端服务器的权重。N为ALB服务器组的编号。\n\n权重越高，ECS实例或ECI实例将被分配到越多的访问请求。如果权重为0，则ECS实例或ECI实例不会收到访问请求。取值范围：0~100。",
+            "en": "The weight of the ECS instance or elastic container instance as a backend server after Auto Scaling adds the instance to the ALB server group. N specifies the number of the ALB server group.\n\nA higher weight indicates that the instance receives more requests. If the weight is 0, the instance does not receive any requests. Valid values: 0 to 100."
+          }
         }
       ]
     },
@@ -34,27 +51,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "ForceAttach",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否将当前伸缩组内的ECS实例或ECI实例添加到新增的ALB服务器组。\n\n- true：添加，并返回`ScalingActivityId`，您可以通过查看该伸缩活动ID来确定已有实例是否添加成功。\n\n- false：不添加。\n\n默认值：false。",
+        "en": "Specifies whether to add the existing ECS instances or elastic container instances in the scaling group to the new ALB server group. Valid values:\n\n- true: The instances are added. The system returns a ScalingActivityId. You can use the scaling activity ID to check whether the existing instances are added.\n\n- false: The instances are not added.\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组所属地域的ID。\n\n例如`cn-hangzhou`、c`n-shanghai`。更多信息，请参见[地域和可用区](~~40654~~)。",
+        "en": "The ID of the region where the scaling group resides.\n\nExamples: `ap-southeast-1` and `cn-shanghai`. For more information, see [Regions and zones](~~40654~~)."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加一个或多个ALB服务器组",
+    "en": "Add one or more ALB server groups"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n向伸缩组添加ALB服务器组时，需要满足以下条件：\n\n- 伸缩组的网络类型必须为VPC，且与ALB服务器组处于同一VPC。\n\n-  ALB服务器组必须处于可用状态。",
+    "en": "## Operation description\n\nTo add ALB server groups to a scaling group, the following conditions must be met:\n\n- The network type of the scaling group must be Virtual Private Cloud (VPC), and the scaling group must reside in the same VPC as the ALB server groups.\n\n- The ALB server groups must be in the Available state."
+  },
   "example": {
     "unifiedCli": "aliyun ess attach-alb-server-groups --biz-region-id cn-hangzhou --scaling-group-id asg-bp18p2yfxow2dloq0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --force-attach false --alb-server-group AlbServerGroupId=sgp-ddwb0y0g6y9bjm0000 Port=22 Weight=100 --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess AttachAlbServerGroups --region cn-hangzhou --AlbServerGroup.1.Weight 100 --AlbServerGroup.1.Port 22 --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --ForceAttach false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AlbServerGroup.1.AlbServerGroupId 'sgp-ddwb0y0g6y9bjm0000'"

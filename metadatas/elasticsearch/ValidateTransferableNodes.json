@@ -1,5 +1,6 @@
 {
   "name": "ValidateTransferableNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/openapi/instances/[InstanceId]/validate-transfer-nodes",
@@ -8,31 +9,51 @@
       "name": "InstanceId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "请求体。",
+        "en": "The request body."
+      },
       "sub_parameters": [
         {
           "name": "host",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点的IP地址。",
+            "en": "The IP address of the node."
+          }
         },
         {
           "name": "port",
           "position": "Body",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点的访问端口号。",
+            "en": "The access port number of the node."
+          }
         },
         {
           "name": "zoneId",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例节点所在的可用区ID。例如，上海可用区C为cn-shanghai-c。",
+            "en": "The zone ID of the instance node. For example, the ID of Zone C in the China (Shanghai) region is cn-shanghai-c."
+          }
         }
       ]
     },
@@ -40,9 +61,20 @@
       "name": "nodeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点类型，可选值：\n\n- WORKER：热节点\n- WORKER_WARM：冷节点\n\n> 不支持COORDINATING（协调节点）和KIBANA（Kibana节点）。",
+        "en": "The node type. Valid values:\n\n- WORKER: hot node\n- WORKER_WARM: warm node\n\n> COORDINATING (client node) and KIBANA (Kibana node) are not supported."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "校验是否可以迁移实例中节点",
+    "en": "Validate whether data on nodes in an instance can be migrated"
+  },
   "example": {
     "unifiedCli": "aliyun elasticsearch validate-transferable-nodes --instance-id es-cn-nif1q9o8r00080000 --node-type WORKER --biz-body port=9200 host=172.16.xx.xx zoneId=cn-shanghai-c --api-version 2017-06-13 --region cn-hangzhou",
     "legacyCli": "aliyun elasticsearch POST /openapi/instances/es-cn-nif1q9o8r00080000/validate-transfer-nodes --region cn-hangzhou --nodeType WORKER --header \"Content-Type=application/json\" --body [{\"port\":9200,\"host\":\"172.16.xx.xx\",\"zoneId\":\"cn-shanghai-c\"}]"

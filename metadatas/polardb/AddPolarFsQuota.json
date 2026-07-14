@@ -1,5 +1,6 @@
 {
   "name": "AddPolarFsQuota",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,83 +9,146 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用依赖的PolarDB实例ID",
+        "en": "The ID of the PolarDB instance on which the application depends."
+      }
     },
     {
       "name": "PolarFsInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Polarlakebase实例ID",
+        "en": "The ID of the Polarlakebase instance."
+      }
     },
     {
       "name": "Quotas",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "配额规则详情。",
+        "en": "The details of the quota rules."
+      },
       "sub_parameters": [
         {
           "name": "AccessTTL",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "access time对应的ttl，单位 秒",
+            "en": "The time to live (TTL) for the access time. Unit: seconds."
+          }
         },
         {
           "name": "ChangeTTL",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "change time对应的ttl，单位 秒",
+            "en": "The TTL for the change time. Unit: seconds."
+          }
         },
         {
           "name": "Description",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源配额描述。",
+            "en": "The description of the resource quota."
+          }
         },
         {
           "name": "Enabled",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则是否启用，取值如下：\n- **True**：新增事件对新事物立即生效，默认值\n- **False**：新增事件对新事物不生效",
+            "en": "Specifies whether to enable the rule. Valid values:\n\n- **True**: The rule immediately applies to new items. This is the default value.\n\n- **False**: The rule does not apply to new items."
+          }
         },
         {
           "name": "Exclude",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "排除特定路径的匹配规则\n- 以 `/` 开头的路径模式（支持 `*`、`?`、`**` 的 glob 语法）",
+            "en": "The rule to exclude specific paths from matching.\n\n- A path pattern that starts with a forward slash (/). Supports glob syntax, including `*`, `?`, and `**`."
+          }
         },
         {
           "name": "FileCountLimit",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "目录下用户的文件数目限制。",
+            "en": "The limit on the number of files for a user in the directory."
+          }
         },
         {
           "name": "Include",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "匹配路径的通配模式\n- 以 `/` 开头的路径模式（支持 `*`、`?、`**` 的 glob 语法）。",
+            "en": "The wildcard pattern to match paths.\n\n- A path pattern that starts with a forward slash (/). Supports glob syntax, including `*`, `?`, and `**`."
+          }
         },
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "规则名称",
+            "en": "The name of the rule."
+          }
         },
         {
           "name": "Priority",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "配额规则的优先级。",
+            "en": "The priority of the quota rule."
+          }
         },
         {
           "name": "SizeLimit",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "限制目录下文件总容量。单位：GB\n- 说明：不小于1GB",
+            "en": "The total size limit for files in the directory. Unit: GB.\n\n- Note: The value must be at least 1 GB."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新增Polarlakebase配额规则",
+    "en": "AddPolarFsQuota"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 该API用于向指定的Polarlakebase实例中添加新的PathPolicy（Quota规则）。\n- `Quotas`参数是一个列表，每个元素代表一个待新增的规则，最多支持同时添加11条规则。\n- 每个规则必须包含`Name`和`Include`字段，其他字段如`Description`、`Exclude`等为可选项。\n- `SizeLimit`、`FileCountLimit`、`AccessTTL`、`ChangeTTL`至少需要提供其中之一来定义配额限制。\n- `Priority`字段用于设置规则优先级，数值越大优先级越高，默认值为0。\n- `Enabled`字段控制规则是否立即生效，默认值为true表示立即生效。",
+    "en": "## Request description\n\n- This operation adds a new path policy—a directory quota rule—to a specified Polarlakebase instance.\n\n- The `Quotas` parameter is a list. Each element represents a new quota rule. You can add up to 11 rules in a single request.\n\n- Each rule must include the `Name` and `Include` fields. Other fields, such as `Description` and `Exclude`, are optional.\n\n- To define the quota limit, specify at least one of the following parameters: `SizeLimit`, `FileCountLimit`, `AccessTTL`, or `ChangeTTL`.\n\n- The `Priority` field specifies the rule priority. A larger value indicates higher priority. The default value is 0.\n\n- The `Enabled` field determines whether the rule takes effect immediately. The default value is true."
+  },
   "example": {
     "unifiedCli": "aliyun polardb add-polar-fs-quota --polar-fs-instance-id pfs-2ze0i74ka60700000 --quotas Description=quota_policy Exclude=/a/0project0 ChangeTTL=7200 FileCountLimit=222 Priority=1 SizeLimit=1 Include=/b/0project0 AccessTTL=7200 Enabled=true Name=rule1 --db-cluster-id pc-00000000000000 --region cn-hangzhou",
     "legacyCli": "aliyun polardb AddPolarFsQuota --region cn-hangzhou --Quotas.1.Description quota_policy --Quotas.1.Priority 1 --Quotas.1.FileCountLimit 222 --Quotas.1.ChangeTTL 7200 --Quotas.1.Exclude '/a/0project0' --Quotas.1.SizeLimit 1 --PolarFsInstanceId 'pfs-2ze0i74ka60700000' --Quotas.1.AccessTTL 7200 --DBClusterId 'pc-00000000000000' --Quotas.1.Enabled true --Quotas.1.Include '/b/0project0' --Quotas.1.Name rule1"

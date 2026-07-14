@@ -1,5 +1,6 @@
 {
   "name": "ListDatabases",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "Comment",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "注释，模糊匹配。",
+        "en": "The comment. Supports fuzzy match."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "名称，模糊匹配。",
+        "en": "The name. Supports fuzzy match."
+      }
     },
     {
       "name": "Order",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方向，默认为Asc，枚举值，当前支持：\n\n- Asc：升序\n- Desc：降序",
+        "en": "The sort order. Default value: Asc. Valid values:\n\n- Asc: ascending.\n\n- Desc: descending."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页页码，默认为1。",
+        "en": "The page number. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，默认为10，最大为100。",
+        "en": "The number of records per page. Default: 10. Maximum: 100."
+      }
     },
     {
       "name": "ParentMetaEntityId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "父层级实体ID，可参考[元数据实体相关概念说明](~~2880092~~)。\n\n父层级实体类型参考ListCrawlerTypes接口\n\n- 若父层级实体为数据目录，`ParentMetaEntityId`格式参考ListCatalogs接口返回结果。\n\n- 如果父层级实体为元数据采集器，`ParentMetaEntityId`格式为`${CrawlerType}:${实例ID或转义后的URL}`。\n\n几种常用类型的ParentMetaEntityId格式参考如下：\n\n- `dlf-catalog::catalog_id`\n\n- `holo:instance_id`\n\n- `mysql:(instance_id|encoded_jdbc_url)`\n\n> 其中  \n- `catalog_id`: dlf目录id。\n- `instance_id`: 实例ID，对应数据源以实例模式注册时需要提供。\n- `encoded_jdbc_url`: JDBC连接串的URLEncode编码,对应数据源以连接串方式注册时需要提供。",
+        "en": "The parent entity ID. For more information, see [Concepts related to metadata entities](~~2880092~~).\n\nYou can refer to the ListCrawlerTypes operation for the parent entity type.\n\n- If the parent entity is a catalog, the format of `ParentMetaEntityId` follows the response of the ListCatalogs API.\n\n- If the parent entity is a metadata crawler, the format of `ParentMetaEntityId` is `${CrawlerType}:${Instance ID or encoded URL}`.\n\nParentMetaEntityId format examples\n\n- `dlf-catalog::catalog_id`\n\n- `holo:instance_id`\n\n- `mysql:(instance_id|encoded_jdbc_url)`\n\n>\n\n- `catalog_id`: The ID of the DLF catalog.\n\n- `instance_id`: The instance ID. Required when the data source is registered in instance mode.\n\n- `encoded_jdbc_url`: The URL-encoded JDBC connection string. Required when the data source is registered by connection string."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段，默认为CreateTime，枚举值，当前支持：\n\n- CreateTime：创建时间\n- ModifyTime：修改时间\n- Name：名称",
+        "en": "The sort field. Default value: CreateTime. Valid values:\n\n- CreateTime\n\n- ModifyTime\n\n- Name"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询数据地图数据库列表",
+    "en": "ListDatabases"
+  },
+  "descriptions": {
+    "zh": "1. 需要购买DataWorks基础版及以上版本才能使用。\n2. 对于starrocks类型，当前仅支持查询Internal catalog",
+    "en": "1. DataWorks Basic Edition or a higher edition is required.\n\n2. For the StarRocks type, only the Internal catalog is supported."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public list-databases --parent-meta-entity-id holo:instance_id --name test_tbl --comment test_comment --sort-by CreateTime --order Asc --page-number 1 --page-size 10 --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public ListDatabases --region cn-hangzhou --Order Asc --Comment test_comment --PageSize 10 --PageNumber 1 --SortBy CreateTime --ParentMetaEntityId 'holo:instance_id' --Name test_tbl"

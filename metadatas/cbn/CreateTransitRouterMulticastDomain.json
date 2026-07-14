@@ -1,5 +1,6 @@
 {
   "name": "CreateTransitRouterMulticastDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The token can contain only ASCII characters."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token on your client to make sure that the token is unique among different requests. The token can contain only ASCII characters."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会创建组播域。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接创建组播域。",
-        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: performs a dry run. The system checks the required parameters, request format, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and sends the request."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. After the request passes the check, the multicast domain is created."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "组播域功能选项。",
-        "en": "Multicast domain feature."
+        "en": "The multicast domain options."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "转发路由器实例所属的地域ID。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
-        "en": "The region ID of the transit router.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query the most recent region list."
+        "en": "The ID of the region where the transit router is deployed.\n\nCall the [DescribeChildInstanceRegions](~~132080~~) operation to obtain region IDs."
       }
     },
     {
@@ -59,24 +60,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
+        "en": "The tag.\n\nYou can specify up to 20 tags in each call."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key cannot be an empty string. The tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https:// `.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The tag value.\n\nThe tag value can be an empty string or a string of up to 128 characters. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https:// `.\n\nEach tag key must have a unique tag value. You can specify up to 20 tag values."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
-        "en": "The information about the tags.\n\nYou can specify at most 20 tags in each call."
-      }
+      ]
     },
     {
       "name": "TransitRouterId",
@@ -95,7 +104,7 @@
       "required": false,
       "description": {
         "zh": "组播域的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
-        "en": "The description of the multicast domain.\n\nThe description must be 1 to 256 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "The description of the multicast domain.\n\nThe description can be empty or 1 to 256 characters in length, and cannot start with \\`http\\://\\` or \\`https\\://\\`."
       }
     },
     {
@@ -105,10 +114,21 @@
       "required": false,
       "description": {
         "zh": "组播域的名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
-        "en": "The name of the multicast domain.\n\nThe name must be 1 to 128 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "The name of the multicast domain.\n\nThe name can be empty or 1 to 128 characters in length, and cannot start with \\`http\\://\\` or \\`https\\://\\`."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建组播域",
+    "en": "CreateTransitRouterMulticastDomain"
+  },
+  "descriptions": {
+    "zh": "在调用本接口前，请先了解以下信息：\n\n- 请确保您已经在待建立组播网络的地域创建了企业版转发路由器，并开启了企业版转发路由器的组播功能。具体操作，请参见[CreateTransitRouter](~~261169~~)。\n\n    如果您在申请组播资源前已创建了企业版转发路由器实例，则该企业版转发路由器实例不支持开启组播功能，您可以删除当前企业版转发路由器实例，重新创建。如何删除企业版转发路由器实例，请参见[DeleteTransitRouter](~~261218~~)。\n- 在调用**CreateTransitRouterMulticastDomain**接口的过程中，如果您指定了**CenId**、**RegionId**参数的值，则无需指定**TransitRouterId**参数的值；如果您指定了**TransitRouterId**参数的值，则无需指定**CenId**和**RegionId**参数的值。",
+    "en": "Before you call this operation, note the following:\n\n- Make sure that you have created an Enterprise Edition transit router in the region where you want to create the multicast network and enabled the multicast feature for the transit router. For more information, see [CreateTransitRouter](~~261169~~).\n\n  If you created an Enterprise Edition transit router before you requested multicast resources, you cannot enable the multicast feature for the transit router. You must delete the current Enterprise Edition transit router and create a new one. For more information about how to delete an Enterprise Edition transit router, see [DeleteTransitRouter](~~261218~~).\n\n- When you call the **CreateTransitRouterMulticastDomain** operation, if you specify **CenId** and **RegionId**, you do not need to specify **TransitRouterId**. If you specify **TransitRouterId**, you do not need to specify **CenId** or **RegionId**."
+  },
   "example": {
     "unifiedCli": "aliyun cbn create-transit-router-multicast-domain --client-token 123e4567-e89b-12d3-a456-42660000 --cen-id cen-a7syd349kne38g0000 --transit-router-id tr-p0wr9p28r92d598y60000 --biz-region-id cn-hangzhou --transit-router-multicast-domain-name nametest --transit-router-multicast-domain-description desctest --dry-run false --tag Value=TagValue Key=TagKey --options StrictSourceControl=enable Igmpv2Support=enable --region cn-hangzhou",
     "legacyCli": "aliyun cbn CreateTransitRouterMulticastDomain --region cn-hangzhou --Tag.1.Key TagKey --Options.Igmpv2Support enable --Tag.1.Value TagValue --CenId 'cen-a7syd349kne38g0000' --DryRun false --TransitRouterMulticastDomainName nametest --TransitRouterMulticastDomainDescription desctest --RegionId 'cn-hangzhou' --Options.StrictSourceControl enable --ClientToken '123e4567-e89b-12d3-a456-42660000' --TransitRouterId 'tr-p0wr9p28r92d598y60000' --method POST --force"

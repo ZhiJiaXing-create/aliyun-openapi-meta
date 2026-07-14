@@ -1,5 +1,6 @@
 {
   "name": "OperateBatchDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,72 +10,112 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "用户提交的数据（POPAPI确认size，最大200条数据）。",
+        "en": "The data for the batch operation."
+      },
       "sub_parameters": [
         {
           "name": "Domain",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "域名名称。\n\n> 用户提交的数据， N 从 1 开始，最多 200 条数据。由于HTTP请求头限制，请勿超过 200 条数据。",
+            "en": "The domain name.\n\n> A single request can contain up to 200 entries. Exceeding this limit may cause the request to fail due to the HTTP request header size limit."
+          }
         },
         {
           "name": "Line",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "解析请求来源。默认：default。",
+            "en": "The resolution line. Default value: default."
+          }
         },
         {
           "name": "NewRr",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新的主机记录（仅修改操作时使用，外部用户不支持）。",
+            "en": "The new host record. This parameter is used only for modification operations and is for internal use only."
+          }
         },
         {
           "name": "NewType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新的记录类型代码（仅修改操作时使用，外部用户不支持）。",
+            "en": "The new record type. This parameter is used only for modification operations and is for internal use only."
+          }
         },
         {
           "name": "NewValue",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新的记录值（仅修改操作时使用，外部用户不支持）。",
+            "en": "The new record value. This parameter is used only for modification operations and is for internal use only."
+          }
         },
         {
           "name": "Priority",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "MX优先级。\n\n记录类型为MX时必需。默认：10。",
+            "en": "The MX priority.\n\nThis parameter is required if the record type is MX. Default value: 10."
+          }
         },
         {
           "name": "Rr",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "主机记录。\n\n> 批量操作类型为**RR_ADD**、**RR_DEL**时必需。",
+            "en": "The host record.\n\n> This parameter is required when `Type` is **RR\\_ADD** or **RR\\_DEL**."
+          }
         },
         {
           "name": "Ttl",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生效时间（单位：秒），默认***600***。",
+            "en": "The TTL, in seconds. Default value: ***600***."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "记录类型。例如：A、AAAA、TXT、MX、CNAME等。\n\n> 批量操作类型为**RR_ADD**、**RR_DEL**时必需。",
+            "en": "The record type. Examples: A, AAAA, TXT, MX, and CNAME.\n\n> This parameter is required when `Type` is **RR\\_ADD** or **RR\\_DEL**."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "记录值。\n\n> 批量操作类型为**RR_ADD**、**RR_DEL**时必需。",
+            "en": "The record value.\n\n> This parameter is required when `Type` is **RR\\_ADD** or **RR\\_DEL**."
+          }
         }
-      ],
-      "description": {
-        "zh": "用户提交的数据（POPAPI确认size，最大1000条数据）。",
-        "en": "The DNS records. You can submit up to 1,000 DNS records."
-      }
+      ]
     },
     {
       "name": "Lang",
@@ -83,7 +124,7 @@
       "required": false,
       "description": {
         "zh": "返回值语言，取值：\n- zh：中文\n- en：英文\n\n默认：zh",
-        "en": "The language of the response. Valid values:\n\n*   zh: Chinese\n*   en: English\n\nDefault value: zh"
+        "en": "The response language. Valid values:\n\n- zh: Chinese\n\n- en: English\n\nDefault value: zh"
       }
     },
     {
@@ -93,10 +134,21 @@
       "required": true,
       "description": {
         "zh": "批量操作类型，取值：\n\n- **DOMAIN_ADD**：批量添加域名\n- **DOMAIN_DEL**：批量删除域名\n- **RR_ADD**：批量添加解析\n- **RR_DEL**：批量删除解析（删除满足N.RR、N.VALUE、N.RR&amp;N.VALUE条件的解析记录。如果无N.RR&&N.VALUE则清空参数DomainRecordInfo.N.Domain下的解析记录）",
-        "en": "The type of the batch operation. Valid values:\n\n*   **DOMAIN_ADD**: adds domain names in batches.\n*   **DOMAIN_DEL**: deletes domain names in batches.\n*   **RR_ADD**: adds DNS records in batches.\n*   **RR_DEL**: deletes DNS records in batches. This operation deletes the DNS records with the specified hostname or record value. If you do not specify the Rr and Value parameters, this operation deletes the DNS records that are added for the specified domain names."
+        "en": "The batch operation type. Valid values:\n\n- **DOMAIN\\_ADD**: adds domain names in batches.\n\n- **DOMAIN\\_DEL**: deletes domain names in batches.\n\n- **RR\\_ADD**: adds DNS records in batches.\n\n- **RR\\_DEL**: deletes DNS records in batches. This operation deletes DNS records that match the conditions specified by `Rr`, `Value`, or both. If you do not specify `Rr` and `Value`, all DNS records for the specified domain name are deleted."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量管理域名和解析记录",
+    "en": "OperateBatchDomain"
+  },
+  "descriptions": {
+    "zh": "使用场景：有大量需要执行的解析操作任务，但是对任务生效效率没有高需求。",
+    "en": "Use this operation for batch DNS tasks that do not require immediate execution."
+  },
   "example": {
     "unifiedCli": "aliyun alidns operate-batch-domain --lang en --type RR_ADD --domain-record-info Line=default Rr=zhaohui Type=MX Priority=5 Value=fd87da3c4528844d45af39200155a905 NewRr=mail NewValue=114.92.XX.XX Domain=example.com Ttl=600 NewType=AAAA --region cn-hangzhou",
     "legacyCli": "aliyun alidns OperateBatchDomain --region cn-hangzhou --Type RR_ADD --DomainRecordInfo.1.NewType AAAA --DomainRecordInfo.1.NewValue '114.92.XX.XX' --DomainRecordInfo.1.Line default --DomainRecordInfo.1.Priority 5 --DomainRecordInfo.1.Value fd87da3c4528844d45af39200155a905 --DomainRecordInfo.1.NewRr mail --DomainRecordInfo.1.Ttl 600 --Lang en --DomainRecordInfo.1.Rr zhaohui --DomainRecordInfo.1.Domain 'example.com' --DomainRecordInfo.1.Type MX"

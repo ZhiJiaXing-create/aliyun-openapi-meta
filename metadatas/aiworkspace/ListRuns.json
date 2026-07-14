@@ -1,5 +1,6 @@
 {
   "name": "ListRuns",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/runs",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "Run所属实验ID。",
-        "en": "The ID of the experiment that the run belongs."
+        "en": "The ID of the experiment to which the run belongs."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "任务的标签，精确匹配。支持：\n- 单标签查询：\"is_evaluation:true\"\n- 多标签场景（非特殊场景不推荐，可能存在性能问题）：\"is_evaluation:true,LLM_evaluation:true\" 使用半角逗号（,）分隔，表示多个标签key-value需要同时匹配。",
-        "en": "The label. Exact match is supported. Valid values:\n\n*   Single-label query: Set the value to is_evaluation.\n*   Multi-label query (not recommended in non-special scenarios and may have performance issues): Set the value to is_evaluation:true,LLM_evaluation:true. Multiple labels are separated with commas (,), indicating that the key-value pairs of multiple labels must be matched at the same time."
+        "en": "The labels of the run for an exact match. The following formats are supported:\n\n- Single-label query: \"is\\_evaluation:true\"\n\n- Multi-label query: \"is\\_evaluation:true,LLM\\_evaluation:true\". This method is not recommended for common scenarios because it may degrade performance. Use commas (,) to separate multiple labels. The system matches all specified key-value pairs."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "请求的最大结果数，默认为10。",
-        "en": "The maximum number of entries in the request. Default value: 10."
+        "en": "The maximum number of results to return. The default value is 10."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "运行名称。",
-        "en": "The run name."
+        "en": "The name of the run."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "分页查询时，对指定的排序字段进行升序或降序，与SortBy结合使用。\n- ASC：升序。\n- DESC（默认值）：降序。",
-        "en": "The order in which the entries are sorted by the specific field on the returned page. This parameter must be used together with SortBy.\n\n*   ASC\n*   DESC (default)"
+        "en": "The sort order for the paged query. Use this parameter with SortBy.\n\n- ASC: ascending order.\n\n- DESC (default): descending order."
       }
     },
     {
@@ -71,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "排序方式的字符串列表，支持排序的字段包括：GmtCreateTime、Name。排序方式包括DESC和ASC，默认为ASC。支持多个字段，用半角逗号\",\"分隔。",
-        "en": "The strings by which the results are sorted. The following parameters can be used to sort the results: GmtCreateTime and Name. The sorting order can be ASC (default) and DESC. Separate multiple strings with commas (,)."
+        "en": "The fields to sort by and the sort order. You can sort by GmtCreateTime and Name. Valid sort orders are DESC and ASC. The default is ASC. To sort by multiple fields, separate them with a comma (,)."
       }
     },
     {
@@ -91,7 +92,7 @@
       "required": false,
       "description": {
         "zh": "每页显示的记录数。",
-        "en": "The number of entries per page."
+        "en": "The number of records to display on each page."
       }
     },
     {
@@ -101,7 +102,7 @@
       "required": false,
       "description": {
         "zh": "分页token，从0开始，默认为0。",
-        "en": "The pagination token, which starts from 0. Default value: 0."
+        "en": "The paging token. The value starts from 0. The default value is 0."
       }
     },
     {
@@ -111,7 +112,7 @@
       "required": false,
       "description": {
         "zh": "用于排序的字段名，取值如下：\n- Name：Run名称。\n- GmtCreateTime（默认值）：Run创建时间。",
-        "en": "The field used for sorting. Valid values:\n\n*   Name: the name of the run.\n*   GmtCreateTime: the time when the run is created."
+        "en": "The field to use for sorting. Valid values:\n\n- Name: the name of the run.\n\n- GmtCreateTime (default): the time when the run was created."
       }
     },
     {
@@ -121,7 +122,7 @@
       "required": false,
       "description": {
         "zh": "Run关联的PAI Workload ID。",
-        "en": "The ID of the workload associated with the run."
+        "en": "The ID of the PAI workload associated with the run."
       }
     },
     {
@@ -131,7 +132,7 @@
       "required": false,
       "description": {
         "zh": "Run关联的PAI Workload类型。",
-        "en": "The type of the workload associated with the run."
+        "en": "The type of the PAI workload associated with the run."
       }
     },
     {
@@ -141,7 +142,7 @@
       "required": false,
       "description": {
         "zh": "是否展示详细信息，包括：Metrics、Params和Labels。取值如下：\n- true：表示展示详细信息。\n- false（默认值）：表示不展示详细信息。",
-        "en": "Specifies whether to show detailed information, including Metrics, Params, and Labels. Valid values:\n\n*   true\n*   false (default)"
+        "en": "Specifies whether to display details, including Metrics, Params, and Labels. Valid values:\n\n- true: displays details.\n\n- false (default): does not display details."
       }
     },
     {
@@ -151,10 +152,17 @@
       "required": false,
       "description": {
         "zh": "实验所在工作空间ID。如何获取工作空间ID，请参见[ListWorkspaces](~~449124~~)。\n> 不填写工作空间ID，系统将返回默认工作空间的运行列表。\n>",
-        "en": "The ID of the workspace to which the experiment belongs. You can call [ListWorkspaces](~~449124~~) to obtain the workspace ID.\n\n>  If you do not specify a workspace ID, the system returns the runs of the default workspace."
+        "en": "The ID of the workspace where the experiment resides. For more information about how to obtain a workspace ID, see [ListWorkspaces](~~449124~~).\n\n> If you do not specify a workspace ID, the system returns the list of runs in the default workspace."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取运行列表",
+    "en": "ListRuns"
+  },
   "example": {
     "unifiedCli": "aliyun aiworkspace list-runs --name myName --workspace-id 22800 --experiment-id exp-1zpfthdx000000 --source-type TrainingService --source-id job-rbvg5wzlj0000 --labels is_evaluation:true --verbose true --gmt-create-time 2021-01-30T12:51:33.028Z --order-by GmtCreateTime_DESC,Name_ASC --page-token 0 --max-results 10 --page-number 1 --page-size 10 --sort-by GmtCreateTime --order DESC --region cn-hangzhou",
     "legacyCli": "aliyun aiworkspace GET /api/v1/runs --region cn-hangzhou --OrderBy 'GmtCreateTime_DESC,Name_ASC' --Order DESC --Verbose true --PageSize 10 --SortBy GmtCreateTime --SourceType TrainingService --SourceId 'job-rbvg5wzlj0000' --MaxResults 10 --WorkspaceId 22800 --PageToken 0 --Labels 'is_evaluation:true' --Name myName --PageNumber 1 --ExperimentId 'exp-1zpfthdx000000' --GmtCreateTime '2021-01-30T12:51:33.028Z' --header \"Content-Type=application/json\""

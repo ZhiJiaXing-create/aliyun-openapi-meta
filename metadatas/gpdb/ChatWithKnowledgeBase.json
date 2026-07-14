@@ -1,5 +1,6 @@
 {
   "name": "ChatWithKnowledgeBase",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n> 您可以调用[DescribeDBInstances](~~196830~~)接口查看目标地域下所有实例的详情，包括实例ID。",
+        "en": "The instance ID.\n> You can call the [DescribeDBInstances](~~196830~~) operation to query the details of all instances in the target region, including the instance ID."
+      }
     },
     {
       "name": "IncludeKnowledgeBaseResults",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否返回召回结果，默认false",
+        "en": "Specifies whether to return the recall results. Default value: false."
+      }
     },
     {
       "name": "KnowledgeParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "知识检索参数对象，不指定时，仅chat。",
+        "en": "The knowledge retrieval parameter object. If not specified, only chat is performed."
+      }
     },
     {
       "name": "ModelParams",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "大语言模型LLM调用参数对象。",
+        "en": "The large language model (LLM) invocation parameter object."
+      }
     },
     {
       "name": "PromptParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统提示词模板，需要包括{{ text_chunks }},{{ user_system_prompt }},{{ graph_entities }},{{ graph_relations }}，不指定时，该部分不生效。",
+        "en": "The system prompt template, which must include {{ text_chunks }}, {{ user_system_prompt }}, {{ graph_entities }}, and {{ graph_relations }}. If not specified, this part does not take effect."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在的地域ID。",
+        "en": "The region ID of the instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "基于知识库的聊天API",
+    "en": "Knowledge Base Chat API"
+  },
+  "descriptions": {
+    "zh": "该 API 允许用户通过指定的知识库集合与大模型进行交互，以获取基于知识库内容的答案。支持配置多种参数来定制化请求，包括但不限于数据库实例 ID、知识检索参数、模型推理参数等。此外，还提供了默认的系统提示词模板，并允许用户自定义系统提示。\n\n- **DBInstanceId**：必填项，用于指定数据库实例 ID。\n- **KnowledgeParams**：可选项，包含知识检索相关的参数，如检索内容、合并策略等。\n- **ModelParams**：必填项，包含模型推理相关的参数，如消息列表、使用的模型名称等。\n- **PromptTemplate**：可选项，用于自定义系统提示词模板。",
+    "en": "This API allows users to interact with a large model through specified knowledge base collections to obtain answers based on knowledge base content. It supports configuring various parameters to customize requests, including but not limited to database instance ID, knowledge retrieval parameters, model inference parameters, etc. Additionally, it provides a default system prompt template and allows users to customize system prompts.\n\n- **DBInstanceId**: Required. Specifies the database instance ID.\n- **KnowledgeParams**: Optional. Contains parameters related to knowledge retrieval, such as retrieval content, merge strategies, etc.\n- **ModelParams**: Required. Contains parameters related to model inference, such as message list, model name, etc.\n- **PromptTemplate**: Optional. Used to customize the system prompt template."
+  },
   "example": {
     "unifiedCli": "aliyun gpdb chat-with-knowledge-base --db-instance-id gp-xxxxxxxxx --biz-region-id cn-hangzhou --knowledge-params '{\"SourceCollection\":[{\"Collection\":\"adbpg_document_collection\",\"QueryParams\":{\"RerankModel\":{\"Instruct\":\"Given_a_web_search_query,_retrieve_relevant_passages_that_answer_the_query\",\"RerankMetadataFields\":\"example-string\",\"Name\":\"qwen3-rerank\"},\"TopK\":10,\"Metrics\":\"cosine\",\"Filter\":\"id_=_llm-t87l87fxuhn56woc_8anu8j2d3f_file_e74635e2cc314e838543e724f6b3b1f2_10658020\",\"GraphEnhance\":false,\"GraphSearchArgs\":{\"GraphTopK\":60},\"RecallWindow\":[-1],\"RerankFactor\":1.5,\"UseFullTextRetrieval\":true,\"HybridSearch\":\"RRF\",\"HybridSearchArgs\":{\"key\":\"example-string\"}},\"NamespacePassword\":\"namespacePasswd\",\"Namespace\":\"dukang\"}],\"RerankModel\":{\"Instruct\":\"Given_a_web_search_query,_retrieve_relevant_passages_that_answer_the_query\",\"Name\":\"qwen3-rerank\"},\"TopK\":10,\"RerankFactor\":1.0001,\"MergeMethodArgs\":{\"Rrf\":{\"K\":60},\"Weight\":{\"Weights\":[0.01]}},\"MergeMethod\":\"RRF\"}' --prompt-params '参考以下知识回答问题:_text_chunks' --model-params '{\"Temperature\":0.6,\"Messages\":[{\"Role\":\"user\",\"Content\":\"You_are_a_helpful_assistant.\"}],\"Stop\":[\"n\"],\"MaxTokens\":8192,\"Seed\":42,\"Model\":\"qwen-plus\",\"Tools\":[{\"Description\":\"获取天气。\",\"Parameters\":\"type_:_object_,_...\",\"Name\":\"get_weather\"}],\"PresencePenalty\":1.0,\"TopP\":0.9}' --include-knowledge-base-results false --region cn-hangzhou",
     "legacyCli": "aliyun gpdb ChatWithKnowledgeBase --region cn-hangzhou --KnowledgeParams '{\"SourceCollection\":[{\"Collection\":\"adbpg_document_collection\",\"QueryParams\":{\"RerankModel\":{\"Instruct\":\"Given_a_web_search_query,_retrieve_relevant_passages_that_answer_the_query\",\"RerankMetadataFields\":\"example-string\",\"Name\":\"qwen3-rerank\"},\"TopK\":10,\"Metrics\":\"cosine\",\"Filter\":\"id_=_llm-t87l87fxuhn56woc_8anu8j2d3f_file_e74635e2cc314e838543e724f6b3b1f2_10658020\",\"GraphEnhance\":false,\"GraphSearchArgs\":{\"GraphTopK\":60},\"RecallWindow\":[-1],\"RerankFactor\":1.5,\"UseFullTextRetrieval\":true,\"HybridSearch\":\"RRF\",\"HybridSearchArgs\":{\"key\":\"example-string\"}},\"NamespacePassword\":\"namespacePasswd\",\"Namespace\":\"dukang\"}],\"RerankModel\":{\"Instruct\":\"Given_a_web_search_query,_retrieve_relevant_passages_that_answer_the_query\",\"Name\":\"qwen3-rerank\"},\"TopK\":10,\"RerankFactor\":1.0001,\"MergeMethodArgs\":{\"Rrf\":{\"K\":60},\"Weight\":{\"Weights\":[0.01]}},\"MergeMethod\":\"RRF\"}' --DBInstanceId 'gp-xxxxxxxxx' --IncludeKnowledgeBaseResults false --PromptParams '参考以下知识回答问题:_text_chunks' --RegionId 'cn-hangzhou' --ModelParams '{\"Temperature\":0.6,\"Messages\":[{\"Role\":\"user\",\"Content\":\"You_are_a_helpful_assistant.\"}],\"Stop\":[\"n\"],\"MaxTokens\":8192,\"Seed\":42,\"Model\":\"qwen-plus\",\"Tools\":[{\"Description\":\"获取天气。\",\"Parameters\":\"type_:_object_,_...\",\"Name\":\"get_weather\"}],\"PresencePenalty\":1.0,\"TopP\":0.9}'"

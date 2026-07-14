@@ -1,5 +1,6 @@
 {
   "name": "ModifyVpnPbrRouteEntryAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "NewPriority",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略路由新的策略优先级。取值范围：**1**~**100**。\n\n策略优先级数字越小，策略路由的优先级越高。\n\n如果您不输入当前参数，表示不修改策略路由的策略优先级。\n\n> **NewPriority**和**NewWeight**参数需至少输入一个。",
+        "en": "The new policy priority of the policy-based route. Valid values: **1** to **100**.\n\nA smaller value indicates a higher priority.\n\nIf you do not specify this parameter, the policy priority of the policy-based route is not modified.\n\n> You must specify at least one of the **NewPriority** and **NewWeight** parameters."
+      }
     },
     {
       "name": "NewWeight",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略路由新的权重值。取值：\n\n- **100**：表示当前策略路由关联的IPsec连接为主链路。\n- **0**：表示当前策略路由关联的IPsec连接为备链路。\n\n如果您不输入当前参数，表示不修改策略路由的权重值。\n> **NewPriority**和**NewWeight**参数需至少输入一个。",
+        "en": "The new weight of the policy-based route. Valid values:\n\n- **100**: The IPsec-VPN connection associated with the policy-based route serves as the active link.\n- **0**: The IPsec-VPN connection associated with the policy-based route serves as the standby link.\n\nIf you do not specify this parameter, the weight of the policy-based route is not modified.\n> You must specify at least one of the **NewPriority** and **NewWeight** parameters."
+      }
     },
     {
       "name": "NextHop",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略路由的下一跳。",
+        "en": "The next hop of the policy-based route."
+      }
     },
     {
       "name": "Priority",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略路由原始的策略优先级。取值范围：**1**~**100**。\n\n策略优先级数字越小，策略路由的优先级越高。",
+        "en": "The original policy priority of the policy-based route. Valid values: **1** to **100**.\n\nA smaller value indicates a higher priority."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPN gateway instance.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     },
     {
       "name": "RouteDest",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略路由的目标网段。",
+        "en": "The destination CIDR block of the policy-based route."
+      }
     },
     {
       "name": "RouteSource",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略路由的源网段。",
+        "en": "The source CIDR block of the policy-based route."
+      }
     },
     {
       "name": "VpnGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例ID。",
+        "en": "The instance ID of the VPN gateway."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略路由原始的权重值。取值：\n\n- **100**：表示当前策略路由关联的IPsec连接为主链路。\n- **0**：表示当前策略路由关联的IPsec连接为备链路。",
+        "en": "The original weight of the policy-based route. Valid values:\n\n- **100**: The IPsec-VPN connection associated with the policy-based route serves as the active link.\n- **0**: The IPsec-VPN connection associated with the policy-based route serves as the standby link."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改策略路由的权重值和策略优先级",
+    "en": "Modify the weight and policy priority of a policy-based route"
+  },
+  "descriptions": {
+    "zh": "- **ModifyVpnPbrRouteEntryAttribute**接口适用于为支持策略优先级的策略路由一并修改权重值和策略优先级。\n\n    - 如果您仅需要为策略路由修改权重值，您可以调用[ModifyVpnPbrRouteEntryWeight](~~127249~~)接口。\n    - 如果您仅需要为策略路由修改策略优先级，您可以调用[ModifyVpnPbrRouteEntryPriority](~~466870~~)接口。\n    - 如果您的策略路由不支持策略优先级，则您仅可以调用[ModifyVpnPbrRouteEntryWeight](~~127249~~)接口修改策略路由的权重值。\n  > 对于支持双隧道模式IPsec-VPN连接的VPN网关实例，仅支持调用本接口修改策略路由的优先级。\n\n- **ModifyVpnPbrRouteEntryAttribute**接口属于异步接口，即系统先返回一个请求ID，但该策略路由尚未修改成功，系统后台的修改任务仍在进行。您可以调用[DescribeVpnGateway](~~73720~~)接口查询VPN网关实例状态，来确定策略路由的修改状态：\n    - 当VPN网关实例处于**updating**状态时，表示策略路由正在修改中。\n    - 当VPN网关实例处于**active**状态时，表示策略路由修改成功。\n- **ModifyVpnPbrRouteEntryAttribute**接口不支持在同一VPN网关实例下并发修改策略路由。",
+    "en": "- **ModifyVpnPbrRouteEntryAttribute** is used to modify both the weight and policy priority of a policy-based route that supports policy priority.\n\n    - To modify only the weight of a policy-based route, call the [ModifyVpnPbrRouteEntryWeight](~~127249~~) operation.\n    - To modify only the policy priority of a policy-based route, call the [ModifyVpnPbrRouteEntryPriority](~~466870~~) operation.\n    - If your policy-based route does not support policy priority, you can only call the [ModifyVpnPbrRouteEntryWeight](~~127249~~) operation to modify the weight of the policy-based route.\n  > For VPN gateway instances that support dual-tunnel mode IPsec-VPN connections, you can only call this operation to modify the priority of policy-based routes.\n\n- **ModifyVpnPbrRouteEntryAttribute** is an asynchronous operation. After you send a request, the system returns a request ID, but the policy-based route has not been modified yet. The modification node is still running in the background. You can invoke the [DescribeVpnGateway](~~73720~~) operation to query the instance status of the VPN gateway to determine the modification status of the policy-based routing:\n    - If the VPN gateway instance is in the **updating** state, the policy-based route is being modified.\n    - If the VPN gateway instance is in the **active** state, the policy-based route has been modified.\n- **ModifyVpnPbrRouteEntryAttribute** does not support concurrent modifications of policy-based routes under the same VPN gateway instance."
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-vpn-pbr-route-entry-attribute --biz-region-id cn-hangzhou --client-token d7d24a21-f4ba-4454-9173-b30000 --vpn-gateway-id vpn-bp1a3kqjiiq9legfx0000 --route-source 192.168.1.0/24 --route-dest 10.0.0.0/24 --next-hop vco-bp15oes1py4i66rmd0000 --priority 5 --new-priority 10 --weight 100 --new-weight 0 --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyVpnPbrRouteEntryAttribute --region cn-hangzhou --RouteDest '10.0.0.0/24' --NewWeight 0 --VpnGatewayId 'vpn-bp1a3kqjiiq9legfx0000' --NextHop 'vco-bp15oes1py4i66rmd0000' --Priority 5 --RouteSource '192.168.1.0/24' --RegionId 'cn-hangzhou' --ClientToken 'd7d24a21-f4ba-4454-9173-b30000' --NewPriority 10 --Weight 100"

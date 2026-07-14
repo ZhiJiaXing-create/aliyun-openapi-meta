@@ -1,5 +1,6 @@
 {
   "name": "CreateAccount",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -10,7 +11,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "静态用户备注"
+        "zh": "静态用户备注",
+        "en": "The remarks on the static user."
       }
     },
     {
@@ -20,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "您的阿里云账号或RAM用户的AccessKey ID。获取方式，请参见[创建AccessKey](~~116401~~)。\n\n> 如果您使用RAM用户的AccessKey创建的静态用户名密码接入消息队列RabbitMQ版并收发消息，请确保该RAM用户已被授予收发消息权限。更多信息，请参见[RAM权限策略](~~146559~~)。",
-        "en": "The AccessKey ID of your Alibaba Cloud account or RAM user. For information about how to obtain an AccessKey pair, see [Create an AccessKey pair](~~116401~~).\n\n>  If you use the pair of static username and password that is created by using the Accesskey pair of a RAM user to access ApsaraMQ for RabbitMQ to send and receive messages, make sure that the RAM user is granted the required permissions. For more information, see [RAM policies](~~146559~~)."
+        "en": "The AccessKey ID of your Alibaba Cloud account or RAM user. For more information about how to obtain an AccessKey ID, see [Create an AccessKey](~~116401~~).\n\n> If you use the AccessKey of a RAM user to create a static username and password to access ApsaraMQ for RabbitMQ and to send and receive messages, make sure that the RAM user is granted the required permissions. For more information, see [RAM access policies](~~146559~~)."
       }
     },
     {
@@ -30,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "指定该用户名密码创建的时间戳。单位：毫秒。\n\n> 该时间戳用于计算静态用户密码，由您自定义设置。不是系统生成用户名密码时的时间戳。",
-        "en": "The timestamp that indicates when the password is created. Unit: milliseconds.\n\n>  This timestamp is specified by you and is used to generate a static password. The timestamp is not the timestamp that indicates when the system generates the password."
+        "en": "The timestamp that indicates when the username and password are created. Unit: milliseconds.\n\n> This timestamp is used to calculate the static password. You can customize this value. This is not the timestamp that the system generates when the username and password are created."
       }
     },
     {
@@ -40,7 +42,7 @@
       "required": true,
       "description": {
         "zh": "消息队列RabbitMQ版实例的ID，表示您需要为哪个实例创建静态用户名密码。",
-        "en": "The ID of the instance for which you want to create a pair of static username and password."
+        "en": "The ID of the ApsaraMQ for RabbitMQ instance. This specifies the instance for which you want to create a static username and password."
       }
     },
     {
@@ -50,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "AccessKey Secret签名，系统将根据请求参数中的签名、AccessKey Secret签名和用户名计算出静态用户密码。\n\nAccessKey Secret签名由指定的用户名创建时间戳和AccessKey ID进行HmacSHA1加密算法计算得出。具体计算方法，请参见本文中的**签名算法示例代码**。",
-        "en": "The AccessKey secret signature. The system generates a static password based on the signature in the request, the AccessKey secret signature, and the username.\n\nThe system uses the HMAC-SHA1 algorithm to generate the AccessKey secret signature based on the timestamp that indicates when the username is created and the AccessKey ID. For more information, see the **\"Sample code on how to generate a signature\"** section of this topic."
+        "en": "The signature of the AccessKey secret. The system calculates the static password based on the signature, the AccessKey secret signature, and the username.\n\nThe AccessKey secret signature is calculated using the HmacSHA1 algorithm on the creation timestamp of the specified username and the AccessKey ID. For more information about how to calculate the signature, see the **Signature algorithm sample code** section in this topic."
       }
     },
     {
@@ -60,7 +62,7 @@
       "required": true,
       "description": {
         "zh": "签名，系统将根据请求参数中的签名、AccessKey Secret签名和用户名计算出静态用户密码。\n\n签名由指定的用户名创建时间戳和AccessKey ID进行HmacSHA1加密算法计算得出。具体计算方法，请参见本文中的**签名算法示例代码**。",
-        "en": "The signature. The system generates a static password based on the signature in the request, the AccessKey secret signature, and the username.\n\nThe system uses the HMAC-SHA1 algorithm to generate the signature based on the timestamp that indicates when the username is created and the AccessKey ID. For more information, see the **\"Sample code on how to generate a signature\"** section of this topic."
+        "en": "The signature. The system calculates the static password based on the signature, the AccessKey secret signature, and the username.\n\nThe signature is calculated using the HmacSHA1 algorithm on the creation timestamp of the specified username and the AccessKey ID. For more information about how to calculate the signature, see the **Signature algorithm sample code** section in this topic."
       }
     },
     {
@@ -70,10 +72,21 @@
       "required": true,
       "description": {
         "zh": "待创建的静态用户名。\n\n该参数值由实例ID和AccessKey ID构造的字符串经过Base64编码得出，具体计算方法，请参见本文中的**用户名计算示例代码**。",
-        "en": "The static username that you want to create.\n\nThe value of this parameter is a Base64-encoded string that is generated based on the instance ID and AccessKey ID. For more information, see the \"**Sample code on how to generate a username**\" section of this topic."
+        "en": "The static username that you want to create.\n\nThe value of this parameter is a Base64-encoded string that is constructed from the instance ID and the AccessKey ID. For more information about how to calculate the value, see the **Username calculation sample code** section in this topic."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建用户名密码",
+    "en": "CreateAccount"
+  },
+  "descriptions": {
+    "zh": "### 背景信息\n开源客户端访问云消息队列 RabbitMQ 版服务端时，需要传入用户名和密码进行权限认证，认证通过才允许访问服务端。\n云消息队列 RabbitMQ 版支持通过阿里云访问控制（RAM）的AccessKey和AccessKey Secret生成用户名和密码。\n### 注意事项\n- 创建静态用户名密码所属的实例需处于服务中状态。\n- 一个实例下的AccessKey和静态用户名密码一一对应，即一个实例下的一个AccessKey只能创建一个静态用户名密码。\n- 如果需要更新静态用户名密码，您可以删除该静态用户名密码后重新创建。\n### 用户名计算示例代码\n请求参数中的userName的参数值，需要由实例ID和AccessKey ID构造字符串并进行Base64编码得出。具体的计算方法如下：\n```\nimport java.nio.charset.Charset;\nimport java.nio.charset.StandardCharsets;\nimport java.util.Base64;\n\npublic class Base64Utils {\n    public static final Charset UTF8 = StandardCharsets.UTF_8;\n\n    /**\n     * 解码 base64 字符串\n     *\n     * @param str\n     * @return\n     */\n    public static String decode(String str) {\n        return new String(Base64.getDecoder().decode(str.getBytes(UTF8)), UTF8);\n    }\n\n    public static String encode(String bytes) {\n        return new String(Base64.getEncoder().encode(bytes.getBytes(UTF8)), UTF8);\n    }\n\n    public static void main(String[] args) {\n        //使用您的实例 ID 以及购买该实例的账号 AK，组成字符串。\n        String str = \"2:${instanceId}:${ak}\";\n\n        //生成 API 使用的 userName。\n        String userName = encode(str);\n        System.out.println(\"userName=\" + userName);\n\n        String decodeStr = decode(userName);\n        System.out.println(\"originStr=\" + decodeStr);\n    }\n}\n```\n\n### 签名算法示例代码\n请求参数中signature和secretSign的参数值，需要由指定的静态用户名的创建时间戳和AccessKey Secret进行加密算法计算得出。具体的算法和示例代码如下：\n```\nimport javax.crypto.Mac;\nimport javax.crypto.spec.SecretKeySpec;\nimport java.security.InvalidKeyException;\nimport java.security.NoSuchAlgorithmException;\n\npublic class SignatureUtils {\n\n    public static String hamcsha1(byte[] data, byte[] key) throws NoSuchAlgorithmException, InvalidKeyException {\n        SecretKeySpec signingKey = new SecretKeySpec(key, \"HmacSHA1\");\n        Mac mac = Mac.getInstance(\"HmacSHA1\");\n        mac.init(signingKey);\n        return byte2hex(mac.doFinal(data));\n    }\n\n    public static String byte2hex(byte[] b) {\n        StringBuilder hs = new StringBuilder();\n        String stmp;\n        for (int n = 0; b != null && n < b.length; n++) {\n            stmp = Integer.toHexString(b[n] & 0XFF);\n            if (stmp.length() == 1) {\n                hs.append('0');\n            }\n            hs.append(stmp);\n        }\n        return hs.toString().toUpperCase();\n    }\n\n    public static void main(String[] args) throws InvalidKeyException, NoSuchAlgorithmException {\n        //createTimestamp 即是 API 的 createTimestamp 参数。\n        String createTimestamp = String.valueOf(System.currentTimeMillis());\n        System.out.println(\"timestamp:\" + createTimestamp);\n\n        //您账号的 sk。\n        String sk = \"${sk}\";\n\n        //生成 API 使用的 SecretSign。\n        String SecretSign = hamcsha1(sk.getBytes(), createTimestamp.getBytes());\n        System.out.println(\"SecretSign:\" + SecretSign);\n\n        //生成 API 使用的 signature。\n        String signature = hamcsha1(createTimestamp.getBytes(), sk.getBytes());\n        System.out.println(\"signature:\" + signature);\n    }\n}\n```",
+    "en": "### Background information\n\nWhen an open-source client accesses an ApsaraMQ for RabbitMQ server, it must provide a username and password for authentication. The client can access the server after the authentication is successful. ApsaraMQ for RabbitMQ lets you generate a username and password from an AccessKey ID and AccessKey secret provided by RAM.\n\n### Notes\n\n- The instance for which you create a static username and password must be in the In Service state.\n\n- An AccessKey and a static username and password have a one-to-one mapping within an instance. This means you can create only one static username and password for each AccessKey in an instance.\n\n- To update a static username and password, delete the existing one and create a new one.\n\n### Username calculation sample code\n\nThe value of the userName request parameter is a Base64-encoded string. This string is constructed from the instance ID and the AccessKey ID. The following sample code shows how to calculate the value:\n\n```\nimport java.nio.charset.Charset;\nimport java.nio.charset.StandardCharsets;\nimport java.util.Base64;\n\npublic class Base64Utils {\n    public static final Charset UTF8 = StandardCharsets.UTF_8;\n\n    /**\n     * Decode a Base64 string\n     *\n     * @param str\n     * @return\n     */\n    public static String decode(String str) {\n        return new String(Base64.getDecoder().decode(str.getBytes(UTF8)), UTF8);\n    }\n\n    public static String encode(String bytes) {\n        return new String(Base64.getEncoder().encode(bytes.getBytes(UTF8)), UTF8);\n    }\n\n    public static void main(String[] args) {\n        // Construct a string from your instance ID and the AccessKey ID of the account that was used to purchase the instance.\n        String str = \"2:${instanceId}:${ak}\";\n\n        // Generate the userName for the API call.\n        String userName = encode(str);\n        System.out.println(\"userName=\" + userName);\n\n        String decodeStr = decode(userName);\n        System.out.println(\"originStr=\" + decodeStr);\n    }\n}\n```\n\n### Signature algorithm sample code\n\nThe values of the signature and secretSign request parameters are calculated using an encryption algorithm. The algorithm uses the creation timestamp of the static username and the AccessKey secret. The following sample code shows the algorithm:\n\n```\nimport javax.crypto.Mac;\nimport javax.crypto.spec.SecretKeySpec;\nimport java.security.InvalidKeyException;\nimport java.security.NoSuchAlgorithmException;\n\npublic class SignatureUtils {\n\n    public static String hamcsha1(byte[] data, byte[] key) throws NoSuchAlgorithmException, InvalidKeyException {\n        SecretKeySpec signingKey = new SecretKeySpec(key, \"HmacSHA1\");\n        Mac mac = Mac.getInstance(\"HmacSHA1\");\n        mac.init(signingKey);\n        return byte2hex(mac.doFinal(data));\n    }\n\n    public static String byte2hex(byte[] b) {\n        StringBuilder hs = new StringBuilder();\n        String stmp;\n        for (int n = 0; b != null && n < b.length; n++) {\n            stmp = Integer.toHexString(b[n] & 0XFF);\n            if (stmp.length() == 1) {\n                hs.append('0');\n            }\n            hs.append(stmp);\n        }\n        return hs.toString().toUpperCase();\n    }\n\n    public static void main(String[] args) throws InvalidKeyException, NoSuchAlgorithmException {\n        // createTimestamp is the createTimestamp parameter of the API.\n        String createTimestamp = String.valueOf(System.currentTimeMillis());\n        System.out.println(\"timestamp:\" + createTimestamp);\n\n        // The AccessKey secret of your account.\n        String sk = \"${sk}\";\n\n        // Generate the SecretSign for the API call.\n        String SecretSign = hamcsha1(sk.getBytes(), createTimestamp.getBytes());\n        System.out.println(\"SecretSign:\" + SecretSign);\n\n        // Generate the signature for the API call.\n        String signature = hamcsha1(createTimestamp.getBytes(), sk.getBytes());\n        System.out.println(\"signature:\" + signature);\n    }\n}\n```"
+  },
   "example": {
     "unifiedCli": "aliyun amqp-open create-account --instance-id amqp-cn-000000000 --account-access-key yourAccessKeyID --user-name Mjo0000000000000000 --signature 22c2d7d1769cb53c5a6d9213248e2de524000000 --create-timestamp 1671175303522 --secret-sign 4c1a6367ce4c4255e9617326f9133ac635000000 --remark 000_environment --region cn-hangzhou",
     "legacyCli": "aliyun amqp-open CreateAccount --region cn-hangzhou --instanceId 'amqp-cn-000000000' --signature 22c2d7d1769cb53c5a6d9213248e2de524000000 --secretSign 4c1a6367ce4c4255e9617326f9133ac635000000 --userName Mjo0000000000000000 --accountAccessKey yourAccessKeyID --createTimestamp 1671175303522 --Remark 000_environment"

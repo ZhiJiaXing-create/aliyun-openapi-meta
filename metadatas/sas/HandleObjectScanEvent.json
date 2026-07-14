@@ -1,0 +1,122 @@
+{
+  "name": "HandleObjectScanEvent",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BatchType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "批量处理同类告警，取值：\n\n- **sha256**：按文件内容\n- **eventName**：按告警名称",
+        "en": "Specifies the type for batch processing of similar alerts. Valid values:\n\n- **sha256**: by file content\n- **eventName**: by alert name."
+      }
+    },
+    {
+      "name": "EventId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "事件ID。",
+        "en": "The event ID."
+      }
+    },
+    {
+      "name": "EventIdList",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "指定事件ID列表。",
+        "en": "The list of event IDs."
+      }
+    },
+    {
+      "name": "Lang",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "设置请求和接收消息的语言类型。默认值为**zh**。取值：\n- **zh**：中文\n- **en**：英文",
+        "en": "The language of the content in the request and response. Default value: **zh**. Valid values:\n- **zh**: Chinese\n- **en**: English."
+      }
+    },
+    {
+      "name": "Remark",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "备注信息。",
+        "en": "The remarks."
+      }
+    },
+    {
+      "name": "RuleConditionList",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "加白规则列表，仅当加白时有效。",
+        "en": "The list of whitelist rules. This parameter takes effect only when the alert is whitelisted."
+      },
+      "sub_parameters": [
+        {
+          "name": "Key",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "加白字段。取值：\n\n- **ossKey**: 文件路径\n- **bucketName**: Bucket名称\n- **md5**: 文件MD5\n- **sha256**: 文件SHA-256",
+            "en": "The whitelist field. Valid values:\n\n- **ossKey**: file path\n- **bucketName**: bucket name\n- **md5**: file MD5\n- **sha256**: file SHA-256."
+          }
+        },
+        {
+          "name": "Operate",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "操作符。取值：\n\n- **contains**：包含\n- **not_contains**：不包含\n- **str_equal**：等于\n- **str_not_equal**：不等于\n- **regex**：正则",
+            "en": "The operator. Valid values:\n\n- **contains**: Contains.\n- **not_contains**: Does not contain.\n- **str_equal**: Equals.\n- **str_not_equal**: Does not equal.\n- **regex**: Regular expression."
+          }
+        },
+        {
+          "name": "Value",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "需要匹配的值。",
+            "en": "The value to match."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "目标状态，取值：\n\n- **0**: 未处理\n- **1**: 我已手动处理\n- **2**: 已加白\n- **3**: 已忽略\n- **4**: 禁止访问",
+        "en": "The target status. Valid values:\n\n- **0**: Unhandled.\n- **1**: Manually handled.\n- **2**: Whitelisted.\n- **3**: Ignored.\n- **4**: Access denied."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "处理恶意文件检测告警",
+    "en": "Handle malicious file detection alerts"
+  },
+  "example": {
+    "unifiedCli": "aliyun sas handle-object-scan-event --event-id 810000 --status 0 --batch-type sha256 --rule-condition-list Value=sshe Operate=contains Key=ossKey --remark test --lang zh --event-id-list 42799634 --api-version 2018-12-03 --region cn-hangzhou",
+    "legacyCli": "aliyun sas HandleObjectScanEvent --region cn-hangzhou --Status 0 --RuleConditionList.1.Operate contains --EventIdList.1 42799634 --EventId 810000 --RuleConditionList.1.Value sshe --Lang zh --RuleConditionList.1.Key ossKey --BatchType sha256 --Remark test"
+  }
+}

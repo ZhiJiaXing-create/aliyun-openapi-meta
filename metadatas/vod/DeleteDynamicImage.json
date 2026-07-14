@@ -1,5 +1,6 @@
 {
   "name": "DeleteDynamicImage",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "DynamicImageIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "动图文件ID列表。动图文件ID为[查询动图列表](~~180958~~)接口返回参数DynamicImageId的值。\n\n- 多个ID之间使用半角逗号（,）分隔，最多支持10个ID。\n- **如果不传该参数，将按VideoId删除视频下的所有动图，但是如果视频下的动图数量超过10个，将拒绝删除请求。**",
+        "en": "The IDs of the animated stickers.\n\n- Separate multiple IDs with commas (,). You can specify a maximum of 10 IDs.\n- If you do not set this parameter, the system finds the video specified by the VideoId parameter and deletes the information about the animated stickers associated with the video. If more than 10 animated stickers are associated with the video specified by the VideoId parameter, the deletion request is denied."
+      }
     },
     {
       "name": "VideoId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要删除的动图所关联的视频ID。视频ID可通过以下方式获取：\n- 通过控制台上传的视频，可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看视频ID。\n- 通过[获取视频上传地址和凭证](~~55407~~)接口获取上传地址和凭证时，视频ID为返回参数VideoId的值。\n- 视频上传后，可通过[搜索媒体信息](~~86044~~)接口查询视频ID，为请求后返回参数VideoId的值。",
+        "en": "The ID of the video associated with the animated stickers whose information you want to delete."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除动图信息",
+    "en": "DeleteDynamicImage"
+  },
+  "descriptions": {
+    "zh": "- 本接口只会删除动图与视频的关联关系，并不会实际删除动图文件。\n- 关联关系删除之后，将无法通过[查询动图列表](~~180958~~)接口查询到视频下已被删除的动图信息。\n- 如果不传**DynamicImageIds**，将按VideoId删除视频下的所有动图，但是如果视频下的动图数量超过10个，将拒绝删除请求。\n\n### QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342790~~)。",
+    "en": "> This operation deletes only the information about animated stickers, but not the animated stickers themselves."
+  },
   "example": {
     "unifiedCli": "aliyun vod delete-dynamic-image --video-id 2321077d460b028700ef6c2f4d0000 --dynamic-image-ids beafec3834a4e52ea52042a40000,8281c8519847fd8970e79e80b60000 --region cn-hangzhou",
     "legacyCli": "aliyun vod DeleteDynamicImage --region cn-hangzhou --DynamicImageIds 'beafec3834a4e52ea52042a40000,8281c8519847fd8970e79e80b60000' --VideoId 2321077d460b028700ef6c2f4d0000"

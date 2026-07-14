@@ -1,5 +1,6 @@
 {
   "name": "CreateDataQualityRule",
+  "deprecated": true,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "CheckingConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "样本校验设置。",
+        "en": "The sample check settings."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则描述信息，最长500个字符。",
+        "en": "The description of the rule. The maximum length is 500 characters."
+      }
     },
     {
       "name": "Enabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "质量规则是否启用。",
+        "en": "Specifies whether to enable the data quality rule."
+      }
     },
     {
       "name": "ErrorHandlers",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "质量规则校验问题处理器列表。",
+        "en": "The list of issue handlers for the data quality rule check."
+      },
       "sub_parameters": [
         {
           "name": "ErrorDataFilter",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "如果是自定义SQL规则，需要用户指定SQL来过滤问题数据。",
+            "en": "For a custom SQL rule, you must specify an SQL statement to filter problematic data."
+          }
         },
         {
           "name": "Type",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "处理器类型：\n- SaveErrorData",
+            "en": "The handler type:\n- SaveErrorData"
+          }
         }
       ]
     },
@@ -46,39 +71,74 @@
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则名称。",
+        "en": "The name of the rule."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DataWorks工作空间ID。",
+        "en": "The ID of the DataWorks workspace."
+      }
     },
     {
       "name": "SamplingConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "样本采集所需的设置。",
+        "en": "The settings required for sample collection."
+      }
     },
     {
       "name": "Severity",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则对于业务的等级（对应页面上的强弱规则），可选的枚举值：\n- Normal\n- High",
+        "en": "The severity of the rule for the business (corresponding to the strong/weak rule on the page). Valid values:\n- Normal\n- High"
+      }
     },
     {
       "name": "Target",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则所监控的对象。",
+        "en": "The object monitored by the rule."
+      }
     },
     {
       "name": "TemplateCode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则所引用的规则模板唯一标识。",
+        "en": "The unique identifier of the rule template that the rule references."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建质量规则",
+    "en": "Create a data quality rule"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用",
+    "en": "You must purchase DataWorks Basic Edition or higher to use this feature."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public create-data-quality-rule --name The_table_cannot_be_empty. --project-id 10726 --enabled true --severity Normal --description this_is_a_odps_sql_task --target Type=Table TableGuid=odps.unit_test.tb_unit_test DatabaseType=maxcompute PartitionSpec=ds=_yyyymmdd-1 --template-code SYSTEM:table:table_count:fixed --sampling-config SettingConfig=SET_odps.sql.udf.timeout=600s_SET_odps.sql.python.version=cp27 SamplingFilter=id_IS_NULL Metric=Count MetricParameters=Columns_:_id_,_name_,_SQL_:_select_count_1_from_table --checking-config '{\"Type\":\"Fixed\",\"Thresholds\":{\"Expected\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_=_0.01\",\"Value\":\"100.0\"},\"Warned\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"100.0\"},\"Critical\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.05\",\"Value\":\"100.0\"}},\"ReferencedSamplesFilter\":\"bizdate_:_-1_,_-7_,_-1m\"}' --error-handlers Type=SaveErrorData ErrorDataFilter=SELECT_0_FROM_tb_api_log_WHERE_id_IS_NULL --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public CreateDataQualityRule --region cn-hangzhou --TemplateCode 'SYSTEM:table:table_count:fixed' --Target '{\"Type\":\"Table\",\"TableGuid\":\"odps.unit_test.tb_unit_test\",\"DatabaseType\":\"maxcompute\",\"PartitionSpec\":\"ds=_yyyymmdd-1\"}' --Description this_is_a_odps_sql_task --CheckingConfig '{\"Type\":\"Fixed\",\"Thresholds\":{\"Expected\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_=_0.01\",\"Value\":\"100.0\"},\"Warned\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"100.0\"},\"Critical\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.05\",\"Value\":\"100.0\"}},\"ReferencedSamplesFilter\":\"bizdate_:_-1_,_-7_,_-1m\"}' --ProjectId 10726 --Enabled true --Severity Normal --SamplingConfig '{\"SettingConfig\":\"SET_odps.sql.udf.timeout=600s_SET_odps.sql.python.version=cp27\",\"SamplingFilter\":\"id_IS_NULL\",\"Metric\":\"Count\",\"MetricParameters\":\"Columns_:_id_,_name_,_SQL_:_select_count_1_from_table\"}' --ErrorHandlers '[{\"Type\":\"SaveErrorData\",\"ErrorDataFilter\":\"SELECT_0_FROM_tb_api_log_WHERE_id_IS_NULL\"}]' --Name 'The_table_cannot_be_empty.'"

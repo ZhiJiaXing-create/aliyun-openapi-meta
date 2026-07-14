@@ -1,5 +1,6 @@
 {
   "name": "DeleteForwardingRules",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The GA instance ID."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among all requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "ForwardingRuleIds",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发策略。",
+        "en": "The forwarding rules."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听实例ID。",
+        "en": "The listener ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the GA instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除转发规则",
+    "en": "DeleteForwardingRules"
+  },
+  "descriptions": {
+    "zh": "- **DeleteForwardingRules**接口属于异步接口，即系统会先返回一个请求ID，但转发策略并未删除完成，系统后台的删除任务仍在进行。您可以调用[ListForwardingRules](~~205817~~)查询转发策略的状态：\n    - 当转发策略处于**deleting**状态时，表示转发策略正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到要删除的转发策略时，表示转发策略删除完成。\n- **DeleteForwardingRules**接口不支持在同一个全球加速实例内并发删除转发策略。",
+    "en": "*   **DeleteForwardingRules** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [ListForwardingRules](~~205817~~) operation to query the status of the task.\n\n    *   If a forwarding rule is in the **deleting** state, the forwarding rule is being deleted. In this case, you can perform only query operations.\n    *   If a forwarding rule cannot be queried, the forwarding rule is deleted.\n\n*   The **DeleteForwardingRules** operation cannot be repeatedly called for the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-forwarding-rules --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --forwarding-rule-ids frule-bp19a3t3yzr21q30000 --accelerator-id ga-bp17frjjh0udz4q0000 --listener-id lsr-bp1s0vzbi5bxlx50000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteForwardingRules --region cn-hangzhou --ForwardingRuleIds.1 'frule-bp19a3t3yzr21q30000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp17frjjh0udz4q0000' --ListenerId 'lsr-bp1s0vzbi5bxlx50000' --method POST --force"

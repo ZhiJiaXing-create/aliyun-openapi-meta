@@ -1,5 +1,6 @@
 {
   "name": "DescribeVaults",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,49 +9,81 @@
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页页码，从1开始，默认值为1。",
+        "en": "The page number. Pages start from page 1. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，最小值为1，最大值为99，默认值为10。",
+        "en": "The number of entries per page. Valid values: 1 to 99. Default value: 10."
+      }
     },
     {
       "name": "Replication",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否查询复制目标备份库",
+        "en": "Specifies whether to query the backup vaults that are used as replication destinations."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份仓库状态。\n\n- **UNKNOWN**：未知\n- **INITIALIZING**：初始化中\n- **CREATED**：已创建\n- **ERROR**：错误",
+        "en": "The status of the backup vault.\n\n- **UNKNOWN**: The status is unknown.\n\n- **INITIALIZING**: The backup vault is being initialized.\n\n- **CREATED**: The backup vault has been created.\n\n- **ERROR**: An error occurred."
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。最大支持20个标签。",
+        "en": "The tags. You can specify a maximum of 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的Key值。",
+            "en": "The key of the tag."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的Value值。",
+            "en": "The value of the tag."
+          }
         }
       ]
     },
@@ -58,33 +91,60 @@
       "name": "VaultId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份仓库ID。",
+        "en": "The ID of the backup vault."
+      }
     },
     {
       "name": "VaultName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份仓库名称。长度为1~64个字符。",
+        "en": "The name of the backup vault. The name must be 1 to 64 characters in length."
+      }
     },
     {
       "name": "VaultOwnerId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份库所属账号ID",
+        "en": "The ID of the Alibaba Cloud account that owns the backup vault."
+      }
     },
     {
       "name": "VaultRegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份仓库所属的地域ID。",
+        "en": "The ID of the region where the backup vault resides."
+      }
     },
     {
       "name": "VaultType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份仓库类型。取值\n- **STANDARD**：表示普通仓库，可用于ECS文件备份、OSS备份、NAS备份等。\n- **OTS_BACKUP**：表示TableStore仓库，仅可用于TableStore备份，且TableStore需要使用该类型的仓库。",
+        "en": "The type of the backup vault. Valid values:\n\n- **STANDARD**: standard backup vault. This type of vault can be used for ECS file backup, OSS backup, and NAS backup.\n\n- **OTS\\_BACKUP**: Tablestore backup vault. This type of vault is dedicated to Tablestore backup."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询备份仓库信息",
+    "en": "DescribeVaults"
+  },
   "example": {
     "unifiedCli": "aliyun hbr describe-vaults --vault-id v-000000000000000000000 --vault-region-id cn-shanghai --status CREATED --page-number 1 --page-size 10 --vault-type STANDARD --tag Value=value1 Key=key1 --resource-group-id rg-000000000000000000000 --vault-name vaultname --vault-owner-id 144000000732 --replication true --region cn-hangzhou",
     "legacyCli": "aliyun hbr DescribeVaults --region cn-hangzhou --Status CREATED --Tag.1.Key key1 --VaultType STANDARD --PageSize 10 --ResourceGroupId 'rg-000000000000000000000' --PageNumber 1 --VaultName vaultname --Tag.1.Value value1 --Replication true --VaultOwnerId 144000000732 --VaultId 'v-000000000000000000000' --VaultRegionId 'cn-shanghai'"

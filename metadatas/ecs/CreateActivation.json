@@ -1,5 +1,6 @@
 {
   "name": "CreateActivation",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. **ClientToken** supports only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "激活码对应的描述。支持1~100个字符。",
+        "en": "The description of the activation code. The value can be 1 to 100 characters in length."
+      }
     },
     {
       "name": "InstanceCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "激活码用于注册托管实例的使用次数上限。取值范围为1~1000。\n\n默认值为10。",
+        "en": "The maximum number of times that the activation code can be used to register managed instances. Valid values: 1 to 1000.\n\nDefault value: 10."
+      }
     },
     {
       "name": "InstanceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认的实例名称前缀。支持2~50个字符，且必须以字母开头，不能以特殊字符及数字开头，只可包含特殊字符中的半角句号（.）、下划线（_）、短划线（-）和半角冒号（:），不可以使用`http://`或`https://`开头。\n\n使用该接口创建的激活码注册的实例，将使用该名称作为前缀，生成有序的实例名。您也可以在注册托管实例时，指定新的实例名称以覆盖此默认值。\n\n注册托管实例时，如果指定了InstanceName的值，则会生成名称`<InstanceName>-001`，其中编号`001`数字的位数取决于`InstanceCount`数值的位数。如果未指定InstanceName的值，则会使用主机的主机名（Hostname）作为实例的名称。",
+        "en": "The default instance name prefix. The value must be 2 to 50 characters in length and must start with a letter. It cannot start with a special character or digit. It can contain only periods (.), underscores (_), hyphens (-), and colons (:). It cannot start with `http://` or `https://`.\n\nInstances registered with the activation code created by this operation use this value as the prefix to generate sequential instance names. You can also specify a new instance name when you register a managed instance to override this default value.\n\nWhen you register a managed instance, if you specify a value for InstanceName, a name in the format of `<InstanceName>-001` is generated. The number of digits in `001` depends on the number of digits in the `InstanceCount` value. If you do not specify a value for InstanceName, the hostname of the host is used as the instance name."
+      }
     },
     {
       "name": "IpAddressRange",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "允许使用该激活码的主机IP。取值为对应的IPv4地址、IPv6地址或CIDR地址段。",
+        "en": "The IP addresses of hosts that are allowed to use the activation code. The value can be an IPv4 address, an IPv6 address, or a CIDR block."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。目前支持的地域：华北1（青岛）、华北2（北京）、华北3（张家口）、华北5（呼和浩特）、华北6（乌兰察布）、华东1（杭州）、华东2（上海）、华南1（深圳）、华南2（河源）、华南3（广州）、西南1（成都）、中国香港、新加坡、日本（东京）、美国（硅谷）、美国（弗吉尼亚）。\n您可以调用[DescribeRegions](~~25609~~)查看地域对应的ID等信息。",
+        "en": "The region ID. Currently supported regions include China (Qingdao), China (Beijing), China (Zhangjiakou), China (Hohhot), China (Ulanqab), China (Hangzhou), China (Shanghai), China (Shenzhen), China (Heyuan), China (Guangzhou), China (Chengdu), Hong Kong (China), Singapore, Japan (Tokyo), US (Silicon Valley), and US (Virginia).\nYou can call [DescribeRegions](~~25609~~) to query region IDs and other information."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "激活码所属的资源组ID。",
+        "en": "The ID of the resource group to which the activation code belongs."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "托管实例激活码的标签键。N的取值范围为1~20。一旦传入该值，则不允许为空字符串。\n\n使用一个标签过滤资源，查询到该标签下的资源数量不能超过1000个。使用多个标签过滤资源，查询到同时绑定了多个标签的资源数量不能超过1000个。如果资源数量超过1000个，您需要使用[ListTagResources](~~110425~~)接口进行查询。\n\n最多支持64个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。",
+            "en": "The tag key of the managed instance activation code. Valid values of N: 1 to 20. The tag key cannot be an empty string.\n\nIf you use a single tag to filter resources, the resource count with the tag cannot exceed 1000. If you use multiple tags to filter resources, the resource count with all the specified tags attached cannot exceed 1000. If the resource count exceeds 1000, use the [ListTagResources](~~110425~~) operation to query resources.\n\nThe tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "托管实例激活码的标签值。N的取值范围为1~20。该值可以为空字符串。\n\n最多支持128个字符，不能包含`http://`或`https://`。",
+            "en": "The tag value of the managed instance activation code. Valid values of N: 1 to 20. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -70,9 +111,24 @@
       "name": "TimeToLiveInHours",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "激活码的有效使用时间，过期后将不能用于注册新的实例。单位：小时。可选值：1~4。\n\n默认值为4小时。",
+        "en": "The validity period of the activation code. After the validity period expires, the activation code cannot be used to register new instances. Unit: hours. Valid values: 1 to 4.\n\nDefault value: 4."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个激活码",
+    "en": "Creates an activation code."
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n通过激活码将非阿里云服务器注册为阿里云托管实例后，您可以在托管实例中使用阿里云提供的多种在线服务（例如云助手、系统运维管理和云效等服务）。\n\n非阿里云服务器的操作系统需要符合以下版本，且服务器可以访问公网，才可以注册为阿里云托管实例。\n\n- Alibaba Cloud Linux 2/3及更高版本\n- CentOS 6/7/8及更高版本\n- Debian 8/9/10及更高版本\n- Ubuntu 12/14/16/18及更高版本\n- CoreOS\n- OpenSUSE\n- RedHat 5/6/7及更高版本\n- SUSE Linux Enterprise Server 11/12/15及更高版本\n- Window Server 2012/2016/2019及更高版本\n\n在一个阿里云地域下，您最多可以拥有 10 条托管实例激活码，一个激活码可激活实例上限为 10 个，单个激活码有效期上限为 4 小时。\n\n> 您可以在**ECS云助手**页面的**托管实例**页签下，单击**注册新实例**，获取激活码使用数据。",
+    "en": "## Operation description\n\nAfter you use an activation code to register a non-Alibaba Cloud server as an Alibaba Cloud managed instance, you can use various online services provided by Alibaba Cloud in the managed instance, such as Cloud Assistant, CloudOps Orchestration Service, and Alibaba Cloud DevOps.\n\nThe operating system of the non-Elastic Compute Service (ECS) server must meet the following version requirements, and the server must have Internet access to be registered as an Alibaba Cloud managed instance.\n\n- Alibaba Cloud Linux 2/3 and later\n- CentOS 6/7/8 and later\n- Debian 8/9/10 and later\n- Ubuntu 12/14/16/18 and later\n- CoreOS\n- OpenSUSE\n- RedHat 5/6/7 and later\n- SUSE Linux Enterprise Server 11/12/15 and later\n- Window Server 2012/2016/2019 and later\n\nIn each Alibaba Cloud region, you can have up to 10 managed instance activation codes. Each activation code can be used to register up to 10 instances, and each activation code is valid for up to 4 hours.\n\n> On the **ECS Cloud Assistant** page, click the **Managed Instances** tab, and then click **Register New Instance** to view the usage data of activation codes."
+  },
   "example": {
     "unifiedCli": "aliyun ecs create-activation --biz-region-id cn-hangzhou --instance-name test-InstanceName --description This_is_description. --instance-count 10 --time-to-live-in-hours 4 --ip-address-range 0.0.0.0/0 --client-token 123e4567-e89b-12d3-a456-426655440000 --resource-group-id rg-123000000 --tag Value=TestValue Key=TestKey --region cn-hangzhou",
     "legacyCli": "aliyun ecs CreateActivation --region cn-hangzhou --InstanceName 'test-InstanceName' --InstanceCount 10 --Tag.1.Key TestKey --Description 'This_is_description.' --ResourceGroupId 'rg-123000000' --Tag.1.Value TestValue --TimeToLiveInHours 4 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --IpAddressRange '0.0.0.0/0'"

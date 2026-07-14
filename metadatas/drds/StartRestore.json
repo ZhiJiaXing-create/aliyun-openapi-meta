@@ -1,5 +1,6 @@
 {
   "name": "StartRestore",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "BackupDbNames",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要恢复的数据库名列表，多个数据库之间用英文逗号（,）分隔。\n> 如不填任何数据库名称则默认恢复实例下所有数据库。",
+        "en": "The list of database names to restore. Separate multiple database names with commas (,).\n> If you do not specify any database names, all databases in the instance are restored by default."
+      }
     },
     {
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DRDS备份集ID。\n> 若不填该参数，则默认按时间点（PreferredBackupTime）恢复。",
+        "en": "The ID of the DRDS backup set.\n> If you do not specify this parameter, the restoration is performed based on the point in time specified by PreferredBackupTime."
+      }
     },
     {
       "name": "BackupLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份级别，取值范围如下：\n* db：数据库级别\n* instance：实例级别",
+        "en": "The backup level. Valid values:\n\n* db: database level\n* instance: instance level."
+      }
     },
     {
       "name": "BackupMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份方式，取值范围如下：\n* logic：逻辑备份\n* phy：快速备份",
+        "en": "The backup mode. Valid values:\n\n* logic: logical backup\n* phy: fast backup."
+      }
     },
     {
       "name": "DrdsInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DRDS实例ID。",
+        "en": "The instance ID of the DRDS instance."
+      }
     },
     {
       "name": "PreferredBackupTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的恢复时间，格式为`yyyy-MM-dd HH:mm:ss`。",
+        "en": "The restoration time of the instance. The value is in the `yyyy-MM-dd HH:mm:ss` format."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "启动基于备份的恢复任务",
+    "en": "Start a backup-based restoration task"
+  },
   "example": {
     "unifiedCli": "aliyun drds start-restore --drds-instance-id rds00000000 --preferred-backup-time 2019-09-10_20:18:18 --backup-mode phy --backup-level db --backup-db-names test1,test2 --backup-id 23000 --api-version 2019-01-23 --region cn-hangzhou",
     "legacyCli": "aliyun drds StartRestore --region cn-hangzhou --DrdsInstanceId rds00000000 --PreferredBackupTime '2019-09-10_20:18:18' --BackupMode phy --BackupLevel db --BackupDbNames 'test1,test2' --BackupId 23000"

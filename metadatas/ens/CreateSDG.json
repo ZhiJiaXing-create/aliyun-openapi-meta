@@ -1,5 +1,6 @@
 {
   "name": "CreateSDG",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "BillingCycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SDG子盘计费逻辑：该SDG所生产的rbd子盘的计费方案（标准云盘不适配）\n可选参数：\n\n- Hour。\n\n-  Day（默认）。\n\n\n> - 参数说明：周期越长计费越便宜，若周期未满提早释放会有手续费。",
+        "en": "The billing method for the sub-disks of the SDG. This parameter specifies the billing plan for RBD sub-disks that are created from this SDG. This parameter does not apply to standard disks. Valid values:\n\n- Hour.\n\n- Day (default).\n\n> * Metric description: A longer billing cycle results in lower costs. A service fee is charged if you release the disk before the billing cycle ends."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SDG的描述信息。\n> 建议详细填写，以便后续查询。",
+        "en": "The description of the SDG.\n\n> Provide a detailed description for easy reference."
+      }
     },
     {
       "name": "DiskType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "制作母盘类型\n可选参数：\n-  standard（标准云盘：默认）。\n-  rbd（rbd盘）。\n\n> - 使用限制：rbd盘SDG与标准盘SDG不可相互继承。",
+        "en": "The type of the source disk. Valid values:\n\n- standard (standard disk: default).\n\n- rbd (RBD disk).\n\n> * Limit: SDGs on RBD disks and SDGs on standard disks cannot inherit from each other."
+      }
     },
     {
       "name": "FromSDGId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "已有SDG的ID。\n> - 如果为首次创建SDG，**FromSDGId**则为空。\n>- 如果**FromSDGId**非法或查询不到对应的原始云盘，则报错。\n>- 如果**FromSDGId**不为空，则表示非首次创建SDG，对已有SDG进行操作。",
+        "en": "The ID of an existing SDG.\n\n> - If you are creating an SDG for the first time, leave **FromSDGId** empty.\n>\n> - If **FromSDGId** is invalid or the corresponding source disk cannot be found, an error is reported.\n>\n> - If **FromSDGId** is not empty, you are performing an operation on an existing SDG."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "AIC实例ID。可以通过调用[DescribeARMServerInstances](~~DescribeARMServerInstances~~)获取InstanceId值。",
+        "en": "The ID of the AIC instance. You can call [DescribeARMServerInstances](~~DescribeARMServerInstances~~) to obtain the instance ID."
+      }
     },
     {
       "name": "PerformanceLevel",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "sdg共享比参数，支持不同最大共享比的云盘",
+        "en": "The sharing ratio of the SDG. This parameter supports disks with different maximum sharing ratios."
+      }
     },
     {
       "name": "Size",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SDG最大容量，单位GB。\n>- 为了节约成本，建议按需评估。\n>- 如果是首次创建SDG，**Size**为必填参数。\n>- 后续数据量增大时可传递新的**Size**进行扩容。如果**Size**不为空，且大于原有SDG的**Size**值，则表示将该SDG对应的原始云盘扩容到当前**Size**大小。如果**Size**为空，或填入的**Size**小于原有SDG的**Szie**值，系统将不做处理。",
+        "en": "The maximum capacity of the SDG, in GB.\n\n> - To save costs, specify the size as needed.\n>\n> - If you are creating an SDG for the first time, **Size** is a required parameter.\n>\n> - If your data volume increases, you can specify a new value for **Size** to expand the disk. If **Size** is not empty and its value is greater than the original size of the SDG, the source disk for the SDG is expanded to the new size. If **Size** is empty or its value is smaller than the original size of the SDG, the system takes no action."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建SDG",
+    "en": "Create SDG"
+  },
+  "descriptions": {
+    "zh": "数据共享集（SDG）可以看作成虚拟设备的数据分区镜像，用户通过操作将某个虚拟设备数据分区保存为SDG。制作好的SDG可以部署在其他虚拟设备的数据分区，实现数据快速分发和应用。SDG相关接口使用流程如下：\n\n- 用户调用[CreateSDG](~~CreateSDG~~)接口创建一个SDG ，该SDG会绑定到AIC实例A（InstanceId ）上。创建成功后，会有一个空白云盘（也称原始云盘）挂载到设备A（InstanceId）上，用于SDG的制作。\n\n- 用户在AIC实例A（InstanceId）上进行安装应用，下发文件等所需操作。\n\n- 调用[SaveSDG](~~SaveSDG~~)将AIC实例A中的数据盘保存为SDG A。\n\n- 调用[DeploySDG](~~DeploySDG~~)将SDG A部署到其他AIC实例B中。该过程为异步执行，通过[DescribeARMServerInstances](~~DescribeARMServerInstances~~)可查询到AIC实例B的状态。当状态恢复为success后可以认为AIC实例B可用，此时AIC实例B内的应用与AIC实例A完全一致。",
+    "en": "An SDG is a data partition image for a virtual device. You can save a data partition from a virtual device as an SDG and then deploy it to the data partitions of other virtual devices. This lets you quickly distribute data and applications. The procedure for using SDG-related API operations is as follows:\n\n- Call the [CreateSDG](~~CreateSDG~~) operation to create an SDG. This operation attaches an empty disk, also known as a source disk, to the specified AIC instance (InstanceId). You will use this disk to create the SDG image.\n\n- You can then install applications, transfer files, and perform other required operations on the AIC instance (InstanceId).\n\n- Call the [SaveSDG](~~SaveSDG~~) operation to save the data disk of the AIC instance as an SDG image.\n\n- Call the [DeploySDG](~~DeploySDG~~) operation to deploy the SDG image to another AIC instance. This is an asynchronous operation. You can query the status of the destination instance by calling [DescribeARMServerInstances](~~DescribeARMServerInstances~~). When the status changes to \\`success\\`, the instance is available. The applications on the destination instance are then identical to those on the source instance."
+  },
   "example": {
     "unifiedCli": "aliyun ens create-sdg --instance-id aic-xxxx --size 20 --description Test_SDG --from-sdg-id sdg-xxxxx --disk-type standard --billing-cycle Day --performance-level 100 --region cn-hangzhou",
     "legacyCli": "aliyun ens CreateSDG --region cn-hangzhou --DiskType standard --BillingCycle Day --Description Test_SDG --InstanceId 'aic-xxxx' --Size 20 --FromSDGId 'sdg-xxxxx' --PerformanceLevel 100"

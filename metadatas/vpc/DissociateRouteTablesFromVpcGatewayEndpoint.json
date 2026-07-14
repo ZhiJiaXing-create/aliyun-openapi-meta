@@ -1,5 +1,6 @@
 {
   "name": "DissociateRouteTablesFromVpcGatewayEndpoint",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,60 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The **token** can contain only ASCII characters and cannot exceed 64 characters in length.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否检测此次请求。取值：\n\n- **true**：发送检查请求。\n- **false**（默认值）：发送正常请求。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关终端节点实例ID。",
+        "en": "The ID of the gateway endpoint to be disassociated from the route table."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点所属的地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the gateway endpoint.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "RouteTableIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由表列表。",
+        "en": "The ID of the route table. Valid values of **N** are **1** to **20**, which specifies that you can disassociate a gateway endpoint from at most 20 route tables at a time."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将网关终端节点与路由表解绑",
+    "en": "DissociateRouteTablesFromVpcGatewayEndpoint"
+  },
   "example": {
     "unifiedCli": "aliyun vpc dissociate-route-tables-from-vpc-gateway-endpoint --endpoint-id vpce-bp11cwae3p6z7ftbm0000 --route-table-ids vtb-m5elgtm3aj586iitr0000 --client-token TF-DissociateRouteTablesFromVpcGatewayEndpoint-1634369235-8f0000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc DissociateRouteTablesFromVpcGatewayEndpoint --region cn-hangzhou --RouteTableIds.1 'vtb-m5elgtm3aj586iitr0000' --EndpointId 'vpce-bp11cwae3p6z7ftbm0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken 'TF-DissociateRouteTablesFromVpcGatewayEndpoint-1634369235-8f0000'"

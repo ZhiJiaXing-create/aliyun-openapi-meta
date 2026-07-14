@@ -1,5 +1,6 @@
 {
   "name": "RecoverPhysicalConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- **true**：发送检查请求，不会恢复物理专线接入。检查项包括是否填写了必需参数、请求格式、实例状态。如果检查不通过，则返回对应错误。如果检查通过，则返回请求ID。\n- **false**（默认值）：发送正常请求，通过检查后直接恢复物理专线接入。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run without recovering access to the Express Connect circuit. The system checks the required parameters, request format, and instance status. If the check fails, the corresponding error is returned. If the check succeeds, the request ID is returned.\n- **false** (default): sends the request. After the request passes the check, access to the Express Connect circuit is recovered."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线实例ID。\n\n> 目前仅支持恢复共享专线的接入。",
+        "en": "The instance ID of the Express Connect circuit.\n\n> Currently, only shared Express Connect circuits can be recovered."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线所属地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the Express Connect circuit.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     },
     {
       "name": "Token",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token用于保证请求的幂等性。\n\n由客户端生成该参数值，需保证该参数在不同请求间唯一，最大值不超过64个ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nThe client generates the value of this parameter. The value must be unique among different requests and cannot exceed 64 ASCII characters in length."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "恢复物理专线接入",
+    "en": "Recover access to an express connect circuit"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n\n您可以通过调用RecoverPhysicalConnection接口将已被终止接入的物理专线恢复接入。目前仅支持恢复共享专线的接入。",
+    "en": "### Operation description\n\nYou can call the RecoverPhysicalConnection operation to recover access to an Express Connect circuit that has been terminated. Currently, only shared Express Connect circuits can be recovered."
+  },
   "example": {
     "unifiedCli": "aliyun vpc recover-physical-connection --instance-id pc-bp1mrgfbtmc9brre70000 --token CBCE910E-D396-4944-80000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc RecoverPhysicalConnection --region cn-hangzhou --InstanceId 'pc-bp1mrgfbtmc9brre70000' --DryRun false --Token 'CBCE910E-D396-4944-80000' --RegionId 'cn-hangzhou'"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyDiskSpec",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DestinationZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "> 该参数正在邀测中，暂不支持使用。",
+        "en": "> This parameter is in invitational preview and is not publicly available."
+      }
     },
     {
       "name": "DiskCategory",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "变更一块云盘的类型。取值范围：\n\n- cloud_essd：ESSD云盘。\n- cloud_auto：ESSD AutoPL云盘。\n- cloud_ssd：SSD云盘。\n<props=\"china\">\n- cloud_essd_entry：ESSD Entry云盘。\n</props>\n- cloud_efficiency：高效云盘。\n\n默认值：空，表示不变配云盘。\n\n> - 以上有效取值按云盘性能降序排列。如果指定的云盘是包年包月云盘，则不允许降配云盘。\n\n<props=\"china\">\n- ESSD Entry云盘仅支持变配到ESSD云盘和ESSD AutoPL云盘。更多信息，请参见[变更云盘类型](~~161980~~)。\n</props>",
+        "en": "The new disk category of the cloud disk. Valid values:\n\n- cloud\\_essd: ESSD\n\n- cloud\\_auto: ESSD AutoPL disk\n\n- cloud\\_ssd: standard SSD\n\n- cloud\\_efficiency: utra disk\n\nThis parameter is empty by default, which indicates that the disk category is not changed.\n\n>\n\n- The preceding values are listed in descending order of disk performance. Subscription disks cannot be downgraded."
+      }
     },
     {
       "name": "DiskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云盘的ID。",
+        "en": "The disk ID."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n* true：发送检查请求。检查项包括是否填写了必需参数、请求格式、业务限制和ECS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n* false：发送正常请求，通过检查后返回2XX HTTP状态码并且直接变配云盘或修改ESSD性能等级。\n\n默认值：false。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- true: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, service limits, and insufficient ECS resources. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- false: performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed.\n\nDefault value: false."
+      }
     },
     {
       "name": "PerformanceControlOptions",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "磁盘性能控制参数集合。",
+        "en": "The disk performance specifications."
+      }
     },
     {
       "name": "PerformanceLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改一块ESSD云盘的性能级别。取值范围：\n\n- PL0：单盘最高随机读写IOPS 1万。\n- PL1：单盘最高随机读写IOPS 5万。\n- PL2：单盘最高随机读写IOPS 10万。\n- PL3：单盘最高随机读写IOPS 100万。\n\n默认值：PL1。",
+        "en": "The new performance level of the ESSD. Valid values:\n\n- PL0: An ESSD can deliver up to 10,000 random read/write IOPS.\n\n- PL1: An ESSD can deliver up to 50,000 random read/write IOPS.\n\n- PL2: An ESSD can deliver up to 100,000 random read/write IOPS.\n\n- PL3: An ESSD delivers up to 1,000,000 random read/write IOPS.\n\nDefault value: PL1."
+      }
     },
     {
       "name": "ProvisionedIops",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否修改ESSD AutoPL云盘预配置读写IOPS。\n\n取值范围：0~min{50000, 1000*容量-基准性能}。\n\n基准性能=min{1,800+50*容量, 50,000}。\n\n> 当`DiskCategory`取值为`cloud_auto`时才支持设置该参数。更多信息，请参见[ESSD AutoPL云盘](~~368372~~)和[修改ESSD AutoPL云盘预配置信息](~~413275~~)。",
+        "en": "The provisioned read/write IOPS of the ESSD AutoPL disk.\n\nValid values: 0 to min{50,000, 1,000 × Capacity - Baseline IOPS}.\n\nBaseline IOPS = min{1,800 + 50 × Capacity, 50,000}.\n\n> This parameter is available only if you set `DiskCategory` to `cloud_auto`. For more information, see [ESSD AutoPL disks](~~368372~~) and [Modify the performance configurations of an ESSD AutoPL disk](~~413275~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更云盘类型或性能级别",
+    "en": "ModifyDiskSpec"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">请确保在使用该接口前，您已充分了解云盘的计费方式和[价格](https://www.aliyun.com/price/product#/disk/detail)。</props>\n\n为了减少变配操作对您业务带来的影响，请您在业务低峰期进行变配。\n\n调用该接口时，您需要注意：\n\n- 修改ESSD云盘性能级别：\n\n    - 包年包月ESSD云盘仅支持升级性能级别。\n\n    - 按量付费ESSD云盘支持升级和降低性能级别，但不支持降配到PL0。\n\n    - ESSD云盘的状态必须是**使用中**（In_use）状态或者**待挂载**（Available）状态。\n\n    - 若ESSD云盘已挂载到ECS实例上，实例必须处于**运行中**（Running）状态或者**已停止**（Stopped）状态，不能处于过期或者账号欠费状态。\n\n    - 由于ESSD云盘性能级别受容量限制，如果您无法升级性能级别，可以扩容（[ResizeDisk](~~25522~~)）后重新操作。更多信息，请参见[ESSD云盘](~~122389~~)。\n- 变更一块云盘类型的注意事项，请参见[变更云盘类型](~~161980#section_s4a_to0_1jx~~)。\n- 不同类型的云盘支持变配的情况，请参见[云盘支持变配情况](~~161980#eb8bb54032nho~~)。\n<props=\"china\">* 开启多重挂载特性的云盘不支持云盘变配。</props>\n\n云盘变配后，计费变化情况如下：\n\n- 按量付费云盘：按照新的云盘类型计费。\n\n- 包年包月云盘：在计费周期内，会根据新旧配置的价格差和剩余天数（从次日0点到有效期结束）来计算应补缴的费用。\n\n关于云盘的计费信息，请参见[块存储计费](~~179022~~)。",
+    "en": "To minimize impacts on your business, change the disk categories or performance levels of cloud disks during off-peak hours.\n\nTake note of the following items:\n\n- To change the performance level of an ESSD, take note of the following items:\n\n  - If the ESSD is a subscription ESSD, you can only upgrade its performance level.\n\n  - If the ESSD is a pay-as-you-go ESSD, you can upgrade or downgrade its performance level. However, you cannot downgrade the performance level to PL0.\n\n  - The ESSD must be in the **In Use** (In\\_Use) or **Unattached** (Available) state.\n\n  - If the ESSD is attached to an Elastic Compute Service (ECS) instance, the instance must be in the **Running** (Running) or **Stopped** (Stopped) state. The instance cannot be in the Expired state or stopped due to an overdue payment.\n\n  - If you cannot upgrade the performance level of an ESSD due to the capacity limit, extend the ESSD by calling the [ResizeDisk](~~25522~~) operation and then try again. For more information, see [ESSDs](~~122389~~).\n\n- For information about the limits on changing the disk category of a cloud disk, see [Change the category of a disk](~~161980#section_s4a_to0_1jx~~).\n\n- For the disk categories to which cloud disks of each disk category can be changed, see [Change the category of a disk](~~161980#eb8bb54032nho~~).\n\nAfter the disk category of a cloud disk is changed, the billing of the cloud disk has the following changes:\n\n- If the cloud disk is a pay-as-you-go disk, you are charged for the disk based on the new disk category.\n\n- If the cloud disk is a subscription disk, you may be charged additionally based on the price difference between the old and new disk categories and the remaining days of the billing cycle, starting from 00:00 the next day until the end of the subscription period.\n\nFor information about the billing of cloud disks, see [Block storage devices](~~179022~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-disk-spec --disk-id d-bp131n0q38u3a4zi0000 --performance-level PL2 --disk-category cloud_essd --dry-run false --provisioned-iops 50000 --performance-control-options Throughput=200 IOPS=2000 Recover=All --destination-zone-id cn-hangzhou-g --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyDiskSpec --region cn-hangzhou --PerformanceLevel PL2 --DestinationZoneId 'cn-hangzhou-g' --DryRun false --DiskCategory cloud_essd --ProvisionedIops 50000 --PerformanceControlOptions.IOPS 2000 --PerformanceControlOptions.Recover All --PerformanceControlOptions.Throughput 200 --DiskId 'd-bp131n0q38u3a4zi0000' --method POST --force"

@@ -1,5 +1,6 @@
 {
   "name": "QueryTunnelMetric",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/api/v1/observations/tunnel/[metric]",
@@ -8,33 +9,64 @@
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求体参数。",
+        "en": "The request body parameters."
+      }
     },
     {
       "name": "endTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询时间范围：结束时间。",
+        "en": "The end of the time range for the query."
+      }
     },
     {
       "name": "metric",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "观测指标名称。",
+        "en": "The name of the metric."
+      }
     },
     {
       "name": "startTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询时间范围：开始时间。",
+        "en": "The start of the time range for the query."
+      }
     },
     {
       "name": "strategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据聚合策略。默认max。\n\n数据的采集频率是1分钟。当查询的时间范围较大时，数据展示的自适应步长会超过1分钟，此时指标会进行聚合。该参数即指定数据的聚合逻辑。",
+        "en": "The data aggregation policy. The default value is `max`.\n\nData is collected at a frequency of 1 minute. If you query data over a long time range, the automatic step size for data display may exceed 1 minute. In this case, metrics are aggregated. This parameter specifies the aggregation logic."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "Tunnel资源观测时序数据",
+    "en": "QueryTunnelMetric"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 本API支持查询包括slot使用量(`slot_usage`)、slot使用上限(`slot_max`)、吞吐量(`throughput`)、吞吐量速率(`throughput_speed`)以及请求数(`request`)等在内的多种Tunnel指标。\n- `startTime`与`endTime`为必选参数，分别代表查询的时间段起始和结束时间戳（秒）。\n- `metric`参数也是必需的，用来指定要查询的具体指标类型。\n- 根据不同的`metric`值，可能需要提供额外的过滤参数如`quotaNickname`, `project`, `tableList`, `operationList`, `codeList`, `groupList`及`topN`等来进一步细化查询条件。\n- 特别注意的是，对于某些特定的`metric`（例如当`groupList`包含`table`或`ip`时），必须同时指定相关的项目(`project`)和其他必要参数，并且系统会强制返回Top N的结果。\n- 参数`strategy`定义了在较长时间范围内数据自适应步长超过60秒时的数据聚合逻辑，默认为`max`。\n- 确保所有提供的参数符合文档中列出的要求以避免请求失败。",
+    "en": "- You can use this API to query various Tunnel metrics, such as slot usage (`slot_usage`), slot usage limit (`slot_max`), throughput (`throughput`), throughput rate (`throughput_speed`), and number of requests (`request`).\n\n- The `startTime` and `endTime` parameters are required. They specify the start and end of the time range for the query. The values are UNIX timestamps in seconds.\n\n- The `metric` parameter is also required. It specifies the type of metric to query.\n\n- Depending on the value of `metric`, you may need to specify additional parameters for filtering to refine your query. These parameters include `quotaNickname`, `project`, `tableList`, `operationList`, `codeList`, `groupList`, and `topN`.\n\n- For some `metric` values, you must specify other parameters. For example, if `groupList` contains `table` or `ip`, you must specify the `project` parameter and other required parameters. In this case, the system returns only the top N results.\n\n- The `strategy` parameter defines the data aggregation logic. This logic is used when the automatic step size exceeds 60 seconds over a long time range. The default value is `max`.\n\n- Ensure all parameters meet the requirements in this document to prevent request failures."
+  },
   "example": {
     "unifiedCli": "aliyun maxcompute query-tunnel-metric --start-time 1735534322 --end-time 1735536322 --metric slot_usage --strategy max --quota-nickname default --project project_a --table-list tab_name --operation-list upload --code-list 403 --group-list quota --topn 10 --region cn-hangzhou",
     "legacyCli": "aliyun maxcompute POST /api/v1/observations/tunnel/slot_usage --region cn-hangzhou --startTime 1735534322 --endTime 1735536322 --strategy max --header \"Content-Type=application/json\" --body {\"quotaNickname\":\"default\",\"operationList\":[\"upload\"],\"project\":\"project_a\",\"tableList\":[\"tab_name\"],\"groupList\":[\"quota\"],\"codeList\":[403],\"topN\":10}"

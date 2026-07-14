@@ -1,5 +1,6 @@
 {
   "name": "DeleteTrafficMirrorSession",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,53 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among all requests. ClientToken can contain only ASCII characters.\n\n>  If you do not specify this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** for each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会删除镜像会话。检查项包括是否填写了必需参数、请求格式和限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后直接删除镜像会话。",
+        "en": "Specifies whether to to perform a dry run. Valid values:\n\n*   **true**: performs a dry run. The system checks the required parameters, request format, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and sends the request. If the request passes the dry run, the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像会话的所属地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。关于流量镜像支持的地域，请参见[流量镜像概述](~~207513~~)。",
+        "en": "The ID of the region to which the traffic mirror session belongs. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list. For more information about regions that support traffic mirror, see [Overview of traffic mirror](~~207513~~)."
+      }
     },
     {
       "name": "TrafficMirrorSessionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像会话的实例ID。",
+        "en": "The ID of the traffic mirror session."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除流量镜像会话",
+    "en": "DeleteTrafficMirrorSession"
+  },
+  "descriptions": {
+    "zh": "- **DeleteTrafficMirrorSession**接口属于异步接口，即系统返回一个请求ID，但该镜像会话尚未删除成功，系统后台的删除任务仍在进行。您可以调用[ListTrafficMirrorSessions](~~261367~~)查询镜像会话的删除状态：\n    - 当镜像会话处于**Deleting**状态时，表示镜像会话正在删除中。\n    - 当查询不到指定的镜像会话时，表示镜像会话删除成功。\n- **DeleteTrafficMirrorSession**接口不支持并发删除同一个镜像会话。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-traffic-mirror-session --client-token 0c593ea1-3bea-11e9-b96b-88e9fe630000 --dry-run false --traffic-mirror-session-id tms-j6cla50buc44ap8tu0000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteTrafficMirrorSession --region cn-hangzhou --DryRun false --TrafficMirrorSessionId 'tms-j6cla50buc44ap8tu0000' --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe630000'"

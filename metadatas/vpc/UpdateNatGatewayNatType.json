@@ -1,5 +1,6 @@
 {
   "name": "UpdateNatGatewayNatType",
+  "deprecated": true,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a value, and you must make sure that each request has a unique token value. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the value of **RequestId** as the value of **ClientToken**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n**true**：发送请求，不会升级公网NAT网关类型。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n**false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并直接升级公网NAT网关类型。",
+        "en": "Specifies whether to only precheck this request. Valid values:\n\n**true**: prechecks the request without upgrading the Internet NAT gateway. The system checks whether your AccessKey pair is valid, whether RAM users are granted required permissions, and whether the required parameters are set. If the request fails to pass the precheck, an error code is returned. If the request passes the precheck, the `DryRunOperation` error code is returned.\n\n**false**: sends the API request. This is the default value. After the request passes the precheck, a 2XX HTTP status code is returned and the Internet NAT gateway is upgraded."
+      }
     },
     {
       "name": "NatGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要升级的普通型公网NAT网关实例ID。",
+        "en": "The ID of the standard NAT gateway to be upgraded."
+      }
     },
     {
       "name": "NatType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "公网NAT网关类型。取值：**Enhanced**，表示增强型公网NAT网关。",
+        "en": "The type of Internet NAT gateway. Set the value to **Enhanced**, which specifies an enhanced Internet NAT gateway."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要升级的普通型公网NAT网关所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the NAT gateway that you want to upgrade is deployed.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "升级后增强型公网NAT网关所属的交换机。\n\n>如果不设置该参数，系统会随机将增强型公网NAT网关创建在VPC内的任意一台交换机。",
+        "en": "The vSwitch to which the enhanced Internet NAT gateway belongs.\n\n>  If you do not set this parameter, the system generates an Internet NAT gateway in a random vSwitch of a virtual private cloud (VPC)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将普通型NAT网关切换为增强型",
+    "en": "UpdateNatGatewayNatType"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n调用UpdateNatGatewayNatType接口前，请先了解以下内容：\n\n- **UpdateNatGatewayNatType**接口属于异步接口，即系统会先返回一个请求ID，但NAT网关的网关类型并未升级完成，系统后台的升级任务仍在进行。您可以调用GetNatGatewayConvertStatus查询NAT网关的升级状态，更多信息，请参见[GetNatGatewayConvertStatus](~~184744~~)。\n\n    - 当NAT网关的升级状态处于**processing**时，表示正在升级中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当NAT网关的升级状态处于**successful**时，表示NAT网关的网关类型升级完成。\n\n    - 当NAT网关的升级状态处于**failed**时，表示NAT网关的网关类型升级失败。\n\n-  **UpdateNatGatewayNatType**接口在同一个NAT网关中不支持并发升级NAT网关的网关类型。\n\n- 增强型NAT网关与普通型NAT网关的计费相同，升级过程和升级后计费方式不会改变。\n\n- 每个资源升级过程可能会持续5分钟，升级过程中会出现1~2次秒级闪断，业务重连即可恢复。重连机制为自动重连还是手动重连由业务本身决定。\n\n- 仅支持将普通型NAT网关升级至增强型NAT网关，不支持将增强型NAT网关降级至普通型NAT网关。",
+    "en": "Before you call this operation, take note of the following limits:\n\n*   **UpdateNatGatewayNatType** is an asynchronous operation. After you send a request to call this operation, the system returns a request ID and the NAT gateway is still being upgraded in the backend. You can call the GetNatGatewayConvertStatus operation to query the upgrade progress of a NAT gateway. For more information, see [GetNatGatewayConvertStatus](~~184744~~).\n\n    *   If the NAT gateway is in the **processing** state, the NAT gateway is being upgraded. You can only query the status of the NAT gateway but cannot perform other operations.\n    *   If the NAT gateway is in the **successful** state, the NAT gateway is upgraded.\n    *   If the NAT gateway is in the **failed** state, the system failed to upgrade the NAT gateway.\n\n*   You cannot repeatedly call the **UpdateNatGatewayNatType** operation for the same VPN gateway within the specified period of time.\n\n*   The billing method and billable items remain the same after the upgrade.\n\n*   It takes about five minutes to upgrade a standard NAT gateway to an enhanced NAT gateway. During the upgrade, transient connection errors may occur once or twice. The service can be recovered by reconnection. You can determine whether to enable automatic reconnection or use manual reconnection based on your business requirements.\n\n*   You can only upgrade standard NAT gateways to enhanced NAT gateways. You are not allowed to downgrade enhanced NAT gateways to standard NAT gateways."
+  },
   "example": {
     "unifiedCli": "aliyun vpc update-nat-gateway-nat-type --biz-region-id cn-hangzhou --nat-gateway-id ngw-bp1b0lic8uz4r6vf20000 --vswitch-id vsw-bp17nszybg8epodke0000 --nat-type Enhanced --dry-run false --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --region cn-hangzhou",
     "legacyCli": "aliyun vpc UpdateNatGatewayNatType --region cn-hangzhou --VSwitchId 'vsw-bp17nszybg8epodke0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --NatGatewayId 'ngw-bp1b0lic8uz4r6vf20000' --NatType Enhanced"

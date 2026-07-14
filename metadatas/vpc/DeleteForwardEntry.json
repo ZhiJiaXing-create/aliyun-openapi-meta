@@ -1,5 +1,6 @@
 {
   "name": "DeleteForwardEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "ForwardEntryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的DNAT条目ID。",
+        "en": "The ID of the DNAT entry to be deleted."
+      }
     },
     {
       "name": "ForwardTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DNAT条目所属的DNAT列表ID。",
+        "en": "The ID of the DNAT table to which the DNAT entry belongs."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "NAT网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the NAT gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除指定的DNAT条目",
+    "en": "DeleteForwardEntry"
+  },
+  "descriptions": {
+    "zh": "**DeleteForwardEntry**接口属于异步接口，即系统会先返回一个请求ID，但DNAT条目并未删除完成，系统后台的删除任务仍在进行。您可以调用[DescribeForwardTableEntries](~~36053~~)查询DNAT条目的状态：\n\n- 当DNAT条目处于**Deleting**状态时，表示DNAT条目正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n- 当查询不到该DNAT条目时，表示DNAT条目已删除完成。\n\n>  如果DNAT表中有DNAT条目的状态为**Pending**时，无法删除该DNAT表中的DNAT条目。",
+    "en": "## [](#)Description\n\n*   **DeleteForwardEntry** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeForwardTableEntries](~~36053~~) operation to query the status of the task.\n\n    *   If the DNAT entry is in the **Deleting** state, the system is deleting the DNAT entry. In this case, you can only query the status of the DNAT entry, but cannot perform other operations.\n    *   If the DNAT entry cannot be found, it is deleted.\n\n>  If a DNAT table has DNAT entries in the **Pending** state, you cannot delete the DNAT entries.\n\n*   You cannot repeatedly call the **DeleteForwardEntry** operation to delete a DNAT entry within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-forward-entry --biz-region-id cn-hangzhou --forward-table-id ftb-8vbx8xu2lqj9qb3340000 --forward-entry-id fwd-8vbn3bc8roygjp0gy0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteForwardEntry --region cn-hangzhou --ForwardEntryId 'fwd-8vbn3bc8roygjp0gy0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ForwardTableId 'ftb-8vbx8xu2lqj9qb3340000'"

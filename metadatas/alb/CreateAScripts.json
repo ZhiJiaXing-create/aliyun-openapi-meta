@@ -1,5 +1,6 @@
 {
   "name": "CreateAScripts",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "可编程脚本信息列表。",
-        "en": "The information about the AScript rules."
+        "en": "The AScripts to create."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+        "en": "A client token used to ensure request idempotency.\n\nYou can generate this value on your client. The value must be unique across requests and contain only ASCII characters."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建可编程脚本。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false**(default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run without creating the AScript. The system checks the request for required parameters, format validity, and service limits. If the request fails the check, an error message is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. After the request passes the check, the system returns an HTTP 2xx status code and performs the operation."
       }
     },
     {
@@ -45,6 +46,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建可编程脚本",
+    "en": "CreateAScripts"
+  },
+  "descriptions": {
+    "zh": "### 前提条件\n\n- 已创建标准版或WAF增强版ALB实例。具体操作，请参见[CreateLoadBalancer](~~214358~~)。\n\n\n### 使用说明\n\n**CreateAScripts**接口属于异步接口，即系统返回一个请求ID，但该可编程脚本尚未创建成功，系统后台的创建任务仍在进行。您可以调用[ListAScripts](~~472574~~)查询可编程脚本的创建状态：\n\n   - 当可编程脚本处于**Creating**状态时，表示可编程脚本正在创建中。\n\n   - 当可编程脚本处于**Available**状态时，表示可编程脚本创建成功。",
+    "en": "### Prerequisites\n\n- You have created a standard edition or WAF-enhanced edition ALB instance. For more information, see [CreateLoadBalancer](~~214358~~).\n\n### Usage\n\n**CreateAScripts** is an asynchronous operation. After you send a request, the system returns a request ID, but the programmable script is not created immediately because the creation task runs in the background. You can call [ListAScripts](~~472574~~) to query the creation status of the programmable script:\n\n- If the programmable script is in the **Creating** state, it is being created.\n\n- If the programmable script is in the **Available** state, it has been created."
+  },
   "example": {
     "unifiedCli": "aliyun alb create-ascripts --client-token 5A2CFF0E-5718-45B5-9D4D-70B000000 --dry-run false --listener-id lsn-6hfq3zs0x04ibn0000 --ascripts '[{\"ScriptContent\":\"if_and_match_re_uri,_^/1.txt_,_arg_type_rewrite_concat_/1._,_arg_type_,_break\",\"AScriptName\":\"test\",\"Position\":\"RequestFoot\",\"Enabled\":false,\"ExtAttributeEnabled\":true,\"ExtAttributes\":[{\"AttributeKey\":\"EsDebug\",\"AttributeValue\":\"test123\"}]}]' --region cn-hangzhou",
     "legacyCli": "aliyun alb CreateAScripts --region cn-hangzhou --AScripts.1.ExtAttributeEnabled true --AScripts.1.ExtAttributes.1.AttributeValue test123 --AScripts.1.ExtAttributes.1.AttributeKey EsDebug --AScripts.1.Enabled false --DryRun false --AScripts.1.ScriptContent 'if_and_match_re_uri,_^/1.txt_,_arg_type_rewrite_concat_/1._,_arg_type_,_break' --AScripts.1.Position RequestFoot --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B000000' --AScripts.1.AScriptName test --ListenerId 'lsn-6hfq3zs0x04ibn0000' --method POST --force"

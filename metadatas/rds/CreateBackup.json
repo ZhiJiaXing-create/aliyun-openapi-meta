@@ -1,5 +1,6 @@
 {
   "name": "CreateBackup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "BackupMethod",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份类型，取值：\n* **Logical**：逻辑备份（仅MySQL本地盘支持）\n* **Physical**：物理备份（MySQL本地盘、SQL Server、PostgreSQL支持）\n* **Snapshot**：快照备份（MySQL云盘、SQL Server、PostgreSQL、MariaDB均支持）\n\n默认值：**Physical**。\n\n> * 使用逻辑备份时，数据库内需要有存储数据（数据不为空）。\n> * MariaDB实例仅支持快照备份，但参数取值请填写**Physical**。",
+        "en": "The backup method. Valid values:\n\n- **Logical**: logical backup. This method is applicable only to MySQL instances that use local disks.\n\n- **Physical**: physical backup. This method is applicable to MySQL instances that use local disks, and to SQL Server and PostgreSQL instances.\n\n- **Snapshot**: snapshot backup. This method is applicable to MySQL instances that use cloud disks, and to SQL Server, PostgreSQL, and MariaDB instances.\n\nDefault value: **Physical**.\n\n> - For logical backups, the database cannot be empty.\n>\n> - MariaDB instances support only snapshot backups. However, you must set this parameter to **Physical**."
+      }
     },
     {
       "name": "BackupRetentionPeriod",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "- **SQL Serevr**：当参数BackupStrategy为db、BackupMethod为Physical且BackupType为FullBackup时，支持指定备份集的保留时间，取值7~730天、-1（长期保留）。\n- **MySQL**：支持指定备份集的保留时间，取值 7~730 天、-1（长期保留）",
+        "en": "- For **SQL Server** instances, you can specify the retention period for a backup set if **BackupStrategy** is set to **db**, **BackupMethod** is set to **Physical**, and **BackupType** is set to **FullBackup**. The value must be an integer from 7 to 730. A value of -1 specifies long-term retention.\n\n- **MySQL**: The retention period for backup sets can be 7 to 730 days, or -1 for long-term retention."
+      }
     },
     {
       "name": "BackupStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份策略，取值：\n* **db**：单库备份\n* **instance**：实例备份\n\n>满足以下条件时，该参数生效：\n> - MySQL：已传入**BackupMethod**参数（取值**Logical**）。\n> - SQL Server：已传入**BackupType**参数（取值为**FullBackup**）",
+        "en": "The backup strategy. Valid values:\n\n- **db**: database backup\n\n- **instance**: instance backup\n\n> This parameter applies only in the following cases:\n>\n> - For a MySQL instance, this parameter applies when the **BackupMethod** parameter is set to **Logical**.\n>\n> - For a SQL Server instance, this parameter applies when the **BackupType** parameter is set to **FullBackup**."
+      }
     },
     {
       "name": "BackupType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SQL Server实例备份方式，取值：\n* **Auto**（默认值）：自动选择全量备份或增量备份\n* **FullBackup**：全量备份\n\n> 该值仅在**BackupMethod**参数为**Physical**时生效。",
+        "en": "The backup type for a SQL Server instance. Valid values:\n\n- **Auto** (default): The system automatically selects between a full backup and an incremental backup.\n\n- **FullBackup**: full backup\n\n> This parameter takes effect only when **BackupMethod** is set to **Physical**."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to obtain the instance ID."
+      }
     },
     {
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库列表，多个数据库之间用英文逗号（,）隔开。\n>满足以下条件时，该参数生效：已传入**BackupStrategy**参数（取值为**db**）。",
+        "en": "The names of the databases that you want to back up. Separate multiple database names with commas (,).\n\n> This parameter applies only when the **BackupStrategy** parameter is set to **db**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为RDS实例创建备份集",
+    "en": "Create a Backup Set for an RDS Instance"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 功能说明\n本接口调用的是RDS自带的备份功能接口，您也可以使用DBS。更多信息，<props=\"china\">请参见[DBS API概览](~~2841997~~)</props><props=\"intl\">请参见[DBS API概览](~~2402073~~)</props>。\n\n### 注意事项\n调用该接口时，实例必须满足以下条件，否则将操作失败：\n- 实例状态为运行中。\n- 没有正在执行中的备份任务。\n- 单个实例一天内可创建的备份集数量不超过20个。\n\n### 相关功能文档\n- [RDS MySQL备份数据](~~378074~~)\n- [RDS PostgreSQL备份数据](~~96772~~)\n- [RDS SQL Server备份数据](~~95717~~)\n- [RDS MariaDB备份数据](~~97147~~)",
+    "en": "### Supported engines\n\n- RDS MySQL\n\n- RDS PostgreSQL\n\n- RDS SQL Server\n\n- RDS MariaDB\n\n### Description\n\nThis API calls the native RDS backup API. You can also use DBS. For more information, <props=\"china\">see [DBS API Overview](~~2841997~~)</props><props=\"intl\">see [DBS API Overview](~~2402073~~)</props>.\n\n### Usage notes\n\nThe API call succeeds only if the instance meets the following conditions:\n\n- The instance is running.\n\n- No backup tasks are in progress.\n\n- A maximum of 20 backup sets can be created per instance per day.\n\n### Related documentation\n\n- [Back up an RDS MySQL instance](~~378074~~)\n\n- [Back up an RDS PostgreSQL instance](~~96772~~)\n\n- [Back up an RDS SQL Server instance](~~95717~~)\n\n- [Back up an RDS MariaDB instance](~~97147~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds create-backup --db-instance-id rm-uf6wjk50000 --db-name rds_mysql --backup-strategy db --backup-method Physical --backup-type Auto --backup-retention-period 7 --region cn-hangzhou",
     "legacyCli": "aliyun rds CreateBackup --region cn-hangzhou --BackupMethod Physical --DBInstanceId 'rm-uf6wjk50000' --DBName rds_mysql --BackupType Auto --BackupRetentionPeriod 7 --BackupStrategy db"

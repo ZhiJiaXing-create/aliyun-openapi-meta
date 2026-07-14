@@ -1,5 +1,6 @@
 {
   "name": "UpdateIpSets",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "加速地域列表。",
+        "en": "The acceleration regions."
+      },
       "sub_parameters": [
         {
           "name": "Bandwidth",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "要修改的加速地域带宽。单位：Mbps。\n\n每个加速地域支持分配的最小带宽为2 Mbps。\n您最多可输入100个加速地域带宽。",
+            "en": "The new bandwidth that you want to allocate to the acceleration regions. Unit: Mbit/s.\n\nYou must allocate at least 2 Mbit/s of bandwidth to each acceleration region. You can specify the bandwidth for up to 100 acceleration regions."
+          }
         },
         {
           "name": "IpSetId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "要修改的加速地域ID。\n\n您最多可输入100个加速地域ID。",
+            "en": "The IDs of the acceleration regions that you want to modify.\n\nYou can specify the IDs of up to 100 acceleration regions."
+          }
         }
       ]
     },
@@ -28,9 +41,24 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改加速区域中的多个加速地域",
+    "en": "UpdateIpSets"
+  },
+  "descriptions": {
+    "zh": "- **UpdateIpSets**接口属于异步接口，即系统会先返回一个请求ID，但加速地域并未修改完成，系统后台的修改任务仍在进行。您可以调用[DescribeIpSet](~~153246~~)查询加速地域的状态：\n    - 当加速地域处于**updating**状态时，表示加速地域正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当加速地域处于**active**状态时，表示加速地域修改完成。\n- **UpdateIpSets**接口不支持在同一个全球加速实例内并发修改加速地域。",
+    "en": "*   **UpdateIpSets** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeIpSet](~~153246~~) operation to query the status of the task.\n\n    *   If an acceleration region is in the **updating** state, the acceleration region is being modified. In this case, you can perform only query operations.\n    *   If an acceleration region is in the **active** state, the acceleration region is modified.\n\n*   You cannot repeatedly call the **UpdateIpSets** operation for the same GA instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-ip-sets --biz-region-id cn-hangzhou --ip-sets IpSetId=ips-bp11c9mpphtb1xkds0000 Bandwidth=4 --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateIpSets --region cn-hangzhou --IpSets.1.Bandwidth 4 --IpSets.1.IpSetId 'ips-bp11c9mpphtb1xkds0000' --RegionId 'cn-hangzhou'"

@@ -1,0 +1,90 @@
+{
+  "name": "SubmitLiveEditingJob",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "Clips",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "剪辑片段列表，输出的成片由列表中的片段按顺序收尾拼接而成，JSON Array。\n\n每一个片段都包含开始时间和结束时间。如果没有直播流参数，则以外层的直播流配置为准。开始和结束时间戳皆为UTC时间。参数详情请见下方 Clip 数据结构。",
+        "en": "A JSON array that specifies the clips to edit. The job creates the output file by concatenating these clips in the specified order.\n\nEach clip includes a start and end time. If live stream parameters are not specified for a clip, the system uses the global `LiveStreamConfig` settings. The start and end timestamps must be in UTC. For more details, see the Clip data structure below."
+      }
+    },
+    {
+      "name": "LiveStreamConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "直播流配置， JSON Object。需包含如下配置项：\n\n- AppName：播流所属应用名称 \n\n- DomainName：域名\n\n- StreamName：直播流名",
+        "en": "The configuration of the source live stream, specified as a JSON object. It includes the following parameters:\n\n- `AppName`: The name of the application to which the stream belongs.\n\n- `DomainName`: The domain name of the stream.\n\n- `StreamName`: The name of the live stream."
+      }
+    },
+    {
+      "name": "MediaProduceConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "生成片段的合成配置，用JSON格式表示。其中，Mode为剪辑模式，取值：\n- **AccurateFast**（默认值）：快速精剪，相较于Accurate模式合成速度更快。输出文件与源流分辨率一致，不支持指定输出成片宽高。\n- **Accurate**：精确剪辑，可指定输出成片宽高。\n- **Rough**：粗略剪辑，最小精度为一个TS分片，成片包含用户指定起止时间内所有分片，可指定输出成片宽高。\n- **RoughFast**：快速粗剪，相较于Accurate模式合成速度更快，最小精度为一个TS分片，成片包含用户指定起止时间内所有分片。输出文件与源流分辨率一致，不支持指定输出成片宽高。",
+        "en": "The production configuration for the output file, specified as a JSON object. The `Mode` parameter specifies the editing mode. Valid values are:\n\n- **AccurateFast** (Default): Fast and precise editing. It offers faster processing compared to the `Accurate` mode. The output file has the same resolution as the source stream. You cannot specify a custom width and height for the output file.\n\n- **Accurate**: Precise editing. This mode lets you specify a custom width and height for the output file.\n\n- **Rough**: Rough editing with a precision of a single TS segment. The output file includes all segments between the specified start and end times. You can specify a custom width and height for the output file.\n\n- **RoughFast**: Fast rough-cut editing, which is faster than the `Accurate` mode. It has a precision of a single TS segment, and the output file includes all segments between the specified start and end times. The output file has the same resolution as the source stream. You cannot specify a custom width and height for the output file."
+      }
+    },
+    {
+      "name": "OutputMediaConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "输出成品的目标配置，JSON Object。可以设置输出成品的在OSS 上的URL，或者VOD Bucket 中的存储位置。\n- 输出到OSS时，输出目标的MediaURL必填。\n- 输出到VOD时，StorageLocation和FileName两个参数必填。",
+        "en": "The destination configuration for the output file, specified as a JSON object. You can specify either a URL on OSS or a storage location in a VOD bucket.\n\n- To output to OSS, the `MediaURL` parameter is required.\n\n- To output to VOD, the `StorageLocation` and `FileName` parameters are required."
+      }
+    },
+    {
+      "name": "OutputMediaTarget",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "输出成品的目标类型。取值：\n- oss-object  阿里云oss bucket下的oss object\n- vod-media  阿里云vod的媒资",
+        "en": "The destination type for the output file. Valid values:\n\n- `oss-object`: An object in an Alibaba Cloud OSS bucket.\n\n- `vod-media`: A media asset in Alibaba Cloud VOD."
+      }
+    },
+    {
+      "name": "ProjectId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "直播剪辑工程ID。若非空，读取project相关存储配置。 若为空，则以入参存储配置为准。",
+        "en": "The ID of the live editing project. If you specify this parameter, the system uses the storage settings from the project. If left empty, the system uses the storage settings provided in the request instead."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "自定义设置，JSON Object，长度限制为512字节。",
+        "en": "Custom user data, provided as a JSON object. The maximum length is 512 bytes."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交直播剪辑任务",
+    "en": "SubmitLiveEditingJob"
+  },
+  "descriptions": {
+    "zh": "- 该接口为[异步接口](~~3027141~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询直播剪辑作业](~~441150~~)主动查询任务状态。\n- 当前支持对录制到OSS和VOD的直播流进行直播剪辑。多直播流混剪时，仅支持直播流都录制到OSS或直播流都录制到VOD。",
+    "en": "- This is an [asynchronous API](~~3027141~~). When you submit a job, the system returns a JobId before the job is complete. The job is then queued for asynchronous processing. You will receive a [callback notification](~~441150~~) when the job completes. Alternatively, you can query the job status by calling the [GetLiveEditingJob](~~441150~~) operation.\n\n- You can edit live streams that are recorded to either OSS or VOD. When editing multiple live streams together, all streams must be recorded to the same service, either all to OSS or all to VOD."
+  }
+}

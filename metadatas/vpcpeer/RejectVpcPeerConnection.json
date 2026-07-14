@@ -1,5 +1,6 @@
 {
   "name": "RejectVpcPeerConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client to make sure that the value is unique among different requests. The ClientToken parameter can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会拒绝连接请求。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Sends a check request without rejecting the connection request. The system checks whether the required parameters are specified, the request format is valid, and the service limits are met. If the check fails, the corresponding error is returned. If the check passes, the `DryRunOperation` error code is returned.\n\n- **false** (default): Sends a normal request. After the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "接收端拒绝的VPC对等连接实例ID。",
+        "en": "The ID of the VPC peering connection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "拒绝VPC对等连接",
+    "en": "RejectVpcPeerConnection"
+  },
+  "descriptions": {
+    "zh": "- 对于跨账号的VPC对等连接实例，接收端可以拒绝连接请求。拒绝连接请求的VPC对等连接实例变为**已拒绝**状态。\n\n- **RejectVpcPeerConnection**不支持对同一个对等连接实例并发发起拒绝连接请求。",
+    "en": "- For a cross-account VPC peering connection, the accepter VPC can reject the connection request. After the request is rejected, the VPC peering connection enters the **Rejected** state.\n\n- The **RejectVpcPeerConnection** operation does not support concurrent requests for the same VPC peering connection."
+  },
   "example": {
     "unifiedCli": "aliyun vpcpeer reject-vpc-peer-connection --instance-id pcc-lnk0m24khwvtkm00000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun vpcpeer RejectVpcPeerConnection --region cn-hangzhou --InstanceId 'pcc-lnk0m24khwvtkm00000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

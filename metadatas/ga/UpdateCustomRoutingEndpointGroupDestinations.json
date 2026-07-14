@@ -1,5 +1,6 @@
 {
   "name": "UpdateCustomRoutingEndpointGroupDestinations",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must ensure that it is unique among all requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the value of **RequestId** as the value of **ClientToken**. The value of **RequestId** for each API request may be different."
+      }
     },
     {
       "name": "DestinationConfigurations",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "终端节点组的映射信息配置。\n\n您需要输入终端节点组后端服务端口范围和协议类型，输入信息与关联的监听端口范围将形成映射关系。\n\n单次调用本接口最多可输入20个映射端口范围和协议类型信息。",
+        "en": "The mapping configurations of endpoint group.\n\nYou must specify the backend service port range and protocol of the endpoint group. The specified information is used to map the port range of the associated listener.\n\nYou can specify at most 20 mapping configurations, which include port ranges and protocol types."
+      },
       "sub_parameters": [
         {
           "name": "DestinationId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "终端节点组的映射信息配置ID。",
+            "en": "The ID of the mapping configuration of the endpoint group."
+          }
         },
         {
           "name": "FromPort",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "终端节点组后端服务起始端口。\n\n取值范围：**1**~**65499**，且需满足**FromPort**≤**ToPort**，即终端节点组后端服务起始端口需小于等于终端节点组后端服务结束端口。\n\n单次调用本接口最多可输入20条后端服务起始端口信息。",
+            "en": "The start port of the backend service port range of the endpoint group.\n\nValid values: **1** to **65499**. The **FromPort** value must be smaller than or equal to the **ToPort** value.\n\nYou can specify up to 20 start ports in each request."
+          }
         },
         {
           "name": "Protocols",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "终端节点组后端服务协议类型。取值：\n\n- **TCP**：TCP协议。\n\n- **UDP**：UDP协议。\n\n- **TCP,UDP**：TCP和UDP协议。\n\n\n每个终端节点组映射端口范围和协议类型信息中，最多可以输入4个后端服务协议类型。",
+            "en": "The backend service protocol of the endpoint group. Valid values:\n\n*   **tcp**: TCP\n*   **udp**: UDP\n*   **tcp,udp**: TCP and UDP\n\nYou can specify up to four backend service protocols in each configuration."
+          }
         },
         {
           "name": "ToPort",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "终端节点组后端服务结束端口。\n\n取值范围：**1**~**65499**，且需满足**FromPort**≤**ToPort**，即终端节点组后端服务起始端口需小于等于终端节点组后端服务结束端口。\n\n单次调用本接口最多可输入20条后端服务结束端口信息。",
+            "en": "The end port of the backend service port range of the endpoint group.\n\nValid values: **1** to **65499**. The **FromPort** value must be smaller than or equal to the **ToPort** value.\n\nYou can specify up to 20 end ports in each request."
+          }
         }
       ]
     },
@@ -46,21 +71,44 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会修改终端节点组的映射信息。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接修改终端节点组的映射信息。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: performs a dry run. The system checks the required parameters, request syntax, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false**: performs a dry run and sends the request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改映射信息的终端节点组ID。",
+        "en": "The ID of the endpoint group."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改自定义路由类型监听所关联终端节点组的映射信息",
+    "en": "UpdateCustomRoutingEndpointGroupDestinations"
+  },
+  "descriptions": {
+    "zh": "- **UpdateCustomRoutingEndpointGroupDestinations**接口属于异步接口，即系统会先返回一个请求ID，但自定义路由类型监听所关联终端节点组的映射信息并未修改完成，系统后台的修改任务仍在进行。您可以通过调用[DescribeCustomRoutingEndpointGroup](~~449373~~)接口查询自定义路由类型监听所关联终端节点组的状态，来确认终端节点组的映射信息是否修改完成。\n    - 当终端节点组处于**updating**状态时，表示终端节点组的映射信息正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示终端节点组的映射信息修改完成。\n- **UpdateCustomRoutingEndpointGroupDestinations**接口不支持在同一个全球加速实例内并发修改自定义路由类型监听所关联终端节点组的映射信息。",
+    "en": "*   **UpdateCustomRoutingEndpointGroupDestinations** is an asynchronous operation. After you send a request, the system returns a request ID, but the operation is still being performed in the system background. You can call the [DescribeCustomRoutingEndpointGroup](~~449373~~) operation to query the status of an endpoint group associated with a custom routing listener to check whether the mapping configurations of the endpoint group are modified.\n\n    *   If the endpoint group is in the **updating** state, the mapping configurations of the endpoint group are being modified. In this case, you can perform only query operations.\n    *   If the endpoint group is in the **active** state, the mapping configurations of the endpoint group are modified.\n\n*   The **UpdateCustomRoutingEndpointGroupDestinations** operation cannot be repeatedly called for the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-custom-routing-endpoint-group-destinations --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --endpoint-group-id epg-bp1dmlohjjz4kqaun0000 --destination-configurations '[{\"Protocols\":[\"TCP\"],\"FromPort\":80,\"ToPort\":80,\"DestinationId\":\"dst-abc1230000\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateCustomRoutingEndpointGroupDestinations --region cn-hangzhou --EndpointGroupId 'epg-bp1dmlohjjz4kqaun0000' --DestinationConfigurations.1.ToPort 80 --DestinationConfigurations.1.DestinationId 'dst-abc1230000' --DryRun false --DestinationConfigurations.1.Protocols.1 TCP --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DestinationConfigurations.1.FromPort 80"

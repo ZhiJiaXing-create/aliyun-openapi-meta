@@ -1,5 +1,6 @@
 {
   "name": "CreateFlowAlias",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "别名描述",
+        "en": "The alias description."
+      }
     },
     {
       "name": "FlowName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流程名称",
+        "en": "The flow name."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "别名名称",
+        "en": "The alias name."
+      }
     },
     {
       "name": "RoutingConfigurations",
       "position": "Body",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "流量分发配置，支持配置一个或两个流程版本。当指定别名发起执行时，系统会根据权重选择对应的流程版本进行执行。",
+        "en": "The traffic distribution configuration for one or two flow versions. When you start an execution using the alias, the system uses the specified weights to select a flow version to execute."
+      },
       "sub_parameters": [
         {
           "name": "Version",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "流程版本",
+            "en": "The flow version."
+          }
         },
         {
           "name": "Weight",
           "position": "FormData",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "权重",
+            "en": "The weight."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个流程别名",
+    "en": "CreateFlowAlias"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n- 每个用户所能创建的流程个数受资源限制（详见[使用限制](~~122093~~)），如果您有特殊需求，可以提工单进行调整。\n- 流程在用户级别是按照名称来区分的，即单一账号下不可以存在同名流程。",
+    "en": "## API description\n\n- The number of flows that you can create is limited by resources. For more information, see [Limits](~~122093~~). If you have special requirements, you can submit a ticket to request an adjustment.\n\n- Each flow must have a unique name within your account."
+  },
   "example": {
     "unifiedCli": "aliyun fnf create-flow-alias --flow-name example-flow-name --name example-alias-name --description example_description --routing-configurations Version=1 Weight=30 --region cn-hangzhou",
     "legacyCli": "aliyun fnf CreateFlowAlias --region cn-hangzhou --Description example_description --RoutingConfigurations '[{\"Version\":\"1\",\"Weight\":30}]' --FlowName 'example-flow-name' --Name 'example-alias-name'"

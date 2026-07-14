@@ -1,5 +1,6 @@
 {
   "name": "PutKv",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "Base64",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当需要存储二进制值时指定此参数为true，同时Value参数需进行base64编码。",
+        "en": "Indicates whether the Value parameter uses Base64 encoding. Set this to true when storing a binary value. If this parameter is true, Value must be a valid Base64-encoded string."
+      }
     },
     {
       "name": "Expiration",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过期时间（秒级时间戳，不能小于当前时间），同时设置Expiration和ExpirationTtl时，以ExpirationTtl为准。",
+        "en": "The expiration time for the key-value pair, as a Unix timestamp in seconds. This value cannot be earlier than the current time. If you specify both Expiration and ExpirationTtl, ExpirationTtl takes precedence."
+      }
     },
     {
       "name": "ExpirationTtl",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过期时间（相对时间，单位：秒），同时设置Expiration和ExpirationTtl时，以ExpirationTtl为准。",
+        "en": "The time-to-live (TTL) for the key-value pair, in seconds. If you specify both Expiration and ExpirationTtl, ExpirationTtl takes precedence."
+      }
     },
     {
       "name": "Key",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要设置的键名称，最长不超过512个字符，不能包含空格、反斜杠（/）。",
+        "en": "The key can be up to 512 bytes long and cannot contain spaces or forward slashes (/)."
+      }
     },
     {
       "name": "Namespace",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "调用[CreateKvNamespace](~~2850317~~)时指定的名称。",
+        "en": "The name of the namespace. You specify this name when you call the [CreateKvNamespace](~~2850317~~) operation."
+      }
     },
     {
       "name": "Value",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "键的内容，最大2 MB（2\\*1000\\*1000）。超过2M请使用[PutKvWithHighCapacity](~~2850486~~)",
+        "en": "The value to associate with the key. The maximum size is 2 MB (2,000,000 bytes). For values that exceed this limit, use the [PutKvWithHighCapacity](~~2850486~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置KV存储空间的单个键值对",
+    "en": "PutKv"
+  },
   "example": {
     "unifiedCli": "aliyun esa put-kv --namespace test_namespace --key test_key --value test_value --expiration 1690081381 --expiration-ttl 3600 --base64 true --region cn-hangzhou",
     "legacyCli": "aliyun esa PutKv --region cn-hangzhou --ExpirationTtl 3600 --Base64 true --Value test_value --Expiration 1690081381 --Namespace test_namespace --Key test_key"

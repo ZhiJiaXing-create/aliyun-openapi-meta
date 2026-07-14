@@ -1,5 +1,6 @@
 {
   "name": "CreateInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动付费，取值：\n\n* **true**：自动付费，默认值。\n* **false**：手动付费。您需要在控制台的顶部菜单栏，单击**费用** > **续费管理**，然后单击左侧导航栏的**订单管理** > **我的订单**，找到目标订单进行支付。\n\n> **Instances**参数中，**ChargeType**取值为**PrePaid**时，本参数才可用。",
+        "en": "Specifies whether to enable automatic payment. Valid values:\n\\* **true**: Enables automatic payment. This is the default value.\n\\* **false**: Disables automatic payment. You must go to the console to complete the payment. In the top navigation bar, choose **Expenses** > **Renewal Management**. In the navigation pane on the left, click **Or*er Management** > **My Or*ers**, find the or*er, and then complete the payment.\n\\> This parameter is valid only when **ChargeType** is set to **PrePaid** in **Instances**."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启自动续费，取值：\n* **true**：开启。\n* **false**：不开启，默认值。\n\n> **Instances**参数中，**ChargeType**取值为**PrePaid**时，本参数才可用。",
+        "en": "Specifies whether to enable auto-renewal for the instance. Valid values:\n\\* **true**: Enables auto-renewal.\n\\* **false**: Disables auto-renewal. This is the default value.\n\\> This parameter is valid only when **ChargeType** is set to **PrePaid** in **Instances**."
+      }
     },
     {
       "name": "BusinessInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "业务扩展信息。",
+        "en": "Additional business information."
+      }
     },
     {
       "name": "CouponNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "优惠码，默认值为：`youhuiquan_promotion_option_id_for_blank`。",
+        "en": "The coupon code. The default value is `youhuiquan_promotion_option_id_for_blank`."
+      }
     },
     {
       "name": "EngineVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例兼容Redis的版本，取值：**4.0**、**5.0**。\n> 默认值为**5.0**。",
+        "en": "The Redis-compatible engine version for the instance. Valid values: **4.0** and **5.0**. The default value is **5.0**."
+      }
     },
     {
       "name": "Instances",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "新实例的配置信息，格式为JSON，详细说明请参见Instances参数补充说明。",
+        "en": "The configurations of the new instances, specified in JSON format. For more information, see the details of the Instances parameter."
+      }
     },
     {
       "name": "RebuildInstance",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否需要从回收站中重建恢复源实例，取值：\n* **true**：需要。\n* **false**：不需要，默认值。\n\n> **Instances**参数中设置了**SrcDBInstanceId**参数时，本参数才可用。",
+        "en": "Specifies whether to rebuild an instance from the recycle bin. Valid values:\n\\* **true**: Rebuilds the instance.\n\\* **false**: Does not rebuild the instance. This is the default value.\n\\> This parameter is valid only when **SrcDBInstanceId** is specified in **Instances**."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "Token",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性。由客户端生成该参数值，要保证在不同请求间唯一，大小写敏感、不超过64个ASCII字符。",
+        "en": "A client-generated token to ensure request idempotence. The value must be unique across requests, case-sensitive, and up to 64 ASCII characters long."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量创建实例",
+    "en": "Batch Create Instances"
+  },
+  "descriptions": {
+    "zh": "请确保在使用该接口前，已充分了解云数据库 Tair（兼容 Redis）产品的收费方式和[价格](~~54532~~)。\n> 本接口仅支持创建经典版实例。\n推荐您使用创建单个实例的API接口：\n> - [CreateInstance](~~473757~~)：创建Redis开源版实例、Tair内存型经典版实例。\n> - [CreateTairInstance](~~473770~~)：创建Tair云原生版实例（含内存型、持久内存、磁盘型）。",
+    "en": "Before calling this API, review the billing methods and [pricing](~~54532~~) of ApsaraDB for Tair (Redis-compatible).\n\\> This API supports only creating Classic Edition instances.\nTo create a single instance, use one of the following APIs:\n\\> - [CreateInstance](~~473757~~): Creates open source Redis instances or DRAM-based Classic Edition instances of Tair.\n\\> - [CreateTairInstance](~~473770~~): Creates Cloud-native Edition instances of Tair, including DRAM-based, persistent memory-optimized, and ESSD-based instances."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore create-instances --instances RegionId_:_cn-hangzhou_,_izNo_:_cn-hangzhou-b_,_quantity_:_1,_instanceType_:_Redis_,_instanceClass_:_redis.logic.sharding.1g.2db.0rodb.4proxy.default_,_EngineVersion_:_5.0_,_ChargeType_:_PrePaid_,_Period_:_1_,_networkType_:_VPC_,_vpcId_:_vpc-2zex6u1nu32k3ux35oxxx_,_vSwitchId_:_vsw-2zesk464e647104kw3xxx --token ETnLKlblzczshOTUbOCz0000 --auto-pay true --business-info 000000000 --coupon-no youhuiquan_promotion_option_id_for_blank --engine-version 5.0 --rebuild-instance false --auto-renew false --resource-group-id rg-resourcegroupid1 --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore CreateInstances --region cn-hangzhou --Instances 'RegionId_:_cn-hangzhou_,_izNo_:_cn-hangzhou-b_,_quantity_:_1,_instanceType_:_Redis_,_instanceClass_:_redis.logic.sharding.1g.2db.0rodb.4proxy.default_,_EngineVersion_:_5.0_,_ChargeType_:_PrePaid_,_Period_:_1_,_networkType_:_VPC_,_vpcId_:_vpc-2zex6u1nu32k3ux35oxxx_,_vSwitchId_:_vsw-2zesk464e647104kw3xxx' --CouponNo youhuiquan_promotion_option_id_for_blank --BusinessInfo 000000000 --EngineVersion '5.0' --ResourceGroupId 'rg-resourcegroupid1' --RebuildInstance false --AutoRenew false --Token ETnLKlblzczshOTUbOCz0000 --AutoPay true"

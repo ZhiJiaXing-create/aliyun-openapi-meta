@@ -1,5 +1,6 @@
 {
   "name": "GetPipelineRun",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/pipelineruns/[PipelineRunId]",
@@ -8,27 +9,50 @@
       "name": "ManifestType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "具体返回哪种类型的Manifest信息，取值如下。\n- Raw（默认）：用户提交的原始Manifest。\n- Frozen：针对每个Pipeline生成唯一Uuid，将其版本固化下来。即使遇到子Pipeline定义三元组不变进行升级，依然会使用一开始的版本(Uuid)，不受影响；即可基于该Manifest进行重跑。\n- Rendered：将相关信息进行注入和渲染，包括：补全运行环境信息并优化等。\n- Expanded: 针对每个Pipeline补充完整定义。\n- Runtime：待运行的工作流。",
+        "en": "The type of the manifest to be returned. Valid values:\n\n*   Raw (default): the original manifest submitted by the user.\n*   Frozen: generates a UUID for each pipeline and freeze the pipeline version. Even if you upgrade the pipeline when the three tuples defined on a node remain unchanged, the original UUID is still used. In this case, you can re-run the pipeline based on this manifest.\n*   Rendered: injects related information to the pipeline and renders it, including completing runtime environment information and optimizing pipeline configurations.\n*   Expanded: provides a complete definition for each pipeline.\n*   Runtime: the pipeline to be run."
+      }
     },
     {
       "name": "PipelineRunId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作流任务ID。如何获取工作流任务ID，请参见[ListPipelineRuns](~~438042~~)。",
+        "en": "The ID of the pipeline job. You can call [ListPipelineRuns](~~438042~~) to obtain the ID of the pipeline job."
+      }
     },
     {
       "name": "TokenId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "被分享的工作流任务的ID。",
+        "en": "The ID of the shared pipeline job."
+      }
     },
     {
       "name": "Verbose",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否返回详细信息，取值如下。\n- 关闭开关：不显示详细信息。\n- 打开开关：显示详细信息，目前详细信息包含Manifest字段。",
+        "en": "Specifies whether to return detailed information. Valid values:\n\n*   false: does not return detailed information.\n*   true: returns detailed information that contains Manifest."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取工作流任务信息",
+    "en": "GetPipelineRun"
+  },
   "example": {
     "unifiedCli": "aliyun paiflow get-pipeline-run --pipeline-run-id run-rbvg0000000000ks92 --verbose false --manifest-type Raw --token-id 'https://pai.console.aliyun.com/0regionId=cn-hangzhou_workspaceId=102000000_mode=noSidebar#/paiflow/pipeline-runs/flow-6y70000000Token=eyJ0e000000' --region cn-hangzhou",
     "legacyCli": "aliyun paiflow GET /api/v1/pipelineruns/run-rbvg0000000000ks92 --region cn-hangzhou --ManifestType Raw --Verbose false --TokenId 'https://pai.console.aliyun.com/0regionId=cn-hangzhou_workspaceId=102000000_mode=noSidebar#/paiflow/pipeline-runs/flow-6y70000000Token=eyJ0e000000' --header \"Content-Type=application/json\""

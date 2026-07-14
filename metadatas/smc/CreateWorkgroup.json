@@ -1,5 +1,6 @@
 {
   "name": "CreateWorkgroup",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。您可以从客户端生成一个不超过64个ASCII字符的参数值，并将值赋予ClientToken，保证重试请求的幂等性。更多详情，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "A token to ensure the idempotence of the request. Generate a value from your client that contains up to 64 ASCII characters. This ensures that retried requests are idempotent. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工作组描述。长度为 2～256 个英文或中文字符，不能以`http://`和`https://`开头。",
+        "en": "The description of the workgroup. It must be 2 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工作组名称。名称需满足以下要求：\n\n- 任务名称必须唯一。\n- 长度为2~64个英文或中文字符，必须以大小写字母或中文开头，不能以`http://`和`https://`开头，可以包含数字、半角冒号（:）、点号（.）、下划线（_）或者短划线（-）。",
+        "en": "The name of the workgroup. The name must meet the following requirements:\n\n- The workgroup name must be unique.\n\n- The name must be 2 to 64 characters in length. It must start with a letter or a Chinese character. It cannot start with `http://` or `https://`. It can contain digits, colons (:), periods (.), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签数组。数组长度：1~20。如果数组中有多个标签对象，标签键Key不允许重复。",
+        "en": "An array of tags. The array can contain 1 to 20 tags. If the array contains multiple tags, the value of \\`Key\\` for each tag must be unique."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "工作组的标签键。最多支持128个字符，一旦传入该值，则不允许为空字符串，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。",
+            "en": "The tag key. It can be up to 128 characters in length and cannot be an empty string. The key cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "工作组的标签值。最多支持128个字符，一旦传入该值，可以为空字符串，不能包含`http://`或`https://`。",
+            "en": "The tag value. It can be up to 128 characters in length and can be an empty string. The value cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建工作组",
+    "en": "CreateWorkgroup"
+  },
+  "descriptions": {
+    "zh": "- 每个阿里云账号最多可创建50个工作组。\n- 一个工作组最多可以关联50个迁移源。\n- 一个迁移源只能关联一个工作组。",
+    "en": "- Each Alibaba Cloud account can have up to 50 workgroups.\n\n- A single workgroup can be associated with up to 50 migration sources.\n\n- A migration source can be associated with only one workgroup."
+  },
   "example": {
     "unifiedCli": "aliyun smc create-workgroup --client-token 123e4567-e89b-12d3-a456-426655440000 --name testWorkgroupName --description test --tag Value=TestValue Key=TestKey --region cn-hangzhou",
     "legacyCli": "aliyun smc CreateWorkgroup --region cn-hangzhou --Tag.1.Key TestKey --Description test --Tag.1.Value TestValue --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Name testWorkgroupName"

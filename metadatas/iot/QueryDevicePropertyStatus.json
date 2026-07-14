@@ -1,5 +1,6 @@
 {
   "name": "QueryDevicePropertyStatus",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的设备名称。\n\n><notice>\n如果传入该参数，需同时传入ProductKey。\n></notice>",
+        "en": "The DeviceName of the device.\n\n>If you specify this parameter, you must also specify the **ProductKey** parameter."
+      }
     },
     {
       "name": "FunctionBlockId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "物模型自定义模块标识符，在产品中具有唯一性。\n\n不传入此参数时，查询默认模块的数据。",
+        "en": "The identifier of the custom TSL module. Each identifier is unique in a product.\n\nIf you do not specify this parameter, the system queries the data of the default module."
+      }
     },
     {
       "name": "IotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询属性所属的设备ID或IoT孪生节点ID：\n\n- 调用[QueryDeviceInfo](~~QueryDeviceInfo~~)接口，可查询指定设备的**IotId**。\n- 在物联网平台控制台的**孪生实体图**页面，单击孪生节点，可查看**节点ID**。\n\n\n> **IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果传入该参数，则无需传入**ProductKey**和**DeviceName**。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。",
+        "en": "The ID of the device or digital twin node whose property data you want to query.\n\n*   You can call the [QueryDeviceInfo](~~257184~~) operation to query the **ID** of the device.\n*   Log on to the IoT Platform console. On the **Twin Details** page, click the digital twin node to view its **ID**.\n\n>If you specify this parameter, you do not need to specify the **ProductKey** and **DeviceName** parameters. The **IotId** parameter specifies a globally unique identifier (GUID) for the device. The value of the IotId parameter corresponds to a combination of the values of the **ProductKey** and **DeviceName** parameters. If you specify the **IotId**, **ProductKey**, and **DeviceName** parameters, the value of the **IotId** parameter takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n\n> - 若有ID值，必须传入该**ID**值，否则调用会失败。\n>  - 若无**实例概览**页面或**ID**值，则无需传入。\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n>*   If no **Overview** page or instance ID appears in the console, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的设备所属的产品ProductKey。\n\n><notice>\n如果传入该参数，需同时传入DeviceName。\n></notice>",
+        "en": "The ProductKey of the product to which the device belongs.\n\n>If you specify this parameter, you must also specify the **DeviceName** parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定设备的属性快照",
+    "en": "QueryDevicePropertyStatus"
+  },
+  "descriptions": {
+    "zh": "若查询IoT孪生节点的属性数据，必须传入参数**IotId**，且取值为孪生节点ID。\n\n## QPS限制\n\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为200。\n\n > RAM用户共享阿里云账号配额。",
+    "en": "To query the property data of a digital twin node, you must set the **IotId** parameter to the ID of the digital twin node.\n\n## QPS limits\n\nEach Alibaba Cloud account can run up to 200 queries per second (QPS). \n\n>  The RAM users of an Alibaba Cloud account share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot query-device-property-status --iot-instance-id iot_instc_pu0000_c0-v6400000000 --product-key a1BwAGV0000 --device-name light --iot-id Q7uOhVRdZRRlDnTLv000000100 --function-block-id BatteryModule --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot QueryDevicePropertyStatus --region cn-hangzhou --IotId Q7uOhVRdZRRlDnTLv000000100 --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --FunctionBlockId BatteryModule --ProductKey a1BwAGV0000 --DeviceName light"

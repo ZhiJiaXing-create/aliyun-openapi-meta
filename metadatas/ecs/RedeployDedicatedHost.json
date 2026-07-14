@@ -1,5 +1,6 @@
 {
   "name": "RedeployDedicatedHost",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DedicatedHostId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专有宿主机ID。",
+        "en": "The ID of the dedicated host."
+      }
     },
     {
       "name": "MigrationType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否先停止实例，再迁移到目标专有宿主机。取值范围：\n\n- Reboot：先停止实例再迁移。\n\n- LiveMigrationFirst：不停止实例，直接迁移。此时，您必须指定参数DedicatedHostId。该取值不支持在迁移ECS实例的同时变更实例规格。如果在线迁移失败会默认走关机迁移。\n\n默认值：Reboot。",
+        "en": "Specifies whether to stop the instance before it is migrated to the destination dedicated host. Valid values:\n\n- reboot: stops the instance before migration.\n\n- LiveMigrationFirst: migrates the instance without stopping it. If you set MigrationType to LiveMigrationFirst, you must specify DedicatedHostId. In this case, you cannot change the instance type of the ECS instance when the instance is migrated. If the migration in LiveMigrationFirst mode fails, the system switches to the Reboot mode.\n\nDefault value: reboot."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专有宿主机所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the dedicated host. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "执行专有宿主机的故障迁移",
+    "en": "RedeployDedicatedHost"
+  },
+  "descriptions": {
+    "zh": "DDH状态为报警状态（`UnderAssessment`），即故障潜伏期时，建议您调用该接口执行DDH的故障迁移，避免DDH产生永久性故障。您可以调用API [DescribeDedicatedHosts](~~134242~~)查询专有宿主机的状态信息。",
+    "en": "If a dedicated host is in the `UnderAssessment` state, we recommend that you call this operation to migrate ECS instances away from the dedicated host to prevent permanent failures. You can call the [DescribeDedicatedHosts](~~134242~~) operation to query the status of a dedicated host."
+  },
   "example": {
     "unifiedCli": "aliyun ecs redeploy-dedicated-host --biz-region-id cn-hangzhou --dedicated-host-id dh-bp165p6xk2tlw61e0000 --migration-type Reboot --region cn-hangzhou",
     "legacyCli": "aliyun ecs RedeployDedicatedHost --region cn-hangzhou --DedicatedHostId 'dh-bp165p6xk2tlw61e0000' --MigrationType Reboot --RegionId 'cn-hangzhou'"

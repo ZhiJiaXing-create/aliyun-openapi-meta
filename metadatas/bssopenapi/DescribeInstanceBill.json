@@ -1,5 +1,6 @@
 {
   "name": "DescribeInstanceBill",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "资源归属账号ID，资源归属账号是实际使用资源的账号。",
-        "en": "The ID of the member. If you specify this parameter, the bills of the member are queried. If you do not specify this parameter, the bills of the current account are queried by default."
+        "en": "The ID of the resource ownership account. This is the account that actually uses the resources."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "账期YYYY－MM。仅支持最近18个月账期。",
-        "en": "The billing cycle. Specify the parameter in the YYYY-MM format.\nOnly the latest 18 month billing cycle is supported."
+        "en": "The billing cycle in YYYY-MM format. Only billing cycles within the past 18 months are supported."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "账单日期，仅当Granularity为DAILY时必填，格式为YYYY-MM-DD。\n\n> BillingDate参数值需和BillingCycle参数月份保持一致，例如BillingCycle设置为2020-03，BillingDate需设置为2020-03-DD。若月份设置不一致，查询的结果按BillingCycle设置的时间返回。",
-        "en": "The billing date. This parameter is required only when the Granularity parameter is set to DAILY. Format: YYYY-MM-DD."
+        "en": "The bill date. This parameter is required only when Granularity is set to DAILY. The format is YYYY-MM-DD.\n\n> The month of BillingDate must match the month of BillingCycle. For example, if BillingCycle is 2020-03, BillingDate must be in the format 2020-03-DD. If the months do not match, the query returns results based on the BillingCycle setting."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "查询账单的颗粒度。取值如下：\n\n- MONTHLY：月。与费用与成本-费用账单-账单明细-账期账单一致。\n- DAILY：日。与费用与成本-费用账单-账单明细-按天账单一致。\n\n> 选择DAILY需指定BillingDate。",
-        "en": "The granularity at which bills are queried. Valid values:\n\n*   MONTHLY: queries bills on a monthly basis. The data that you query is the same as the data searched by instances on the Billing Details tab of the Bill Details page in the User Center console.\n*   DAILY: queries bills on a daily basis. The data that you query is the same as the data searched by days on the Billing Details tab of the Bill Details page in the User Center console.\n\nThe BillingDate parameter is required if you set the Granularity parameter to DAILY."
+        "en": "The granularity of the bills to query. Valid values:\n\n- MONTHLY: Monthly. This corresponds to the bills on the Bills by Billing Cycle tab of the Bill Details page.\n\n- DAILY: Daily. This corresponds to the bills on the Bills by Day tab of the Bill Details page.\n\n> Specify BillingDate if you select DAILY."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "实例ID。",
-        "en": "The ID of the instance."
+        "en": "The instance ID."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "是否按照计费项维度拉取数据。\n\n- false（默认值）：与费用与成本-费用账单-账单明细-实例账单一致。\n- true：与费用与成本-费用账单-账单明细-计费项账单一致。",
-        "en": "Specifies whether to query data by billable items. Valid values:\n\n*   false: The data that you query is the same as the data searched by instances on the Billing Details tab of the Bill Details page in the User Center console.\n*   true: The data that you query is the same as the data searched by billable items on the Billing Details tab of the Bill Details page in the User Center console.\n\nDefault value: false."
+        "en": "Specifies whether to pull data by billing item dimension.\n\n- false (default): The data is consistent with the Instance Bill page under Expenses and Costs > Bills > Bill Details.\n\n- true: The data is consistent with the Billing Item Bill page under Expenses and Costs > Bills > Bill Details."
       }
     },
     {
@@ -71,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "根据原价（PretaxGrossAmount）和应付（PretaxAmount）是否都为0做过滤。取值：\n- false。\n- true。",
-        "en": "Specifies whether to filter bills if both the pretax gross amount and pretax amount are 0. Valid values:\n\n*   false: does not filter bills.\n*   true: filters bills."
+        "en": "Specifies whether to exclude bills where both PretaxGrossAmount and PretaxAmount are 0.\n\n- false\n\n- true"
       }
     },
     {
@@ -81,7 +82,7 @@
       "required": false,
       "description": {
         "zh": "本次读取的最大数据记录数量。默认值：20，最大值：300。",
-        "en": "The maximum number of entries to return. Default value: 20. Maximum value: 300."
+        "en": "The maximum number of data records to return. Default value: 20. Maximum value: 300."
       }
     },
     {
@@ -91,7 +92,7 @@
       "required": false,
       "description": {
         "zh": "用来表示当前调用开始读取的位置，参数值必须为空或者使用返回结果中的NextToken设值，否则会报错。空代表从头开始读取。",
-        "en": "The token that is used to indicate the position where the results for the current call start. The parameter must be left empty or set to the value of the NextToken parameter that is returned from the last call. Otherwise, an error is returned. If the parameter is left empty, data is queried from the first item."
+        "en": "The token that specifies the starting point for reading data. Leave this parameter empty to read the first page of results. To read the next page, set this parameter to the NextToken value that was returned in the previous response. Any other value will cause an error."
       }
     },
     {
@@ -101,7 +102,7 @@
       "required": false,
       "description": {
         "zh": "产品Code，与费用中心账单产品Code一致。",
-        "en": "The code of the service. The code is the same as that in Cost Center."
+        "en": "The product code. This is the same as the product code on the bill in the User Center."
       }
     },
     {
@@ -111,7 +112,7 @@
       "required": false,
       "description": {
         "zh": "产品代码。",
-        "en": "The code of the service."
+        "en": "The product code."
       }
     },
     {
@@ -121,7 +122,7 @@
       "required": false,
       "description": {
         "zh": "产品类型。",
-        "en": "The type of the service."
+        "en": "The product type."
       }
     },
     {
@@ -131,10 +132,21 @@
       "required": false,
       "description": {
         "zh": "订阅类型。取值：\n- Subscription：预付费。\n- PayAsYouGo：后付费。",
-        "en": "The billing method. Valid values:\n\n*   Subscription: the subscription billing method.\n*   PayAsYouGo: the pay-as-you-go billing method."
+        "en": "The subscription type. Valid values:\n\n- Subscription: subscription\n\n- PayAsYouGo: pay-as-you-go"
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例账单服务",
+    "en": "DescribeInstanceBill"
+  },
+  "descriptions": {
+    "zh": "- 当月数据查询结果仅供参考，不作为对账依据；当月最终账单在次月3日12点后支持查看/导出（月中会发生包括但不限于以下少数场景：延迟出账，退款，调账，欠费核销等）。\n- 当月账单数据中不包含未结算（未出账，累账中）的后付费数据。\n- 支持近18个月数据。 \n-  账单数据相对于实际费用消耗延迟24小时更新，其中实例ID相关的信息（ 实例配置，实例规格，实例昵称，资源组，公网IP，私网IP，可用区）延迟48小时更新。  \n-  账单数据不支持提供分拆型云产品（例如：CDN、OSS、共享带宽等）各个分拆项（例如：域名、Bucket、EIP等）的具体费用（如需统计含分拆项数据，请前往分账账单）。\n-  对于云通信产品，仅支持查询2020年6月及以后的明细数据，万网产品（包括域名、商标等）仅支持查询2020年11月及以后的明细数据。\n- 单用户限流10笔/秒，如遇超时，请重试。",
+    "en": "- Data for the current month is for reference only and may be adjusted during the month due to delayed billing, refunds, adjustments, or write-offs for overdue payments. The final bill is available after 12:00 on the third day of the next month.\n\n- The bill data for the current month does not include pay-as-you-go resources that are not yet settled.\n\n- You can query data from the past 18 months.\n\n- Bill data is updated with a 24-hour delay compared to actual usage. Information related to instance IDs is updated with a 48-hour delay. This includes instance configurations, instance types, instance nicknames, resource groups, public IP addresses, private IP addresses, and zones.\n\n- Bill data does not provide costs for individual attached resources of services such as CDN, OSS, and Internet Shared Bandwidth. For example, costs are not provided for individual domain names, buckets, or EIPs. To view the costs of attached resources, go to the Split Bill page.\n\n- For Alibaba Cloud Communications products, you can query bill details only starting in June 2020. For HiChina products, including Domain Names and trademarks, you can query details for bills from November 2020 onward.\n\n- Each account can make up to 10 queries per second. If a timeout error occurs, try again."
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi describe-instance-bill --billing-cycle 2020-03 --product-code rds --product-type rds --subscription-type PayAsYouGo --is-billing-item false --next-token CAESEgoQCg4KCm --max-results 20 --is-hide-zero-charge false --billing-date 2020-03-02 --granularity MONTHLY --bill-owner-id 122 --instance-id abc --pip-code rds --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi DescribeInstanceBill --region cn-hangzhou --BillingCycle '2020-03' --NextToken CAESEgoQCg4KCm --ProductCode rds --IsHideZeroCharge false --InstanceID abc --MaxResults 20 --ProductType rds --BillOwnerId 122 --IsBillingItem false --BillingDate '2020-03-02' --Granularity MONTHLY --PipCode rds --SubscriptionType PayAsYouGo"

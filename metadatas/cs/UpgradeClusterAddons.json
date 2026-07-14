@@ -1,5 +1,6 @@
 {
   "name": "UpgradeClusterAddons",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/clusters/[ClusterId]/components/upgrade",
@@ -8,47 +9,86 @@
       "name": "ClusterId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "请求参数。",
+        "en": "The request parameters."
+      },
       "sub_parameters": [
         {
           "name": "component_name",
           "position": "Body",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "组件名称。",
+            "en": "The component name."
+          }
         },
         {
           "name": "config",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "组件自定义参数，使用JSON字符串编码。",
+            "en": "The custom parameters of the component, encoded as a JSON string."
+          }
         },
         {
           "name": "next_version",
           "position": "Body",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "待升级的目标版本。您可以调用`DescribeAddon`接口查看组件可升级的版本。",
+            "en": "The target version to which you want to upgrade. You can call the `DescribeAddon` operation to query the versions to which the component can be upgraded."
+          }
         },
         {
           "name": "policy",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "组件升级策略。可选值：\n- overwrite：覆盖升级。\n- canary：金丝雀升级。",
+            "en": "The component upgrade policy. Valid values:\n- overwrite: overwrites the existing version.\n- canary: performs a canary upgrade."
+          }
         },
         {
           "name": "version",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "当前组件版本。",
+            "en": "The current component version."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "升级集群实例组件",
+    "en": "Upgrade cluster component instances"
+  },
+  "descriptions": {
+    "zh": "- 升级集群组件实例版本可能会影响业务，请评估影响后在业务低峰期操作并提前做好相关的数据备份。\n- 升级组件前，请参考[组件发布记录](~~176087~~)了解指定组件的变更内容和变更影响。\n- 请依次逐个组件升级，确认一个组件升级成功后再升级下一个组件。",
+    "en": "- Upgrading cluster component instance versions may affect your services. Assess the impact before performing the upgrade during off-peak hours, and back up relevant data in advance.\n- Before upgrading a component, refer to [Component release notes](~~176087~~) to learn about the changes and their impact for the specified component.\n- Upgrade components one at a time. Confirm that one component has been upgraded successfully before upgrading the next one."
+  },
   "example": {
     "unifiedCli": "aliyun cs upgrade-cluster-addons --cluster-id cf4299b79b3e34226abfdc80a4bda0000 --biz-body component_name=coredns version=v1.11.3.2-f57ea7ed6-aliyun config=CpuRequest_:_800m next_version=v1.11.3.5-5321daf49-aliyun policy=canary --region cn-hangzhou",
     "legacyCli": "aliyun cs POST /clusters/cf4299b79b3e34226abfdc80a4bda0000/components/upgrade --region cn-hangzhou --header \"Content-Type=application/json\" --body [{\"component_name\":\"coredns\",\"version\":\"v1.11.3.2-f57ea7ed6-aliyun\",\"config\":\"CpuRequest_:_800m\",\"next_version\":\"v1.11.3.5-5321daf49-aliyun\",\"policy\":\"canary\"}]"

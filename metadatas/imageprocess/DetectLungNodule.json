@@ -1,0 +1,82 @@
+{
+  "name": "DetectLungNodule",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "DataFormat",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "图像格式：DICOM。",
+        "en": "The image format: DICOM."
+      }
+    },
+    {
+      "name": "OrgId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构代码。",
+        "en": "The code of the data source organization."
+      }
+    },
+    {
+      "name": "OrgName",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构名称。",
+        "en": "The name of the data source organization."
+      }
+    },
+    {
+      "name": "Threshold",
+      "position": "Body",
+      "type": "Float",
+      "required": false,
+      "description": {
+        "zh": "结点阈值。默认取值0.60，取值范围`(0,1]`，取值越低，输出结节越多，仅取小数点后两位。",
+        "en": "The nodule threshold. Default value: 0.60. Value range: `(0,1]`. A lower value returns more nodules. Only two decimal places are retained."
+      }
+    },
+    {
+      "name": "URLList",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": true,
+      "description": {
+        "zh": "1",
+        "en": "1."
+      },
+      "sub_parameters": [
+        {
+          "name": "URL",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "DICOM影像的图像URL地址。长度小于600。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n\n> URLList.N.URL中的N为该图像URL在当前List中的顺序（从1开始）。当直接使用API请求时，输入URLList的填充会以URLList.1.URL=url1，URLList.2.URL=url2，......的方式指定参数和参数值，参数对以&连接，其中url1、url2、......等具体值请根据实际情况进行替换；当使用SDK填充URLList时，可直接使用SDK提供的相应的方法。",
+            "en": "The URL of the DICOM image. The URL must be less than 600 characters in length. We recommend that you use an OSS URL in the China (Shanghai) region. If the file is stored locally or in an OSS bucket outside the China (Shanghai) region, see [File URL processing](~~155645~~).\n\n> N in URLList.N.URL indicates the sequence number of the image URL in the current list (starting from 1). When you directly use the API, specify the URLList parameters in the format of URLList.1.URL=url1&URLList.2.URL=url2&..., where url1 and url2 are actual URLs. When you use an SDK, use the corresponding methods provided by the SDK to populate the URLList."
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "胸部CT肺结节检测",
+    "en": "Chest CT lung nodule detection"
+  },
+  "descriptions": {
+    "zh": "## 服务说明\n由于产品业务调整，胸部CT肺结节检测服务将迁移至达摩院[达医智影官网](https://damomed.com)，胸部CT肺结节检测服务于2025年11月26日起停止新用户开通调用，历史开通过该服务的老用户可继续调用，2026年11月26日后该服务将下架，不再支持新老用户调用视觉智能开放平台的服务。如果对服务迁移有疑问，您可前往达摩院[达医智影官网](https://damomed.com)联系相关人员。\n\n## 功能描述\n胸部CT肺结节检测能力可以对输入的胸部常规CT形成的DICOM影像（如5mm的单个序列，API仅接受单序列），进行肺结节的辅助诊断。针对每一个结节，主要通过以下方式进行描述：\n\n- 结节的坐标（coordX，coordY，coordZ）、直径（diameter_mm）。\n- 结节在肺叶的位置，例如左肺或右肺，以及肺叶分段（左肺上下叶、右肺上中下叶），通过lung和lobe两个参数共同确定。\n- 结节分类及概率。\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n\n## 输入限制\n\n- 影像格式：DICOM。\n- 影像分辨率：小于等于512×512像素。\n- 单张DICOM影像大小不超过1 MB。\n- 输入最少20张，最多600张。\n- URL中不能包含中文字符。\n\n## 计费说明\n关于胸部CT肺结节检测的计费方式及报价，请参见[计费介绍](~~202483~~)。\n\n> 下方调试接口为付费接口，如需免费体验调试请前往[体验中心](https://vision.aliyun.com/experience/detail?&tagName=imageprocess&children=DetectLungNodule)。\n\n## 调用步骤\n该能力为异步能力，需分两步进行调用。\n第一步调用DetectLungNodule接口提交任务，请求成功后，得到一个任务ID。\n第二步调用[GetAsyncJobResult](~~607824~~)接口查询结果，根据任务ID查询任务执行状态和结果。如果任务还在处理中，可稍等一段时间后再进行查询。当同一个任务还未处理完时，建议不要重复提交任务。",
+    "en": "## Operation description\nDue to product business adjustments, the chest CT lung nodule detection service will be migrated to the Alibaba DAMO Academy [DaMo Medical Imaging website](https://damomed.com). Starting from November 26, 2025, new users will no longer be able to activate and call the chest CT lung nodule detection service. Existing users who have previously activated the service can continue to use it. After November 26, 2026, the service will be delisted and will no longer be available to any users on the Visual Intelligence Open Platform. If you have questions about the service migration, visit the Alibaba DAMO Academy [DaMo Medical Imaging website](https://damomed.com) to contact the relevant personnel.\n\n## Feature description\nThe chest CT lung nodule detection feature performs auxiliary diagnosis of lung nodules on input chest routine CT DICOM images (such as a single sequence at 5 mm. The API accepts only a single sequence). Each nodule is described in the following ways:\n\n- Nodule coordinates (coordX, coordY, coordZ) and diameter (diameter_mm).\n- Nodule location in the lung lobe, such as left lung or right lung, and lung lobe segment (left upper and lower lobes, right upper, middle, and lower lobes), determined by the lung and lobe parameters together.\n- Nodule classification and probability.\n\n> - You can access [online consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for human assistance.\n- To learn about API integration, usage, or consultation for the Alibaba Cloud Visual Intelligence Open Platform, join the DingTalk group (23109592) to contact us.\n\n## Input limits\n\n- Image format: DICOM.\n- Image resolution: up to 512 × 512 pixels.\n- Maximum size of a single DICOM image: 1 MB.\n- Minimum number of input images: 20. Maximum number of input images: 600.\n- URLs cannot contain Chinese characters.\n\n## Billing description\nFor information about the billable methods and pricing of chest CT lung nodule detection, see [Billing overview](~~202483~~).\n\n> The debugging API below is a paid API. To try it for free, go to [Experience Center](https://vision.aliyun.com/experience/detail?&tagName=imageprocess&children=DetectLungNodule).\n\n## Procedure\nThis is an asynchronous operation that requires two steps.\nStep 1: Call the DetectLungNodule operation to submit a task. If the request is successful, a task ID is returned.\nStep 2: Call the [GetAsyncJobResult](~~607824~~) operation to query the result based on the task ID. If the task is still being processed, wait and try again later. Do not submit duplicate tasks while the same task is still being processed."
+  }
+}

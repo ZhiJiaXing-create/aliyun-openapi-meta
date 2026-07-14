@@ -1,5 +1,6 @@
 {
   "name": "UpdateRuleAction",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ActionId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的规则动作ID。\n\n调用[CreateRuleAction](~~69586~~)创建规则动作成功后，返回的规则动作ID，您也可以调用[ListRuleActions](~~69517~~)，从返回结果中查看对应的规则动作ID。",
+        "en": "The ID of the rule action to be modified.\n\nAfter you call the [CreateRuleAction](~~69586~~) operation to create a rule action, the rule action ID is returned. You can call the [ListRuleActions](~~69517~~) operation to view the rule action ID."
+      }
     },
     {
       "name": "Configuration",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "该规则动作的配置信息。不同规则动作类型所需配置内容不同。具体要求，请参见[CreateRuleAction](~~69586~~)的请求参数补充说明中的各规则动作类型的Configuration描述。",
+        "en": "The configurations of the rule action. The configurations for different rule action types are different. For more information about the configurations for different rule action types, see [CreateRuleAction](~~69586~~)."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则动作类型，取值：\n\n<props=\"china\">- **DATAHUB**：流转规则处理后的Topic数据至阿里云DataHub，进行流式数据处理。</props>\n<props=\"china\">- **ONS**：流转规则处理后的Topic数据至阿里云消息队列RocketMQ，进行消息分发。</props>\n- **MNS**：流转规则处理后的Topic数据至阿里云消息服务中，进行消息传输。\n- **FC**：流转规则处理后的Topic数据至阿里云函数计算服务，进行事件计算。\n- **REPUBLISH**：流转规则处理后的Topic数据至另一个物联网平台 Topic。\n- **AMQP**：数据流转到AMQP消费组。\n- **OTS**：流转规则处理后的Topic数据至阿里云表格存储，进行NoSQL数据存储。\n\n> - 数据格式为二进制的规则（即规则的**DataType**参数是**BINARY**）不支持转发数据至OTS（表格存储）。\n- 服务地域不同，规则引擎所支持的数据转发目标云产品不同。具体请参见规则引擎相关[地域和可用区](~~85669~~)。",
+        "en": "The type of the rule action. Valid values:\n\n*   **MNS**: forwards topic data that is processed by the rules engine to MNS.\n*   **FC**: forwards topic data that is processed by the rules engine to Function Compute for event computing.\n*   **REPUBLISH**: forwards topic data that is processed by the rules engine to another IoT Platform topic.\n*   **AMQP**: forwards data to an AMQP consumer group.\n*   **OTS**: forwards topic data that is processed by the rules engine to Tablestore for NoSQL data storage.\n\n> *   If you set the **DataType** parameter to **BINARY**, rules are created in the binary format. These rules cannot be used to forward data to Tablestore.\n>*   Destination Alibaba Cloud services that are supported by the rules engine vary based on regions. For more information about the regions and destination cloud services that are supported by the rules engine, see [Regions and zones](~~85669~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改指定的规则动作",
+    "en": "UpdateRuleAction"
+  },
+  "descriptions": {
+    "zh": "## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n\n   > RAM用户共享阿里云账号配额。",
+    "en": "## Limits\n\nEach Alibaba Cloud account can run a maximum of 50 queries per second (QPS).\n\n>  RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot update-rule-action --iot-instance-id iot-cn-0pp1n8t0000 --action-id 1000003 --type REPUBLISH --configuration topic_:_/a1iYSOl0000/device5/user/get_,_topicType_:1 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot UpdateRuleAction --region cn-hangzhou --ActionId 1000003 --Type REPUBLISH --IotInstanceId 'iot-cn-0pp1n8t0000' --Configuration 'topic_:_/a1iYSOl0000/device5/user/get_,_topicType_:1'"

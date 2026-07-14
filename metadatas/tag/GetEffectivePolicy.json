@@ -1,5 +1,6 @@
 {
   "name": "GetEffectivePolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,7 +9,11 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。取值：cn-shanghai。",
+        "en": "The region ID. Only `cn-shanghai` is supported."
+      }
     },
     {
       "name": "TagKeys",
@@ -20,15 +25,34 @@
       "name": "TargetId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标节点ID。\n> 该参数在单账号模式下为可选，多账号模式下为必选。",
+        "en": "The ID of the target object.\n\n> This parameter is optional in Single-Account Mode and required in Multi-Account Mode."
+      }
     },
     {
       "name": "TargetType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标节点类型。取值：\n\n- USER：查询当前登录账号已绑定的有效策略。适用单账号模式。\n- ROOT：查询资源目录中的Root资源夹已绑定的有效策略。适用多账号模式。\n- FOLDER：查询资源目录中的资源夹已绑定的有效策略。适用多账号模式。\n- ACCOUNT：查询资源目录中的成员已绑定的有效策略。适用多账号模式。\n\n> 该参数在单账号模式下为可选，多账号模式下为必选。且参数取值不区分大小写。",
+        "en": "The type of the target object. Valid values:\n\n- USER: queries the effective policy for the current logon account. This value applies only to Single-Account Mode.\n\n- ROOT: queries the effective policy for the Root Folder in a Resource Directory. This value applies only to Multi-Account Mode.\n\n- FOLDER: queries the effective policy for a Folder in a Resource Directory. This value applies only to Multi-Account Mode.\n\n- ACCOUNT: queries the effective policy for a Member in a Resource Directory. This value applies only to Multi-Account Mode.\n\n> This parameter is optional in Single-Account Mode and required in Multi-Account Mode. The value is case-insensitive."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询有效策略",
+    "en": "GetEffectivePolicy"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n单账号模式下，当前登录账号可以查询自己已绑定的有效策略。多账号模式下，资源目录管理账号可以查询Root资源夹、资源夹和成员已绑定的有效策略，资源目录成员可以查询自己已绑定的有效策略。关于标签策略模式的更多信息，请参见[标签策略模式](~~417434~~)。\n\n该有效策略是根据标签策略继承关系计算得出的。更多信息，请参见[标签策略继承和有效策略计算](~~417435~~)。\n\n本文将提供一个示例，在单账号模式下，查询当前登录账号的有效策略。",
+    "en": "### Usage notes\n\nIn Single-Account Mode, the current logon account can query its own effective policy. In Multi-Account Mode, the Management Account of a Resource Directory can query the effective policy for the Root Folder, a Folder, or a Member. A Member can also query its own effective policy. For more information about tag policy modes, see [Tag policy modes](~~417434~~).\n\nTag policy inheritance determines the effective policy. For more information, see [Tag policy inheritance and effective policy calculation](~~417435~~).\n\nThis topic provides an example of how to query the effective policy for the current logon account in Single-Account Mode."
+  },
   "example": {
     "unifiedCli": "aliyun tag get-effective-policy --biz-region-id cn-hangzhou --target-id 1549509381370000 --target-type ACCOUNT --tag-keys example-string --region cn-hangzhou",
     "legacyCli": "aliyun tag GetEffectivePolicy --region cn-hangzhou --TargetType ACCOUNT --TagKeys.1 'example-string' --RegionId 'cn-hangzhou' --TargetId 1549509381370000"

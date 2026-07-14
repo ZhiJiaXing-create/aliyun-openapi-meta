@@ -1,5 +1,6 @@
 {
   "name": "CreateServiceInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,79 +9,131 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。",
+        "en": "A client token to ensure the idempotence of the request. Generate a unique value for this parameter from your client. The token can be up to 64 characters in length and can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检，包括权限、实例状态校验等。可能的值：\n\n- true：发送请求，不创建服务实例。\n\n- false：发送请求，检查通过后创建服务实例。",
+        "en": "Specifies whether to perform a dry run. A dry run checks for permissions and instance status. Valid values:\n\n- true: The system checks the request but does not create the service instance.\n\n- false: The system sends the request. If the request passes the check, the service instance is created."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务实例的释放时间。\n\n> 仅支持托管版场景中，服务商对自己的服务实例设置该参数。",
+        "en": "The time when the service instance is released.\n\n> Only service providers can set this parameter for their own service instances in managed scenarios."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务实例名称。格式要求如下：\n\n- 长度不超过64个字符。\n\n- 必须以数字或英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_）。",
+        "en": "The name of the service instance. The name must meet the following requirements:\n\n- It can be up to 64 characters in length.\n\n- It must start with a letter or a digit and can contain letters, digits, hyphens (-), and underscores (\\_)."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务实例部署的参数。\n\n> 若服务实例包含部署地域信息，则需在部署参数中填写。",
+        "en": "The parameters used to deploy the service instance.\n\n> If the service instance includes information about the deployment region, specify that information in the deployment parameters."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。可能的值：\n\n- cn-hangzhou：华东1（杭州） 。\n\n- ap-southeast-1：新加坡。",
+        "en": "The ID of the region. Valid values:\n\n- cn-hangzhou: China (Hangzhou)\n\n- ap-southeast-1: Singapore"
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务ID。",
+        "en": "The ID of the service."
+      }
     },
     {
       "name": "ServiceVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务版本。",
+        "en": "The version of the service."
+      }
     },
     {
       "name": "SpecificationName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "套餐规格名称。",
+        "en": "The name of the specification package."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "用户自定义标签。",
+        "en": "The custom tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The key of the tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The value of the tag."
+          }
         }
       ]
     },
@@ -88,15 +141,30 @@
       "name": "TemplateName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板名称，服务支持多模板时需要指定模板名称。",
+        "en": "The name of the template. Specify this parameter if the service supports multiple templates."
+      }
     },
     {
       "name": "UserId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户ID。",
+        "en": "The ID of the user."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建并部署服务实例",
+    "en": "CreateServiceInstance"
+  },
   "example": {
     "unifiedCli": "aliyun computenestsupplier create-service-instance --biz-region-id cn-hangzhou --name TestName --service-id service-0e6fca6a51a544200000 --service-version 1 --parameters RegionId_:_cn-hangzhou_NodeCount_:_3,_SystemDiskSize_:_40,_InstancePassword_:_000000 --client-token 123e4567-e89b-12d3-a456-426655440000 --template-name Template_1 --resource-group-id rg-aekzuqyxxxxxx --user-id 1563457855xxxxxx --tag Value=value1 Key=key1 --specification-name Package_1 --dry-run false --end-time 2023-12-12T03:13:05Z --region cn-hangzhou",
     "legacyCli": "aliyun computenestsupplier CreateServiceInstance --region cn-hangzhou --Tag.1.Key key1 --Parameters 'RegionId_:_cn-hangzhou_NodeCount_:_3,_SystemDiskSize_:_40,_InstancePassword_:_000000' --ResourceGroupId 'rg-aekzuqyxxxxxx' --EndTime '2023-12-12T03:13:05Z' --DryRun false --Name TestName --ServiceId 'service-0e6fca6a51a544200000' --UserId 1563457855xxxxxx --Tag.1.Value value1 --ServiceVersion 1 --TemplateName Template_1 --RegionId 'cn-hangzhou' --SpecificationName Package_1 --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

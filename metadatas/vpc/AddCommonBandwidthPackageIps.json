@@ -1,5 +1,6 @@
 {
   "name": "AddCommonBandwidthPackageIps",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "BandwidthPackageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "共享带宽实例ID。",
+        "en": "The ID of the Internet Shared Bandwidth instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "IpInstanceIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待添加的EIP实例ID列表。\n\n一次最多支持添加10个EIP实例ID。",
+        "en": "The list of EIPs that you want to associate with the Internet Shared Bandwidth instance.\n\nYou can specify at most 10 EIP IDs at a time."
+      }
     },
     {
       "name": "IpType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP类型。取值：**EIP**，表示将EIP添加至共享带宽。",
+        "en": "The IP type. Set the value to **EIP**, which indicates that an EIP is added to the Shared Bandwidth."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "共享带宽所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~448570~~)接口获取地域ID。",
+        "en": "The region ID of the Internet Shared Bandwidth instance.\n\nYou can call the [DescribeRegions](~~448570~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量添加EIP到共享带宽中",
+    "en": "AddCommonBandwidthPackageIps"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口批量添加EIP到共享带宽中时，EIP需满足以下条件：\n    - EIP的计费方式为按量付费。\n    - EIP的地域与要加入的共享带宽的地域相同。\n    - EIP的线路类型与要加入的共享带宽的线路类型一致。\n- **AddCommonBandwidthPackageIps**接口属于异步接口，即系统会先返回一个请求ID，但EIP并未成功添加到共享带宽，系统后台的添加任务仍在进行。您可以调用[DescribeCommonBandwidthPackages](~~DescribeCommonBandwidthPackages~~)查询共享带宽和EIP的关联状态。 \n    - 当共享带宽和EIP的关联状态处于**BINDING**时，表示共享带宽与EIP关联中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当共享带宽和EIP的关联状态处于**BINDED**时，表示共享带宽与EIP关联完成。",
+    "en": "- 调用本接口批量添加EIP到共享带宽中时，EIP需满足以下条件：\n    - EIP的计费方式为按量付费。\n    - EIP的地域与要加入的共享带宽的地域相同。\n    - EIP的线路类型与要加入的共享带宽的线路类型一致。\n- **AddCommonBandwidthPackageIps**接口属于异步接口，即系统会先返回一个请求ID，但EIP并未成功添加到共享带宽，系统后台的添加任务仍在进行。您可以调用[DescribeCommonBandwidthPackages](~~DescribeCommonBandwidthPackages~~)查询共享带宽和EIP的关联状态。 \n    - 当共享带宽和EIP的关联状态处于**BINDING**时，表示共享带宽与EIP关联中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当共享带宽和EIP的关联状态处于**BINDED**时，表示共享带宽与EIP关联完成。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc add-common-bandwidth-package-ips --biz-region-id cn-hangzhou --bandwidth-package-id cbwp-2ze2ic1xd2qeqasdf0000 --ip-type EIP --client-token 123e4567-e89b-12d3-a456-426655440000 --ip-instance-ids eip-2zeerraiwb7uqwed0000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc AddCommonBandwidthPackageIps --region cn-hangzhou --IpType EIP --BandwidthPackageId 'cbwp-2ze2ic1xd2qeqasdf0000' --IpInstanceIds.1 'eip-2zeerraiwb7uqwed0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

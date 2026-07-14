@@ -1,5 +1,6 @@
 {
   "name": "OperateLogHub",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": true,
       "description": {
         "zh": "是否创建。",
-        "en": "Specifies whether to create the log shipping job."
+        "en": "Specifies whether to create the rule."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "集群ID。\n\n> 您可以通过[DescribeDBClusters](~~129857~~)接口查看账号下AnalyticDB MySQL数仓版集群的集群ID。",
-        "en": "The cluster ID.\n\n>  You can call the [DescribeDBClusters](~~129857~~) operation to query the IDs of all AnalyticDB for MySQL Data Warehouse Edition clusters within a region."
+        "en": "The cluster ID.\n\n> You can call the [DescribeDBClusters](~~129857~~) operation to query the IDs of AnalyticDB for MySQL clusters in your account."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "投递名称。",
-        "en": "The name of the log shipping job."
+        "en": "The delivery name."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": true,
       "description": {
         "zh": "投递时间。",
-        "en": "The shipping time."
+        "en": "The delivery time."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "描述。",
-        "en": "The description of the log shipping job."
+        "en": "The description."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "是否过滤脏数据。",
-        "en": "Specifies whether to filter dirty data.\n\nValid values:\n\n*   true\n*   false"
+        "en": "Specifies whether to filter dirty data."
       }
     },
     {
@@ -69,24 +70,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "字段对应关系数组。",
+        "en": "An array of field mappings."
+      },
       "sub_parameters": [
         {
           "name": "FieldKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "关键字对应的值。",
+            "en": "The value that corresponds to the keyword."
+          }
         },
         {
           "name": "LogKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "日志关键字。",
+            "en": "The log keyword."
+          }
         }
-      ],
-      "description": {
-        "zh": "字段对应关系数组。",
-        "en": "The log keywords."
-      }
+      ]
     },
     {
       "name": "LogStoreName",
@@ -95,7 +104,7 @@
       "required": true,
       "description": {
         "zh": "日志服务SLS日志库LogStore的名称。",
-        "en": "The name of the Logstore."
+        "en": "The name of the Simple Log Service (SLS) Logstore."
       }
     },
     {
@@ -105,7 +114,7 @@
       "required": true,
       "description": {
         "zh": "密码。",
-        "en": "The password of the database account."
+        "en": "The password."
       }
     },
     {
@@ -125,7 +134,7 @@
       "required": false,
       "description": {
         "zh": "渠道。",
-        "en": "The channel of the log shipping job."
+        "en": "The provider."
       }
     },
     {
@@ -135,7 +144,7 @@
       "required": true,
       "description": {
         "zh": "数据库名称。",
-        "en": "The name of the database."
+        "en": "The database name."
       }
     },
     {
@@ -145,7 +154,7 @@
       "required": true,
       "description": {
         "zh": "数据表名称。",
-        "en": "The name of the table."
+        "en": "The table name."
       }
     },
     {
@@ -155,10 +164,17 @@
       "required": true,
       "description": {
         "zh": "用户名。",
-        "en": "The name of the database account."
+        "en": "The username."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建日志任务",
+    "en": "OperateLogHub"
+  },
   "example": {
     "unifiedCli": "aliyun adb operate-log-hub --create true --db-cluster-id am-uf6rtqaj25491628z --project-name test-adb --log-store-name beta-game-mjxb-ham-pool-export --deliver-name xhxsblz_limited_gift_pay --deliver-time 2024-10-24_T_13:10_Z --description test --schema-name wddata --table-name rest_action_latest --user-name admin --password ads_123 --filter-dirty-data false --provider SLS --log-hub-stores LogKey=testKey FieldKey=testValue --api-version 2019-03-15 --region cn-hangzhou",
     "legacyCli": "aliyun adb OperateLogHub --region cn-hangzhou --Description test --UserName admin --ProjectName 'test-adb' --DeliverName xhxsblz_limited_gift_pay --DBClusterId 'am-uf6rtqaj25491628z' --DeliverTime '2024-10-24_T_13:10_Z' --LogHubStores.1.LogKey testKey --Provider SLS --TableName rest_action_latest --FilterDirtyData false --LogStoreName 'beta-game-mjxb-ham-pool-export' --Create true --LogHubStores.1.FieldKey testValue --SchemaName wddata --Password ads_123"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateForwardingRules",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The Global Accelerator instance ID."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "ForwardingRules",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发策略配置信息列表。",
+        "en": "The configurations of the forwarding rules."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听ID。",
+        "en": "The listener ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator instance. Set the value to **ap-southeast-1**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新转发规则",
+    "en": "Update forwarding rules"
+  },
+  "descriptions": {
+    "zh": "- **UpdateForwardingRules**接口属于异步接口，即系统会先返回一个请求ID，但转发策略并未修改完成，系统后台的修改任务仍在进行。您可以调用[ListForwardingRules](~~205817~~)查询转发策略的状态：\n    - 当转发策略处于**configuring**状态时，表示转发策略正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当转发策略处于**active**状态时，表示转发策略修改完成。\n- **UpdateForwardingRules**接口不支持在同一个全球加速实例内并发修改转发策略。",
+    "en": "- **UpdateForwardingRules** is an asynchronous operation. After a request is sent, the system returns a request ID, but the forwarding rule is not yet modified. The modification task continues to run in the background. You can call [ListForwardingRules](~~205817~~) to query the status of a forwarding rule:\n    - If the forwarding rule is in the **configuring** state, the forwarding rule is being modified. In this state, you can only perform query operations.\n    - If the forwarding rule is in the **active** state, the forwarding rule is modified.\n- **UpdateForwardingRules** does not support concurrent modification of forwarding rules within the same Global Accelerator instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-forwarding-rules --biz-region-id cn-hangzhou --client-token 02fb3da40000 --accelerator-id ga-bp17frjjh0udz4q0000 --listener-id lsr-bp1s0vzbi5bxlx50000 --forwarding-rules '[{\"RuleActions\":[{\"Order\":20,\"RuleActionType\":\"ForwardGroup\",\"RuleActionValue\":\"type_:_endpointgroup_,_value_:_epg-bp1enpdcrqhl78g6r0000\",\"ForwardGroupConfig\":{\"ServerGroupTuples\":[\"epg-bp1ieei9664r5nv0000\"]}}],\"Priority\":1000,\"ForwardingRuleName\":\"test\",\"RuleConditions\":[{\"PathConfig\":{\"Values\":[\"/test\"]},\"HostConfig\":{\"Values\":[\"example.com\"]},\"RuleConditionType\":\"Host\",\"RuleConditionValue\":\"www.example.com_,_www.aliyun.com\"}],\"ForwardingRuleId\":\"frule-bp1dii16gu9qdvb340000\",\"RuleDirection\":\"request\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateForwardingRules --region cn-hangzhou --ForwardingRules.1.RuleActions.1.ForwardGroupConfig.ServerGroupTuples.1 'epg-bp1ieei9664r5nv0000' --ForwardingRules.1.RuleActions.1.RuleActionValue 'type_:_endpointgroup_,_value_:_epg-bp1enpdcrqhl78g6r0000' --ForwardingRules.1.ForwardingRuleId 'frule-bp1dii16gu9qdvb340000' --ForwardingRules.1.RuleDirection request --ForwardingRules.1.RuleConditions.1.RuleConditionType Host --ForwardingRules.1.ForwardingRuleName test --ForwardingRules.1.RuleConditions.1.RuleConditionValue 'www.example.com_,_www.aliyun.com' --ForwardingRules.1.RuleConditions.1.HostConfig.Values.1 'example.com' --ForwardingRules.1.RuleActions.1.Order 20 --RegionId 'cn-hangzhou' --ForwardingRules.1.Priority 1000 --ClientToken 02fb3da40000 --AcceleratorId 'ga-bp17frjjh0udz4q0000' --ForwardingRules.1.RuleConditions.1.PathConfig.Values.1 '/test' --ForwardingRules.1.RuleActions.1.RuleActionType ForwardGroup --ListenerId 'lsr-bp1s0vzbi5bxlx50000' --method POST --force"

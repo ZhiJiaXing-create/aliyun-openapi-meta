@@ -1,5 +1,6 @@
 {
   "name": "BatchEventRedeployInstance",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "事件列表。",
+        "en": "List of events."
+      },
       "sub_parameters": [
         {
           "name": "EventId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "系统事件ID。",
+            "en": "System event ID."
+          }
         },
         {
           "name": "OpsType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "运维任务类型，取值范围：\n\n- immediate：立即执行。\n- scheduled：预约执行。",
+            "en": "O\\&M task type. Valid values:\n\n- immediate: Execute immediately.\n\n- scheduled: Execute at a scheduled time."
+          }
         },
         {
           "name": "PlanTime",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "预约执行时间，时间戳，单位毫秒。 当OpsType=scheduled时，此字段为必输。",
+            "en": "Scheduled execution time as a UNIX timestamp in milliseconds. This field is required when OpsType=scheduled."
+          }
         },
         {
           "name": "PlanUtcTime",
@@ -38,11 +55,26 @@
           "name": "ResourceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源ID。",
+            "en": "Resource ID."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量部署实例",
+    "en": "Batch Deploy Instances"
+  },
+  "descriptions": {
+    "zh": "- 此运维操作，目前仅支持事件类型：Instance:SystemFailure.Redeploy（因系统问题实例重新部署）、Instance:SystemMaintenance.Redeploy（因系统维护实例重新部署）",
+    "en": "- This O\\&M operation currently supports only the following event types: Instance:SystemFailure.Redeploy (instance redeployment due to system failure) and Instance:SystemMaintenance.Redeploy (instance redeployment due to system maintenance)."
+  },
   "example": {
     "unifiedCli": "aliyun ens batch-event-redeploy-instance --event-infos ResourceId=i-55qi8m11rr53c4i964md8a00l EventId=e-d71ff150945b9c02eb6ebc0016328468 PlanUtcTime=example-string OpsType=1742452232000 PlanTime=1 --region cn-hangzhou",
     "legacyCli": "aliyun ens BatchEventRedeployInstance --region cn-hangzhou --EventInfos '[{\"ResourceId\":\"i-55qi8m11rr53c4i964md8a00l\",\"EventId\":\"e-d71ff150945b9c02eb6ebc0016328468\",\"PlanUtcTime\":\"example-string\",\"OpsType\":\"1742452232000\",\"PlanTime\":1}]'"

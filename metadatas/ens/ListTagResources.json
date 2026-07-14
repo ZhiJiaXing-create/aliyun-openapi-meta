@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,72 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始的Token。",
+        "en": "The token of the first page to query."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID，n 的取值范围为 [1, 50]",
+        "en": "The IDs of resources. Valid values of N: 1 to 50."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义。取值：instance（实例）",
+        "en": "The resource type. Set the value to instance."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签键。N的取值范围为**1**~**20**。\n\n- 不能以`aliyun`、`acs:`、`http://`或`https://`开头。\n- 最多支持64个字符。\n- 不允许传入空字符串。",
+            "en": "The key of tag N of the instance. Valid values of N: **1** to **20**.\n\n- The key cannot start with `aliyun`, `acs:`, `http://`, or `https://`.\n\n- The key must be up to 64 characters in length.\n\n- The tag key cannot be an empty string."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Topic的标签值。**Key**和**Value**值必须同时输入或同时不输入。若同时输入表示根据Tag过滤符合条件的Topic，若不输入表示查询所有Topic。\n\n- N的取值范围为1~20。\n- 如果输入该值，取值允许为空字符串。\n- 最多支持128个字符，不能以aliyun和acs:开头，不能包含http://或者https://。",
+            "en": "The value of a tag that is attached to the topics you want to query. This parameter is not required. If you configure this parameter, you must also configure the **Key** parameter.\\*\\*\\*\\* If you include the Key and Value parameters in a request, Queries only the topics that use the specified tags. If you do not include these parameters in a request, Queries all topics that you can access.\n\n- Valid values of N: 1 to 20.\n\n- The value of this parameter can be an empty string.\n\n- The tag key can be up to 128 characters in length and cannot contain http\\:// or https\\://. The tag key cannot start with acs: or aliyun."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源已经绑定的标签列表",
+    "en": "ListTagResources"
+  },
   "example": {
     "unifiedCli": "aliyun ens list-tag-resources --resource-type instance --resource-id i-t252vwg7cib00ky8g0q --next-token 153ba0bbb2be03f84eb48b699f0a4123 --tag Value=tagValue Key=team --region cn-hangzhou",
     "legacyCli": "aliyun ens ListTagResources --region cn-hangzhou --ResourceId.1 'i-t252vwg7cib00ky8g0q' --Tag.1.Key team --NextToken 153ba0bbb2be03f84eb48b699f0a4123 --Tag.1.Value tagValue --ResourceType instance"

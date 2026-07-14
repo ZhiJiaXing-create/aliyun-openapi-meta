@@ -1,5 +1,6 @@
 {
   "name": "ModifyCapacityReservation",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,100 @@
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量预定服务的描述信息。长度为2~256个英文或中文字符，不能以`http://`和`https://`开头。",
+        "en": "The description of the capacity reservation. The description must be 2 to 256 characters in length. It cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量预定服务的失效时间，仅`EndTimeType=Limited`时该参数生效。时间格式以ISO8601为标准，并需要使用UTC +0时间，格式为`yyyy-MM-ddTHH:mm:ssZ`。更多信息，请参见[ISO8601](~~25696~~)。",
+        "en": "The expiration time of the capacity reservation. This parameter takes effect only when `EndTimeType` is set to Limited. Specify the time in the ISO 8601 standard in the `yyyy-MM-ddTHH:mm:ssZ` format. The time must be in UTC. For more information, see [ISO 8601](~~25696~~)."
+      }
     },
     {
       "name": "EndTimeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量预定服务的失效方式。取值范围：\n\n- Limited：指定时间释放。必须同时指定`EndTime`参数。\n- Unlimited：手动释放。不限制时间。",
+        "en": "The release mode of the capacity reservation. Valid values:\n\n- Limited: The capacity reservation is automatically released at the specified point in time. If you configure this parameter, you must also configure `EndTime`.\n\n- Unlimited: The capacity reservation must be manually released. You can release it anytime."
+      }
     },
     {
       "name": "InstanceAmount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量预定服务需要预留的实例总数量。取值范围：已使用的实例数量~1000\n\n> 扩充实例总数量时，可能因库存不足导致扩充失败。",
+        "en": "The total number of instances for which capacity is reserved. Valid values: the number of used instances to 1000.\n\n> When you increase the number of instances, the increase may fail due to insufficient resources."
+      }
     },
     {
       "name": "Platform",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例使用的镜像的操作系统类型。取值范围：\n\n- Windows：Windows Server类型的操作系统。\n- Linux：Linux及类Unix类型的操作系统。\n\n> 该参数暂未开放使用。",
+        "en": "The operating system of the image used by the instance. Valid values:\n\n- Windows\n\n- Linux\n\n> This parameter is unavailable."
+      }
     },
     {
       "name": "PrivatePoolOptions.Id",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "容量预定服务ID。",
+        "en": "The capacity reservation ID."
+      }
     },
     {
       "name": "PrivatePoolOptions.Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量预定服务的名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以`http://`和`https://`开头。可以包含数字、半角冒号（:）、下划线（_）或者连字符（-）。",
+        "en": "The name of the capacity reservation. The name must be 2 to 128 characters in length. It must start with a letter and cannot start with `http://` or `https://`. It can contain letters, digits, colons (:), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "容量预定服务所属地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the capacity reservation. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量预定服务的生效方式。目前仅支持设置为立即生效，且参数无需传值。\n\n> 该参数不传值即表示设置为立即生效。",
+        "en": "The mode in which the capacity reservation takes effect. Only immediate capacity reservations are supported. You do not need to specify a value for this parameter.\n\n> If you do not specify a value for this parameter, the capacity reservation immediately takes effect."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改一个容量预定服务的部分信息",
+    "en": "ModifyCapacityReservation"
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-capacity-reservation --biz-region-id cn-hangzhou --private-pool-options-id crp-bp67acfmxazb40000 --private-pool-options-name eapTestName --description This_is_description. --start-time Now --end-time 2021-10-30T06:32:00Z --end-time-type Unlimited --platform Linux --instance-amount 100 --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyCapacityReservation --region cn-hangzhou --Description 'This_is_description.' --InstanceAmount 100 --EndTime '2021-10-30T06:32:00Z' --EndTimeType Unlimited --Platform Linux --PrivatePoolOptions.Name eapTestName --StartTime Now --RegionId 'cn-hangzhou' --PrivatePoolOptions.Id 'crp-bp67acfmxazb40000'"

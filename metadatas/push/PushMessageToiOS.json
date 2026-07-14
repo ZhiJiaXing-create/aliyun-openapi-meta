@@ -1,5 +1,6 @@
 {
   "name": "PushMessageToiOS",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AppKey",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "AppKey信息。",
+        "en": "AppKey information."
+      }
     },
     {
       "name": "Body",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "发送的消息内容。",
+        "en": "The content of the message."
+      }
     },
     {
       "name": "JobKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "推送任务自定义标识，当JobKey不为空时，回执日志中会附带该字段。查看回执日志参见[回执日志](~~434651~~)。",
+        "en": "The custom ID for the push Job. If JobKey is not empty, this field is included in the receipt log. For receipt logs, see [Receipt Logs](~~434651~~)."
+      }
     },
     {
       "name": "StoreOffline",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息是否离线保存。StoreOffline默认设置为false。\n\n若保存，在推送时候用户不在线，在过期时间（ExpireTime）内用户上线时会被再次发送。ExpireTime默认为72小时。",
+        "en": "Whether to store the message offline. StoreOffline is set to false by default.\n\nIf stored, and the user is offline during the push, the message is sent again when the user comes online within the time-to-live (TTL). The default time-to-live (TTL) is 72 hours."
+      }
     },
     {
       "name": "Target",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "推送目标。可取值：\n\n- **DEVICE**：根据设备推送\n- **ACCOUNT**：根据账号推送\n- **ALIAS**：根据别名推送\n- **TAG**：根据标签推送\n- **ALL**：推送给全部设备",
+        "en": "Push target. Valid values:\n\n- **DEVICE**: Push by device\n\n- **ACCOUNT**: Push by account\n\n- **ALIAS**: Push by alias\n\n- **TAG**: Push by tag\n\n- **ALL**: Push to all devices"
+      }
     },
     {
       "name": "TargetValue",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "根据Target来设定，多个值使用逗号分隔，超过限制需要分多次推送。\n\n- Target=DEVICE，值如`deviceid111,deviceid1111`（最多支持1000个）。\n- Target=ACCOUNT，值如`account111,account222`（最多支持1000个）。\n- Target=ALIAS，值如`alias111,alias222`（最多支持1000个）。\n- Target=TAG，支持单Tag和多Tag，格式请参见[标签格式](~~434847~~)。\n- Target=ALL，值为**all**。",
+        "en": "Set based on Target. Separate multiple values with commas. If the limit is exceeded, push multiple times.\n\n- Target=DEVICE. Example values: `deviceid111,deviceid1111` (supports up to 1,000).\n\n- Target=ACCOUNT. Example values: `account111,account222` (supports up to 1,000).\n\n- Target=ALIAS. Example values: `alias111,alias222` (supports up to 1,000).\n\n- Target=TAG. Supports single and multiple tags. For format, see [Tag Format](~~434847~~).\n\n- Target=ALL. Value is **all**."
+      }
     },
     {
       "name": "Title",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "发送的消息的标题。",
+        "en": "The title of the message."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "推送消息给iOS设备",
+    "en": "Push Message to iOS Devices"
+  },
+  "descriptions": {
+    "zh": "**这个接口即将废弃，请使用具备更多推送能力的[高级推送接口](~~2249916~~)，在该接口中指定推送平台`DeviceType`为`iOS`，推送类型`PushType`为`MESSAGE`，即可达到同样效果。**\n\n**请确保在使用该接口前，以充分了解EMAS移动推送产品的[收费方式和价格](~~434638~~)。**\n\n该接口默认只把消息发送给在线设备，若设备离线，则需要设置`StoreOffline`参数，推送系统会保存该消息，等到设备上线后再自动下发信息。",
+    "en": "**This API is deprecated. Use the [advanced push API](~~2249916~~) for more push capabilities. In that API, set the push platform `DeviceType` to `iOS` and the push type `PushType` to `MESSAGE` to achieve the same effect.**\n\n**Before you use this API, review the [billing methods and pricing](~~434638~~) for EMAS Mobile Push.**\n\nBy default, this API sends messages only to online devices. If a device is offline, you can set the `StoreOffline` parameter. The push system then saves the message and automatically delivers it when the device comes back online."
+  },
   "example": {
     "unifiedCli": "aliyun push push-message-to-ios --app-key 24780725 --target ALL --target-value all --title my_title --biz-body my_body --store-offline true --job-key 123 --region cn-hangzhou",
     "legacyCli": "aliyun push PushMessageToiOS --region cn-hangzhou --Target ALL --TargetValue all --JobKey 123 --AppKey 24780725 --Title my_title --Body my_body --StoreOffline true"

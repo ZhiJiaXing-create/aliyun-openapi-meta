@@ -1,5 +1,6 @@
 {
   "name": "UpdateProductTags",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,35 +9,66 @@
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n>*   If no **Overview** page or ID is generated for your instance, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "产品的ProductKey。ProductKey是物联网平台为新建产品颁发的产品Key，作为其全局唯一标识符。您可以在物联网平台控制台查看或调用[QueryProductList](~~69271~~)查看当前账号下所有产品的信息。",
+        "en": "The ProductKey of the product. A ProductKey is a GUID that is issued by IoT Platform to a product. You can use the IoT Platform console or call the [QueryProductList](~~69271~~) operation to view the information about all products within the current account."
+      }
     },
     {
       "name": "ProductTag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "产品标签列表。",
+        "en": "The list of product tags."
+      },
       "sub_parameters": [
         {
           "name": "TagKey",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "产品标签键（key）。长度不可超过30个字符，可包含英文大小写字母，数字和英文句号（.）。\n\n> 传入标签的TagKey必须是已存在的标签key。传入标签的TagKey不能重复。",
+            "en": "The keys of the product tags. Each key must be 1 to 30 characters in length, and can contain letters, digits, and periods (.).\n\n>  Each tag key that you specify must already exist. Each tag value that you specify must be unique."
+          }
         },
         {
           "name": "TagValue",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "更新后的标签值（value）。长度不可超过128字符，可包含中文、英文字母、数字、下划线（_）和短划线（-）。一个中文汉字算2个字符。",
+            "en": "The new values of the product tags. Each tag value must be 1 to 128 characters in length, and can contain letters, digits, underscores (\\_), and hyphens (-)."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "UpdateProductTags",
+    "en": "UpdateProductTags"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n单次调用该接口最多可更新10个标签。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为500。\n\n > RAM用户共享阿里云账号配额。",
+    "en": "## How-To\n\nYou can update up to 10 tags in a single API call.\n\n## QPS Limit\nThe maximum queries per second (QPS) for a single Alibaba Cloud account is 500 when calling this API.\n\n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot update-product-tags --iot-instance-id iot_instc_pu0000_c0-v6400000000 --product-key a1BwAGV0000 --product-tag TagKey=room TagValue=202 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot UpdateProductTags --region cn-hangzhou --ProductTag.1.TagValue 202 --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --ProductTag.1.TagKey room --ProductKey a1BwAGV0000"

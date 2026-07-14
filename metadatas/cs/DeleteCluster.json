@@ -1,5 +1,6 @@
 {
   "name": "DeleteCluster",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "DELETE",
   "pathPattern": "/clusters/[ClusterId]",
@@ -8,25 +9,41 @@
       "name": "ClusterId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "delete_options",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "集群关联资源的删除选项。",
+        "en": "The deletion options for cluster-associated resources."
+      },
       "sub_parameters": [
         {
           "name": "delete_mode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "该类型资源的删除策略，可取值：\n- delete：删除该类资源。\n- retain：保留该类资源。",
+            "en": "The deletion policy for this resource type. Valid values:\n- delete: deletes resources of this type.\n- retain: retains resources of this type."
+          }
         },
         {
           "name": "resource_type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源类型，可取值：\n- SLB：通过service创建的SLB资源，默认删除，可选择保留。\n- ALB：ALB Ingress Controller创建的ALB资源，默认保留，可选择删除。\n- SLS_Data：集群日志功能所使用的日志服务Project，默认保留，可选择删除。\n- SLS_ControlPlane：托管版集群控制平面日志所使用的日志服务Project，默认保留，可选择删除。\n- PrivateZone：ACK Serverless集群创建的PrivateZone资源，默认保留，可选择删除。",
+            "en": "The resource type. Valid values:\n- SLB: SLB resources created through services. Deleted by default. You can choose to retain them.\n- ALB: ALB resources created by ALB Ingress Controller. Retained by default. You can choose to delete them.\n- SLS_Data: the SLS project used by the cluster logging feature. Retained by default. You can choose to delete it.\n- SLS_ControlPlane: the SLS project used by the control plane logs of managed clusters. Retained by default. You can choose to delete it.\n- PrivateZone: PrivateZone resources created by ACK Serverless clusters. Retained by default. You can choose to delete them."
+          }
         }
       ]
     },
@@ -34,21 +51,44 @@
       "name": "keep_slb",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否保留SLB，取值：\n\n- `true`：保留创建的SLB资源。\n- `false`：不保留创建的SLB资源。\n\n默认值：`false`。\n请使用`delete_options`中的`SLB`管理",
+        "en": "Specifies whether to retain SLB resources. Valid values:\n\n- `true`: retains the created SLB resources.\n- `false`: does not retain the created SLB resources.\n\nDefault value: `false`.\nUse `SLB` in `delete_options` to manage this setting."
+      }
     },
     {
       "name": "retain_all_resources",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否保留所有资源。如果设置该值为`true`，则会忽略`retain_resources`，通过`DescribeClusterResources`接口查询到的通过集群创建的云资源将被保留。如果该值为`false`，请注意`delete_options`中默认保留的资源仍将被保留，如需删除相关资源，请单独在`delete_options`中设置`delete_mode`为`delete`。\n\n- `true`：保留所有资源，包含所有通过集群创建的云资源。\n- `false`：不保留所有资源（`delete_options`中定义的默认保留资源除外，如`ALB`在该参数取值为`false`时仍然保留）。\n\n默认值：`false`。",
+        "en": "Specifies whether to retain all resources. If this parameter is set to `true`, `retain_resources` is ignored, and cloud resources created through the cluster that are queried by the `DescribeClusterResources` operation are retained. If this parameter is set to `false`, resources that are retained by default in `delete_options` are still retained. To delete these resources, set `delete_mode` to `delete` in `delete_options`.\n\n- `true`: retains all resources, including all cloud resources created through the cluster.\n- `false`: does not retain all resources, except resources defined as retained by default in `delete_options`. For example, `ALB` resources are still retained when this parameter is set to `false`.\n\nDefault value: `false`."
+      }
     },
     {
       "name": "retain_resources",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源列表。删除集群时如果需要保留资源，则需要提供对应资源的ID。",
+        "en": "The resource list. To retain resources when you delete a cluster, specify the IDs of the resources to retain."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除集群",
+    "en": "Delete a cluster"
+  },
+  "descriptions": {
+    "zh": "风险提示：\n- 集群内包年包月类型 ECS、灵骏计算节点等资源无法自动释放，为避免不必要的费用，请您手动释放。关于更多细节，请参见 集群删除及节点释放规则 。\n- 包年包月类型的APIServer SLB资源无法自动释放，为避免不必要的费用，请您手动释放。\n- VPC、交换机、安全组、RamRole如被其他资源占用无法删除时会默认保留，请您手动释放。\n- 通过虚拟节点创建的弹性容器实例 ECI 会被自动释放。\n- 部分通过集群创建的云资源在删除集群时不会被自动释放，集群删除后会继续计费，请根据实际需要释放或保留。这些资源包括：集群自动创建的日志服务 SLS Project；通过动态存储卷购买的云盘。",
+    "en": "Risk notice:\n- Subscription ECS instances, Lingjun compute nodes, and other subscription resources in the cluster cannot be subject to automatic release. To avoid unnecessary billing, perform manual release of these resources. For more information, refer to Cluster deletion and node release rules.\n- Subscription APIServer SLB resources cannot be subject to automatic release. To avoid unnecessary billing, perform manual release of these resources.\n- VPCs, vSwitches, security groups, and RAM roles that are used by other resources cannot be deleted and are retained by default. Perform manual release of these resources.\n- Elastic Container Instances (ECIs) created through virtual nodes are subject to automatic release.\n- Some cloud resources created through the cluster are not subject to automatic release when the cluster is deleted. These resources continue to incur billing after the cluster is deleted. Release or retain them as needed. These resources include: Simple Log Service (SLS) projects automatically created by the cluster, and cloud disks purchased through dynamic storage volumes."
+  },
   "example": {
     "unifiedCli": "aliyun cs delete-cluster --cluster-id c905d1364c2dd4b6284a3f41790c40000 --retain-all-resources false --keep-slb false --retain-resources sg-2ze6ess9kho6fdn90000 --delete-options resource_type=SLS_Data delete_mode=delete --region cn-hangzhou",
     "legacyCli": "aliyun cs DELETE /clusters/c905d1364c2dd4b6284a3f41790c40000 --region cn-hangzhou --retain_resources '[\"sg-2ze6ess9kho6fdn90000\"]' --retain_all_resources false --delete_options '[{\"resource_type\":\"SLS_Data\",\"delete_mode\":\"delete\"}]' --keep_slb false --header \"Content-Type=application/json\""

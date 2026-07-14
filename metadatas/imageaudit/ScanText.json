@@ -1,5 +1,6 @@
 {
   "name": "ScanText",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -9,12 +10,20 @@
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "1",
+        "en": "1."
+      },
       "sub_parameters": [
         {
           "name": "Label",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "指定文本检测的应用场景，可选值包括：\n\n- spam：文字垃圾内容识别\n\n- politics：文字敏感内容识别\n\n- abuse：文字辱骂内容识别\n\n- terrorism：文字暴恐内容识别\n\n- porn：文字鉴黄内容识别\n\n- flood：文字灌水内容识别\n\n- contraband：文字违禁内容识别\n\n- ad：文字广告内容识别",
+            "en": "The common scenario for text detection. Valid values:\n\n- spam: spam text detection\n\n- politics: sensitive text detection\n\n- abuse: abuse text detection\n\n- terrorism: terrorism text detection\n\n- porn: pornographic text detection\n\n- flood: flood text detection\n\n- contraband: contraband text detection\n\n- ad: advertising text detection."
+          }
         }
       ]
     },
@@ -23,16 +32,35 @@
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "1",
+        "en": "1."
+      },
       "sub_parameters": [
         {
           "name": "Content",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "指定检测的对象，JSON数组中的每个元素是一个文字检测任务结构体。\n\n> - N个Task会折算为N次调用进行计费。\n- 算法识别效果问题请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。",
+            "en": "The object to be detected. Each element in the JSON array is a text detection task structure.\n\n> - N Tasks are counted as N calls for billing purposes.\n- For questions about algorithm detection accuracy, join the Alibaba Cloud Visual Intelligence Platform consultation group on DingTalk (group ID: 23109592)."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "文本内容安全",
+    "en": "Text content moderation"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n文本内容安全结合行为、内容，采用多维度、多模型、多检测手段，识别文本中的敏感信息，规避敏感人物姓名、敏感事件描述、敏感言论等内容风险。\n支持检测的场景包括：文字垃圾内容识别、文字广告内容识别、文字敏感内容识别、文字暴恐内容识别、文字辱骂内容识别、文字鉴黄内容识别、文字灌水内容识别、文字违禁内容识别。\n在提交检测任务时，您需要指定Labels参数，并且支持组合使用，即可对同一段文字进行多种风险检测。如果接口返回结果为空，表示未检测到Labels中的风险点。\n\n> - 在同时检测多个Task的情况下，将按照Task的个数进行累计计费。\n- 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[内容审核服务](https://vision.aliyun.com/imageaudit)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_imageaudit_public_cn#/open)。\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/imageaudit/2019-12-30/ScanText?lang=JAVA&sdkStyle=dara&params=%7B%22Tasks%22%3A%5B%7B%22Content%22%3A%22%E6%9C%AC%E6%A0%A1%E5%B0%8F%E9%A2%9D%E8%B4%B7%E6%AC%BE%EF%BC%8C%E5%AE%89%E5%85%A8%E3%80%81%E5%BF%AB%E6%8D%B7%E3%80%81%E6%96%B9%E4%BE%BF%E3%80%81%E6%97%A0%E6%8A%B5%E6%8A%BC%EF%BC%8C%E9%9A%8F%E6%9C%BA%E9%9A%8F%E8%B4%B7%EF%BC%8C%E5%BD%93%E5%A4%A9%E6%94%BE%E6%AC%BE%EF%BC%8C%E4%B8%8A%E9%97%A8%E6%9C%8D%E5%8A%A1%E3%80%82%E8%81%94%E7%B3%BBweixin%20123456%22%7D%5D%2C%22Labels%22%3A%5B%7B%22Label%22%3A%22spam%22%7D%2C%7B%22Label%22%3A%22politics%22%7D%2C%7B%22Label%22%3A%22abuse%22%7D%2C%7B%22Label%22%3A%22terrorism%22%7D%2C%7B%22Label%22%3A%22porn%22%7D%2C%7B%22Label%22%3A%22flood%22%7D%2C%7B%22Label%22%3A%22contraband%22%7D%2C%7B%22Label%22%3A%22ad%22%7D%5D%7D&tab=DEBUG)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为内容审核（imageaudit）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 示例代码：该能力常用语言的示例代码，请参见[文本内容安全示例代码](~~477836~~)。\n\n7. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 限制说明\n该接口每次可以检测的文本字符数最大为10000。\n\n## 计费说明\n关于文本内容安全的计费方式及报价，请参见[计费介绍](~~202478~~)。\n\n> 下方调试接口为付费接口，如需免费体验调试请前往体验中心，对应体验入口如下表所示。\n\n| 能力             | 体验中心                                                     |\n| ---------------- | ------------------------------------------------------------ |\n| 文字垃圾内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeSpamText) |\n| 文字广告内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeAdvertisingText) |\n| 文字敏感内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizePoliticsText) |\n| 文字暴恐内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeTerrorismText) |\n| 文字辱骂内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeAbuseText) |\n| 文字鉴黄内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizePornText) |\n| 文字灌水内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeFloodText) |\n| 文字违禁内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeContrabandText) |",
+    "en": "## Features\nText content moderation combines behavioral and content analysis, using multi-dimensional models and multiple detection methods to identify sensitive information in text and mitigate content risks such as sensitive names, sensitive event descriptions, and sensitive remarks.\nSupported detection scenarios include: spam text detection, advertising text detection, sensitive text detection, terrorism text detection, abuse text detection, pornographic text detection, flood text detection, and contraband text detection.\nWhen you submit a detection task, specify the Labels parameter. You can combine multiple labels to perform multiple types of risk detection on the same text. If the API returns an empty result, no risks specified in Labels are detected.\n\n> - When multiple Tasks are detected simultaneously, you are charged based on the number of Tasks.\n- You can visit [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for online assistance.\n- To learn more about the visual intelligence service, including API integration, usage, or consultation, join the Alibaba Cloud Visual Intelligence Platform consultation group on DingTalk (group ID: 23109592).\n\n## Getting started\n1. Create an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **Sign Up** in the upper-right corner, and follow the instructions to create an account.\n2. Activate the service: Make sure you have activated [Content Moderation](https://vision.aliyun.com/imageaudit). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_imageaudit_public_cn#/open).\n3. Create an AccessKey: Make sure you have [created an AccessKey](~~175144~~). If you are using a RAM user AccessKey, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/imageaudit/2019-12-30/ScanText?lang=JAVA&sdkStyle=dara&params=%7B%22Tasks%22%3A%5B%7B%22Content%22%3A%22%E6%9C%AC%E6%A0%A1%E5%B0%8F%E9%A2%9D%E8%B4%B7%E6%AC%BE%EF%BC%8C%E5%AE%89%E5%85%A8%E3%80%81%E5%BF%AB%E6%8D%B7%E3%80%81%E6%96%B9%E4%BE%BF%E3%80%81%E6%97%A0%E6%8A%B5%E6%8A%BC%EF%BC%8C%E9%9A%8F%E6%9C%BA%E9%9A%8F%E8%B4%B7%EF%BC%8C%E5%BD%93%E5%A4%A9%E6%94%BE%E6%AC%BE%EF%BC%8C%E4%B8%8A%E9%97%A8%E6%9C%8D%E5%8A%A1%E3%80%82%E8%81%94%E7%B3%BBweixin%20123456%22%7D%5D%2C%22Labels%22%3A%5B%7B%22Label%22%3A%22spam%22%7D%2C%7B%22Label%22%3A%22politics%22%7D%2C%7B%22Label%22%3A%22abuse%22%7D%2C%7B%22Label%22%3A%22terrorism%22%7D%2C%7B%22Label%22%3A%22porn%22%7D%2C%7B%22Label%22%3A%22flood%22%7D%2C%7B%22Label%22%3A%22contraband%22%7D%2C%7B%22Label%22%3A%22ad%22%7D%5D%7D&tab=DEBUG) to debug the operation online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development integration steps:\n- Select the SDK language you want to use from the [SDK overview](~~145033~~).\n- Find the SDK package for the Content Moderation (imageaudit) AI category in the corresponding SDK documentation and install it.\n- Modify the sample code provided in the References as needed and invoke the operation.\n\n6. Sample code: For sample code in commonly used languages, see [Text content moderation sample code](~~477836~~).\n\n7. Direct client calls: Common client call methods for this operation include the following.\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~).\n\n## Limits\nEach call to this operation can detect a maximum of 10,000 text characters.\n\n## Billing\nFor information about the billable methods and pricing of text content moderation, see [Billing overview](~~202478~~).\n\n> The debugging operation below is a paid operation. To try it for free, go to the experience center. The corresponding experience entries are listed in the following table.\n\n| Feature             | Experience center                                                     |\n| ---------------- | ------------------------------------------------------------ |\n| Spam text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeSpamText) |\n| Advertising text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeAdvertisingText) |\n| Sensitive text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizePoliticsText) |\n| Terrorism text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeTerrorismText) |\n| Abuse text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeAbuseText) |\n| Pornographic text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizePornText) |\n| Flood text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeFloodText) |\n| Contraband text detection | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=RecognizeContrabandText) |."
+  },
   "example": {
     "unifiedCli": "aliyun imageaudit scan-text --tasks Content=维修管道，联系weixin --labels Label=ad --region cn-hangzhou",
     "legacyCli": "aliyun imageaudit ScanText --region cn-hangzhou --Labels.1.Label ad --Tasks.1.Content '维修管道，联系weixin'"

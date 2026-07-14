@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the resource. You can call [DescribeRegions](~~25609~~) to view the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID。N的取值范围为1~50。",
+        "en": "The resource ID. Valid values of N: 1 to 50."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义，目前仅支持伸缩组。取值：scalinggroup。",
+        "en": "The resource type. Currently, only scaling groups are supported. Set the value to scalinggroup."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "资源的标签信息。",
+        "en": "The tag information of the resource."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。N的取值范围：1~20。\n\n一旦输入该值，则不允许为空字符串。最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the resource. Valid values of N: 1 to 20.\n\nOnce specified, the tag key cannot be an empty string. The tag key can be up to 128 characters in length and cannot start with `aliyun` or `acs:`, or contain `http://` or `https://`."
+          }
         },
         {
           "name": "Propagate",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标识该标签是否为可传播标签，取值范围：\n\n- true：伸缩组上的标签只会传播到即将新创建的实例上，不会传播到已经在伸缩组中运行的实例上。\n- false：伸缩组上的标签不会传播到实例上。\n\n默认值：false。",
+            "en": "Specifies whether the tag is a propagated tag. Valid values:\n\n- true: The tags on the scaling group are propagated only to instances that are about to be created, and are not propagated to instances that are already running in the scaling group.\n- false: The tags on the scaling group are not propagated to instances.\n\nDefault value: false."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。N的取值范围：1~20。\n\n输入该值时，可以为空字符串。最多支持128个字符，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the resource. Valid values of N: 1 to 20.\n\nThe tag value can be an empty string. The tag value can be up to 128 characters in length and cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "TagResources",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 伸缩组最多支持绑定20个标签。\n    >绑定标签前，阿里云会校验资源已有标签数量。超过限制值时返回报错信息。\n\n- 如果`Tag.N.Propagate`参数设置为`true`时，伸缩组设置的标签只会同步传播到伸缩组中即将新创建的实例上，而不会传播到已经在伸缩组中运行的实例上。\n\n- 如果伸缩配置设置了标签，且将伸缩组设置的标签进行传播，则即将新创建的实例标签预期如下：\n    - 包含伸缩配置与伸缩组设置传播的所有标签。\n    - 如果伸缩配置设置的标签与伸缩组传播的标签具有相同的标签键，则伸缩组传播的标签会被伸缩配置设置的标签覆盖。",
+    "en": "## Description\n\n- A scaling group supports binding up to 20 tags.\n    >Before binding tags, Alibaba Cloud verifies the number of existing tags on the resource. If the limit is exceeded, an error message is returned.\n\n- If the `Tag.N.Propagate` parameter is set to `true`, the tags set on the scaling group are only propagated to instances that are about to be created in the scaling group, and are not propagated to instances that are already running in the scaling group.\n\n- If tags are configured in the scaling configuration and the tags set on the scaling group are propagated, the tags on the instances that are about to be created are expected as follows:\n    - The instances contain all tags from both the scaling configuration and the propagated tags from the scaling group.\n    - If a tag in the scaling configuration has the same tag key as a propagated tag from the scaling group, the propagated tag from the scaling group is overridden by the tag in the scaling configuration."
+  },
   "example": {
     "unifiedCli": "aliyun ess tag-resources --biz-region-id cn-hangzhou --resource-type scalinggroup --resource-id asg-2zej7nf7hea77k5a0000 --tag Value=TestValue Propagate=false Key=TestKey --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess TagResources --region cn-hangzhou --ResourceId.1 'asg-2zej7nf7hea77k5a0000' --Tag.1.Key TestKey --Tag.1.Value TestValue --ResourceType scalinggroup --RegionId 'cn-hangzhou' --Tag.1.Propagate false"

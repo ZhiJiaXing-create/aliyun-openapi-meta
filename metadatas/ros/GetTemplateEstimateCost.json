@@ -1,5 +1,6 @@
 {
   "name": "GetTemplateEstimateCost",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求的幂等性。 该值由客户端生成，并且必须全局唯一。   \n长度不超过64个字符。可包含英文字母、数字、短划线（-）和下划线（_）。   \n更多信息，请参见[如何保证幂等性](~~134212~~)。",
+        "en": "The name of parameter N. If you do not specify the name and value of a parameter, ROS uses the default name and value that are specified in the template.\n\nMaximum value of N: 200.\n\nExamples:\n\n- Parameters.1.ParameterKey: `Name`\n\n- Parameters.2.ParameterKey: `Netmode`\n\n> The Parameters parameter is optional. If you want to specify Parameters, you must specify both Parameters.N.ParameterKey and Parameters.N.ParameterValue."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "参数。",
+        "en": "The region ID of the scenario. The default value is the same as the value of the RegionId parameter.\n\nYou can call the [DescribeRegions](~~131035~~) operation to query the most recent region list."
+      },
       "sub_parameters": [
         {
           "name": "ParameterKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "参数的名称。如果未指定模板中定义的参数名称和参数值，ROS将使用模板中指定的默认值。  \nN的最大值为：200。\n取值示例：\n\n- Parameters.1.ParameterKey：`Name`。\n\n- Parameters.2.ParameterKey：`Netmode`。\n\n\n> Parameters为可选参数。如果需要指定Parameters，则Parameters.N.ParameterKey和Parameters.N.ParameterValue必须同时指定。",
+            "en": "The ID of the request."
+          }
         },
         {
           "name": "ParameterValue",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "参数值。  \nN的最大值为：200。\n取值示例：\n\n- Parameters.1.ParameterValue：`DemoEip`。\n\n- Parameters.2.ParameterValue：`public`。\n\n\n> Parameters为可选参数。如果需要指定Parameters，则Parameters.N.ParameterKey和Parameters.N.ParameterValue必须同时指定。",
+            "en": "Details of the resource."
+          }
         }
       ]
     },
@@ -34,51 +51,94 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈所属的地域ID。您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The ID of the template. This parameter applies to shared and private templates.\n\n> You must specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     },
     {
       "name": "StackId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈ID。\n\n当填写此参数时，表示查询变配场景的预估价格。\n\n假设指定资源栈中仅有一个ECS实例，且规格是ecs.s6-c1m2.large。询价使用的新模板将规格改为ecs.s6-c1m1.small（降配），并新增一个RDS实例。则询价结果为ECS实例变配价格（本例由于是降配，则是退款）和新购RDS实例的价格总和。",
+        "en": "The stack ID.\n\nThis parameter is used to query the estimated price in a configuration change scenario.\n\nAssume that the specified stack contains only one Elastic Compute Service (ECS) instance and the instance type is ecs.s6-c1m2.large. You downgrade the instance type to ecs.s6-c1m1.small and specify a new ApsaraDB RDS instance in the template that is used for the price inquiry. The queried result is the sum of the downgrade refund of the ECS instance and the price of the new ApsaraDB RDS instance."
+      }
     },
     {
       "name": "TemplateBody",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板主体的结构。长度为1~524,288个字节。如果长度较长，则建议通过HTTP POST+Body Param的方式，将参数放在请求体中进行传递，避免因URL过长而导致请求失败。\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The structure that contains the template body. The template body must be 1 to 524,288 bytes in length. If the length of the template body exceeds the upper limit, we recommend that you add parameters to the HTTP POST request body to prevent request failures caused by excessively long URLs.\n\n> You must and can specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板ID。支持共享模板和私有模板。\n\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The value of parameter N.\n\nMaximum value of N: 200.\n\nExamples:\n\n- Parameters.1.ParameterValue: `DemoEip`\n\n- Parameters.2.ParameterValue: `public`\n\n> The Parameters parameter is optional. If you want to specify Parameters, you must specify both Parameters.N.ParameterKey and Parameters.N.ParameterValue."
+      }
     },
     {
       "name": "TemplateScratchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源场景ID。\n\n关于如何获取资源场景ID，请参见[ListTemplateScratches](~~363050~~)。\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The ID of the scenario."
+      }
     },
     {
       "name": "TemplateScratchRegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源场景所属的地域ID，默认与RegionId取值相同。\n\n您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the scenario. The default value is the same as the value of the RegionId parameter.\n\nYou can call the [DescribeRegions](~~131035~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "TemplateURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含模板主体的文件的位置。URL必须指向位于Web服务器（HTTP或HTTPS）或阿里云OSS存储空间（例如：oss://ros/stack-policy/demo、oss://ros/stack-policy/demo?RegionId=cn-hangzhou）中的模板，模板的最大长度为524,288个字节。如未指定OSS地域，默认与RegionId取值相同。 \n\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must make sure that the value is unique among different requests.\n\nThe token can be up to 64 characters in length, and can contain letters, digits, hyphens (-), and underscores (\\_).\n\nFor more information, see [Ensure idempotence](~~134212~~)."
+      }
     },
     {
       "name": "TemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板版本。仅在指定TemplateId时生效。",
+        "en": "The ID of the scenario.\n\nFor more information about how to query the IDs of scenarios, see [ListTemplateScratches](~~363050~~).\n\n> You must specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询模板中创建资源的预估价格",
+    "en": "GetTemplateEstimateCost"
+  },
+  "descriptions": {
+    "zh": "- ROS模板支持询价的资源，请参见[预估资源价格](~~203165~~)的**支持询价的资源类型**章节。\n\n- Terraform模板支持询价的资源，请参见[Terraform支持的功能和资源](~~184389~~)的**ROS资源支持情况**章节。\n\n本文将提供一个示例，查询模板中创建的EIP资源的预估价格。\n示例如下：\n```\n{\n  \"ROSTemplateFormatVersion\": \"2015-09-01\",\n  \"Parameters\": {\n    \"Isp\": {\n      \"Type\": \"String\",\n      \"Default\": \"BGP\"\n    },\n    \"Name\": {\n      \"Type\": \"String\",\n      \"Default\": \"test\"\n    },\n    \"Netmode\": {\n      \"Type\": \"String\",\n      \"Default\": \"public\"\n    },\n    \"Bandwidth\": {\n      \"Type\": \"Number\",\n      \"Default\": 5\n    }\n  },\n  \"Resources\": {\n    \"NewEip\": {\n      \"Type\": \"ALIYUN::VPC::EIP\",\n      \"Properties\": {\n        \"InstanceChargeType\": \"Prepaid\",\n        \"PricingCycle\": \"Month\",\n        \"Isp\": {\n          \"Ref\": \"Isp\"\n        },\n        \"Period\": 1,\n        \"DeletionProtection\": false,\n        \"AutoPay\": false,\n        \"Name\": {\n          \"Ref\": \"Name\"\n        },\n        \"InternetChargeType\": \"PayByTraffic\",\n        \"Netmode\": {\n          \"Ref\": \"Netmode\"\n        },\n        \"Bandwidth\": {\n          \"Ref\": \"Bandwidth\"\n        }\n      }\n    }\n  }\n}\n```",
+    "en": "###\n\n- For more information about the resources that support price inquiry in Resource Orchestration Service (ROS) templates, see the \"**Resource types that support price inquiry**\" section of the [Estimate resource prices](~~203165~~) topic.\n\n- For more information about the resources that support price inquiry in Terraform templates, see the \"**ROS resources supported by Terraform**\" section of the [ROS features and resources supported by Terraform](~~184389~~) topic.\n\nThe following sample code provides an example on how to query the estimated price of an elastic IP address (EIP) that you want to create based on a template. In this example, the following template is used:\n\n```\n{\n  \"ROSTemplateFormatVersion\": \"2015-09-01\",\n  \"Parameters\": {\n    \"Isp\": {\n      \"Type\": \"String\",\n      \"Default\": \"BGP\"\n    },\n    \"Name\": {\n      \"Type\": \"String\",\n      \"Default\": \"test\"\n    },\n    \"Netmode\": {\n      \"Type\": \"String\",\n      \"Default\": \"public\"\n    },\n    \"Bandwidth\": {\n      \"Type\": \"Number\",\n      \"Default\": 5\n    }\n  },\n  \"Resources\": {\n    \"NewEip\": {\n      \"Type\": \"ALIYUN::VPC::EIP\",\n      \"Properties\": {\n        \"InstanceChargeType\": \"Prepaid\",\n        \"PricingCycle\": \"Month\",\n        \"Isp\": {\n          \"Ref\": \"Isp\"\n        },\n        \"Period\": 1,\n        \"DeletionProtection\": false,\n        \"AutoPay\": false,\n        \"Name\": {\n          \"Ref\": \"Name\"\n        },\n        \"InternetChargeType\": \"PayByTraffic\",\n        \"Netmode\": {\n          \"Ref\": \"Netmode\"\n        },\n        \"Bandwidth\": {\n          \"Ref\": \"Bandwidth\"\n        }\n      }\n    }\n  }\n}\n```"
+  },
   "example": {
     "unifiedCli": "aliyun ros get-template-estimate-cost --template-url oss://ros-template/demo --biz-region-id cn-hangzhou --template-body ROSTemplateFormatVersion:_2015-09-01_nResources:_n_vpc:_n_Type:_ALIYUN::ECS::VPC --client-token 123e4567-e89b-12d3-a456-426655440000 --template-id 5ecd1e10-b0e9-4389-a565-e4c15efc0000 --template-version v1 --parameters ParameterValue=DemoEip ParameterKey=Name --template-scratch-id ts-aa9c62feab844a6b0000 --template-scratch-region-id cn-hangzhou --stack-id c754d2a4-28f1-46df-b557-9586173a0000 --region cn-hangzhou",
     "legacyCli": "aliyun ros GetTemplateEstimateCost --region cn-hangzhou --TemplateURL 'oss://ros-template/demo' --TemplateScratchRegionId 'cn-hangzhou' --Parameters.1.ParameterKey Name --TemplateVersion v1 --RegionId 'cn-hangzhou' --TemplateBody 'ROSTemplateFormatVersion:_2015-09-01_nResources:_n_vpc:_n_Type:_ALIYUN::ECS::VPC' --TemplateScratchId 'ts-aa9c62feab844a6b0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Parameters.1.ParameterValue DemoEip --TemplateId '5ecd1e10-b0e9-4389-a565-e4c15efc0000' --StackId 'c754d2a4-28f1-46df-b557-9586173a0000'"

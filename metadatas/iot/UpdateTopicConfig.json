@@ -1,5 +1,6 @@
 {
   "name": "UpdateTopicConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -20,7 +21,11 @@
       "name": "EnableBroadcast",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否支持保留消息广播。\n\n- **true**：是。\n- **false**：否。",
+        "en": "Specifies whether to enable the retained message broadcasting feature for a custom topic.\n\n*   **true**\n*   **false**"
+      }
     },
     {
       "name": "EnableProxySubscribe",
@@ -32,7 +37,11 @@
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The instance ID. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n>  If your instance has an ID, you must specify this parameter. Otherwise, the request fails. If no Overview page exists or no instance ID is displayed, you do not need to specify this parameter.\n\nFor more information, see the [Overview](~~356505~~) topic of IoT instances."
+      }
     },
     {
       "name": "Operation",
@@ -44,15 +53,34 @@
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要接收消息的设备所属产品的**ProductKey**。",
+        "en": "The **ProductKey** of the product to which the device belongs. The device receives the retained message."
+      }
     },
     {
       "name": "TopicFullName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要广播消息的自定义Topic。\n\n\n- 对于<props=\"china\"><ph>开源MQTT托管形态设备和</ph></props>MQTT云网关设备，自定义Topic为设备的原始自定义Topic。详细内容，请参见[Topic说明](~~433806~~)。\n- 对于<props=\"china\"><ph>非开源MQTT托管形态设备和</ph></props>非MQTT云网关设备，自定义Topic的格式为`/broadcast/${productKey}/${自定义字段}`。其中`${productKey}`与请求参数**ProductKey**值一致，`${自定义字段}`为您自定义的任意字段。\n\n><notice> \n- Topic是在设备开发时编码定义的，无需控制台创建。\n- Topic的操作权限必须为**订阅**或**发布和订阅**。\n\n></notice>",
+        "en": "The custom topic for which you want to enable the retained message broadcasting feature.\n\n*   If you use an MQTT gateway device, set this parameter to the original custom topic of the device. For more information, see [Topics](~~433806~~).\n*   If you use a non-MQTT gateway device, set this parameter to a custom topic in the following format: `/broadcast/${productKey}/${Custom field}`. `${productKey}` is the value of the **ProductKey** request parameter. You can specify `${Custom field}` based on your business requirements.\n\n>  When you develop devices, use code to define a broadcast topic. You do not need to create a topic in the IoT Platform console. You must grant devices the Subscribe permission or the Publish and Subscribe permission on the topic."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "UpdateTopicConfig",
+    "en": "UpdateTopicConfig"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n一个自定义Topic广播消息时，最多可被1,000个设备订阅。若后续需要新增更多设备订阅该自定义Topic的广播消息，可使用MQTT 5.0版本通信协议进行通信，通过设置自定义Topic支持保留消息广播和设置自定义Topic消息为保留消息来实现。\n具体步骤为：\n\n1. 调用本接口设置指定的自定义Topic（例如：`/broadcast/a1Q5XoY****/test`）支持保留消息广播，即**EnableBroadcast**设置为**true**。\n2. 调用[Pub](~~69793~~)接口向该自定义Topic（例如：`/broadcast/a1Q5XoY****/test`）发布广播消息，并设置为保留消息，即**Retained**设置为**true**。\n3. 调用[SubscribeTopic](~~311869~~)接口，新增设备订阅该自定义Topic（例如：`/broadcast/a1Q5XoY****/test`），设备即可收到上一步向该自定义Topic发送的保留消息。\n\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为100。\n> RAM用户共享阿里云账号配额。",
+    "en": "## Usage notes\n\nYou can subscribe to the broadcast messages of a custom topic for up to 1,000 devices. If you want to subscribe to the broadcast messages of a custom topic for more than 1,000 devices, you can use Message Queuing Telemetry Transport (MQTT) 5.0 for communication, allow the custom topic to broadcast retained messages, and label messages of the custom topic as retained messages. Perform the following steps:\n\n1.  Call this operation and set **EnableBroadcast** to **true** to allow a custom topic to broadcast retained messages. In this example, the `/broadcast/a1Q5XoY****/test` custom topic is used.\n2.  Call the [Pub](~~69793~~) operation to publish a broadcast message to the custom topic and set **Retained** to **true** to label the message as a retained message.``\n3.  Call the [SubscribeTopic](~~311869~~) operation to allow a device to subscribe to the custom topic. This way, the device can receive the retained message that was published to the custom topic in the previous step.``\n\n## QPS limits\n\nYou can call this operation up to 100 times per second per account.\n\n> The RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot update-topic-config --iot-instance-id iot-0pp1n8t0000 --product-key a1Q5XoY0000 --enable-broadcast true --enable-proxy-subscribe true --codec example-string --operation example-string --topic-full-name /broadcast/a1Q5XoY0000/test --description example-string --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot UpdateTopicConfig --region cn-hangzhou --Codec 'example-string' --Description 'example-string' --IotInstanceId 'iot-0pp1n8t0000' --EnableProxySubscribe true --Operation 'example-string' --ProductKey a1Q5XoY0000 --EnableBroadcast true --TopicFullName '/broadcast/a1Q5XoY0000/test'"

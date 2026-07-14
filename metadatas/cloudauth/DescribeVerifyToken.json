@@ -1,5 +1,6 @@
 {
   "name": "DescribeVerifyToken",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,93 +9,164 @@
       "name": "BizId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "认证ID。标识一次认证任务的唯一ID，不超过64字符。针对一次认证任务，系统支持无限次发起提交，直到最终认证通过，该任务完结。\n\n> 发起不同的认证任务时需要更换不同的BizId。",
+        "en": "The authentication ID. A unique ID that identifies an authentication task. The value can be up to 64 characters in length. For a single authentication task, the system supports unlimited submissions until the authentication is passed and the task is completed.\n\n> Use a different BizId for each different authentication task."
+      }
     },
     {
       "name": "BizType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "使用实人认证服务的业务场景标识。请先参见[业务设置](~~127885~~)在控制台完成创建。",
+        "en": "The business scenario identifier for using the ID Verification service. Create one in the console first. For more information, see [Business settings](~~127885~~)."
+      }
     },
     {
       "name": "CallbackSeed",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "回调种子。",
+        "en": "The callback seed."
+      }
     },
     {
       "name": "CallbackUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "回调Url。",
+        "en": "The callback URL."
+      }
     },
     {
       "name": "FaceRetainedImageUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "人像留底照片的HTTP或HTTPS链接。",
+        "en": "The HTTP or HTTPS URL of the retained face photo."
+      }
     },
     {
       "name": "FailedRedirectUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "验证失败跳转链接。",
+        "en": "The redirect URL upon verification failure."
+      }
     },
     {
       "name": "IdCardBackImageUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "身份证国徽面图片的HTTP或HTTPS链接。",
+        "en": "The HTTP or HTTPS URL of the national emblem side of the ID card image."
+      }
     },
     {
       "name": "IdCardFrontImageUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "身份证人像面图片的HTTP或HTTPS链接。",
+        "en": "The HTTP or HTTPS URL of the portrait side of the ID card image."
+      }
     },
     {
       "name": "IdCardNumber",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "身份证号。",
+        "en": "The ID card number."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "姓名。",
+        "en": "The name."
+      }
     },
     {
       "name": "PassedRedirectUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "验证通过跳转链接。",
+        "en": "The redirect URL upon successful verification."
+      }
     },
     {
       "name": "UserId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端用户的ID，如终端用户的账号ID。",
+        "en": "The ID of the end user, such as the account ID of the end user."
+      }
     },
     {
       "name": "UserIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户IP。",
+        "en": "The IP address of the user."
+      }
     },
     {
       "name": "UserPhoneNumber",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户电话号码。",
+        "en": "The phone number of the user."
+      }
     },
     {
       "name": "UserRegistTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户的注册时间。使用时间戳格式表达，单位：毫秒。",
+        "en": "The registration time of the user. Specify the value in UNIX timestamp format. Unit: milliseconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取认证Token",
+    "en": "Obtain an authentication token"
+  },
+  "descriptions": {
+    "zh": "接入准备：接入该API时，请确保已经完成相应的准备工作，具体请参见[实人认证方案接入流程概述](~~127536~~)、[活体人脸验证方案（活体检测方案）接入流程概述](~~127687~~)。\n\n请求方法：HTTPS POST和GET\n\n接口说明：每次开始认证前通过本接口获取认证Token（VerifyToken），用来串联认证请求中的各个接口。\n\n适用范围：该接口适用于无线SDK接入。\n\n图片地址：需使用HTTP或HTTPS地址，公网可访问的HTTP或HTTPS地址。例如，`http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`。\n\n图片限制：\n\n- 不支持本地图片的相对路径或绝对路径。\n- 单张图片大小请控制在2 MB内，避免算法拉取超时。\n- 图片中人脸区域的大小至少64*64像素（px）。\n- 单个请求的Body有8 MB的大小限制，请计算好请求中所有图片和其他信息的大小，不要超限。",
+    "en": "Preparations: Before calling this operation, make sure that you have completed the required preparations. For more information, see [Overview of the ID Verification scheme integration process](~~127536~~) and [Overview of the face liveness verification scheme (liveness detection scheme) integration process](~~127687~~).\n\nRequest method: HTTPS POST and GET.\n\nOperation description: Before each authentication, call this operation to obtain an authentication token (VerifyToken), which is used to connect the various operations in the authentication request.\n\nScope of application: This operation is applicable to mobile SDK integration.\n\nImage URL: Use a publicly accessible HTTP or HTTPS URL. Example: `http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`.\n\nImage limits:\n\n- The relative path or absolute path of local images is not supported.\n- Keep the size of a single image within 2 MB to avoid algorithm fetch timeout.\n- The face area in the image must be at least 64 × 64 pixels (px).\n- The body of a single request has a size limit of 8 MB. Make sure that the total size of all images and other information in the request does not exceed this limit."
+  },
   "example": {
     "unifiedCli": "aliyun cloudauth describe-verify-token --id-card-back-image-url http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg --biz-type RPBasicTest --failed-redirect-url - --face-retained-image-url http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg --callback-seed - --id-card-front-image-url http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg --user-id user111 --biz-id 39ecf51e-2f81-4dc5-90ee-ff86125be683 --name '张三' --id-card-number 330100xxxxxxxxxxxx --passed-redirect-url - --callback-url - --user-ip 192.168.000.000 --user-phone-number 18700000000 --user-regist-time 1577808000000 --api-version 2019-03-07 --region cn-hangzhou",
     "legacyCli": "aliyun cloudauth DescribeVerifyToken --region cn-hangzhou --UserIp '192.168.000.000' --IdCardNumber 330100xxxxxxxxxxxx --BizType RPBasicTest --IdCardBackImageUrl 'http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg' --UserRegistTime 1577808000000 --FailedRedirectUrl '-' --Name '张三' --CallbackUrl '-' --FaceRetainedImageUrl 'http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg' --UserId user111 --UserPhoneNumber 18700000000 --CallbackSeed '-' --BizId '39ecf51e-2f81-4dc5-90ee-ff86125be683' --IdCardFrontImageUrl 'http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg' --PassedRedirectUrl '-'"

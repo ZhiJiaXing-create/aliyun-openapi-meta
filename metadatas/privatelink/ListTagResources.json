@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否拥有下一次查询的令牌（Token）。取值：\n\n- 第一次查询和没有下一次查询时，均无需填写。\n\n- 如果有下一次查询，取值为上一次API调用返回的**NextToken**值。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results.\n\n- If this is your first request or no next requests are to be sent, you do not need to specify this parameter.\n\n- If a next request is to be sent, you must specify the token that is obtained from the previous request as the value of **NextToken**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源所属的地域ID。您可以通过调用[describeregions](~~120468~~)接口获取地域ID。",
+        "en": "The ID of the region where the resource resides. You can call the [DescribeRegions](~~120468~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID列表。最多支持50个资源ID。",
+        "en": "The resource IDs. You can specify up to 50 resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n\n- **vpcendpoint**：终端节点。                                \n\n- **vpcendpointservice**：终端节点服务。",
+        "en": "The type of the resource. Valid values:\n\n- **vpcendpoint**: endpoint\n\n- **vpcendpointservice**: endpoint service"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags to add to the resource."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源已经绑定的标签列表",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "- 请求中至少指定参数**ResourceId.N**或**Tag.N**（**Tag.N.Key**与**Tag.N.Value**），以确定检索对象。\n\n- **Tag.N**是资源的标签，由一个键值对组成。仅指定**Tag.N.Key**时，则返回该标签键关联的所有标签值。仅指定**Tag.N.Value**会报错。\n\n- 如果您同时指定**Tag.N**和**ResourceId.N**筛选标签，则**ResourceId.N**必须满足所有输入的标签键值对。\n\n- 如果您同时指定多个标签键值对，返回结果为同时包含被指定的多个键值对的资源。",
+    "en": "- You must specify **ResourceId.N** or **Tag.N** in the request to specify the object that you want to query.\n\n- **Tag.N** is a resource tag that consists of a key-value pair (Tag.N.Key and Tag.N.Value). If you specify only **Tag.N.Key**, all tag values that are associated with the specified key are returned. If you specify only **Tag.N.Value**, an error message is returned.\n\n- If you specify **Tag.N** and **ResourceId.N** to filter tags, **ResourceId.N** must match all specified key-value pairs.\n\n- If you specify multiple key-value pairs, resources that contain these key-value pairs are returned."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink list-tag-resources --resource-id ep-hp3i05294c2d2d000000 --resource-type vpcendpoint --tag Value=FinanceJoshua Key=FinanceDept --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --biz-region-id cn-hangzhou --next-token caeba0bbb2be03f84eb48b699f0a0000 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink ListTagResources --region cn-hangzhou --ResourceId.1 'ep-hp3i05294c2d2d000000' --Tag.1.Key FinanceDept --NextToken caeba0bbb2be03f84eb48b699f0a0000 --Tag.1.Value FinanceJoshua --ResourceType vpcendpoint --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --method POST --force"

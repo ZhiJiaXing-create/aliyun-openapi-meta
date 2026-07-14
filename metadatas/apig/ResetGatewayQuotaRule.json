@@ -1,0 +1,54 @@
+{
+  "name": "ResetGatewayQuotaRule",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "/v1/gateways/[gatewayId]/quota-rules/[ruleId]/reset",
+  "parameters": [
+    {
+      "name": "body",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "请求体内容",
+        "en": "The request body."
+      }
+    },
+    {
+      "name": "gatewayId",
+      "position": "Path",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "网关唯一标识",
+        "en": "The unique identifier of the gateway."
+      }
+    },
+    {
+      "name": "ruleId",
+      "position": "Path",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "规则ID",
+        "en": "The ID of the rule."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重置消费者配额规则",
+    "en": "Reset a consumer quota rule"
+  },
+  "descriptions": {
+    "zh": "该接口用于重置网关上某条配额限流规则。注意，只针对于版本大于 2.1.19 的 AI 网关生效；重置将清零规则上消费者历史用量。\n> \n>  推荐调用逻辑：\n> - 一、先 dryRun 预检检验是否存在规则冲突\n> - - 传dryRun=true\n> - - 返回含conflictHash的冲突预览\n> - 二、确认后正式提交\n> - - 无冲突：dryRun=false,overwrite=false\n> - - 有冲突且确认覆盖：dryRun=false,overwrite=true, conflictHash=<上一步返回的值＞",
+    "en": "Resets a quota throttling rule on a gateway. This operation takes effect only on AI gateways running version 2.1.19 or later. Resetting a rule clears the historical usage of consumers associated with the rule.\n> \n>  Recommended call sequence:\n> - 1. Perform a dry run to check for rule conflicts.\n> - - Set dryRun to true.\n> - - The response contains a conflict preview with conflictHash.\n> - 2. Submit the request after confirmation.\n> - - No conflicts: Set dryRun to false and overwrite to false.\n> - - Conflicts exist and you confirm the overwrite: Set dryRun to false, overwrite to true, and conflictHash to the value returned in the previous step."
+  },
+  "example": {
+    "unifiedCli": "aliyun apig reset-gateway-quota-rule --gateway-id gw-123456 --rule-id qr-d8j7fpmm1hksxxxxxx --region cn-hangzhou",
+    "legacyCli": "aliyun apig POST /v1/gateways/gw-123456/quota-rules/qr-d8j7fpmm1hksxxxxxx/reset --region cn-hangzhou --header \"Content-Type=application/json\" --body \"key_:_value\""
+  }
+}

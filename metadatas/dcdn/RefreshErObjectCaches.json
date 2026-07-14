@@ -1,5 +1,6 @@
 {
   "name": "RefreshErObjectCaches",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当回源内容和源站资源对比后不一致时，是否刷新对应目录下的资源。默认为false。\n- **true**：刷新对应目录下的全部资源。\n- **false**：刷新对应目录下发生变更的资源。",
+        "en": "Specifies whether to refresh all resources in the corresponding directory when the back-to-origin content is inconsistent with the origin server resources. Default value: false.\n- **true**: Refreshes all resources in the corresponding directory.\n- **false**: Refreshes only the changed resources in the corresponding directory."
+      }
     },
     {
       "name": "MergeDomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "合并刷新域名，刷新的时候会合并域名的调度域节点进行刷新。\n>多个域名之间用英文逗号（,）隔开。",
+        "en": "The domain names to merge for refresh. When a refresh is performed, the scheduling node of the merged domain names is refreshed.\n>Separate multiple domain names with commas (,)."
+      }
     },
     {
       "name": "ObjectPath",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "刷新URL。\n>- 多个URL之间用换行符分隔，ObjectPath的单条长度最长为1024个字符。\n>- 一次请求中的URL都必须属于同一个域名。\n>- 一次请求最多包含1000条URL。",
+        "en": "The URLs to refresh.\n>- Separate multiple URLs with line breaks. Each URL can be up to 1,024 characters in length.\n>- All URLs in a single request must belong to the same domain name.\n>- Each request can contain up to 1,000 URLs."
+      }
     },
     {
       "name": "ObjectType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "刷新类型。取值范围：\n\n- **File**（默认值）：URL。\n- **Directory**：目录。\n- **Regex**：正则刷新。\n- **IgnoreParams**：去参数刷新。去参数指的是去除请求URL中`?`及`?`之后的参数，去参数刷新指的是用户先通过接口提交去参数后的URL，然后用户提交的待刷新URL将会与已缓存资源的URL进行去参数匹配，如果已缓存资源的URL去参数以后与待刷新URL匹配，那么CDN节点将对缓存资源执行刷新处理。\n\n>目录刷新默认采用标记资源过期的处理方式，不支持删除目录。目录刷新会将节点上对应目录置为过期，后续有用户访问时，DCDN节点将会回源站校验目录是否更新，有更新时从源站重新拉取新版本返回给用户，未有更新时源站响应304状态码。",
+        "en": "The refresh type. Valid values:\n\n- **File** (default): URL.\n- **Directory**: directory refresh.\n- **Regex**: regular expression-based refresh.\n- **IgnoreParams**: purge by URL with parameters ignored. This refers to removing the `?` and all parameters after `?` from the request URL. When you submit a URL with parameters removed through this operation, the submitted URL is matched against cached resource URLs after their parameters are removed. If a cached resource URL matches the submitted URL after parameter removal, the point of presence (POP) executes the refresh on the cached resource.\n\n>Directory refresh marks resources as expired by default. You cannot delete a directory. Directory refresh marks the corresponding directory on POPs as expired. When a user subsequently accesses the directory, the DCDN POP performs back-to-origin validation with the origin server to check whether the directory has been updated. If updated, the POP retrieves the new version from the origin server and returns it to the user. If not updated, the origin server returns a 304 status code in the response."
+      }
     },
     {
       "name": "RoutineId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "边缘函数脚本的程序ID，也叫函数ID，由\"Name.Subdomain\"组合而成，作为客户边缘函数代码的唯一标识。\n\n>- 当刷新Cache API写入的缓存时，需要指定此字段。\n>- 当刷新Fetch子请求写入的缓存时，不需要指定此字段。",
+        "en": "The routine ID of the edge function script, also known as the function ID. It is composed of \"Name.Subdomain\" and serves as the unique identifier for the edge function code.\n\n>- Specify this parameter when refreshing caches written through the Cache API.\n>- Do not specify this parameter when refreshing caches written through fetch subrequests."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "刷新边缘函数缓存",
+    "en": "Refresh edge function caches"
+  },
+  "descriptions": {
+    "zh": "> \n> - 请求方式：支持POST请求，参数用form表单显示。\n> - 相关接口：刷新类接口包含[RefreshDcdnObjectCaches](~~130620~~)刷新接口。\n> - URL刷新配额（每日）：默认情况下，一个账号每日最多可以提交10000条URL刷新和100个目录刷新，目录刷新包含子目录。\n> - 每次请求最多支持提交1000条URL刷新或者100个目录刷新。\n> - 单个域名每分钟最多支持提交1000条URL刷新。\n> - 单用户调用频率：30次/秒。",
+    "en": "> \n> - Request method: POST requests are supported. Parameters are displayed in a form.\n> - Related operations: Refresh operations include the [RefreshDcdnObjectCaches](~~130620~~) operation.\n> - URL refresh quota (daily): By default, each account can submit up to 10,000 URL refresh requests and 100 directory refresh requests per day. Directory refresh includes subdirectories.\n> - Each request can contain up to 1,000 URL refresh requests or 100 directory refresh requests.\n> - Each domain name supports up to 1,000 URL refresh requests per minute.\n> - Maximum number of calls per user: 30 calls per second."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn refresh-er-object-caches --object-path http://example.com/examplefile.txt_http://example.com/examplefile2.txt --object-type File --merge-domain-name a.test.com,b.test.com --routine-id test.mysubdomain --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun dcdn RefreshErObjectCaches --region cn-hangzhou --MergeDomainName 'a.test.com,b.test.com' --ObjectType File --ObjectPath 'http://example.com/examplefile.txt_http://example.com/examplefile2.txt' --Force false --RoutineId 'test.mysubdomain'"

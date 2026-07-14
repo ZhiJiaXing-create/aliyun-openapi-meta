@@ -1,5 +1,6 @@
 {
   "name": "DeleteTransitRouterPeerAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that you want to use to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "A client token that is used to ensure the idempotence of the request.\n\nGenerate a token from your client to ensure that the token is unique among different requests. The ClientToken parameter can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each request is different."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次删除请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认值）：发送正常请求，通过检查后直接删除跨地域连接。\n- **true**：发送检查请求，只进行校验，不会删除跨地域连接。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。",
-        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **false** (default): performs a dry run and sends the request.\n*   **true**: performs a dry run. The system checks the required parameters and request syntax. If the request fails to pass the check, an error message is returned. If the request passes the dry run, the system returns the ID of the request."
+        "en": "Specifies whether to perform a dry run. A dry run checks permissions and the status of the instance. Valid values:\n\n- **false** (default): sends the request. If the request passes the check, the inter-region connection is deleted.\n\n- **true**: sends a check request. The system checks the required parameters and the request format. If the request fails the check, an error is returned. If the request passes the check, the corresponding request ID is returned. The inter-region connection is not deleted."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "是否强制删除跨地域连接，取值：\n- **false**（默认值）：删除跨地域连接前校验是否存在相关资源依赖，如关联转发、路由学习等。如果存在相关依赖，则不允许删除，返回对应错误。\n- **true**：删除跨地域连接时，默认删除所有相关依赖。",
-        "en": "Specifies whether to forcefully delete the inter-region connection. Valid values:\n\n*   **false** (default): Check for relevant resources, including associated forwarding and route learning, before deleting the inter-region connection. If such a resource exists, the VPC connection is not deleted and an error message is returned.\n*   **true**: Delete the inter-region connection and all relevant resources."
+        "en": "Specifies whether to forcefully delete the inter-region connection. Valid values:\n\n- **false** (default): checks for resource dependencies, such as associated forwarding and route learning, before deleting the inter-region connection. If dependencies exist, the deletion is not allowed and an error is returned.\n\n- **true**: deletes all related dependencies when deleting the inter-region connection."
       }
     },
     {
@@ -45,6 +46,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除企业版转发路由器下的跨地域连接",
+    "en": "DeleteTransitRouterPeerAttachment"
+  },
+  "descriptions": {
+    "zh": "**DeleteTransitRouterPeerAttachment**接口属于异步接口，即系统会先返回一个**RequestId**，但该跨地域连接并未删除完成，系统后台的删除任务仍在进行。您可以调用**ListTransitRouterPeerAttachments**接口查询跨地域连接的状态。\n\n- 当跨地域连接处于**Detaching**状态时，表示跨地域连接正在删除中，在该状态下，您只能对跨地域连接执行查询操作，不能执行其他操作。\n- 当查询不到指定的跨地域连接时，表示跨地域连接删除完成。\n\n在调用**DeleteTransitRouterPeerAttachment**接口过程时请确保输入的参数值无误。如果您输入的参数有误调用接口后仍然会返回**RequestId**，但不会删除企业版转发路由器下的跨地域连接。",
+    "en": "The **DeleteTransitRouterPeerAttachment** operation is asynchronous. After you send a request, the system returns a **RequestId**, but the inter-region connection is not immediately deleted. The system deletes the connection in the background. You can call the **ListTransitRouterPeerAttachments** operation to query the status of the inter-region connection.\n\n- If an inter-region connection is in the **Detaching** state, it is being deleted. In this state, you can only query the connection and cannot perform other operations.\n\n- If the specified inter-region connection is not found, the connection has been deleted.\n\nMake sure that you specify valid parameter values when you call the **DeleteTransitRouterPeerAttachment** operation. If you specify an invalid parameter value, the system returns a **RequestId** but does not delete the inter-region connection."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-transit-router-peer-attachment --client-token 02fb3da4-130e-11e9-8e44-0010000 --transit-router-attachment-id tr-attach-gyjhtx9sjsxhm60000 --dry-run false --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteTransitRouterPeerAttachment --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-gyjhtx9sjsxhm60000' --Force false --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

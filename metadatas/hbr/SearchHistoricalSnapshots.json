@@ -1,5 +1,6 @@
 {
   "name": "SearchHistoricalSnapshots",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "Edition",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "版本类型，支持BASIC和STANDARD，默认值为STANDARD。",
+        "en": "The edition. Valid values are BASIC and STANDARD. The default value is STANDARD."
+      }
     },
     {
       "name": "Limit",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本次查询需要返回的最大数量。\n如果只为了获取行数，无需具体数据，可以设置`limit=0`，即不返回任意一行数据。",
+        "en": "The maximum number of results to return.\nTo retrieve only the number of rows without any data, set Limit to `0`."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取下一页快照所需的Token。",
+        "en": "The token that is required to obtain the next page of snapshots."
+      }
     },
     {
       "name": "Order",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方式，默认值为ASC。\n- ASC：升序\n- DESC：降序",
+        "en": "The sort order. The default value is ASC.\n\n- ASC: ascending\n\n- DESC: descending"
+      }
     },
     {
       "name": "Query",
       "position": "Query",
       "type": "Json",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询条件。Query示例如下：\n\n```\n[\n  {\n    \"field\": \"VaultId\",\n    \"value\": \"v-0003rf9m*****qx5\",\n    \"operation\": \"MATCH_TERM\"\n  },\n  {\n    \"field\": \"InstanceId\",\n    \"value\": \"i-bp1i20zq2*****e9368m\",\n    \"operation\": \"MATCH_TERM\"\n  },\n  {\n    \"field\": \"PlanId\",\n    \"value\": \"plan-0005vk*****gkd1iu4f\",\n    \"operation\": \"MATCH_TERM\"\n  },\n  {\n    \"field\": \"CompleteTime\",\n    \"value\": \"1626769913\",\n    \"operation\": \"GREATER_THAN_OR_EQUAL\"\n  }\n]\n```\n\n- 支持的field如下：\n\n    - VaultId：必选参数，表示仓库ID。\n    - InstanceId：仅当SourceType=ECS_FILE时，必选参数，表示ECS实例ID。\n    -  Bucket ：仅当SourceType=OSS时，必选参数，表示OSS bucket名称。\n    - FileSystemId：仅当SourceType=NAS时，必选参数，表示NAS文件系统ID。\n    - CreateTime ：仅当SourceType=NAS时，必选参数，表示NAS文件系统创建时间。\n    - CompleteTime：快照完成时间。\n    - PlanId：备份计划ID。\n\n- 支持的operation如下：\n\n    - MATCH_TERM：精确匹配。\n    - GREATER_THAN：大于。\n    - GREATER_THAN_OR_EQUAL：大于等于。\n    - LESS_THAN：小于。\n    - LESS_THAN_OR_EQUAL：小于等于。\n    - BETWEEN：区间，value为JSON数组` [下界,上界]`。\n    - IN：在集合中，value为数组。\n    - NOT_IN：不在集合中，value为数组。",
+        "en": "The query conditions. For example:\n\n```\n[\n  {\n    \"field\": \"VaultId\",\n    \"value\": \"v-0003rf9m*****qx5\",\n    \"operation\": \"MATCH_TERM\"\n  },\n  {\n    \"field\": \"InstanceId\",\n    \"value\": \"i-bp1i20zq2*****e9368m\",\n    \"operation\": \"MATCH_TERM\"\n  },\n  {\n    \"field\": \"PlanId\",\n    \"value\": \"plan-0005vk*****gkd1iu4f\",\n    \"operation\": \"MATCH_TERM\"\n  },\n  {\n    \"field\": \"CompleteTime\",\n    \"value\": \"1626769913\",\n    \"operation\": \"GREATER_THAN_OR_EQUAL\"\n  }\n]\n```\n\n- Supported fields:\n\n  - VaultId: This parameter is required. The ID of the backup vault.\n\n  - InstanceId: This parameter is required only when SourceType is set to ECS\\_FILE. The ID of the ECS instance.\n\n  - Bucket: This parameter is required only when SourceType is set to OSS. The name of the OSS bucket.\n\n  - FileSystemId: This parameter is required only when SourceType is set to NAS. The ID of the NAS file system.\n\n  - CreateTime: This parameter is required only when SourceType is set to NAS. The time when the NAS file system was created.\n\n  - CompleteTime: The time when the snapshot was completed.\n\n  - PlanId: The ID of the backup plan.\n\n- Supported operations:\n\n  - MATCH\\_TERM: exact match.\n\n  - GREATER\\_THAN: greater than.\n\n  - GREATER\\_THAN\\_OR\\_EQUAL: greater than or equal to.\n\n  - LESS\\_THAN: less than.\n\n  - LESS\\_THAN\\_OR\\_EQUAL: less than or equal to.\n\n  - BETWEEN: a range. The value is a JSON array in the `[lower bound,upper bound]` format.\n\n  - IN: in a collection. The value is an array.\n\n  - NOT\\_IN: not in a collection. The value is an array."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段。",
+        "en": "The field to sort by."
+      }
     },
     {
       "name": "SourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源类型。取值范围：\n* **ECS_FILE**：表示ECS文件的备份快照。\n* **OSS**：表示阿里云OSS的备份快照。\n* **NAS**：表示阿里云NAS的备份快照。",
+        "en": "The type of the data source. Valid values:\n\n- **ECS\\_FILE**: a backup snapshot of ECS files.\n\n- **OSS**: a backup snapshot of Alibaba Cloud OSS.\n\n- **NAS**: a backup snapshot of Alibaba Cloud NAS."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取备份快照",
+    "en": "SearchHistoricalSnapshots"
+  },
   "example": {
     "unifiedCli": "aliyun hbr search-historical-snapshots --source-type ECS_FILE --query field --limit 10 --next-token caeba0bbb2be03f84eb48b699f0a0000 --sort-by CreatedTime --order ASC --edition BASIC --region cn-hangzhou",
     "legacyCli": "aliyun hbr SearchHistoricalSnapshots --region cn-hangzhou --Order ASC --Query '[\"field\"]' --NextToken caeba0bbb2be03f84eb48b699f0a0000 --SortBy CreatedTime --SourceType ECS_FILE --Limit 10 --Edition BASIC"

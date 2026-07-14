@@ -1,5 +1,6 @@
 {
   "name": "ApplyScalingGroup",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "Ensures the idempotence of the request. Generate a value from your client that is unique across different requests. The value can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "Content",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "配置文件内容。",
+        "en": "The content of the configuration file."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "所属地域的ID。",
+        "en": "The region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "ApplyScalingGroup",
+    "en": "ApplyScalingGroup"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\nApplyScalingGroup目前支持以Kubernetes Deployment资源定义格式快速创建ECI伸缩组。同时支持ECI实例对Kubernetes YAML拓展annotation，更多信息，请参见本文的《支持的annotation列表》。\n\n\nYAML配置与伸缩组的映射关系：通过YAML中定义的`namespace`、`kind`、`name`三元组映射伸缩组`name`，一个地域（region）下同一个YAMLl配置只能映射同一个伸缩组。例如：\n如果使用默认命名空间（namespace）下`name`为`nginx`的Deployment YAML配置，则映射同地域（region）下名称为`k8s_default_Deployment_nginx`的伸缩组。\n\n\n基于YAML配置管理伸缩组的逻辑：\n\n- 当YAML配置映射伸缩组存在时，会基于YAML配置更新伸缩组。\n- 当YAML配置映射伸缩组不存在时，会基于YAML配置创建对应伸缩组。\n\n### 注意事项 \n\n- 当YAML配置未指定VPC、vSwitch、安全组annotation时，系统会自动创建默认VPC，在该VPC下会创建默认交换机，以及创建弹性伸缩的默认安全组（`ess-default-sg`）。其中，安全组策略默认开放TCP协议的22、3389端口以及ICMP（IPv4）协议，如果您有其他端口协议需求，可另行调整安全组策略。\n- 当使用公网镜像时，需配置开启公网访问能力，设置`k8s.aliyun.com/eci-with-eip pod annotation`开启EIP功能。\n- ApplyScalingGroup应用YAML配置后，伸缩组及伸缩配置会立即生效，如果指定replicas＞0，则会自动创建资源。\n\n### 支持的annotation列表\n更多annotation信息，请参考[ECI Pod Annotation](~~186939~~) 。\n|参数|示例值|说明|\n|-----|-----|-----|\n|k8s.aliyun.com/ess-scaling-group-min-size|1|伸缩组最小值。默认值：0。\n|k8s.aliyun.com/ess-scaling-group-max-size|20|伸缩组最大值。默认值：max(replicas, 30)。\n|k8s.aliyun.com/eci-ntp-server|100.100.*.*|NTP Server。\n|k8s.aliyun.com/eci-use-specs|2-4Gi|2核4 G规格配置。更多信息，请参见[多规格创建Pod](~~451267~~)。\n|k8s.aliyun.com/eci-vswitch|vsw-bp1xpiowfm5vo8o3c****|指定交换机ID，支持指定多个交换机实现多可用区功能。\n|k8s.aliyun.com/eci-security-group|sg-bp1dktddjsg5nktv****|指定安全组ID。要求如下：支持指定一个或多个安全组，最多可以指定5个安全组；指定的安全组必须属于同一VPC；指定的安全组的类型必须相同。\n|k8s.aliyun.com/eci-sls-enable|\"false\"|配置为false表示关闭日志采集功能。通过SLS CRD方式采集日志时，如果某些Pod不需要采集日志，可配置该Annotation来关闭日志采集功能，避免系统自动创建Logtail而造成资源浪费。\n|k8s.aliyun.com/eci-spot-strategy|SpotAsPriceGo|抢占式实例的出价策略，可根据需要进行配置。SpotWithPriceLimit：自定义设置抢占实例价格上限。此时必须设置`k8s.aliyun.com/eci-spot-price-limit`；SpotAsPriceGo：系统自动出价，跟随当前市场实际价格。\n|k8s.aliyun.com/eci-spot-price-limit|\"0.5\"|抢占式实例的每小时价格上限，最多支持精确到小数点后三位。仅当`k8s.aliyun.com/eci-spot-strategy`设置为`SpotWithPriceLimit`时有效。\n|k8s.aliyun.com/eci-with-eip|\"true\"|配置为true表示自动创建并绑定EIP。\n|k8s.aliyun.com/eci-data-cache-bucket|default|指定DataCache的Bucket。使用DataCache创建Pod时必须配置。\n|k8s.aliyun.com/eci-data-cache-pl|PL1|基于DataCache创建的云盘的性能等级。默认使用ESSD云盘，性能等级默认为PL1。\n|k8s.aliyun.com/eci-data-cache-provisionedIops|\"40000\"|ESSD AutoPL云盘预配置的读写IOPS。取值范围：0~min{50000, 1000 * 容量-基准性能}，基准性能=min{1800+50 * 容量, 50000}。更多信息，请参见[ESSD AutoPL云盘](~~368372~~)。如果添加了该Annotation，则基于DataCache创建的云盘类型为ESSD AutoPL云盘。\n|k8s.aliyun.com/eci-data-cache-burstingEnabled|\"true\"|ESSD AutoPL云盘是否开启Burst（性能突发）。更多信息，请参见[ESSD AutoPL云盘](~~368372~~)。如果添加了该Annotation，则基于DataCache创建的云盘类型为ESSD AutoPL云盘。\n|k8s.aliyun.com/eci-custom-tags|\"env:test,name:alice\"|绑定的标签（Tag）字符串，最多可以绑定3个标签。标签键和标签值之间用半角冒号（:）隔开，多个标签之间用半角逗号（,）隔开。",
+    "en": "## Operation description\nApplyScalingGroup allows you to quickly create ECI scaling groups in the Kubernetes Deployment resource definition format. ECI instances also support Kubernetes YAML extended annotations. For more information, see the \"Supported annotations\" section of this topic.\n\n\nMapping between YAML configurations and scaling groups: A scaling group name is mapped by the `namespace`, `kind`, and `name` triplet defined in the YAML. Within a region, a YAML configuration can map to only one scaling group. For example:\nIf you use a Deployment YAML configuration with `name` set to `nginx` under the default namespace, it maps to a scaling group named `k8s_default_Deployment_nginx` in the same region.\n\n\nLogic for managing scaling groups based on YAML configurations:\n\n- If the scaling group mapped by the YAML configuration exists, the scaling group is updated based on the YAML configuration.\n- If the scaling group mapped by the YAML configuration does not exist, a scaling group is created based on the YAML configuration.\n\n### Before you begin \n\n- If the YAML configuration does not specify VPC, vSwitch, or security group annotations, the system performs automatic creation of a default VPC, a default vSwitch within the VPC, and a default Auto Scaling security group (`ess-default-sg`). The security group policy opens TCP ports 22 and 3389 and the ICMP (IPv4) protocol by default. If you require other port protocols, adjust the security group policy accordingly.\n- When using a public image, enable public network access. Settings the `k8s.aliyun.com/eci-with-eip pod annotation` to enable the EIP feature.\n- After ApplyScalingGroup applies the YAML configuration, the scaling group and scaling configuration take effect immediately. If replicas is set to a value greater than 0, automatic creation of resources occurs.\n\n### Supported annotations\nFor more information about annotations, see [ECI Pod Annotation](~~186939~~).\n|Parameter|Example|Description|\n|-----|-----|-----|\n|k8s.aliyun.com/ess-scaling-group-min-size|1|The minimum number of instances in the scaling group. Default value: 0.\n|k8s.aliyun.com/ess-scaling-group-max-size|20|The maximum number of instances in the scaling group. Default value: max(replicas, 30).\n|k8s.aliyun.com/eci-ntp-server|100.100.*.*|The NTP server.\n|k8s.aliyun.com/eci-use-specs|2-4Gi|The specification of 2 vCPUs and 4 GiB of memory. For more information, see [Create a pod with multiple specifications](~~451267~~).\n|k8s.aliyun.com/eci-vswitch|vsw-bp1xpiowfm5vo8o3c****|The vSwitch ID. You can specify multiple vSwitches to enable the multi-zone feature.\n|k8s.aliyun.com/eci-security-group|sg-bp1dktddjsg5nktv****|The security group ID. You can specify one or more security groups, up to a maximum of five. The specified security groups must belong to the same VPC and must be of the same type.\n|k8s.aliyun.com/eci-sls-enable|\"false\"|Settings this parameter to false to shutdown log collection. When you collect logs by using SLS CRDs, if specific pods do not require log collection, configure this annotation to shutdown log collection and avoid unnecessary resource consumption caused by automatic creation of Logtail.\n|k8s.aliyun.com/eci-spot-strategy|SpotAsPriceGo|The bidding policy for spot instances. Configure as needed. SpotWithPriceLimit: settings a custom price limit for spot instances. You must also set `k8s.aliyun.com/eci-spot-price-limit`. SpotAsPriceGo: the system automatically bids based on the current marketplace price.\n|k8s.aliyun.com/eci-spot-price-limit|\"0.5\"|The maximum hourly price for spot instances, accurate to three decimal places. This parameter is active only when `k8s.aliyun.com/eci-spot-strategy` is set to `SpotWithPriceLimit`.\n|k8s.aliyun.com/eci-with-eip|\"true\"|Settings this parameter to true for automatic creation and attach of an EIP.\n|k8s.aliyun.com/eci-data-cache-bucket|default|The DataCache bucket. This parameter is required when you create a pod by using DataCache.\n|k8s.aliyun.com/eci-data-cache-pl|PL1|The performance level (PL) of the cloud disk created based on DataCache. Standard SSD is used by default, and the default PL is PL1.\n|k8s.aliyun.com/eci-data-cache-provisionedIops|\"40000\"|The provisioned read/write IOPS of the ESSD AutoPL cloud disk. Valid values: 0 to min{50000, 1000 × capacity - baseline performance}. Baseline performance = min{1800 + 50 × capacity, 50000}. For more information, see [ESSD AutoPL cloud disk](~~368372~~). If this annotation is added, the cloud disk created based on DataCache is an ESSD AutoPL cloud disk.\n|k8s.aliyun.com/eci-data-cache-burstingEnabled|\"true\"|Specifies whether to enable burst (I/O burst) for the ESSD AutoPL cloud disk. For more information, see [ESSD AutoPL cloud disk](~~368372~~). If this annotation is added, the cloud disk created based on DataCache is an ESSD AutoPL cloud disk.\n|k8s.aliyun.com/eci-custom-tags|\"env:test,name:alice\"|The label (Tag) character string to attach. You can attach up to three labels. Separate label keys and label values with colons (:), and separate multiple labels with commas (,)."
+  },
   "example": {
     "unifiedCli": "aliyun ess apply-scaling-group --client-token 123e4567-e89b-12d3-a456-426655440000 --content apiVersion:_apps/v1_kind:_Deployment_metadata:_name:_nginx-deployment_labels:_app:_nginx_spec:_replicas:_3_selector:_matchLabels:_app:_nginx_template:_metadata:_labels:_app:_nginx_annotations:_k8s.aliyun.com/eip-bandwidth:_10_k8s.aliyun.com/eci-with-eip:_true_spec:_containers:_-_name:_nginx_image:_nginx:1.14.2_ports:_-_containerPort:_80 --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess ApplyScalingGroup --region cn-hangzhou --Content 'apiVersion:_apps/v1_kind:_Deployment_metadata:_name:_nginx-deployment_labels:_app:_nginx_spec:_replicas:_3_selector:_matchLabels:_app:_nginx_template:_metadata:_labels:_app:_nginx_annotations:_k8s.aliyun.com/eip-bandwidth:_10_k8s.aliyun.com/eci-with-eip:_true_spec:_containers:_-_name:_nginx_image:_nginx:1.14.2_ports:_-_containerPort:_80' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

@@ -1,5 +1,6 @@
 {
   "name": "BatchQueryDeviceDetail",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的设备名称列表。最多可包含100个设备名称。\n\n> 查询的设备必须在同一产品下。",
+        "en": "A list of device names to query. You can specify up to 100 device names.\n\n> The devices to query must belong to the same product."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "**DeviceName.N**中设备所属产品的**ProductKey**。",
+        "en": "The **ProductKey** of the product to which the devices specified by the **DeviceName.N** parameter belong."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量查询设备详情",
+    "en": "Batch Query Device Details"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n- 单次调用最多能查询100个设备。\n- 只能批量查询当前阿里云账号下的设备详情。如果传入的设备信息中，有设备不属于当前账号，则直接返回失败结果。\n- 若传入的设备信息中，包含不存在的设备，则只返回存在的设备详情。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为5。\n\n > RAM用户共享阿里云账号配额。",
+    "en": "## How-To\n\n- You can query up to 100 devices in a single call.\n- You can only batch query device details under the current Alibaba Cloud account. If any device in the provided list does not belong to the current account, the request immediately returns a failed result.\n- If the provided device list includes non-existent devices, only the details of existing devices are returned.\n\n## QPS Limit\nThe maximum queries per second (QPS) for this API is 5 per Alibaba Cloud account.\n\n > Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot batch-query-device-detail --product-key a1BwAGV0000 --iot-instance-id iot-v64000 --device-name example-string --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot BatchQueryDeviceDetail --region cn-hangzhou --IotInstanceId 'iot-v64000' --DeviceName.1 'example-string' --ProductKey a1BwAGV0000"

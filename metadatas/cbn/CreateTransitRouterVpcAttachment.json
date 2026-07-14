@@ -1,5 +1,6 @@
 {
   "name": "CreateTransitRouterVpcAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "是否使企业版转发路由器自动发布路由到VPC实例。\n\n- **false**（默认值）：否。\n- **true**：是。",
-        "en": "Specifies whether to enable the Enterprise Edition transit router to automatically advertise routes to VPCs. Valid values:\n\n*   **false:** (default)\n*   **true**"
+        "en": "Specifies whether to enable the Enterprise Edition transit router to automatically advertise routes to the VPC.\n\n- **false** (default): Do not automatically advertise routes.\n\n- **true**: Automatically advertise routes."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "云企业网实例ID。",
-        "en": "The ID of the Cloud Enterprise Network (CEN) instance."
+        "en": "The ID of the CEN instance."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "付费方式。默认值：**POSTPAY**，表示按量付费。",
-        "en": "The billing method. The default value is **POSTPAY**, which specifies the pay-as-you-go billing method."
+        "en": "The billing method. The default value is **POSTPAY** (pay-as-you-go)."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n>若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+        "en": "The client token used to ensure request idempotency.\n\nYou must generate a value on your client that is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the request ID as the client token, which is unique for each request."
       }
     },
     {
@@ -51,7 +52,16 @@
       "required": false,
       "description": {
         "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认值）：发送正常请求，通过检查后直接创建VPC连接。\n- **true**：发送检查请求，只进行校验，不会创建VPC连接。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。",
-        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **false** (default): performs a dry run and sends the request.\n*   **true**: performs a dry run. The system checks the required parameters and request syntax. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned."
+        "en": "Specifies whether to perform a dry run to check the validity of the request without creating the resource. The check includes permissions and instance status. Valid values:\n\n- **false** (default): Sends a normal request. The system creates the VPC connection if the request is valid.\n\n- **true**: Sends only a check request. The system checks required parameters, request format, and permissions. The VPC connection is not created. If the check fails, an error is returned. If the check succeeds, the `DryRunOperation` error code is returned."
+      }
+    },
+    {
+      "name": "Options",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "功能属性集合。"
       }
     },
     {
@@ -61,7 +71,7 @@
       "required": false,
       "description": {
         "zh": "VPC实例所属地域ID。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
-        "en": "The ID of the region where the VPC is deployed.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query the most recent region list."
+        "en": "The ID of the region where the VPC is located.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query region IDs."
       }
     },
     {
@@ -69,24 +79,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。\n\n一次最多支持输入20个标签信息。",
+        "en": "The tags to add to the VPC connection.\n\nYou can add up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The key of the tag.\n\nThe tag key cannot be an empty string. The key can be up to 64 characters long and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The value of the tag.\n\nThe tag value can be an empty string or a string up to 128 characters long. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签列表。\n\n一次最多支持输入20个标签信息。",
-        "en": "The information about the tags.\n\nYou can specify at most 20 tags in each call."
-      }
+      ]
     },
     {
       "name": "TransitRouterAttachmentDescription",
@@ -95,7 +113,7 @@
       "required": false,
       "description": {
         "zh": "VPC连接的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
-        "en": "The description of the VPC connection.\n\nThe description must be 1 to 256 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "The description of the VPC connection.\n\nThe description can be empty or 1 to 256 characters long, and cannot start with `http://` or `https://`."
       }
     },
     {
@@ -105,7 +123,7 @@
       "required": false,
       "description": {
         "zh": "VPC连接的名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
-        "en": "The name of the VPC connection.\n\nThe name must be 1 to 128 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "The name of the VPC connection.\n\nThe name can be empty or 1 to 128 characters long, and cannot start with `http://` or `https://`."
       }
     },
     {
@@ -124,8 +142,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "VPC连接的功能属性列表。",
-        "en": "Feature configurations of the VPC connection."
+        "zh": "VPC连接的功能属性列表（即将废弃，请使用新入参 Options）。",
+        "en": "The properties of the VPC connection. This parameter is deprecated. We recommend that you use the `Options` parameter instead."
       }
     },
     {
@@ -135,7 +153,7 @@
       "required": true,
       "description": {
         "zh": "VPC实例ID。",
-        "en": "The VPC ID."
+        "en": "The ID of the VPC."
       }
     },
     {
@@ -145,7 +163,7 @@
       "required": false,
       "description": {
         "zh": "VPC实例所属阿里云账号（主账号）ID。默认值为当前登录的阿里云账号ID。\n\n> 如果您要加载跨账号的网络实例，本参数必填。",
-        "en": "The ID of the Alibaba Cloud account to which the VPC belongs. The default value is the ID of the current Alibaba Cloud account.\n\n> If the network instance and CEN instance belong to different Alibaba Cloud accounts, this parameter is required."
+        "en": "The ID of the Alibaba Cloud account that owns the VPC. By default, this is the ID of the current Alibaba Cloud account.\n\n> This parameter is required if you want to attach a cross-account network instance."
       }
     },
     {
@@ -153,26 +171,45 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "请在企业版转发路由器的可用区中选择一个交换机实例。\n\n一次最多支持添加10组信息。",
+        "en": "The zone mappings for the VPC connection. For each mapping, you must specify a vSwitch in a zone that is supported by the Enterprise Edition transit router.\n\nYou can specify up to 10 zone mappings."
+      },
       "sub_parameters": [
         {
           "name": "VSwitchId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "在企业版转发路由器支持的可用区中选择一个交换机实例。\n\n一次最多支持为10个可用区选择交换机实例。",
+            "en": "The ID of the vSwitch."
+          }
         },
         {
           "name": "ZoneId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "企业版转发路由器支持的可用区的ID。\n\n您可以通过[DescribeZones](~~36064~~)接口查询可用区的ID。\n\n一次最多支持选择10个可用区。",
+            "en": "The ID of the zone. The zone must be supported by the Enterprise Edition transit router.\n\nYou can call the [DescribeZones](~~36064~~) operation to query available zones."
+          }
         }
-      ],
-      "description": {
-        "zh": "请在企业版转发路由器的可用区中选择一个交换机实例。\n\n一次最多支持添加10组信息。",
-        "en": "A zone that supports Enterprise Edition transit routers.\n\nYou can specify at most 10 zones."
-      }
+      ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在企业版转发路由器下创建专有网络VPC连接",
+    "en": "CreateTransitRouterVpcAttachment"
+  },
+  "descriptions": {
+    "zh": "- 您可以通过以下两种方式在企业版转发路由器下创建VPC连接：\n    - 如果您已经在目标地域创建了企业版转发路由器实例，您可以通过指定**VpcId**、**ZoneMappings.N.VSwitchId**、**ZoneMappings.N.ZoneId**和**TransitRouterId**、**RegionId**创建VPC连接。\n    - 如果您在目标地域没有企业版转发路由器实例，您可以通过指定**VpcId**、**ZoneMappings.N.VSwitchId**、**ZoneMappings.N.ZoneId**、**CenId**和**RegionId**创建VPC连接。创建VPC连接时系统为您自动创建企业版转发路由器实例。\n\n- **CreateTransitRouterVpcAttachment**接口属于异步接口，即系统会先返回一个VPC连接ID，但该VPC连接并未创建完成，系统后台的创建任务仍在进行。您可以调用[ListTransitRouterVpcAttachments](~~261222~~)接口查询VPC连接的状态。\n    - 当VPC连接处于**Attaching**状态时，表示VPC连接正在创建中，在该状态下，您只能对VPC连接执行查询操作，不能执行其他操作。\n    - 当VPC连接处于**Attached**状态时，表示VPC连接创建完成。\n- 创建VPC连接后，VPC连接默认不与任何转发路由器路由表建立路由学习关系和关联转发关系。\n\n### 前提条件\n\n在调用本接口创建VPC连接前，请确保满足以下条件：\n\n- VPC实例在企业版转发路由器支持的可用区拥有至少一个交换机实例，且该交换机实例拥有至少一个空闲的IP地址。关于企业版转发路由器支持的地域和可用区信息，请参见[企业版转发路由器支持的地域和可用区](~~181681~~)。\n- 如果您要连接跨账号的网络实例，请先获得跨账号网络实例授权。具体操作，请参见[跨账号网络实例授权](~~181553~~)。\n- VPC连接创建后会产生费用，请确保您已经了解相关计费规则。更多信息，请参见[计费说明](~~189836~~)。",
+    "en": "- You can create a VPC connection for an Enterprise Edition transit router in one of two ways:\n\n  - If you have an Enterprise Edition transit router in the target region, you can create a VPC connection by specifying **VpcId**, **ZoneMappings.N.VSwitchId**, **ZoneMappings.N.ZoneId**, **TransitRouterId**, and **RegionId**.\n\n  - If you do not have an Enterprise Edition transit router in the target region, you can create a VPC connection by specifying **VpcId**, **ZoneMappings.N.VSwitchId**, **ZoneMappings.N.ZoneId**, **CenId**, and **RegionId**. When you create the VPC connection, the system automatically creates an Enterprise Edition transit router.\n\n- **CreateTransitRouterVpcAttachment** is an asynchronous operation. After you send a request, the system returns a VPC connection ID, and the connection is created in the background. Call the [ListTransitRouterVpcAttachments](~~261222~~) operation to query the status of the VPC connection.\n\n  - The **Attaching** state indicates that the VPC connection is being created. In this state, you can only query the VPC connection.\n\n  - The **Attached** state indicates that the VPC connection has been created.\n\n- By default, a newly created VPC connection is not associated with any transit router route table for route learning or forwarding.\n\n### Prerequisites\n\nBefore you call this API operation to create a VPC connection, ensure the following prerequisites are met:\n\n- The VPC must have at least one vSwitch in a zone that supports Enterprise Edition transit routers. The vSwitch must have at least one available IP address. For more information about supported regions and zones, see [Regions and zones that support Enterprise Edition transit routers](~~181681~~).\n\n- To connect a cross-account network instance, you must first have the required permissions. For more information, see [Grant permissions on a network instance that belongs to another account](~~181553~~).\n\n- Creating a VPC connection incurs costs. Ensure you understand the billing rules. For more information, see [Billing](~~189836~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn create-transit-router-vpc-attachment --client-token 02fb3da4-130e-11e9-8e44-0010000 --cen-id cen-j3jzhw1zpau2km0000 --transit-router-id tr-bp1su1ytdxtataupl0000 --biz-region-id cn-hangzhou --transit-router-attachment-name testname --transit-router-attachment-description testname --vpc-id vpc-bp1kbjcre9vtsebo10000 --vpc-owner-id 1250123456123456 --charge-type POSTPAY --dry-run false --zone-mappings ZoneId=cn-hangzhou-h VSwitchId=vsw-bp1a214sbus8z3b540000 --auto-publish-route-enabled true --transit-router-vpc-attachment-options key=example-string --tag Value=tagtest Key=tagtest --options Ipv6Support=enable ApplianceModeSupport=enable --region cn-hangzhou",
     "legacyCli": "aliyun cbn CreateTransitRouterVpcAttachment --region cn-hangzhou --Options '{\"Ipv6Support\":\"enable\",\"ApplianceModeSupport\":\"enable\"}' --Tag.1.Key tagtest --DryRun false --TransitRouterAttachmentName testname --VpcOwnerId 1250123456123456 --TransitRouterVPCAttachmentOptions '{\"key\":\"example-string\"}' --AutoPublishRouteEnabled true --VpcId 'vpc-bp1kbjcre9vtsebo10000' --ChargeType POSTPAY --ZoneMappings.1.ZoneId 'cn-hangzhou-h' --Tag.1.Value tagtest --CenId 'cen-j3jzhw1zpau2km0000' --RegionId 'cn-hangzhou' --ZoneMappings.1.VSwitchId 'vsw-bp1a214sbus8z3b540000' --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --TransitRouterAttachmentDescription testname --TransitRouterId 'tr-bp1su1ytdxtataupl0000'"

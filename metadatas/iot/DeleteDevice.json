@@ -1,5 +1,6 @@
 {
   "name": "DeleteDevice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定要删除的设备的名称。\n\n><notice> 如果传入该参数，需同时传入**ProductKey**。\n></notice>",
+        "en": "The DeviceName of the device.\n\n\n> If you configure this parameter, you must specify a value for the **ProductKey** parameter."
+      }
     },
     {
       "name": "IotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要删除的设备ID。\n\n><notice> **IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果传入该参数，则无需传入**ProductKey**和**DeviceName**。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。\n></notice>",
+        "en": "The ID of the device.\n\n\n\n**Important** The IotId parameter specifies a globally unique identifier (GUID) for the device. The value of the **IotId** parameter corresponds to a combination of the values of the **ProductKey** and **DeviceName** parameters. If you specify a value for this parameter, you do not need to configure the **ProductKey** or **DeviceName** parameter. If you specify values for the **IotId**, **ProductKey**, and **DeviceName** parameters, the value of the **IotId** parameter takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the ID of the instance on the **Overview** page in the IoT Platform console.\n\n\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n>*   If no **Overview** page or **ID** is generated for your instance, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要删除的设备所属的产品**ProductKey**。\n\n><notice> 如果传入该参数，需同时传入**DeviceName**。\n></notice>",
+        "en": "The **ProductKey** of the product to which the device belongs.\n\n\n\n> If you configure this parameter, you must specify a value for the **DeviceName** parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "DeleteDevice",
+    "en": "DeleteDevice"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n**调用本接口前须知**\n\n- 使用主账号登录时，物联网平台会进行短信验证，以确认是您本人操作。\n- 使用RAM用户账号时，物联网平台默认无需短信验证。为保障设备安全，您可创建自定义权限策略进行精细化权限管理。具体内容，请参见[IoT授权映射表](~~47485~~)和[自定义权限](~~47495~~)。\n\n><warning>\n- 设备删除后，设备ID（**IotId**）将失效，与设备关联的其他信息也一并删除，您将无法执行与该设备关联的任何操作。\n- 在物联网平台控制台删除设备前，对应的真实设备必须离线。否则，在物联网平台删除该设备后，真实设备会一直向物联网平台发起建连请求，发起请求数超出限制后，触发物联网平台的限流机制，会影响您当前账号下设备的正常接入。\n- 设备删除后，该设备证书会失效，且不能恢复。请谨慎操作。\n\n></warning>\n\n**调用本接口时**\n\n- 传入请求参数时，需传入**IotId**或**ProductKey**与**DeviceName**组合，用于指定设备。\n- 如果指定设备是网关设备，且其子设备数量超过2000个，调用本接口会创建删除设备拓扑关系的设备任务，以异步方式删除拓扑关系，并返回参数**JobId** （任务ID）。<props=\"china\"><ph>您可通过调用接口[QueryJob](~~198577~~)，查看任务执行结果。</ph></props>\n\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n> RAM用户共享阿里云账号配额。",
+    "en": "*   When you call this operation with an Alibaba Cloud account, IoT Platform sends a verification code by text message to confirm your identity.\n*   When you call this operation with a RAM user, IoT Platform does not send a verification code. To ensure device security, you can create custom permission policies to perform fine-grained permission management. For more information, see [Mapping of IoT Platform operations and RAM policies](~~47485~~) and [Custom permissions](~~47495~~).\n\n\n**Warning**\n\n*   After a device is deleted, the device ID (**IotId**) becomes invalid, and all other information associated with the device is deleted. In addition, you can no longer perform an operation on the device.\n*   Before you delete a device in the IoT Platform console, make sure that the corresponding actual device is offline. Otherwise, after the device is deleted from IoT Platform, the actual device continues to initiate connection requests to IoT Platform. If the number of requests exceeds the upper limit, IoT Platform starts request throttling. In this case, access of other devices within your Alibaba Cloud account is affected.\n*   After you delete a device, the certificate of the device becomes invalid and cannot be restored. Proceed with caution.\n\n****\n\n*   You must specify a value for the **IotId** parameter or values for the **ProductKey** and **DeviceName** parameters to identify a device.\n*   If you specify a gateway and the number of sub-devices that belong to the gateway exceeds 2,000, you can call this operation to create a device job to delete the topological relationships in an asynchronous manner. The operation returns the **JobId** parameter.\n\n## QPS limits\n\nYou can call this API operation up to 50 times per second per account. \n\n>  The RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot delete-device --iot-instance-id iot-cn-0pp1n8t0000 --product-key a1FlqIQ0000 --device-name light --iot-id MpEKNuEUJzIORNANAWJX001092990000000 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot DeleteDevice --region cn-hangzhou --IotId MpEKNuEUJzIORNANAWJX001092990000000 --IotInstanceId 'iot-cn-0pp1n8t0000' --ProductKey a1FlqIQ0000 --DeviceName light"

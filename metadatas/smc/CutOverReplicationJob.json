@@ -1,5 +1,6 @@
 {
   "name": "CutOverReplicationJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "JobId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自动增量迁移任务ID。",
+        "en": "The ID of the incremental migration job."
+      }
     },
     {
       "name": "SyncData",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否需要进行最后一次全量数据迁移。取值范围：\n\n- true：需要进行最后一次全量数据迁移。\n- false：不需要进行最后一次全量数据迁移。\n\n默认值：false。",
+        "en": "Specifies whether to perform a final full data migration. Valid values:\n\n- true: Performs a final full data migration.\n\n- false: Does not perform a final full data migration.\n\nDefault value: false."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "停止周期执行自动增量任务",
+    "en": "CutOverReplicationJob"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n\n- 自动增量迁移任务的状态必须处于等待中（Waiting）。\n\n- 调用该接口后，自动增量迁移任务将不再周期执行，而是根据`SyncData`参数取值进行判断。当`SyncData=false`时，不再进行数据迁移，直接自动清理中转资源后，完成迁移任务；当`SyncData=true`时，将进行最后一次全量数据迁移，然后自动清理中转资源，完成迁移任务。",
+    "en": "## Description\n\n- The incremental migration job must be in the Waiting state.\n\n- When you call this operation, the incremental migration job stops running periodically. The SyncData parameter determines the next action. If SyncData is `false`, no more data is migrated. If `SyncData` is `true`, a final full data migration is performed. The job is then completed after the intermediate resources are automatically released."
+  },
   "example": {
     "unifiedCli": "aliyun smc cut-over-replication-job --job-id j-bp1fnx5y3djc4cop0000 --sync-data false --region cn-hangzhou",
     "legacyCli": "aliyun smc CutOverReplicationJob --region cn-hangzhou --SyncData false --JobId 'j-bp1fnx5y3djc4cop0000'"

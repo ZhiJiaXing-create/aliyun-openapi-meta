@@ -1,5 +1,6 @@
 {
   "name": "AssociateHaVip",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "HaVipId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定的HaVip实例ID。",
+        "en": "The ID of the HAVIP."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "InstanceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要绑定HaVip的实例类型，取值：\n- EnsInstance：云服务器ENS实例（默认）。\n- NetworkInterface：弹性网卡实例，当绑定HaVip的实例为弹性网卡，该参数必须填写。",
+        "en": "The type of the instance to be associated with the HAVIP. Valid values:\n\n- EnsInstance (default): ENS instance\n\n- NetworkInterface: elastic network interface (ENI)"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将HaVip绑定到ENS实例上",
+    "en": "AssociateHaVip"
+  },
+  "descriptions": {
+    "zh": "在调用本接口绑定高可用虚拟IP时，请注意：\n\n- HaVip绑定后，无需重启ENS实例，但需要将HaVip配置到ENS实例的弹性网卡上。\n- HaVip和要绑定的ENS实例必须同属于一个交换机。\n- 要绑定的ENS实例的状态必须为运行中或已停止。\n- HaVip实例的状态必须为Available或InUse。\n- AssociateHaVip接口属于异步接口，即系统返回一个请求ID，但该HaVip并未绑定完成，系统后台的绑定任务仍在进行。您可以调用DescribeHaVips查询HaVip的绑定状态：\n  + 当HaVip处于Associating状态时，表示HaVip正在绑定中。\n  - 当HaVip处于InUse状态时，表示HaVip绑定完成。",
+    "en": "When you To associate an HAVIP, take note of the following items:\n\n- An HAVIP immediately takes effect after it is associated. You do not need to restart the ENS instance. However, you need to associate the HAVIP with the ENI of the ENS instance.\n\n- The HAVIP and ENS instance must belong to the same vSwitch.\n\n- The ENS instance must be in the Running or Stopped state.\n\n- The HAVIP must be in the Available or InUse state.\n\n- AssociateHaVip is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the DescribeHaVips operation to query the status of an HAVIP:\n\n  - If the HAVIP is in the Associating state, the HAVIP is being associated.\n\n  <!---->\n\n  - If the HAVIP is in the InUse state, the HAVIP is associated."
+  },
   "example": {
     "unifiedCli": "aliyun ens associate-ha-vip --ha-vip-id havip-5p14t0000 --instance-id i-50c40000 --instance-type EnsInstance --region cn-hangzhou",
     "legacyCli": "aliyun ens AssociateHaVip --region cn-hangzhou --InstanceId 'i-50c40000' --HaVipId 'havip-5p14t0000' --InstanceType EnsInstance"

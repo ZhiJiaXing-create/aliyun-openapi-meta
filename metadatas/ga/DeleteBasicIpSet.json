@@ -1,5 +1,6 @@
 {
   "name": "DeleteBasicIpSet",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must ensure that it is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "IpSetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的加速地域实例ID。",
+        "en": "The ID of the acceleration region of the basic GA instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "基础型全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the basic GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除基础性全球加速实例的加速地域",
+    "en": "DeleteBasicIpSet"
+  },
+  "descriptions": {
+    "zh": "-  存在绑定状态的加速IP，加速地域不可删除。您可以调用[DeleteBasicAccelerateIpEndpointRelation](~~2253413~~)解除加速IP与终端节点的绑定关系。\n- ** DeleteBasicIpSet**接口属于异步接口，即系统会先返回一个请求ID，但加速地域并未删除完成，系统后台的删除任务仍在进行。您可以调用[GetBasicIpSet](~~362987~~)查询加速地域的状态：\n    - 当加速地域处于**deleting**状态时，表示加速地域正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到该加速地域时，表示加速地域删除完成。\n- ** DeleteBasicIpSet**接口不支持在同一个基础型全球加速实例内并发删除加速地域。",
+    "en": "*   If an accelerated IP address is associated with an endpoint, you cannot delete the acceleration region. You can call the [DeleteBasicAccelerateIpEndpointRelation](~~2253413~~) operation to disassociate the accelerated IP address from the endpoint.\n\n*   \\*\\*DeleteBasicIpSet\\*\\* is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetBasicIpSet](~~362987~~) operation to query the status of the task.\n\n    *   If the acceleration region is in the **deleting** state, it indicates that the acceleration region is being deleted. In this case, you can perform only query operations.\n    *   If the acceleration region cannot be queried, it indicates that the acceleration region is deleted.\n\n*   The \\*\\*DeleteBasicIpSet\\*\\* operation cannot be repeatedly called for the same basic GA instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-basic-ip-set --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --ip-set-id ips-bp11r5jb8ogp122xl0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteBasicIpSet --region cn-hangzhou --IpSetId 'ips-bp11r5jb8ogp122xl0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

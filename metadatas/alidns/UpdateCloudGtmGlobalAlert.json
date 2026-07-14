@@ -1,5 +1,6 @@
 {
   "name": "UpdateCloudGtmGlobalAlert",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "返回结果显示的语言。取值：\n\n- zh-CN：中文\n\n- en-US：英文",
-        "en": "The language of the response. Valid values:\n\n*   zh-CN: Chinese\n*   en-US: English"
+        "en": "The language of the response. Valid values:\n\n- `zh-CN`: Chinese\n\n- `en-US`: English"
       }
     },
     {
@@ -19,48 +20,70 @@
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "报警配置列表。",
+        "en": "A list of alert configurations."
+      },
       "sub_parameters": [
         {
           "name": "DingtalkNotice",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否配置钉钉报警通知：\n\n- true：已配置，当报警事情发生时，会发送钉钉通知\n- false：未配置",
+            "en": "Whether to send a DingTalk notification when an alert is triggered. Valid values:\n\n- `true`: A DingTalk notification is sent.\n\n- `false`: Do not send a DingTalk notification."
+          }
         },
         {
           "name": "EmailNotice",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否配置邮件报警通知：\n\n- true：已配置，当报警事情发生时，会发送邮件通知\n\n- false｜null：未配置",
+            "en": "Whether to send an email notification when an alert is triggered. Valid values:\n\n- `true`: An email notification is sent.\n\n- `false` or `null`: Do not send an email notification."
+          }
         },
         {
           "name": "NoticeType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "报警事件类型：\n\n- addr_alert：地址不可用\n\n- addr_resume：地址恢复可用\n\n- addr_pool_unavailable：地址池不可用\n\n- addr_pool_available：地址池恢复可用",
+            "en": "The alert event type. Valid values:\n\n- `addr_alert`: An address becomes unavailable.\n\n- `addr_resume`: An address becomes available.\n\n- `addr_pool_unavailable`: An address pool becomes unavailable.\n\n- `addr_pool_available`: An address pool becomes available."
+          }
         },
         {
           "name": "QpsThreshold",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The alert threshold for queries per second (QPS)."
+          }
         },
         {
           "name": "SmsNotice",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否配置短信报警通知：\n\n- true：已配置，当报警事情发生时，会发送短信通知\n- false｜null：未配置\n\n仅中国站支持短信通知，国际站不支持短信通知。",
+            "en": "Whether to send a text message notification when an alert is triggered. Valid values:\n\n- `true`: A text message notification is sent.\n\n- `false` or `null`: Do not send a text message notification.\n\nText message notifications are available only on the China site."
+          }
         },
         {
           "name": "Threshold",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The alert threshold."
+          }
         }
-      ],
-      "description": {
-        "zh": "报警配置列表。",
-        "en": "The alert configurations."
-      }
+      ]
     },
     {
       "name": "AlertGroup",
@@ -69,7 +92,7 @@
       "required": false,
       "description": {
         "zh": "告警通知组列表。",
-        "en": "The alert contact groups."
+        "en": "A list of alert notification groups."
       }
     },
     {
@@ -79,10 +102,17 @@
       "required": false,
       "description": {
         "zh": "用户生成的请求token。用于保证请求的幂等性。该参数值可自定义，但是要保证在不同请求间唯一，最大值不超过64个ASCII字符。",
-        "en": "The client token that is used to ensure the idempotence of the request. You can specify a custom value for this parameter, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+        "en": "A client-generated token to ensure request idempotence. This token must be unique for each request, contain only ASCII characters, and be no more than 64 characters in length."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改全局告警配置",
+    "en": "UpdateCloudGtmGlobalAlert"
+  },
   "example": {
     "unifiedCli": "aliyun alidns update-cloud-gtm-global-alert --accept-language en-US --client-token 1ae05db4-10e7-11ef-b126-00163e240022 --alert-group 云账号报警联系人 --alert-config QpsThreshold=10 EmailNotice=true NoticeType=addr_alert SmsNotice=true DingtalkNotice=false Threshold=100 --region cn-hangzhou",
     "legacyCli": "aliyun alidns UpdateCloudGtmGlobalAlert --region cn-hangzhou --AlertGroup '[\"云账号报警联系人\"]' --AlertConfig '[{\"QpsThreshold\":10,\"EmailNotice\":true,\"NoticeType\":\"addr_alert\",\"SmsNotice\":true,\"DingtalkNotice\":false,\"Threshold\":100}]' --AcceptLanguage 'en-US' --ClientToken '1ae05db4-10e7-11ef-b126-00163e240022'"

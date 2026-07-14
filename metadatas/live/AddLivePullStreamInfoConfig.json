@@ -1,5 +1,6 @@
 {
   "name": "AddLivePullStreamInfoConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "直播流所属应用名称，用户自定义。",
+        "en": "The custom name of the application."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "您的拉流域名为用户的主播流域名。",
+        "en": "The streaming domain where the ingested stream will be hosted and distributed from."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "拉流结束时间。\n\nStartTime和EndTime时间间隔在7天内，且EndTime超过当前时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The time when stream pulling ends.\n\nThe time range specified by the StartTime and EndTime parameters cannot exceed seven days. The time must be later than the current time. Specify the value in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "SourceUrl",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用户的直播流所在的源站完整url。多个源站可以填多个地址，用英文分号（;）分隔。\n> 仅支持拉取直播流，支持RTMP、FLV、HLS、SRT格式。",
+        "en": "The origin URL of the live stream. You can specify multiple URLs. Separate them with semicolons (;).\n\n> You can pull only live streams in the RTMP, FLV, HLS, and SRT formats."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "拉流开始时间。\n\nStartTime和EndTime时间间隔在7天内。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The time when stream pulling starts. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "直播流名，用户自定义。",
+        "en": "The custom name of the live stream."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加直播拉流配置信息",
+    "en": "AddLivePullStreamInfoConfig"
+  },
+  "descriptions": {
+    "zh": "- 请确保在使用该接口前，已充分了解直播拉流的收费方式和价格。计费详情，请参见[标准直播](~~195284~~)。\n\n- 拉流是将第三方直播流地址拉取到阿里直播中心进行加速分发的过程。\n- 本接口仅支持固定拉流方式，即指定拉流的起始时间和结束时间，在指定时间进行拉流直播。\n- 控制台支持固定拉流和触发拉流两种方式，详细内容请参见[拉流配置](~~199452~~)。\n- AppName与StreamName可自定义修改，不同的值生成不同的直播流地址。可用[地址生成器](~~197400~~)生成。\n- (DomainName, AppName, StreamName)三元组只能对应一个配置，如果该三元组已经存在一个配置了，再调用本接口添加配置会返回配置已存在错误。\n\n## QPS限制\n本接口的单用户QPS限制为15次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Before you call this operation, make sure that you understand the billing method and pricing of ApsaraVideo Live. For more information, see [](t1961174.xdita#).\n\n- Stream pulling refers to the process of pulling live streams from third-party URLs to a live center of ApsaraVideo Live for CDN acceleration.\n\n- This operation supports only scheduled stream pulling. You can specify a start time and an end time to pull a live stream during a specific time period.\n\n- The console supports both scheduled and triggered stream pulling. For more information, see [Configure stream pulling](~~199452~~).\n\n- You can specify custom values for the AppName and StreamName parameters. Streaming URLs are generated based on AppName and StreamName. You can use the [](t2020590.xdita#) to generate a streaming URL.\n\n- Each stream pulling configuration must be unique. The combination of DomainName, AppName, and StreamName can only be associated with one active configuration. Attempting to add a duplicate configuration will result in an error.\n\n## QPS limit\n\nYou can call this operation up to 15 times per second per account. Requests that exceed this limit are dropped and you may experience service interruptions."
+  },
   "example": {
     "unifiedCli": "aliyun live add-live-pull-stream-info-config --biz-region-id cn-hangzhou --domain-name example.com --app-name liveApp0000 --stream-name liveStream0000 --source-url rtmp://guide.aliyundoc.com/liveApp0000/liveStream0000_rtmp://developer.aliyundoc.com/liveApp0000/liveStream0000 --start-time 2017-12-21T08:00:00Z --end-time 2017-12-22T08:00:00Z --region cn-hangzhou",
     "legacyCli": "aliyun live AddLivePullStreamInfoConfig --region cn-hangzhou --SourceUrl 'rtmp://guide.aliyundoc.com/liveApp0000/liveStream0000_rtmp://developer.aliyundoc.com/liveApp0000/liveStream0000' --StreamName liveStream0000 --EndTime '2017-12-22T08:00:00Z' --DomainName 'example.com' --StartTime '2017-12-21T08:00:00Z' --RegionId 'cn-hangzhou' --AppName liveApp0000"

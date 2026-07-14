@@ -1,5 +1,6 @@
 {
   "name": "AssociateTransitRouterMulticastDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会将交换机关联至组播域。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接将交换机关联至组播域。",
-        "en": "Specifies whether to perform a dry run, without sending the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and sends the request."
+        "en": "Specifies whether to perform a dry run, without sending the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): performs a dry run and sends the request."
       }
     },
     {
@@ -55,6 +56,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将专有网络VPC下的交换机关联至组播域",
+    "en": "AssociateTransitRouterMulticastDomain"
+  },
+  "descriptions": {
+    "zh": "- 一个交换机只支持关联至一个组播域。请确保待关联的交换机未与其他组播域建立关联关系。解除交换机与组播域的关联关系，请参见[DisassociateTransitRouterMulticastDomain](~~429774~~)。\n- **AssociateTransitRouterMulticastDomain**接口属于异步接口，即系统会先返回一个**RequestId**，但交换机和组播域并未完全建立关联关系，系统后台的关联任务仍在进行。您可以调用**ListTransitRouterMulticastDomainAssociations**接口查询交换机和组播域的关联状态。\n\n    - 当关联状态为**Associating**时，表示交换机和组播域正在建立关联关系，在该状态下，您只能对交换机执行查询操作，不能执行其他操作。\n    - 当关联状态为**Associated**时，表示交换机和组播域已成功建立关联关系。\n\n- 交换机所属的VPC必须已经连接到企业版转发路由器。创建VPC连接，请参见[CreateTransitRouterVpcAttachment](~~468237~~)。",
+    "en": "- A vSwitch can be associated with only one multicast domain. Make sure that the vSwitch is not associated with other multicast domains. For more information about how to disassociate a vSwitch from a multicast domain, see [DisassociateTransitRouterMulticastDomain](~~429774~~).\n- AssociateTransitRouterMulticastDomain is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the ListTransitRouterMulticastDomainAssociations operation to query whether a vSwitch is associated with the specified multicast domain.\n\n  - If the status is Associating, it indicates that the vSwitch is being associated with the specified multicast domain. You can query the vSwitch but cannot perform other operations on the vSwitch.\n  - If the status is Associated, the vSwitch is associated with the specified multicast domain.\n- The VPC of the vSwitch must be associated with an Enterprise Edition transit router. For more information about how to associate a VPC with an Enterprise Edition transit router, see [CreateTransitRouterVpcAttachment](~~468237~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn associate-transit-router-multicast-domain --client-token 123e4567-e89b-12d3-a456-426655440000 --transit-router-multicast-domain-id tr-mcast-domain-91wpg6wbhchjeq0000 --transit-router-attachment-id tr-attach-g3kz2k3u76amsk0000 --vswitchids vsw-p0wxk12u6okfkr8xy0000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun cbn AssociateTransitRouterMulticastDomain --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-g3kz2k3u76amsk0000' --VSwitchIds.1 'vsw-p0wxk12u6okfkr8xy0000' --TransitRouterMulticastDomainId 'tr-mcast-domain-91wpg6wbhchjeq0000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

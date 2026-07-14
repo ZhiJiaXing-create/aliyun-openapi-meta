@@ -1,5 +1,6 @@
 {
   "name": "UpdateSLARules",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "DagId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务流ID，可通过调用接口[ListTaskFlow](~~424565~~)或[ListLhTaskFlowAndScenario](~~426672~~)获取该参数的值。",
+        "en": "The ID of the task flow. You can call the [ListTaskFlow](~~424565~~) or [ListLhTaskFlowAndScenario](~~426672~~) operation to query the task flow ID."
+      }
     },
     {
       "name": "SlaRuleList",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "SLA规则列表。",
+        "en": "The list of SLA rules."
+      },
       "sub_parameters": [
         {
           "name": "DagId",
           "position": "Query",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "任务流ID。",
+            "en": "The ID of the task flow."
+          }
         },
         {
           "name": "IntervalMinutes",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "超时时间（单位：分钟）。",
+            "en": "The timeout period. Unit: minutes."
+          }
         },
         {
           "name": "NodeId",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务节点ID。",
+            "en": "The ID of the task node."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "规则类型：  \n- **0**：任务流SLA规则。  \n- **1**：任务节点SLA规则。",
+            "en": "The rule type. Valid values:\n\n*   **0**: SLA rules for task flows\n*   **1**: SLA rules for nodes"
+          }
         }
       ]
     },
@@ -46,9 +71,24 @@
       "name": "Tid",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID。\n> 取自系统右上角头像处悬停展示的租户ID信息，详情请参见[查看租户信息](~~181330~~)。",
+        "en": "The ID of the tenant.\n\n> :To view the ID of the tenant, go to the Data Management (DMS) console and move the pointer over the profile picture in the upper-right corner. For more information, see [View information about the current tenant](~~181330~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新任务流SLA超时提醒",
+    "en": "UpdateSLARules"
+  },
+  "descriptions": {
+    "zh": "SLA规则随着任务流的部署、发布而生效。",
+    "en": "SLA rules take effect after task flows are deployed and published."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise update-sla-rules --dag-id 110000 --tid 3000 --sla-rule-list Type=0 NodeId=0 IntervalMinutes=1080 DagId=15000 --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise UpdateSLARules --region cn-hangzhou --SlaRuleList '[{\"Type\":0,\"NodeId\":0,\"IntervalMinutes\":1080,\"DagId\":15000}]' --DagId 110000 --Tid 3000"

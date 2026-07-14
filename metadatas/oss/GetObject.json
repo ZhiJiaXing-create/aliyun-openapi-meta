@@ -1,0 +1,170 @@
+{
+  "name": "GetObject",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET",
+  "pathPattern": "/[key]",
+  "parameters": [
+    {
+      "name": "Accept-Encoding",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定客户端的编码类型。\n如果要对返回内容进行Gzip压缩传输，您需要在请求头中以显示方式加入Accept-Encoding:gzip。OSS会根据Object的Content-Type和Object大小（不小于1\n                                 KB）判断是否返回经过Gzip压缩的数据。\n>   - 如果采用了Gzip压缩，则不会附带ETag信息。\n>   - 目前OSS支持Gzip压缩的Content-Type为text/cache-manifest、 text/xml、text/plain、text/css、application/javascript、application/x-javascript、application/rss+xml、application/json和text/json。\n\n默认值：无",
+        "en": "The encoding type of the client.\nTo use Gzip compression for the response content, you must explicitly include Accept-Encoding:gzip in the request header. OSS determines whether to return Gzip-compressed data based on the Content-Type and size of the object (at least 1 KB).\n>   - If Gzip compression is used, the ETag is not included in the response.\n>   - OSS supports Gzip compression for the following Content-Type values: text/cache-manifest, text/xml, text/plain, text/css, application/javascript, application/x-javascript, application/rss+xml, application/json, and text/json.\n\nDefault value: null."
+      }
+    },
+    {
+      "name": "If-Match",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果传入的ETag和Object的ETag匹配，则正常传输Object，并返回200 OK；如果传入的ETag和Object的ETag不匹配，则返回412 Precondition Failed。\nObject的ETag值用于验证数据是否发生了更改，您可以基于ETag值验证数据完整性。\n默认值：无",
+        "en": "If the specified ETag matches the ETag of the object, the object is transferred and an HTTP 200 OK status code is returned. If the specified ETag does not match the ETag of the object, an HTTP 412 Precondition Failed status code is returned.\nThe ETag of an object is used to check whether the data has changed. You can use the ETag to verify data integrity.\nDefault value: null."
+      }
+    },
+    {
+      "name": "If-Modified-Since",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果指定的时间早于实际修改时间或指定的时间不符合规范，则直接返回Object，并返回200 OK；如果指定的时间等于或者晚于实际修改时间，则返回304 Not Modified。\n时间格式：GMT，例如`Fri, 13 Nov 2015 14:47:53 GMT`\n默认值：无",
+        "en": "If the specified time is earlier than the actual modification time or does not conform to the standard format, the object is returned with an HTTP 200 OK status code. If the specified time is equal to or later than the actual modification time, an HTTP 304 Not Modified status code is returned.\nTime format: GMT. Example: `Fri, 13 Nov 2015 14:47:53 GMT`.\nDefault value: null."
+      }
+    },
+    {
+      "name": "If-None-Match",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果传入的ETag值和Object的ETag不匹配，则正常传输Object，并返回200 OK；如果传入的ETag和Object的ETag匹配，则返回304 Not Modified。\n**If-Match**和**If-None-Match**可以同时使用。\n默认值：无",
+        "en": "If the specified ETag does not match the ETag of the object, the object is transferred and an HTTP 200 OK status code is returned. If the specified ETag matches the ETag of the object, an HTTP 304 Not Modified status code is returned.\nYou can specify both **If-Match** and **If-None-Match** in the same request.\nDefault value: null."
+      }
+    },
+    {
+      "name": "If-Unmodified-Since",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果指定的时间等于或者晚于Object实际修改时间，则正常传输Object，并返回200 OK；如果指定的时间早于实际修改时间，则返回412 Precondition\n                              Failed。\n时间格式：GMT，例如`Fri, 13 Nov 2015 14:47:53 GMT`\n**If-Modified-Since**和**If-Unmodified-Since**可以同时使用。\n默认值：无",
+        "en": "If the specified time is equal to or later than the actual modification time of the object, the object is transferred and an HTTP 200 OK status code is returned. If the specified time is earlier than the actual modification time, an HTTP 412 Precondition Failed status code is returned.\nTime format: GMT. Example: `Fri, 13 Nov 2015 14:47:53 GMT`.\nYou can specify both **If-Modified-Since** and **If-Unmodified-Since** in the same request.\nDefault value: null."
+      }
+    },
+    {
+      "name": "Range",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定文件传输的范围。\n  - 如果指定的范围符合规范，返回消息中会包含整个Object的大小和此次返回Object的范围。例如：Content-Range: bytes 0~9/44，表示整个Object大小为44，此次返回的范围为0~9。\n  - 如果指定的范围不符合规范，则传送整个Object，并且结果中不包含Content-Range。\n\n默认值：无",
+        "en": "The range of the file transfer.\n  - If the specified range is valid, the response includes the total size of the object and the range returned. Example: Content-Range: bytes 0~9/44, which indicates that the total size of the object is 44 bytes and the returned range is bytes 0 through 9.\n  - If the specified range is invalid, the entire file is transferred and the response does not include Content-Range.\n\nDefault value: null."
+      }
+    },
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The name of the bucket."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object的完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "response-cache-control",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定OSS返回请求的cache-control头。",
+        "en": "Specifies the cache-control header that OSS returns in the response."
+      }
+    },
+    {
+      "name": "response-content-disposition",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定OSS返回请求的content-disposition头。",
+        "en": "Specifies the content-disposition header that OSS returns in the response."
+      }
+    },
+    {
+      "name": "response-content-encoding",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定OSS返回请求的content-encoding头。",
+        "en": "Specifies the content-encoding header that OSS returns in the response."
+      }
+    },
+    {
+      "name": "response-content-language",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定OSS返回请求的content-language头。",
+        "en": "Specifies the content-language header that OSS returns in the response."
+      }
+    },
+    {
+      "name": "response-content-type",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定OSS返回请求的content-type头。",
+        "en": "Specifies the content-type header that OSS returns in the response."
+      }
+    },
+    {
+      "name": "response-expires",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定OSS返回请求的expires头。",
+        "en": "Specifies the expires header that OSS returns in the response."
+      }
+    },
+    {
+      "name": "versionId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "目标文件的版本ID。",
+        "en": "The version ID of the object."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取文件",
+    "en": "Get an object"
+  },
+  "descriptions": {
+    "zh": "**注意事项**\n\n- GetObject接口默认可通过HTTP和HTTPS两种方式访问。如果要设置仅允许通过HTTPS方式访问，请使用Bucket Policy的授权访问方式。具体操作，请参见[通过Bucket Policy授权用户访问指定资源](~~85111~~)。\n\n- 如果Object类型为归档类型，需要先完成解冻文件（RestoreObject）请求，且该请求不能超时。\n\n**版本控制**\n\n默认情况下，调用GetObject接口仅返回Object的当前版本。\n如果在查询参数中指定Object的versionId，则返回指定的Object版本。当versionId指定为null时，则返回versionId为null的Object版本。",
+    "en": "**Before you begin**\n\n- The GetObject operation can be accessed over HTTP and HTTPS by default. To set access to HTTPS only, use a bucket policy for authorization. For more information, see [Use bucket policies to authorize users to access specified resources](~~85111~~).\n\n- If the object is of the Archive storage class, you must first complete a RestoreObject request to restore the file, and the request must not timeout.\n\n**Versioning**\n\nBy default, invoking the GetObject operation returns only the current version of an object.\nIf you specify the versionId of the object in the query parameters, the specified object version is returned. If versionId is set to null, the object version whose versionId is null is returned."
+  }
+}

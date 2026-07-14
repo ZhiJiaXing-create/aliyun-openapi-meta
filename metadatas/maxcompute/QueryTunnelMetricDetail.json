@@ -1,5 +1,6 @@
 {
   "name": "QueryTunnelMetricDetail",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/api/v1/observations/tunnel/[metric]/detail",
@@ -8,27 +9,54 @@
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求体参数。",
+        "en": "The request body parameters."
+      }
     },
     {
       "name": "endTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询时间范围：结束时间。",
+        "en": "The end of the query time range. This is a Unix timestamp in seconds."
+      }
     },
     {
       "name": "metric",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "观测指标名称。",
+        "en": "The metric name."
+      }
     },
     {
       "name": "startTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询时间范围：开始时间。",
+        "en": "The start of the query time range. This is a Unix timestamp in seconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "Tunnel资源观测详情数据",
+    "en": "QueryTunnelMetricDetail"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 本API支持查询包括slot使用量详情(`slot_usage_detail`)、吞吐量详情(`throughput_detail`)和吞吐量汇总(`throughput_summary`)等在内的多种Tunnel指标。\n- `quotaNickname` 和 `project` 参数不能同时为空。\n- 当 `groupList` 包含 `table` 或 `ip` 时，必须指定 `project` 参数，并且在包含 `ip` 时还需指定 `tableList` 参数。\n- `orderColumn` 支持 `maxValue`, `minValue`, `avgValue` 和 `sumValue`（仅适用于 `throughput_summary`），默认为空表示不排序。\n- `ascOrder` 默认为 `false` 表示降序排列。\n- `limit` 参数定义了返回结果的数量限制，默认值为10，最大不超过100。",
+    "en": "## Usage notes\n\n- You can use this API to query Tunnel metrics, including slot usage details (`slot_usage_detail`), throughput details (`throughput_detail`), and a throughput summary (`throughput_summary`).\n\n- The `quotaNickname` and `project` parameters cannot both be empty.\n\n- If the `groupList` parameter includes `table` or `ip`, the `project` parameter is required. If groupList includes `ip`, the `tableList` parameter is also required.\n\n- The `orderColumn` parameter supports `maxValue`, `minValue`, `avgValue`, and `sumValue` (only for `throughput_summary`). If this parameter is omitted, the results are not sorted.\n\n- The `ascOrder` parameter defaults to `false` (descending order).\n\n- The `limit` parameter specifies the number of results to return, with a default of 10 and a maximum of 100."
+  },
   "example": {
     "unifiedCli": "aliyun maxcompute query-tunnel-metric-detail --start-time 1735534322 --end-time 1735536322 --metric slot_usage_detail --quota-nickname quota_A --project project_a --table-list tab_name --operation-list upload --group-list quota --order-column maxValue --asc-order false --limit 10 --code-list 403 --region cn-hangzhou",
     "legacyCli": "aliyun maxcompute POST /api/v1/observations/tunnel/slot_usage_detail/detail --region cn-hangzhou --startTime 1735534322 --endTime 1735536322 --header \"Content-Type=application/json\" --body {\"quotaNickname\":\"quota_A\",\"ascOrder\":false,\"operationList\":[\"upload\"],\"limit\":10,\"project\":\"project_a\",\"tableList\":[\"tab_name\"],\"groupList\":[\"quota\"],\"codeList\":[403],\"orderColumn\":\"maxValue\"}"

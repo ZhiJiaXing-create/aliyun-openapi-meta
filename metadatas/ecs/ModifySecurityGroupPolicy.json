@@ -1,5 +1,6 @@
 {
   "name": "ModifySecurityGroupPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. The **ClientToken** value can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "InnerAccessPolicy",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "安全组内的ECS实例之间的内网连通策略。取值范围：\n\n- Accept：互通。\n- Drop：隔离。\n\n>取值不区分大小写。",
+        "en": "The internal connectivity policy between ECS instances in the security group. Valid values:\n\n- Accept: intra-group connectivity\n- Drop: internal isolation\n\n>The value is case-insensitive."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "安全组所属地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the security group. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "SecurityGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "安全组的ID。",
+        "en": "The ID of the security group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改普通安全组的组内连通策略",
+    "en": "Modify the intra-group connectivity policy of a basic security group"
+  },
+  "descriptions": {
+    "zh": "-  企业级安全组不支持修改组内连通策略，默认**组内隔离**。\n-  您可以通过[DescribeSecurityGroupAttribute](~~25555~~)查询当前安全组组内连通策略。\n-  安全组的组内连通策略是**组内互通**时，会忽略其他自定义访问规则，组内所有实例的内网保持默认连通。  \n\n-  安全组的组内连通策略是**组内隔离**时，在不添加其他访问规则的情况下，组内所有实例的内网默认不连通。但您可以自定义安全组规则改变内网状态，例如，您可以通过[AuthorizeSecurityGroup](~~25554~~)使安全组内的两台ECS实例网络互通。",
+    "en": "-  Advanced security groups do not support modifications to the intra-group connectivity policy. The default policy is **internal isolation**.\n-  You can call [DescribeSecurityGroupAttribute](~~25555~~) to query the current intra-group connectivity policy of a security group.\n-  When the intra-group connectivity policy of a security group is set to **intra-group connectivity**, other custom access rules are ignored, and all instances in custom security group are connected over the internal network by default.  \n\n-  When the intra-group connectivity policy of a security group is set to **internal isolation**, all instances in custom security group are disconnected over the internal network by default if no other access rules are added. However, you can customize security group rules to change the internal network status. For example, you can call [AuthorizeSecurityGroup](~~25554~~) to enable network connectivity between two ECS instances in custom security group."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-security-group-policy --security-group-id sg-bp67acfmxazb4ph0000 --biz-region-id cn-hangzhou --inner-access-policy Drop --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifySecurityGroupPolicy --region cn-hangzhou --SecurityGroupId 'sg-bp67acfmxazb4ph0000' --RegionId 'cn-hangzhou' --InnerAccessPolicy Drop --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

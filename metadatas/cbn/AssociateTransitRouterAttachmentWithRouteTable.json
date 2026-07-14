@@ -1,5 +1,6 @@
 {
   "name": "AssociateTransitRouterAttachmentWithRouteTable",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** is different for each request."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client to make sure that the value is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接创建关联转发关系。\n- **true**：发送检查请求，只进行校验，不会创建关联转发关系。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed.\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned."
+        "en": "Specifies whether to perform a dry run to check for potential issues, such as permissions and instance status. Valid values:\n\n- **false** (default): sends a normal request. An association is created after the request passes the check.\n\n- **true**: sends a check request to perform a dry run. The system checks the required parameters, request format, and other items. No association is created. If the check fails, an error message is returned. If the check passes, the `DryRunOperation` error code is returned."
       }
     },
     {
@@ -45,6 +46,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建关联转发关系",
+    "en": "AssociateTransitRouterAttachmentWithRouteTable"
+  },
+  "descriptions": {
+    "zh": "创建网络实例连接后，您需要为其设置关联转发关系，将网络实例连接关联到企业版转发路由器路由表。关联后，企业版转发路由器将依据该路由表中的路由条目信息转发网络实例的流量。在调用本接口创建关联转发关系前，请先了解以下信息：\n\n- 仅企业版转发路由器路由表支持创建关联转发关系。关于企业版转发路由器支持的地域和可用区信息，请参见[什么是云企业网](~~181681~~)。\n- 一个网络实例连接仅支持与一个企业版转发路由器路由表建立关联转发关系。\n- **AssociateTransitRouterAttachmentWithRouteTable**接口属于异步接口，即系统会先返回一个**RequestId**，但网络实例连接和路由表并未完全建立关联转发关系，系统后台的关联任务仍在进行。您可以调用**ListTransitRouterRouteTableAssociations**接口查询网络实例连接和路由表的关联转发状态。\n\n    - 当关联转发状态为**Associating**时，表示网络实例连接和路由表正在建立关联转发关系。在该状态下，您只能对网络实例连接和路由表之间的关联转发关系执行查询操作，不能执行其他操作。\n    - 当关联转发状态为**Active**时，表示网络实例连接和路由表已成功建立关联转发关系。",
+    "en": "After you create a network instance connection, you must associate it with the route table of an Enterprise Edition transit router. After the association is created, the Enterprise Edition transit router forwards traffic from the network instance based on the routes in the associated route table. Before you call this operation, take note of the following:\n\n- Only route tables of Enterprise Edition transit routers support associations. For more information about the regions and zones that support Enterprise Edition transit routers, see [What is Cloud Enterprise Network?](~~181681~~).\n\n- A network instance connection can be associated with only one route table of an Enterprise Edition transit router.\n\n- The **AssociateTransitRouterAttachmentWithRouteTable** operation is asynchronous. After you send a request, the system returns a **Request ID**, but the association is not immediately created. The system creates the association in the background. You can call the **ListTransitRouterRouteTableAssociations** operation to query the status of the association.\n\n  - If the association is in the **Associating** state, it is being created. In this state, you can only query the association and cannot perform other operations.\n\n  - If the association is in the **Active** state, it is successfully created."
+  },
   "example": {
     "unifiedCli": "aliyun cbn associate-transit-router-attachment-with-route-table --transit-router-attachment-id tr-attach-nls9fzkfat89340000 --transit-router-route-table-id vtb-bp1dudbh2d5na6b500000 --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun cbn AssociateTransitRouterAttachmentWithRouteTable --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-nls9fzkfat89340000' --TransitRouterRouteTableId 'vtb-bp1dudbh2d5na6b500000' --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

@@ -1,5 +1,6 @@
 {
   "name": "AssociateNetworkAcl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否检测此次请求。取值：\n- true：发送检查请求。\n- false（默认值）：发送正常请求。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request."
+      }
     },
     {
       "name": "NetworkAclId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络ACL的ID。",
+        "en": "The ID of the network ACL."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络ACL所在的地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the network ACL. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "Resource",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "关联的资源信息。",
+        "en": "The information about the associated resources."
+      },
       "sub_parameters": [
         {
           "name": "ResourceId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "关联资源的ID。",
+            "en": "The ID of the associated resource."
+          }
         },
         {
           "name": "ResourceType",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "关联资源的类型。取值：**VSwitch**，交换机。\n\n**N**的取值为**0**~**29**，即最多可以关联30个资源。",
+            "en": "The type of resource with which you want to associate the network ACL. Set the value to **VSwitch**.\n\nValid values of **N**: **0** to **29**. You can associate a network ACL with up to 30 vSwitches."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "绑定网络ACL到交换机",
+    "en": "AssociateNetworkAcl"
+  },
+  "descriptions": {
+    "zh": "- **AssociateNetworkAcl**接口属于异步接口，即系统返回一个请求ID，但该网络ACL尚未绑定成功，系统后台的绑定任务仍在进行。您可以调用[DescribeNetworkAclAttributes](~~116542~~)查询网络ACL的绑定状态：\n    - 当网络ACL处于**BINDING**状态时，表示网络ACL正在绑定中。\n    - 当网络ACL处于**BINDED**状态时，表示网络ACL绑定成功。\n- **AssociateNetworkAcl**接口不支持并发绑定同一个网络ACL。",
+    "en": "## [](#)Description\n\n*   **AssociateNetworkAcl** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeNetworkAclAttributes](~~116542~~) operation to query the status of the task.\n\n    *   If the network ACL is in the **BINDING** state, the network ACL is being associated.\n    *   If the network ACL is in the **BINDED** state, the network ACL is associated.\n\n*   You cannot repeatedly call the **AssociateNetworkAcl** operation to associate a network ACL within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc associate-network-acl --resource ResourceId=vsw-bp1de348lntdw0000 ResourceType=VSwitch --network-acl-id nacl-a2do9e413e0sp0000 --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc AssociateNetworkAcl --region cn-hangzhou --Resource.1.ResourceId 'vsw-bp1de348lntdw0000' --NetworkAclId 'nacl-a2do9e413e0sp0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Resource.1.ResourceType VSwitch"

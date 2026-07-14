@@ -1,5 +1,6 @@
 {
   "name": "CreateDataCronClearOrder",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AttachmentKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工单补充附件，对本次操作进行补充说明。\n\n您可以调用[GetUserUploadFileJob](~~206069~~)接口获取该参数。",
+        "en": "The key of the attachment for the ticket. The attachment provides more instructions for this operation.\n\nYou can call the [GetUserUploadFileJob](~~206069~~) operation to query the key of the attachment."
+      }
     },
     {
       "name": "Comment",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "业务背景，以减少沟通成本。",
+        "en": "The purpose or objective of the data change. This reduces unnecessary communication."
+      }
     },
     {
       "name": "Param",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工单参数。",
+        "en": "The parameters of the ticket."
+      }
     },
     {
       "name": "RelatedUserList",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "相关人列表。",
+        "en": "The stakeholders of this operation. All stakeholders can view the ticket details and assist in the approval process. Irrelevant users other than Data Management (DMS) administrators and database administrators (DBAs) are not allowed to view the ticket details."
+      }
     },
     {
       "name": "Tid",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID。\n> 取自系统右上角头像处悬停展示的租户ID信息，详情请参见[查看租户信息](~~181330~~)。",
+        "en": "The ID of the tenant.\n\n>  The ID of the tenant is displayed when you move the pointer over the profile picture in the upper-right corner of the DMS console. For more information, see the [View information about the current tenant](~~181330~~) section of the Manage DMS tenants topic."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建历史数据清理工单",
+    "en": "Create a Historical Data Cleanup ticket"
+  },
+  "descriptions": {
+    "zh": "目前仅支持安全协同管控模式的MySQL实例调用该接口。\n\n关于该功能的更多说明，请参见[历史数据清理](~~162507~~)。",
+    "en": "This API currently supports only MySQL instances under Security Collaboration control mode.\n\nFor more information about this feature, see [Historical Data Cleanup](~~162507~~)."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise create-data-cron-clear-order --comment test --related-user-list 243253 --param '{\"specifyDuration\":true,\"DurationHour\":4,\"CronFormat\":\"0_0_2_0_0_0\",\"Classify\":\"test\",\"CronClearItemList\":[{\"TableName\":\"t1\",\"ColumnName\":\"gmt_create\",\"TimeUnit\":\"MILLISECONDS\",\"RemainDays\":7,\"FilterSQL\":\"where_1_=_1\"}],\"DbItemList\":[{\"DbId\":100000,\"Logic\":false}]}' --attachment-key order_attachement.txt --tid 123454324 --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise CreateDataCronClearOrder --region cn-hangzhou --Comment test --AttachmentKey 'order_attachement.txt' --Param '{\"specifyDuration\":true,\"DurationHour\":4,\"CronFormat\":\"0_0_2_0_0_0\",\"Classify\":\"test\",\"CronClearItemList\":[{\"TableName\":\"t1\",\"ColumnName\":\"gmt_create\",\"TimeUnit\":\"MILLISECONDS\",\"RemainDays\":7,\"FilterSQL\":\"where_1_=_1\"}],\"DbItemList\":[{\"DbId\":100000,\"Logic\":false}]}' --RelatedUserList '[243253]' --Tid 123454324"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateTransitRouter",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a client token to make sure that the value is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each request is unique."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次修改请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接修改转发路由器实例的信息。\n- **true**：发送检查请求，只进行校验，不会修改转发路由器实例的信息。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed.\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the system returns the ID of the request."
+        "en": "Specifies whether to perform a dry run. A dry run checks permissions and the status of the instance. Valid values:\n\n- **false** (default): Sends a normal request. After the request passes the check, the information about the TransitRouter instance is modified.\n\n- **true**: Sends a check request. The system checks the request for required parameters and format correctness, but does not modify the TransitRouter instance. If the check fails, an error is returned. If the check passes, the request ID is returned."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "转发路由器实例所属地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
-        "en": "The region ID of the transit router.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+        "en": "The ID of the region where the TransitRouter instance is deployed.\n\nCall the [DescribeRegions](~~36063~~) operation to query region IDs."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "转发路由器实例新的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
-        "en": "The description of the transit router.\n\nThe description must be 1 to 256 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "The new description of the TransitRouter instance.\n\nThe description can be empty or 1 to 256 characters in length. The description cannot start with http\\:// or https\\://."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "转发路由器实例ID。",
-        "en": "The transit router ID."
+        "en": "The ID of the TransitRouter instance."
       }
     },
     {
@@ -61,10 +62,21 @@
       "required": false,
       "description": {
         "zh": "转发路由器实例的新名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
-        "en": "The transit router name.\n\nThe name must be 1 to 128 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "The new name for the TransitRouter instance.\n\nThe name can be empty or 1 to 128 characters in length. The name cannot start with http\\:// or https\\://."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改转发路由器实例信息",
+    "en": "UpdateTransitRouter"
+  },
+  "descriptions": {
+    "zh": "**UpdateTransitRouter**接口属于异步接口，即系统会先返回一个**RequestId**，但转发路由器实例的修改并未完成，系统后台的修改任务仍在进行。您可以调用**ListTransitRouters**接口查询转发路由器实例的状态。 \n\n- 当转发路由器实例处于**Modifying**状态时，表示转发路由器实例正在修改中，在该状态下，您只能对转发路由器实例执行查询操作，不能执行其他操作。\n- 当转发路由器实例处于**Active**状态时，表示转发路由器实例修改完成。",
+    "en": "**UpdateTransitRouter** is an asynchronous operation. After you send a request, the system returns a **RequestId**. The TransitRouter instance is not immediately modified because the modification task runs in the background. You can call the **ListTransitRouters** operation to query the status of the TransitRouter instance.\n\n- If a TransitRouter instance is in the **Modifying** state, the instance is being modified. In this state, you can only query the instance. You cannot perform other operations.\n\n- If a TransitRouter instance is in the **Active** state, the modification is complete."
+  },
   "example": {
     "unifiedCli": "aliyun cbn update-transit-router --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --biz-region-id cn-hangzhou --transit-router-id tr-uf654ttymmljlvh2x0000 --transit-router-name testname --transit-router-description testdesc --region cn-hangzhou",
     "legacyCli": "aliyun cbn UpdateTransitRouter --region cn-hangzhou --DryRun false --TransitRouterName testname --TransitRouterDescription testdesc --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --TransitRouterId 'tr-uf654ttymmljlvh2x0000'"

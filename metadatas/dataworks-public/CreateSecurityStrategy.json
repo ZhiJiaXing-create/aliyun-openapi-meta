@@ -1,0 +1,114 @@
+{
+  "name": "CreateSecurityStrategy",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ClientToken",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "幂等参数。用于避免多次调用导致操作重复。",
+        "en": "A client-generated token that ensures request idempotency, preventing duplicate operations if you retry the request."
+      }
+    },
+    {
+      "name": "Content",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "策略内容。内容受SecurityStrategySchema约束",
+        "en": "The content of the strategy. This value is constrained by the `SecurityStrategySchema`."
+      }
+    },
+    {
+      "name": "ControlDwScope",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "**管控范围（Workspace/Tenant）**",
+        "en": "**The control scope. Valid values: Workspace and Tenant.**"
+      }
+    },
+    {
+      "name": "ControlModule",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "**管控模块**",
+        "en": "**Control module**"
+      }
+    },
+    {
+      "name": "ControlSubModule",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "**管控子模块**",
+        "en": "**Control submodule**"
+      }
+    },
+    {
+      "name": "Description",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "**策略描述**",
+        "en": "**Strategy description**"
+      }
+    },
+    {
+      "name": "Name",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "**策略名称**",
+        "en": "**Strategy name**"
+      }
+    },
+    {
+      "name": "SchemaName",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "**Schema模板名称**",
+        "en": "**Schema template name**"
+      }
+    },
+    {
+      "name": "Workspaces",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "关联工作空间ID列表",
+        "en": "A list of associated workspace IDs."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建安全策略",
+    "en": "CreateSecurityStrategy"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- **SchemaName**：根据不同的业务需求选择合适的 Schema 名称。\n- **ControlModule** 和 **ControlSubModule**：指定策略应用的模块及子模块，确保与所选 Schema 匹配。\n- **ControlDwScope**：定义策略的应用范围（租户或工作空间级别）。\n- **Workspaces**：当 `ControlDwScope` 为 `Workspace` 时，必须提供关联的工作空间 ID 列表。\n- **Content.Controllers**：策略内容中的管控项列表需符合所选 Schema 的合法管控项定义。\n- 系统默认策略不允许通过此接口创建。",
+    "en": "## Request\n\n- **SchemaName**: Select a schema that fits your business needs.\n\n- **ControlModule** and **ControlSubModule**: Specify the module and submodule for the policy, ensuring they match the selected schema.\n\n- **ControlDwScope**: Set the policy scope to either the tenant or workspace level.\n\n- **Workspaces**: If `ControlDwScope` is set to `Workspace`, provide the corresponding workspace IDs.\n\n- **Content.Controllers**: The controllers must match the definitions in the selected schema.\n\n- This operation cannot create system default policies."
+  },
+  "example": {
+    "unifiedCli": "aliyun dataworks-public create-security-strategy --name '默认数据分析策略' --description '控制数据分析模块的查询结果安全行为' --schema-name DataQuerySecurityStrategySchema --control-module DataQuery --control-sub-module MyCatalog --control-dw-scope Tenant --workspaces 1853943 --content '{\"Controllers\":[{\"ProfessionalEditionIntervalValue\":[200000],\"StandardEditionIntervalValue\":[100000],\"EnterpriseEditionDefaultValue\":\"500000\",\"BasicEditionIntervalValue\":[0],\"ControllerValueType\":\"Integer\",\"Controller\":\"viewCount\",\"StandardEditionDefaultValue\":\"100000\",\"UserConfigValue\":\"10\",\"DisplayName\":\"查询结果-单次展示记录值上限\",\"DisplayNameEn\":\"Query_Results_-_Single_Display_Record_Limit\",\"Enable\":true,\"BasicEditionDefaultValue\":\"0\",\"ProfessionalEditionDefaultValue\":\"200000\",\"EnterpriseEditionIntervalValue\":[500000]}],\"ControlModule\":\"DataStudio\",\"ControlSubModule\":\"MyCatalog\",\"DisplayName\":\"数据分析\",\"DisplayNameEn\":\"Data_Analysis\",\"SystemPolicyDisplayName\":\"Default_system_generate_data_query_policy\",\"ControlDwScope\":\"Tenant\",\"SystemPolicyName\":\"SYSTEM_GENERATE_DEFAULT_DATA_QUERY\",\"Name\":\"DataQuerySecurityStrategySchema\"}' --client-token ABFUOEUOTRTRJKE --api-version 2024-05-18 --region cn-hangzhou",
+    "legacyCli": "aliyun dataworks-public CreateSecurityStrategy --region cn-hangzhou --Description '控制数据分析模块的查询结果安全行为' --ControlModule DataQuery --ControlSubModule MyCatalog --Content '{\"Controllers\":[{\"ProfessionalEditionIntervalValue\":[200000],\"StandardEditionIntervalValue\":[100000],\"EnterpriseEditionDefaultValue\":\"500000\",\"BasicEditionIntervalValue\":[0],\"ControllerValueType\":\"Integer\",\"Controller\":\"viewCount\",\"StandardEditionDefaultValue\":\"100000\",\"UserConfigValue\":\"10\",\"DisplayName\":\"查询结果-单次展示记录值上限\",\"DisplayNameEn\":\"Query_Results_-_Single_Display_Record_Limit\",\"Enable\":true,\"BasicEditionDefaultValue\":\"0\",\"ProfessionalEditionDefaultValue\":\"200000\",\"EnterpriseEditionIntervalValue\":[500000]}],\"ControlModule\":\"DataStudio\",\"ControlSubModule\":\"MyCatalog\",\"DisplayName\":\"数据分析\",\"DisplayNameEn\":\"Data_Analysis\",\"SystemPolicyDisplayName\":\"Default_system_generate_data_query_policy\",\"ControlDwScope\":\"Tenant\",\"SystemPolicyName\":\"SYSTEM_GENERATE_DEFAULT_DATA_QUERY\",\"Name\":\"DataQuerySecurityStrategySchema\"}' --Workspaces '[1853943]' --ClientToken ABFUOEUOTRTRJKE --ControlDwScope Tenant --SchemaName DataQuerySecurityStrategySchema --Name '默认数据分析策略'"
+  }
+}

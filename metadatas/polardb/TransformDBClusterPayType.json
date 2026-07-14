@@ -1,5 +1,6 @@
 {
   "name": "TransformDBClusterPayType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -14,25 +15,41 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该参数用于保证请求的幂等性。由客户端生成该参数值，保证在不同请求间该参数值的唯一性。该参数区分大小写、长度不超过64个ASCII字符。",
+        "en": "A client token to ensure the idempotence of the request. The client generates the token, but you must make sure that the token is unique among different requests. The token is case-sensitive and can be up to 64 ASCII characters in length."
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "PolarDB集群ID。",
+        "en": "The ID of the PolarDB cluster."
+      }
     },
     {
       "name": "PayType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例的付费类型。取值：\n\n- **Postpaid**：后付费（按量付费）\n\n- **Prepaid**：预付费（包年包月）",
+        "en": "The billing method of the instance. Valid values:\n\n- **Postpaid**: pay-as-you-go\n\n- **Prepaid**: subscription"
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定预付费实例为包年或者包月类型。取值：\n\n- **Year**：包年\n\n- **Month**：包月\n\n> 当**PayType**取值为**Prepaid**时，需要传入该参数。",
+        "en": "The unit of the subscription duration. Valid values:\n\n- **Year**\n\n- **Month**\n\n> This parameter is required when you set **PayType** to **Prepaid**."
+      }
     },
     {
       "name": "PromotionCode",
@@ -44,21 +61,44 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "UsedTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买时长，取值：\n\n- 当**Period**为**Year**时，**UsedTime**取值为1~3。\n\n- 当**Period**为**Month**时，**UsedTime**取值为1~9。\n\n> 当**PayType**取值**Prepaid**时，需要传入该参数。",
+        "en": "The subscription duration. Valid values:\n\n- If you set **Period** to **Year**, the value of **UsedTime** can be 1, 2, or 3.\n\n- If you set **Period** to **Month**, the value of **UsedTime** can be an integer from 1 to 9.\n\n> This parameter is required when you set **PayType** to **Prepaid**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更数据库集群付费类型",
+    "en": "TransformDBClusterPayType"
+  },
+  "descriptions": {
+    "zh": "> - PolarDB集群支持包年包月和按量付费两种计费方式，您可以根据业务需求，将包年包月计费方式转换为按量付费，也可以将按量付费计费方式转换为包年包月。具体请参见[包年包月转按量付费](~~172886~~)和[按量付费转包年包月](~~84076~~)。\n>- 当您的阿里云账号余额不足时，按量付费计费方式无法转换为包年包月。\n>- 包年包月计费方式变更为按量付费时，系统会自动退还您已支付费用的余额。",
+    "en": "> - PolarDB clusters support two billing methods: subscription and pay-as-you-go. You can change the billing method of a cluster from subscription to pay-as-you-go, or from pay-as-you-go to subscription. For more information, see [Change the billing method from subscription to pay-as-you-go](~~172886~~) and [Change the billing method from pay-as-you-go to subscription](~~84076~~).\n>\n> - You cannot change the billing method from pay-as-you-go to subscription if your Alibaba Cloud account has an insufficient balance.\n>\n> - When you change the billing method from subscription to pay-as-you-go, the system automatically refunds your remaining prepaid fees."
+  },
   "example": {
     "unifiedCli": "aliyun polardb transform-db-cluster-pay-type --db-cluster-id pc-bp10gr51qasnl0000 --pay-type Prepaid --biz-region-id cn-hangzhou --used-time 1 --period Month --resource-group-id rg-acfm3f4un320000 --client-token 6000170000591aed949d0f500000000000000000000 --auto-use-coupon true --promotion-code 727xxxxxx934 --region cn-hangzhou",
     "legacyCli": "aliyun polardb TransformDBClusterPayType --region cn-hangzhou --ResourceGroupId 'rg-acfm3f4un320000' --AutoUseCoupon true --PromotionCode 727xxxxxx934 --DBClusterId 'pc-bp10gr51qasnl0000' --UsedTime 1 --Period Month --PayType Prepaid --RegionId 'cn-hangzhou' --ClientToken 6000170000591aed949d0f500000000000000000000"

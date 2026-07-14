@@ -1,5 +1,6 @@
 {
   "name": "RescaleApplication",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID，您可通过查询ListApplications接口获取。",
+        "en": "The ID of the application. You can query the application ID by calling the ListApplications operation."
+      }
     },
     {
       "name": "RescaleLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "扩缩容区域级别。枚举类型，取值范围：\n\n- AreaIspCode：区域运营商\n- RegionId：边缘节点\n- InstanceId：实例，扩容代表资源托管 / 缩容代表资源释放\n\n默认值AreaIspCode。",
+        "en": "The level of resource scaling. The value is of the enumeration type. Valid values:\n\n- AreaIspCode (default): scales resources based on the Internet service provider (ISP).\n\n- RegionId: scales resources based on the edge node.\n\n- InstanceId: scales resources based on the instance ID. Resource scale-out specifies resource hosting and scale-in specifies resource release.\n\nDefault value: AreaIspCode."
+      }
     },
     {
       "name": "RescaleType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "扩缩容资源动作。枚举类型，取值：\n- Add：生产新资源。\n- Del：释放资源。",
+        "en": "The scaling operation. The value must be of the enumerated data type. Valid values:\n\n- Add: adds new resources.\n\n- Del: releases resources."
+      }
     },
     {
       "name": "ResourceSelector",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "扩缩容资源需求，Json数组格式的字符串。",
+        "en": "The required resources. The value must be a JSON string."
+      }
     },
     {
       "name": "Timeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "异步扩缩容的超时时间，单位秒。默认300。",
+        "en": "The timeout period for asynchronous scaling. Unit: seconds. Default value: 300."
+      }
     },
     {
       "name": "ToAppVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "仅新增资源时有效，新增资源的应用部署版本号，默认为应用的稳定版版本号。",
+        "en": "The version number of the application deployment package. By default, the stable version number is used. This parameter takes effect only when you perform resource scale-out."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "应用扩缩容",
+    "en": "RescaleApplication"
+  },
   "example": {
     "unifiedCli": "aliyun ens rescale-application --app-id 474bdef0-d149-4695-abfb-52912d9143f0 --rescale-type Add --rescale-level RegionId --resource-selector regionCode_:_cn-wuxi-telecom_unicom_cmcc-3_,_ispCode_:_telecom_,_count_:_2_,_regionCode_:_cn-shanghai-cmcc_,_count_:_4 --to-app-version v2 --timeout 1800 --region cn-hangzhou",
     "legacyCli": "aliyun ens RescaleApplication --region cn-hangzhou --AppId '474bdef0-d149-4695-abfb-52912d9143f0' --Timeout 1800 --ResourceSelector 'regionCode_:_cn-wuxi-telecom_unicom_cmcc-3_,_ispCode_:_telecom_,_count_:_2_,_regionCode_:_cn-shanghai-cmcc_,_count_:_4' --ToAppVersion v2 --RescaleLevel RegionId --RescaleType Add"

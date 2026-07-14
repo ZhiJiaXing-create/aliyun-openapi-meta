@@ -1,5 +1,6 @@
 {
   "name": "ListWafManagedRules",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,110 @@
       "name": "AttackType",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "漏洞防护事件的攻击类型。取值：\n- SQL注入\n- 跨站脚本\n- 代码执行\n- CRLF\n- 本地文件包含\n- 远程文件包含\n- webshell\n- 跨站请求伪造\n- 其他\n- SEMA",
+        "en": "The attack type of the vulnerability prevention event. Valid values:\n- SQL injection\n- cross-site scripting (XSS)\n- code execute\n- CRLF\n- local file inclusion (LFI)\n- remote file inclusion (RFI)\n- webshell\n- cross-site request forgery\n- Others\n- SEMA"
+      }
     },
     {
       "name": "Id",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF规则的ID。",
+        "en": "The ID of the WAF rule."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF 实例 ID。",
+        "en": "The WAF instance ID."
+      }
     },
     {
       "name": "Language",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "语言类型，将以此语言返回。取值范围：\n\n- **en**：英文。\n- **zh**：中文。",
+        "en": "The language type. The response is returned in the specified language. Valid values:\n\n- **en**: English.\n- **zh**: Chinese."
+      }
     },
     {
       "name": "ManagedRuleset",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "托管规则集配置，JSON 字符串格式。\n\n包含 AttackType、ProtectionLevel、Action 及 ManagedRules 子字段。当 ProtectionLevel 为 -1（自定义模式）时，需通过 ManagedRules 数组逐条指定规则状态和动作。",
+        "en": "The managed ruleset configuration in JSON string format.\n\nContains the AttackType, ProtectionLevel, Action, and ManagedRules subfields. When ProtectionLevel is set to -1 (custom mode), specify the status and action for each rule through the ManagedRules array."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询页号。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询页大小。",
+        "en": "The page size."
+      }
     },
     {
       "name": "ProtectionLevel",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前已保存的防护等级，代表数据库中已存在的配置状态。\n\n取值：-1（自定义模式）、1（宽松）、2（中等）、3（严格）、4（超严格）。\n\n与 ManagedRuleset.ProtectionLevel 的区别：本字段是当前已生效的配置，ManagedRuleset.ProtectionLevel 是传入的目标值。",
+        "en": "The currently saved protection level, which represents the existing configuration state in the database.\n\nValid values: -1 (custom mode), 1 (loose), 2 (medium), 3 (strict), 4 (super strict).\n\nDifference from ManagedRuleset.ProtectionLevel: this parameter indicates the currently effective configuration, while ManagedRuleset.ProtectionLevel indicates the target value being passed in."
+      }
     },
     {
       "name": "QueryArgs",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询条件。",
+        "en": "The query conditions."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~2850189~~)接口获取。",
+        "en": "The site ID. You can obtain the site ID by calling the [ListSites](~~2850189~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "列举WAF托管规则",
+    "en": "List WAF managed rules"
+  },
   "example": {
     "unifiedCli": "aliyun esa list-waf-managed-rules --site-id 1 --instance-id esa-site-awmmx25y2igw --id 10000001 --managed-ruleset '{\"ProtectionLevel\":-1,\"Action\":\"monitor\",\"ManagedRules\":[{\"Status\":\"on\",\"Action\":\"js\",\"Id\":20611349}],\"AttackType\":11}' --attack-type 11 --protection-level 1 --biz-language zh --query-args Status_:_,_ProtectionLevels_:_2,1_,_Action_:_,_IdNameLike_: --page-number 1 --page-size 20 --region cn-hangzhou",
     "legacyCli": "aliyun esa ListWafManagedRules --region cn-hangzhou --ProtectionLevel 1 --SiteId 1 --QueryArgs 'Status_:_,_ProtectionLevels_:_2,1_,_Action_:_,_IdNameLike_:' --Language zh --PageSize 20 --InstanceId 'esa-site-awmmx25y2igw' --PageNumber 1 --ManagedRuleset '{\"ProtectionLevel\":-1,\"Action\":\"monitor\",\"ManagedRules\":[{\"Status\":\"on\",\"Action\":\"js\",\"Id\":20611349}],\"AttackType\":11}' --AttackType 11 --Id 10000001"

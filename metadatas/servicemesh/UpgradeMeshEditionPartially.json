@@ -1,5 +1,6 @@
 {
   "name": "UpgradeMeshEditionPartially",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "ASMGatewayContinue",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "此次操作是否为ASM网关继续升级，取值：\n- `true`：升级ASM网关\n\n- `false`：不升级ASM网关",
+        "en": "Specifies whether to continue upgrading the ASM gateway. Valid values:\n\n- `true`: Upgrades the ASM gateway.\n\n- `false`: Does not upgrade the ASM gateway."
+      }
     },
     {
       "name": "ExpectedVersion",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "期望升级到的版本，如果填写该字段，后端会检查计算出的目标升级版本是否和期望版本一致，如果一致才进行升级流程，如果不一致则会返回`UpgradedVersion.NotExpected`错误。",
+        "en": "The version to which you want to upgrade the instance. If you set this parameter, the backend checks if the target version matches this expected version. The upgrade proceeds only if the versions match. If they do not match, the `UpgradedVersion.NotExpected` fault is returned."
+      }
     },
     {
       "name": "PreCheck",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行升级检查。如果该值设置为true，则只会执行升级检查，并不会实际升级。",
+        "en": "Specifies whether to perform only a precheck. If set to true, the system performs a precheck but does not start the upgrade."
+      }
     },
     {
       "name": "ServiceMeshId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ASM实例ID",
+        "en": "The ID of the ASM instance."
+      }
     },
     {
       "name": "SwitchToPro",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否切换为商业版（专业版），取值：\n\n- `true`：切换为商业版（专业版）\n\n- `false`：不切换为商业版（专业版）",
+        "en": "Specifies whether to switch the instance to the Professional Edition. Valid values:\n\n- `true`: Switches the instance to the Professional Edition.\n\n- `false`: Does not switch the instance to the Professional Edition."
+      }
     },
     {
       "name": "UpgradeGatewayRecords",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "选择升级的ASM网关列表。用逗号分隔。",
+        "en": "The list of ASM gateways to upgrade. Separate multiple gateway names with commas."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "升级或切换ASM实例版本",
+    "en": "UpgradeMeshEditionPartially"
+  },
   "example": {
     "unifiedCli": "aliyun servicemesh upgrade-mesh-edition-partially --service-mesh-id ca04bc38979214bf2882be79d39b40000 --switch-to-pro true --asm-gateway-continue true --upgrade-gateway-records istio-system:ingressgateway1,istio-system:ingressgateway2 --expected-version v1.15.3.118-g4712daf0-aliyun --pre-check false --region cn-hangzhou",
     "legacyCli": "aliyun servicemesh UpgradeMeshEditionPartially --region cn-hangzhou --ServiceMeshId ca04bc38979214bf2882be79d39b40000 --SwitchToPro true --PreCheck false --ASMGatewayContinue true --ExpectedVersion 'v1.15.3.118-g4712daf0-aliyun' --UpgradeGatewayRecords 'istio-system:ingressgateway1,istio-system:ingressgateway2'"

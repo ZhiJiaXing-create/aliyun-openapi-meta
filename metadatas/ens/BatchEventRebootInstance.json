@@ -1,5 +1,6 @@
 {
   "name": "BatchEventRebootInstance",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "事件列表。",
+        "en": "A list of objects, where each object specifies an Event and the associated Resource to reboot."
+      },
       "sub_parameters": [
         {
           "name": "EventId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "系统事件ID。",
+            "en": "The ID of the System Event."
+          }
         },
         {
           "name": "OpsType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "运维任务类型，取值范围：\n\n- immediate：立即执行。\n\n- scheduled：预约执行。",
+            "en": "The type of Operation. Valid values:\n\n- `immediate`: Executes the operation immediately.\n\n- `scheduled`: Executes the Operation at the time specified by `PlanTime`."
+          }
         },
         {
           "name": "PlanTime",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "预约执行时间，时间戳，单位毫秒。 当OpsType=scheduled时，此字段为必输。",
+            "en": "The scheduled execution time, specified as a Timestamp in milliseconds. This parameter is required when `OpsType` is `scheduled`."
+          }
         },
         {
           "name": "PlanUtcTime",
@@ -38,11 +55,26 @@
           "name": "ResourceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源ID。",
+            "en": "The ID of the Resource to be rebooted."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量重启实例",
+    "en": "BatchEventRebootInstance"
+  },
+  "descriptions": {
+    "zh": "- 此运维操作，目前仅支持事件类型：Instance:SystemMaintenance.Reboot（因系统维护实例重启）。",
+    "en": "- This operation applies only to `Instance:SystemMaintenance.Reboot` events, which are system maintenance events that require an Instance reboot."
+  },
   "example": {
     "unifiedCli": "aliyun ens batch-event-reboot-instance --event-infos ResourceId=n-54hi3ffi63zrjt4wzx9mepeyh EventId=e-4452cec5a8f8eb9b2879a054207687d6 PlanUtcTime=example-string OpsType=immediate PlanTime=1742452232000 --region cn-hangzhou",
     "legacyCli": "aliyun ens BatchEventRebootInstance --region cn-hangzhou --EventInfos '[{\"ResourceId\":\"n-54hi3ffi63zrjt4wzx9mepeyh\",\"EventId\":\"e-4452cec5a8f8eb9b2879a054207687d6\",\"PlanUtcTime\":\"example-string\",\"OpsType\":\"immediate\",\"PlanTime\":1742452232000}]'"

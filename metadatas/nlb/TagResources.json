@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nYou can use the client to generate the token. Ensure that the token is unique among different requests. Only ASCII characters are allowed.\n\n>  If you do not specify this parameter, the value of **RequestId** is used.**** **RequestId** is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会为资源创建并绑定标签。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: validates the request without performing the operation. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the validation, the corresponding error message is returned. If the request passes the validation, the `DryRunOperation` error code is returned.\n*   **false** (default): validates the request and performs the operation. If the request passes the validation, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The ID of the region where the resources are deployed.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Body",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID。一次调用最多支持添加50个资源ID。",
+        "en": "The IDs of the resources. You can specify up to 50 resource IDs in each call."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，取值：\n\n- **loadbalancer**：网络型负载均衡实例。\n- **securitypolicy**：安全策略。\n- **servergroup**：服务器组。",
+        "en": "The type of the resources. Valid values:\n\n*   **loadbalancer**: the Network Load Balancer (NLB) instance\n*   **securitypolicy**: the security policy\n*   **servergroup**: the server group"
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "标签。",
+        "en": "The tags."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "给资源添加标签",
+    "en": "TagResources"
+  },
   "example": {
     "unifiedCli": "aliyun nlb tag-resources --resource-id nlb-nrnrxwd15en27r0000 --tag Value=product Key=env --resource-type loadbalancer --dry-run true --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun nlb TagResources --region cn-hangzhou --ResourceId.1 'nlb-nrnrxwd15en27r0000' --Tag.1.Key env --Tag.1.Value product --DryRun true --ResourceType loadbalancer --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --method POST --force"

@@ -1,5 +1,6 @@
 {
   "name": "SetBackendServers",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "添加的后端服务器列表，每次调用最多可修改20个后端服务器。",
+        "en": "The list of backend servers that you added. You can modify the weights of up to 20 backend servers in each request."
+      },
       "sub_parameters": [
         {
           "name": "ServerId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "后端服务器的实例ID。",
+            "en": "The ID of the instance that you use as the backend server."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器类型。取值：\n- **ens**：ENS实例。\n- **eni**：弹性网卡实例。",
+            "en": "The type of the backend server. Valid values:\n\n- **ens**: ENS instance\n\n- **eni**: elastic network interface (ENI)"
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "后端服务器的权重。默认值：100，取值：**0**~**100**。\n\n> 取值为0，表示不会将请求转发给该后端服务器。",
+            "en": "The weight of the backend server. Default value: 100. Valid values: **0** to **100**.\n\n> The value 0 indicates that requests are not forwarded to the backend server."
+          }
         }
       ]
     },
@@ -34,9 +51,23 @@
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例的ID。",
+        "en": "The ID of the Edge Load Balancer (ELB) instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置后端服务器权重",
+    "en": "SetBackendServers"
+  },
+  "descriptions": {
+    "en": "- Rate limit: 100 requests per second.\n\n- up to 10 times per second per account."
+  },
   "example": {
     "unifiedCli": "aliyun ens set-backend-servers --load-balancer-id lb-5s7crik3yo3bp03gqrbp50000 --backend-servers Type=ens ServerId=i-5ze0o05xccvbljtn0000 Weight=20 --region cn-hangzhou",
     "legacyCli": "aliyun ens SetBackendServers --region cn-hangzhou --LoadBalancerId 'lb-5s7crik3yo3bp03gqrbp50000' --BackendServers '[{\"Type\":\"ens\",\"ServerId\":\"i-5ze0o05xccvbljtn0000\",\"Weight\":20}]'"

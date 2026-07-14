@@ -1,5 +1,6 @@
 {
   "name": "ListTagResourcesForExpressConnect",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,53 +9,96 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批次查询时每次显示的条目数。取值范围：**1**~**100**，默认值为**20**。",
+        "en": "The number of entries per page. Valid values: **1** to **100**. Default value: **20**."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否拥有下一次查询的令牌（Token）。取值：\n- 第一次查询和没有下一次查询时，均无需填写。\n- 如果有下一次查询，取值为上一次API调用返回的**NextToken**值。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results.\n\n*   You do not need to specify this parameter for the first request.\n*   You must specify the token that is obtained from the previous query as the value of **NextToken**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region to which the resource resides.\n\nYou can call the [DescribeRegions](~~36063~~) operation to obtain the region ID."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID列表。",
+        "en": "The resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n- **PHYSICALCONNECTION**：表示高速通道专线实例。\n- **VIRTUALBORDERROUTER**：表示边界路由器。\n- **ROUTERINTERFACE**：表示VBR上连。\n- **TRAFFICQOS**：表示QoS策略。",
+        "en": "The type of the resource. Valid values:\n\n*   **PHYSICALCONNECTION**: Express Connect circuit.\n*   **VIRTUALBORDERROUTER**: virtual border router (VBR).\n*   **ROUTERINTERFACE**: router interface."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。如果传入该值，则不能输入空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The key of the tag to add to the resource. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length and cannot contain `http://` or `https://`. The tag key cannot start with `aliyun` or `acs:`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。如需传入该值，可以输入空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The value of the tag to add to the resource. You can specify up to 20 tag values The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot contain `http://` or `https://`. The tag value cannot start with `aliyun` or `acs:`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询高速通道已经绑定的标签列表",
+    "en": "ListTagResourcesForExpressConnect"
+  },
+  "descriptions": {
+    "zh": "- 如您需要确认检索对象，请求参数中需指定参数**ResourceId.N**或**Tag.N**（**Tag.N.Key**与**Tag.N.Value**）。\n\n- **Tag.N**是资源的标签，由一个键值对组成。仅指定**Tag.N.Key**时，则返回该标签键关联的所有标签值。仅指定**Tag.N.Value**会报错。\n\n- 如果您同时指定**Tag.N**和**ResourceId.N**筛选标签，则**ResourceId.N**必须满足所有输入的标签键值对。\n\n- 如果您同时指定多个标签键值对，返回结果为同时包含被指定的多个键值对的资源。",
+    "en": "## [](#)\n\n*   If you want to query a specific object, you must specify **ResourceId.N** or **Tag.N** that consists of **Tag.N.Key** and **Tag.N.Value** in the request.\n*   **Tag.N** is a resource tag that consists of a key-value pair. If you specify only **Tag.N.Key**, all tag values that are associated with the specified key are returned. If you specify only **Tag.N.Value**, an error message is returned.\n*   If you specify **Tag.N** and **ResourceId.N** to filter tags, **ResourceId.N** must match all specified key-value pairs.\n*   If you specify multiple key-value pairs, resources that contain these key-value pairs are returned."
+  },
   "example": {
     "unifiedCli": "aliyun vpc list-tag-resources-for-express-connect --resource-type PHYSICALCONNECTION --biz-region-id cn-hangzhou --next-token FFmyTO70tTpLG6I3FmYAXGKPd0000 --max-results 20 --resource-id pc-bp16qjewdsunr41m10000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpc ListTagResourcesForExpressConnect --region cn-hangzhou --ResourceId.1 'pc-bp16qjewdsunr41m10000' --Tag.1.Key FinanceDept --NextToken FFmyTO70tTpLG6I3FmYAXGKPd0000 --MaxResults 20 --Tag.1.Value FinanceJoshua --ResourceType PHYSICALCONNECTION --RegionId 'cn-hangzhou'"

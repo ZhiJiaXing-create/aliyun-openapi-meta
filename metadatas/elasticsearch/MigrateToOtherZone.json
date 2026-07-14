@@ -1,5 +1,6 @@
 {
   "name": "MigrateToOtherZone",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/openapi/instances/[InstanceId]/actions/migrate-zones",
@@ -8,7 +9,11 @@
       "name": "InstanceId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "body",
@@ -20,9 +25,24 @@
       "name": "dryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "校验是否可以进行可用区节点迁移。true表示只校验不执行迁移任务；false表示校验通过后即进行迁移任务。",
+        "en": "Specifies whether to perform a dry run to check whether zone node migration is feasible. Valid values:\n- true: performs only a validation check without executing the migration task.\n- false: executes the migration task after the validation check succeeds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "迁移可用区",
+    "en": "Migrate zone"
+  },
+  "descriptions": {
+    "zh": "当您升配实例，遇到可用区规格库存不足的问题时，可以通过迁移可用区节点来解决。在调用此接口前，需要确保：\n\n- 当前账号存在资源充足的可用区。\n\n   在迁移当前规格的节点到其他可用区后，需手动[升配集群](~~96650~~)，并不会在迁移过程中升配集群，因此要选择资源充足的可用区，避免集群升配失败。建议优先选择字母顺序靠后的新可用区（例如对于cn-hangzhou-e和cn-hangzhou-h可用区，优先选择cn-hangzhou-h）。\n\n- 集群处于健康状态。\n\n   可通过`GET _cat/health?v`命令查看集群健康状态。",
+    "en": "When you upgrade the specifications of an instance and encounter insufficient inventory in the current zone, you can resolve this issue by migrating zone nodes. Before calling this operation, make sure that:\n\n- Your account has a zone with sufficient resources.\n\n   After migrating nodes of the current specifications to another zone, you must manually [upgrade the cluster](~~96650~~). The cluster is not upgraded during the migration. Therefore, select a zone with sufficient resources to avoid cluster upgrade failures. Select a zone with a later alphabetical order first. For example, between ap-southeast-1e and ap-southeast-1h, select ap-southeast-1h first.\n\n- The cluster is in a healthy state.\n\n   You can run the `GET _cat/health?v` command to check the cluster health status."
+  },
   "example": {
     "unifiedCli": "aliyun elasticsearch migrate-to-other-zone --instance-id es-cn-n6w1o1x0w001c0000 --dry-run false --biz-body example-string --api-version 2017-06-13 --region cn-hangzhou",
     "legacyCli": "aliyun elasticsearch POST /openapi/instances/es-cn-n6w1o1x0w001c0000/actions/migrate-zones --region cn-hangzhou --dryRun false --header \"Content-Type=application/json\" --body \"example-string\""

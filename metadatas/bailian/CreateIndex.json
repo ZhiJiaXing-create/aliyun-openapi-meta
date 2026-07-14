@@ -1,0 +1,478 @@
+{
+  "name": "CreateIndex",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "/[WorkspaceId]/index/create",
+  "parameters": [
+    {
+      "name": "CategoryIds",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "创建知识库时可同步导入文件。此处通过指定类目 ID，可导入对应类目下的所有文件（建议导入不超过10000个。如有剩余文件，后续可调用 **SubmitIndexAddDocumentsJob** 接口继续导入）。",
+        "en": "You can import files when you create a knowledge base. Specify category IDs to import all files under the corresponding categories. We recommend importing no more than 10,000 files. If you have more files, you can call the **SubmitIndexAddDocumentsJob** operation to import them later."
+      }
+    },
+    {
+      "name": "ChunkSize",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n\n分段长度，即每个文本切片的字符数上限。超过该长度时：\n\n- **智能切分**（未指定`chunkMode`）：文本很可能会被截断。\n- **自定义切分**（指定了`chunkMode`）：文本将被强制截断。\n\n</props>\n\n<props=\"intl\">\n分段长度，即每个文本切片的字符数上限。超过该长度时，文本很可能会被截断。\n</props>\n\n\n取值范围[1-6000]。若未指定，默认采用 500。\n\n> 若设置了`ChunkSize`且小于100，则必须同时设置`OverlapSize`。您也可以不指定这2个参数，系统将使用默认值。",
+        "en": "<props=\"china\">\n\nThe chunk size, which is the maximum number of characters for each text chunk. If this length is exceeded:\n\n- **Smart chunking** (the \\`chunkMode\\` parameter is not specified): The text is likely to be truncated.\n\n- **Custom chunking** (the \\`chunkMode\\` parameter is specified): The text is forcibly truncated.\n\n</props>\n\n<props=\"intl\">\n\nThe chunk size, which is the maximum number of characters for each text chunk. If this length is exceeded, the text is likely to be truncated.\n\n</props>\n\nThe value must be between 1 and 6000. If you do not specify this parameter, the default value 500 is used.\n\n> If you set \\`ChunkSize\\` to a value less than 100, you must also set \\`OverlapSize\\`. You can also leave both parameters unspecified, and the system will use the default values."
+      }
+    },
+    {
+      "name": "Columns",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n数据表的结构（列名、类型等）。\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n\n</props>",
+        "en": "<props=\"china\">\n\nThe structure of the data table (column names, types, etc.).\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+      },
+      "sub_parameters": [
+        {
+          "name": "Column",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "> 该参数暂不开放，请勿传入。\n>",
+            "en": "> This parameter is not yet available. Do not specify it."
+          }
+        },
+        {
+          "name": "IsRecall",
+          "position": "Query",
+          "type": "Boolean",
+          "required": false,
+          "description": {
+            "zh": "<props=\"china\">\n\n是否参与模型回复。开启后表示本列的检索结果将作为大模型生成回答时的输入信息。取值范围：\n\n- true：开启。\n- false：不开启。\n\n\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n\n</props>",
+            "en": "<props=\"china\">\n\nSpecifies whether to participate in model response generation. If enabled, the retrieval results from this column are used as input for the LLM to generate an answer. Valid values:\n\n- true: Enabled.\n\n- false: Disabled.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+          }
+        },
+        {
+          "name": "IsSearch",
+          "position": "Query",
+          "type": "Boolean",
+          "required": false,
+          "description": {
+            "zh": "<props=\"china\">\n\n是否参与知识库检索。开启后表示允许知识库在此列数据中进行搜索。取值范围：\n\n- true：开启。\n- false：不开启。\n\n</props>\n\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n</props>",
+            "en": "<props=\"china\">\n\nSpecifies whether to participate in knowledge base retrieval. If enabled, the knowledge base is allowed to search for data in this column. Valid values:\n\n- true: Enabled.\n\n- false: Disabled.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+          }
+        },
+        {
+          "name": "Name",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "<props=\"china\">\n字段名称。必须与应用数据中创建的数据表的表头一致。\n\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n</props>",
+            "en": "<props=\"china\">\n\nThe field name. It must be consistent with the table header of the data table created in Application Data.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+          }
+        },
+        {
+          "name": "Type",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "<props=\"china\">\n\n字段类型。必须与应用数据中创建的数据表的表头一致。取值范围：\n\n- string\n- double\n- long\n- datetime\n- image_url\n\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n\n</props>",
+            "en": "<props=\"china\">\n\nThe field type. It must be consistent with the table header of the data table created in Application Data. Valid values:\n\n- string\n\n- double\n\n- long\n\n- datetime\n\n- image\\_url\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "CreateIndexType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "> 该参数暂不开放，请勿传入。\n>",
+        "en": "> This parameter is not yet available. Do not specify it."
+      }
+    },
+    {
+      "name": "Description",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "知识库描述。长度为 0~1000 个英文或中文字符。\n默认值为空。",
+        "en": "The description of the knowledge base. The description can be 0 to 1,000 English or Chinese characters in length.\nThe default value is empty."
+      }
+    },
+    {
+      "name": "DocumentIds",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "创建知识库时可同步导入文件。此处可指定需要导入的文件列表（传入文件 ID，建议导入不超过10000个。如有剩余文件，后续可调用 **SubmitIndexAddDocumentsJob** 接口继续导入）。",
+        "en": "You can import files when you create a knowledge base. Specify a list of files to import by providing their IDs. We recommend importing no more than 10,000 files. If you have more files, you can call the **SubmitIndexAddDocumentsJob** operation to import them later."
+      }
+    },
+    {
+      "name": "EmbeddingModelName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n\n知识库使用的向量模型。向量模型用于将原始输入prompt和知识文本转换为数值化向量，以便对二者进行相似度比较。text-embedding-v4模型在语种支持、代码片段向量化效果和向量维度选择等方面，相比text-embedding-v3模型进行了全面升级，适用于大部分场景。更多信息，请参见[向量化](~~2842587~~)。取值范围：\n- text-embedding-v4\n- text-embedding-v3\n\n默认值为空，此时使用text-embedding-v3模型。\n\n\n</props>\n\n<props=\"intl\">\n\n知识库使用的向量模型。向量模型用于将原始输入prompt和知识文本转换为数值化向量，以便对二者进行相似度比较。默认的text-embedding-v2模型（暂不支持更改）除了支持中英文双语外，还支持多种语言，并对向量结果进行归一化处理。更多信息，请参见[向量化](~~2842587~~)。取值范围：\n- text-embedding-v2\n\n默认值为空，此时使用text-embedding-v2模型。\n\n</props>",
+        "en": "<props=\"china\">\n\nThe vector model used by the knowledge base. A vector model converts the original input prompt and knowledge text into numerical vectors to compare their similarity. The text-embedding-v4 model is a comprehensive upgrade over the text-embedding-v3 model in terms of language support, vectorization of code snippets, and vector dimension selection. It is suitable for most scenarios. For more information, see [Vectorization](~~2842587~~). Valid values:\n\n- text-embedding-v4\n\n- text-embedding-v3\n\nIf you do not specify this parameter, \\`text-embedding-v3\\` is used.\n\n</props>\n\n<props=\"intl\">\n\n- The vector model used by the knowledge base. A vector model converts the original input prompt and knowledge text into numerical vectors to compare their similarity. The default text-embedding-v2 model (which cannot be changed for now) supports both Chinese and English, along with multiple other languages, and normalizes the vector results. For more information, see [Vectorization](~~2842587~~). Valid values:\n\n</props>\n\n\n- text-embedding-v2\n\nIf you do not specify this parameter, \\`text-embedding-v2\\` is used."
+      }
+    },
+    {
+      "name": "EnableRewrite",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否开启多轮对话改写。取值范围：\n\n- true：开启。\n- false：不开启。\n\n若未指定，默认为开启。",
+        "en": "Specifies whether to enable multi-turn conversation rewriting. Valid values:\n\n- true: Enabled.\n\n- false: Disabled.\n\nIf you do not specify this parameter, this feature is enabled by default."
+      }
+    },
+    {
+      "name": "Name",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "知识库名称。长度为 1~20 个字符，支持中文、英文、数字、下划线（_）、短划线（-）、半角句号（.）和半角冒号（:）。",
+        "en": "The name of the knowledge base. The name can be 1 to 20 characters in length and can contain Chinese characters, letters, digits, underscores (\\_), hyphens (-), periods (.), and colons (:)."
+      }
+    },
+    {
+      "name": "OverlapSize",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "分段重叠长度，表示当前文本切片与前一个文本切片的重叠字符数。取值范围[0-1024]。\n\n若未指定，默认采用 100。\n>`OverlapSize`必须小于`ChunkSize`，否则将导致切分异常。",
+        "en": "The overlap size, which is the number of overlapping characters between the current text chunk and the previous one. The value must be between 0 and 1024.\n\nIf you do not specify this parameter, the default value 100 is used.\n\n> \\`OverlapSize\\` must be smaller than \\`ChunkSize\\`. Otherwise, chunking errors will occur."
+      }
+    },
+    {
+      "name": "RerankInstruct",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"intl\">该参数暂不开放，请勿传入。</props>\n\n<props=\"china\">提供一个自然语言指令，用于精细化控制重排序模型的行为。\n<notice>此参数仅在 rerank_mode 设置为 \"custom\" 时生效。></notice></props>",
+        "en": "The name of the database. This parameter is required when creating a data query knowledge base.\n\nThe database must exist in the data source specified by \\`datasourceCode\\`."
+      }
+    },
+    {
+      "name": "RerankMinScore",
+      "position": "Query",
+      "type": "Double",
+      "required": false,
+      "description": {
+        "zh": "相似度阈值，仅相似度分数超过此数值的文本切片才会被召回，用于筛选排序模型返回的文本切片。取值范围[0.01-1.00]。\n\n若未指定，默认采用 0.01。",
+        "en": "The similarity threshold. Only text chunks with a similarity score greater than this value are recalled. This is used to filter the text chunks returned by the reranking model. The value must be between 0.01 and 1.00.\n\nIf you do not specify this parameter, the default value 0.01 is used."
+      }
+    },
+    {
+      "name": "RerankMode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n指定重排序模型的指令干预模式，以决定其评分偏好。\n\n**可选值：**\n\n- **qa**:（默认值） 问答模式。模型倾向于为能直接回答查询（Query）的候选项赋予更高分。建议在问答场景使用。\n\n- **similar**: 相似模式。模型倾向于为与查询内容一致性高的候选项赋予更高分。建议在匹配检索场景使用。\n\n- **custom**: 自定义模式。模型的排序行为由 rerank_instruct 参数中的指令决定。\n\n</props>\n\n<props=\"intl\">该参数暂不开放，请勿传入。</props>",
+        "en": "The name of the data table. This parameter is required when creating a data query knowledge base.\n\nThe data table must exist in the data source specified by \\`connectId\\` or \\`datasourceCode\\`."
+      }
+    },
+    {
+      "name": "RerankModelName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "知识库使用的排序模型。排序模型是位于知识库外部的评分系统，它会计算用户问题与知识库中每个文本切片的相似度分数并按此降序排列，并返回分数最高的前K个文本切片。取值范围：\n\n\n<props=\"china\">\n\n- qwen3-rerank-hybrid：qwen3-rerank(hybrid)排序。\n- qwen3-rerank：qwen3-rerank排序。\n- gte-rerank-hybrid：gte-rerank(hybrid)排序\n- gte-rerank：gte-rerank排序。\n\n</props>\n\n<props=\"intl\">\n\n- gte-rerank-hybrid：官方排序。\n- gte-rerank：gte-rerank排序。\n\n</props>\n\n\n\n<props=\"china\">\n\n默认值为空，此时使用qwen3-rerank。\n> 如仅需语义排序，可使用`qwen3-rerank`；若同时需要语义排序和文本匹配特征以确保相关性，建议使用`qwen3-rerank-hybrid`。\n>\n\n\n</props>\n\n<props=\"intl\">\n\n默认值为空，此时使用gte-rerank-hybrid。\n> 如仅需语义排序，可使用`gte-rerank`；若同时需要语义排序和文本匹配特征以确保相关性，建议使用`gte-rerank-hybrid`。\n>\n\n\n</props>\n\n\n<props=\"china\">\n\n> `gte-rerank-hybrid`与`gte-rerank`后续停止更新，不建议使用。\n>\n\n\n</props>",
+        "en": "The reranking model used by the knowledge base. The reranking model is an external scoring system that calculates a similarity score between the user's question and each text chunk in the knowledge base, sorts them in descending order, and returns the top K text chunks. Valid values:\n\n<props=\"china\">\n\n- qwen3-rerank-hybrid: qwen3-rerank (hybrid) reranking.\n\n- qwen3-rerank: qwen3-rerank reranking.\n\n- gte-rerank-hybrid: gte-rerank (hybrid) reranking.\n\n- gte-rerank: gte-rerank reranking.\n\n</props>\n\n<props=\"intl\">\n\n- gte-rerank-hybrid: Official reranking.\n\n- gte-rerank: gte-rerank reranking.\n\n</props>\n\n<props=\"china\">\n\nIf you do not specify this parameter, \\`qwen3-rerank\\` is used.\n\n> Use \\`qwen3-rerank\\` if you only need semantic sorting. Use \\`qwen3-rerank-hybrid\\` if you need both semantic sorting and text-matching features to ensure relevance.\n\n</props>\n\n<props=\"intl\">\n\nIf you do not specify this parameter, \\`gte-rerank-hybrid\\` is used.\n\n> Use \\`gte-rerank\\` if you only need semantic sorting. Use \\`gte-rerank-hybrid\\` if you need both semantic sorting and text-matching features to ensure relevance.\n\n</props>\n\n<props=\"china\">\n\n> The \\`gte-rerank-hybrid\\` and \\`gte-rerank\\` models are no longer updated and are not recommended.\n\n</props>"
+      }
+    },
+    {
+      "name": "Separator",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n\n分句标识符，仅在`chunkMode`=**regex**时生效（其他模式下即使传入也不生效）。可传入一个正则表达式（不支持多个），用于将文件分割为小段的文本切片。\n\n使用智能切分（未指定`chunkMode`）时，保持默认空值即可。\n\n</props>\n\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n</props>",
+        "en": "<props=\"china\">\n\nThe sentence separator. This parameter takes effect only when \\`chunkMode\\` is set to **regex**. It is ignored in other modes, even if specified. You can enter a regular expression (multiple expressions are not supported) to split the file into smaller text chunks.\n\nFor smart chunking (the \\`chunkMode\\` parameter is not specified), you can leave this parameter empty.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+      }
+    },
+    {
+      "name": "SinkInstanceId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "AnalyticDB for PostgreSQL 实例 ID（仅在`SinkType`指定 ADB 时才需要传入）。请前往[AnalyticDB for PostgreSQL数据实例列表](https://gpdbnext.console.aliyun.com/gpdb/list)页面获取此ID。",
+        "en": "The ID of the AnalyticDB for PostgreSQL instance. This parameter is required only when \\`SinkType\\` is set to ADB. Go to the [AnalyticDB for PostgreSQL instance list](https://gpdbnext.console.aliyun.com/gpdb/list) page to obtain this ID."
+      }
+    },
+    {
+      "name": "SinkRegion",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "AnalyticDB for PostgreSQL 实例所在地域（仅在`SinkType`指定 ADB 时才需要传入）。您可调用<props=\"china\">[ DescribeRegions ](https://help.aliyun.com/zh/analyticdb-for-postgresql/developer-reference/api-gpdb-2016-05-03-describeregions)</props><props=\"intl\">[ DescribeRegions ](https://www.alibabacloud.com/help/zh/analyticdb/analyticdb-for-postgresql/developer-reference/api-gpdb-2016-05-03-describeregions?spm=a2c63.p38356.0.i3)</props>获取地域列表。",
+        "en": "The region where the AnalyticDB for PostgreSQL instance is located. This parameter is required only when \\`SinkType\\` is set to ADB. You can call the <props=\"intl\">[DescribeRegions ](https://www.alibabacloud.com/help/zh/analyticdb/analyticdb-for-postgresql/developer-reference/api-gpdb-2016-05-03-describeregions?spm=a2c63.p38356.0.i3)</props>operation to obtain a list of regions."
+      }
+    },
+    {
+      "name": "SinkType",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "知识库的向量存储类型。更多信息，请参见[知识库](~~2807740~~)。取值范围：\n- BUILT_IN：将向量数据托管在阿里云百炼平台中。\n- ADB：AnalyticDB for PostgreSQL数据库。如需高级功能，如管理、审计和监控数据库，推荐选择ADB。\n> 若您尚未在阿里云百炼上使用过ADB存储，可前往<props=\"china\">[创建知识库](https://bailian.console.aliyun.com/#/knowledge-base/create)</props><props=\"intl\">[创建知识库](https://bailian.console.alibabacloud.com/#/knowledge-base/create)</props>页面选择向量存储类型为ADB-PG，并按界面提示完成授权。如果您传入了ADB，则必须指定`SinkInstanceId`和`SinkRegion`参数。",
+        "en": "The storage class for the knowledge base vectors. For more information, see [Knowledge bases](~~2807740~~). Valid values:\n\n- BUILT\\_IN: Hosts the vector data on the Alibaba Cloud Model Studio platform.\n\n- ADB: AnalyticDB for PostgreSQL. We recommend choosing ADB if you need advanced features such as database management, auditing, and monitoring.\n\n> If you have not used ADB storage on Alibaba Cloud Model Studio, go to the <props=\"intl\">[Create Knowledge Base](https://bailian.console.alibabacloud.com/#/knowledge-base/create)</props> page, set the vector storage class to ADB-PG, and follow the on-screen instructions to grant the required permissions. If you set this parameter to ADB, you must specify the \\`SinkInstanceId\\` and \\`SinkRegion\\` parameters."
+      }
+    },
+    {
+      "name": "SourceType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "><notice>此参数在最新版SDK中已改为必传，否则调用 SubmitIndexJob 接口将报错：Required parameter(data_sources) missing or invalid。></notice>\n\n导入数据来源。取值范围：\n- DATA_CENTER_CATEGORY：类目类型，即导入<props=\"china\">[应用数据](https://bailian.console.aliyun.com/?tab=app#/data-center)</props><props=\"intl\">[应用数据](https://modelstudio.console.alibabacloud.com/?tab=app#/data-center)</props>中指定类目下的所有文件，可同时导入多个类目。\n- DATA_CENTER_FILE：文件类型，即导入<props=\"china\">[应用数据](https://bailian.console.aliyun.com/?tab=app#/data-center)</props><props=\"intl\">[应用数据](https://modelstudio.console.alibabacloud.com/?tab=app#/data-center)</props>下的指定文件，可同时导入多个文件。\n\n> 如果本参数传入DATA_CENTER_CATEGORY，则必须指定`CategoryIds`参数；如果本参数传入DATA_CENTER_FILE，则必须指定`DocumentIds`参数。\n>\n\n> 要创建空知识库，可使用不含文件的空类目：本参数传入DATA_CENTER_CATEGORY，`CategoryIds`传入空类目 ID。\n>",
+        "en": "><notice>\n\nIn the latest SDK version, this parameter is required. Otherwise, calling the SubmitIndexJob operation will result in the error: Required parameter(data\\_sources) missing or invalid.\n\n></notice>\n\nThe source of the imported data. Valid values:\n\n- DATA\\_CENTER\\_CATEGORY: Category type. Imports all files under the specified categories in <props=\"intl\">[Application Data](https://modelstudio.console.alibabacloud.com/?tab=app#/data-center)</props>. You can import multiple categories at the same time.\n\n- DATA\\_CENTER\\_FILE: File type. Imports the specified files from <props=\"intl\">[Application Data](https://modelstudio.console.alibabacloud.com/?tab=app#/data-center)</props>. You can import multiple files at the same time.\n\n> If you set this parameter to DATA\\_CENTER\\_CATEGORY, you must specify the \\`CategoryIds\\` parameter. If you set this parameter to DATA\\_CENTER\\_FILE, you must specify the \\`DocumentIds\\` parameter.\n\n> To create an empty knowledge base, use an empty category that contains no files. Set this parameter to DATA\\_CENTER\\_CATEGORY and specify the ID of the empty category for \\`CategoryIds\\`."
+      }
+    },
+    {
+      "name": "StructureType",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "知识库类型。\n\n**取值范围**：\n\n- unstructured：文档搜索或音视频类知识库。文档搜索类型的使用场景默认为基础文档问答。<props=\"china\">如需创建其他场景还需传递knowledgeType和knowledgeScene参数。</props>\n\n<props=\"china\">\n\n- structured：数据查询或图片问答类知识库。\n\n</props>\n\n> 请注意，知识库创建后将无法更改其类型。\n>",
+        "en": "The type of the knowledge base.\n\n**Valid values**:\n\n- unstructured: A knowledge base for document search, audio, or video. The default scenario for document search is basic document Q\\&A.\n\n<props=\"china\">\n\n- structured: A knowledge base for data query or image Q\\&A.\n\n</props>\n\n\n> The type of a knowledge base cannot be changed after it is created."
+      }
+    },
+    {
+      "name": "TableIds",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n\n在[数据连接](https://bailian.console.aliyun.com/cn-beijing?tab=app#/connector/list)-表格连接器的表格页签，单击表格名称旁的 ID 图标获取。若列表包含多个ID时，只取第一个。\n\n</props>\n\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n</props>",
+        "en": "<props=\"china\">\n\nObtain the table ID on the Tables tab of the table connector in Data Connections by clicking the ID icon next to the table name. If the list contains multiple IDs, only the first one is used.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+      }
+    },
+    {
+      "name": "WorkspaceId",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "业务空间 ID，即在该业务空间中创建知识库。获取方式请参见[如何使用业务空间](~~2587495~~)。",
+        "en": "The ID of the workspace where you want to create the knowledge base. For more information about how to obtain the workspace ID, see [How to use workspaces](~~2587495~~)."
+      }
+    },
+    {
+      "name": "channelType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">该参数暂不开放，请勿传入。</props>"
+      }
+    },
+    {
+      "name": "chunkMode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n\n启用自定义切分，并指定切分策略。更多说明，请参见[知识库](~~2807740~~)。\n\n可能取值（不支持同时传入多个值）：\n\n- **length**：按长度切分。严格按照您指定的`ChunkSize`和`OverlapSize`切分。  若您未传入这两个参数，系统将采用默认值（`ChunkSize`为500，`OverlapSize`为100）。按长度切分不支持`Separator`（即使传入也不生效）。\n- **page**：按页切分。如果指定了`ChunkSize`，切分时将一并考虑（未传入时，将使用默认值500）。按页切分不支持`OverlapSize`和`Separator`（即使传入也不生效）。\n- **h1**：按照一级标题切分。如果指定了`ChunkSize`，切分时将一并考虑（未传入时，将使用默认值 500）。按照一级标题切分不支持`OverlapSize`和`Separator`（即使传入也不生效）。\n- **h2**：按照二级标题切分。如果指定了`ChunkSize`，切分时将一并考虑（未传入时，将使用默认值 500）。按照二级标题切分不支持`OverlapSize`和`Separator`（即使传入也不生效）。\n- **regex**：按照正则切分，此时必须指定`Separator`参数。如果指定了`ChunkSize`，切分时将一并考虑（未传入时，将使用默认值 500）。按正则切分不支持`OverlapSize`（即使传入也不生效）。\n\n若未指定，默认采用智能切分。\n\n\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n\n</props>",
+        "en": "<props=\"china\">\n\nEnables custom chunking and specifies the chunking policy. For more information, see [Knowledge bases](~~2807740~~).\n\nPossible values (only one value can be specified at a time):\n\n- **length**: Chunks by length. The text is strictly chunked according to the \\`ChunkSize\\` and \\`OverlapSize\\` you specify. If you do not specify these two parameters, the system uses the default values (\\`ChunkSize\\` is 500, \\`OverlapSize\\` is 100). Chunking by length does not support \\`Separator\\` (it is ignored even if specified).\n\n- **page**: Chunks by page. If \\`ChunkSize\\` is specified, it is also considered during chunking (if not specified, the default value 500 is used). Chunking by page does not support \\`OverlapSize\\` or \\`Separator\\` (they are ignored even if specified).\n\n- **h1**: Chunks by level-1 heading. If \\`ChunkSize\\` is specified, it is also considered during chunking (if not specified, the default value 500 is used). Chunking by level-1 heading does not support \\`OverlapSize\\` or \\`Separator\\` (they are ignored even if specified).\n\n- **h2**: Chunks by level-2 heading. If \\`ChunkSize\\` is specified, it is also considered during chunking (if not specified, the default value 500 is used). Chunking by level-2 heading does not support \\`OverlapSize\\` or \\`Separator\\` (they are ignored even if specified).\n\n- **regex**: Chunks by regular expression. You must specify the \\`Separator\\` parameter. If \\`ChunkSize\\` is specified, it is also considered during chunking (if not specified, the default value 500 is used). Chunking by regular expression does not support \\`OverlapSize\\` (it is ignored even if specified).\n\nIf you do not specify this parameter, smart chunking is used by default.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+      }
+    },
+    {
+      "name": "connectId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">连接器标识符，可在[数据连接](https://bailian.console.aliyun.com/cn-beijing?tab=app#/connector/list)页面的数据连接器卡片上获取。该参数替换了datasourceCode参数，后续需统一使用 connectId。\n创建数据查询类知识库时还需填写table参数。</props>\n\n<props=\"intl\">该参数暂不开放，请勿传入。</props>"
+      }
+    },
+    {
+      "name": "database",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "数据库名称。创建数据查询知识库时必填。\n\n该数据库必须存在于由 datasourceCode 指定的数据源内。"
+      }
+    },
+    {
+      "name": "datasourceCode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "数据源Code。创建数据查询类知识库时必填，与table、database配合使用。\n\n<props=\"china\">建议使用新参数 connectId，可在[数据连接](https://bailian.console.aliyun.com/cn-beijing?tab=app#/connector/list)页面的数据连接器卡片上获取。 当前参数仍可兼容使用，但未来将不再维护。</props>\n\n> \n> - 本接口不支持关联自定义数据库，请使用阿里云百炼控制台创建。"
+      }
+    },
+    {
+      "name": "enableHeaders",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否将所有xlsx、xls格式文件的第一行数据作为表头，并拼接到每个文本切片中，避免大模型误将表头当作普通数据行来处理。\n\n\n> 建议仅在导入文件均为 .xlsx、.xls 格式且包含表头时启用该功能，否则无需开启。\n>\n\n取值范围：\n- true：开启。\n- false：不开启。\n\n若未指定，默认不开启。",
+        "en": "Specifies whether to treat the first row of all .xlsx and .xls files as the table header and append it to each text chunk. This prevents the LLM from treating the header as a regular data row.\n\n> We recommend enabling this feature only when all imported files are in .xlsx or .xls format and contain a header. Otherwise, do not enable it.\n\nValid values:\n\n- true: Enabled.\n\n- false: Disabled.\n\nIf you do not specify this parameter, this feature is disabled by default."
+      }
+    },
+    {
+      "name": "knowledgeScene",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n知识库的具体使用场景。\n<notice>此参数与 knowledgeType 必须一同提供或一同省略，不可单独设置。如果一同省略，系统将根据 structureType 采用默认配置。></notice>\n\n**设置约束**: 此参数的取值完全依赖于您所设置的 knowledgeType。\n\n**取值与联动关系**:\n- 当 knowledgeType 为 document 时，knowledgeType可设置为\nbasic_document_qa（基础文档问答）、visual_document_qa（图文并茂回复）或 lite_document_qa（极速问答）、visual_perception_qa（视觉理解）。\n\n- 当 knowledgeType 为 table 时，knowledgeType设置为basic_table_qa（基础表格问答）。\n\n- 当 knowledgeType 为 image 时，knowledgeType 设置为 image_qa（图片问答）。\n\n- 当knowledgeType 为 multimedia 时，knowledgeType 设置为 basic_multimedia_qa（音视频搜索问答）。\n\n</props>\n\n<props=\"intl\">该参数暂不开放，请勿传入。</props>"
+      }
+    },
+    {
+      "name": "knowledgeType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n具体的知识类型，用于进一步指明知识库处理的数据种类。\n<notice>此参数与 knowledgeScene 必须一同提供或一同省略，不可单独设置。如果一同省略，系统将根据 structureType 采用默认配置。></notice>\n\n**设置约束**: 此参数的取值必须与您选择的 structureType 匹配，并决定了 knowledgeScene 的可用值。\n\n**取值范围**：\n- document: 文档搜索。需与 structureType: unstructured 配合使用。\n- table: 数据查询。需与 structureType: structured 配合使用。\n- image: 图片问答。需与 structureType: structured 配合使用。\n- multimedia: 音视频搜索。需与 structureType: unstructured 配合使用。\n\n</props>\n\n\n<props=\"intl\">该参数暂不开放，请勿传入。</props>",
+        "en": "The data source code. This parameter is required when creating a data query knowledge base and is used with \\`table\\` and \\`database\\`.\n\n<props=\"china\">\n\nWe recommend using the new \\`connectId\\` parameter, which you can obtain from the data connector card on the [Data Connections](https://modelstudio.console.alibabacloud.com/?tab=app#/connector/list) page. This parameter is still compatible but will no longer be maintained in the future.\n\n</props>\n\n> - This operation does not support associating custom databases. Use the Alibaba Cloud Model Studio console to create them."
+      }
+    },
+    {
+      "name": "metaExtractColumns",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "元数据提取配置。元数据是与非结构化数据内容相关的一系列附加属性，这些属性以key-value键值对的形式集成到文本切片中。更多信息，请参见[知识库](~~2807740~~)。",
+        "en": "The metadata extraction configuration. Metadata is a series of additional attributes related to unstructured data content. These attributes are integrated into text chunks as key-value pairs. For more information, see [Knowledge bases](~~2807740~~)."
+      },
+      "sub_parameters": [
+        {
+          "name": "Desc",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "元数据字段的中文描述。长度为 0~1000 个字符，支持中文、英文、数字、下划线（_）、短划线（-）、半角句号（.）和半角冒号（:）。默认值为空。",
+            "en": "The Chinese description of the metadata field. The description can be 0 to 1,000 characters in length and can contain Chinese characters, letters, digits, underscores (\\_), hyphens (-), periods (.), and colons (:). The default value is empty."
+          }
+        },
+        {
+          "name": "EnableLlm",
+          "position": "Query",
+          "type": "Boolean",
+          "required": false,
+          "description": {
+            "zh": "开启后表示该元数据字段和值将和文本切片的内容一同参与大模型的回答生成过程。取值范围：\n\n- true：开启。\n- false：不开启。\n\n默认值为 false。",
+            "en": "If enabled, the metadata field and its value are used along with the text chunk content in the answer generation process of the LLM. Valid values:\n\n- true: Enabled.\n\n- false: Disabled.\n\nThe default value is false."
+          }
+        },
+        {
+          "name": "EnableSearch",
+          "position": "Query",
+          "type": "Boolean",
+          "required": false,
+          "description": {
+            "zh": "开启后表示该元数据字段和值将和文本切片的内容一同参与知识库检索。取值范围：\n\n- true：开启。\n- false：不开启。\n\n默认值为 false。",
+            "en": "If enabled, the metadata field and its value are used along with the text chunk content in the knowledge base retrieval process. Valid values:\n\n- true: Enabled.\n\n- false: Disabled.\n\nThe default value is false."
+          }
+        },
+        {
+          "name": "Key",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "元数据字段，长度为 1~50 个字符，必须为英文或下划线。如果指定本参数，则必须指定`Value`和`Type`参数。",
+            "en": "The metadata field. The field name can be 1 to 50 characters in length and must consist of letters or underscores. If you specify this parameter, you must also specify the \\`Value\\` and \\`Type\\` parameters."
+          }
+        },
+        {
+          "name": "Type",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "元数据字段的取值方法。取值范围：\n\n- constant：常量。\n- variable：变量。\n- custom_prompt：大模型。\n- regular：正则。\n- keywords：关键词搜索。",
+            "en": "The method for obtaining the value of the metadata field. Valid values:\n\n- constant: Constant.\n\n- variable: Variable.\n\n- custom\\_prompt: Large Language Model (LLM).\n\n- regular: Regular expression.\n\n- keywords: Keyword search."
+          }
+        },
+        {
+          "name": "Value",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "元数据字段的值。",
+            "en": "The value of the metadata field."
+          }
+        }
+      ]
+    },
+    {
+      "name": "pipelineCommercialCu",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">指定知识库的 RCU 数量（仅当 pipelineCommercialType 指定 enterprise 时才需要传入）。取值范围：[1-200]。\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n</props>",
+        "en": "<props=\"china\">\n\nThe number of RCUs for the knowledge base. This parameter is required only when \\`pipelineCommercialType\\` is set to \\`enterprise\\`. The value must be between 1 and 200.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+      }
+    },
+    {
+      "name": "pipelineCommercialType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">\n\n知识库的[规格类型](~~2997110~~)。取值范围：\n- standard：标准版\n- enterprise：旗舰版\n\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n</props>",
+        "en": "<props=\"china\">\n\nThe [edition type](~~2997110~~) of the knowledge base. Valid values:\n\n- standard: Standard Edition\n\n- enterprise: Ultimate Edition\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+      }
+    },
+    {
+      "name": "pipelineRetrieveRateLimitStrategy",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">知识库依赖链路限流处理策略（仅当 pipelineCommercialType 指定 enterprise 时才需要传入）。\n取值：\ndowngrade：降级处理（改为使用轻量级链路检索）。\n若未指定，默认downgrade。\n</props>\n\n<props=\"intl\">\n\n> 该参数暂不开放，请勿传入。\n>\n</props>",
+        "en": "<props=\"china\">\n\nThe rate limiting policy for the knowledge base dependency chain. This parameter is required only when \\`pipelineCommercialType\\` is set to \\`enterprise\\`.\nValue:\ndowngrade: Degrades the service (switches to using a lightweight retrieval chain).\nIf you do not specify this parameter, the default value \\`downgrade\\` is used.\n\n</props>\n\n<props=\"intl\">\n\n> This parameter is not yet available. Do not specify it.\n\n</props>"
+      }
+    },
+    {
+      "name": "table",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "数据表名称。创建数据查询类知识库时必填。\n\n该数据表必须存在于由 connectId 或 datasourceCode 指定的数据源内。"
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建知识库",
+    "en": "Create Knowledge Base"
+  },
+  "descriptions": {
+    "zh": "- **权限要求**：\n  - **RAM用户（子账号）**：需先获取阿里云百炼的[API权限](~~2848578~~)（可使用`AliyunBailianDataFullAccess`策略，该策略已包含本接口所需的sfm:CreateIndex权限点），并[加入一个业务空间](~~2851098~~)后，才能调用本接口。\n  - **阿里云账号（主账号）**：默认拥有权限，可直接调用。\n- **调用方式**：推荐使用最新版<props=\"china\">[阿里云百炼SDK](https://api.aliyun.com/api-tools/sdk/bailian?version=2023-12-29)</props><props=\"intl\">[阿里云百炼SDK](https://api.alibabacloud.com/api-tools/sdk/bailian?version=2023-12-29)</props>调用，SDK已封装复杂的签名计算逻辑，可简化您的调用过程。\n- **后续操作**：本接口仅初始化知识库创建作业。完成调用后，必须调用 **SubmitIndexJob** 接口以完成创建（否则，您将得到一个空的知识库）。相应代码示例请参见[知识库API指南](~~2852772~~)。\n- **幂等性**：本接口不具有幂等性，重复调用可能会创建多个同名知识库。建议通过“先查询、后创建”的逻辑实现幂等调用。\n\n**限流说明：**\n本接口频繁调用会被限流，频率请勿超过10次/秒。如遇限流，请稍后重试。",
+    "en": "- **Permissions**:\n\n  - **RAM user**: A RAM user must obtain the required [API permissions](~~2848578~~) for Alibaba Cloud Model Studio and [join a workspace](~~2851098~~) before calling this operation. You can use the `AliyunBailianDataFullAccess` policy, which includes the \\`sfm:CreateIndex\\` permission required for this operation.\n\n  - **Alibaba Cloud account**: By default, Alibaba Cloud accounts have the required permissions and can call this operation directly.\n\n- **How to call**: Use the latest version of the <props=\"intl\">[Alibaba Cloud Model Studio SDK](https://api.alibabacloud.com/api-tools/sdk/bailian?version=2023-12-29)</props> to call this operation. The SDK handles the complex signature calculation logic to simplify the process.\n\n- **What to do next**: This operation only initializes a knowledge base creation job. After calling this operation, you must call the **SubmitIndexJob** operation to complete the creation. Otherwise, an empty knowledge base is created. For related code examples, see [Knowledge base API guide](~~2852772~~).\n\n- **Idempotence**: This operation is not idempotent. Repeated calls may create multiple knowledge bases with the same name. To ensure idempotence, query for the knowledge base before you create it.\n\n**Rate limiting:**\nFrequent calls to this operation are subject to rate limiting. Do not exceed a frequency of 10 calls per second. If you encounter rate limiting, retry the call later."
+  }
+}

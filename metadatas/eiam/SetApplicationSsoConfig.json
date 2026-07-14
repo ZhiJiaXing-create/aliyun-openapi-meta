@@ -1,5 +1,6 @@
 {
   "name": "SetApplicationSsoConfig",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ApplicationId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID。",
+        "en": "The application ID."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见如何保证幂等性。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see How to ensure idempotence."
+      }
     },
     {
       "name": "InitLoginType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "初始化单点登录SSO方式，取值可选范围：\n- only\\_app\\_init\\_sso：仅应用发起SSO，OIDC协议应用默认取值。当SAML应用指定为该方式时，InitLoginUrl必须指定。\n- idaas\\_or\\_app\\_init\\_sso：支持IDaaS门户或者应用发起SSO，SAML协议应用默认取值范围。当OIDC协议指定为该方式时，InitLoginUrl必须指定。",
+        "en": "The initialization single sign-on (SSO) method. Valid values:\n- only\\_app\\_init\\_sso: Only application-initiated SSO. This is the default value for OIDC protocol applications. When a SAML application specifies this method, InitLoginUrl must be specified.\n- idaas\\_or\\_app\\_init\\_sso: SSO initiated from the IDaaS portal or the application. This is the default value for SAML protocol applications. When an OIDC protocol application specifies this method, InitLoginUrl must be specified."
+      }
     },
     {
       "name": "InitLoginUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "初始化单点登录SSO触发地址。\n当OIDC协议类型应用设置InitLoginType为idaas\\_or\\_app\\_init\\_sso时，必须指定该参数。\n当SAML协议类型应用设置InitLoginType为only\\_app\\_init\\_sso时，必须指定该参数。",
+        "en": "The URL that triggers the initialization single sign-on (SSO).\nWhen an OIDC protocol application sets InitLoginType to idaas\\_or\\_app\\_init\\_sso, this parameter is required.\nWhen a SAML protocol application sets InitLoginType to only\\_app\\_init\\_sso, this parameter is required."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "OidcSsoConfig",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OIDC协议的应用SSO属性配置参数。",
+        "en": "The SSO configuration parameters for an OIDC protocol-based application."
+      }
     },
     {
       "name": "SamlSsoConfig",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SAML协议的应用SSO属性配置参数。",
+        "en": "The SSO configuration parameters for a SAML protocol-based application."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置一个EIAM应用的单点登录SSO配置",
+    "en": "Set SSO configuration for an EIAM application"
+  },
+  "descriptions": {
+    "zh": "在EIAM中，应用管理支持添加多种单点登录SSO协议（SAML 2.0和OIDC）的应用，但是一个应用支持的SSO协议只能有一种，且在创建时指定后不可更改。您根据当前的应用支持的SSO协议类型，指定对应的SSO配置属性参数。",
+    "en": "In EIAM, application management supports adding applications that use multiple single sign-on (SSO) protocols (SAML 2.0 and OIDC). However, each application supports only one SSO protocol, which is specified during creation and cannot be changed. Specify the corresponding SSO configuration property parameters based on the SSO protocol type supported by the application."
+  },
   "example": {
     "unifiedCli": "aliyun eiam set-application-sso-config --instance-id idaas_ue2jvisn35ea5lmthk267xxxxx --application-id app_mkv7rgt4d7i4u7zqtzev2mxxxx --saml-sso-config '{\"NameIdValueExpression\":\"user.email\",\"ResponseSigned\":true,\"SpEntityId\":\"urn:alibaba:cloudcomputing\",\"SpSsoAcsUrl\":\"https://signin.aliyun.com/saml-role/sso\",\"DefaultRelayState\":\"https://home.console.aliyun.com\",\"OptionalRelayStates\":[{\"RelayState\":\"https://ram.console.aliyun.com/\",\"DisplayName\":\"Ram\"}],\"SignatureAlgorithm\":\"RSA-SHA256\",\"AssertionSigned\":true,\"NameIdFormat\":\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\",\"AttributeStatements\":[{\"AttributeValueExpression\":\"user.username\",\"AttributeName\":\"https://www.aliyun.com/SAML-Role/Attributes/RoleSessionName\"}],\"IdPEntityId\":\"https://example.com/\"}' --oidc-sso-config '{\"ResponseTypes\":[\"token_id_token\"],\"PasswordAuthenticationSourceId\":\"ia_password\",\"PasswordTotpMfaRequired\":true,\"SubjectIdExpression\":\"user.userid\",\"CustomClaims\":[{\"ClaimName\":\"Role\",\"ClaimValueExpression\":\"user.dict.applicationRole\"}],\"PkceChallengeMethods\":[\"S256\"],\"PostLogoutRedirectUris\":[\"https://example.com/oidc/logout/callback\"],\"RefreshTokenEffective\":86400,\"PkceRequired\":true,\"AccessTokenEffectiveTime\":1200,\"GrantScopes\":[\"openid\"],\"IdTokenEffectiveTime\":300,\"RedirectUris\":[\"https://example.com/oidc/login/callback\"],\"AllowedPublicClient\":true,\"CodeEffectiveTime\":60,\"GrantTypes\":[\"authorization_code\"]}' --init-login-type only_app_init_sso --init-login-url http://127.0.0.1:8000/start_login0enterprise_code=ABCDEF --client-token client-examplexxx --region cn-hangzhou",
     "legacyCli": "aliyun eiam SetApplicationSsoConfig --region cn-hangzhou --SamlSsoConfig.SpSsoAcsUrl 'https://signin.aliyun.com/saml-role/sso' --OidcSsoConfig.AllowedPublicClient true --SamlSsoConfig.OptionalRelayStates.1.RelayState 'https://ram.console.aliyun.com/' --SamlSsoConfig.SpEntityId 'urn:alibaba:cloudcomputing' --OidcSsoConfig.ResponseTypes.1 token_id_token --SamlSsoConfig.ResponseSigned true --InitLoginType only_app_init_sso --SamlSsoConfig.NameIdFormat 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified' --OidcSsoConfig.PostLogoutRedirectUris.1 'https://example.com/oidc/logout/callback' --SamlSsoConfig.OptionalRelayStates.1.DisplayName Ram --OidcSsoConfig.CustomClaims.1.ClaimName Role --OidcSsoConfig.AccessTokenEffectiveTime 1200 --OidcSsoConfig.RefreshTokenEffective 86400 --SamlSsoConfig.SignatureAlgorithm 'RSA-SHA256' --OidcSsoConfig.SubjectIdExpression 'user.userid' --OidcSsoConfig.PasswordAuthenticationSourceId ia_password --InstanceId idaas_ue2jvisn35ea5lmthk267xxxxx --OidcSsoConfig.RedirectUris.1 'https://example.com/oidc/login/callback' --SamlSsoConfig.NameIdValueExpression 'user.email' --SamlSsoConfig.AssertionSigned true --OidcSsoConfig.PasswordTotpMfaRequired true --OidcSsoConfig.GrantScopes.1 openid --OidcSsoConfig.PkceChallengeMethods.1 S256 --InitLoginUrl 'http://127.0.0.1:8000/start_login0enterprise_code=ABCDEF' --SamlSsoConfig.AttributeStatements.1.AttributeName 'https://www.aliyun.com/SAML-Role/Attributes/RoleSessionName' --OidcSsoConfig.CodeEffectiveTime 60 --OidcSsoConfig.IdTokenEffectiveTime 300 --SamlSsoConfig.DefaultRelayState 'https://home.console.aliyun.com' --SamlSsoConfig.AttributeStatements.1.AttributeValueExpression 'user.username' --OidcSsoConfig.GrantTypes.1 authorization_code --OidcSsoConfig.CustomClaims.1.ClaimValueExpression 'user.dict.applicationRole' --ApplicationId app_mkv7rgt4d7i4u7zqtzev2mxxxx --ClientToken 'client-examplexxx' --OidcSsoConfig.PkceRequired true --SamlSsoConfig.IdPEntityId 'https://example.com/' --method POST --force"

@@ -1,5 +1,6 @@
 {
   "name": "DeleteBackup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份集ID。可通过接口DescribeBackups查询。多组值以英文逗号（,）隔开，单次最多传入100个。\n>仅支持删除DescribeBackups中**StoreStatus**为**Enabled**的备份集。",
+        "en": "The backup set ID. You can call the DescribeBackups operation to query the backup set ID. Separate multiple values with commas (,). You can specify a maximum of 100 values in a single request.\n\n>  You can delete only backup sets whose **StoreStatus** is **Enabled** in the response to the DescribeBackups operation call."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除实例数据备份文件",
+    "en": "DeleteBackup"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n> 仅支持高可用版本实例。\n\n### 功能说明\n调用该接口删除数据备份文件只删除实例自身的备份集，不会删除所关联实例（只读、灾备、克隆等）的备份集。\n\n### 注意事项\n调用该接口时，实例必须满足以下条件，否则将操作失败：\n- 实例状态为运行中；\n- 如果日志备份已关闭，RDS实例不支持按时间点恢复功能。此时您可以删除已生成超过7天的任意数据备份文件；\n- 如果日志备份已开启，且日志备份保留时间小于数据备份保留时间，则超过日志备份保留时间的数据备份文件可以删除。",
+    "en": "### Supported database engines\n\n*   MySQL\n*   PostgreSQL\n\n> Only instances that run RDS High-availability Edition are supported.\n\n### Description\n\nYou can call this operation to delete backup sets of the instance itself. Backup sets of the associated instances such as read-only, disaster recovery, and cloned instances are not deleted.\n\n### Precautions\n\nBefore you call this operation, make sure that the following requirements are met:\n\n*   The instance is in the Running state.\n*   If the log backup feature is disabled, instances cannot be restored by point in time. You can delete data backup sets that are retained for more than seven days.\n*   If the log backup feature is enabled and the log backup retention period is shorter than the data backup retention period, you can delete the data backup files that are retained for a period longer than the log backup retention period."
+  },
   "example": {
     "unifiedCli": "aliyun rds delete-backup --db-instance-id rm-uf6wjk50000 --backup-id 324900000 --region cn-hangzhou",
     "legacyCli": "aliyun rds DeleteBackup --region cn-hangzhou --DBInstanceId 'rm-uf6wjk50000' --BackupId 324900000"

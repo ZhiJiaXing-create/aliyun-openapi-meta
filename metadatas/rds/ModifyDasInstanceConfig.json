@@ -1,5 +1,6 @@
 {
   "name": "ModifyDasInstanceConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the generated token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "StorageAutoScale",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "存储空间自动扩展开关，取值：\n\n* **Enable**：开启\n* **Disable**：关闭",
+        "en": "Specifies whether to enable automatic storage expansion. Valid values:\n\n*   **Enable**\n*   **Disable**"
+      }
     },
     {
       "name": "StorageThreshold",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "触发阈值百分比，当剩余存储空间百分比达到设定的阈值时，会触发自动扩容。取值：\n* **10**\n* **20**\n* **30**\n* **40**\n* **50**\n\n>**StorageAutoScale**=**Enable**时必须传入本参数。",
+        "en": "The threshold in percentage based on which an automatic storage expansion is triggered. If the available storage reaches the threshold, ApsaraDB RDS increases the storage capacity of the instance. Valid values:\n\n*   **10**\n*   **20**\n*   **30**\n*   **40**\n*   **50**\n\n>  If you set the StorageAutoScale parameter to **Enable**, you must specify this parameter."
+      }
     },
     {
       "name": "StorageUpperBound",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自动扩容上限，需要大于等于实例当前存储空间总大小。\n\n- ESSD云盘上限：32000 GB\n- SSD云盘上限：6000 GB\n>**StorageAutoScale**=**Enable**时必须传入本参数。",
+        "en": "The maximum storage capacity that is allowed for an automatic storage expansion. The value of this parameter must be greater than or equal to the current storage capacity of the RDS instance.\n\n*   If the RDS instance uses ESSDs, the maximum value of this parameter can be set to 32000 GB.\n*   If the RDS instance uses standard SSDs, the maximum value of this parameter can be set to 6000 GB.\n\n>  If you set the **StorageAutoScale** parameter to **Enable**, you must specify this parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置存储空间自动扩容",
+    "en": "ModifyDasInstanceConfig"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n<props=\"china\">\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n\n</props>\n\n<props=\"intl\">\n\n- RDS MySQL\n- RDS PostgreSQL\n\n</props>\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n<props=\"china\">\n\n- [RDS MySQL存储空间自动扩容](~~173826~~)\n- [RDS PostgreSQL存储空间自动扩容](~~432496~~)\n- [RDS SQL Server存储空间自动扩容](~~2573613~~)\n\n</props>\n\n<props=\"intl\">\n\n- [RDS MySQL存储空间自动扩容](~~173826~~)\n- [RDS PostgreSQL存储空间自动扩容](~~432496~~)\n\n</props>",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   PostgreSQL\n\n### [](#)References\n\n> Before you call this operation, carefully read the following documentation. Make sure that you fully understand the prerequisites and impacts for calling this operation.\n\n*   [Configure automatic storage expansion for ApsaraDB RDS for MySQL](~~173826~~)\n*   [Configure automatic storage expansion for ApsaraDB RDS for PostgreSQL](~~432496~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-das-instance-config --client-token ETnLKlblzczshOTUbOCz0000 --db-instance-id rm-uf6wjk50000 --storage-auto-scale Enable --storage-threshold 50 --storage-upper-bound 1000 --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyDasInstanceConfig --region cn-hangzhou --StorageUpperBound 1000 --DBInstanceId 'rm-uf6wjk50000' --StorageThreshold 50 --ClientToken ETnLKlblzczshOTUbOCz0000 --StorageAutoScale Enable"

@@ -1,5 +1,6 @@
 {
   "name": "AddCdnDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": true,
       "description": {
         "zh": "加速域名的业务类型。取值：\n\n- **web**：图片小文件。\n- **download**：大文件下载。\n- **video**：视音频点播。",
-        "en": "The workload type of the accelerated domain name. Valid values:\n\n*   **web**: images and small files\n*   **download**: large files\n*   **video**: on-demand video and audio streaming"
+        "en": "The business type of the domain name. Valid values:\n\n- **web**: images and small files.\n\n- **download**: large files.\n\n- **video**: on-demand video and audio streaming."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "健康检测URL。",
-        "en": "The URL that is used to check the accessibility of the origin server."
+        "en": "The health check URL."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "需要接入CDN的加速域名。\n\n支持泛域名，以英文句号（.）开头，例如.example.com。",
-        "en": "The domain name that you want to add to Alibaba Cloud CDN.\n\nA wildcard domain that starts with a period (.) is supported, such as .example.com."
+        "en": "The domain name that you want to add to CDN.\n\nA wildcard domain name is supported. A wildcard domain name must start with a period (.), for example, .example.com."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "资源组ID。\n\n不传该参数时，系统自动补全为默认资源组ID。",
-        "en": "The ID of the resource group.\n\nIf you do not set this parameter, the system uses the ID of the default resource group."
+        "en": "The ID of the resource group.\n\nIf you do not specify this parameter, the system automatically uses the ID of the default resource group."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "加速区域。取值：\n\n- **domestic**（默认值）：仅中国内地。\n\n- **overseas**：全球（不包含中国内地）。\n\n- **global**：全球。",
-        "en": "The acceleration region. Default value: domestic. Valid values:\n\n*   **domestic**: Chinese mainland\n*   **overseas**: global (excluding the Chinese mainland)\n*   **global**: global"
+        "en": "The acceleration region. Valid values:\n\n- **domestic** (default): Chinese mainland only.\n\n- **overseas**: global (excluding the Chinese mainland).\n\n- **global**: global."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": true,
       "description": {
         "zh": "回源地址列表。",
-        "en": "The information about the addresses of origin servers."
+        "en": "The addresses of origin servers."
       }
     },
     {
@@ -69,24 +70,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息列表。最大可填入20个标签信息。",
+        "en": "The tags. You can specify a maximum of 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The key of the tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The value of the tag."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签信息列表。最大可填入20个标签信息。",
-        "en": "Details about the tags. You can specify up to 20 tags."
-      }
+      ]
     },
     {
       "name": "TopLevelDomain",
@@ -99,6 +108,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加域名",
+    "en": "AddCdnDomain"
+  },
+  "descriptions": {
+    "zh": "- 添加域名之前，您需要先开通CDN服务。具体操作，请参见[开通CDN服务](~~27272~~)。\n- 如果加速区域选择的是仅中国内地或者全球，则加速域名必须已完成备案。\n- 每次只能添加一个加速域名，每个用户默认最多可以添加50个域名，如果需要添加更多域名，您可以通过配额中心申请。\n- 每个用户每小时最多调用100次。\n\n## 注意事项\n- 通过接口添加了域名之后，将会有3～5分钟的域名生效时间，在这段时间内请不要添加任何配置，待域名状态处于online以后再进行下一步的配置。",
+    "en": "- Before adding an accelerated domain name, activate the CDN service. For details, see [Activate CDN service](~~27272~~).\n\n- If the acceleration region is set to Chinese mainland only or global, the accelerated domain name must have a valid ICP filing.\n\n- You can add only one accelerated domain name at a time. By default, each user can add up to 50 accelerated domain names. To add more, submit a request in Quota Center.\n\n- Each user can call this API up to 100 times per hour.\n\n## Notes\n\n- After adding a domain name using the API, allow 3 to 5 minutes for it to take effect. Wait until the domain status is `online` before applying any further configurations."
+  },
   "example": {
     "unifiedCli": "aliyun cdn add-cdn-domain --cdn-type web --domain-name .example.com --resource-group-id rg-acfmyuji4b6r400 --sources content_:_192.0.2.0_,_type_:_ipaddr_,_priority_:_20_,_port_:_80,_weight_:_15 --check-url www.example.com/test.html --scope domestic --top-level-domain example.com --tag Value=value Key=env --region cn-hangzhou",
     "legacyCli": "aliyun cdn AddCdnDomain --region cn-hangzhou --Tag.1.Key env --CheckUrl 'www.example.com/test.html' --ResourceGroupId 'rg-acfmyuji4b6r400' --Scope domestic --DomainName '.example.com' --Tag.1.Value value --CdnType web --TopLevelDomain 'example.com' --Sources 'content_:_192.0.2.0_,_type_:_ipaddr_,_priority_:_20_,_port_:_80,_weight_:_15'"

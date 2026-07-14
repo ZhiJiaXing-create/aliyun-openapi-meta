@@ -1,5 +1,6 @@
 {
   "name": "Sign",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "证书唯一识别码。该参数可通过调用[ListCert](~~455806~~)获取。\n- SSL证书识别码一般为{证书ID}-cn-hangzhou。\n- PCA证书为对应私有证书的Identifier字段。",
-        "en": "The unique identifier of the certificate. You can call the [ListCert](~~455806~~) operation to obtain the identifier.\n\n*   If the certificate is an SSL certificate, the value of this parameter must be in the {Certificate ID}-cn-hangzhou format.\n*   If the certificate is a private certificate, the value of this parameter must be the value of the Identifier field for the private certificate."
+        "en": "The unique identifier of the certificate. You can get this value by calling the [ListCert](~~455806~~) operation.\n\n- The identifier of an SSL certificate is typically in the format '{Certificate ID}-cn-hangzhou'.\n\n- For a PCA certificate, this is the Identifier from the corresponding private certificate."
       }
     },
     {
@@ -20,7 +21,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "用户自定义标识，唯一键。"
+        "zh": "用户自定义标识，唯一键。",
+        "en": "A unique, user-defined identifier."
       }
     },
     {
@@ -29,8 +31,8 @@
       "type": "String",
       "required": true,
       "description": {
-        "zh": "待签名数据。可以使用原文、Base64、哈希值三种格式进行传输。\n当MessageType取值为RAW时，Message传原文字符串。\n当MessageType取值为BASE64时，Message传原文的base64值。\n当MessageType取值为DIGEST时，Message传哈希值，对消息摘要进行签名。",
-        "en": "The data to sign. The value must be encoded in Base64.\\\nFor example, if the hexadecimal data that you want to sign is \\[0x31, 0x32, 0x33, 0x34], set the parameter to the Base64-encoded value MTIzNA==. If you set MessageType to RAW, the size of the data must be less than 4 KB. If the size of the data is greater than 4 KB, you can set MessageType to DIGEST and set Message to the digest of the data. The digest is a hash value. You can compute the digest of the data on an on-premises machine. The certificate application repository uses the digest that you compute in your own certificate application system. The message digest algorithm that you use must match the specified signature algorithm. The following items describe the details:\n\n*   If the signature algorithm is SHA256withRSA, SHA256withRSA/PSS, or SHA256withECDSA, the message digest algorithm must be SHA-256.\n*   If the signature algorithm is SM3withSM2, the message digest algorithm must be SM3."
+        "zh": "待签名数据。可以使用原文、Base64、哈希值三种格式进行传输。\n当MessageType取值为RAW时，Message传原文字符串。\n当MessageType取值为BASE64时，Message传原文的base64值。\n当MessageType取值为DIGEST时，Message传哈希值，对消息摘要进行签名。\n当MessageType取值为BLIND时，Message传盲化消息的base64值。",
+        "en": "The data to sign. The MessageType parameter determines the format of this data. If MessageType is set to RAW, Message is the raw data. If MessageType is set to BASE64, Message is the Base64-encoded raw data. If MessageType is set to DIGEST, Message is the message digest (hash value). If MessageType is set to BLIND, Message is the Base64-encoded blinded message."
       }
     },
     {
@@ -39,8 +41,8 @@
       "type": "String",
       "required": true,
       "description": {
-        "zh": "消息类型。取值：\n\n- RAW（默认值）：原始数据。\n- DIGEST：原始数据的消息摘要（哈希值）。\n- BASE64：原文base64。",
-        "en": "The value type of the Message parameter. Valid values:\n\n*   RAW: the raw data. This is the default value.\n*   DIGEST: the message digest (hash value) of the raw data."
+        "zh": "消息类型。取值：\n\n- RAW（默认值）：原始数据。\n- DIGEST：原始数据的消息摘要（哈希值）。\n- BASE64：原文base64。\n- BLIND：盲签，目前仅支持使用RSA算法的证书进行盲签。",
+        "en": "The message type. Valid values:\n\n- `RAW` (default): The raw data.\n\n- `DIGEST`: The message digest (hash value) of the raw data.\n\n- `BASE64`: The Base64-encoded raw data.\n\n- `BLIND`: Enables blind signing. This is supported only for certificates that use an RSA algorithm."
       }
     },
     {
@@ -50,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "签名算法。取值：\n\n- SHA256withRSA\n- SHA256withRSA/PSS\n- SHA256withECDSA\n- SM3withSM2\n- SHA256withRSA/P7",
-        "en": "The signature algorithm. Valid values:\n\n*   SHA256withRSA\n*   SHA256withRSA/PSS\n*   SHA256withECDSA\n*   SM3withSM2"
+        "en": "The signature algorithm. Valid values:\n\n- `SHA256withRSA`\n\n- `SHA256withRSA/PSS`\n\n- `SHA256withECDSA`\n\n- `SM3withSM2`\n\n- `SHA256withRSA/P7`"
       }
     },
     {
@@ -59,10 +61,22 @@
       "type": "Long",
       "required": false,
       "description": {
-        "zh": "仓库ID。\n> 此ID可通过调用[ListCertWarehouse ](~~455805~~)获取。"
+        "zh": "仓库ID。\n> 此ID可通过调用[ListCertWarehouse ](~~455805~~)获取。",
+        "en": "The repository ID.\n\n> You can get this ID by calling the [ListCertWarehouse](~~455805~~) operation."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "证书仓库签名",
+    "en": "Sign"
+  },
+  "descriptions": {
+    "zh": "本接口一般用于证书仓库中的PCA证书签名。\n\n### QPS限制\n本接口的单用户QPS限制为1000次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。",
+    "en": "This operation creates a digital signature with a PCA certificate from a certificate repository.\n\n### QPS limit\n\nThis operation supports up to 1,000 queries per second (QPS) for a single user. If you exceed this limit, the system throttles your API calls, which can impact your business. Plan your API calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun cas sign --message MTIzNA== --cert-identifier 1ef1da5f-38ed-69b3-0000-037781890265 --signing-algorithm SHA256withRSA --message-type RAW --custom-identifier 000e6bb538d538c70c01f81fg30000 --warehouse-id 1 --api-version 2020-04-07 --region cn-hangzhou",
     "legacyCli": "aliyun cas Sign --region cn-hangzhou --Message 'MTIzNA==' --CertIdentifier '1ef1da5f-38ed-69b3-0000-037781890265' --SigningAlgorithm SHA256withRSA --WarehouseId 1 --CustomIdentifier 000e6bb538d538c70c01f81fg30000 --MessageType RAW"

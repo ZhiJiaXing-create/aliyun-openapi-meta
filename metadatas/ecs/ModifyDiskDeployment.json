@@ -1,5 +1,6 @@
 {
   "name": "ModifyDiskDeployment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DiskCategory",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "变更云盘类型，仅在不同专属块存储集群之间迁移时有效。当前仅支持cloud_essd（ESSD云盘）。\n\n默认值：空，表示不变配云盘。",
+        "en": "The new category of the disk. This parameter is valid only when you migrate a disk between different dedicated block storage clusters. The only valid value is `cloud_essd` (ESSD disk).\n\nDefault value: An empty string. If you leave this parameter empty, the category of the disk remains unchanged."
+      }
     },
     {
       "name": "DiskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云盘ID。",
+        "en": "The ID of the disk."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n- true：发送检查请求。检查项包括是否填写了必需参数、请求格式、业务限制和ECS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- false：发送正常请求，通过检查后返回2XX HTTP状态码并且直接迁移云盘。\n\n默认值：false。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- `true`: Performs a dry run. The system checks the request for required parameters, format, service limits, and inventory. The system returns an error if the check fails, or the `DryRunOperation` error code if the check succeeds.\n\n- `false`: Sends the request. If the request passes the check, the system returns a 2xx HTTP status code and migrates the disk.\n\nDefault value: `false`."
+      }
     },
     {
       "name": "PerformanceLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改ESSD云盘的性能级别，仅在不同专属块存储集群之间迁移时有效。取值范围：\n- PL0：单盘最高随机读写IOPS 1万。\n- PL1：单盘最高随机读写IOPS 5万。\n\n默认值：空，表示不修改性能级别。",
+        "en": "The new performance level of the ESSD disk. This parameter is valid only when you migrate a disk between different dedicated block storage clusters. Valid values:\n\n- `PL0`: A maximum of 10,000 random read/write IOPS per disk.\n\n- `PL1`: A maximum of 50,000 random read/write IOPS per disk.\n\nDefault value: An empty string. If you leave this parameter empty, the performance level of the disk remains unchanged."
+      }
     },
     {
       "name": "StorageClusterId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "专属块存储集群ID。\n- 迁移至专属块存储集群时，必须指定`StorageClusterId`。\n- 迁移至公共云块存储集群时，`StorageClusterId`必须为空。\n\n默认值：空，表示迁移至公共云块存储集群。",
+        "en": "The ID of the dedicated block storage cluster.\n\n- To migrate the disk to a dedicated block storage cluster, specify `StorageClusterId`.\n\n- To migrate the disk to a public cloud block storage cluster, leave `StorageClusterId` empty.\n\nDefault value: An empty string. If you leave this parameter empty, the disk is migrated to a public cloud block storage cluster."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "迁移云盘",
+    "en": "ModifyDiskDeployment"
+  },
+  "descriptions": {
+    "zh": "> 专属块存储集群功能目前支持华东1（杭州）、华东2（上海）、华北2（北京）、华北3（张家口）、华北6（乌兰察布）、华南1（深圳）、华南2（河源）、印度尼西亚（雅加达）、德国（法兰克福）以及华南1 金融云地域。\n\n请确保在使用该接口前，您已充分了解云盘和专属块存储集群的计费方式和价格，并且专属块存储集群未到期，账号未处于欠费状态。更多信息，请参见[专属块存储计费](~~208883~~)和[块存储计费](~~179022~~)。\n\n调用该接口时，您需要注意：\n- 云盘和专属块存储集群必须在同一个可用区。\n- 仅支持按量付费云盘，包年包月云盘需要先转成按量付费。具体操作，请参见[转换云盘计费方式](~~145018~~)。\n- 迁移时云盘规格需要和目标集群支持的云盘规格保持一致，当在不同专属块存储集群之间迁移时允许变更云盘规格，使其和目标集群支持的云盘规格保持一致。\n- 云盘的状态必须是**使用中**（In_use）状态或者**待挂载**（Available）状态。\n- 若云盘已挂载到ECS实例上，实例必须处于**运行中**（Running）状态或者**已停止**（Stopped）状态，ECS实例不能处于已过期状态。\n- 由于ESSD云盘性能级别受容量限制，如果您无法升级性能级别，可以扩容后重新操作。更多信息，请参见[ResizeDisk](~~25522~~)和[ESSD云盘](~~122389~~)。\n- 一个账号在同一地域内最多同时进行5个云盘迁移任务。\n- 迁移过程中不允许取消迁移、创建快照、变配、扩容、挂载、卸载、重新初始化云盘等操作。\n\n> 云盘迁移后遵循目标集群对应的计费方式、云盘规格和能力，调用接口后立即生效，阿里云按照新的云盘类型及云盘性能级别进行计费。更多信息，请参见[专属块存储计费](~~208883~~)和[块存储计费](~~179022~~)。",
+    "en": "> The dedicated block storage cluster feature is available in the China (Hangzhou), China (Shanghai), China (Beijing), China (Zhangjiakou), China (Ulanqab), China (Shenzhen), China (Heyuan), Indonesia (Jakarta), and Germany (Frankfurt) regions, as well as the China (Shenzhen) Finance region.\n\nBefore you call this operation, make sure you understand the billing methods and pricing for cloud disks and dedicated block storage clusters. You must also ensure that your dedicated block storage cluster has not expired and your account has a positive balance. For more information, see [Billing for dedicated block storage](~~208883~~) and [Block storage billing](~~179022~~).\n\nNote the following when you call this operation:\n\n- The cloud disk and the dedicated block storage cluster must be in the same availability zone.\n\n- Only pay-as-you-go cloud disks are supported. You must first convert subscription cloud disks to pay-as-you-go. For more information, see [Convert the billing method of a cloud disk](~~145018~~).\n\n- The cloud disk type must be compatible with the target dedicated block storage cluster. When migrating a disk between clusters, you can change the disk type to match the types supported by the destination cluster.\n\n- The cloud disk must be in the **In use** or **Available** state.\n\n- If the cloud disk is attached to an ECS instance, the instance must be in the **Running** or **Stopped** state. The ECS instance must not be expired.\n\n- The performance level of an ESSD cloud disk depends on its capacity. If you cannot upgrade the performance level, resize the disk and then retry the operation. For more information, see [ResizeDisk](~~25522~~) and [ESSD cloud disks](~~122389~~).\n\n- You can perform a maximum of five concurrent cloud disk migration tasks per account in a single region.\n\n- During the migration, you cannot cancel the migration, create snapshots, change the configuration, resize, attach, detach, or re-initialize the disk.\n\n> After a cloud disk is migrated, the destination cluster determines its billing method, type, and capabilities. The changes take effect immediately after you call the operation, and Alibaba Cloud charges you based on the new disk type and performance level. For more information, see [Billing for dedicated block storage](~~208883~~) and [Block storage billing](~~179022~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-disk-deployment --disk-id d-bp131n0q38u3a4zi0000 --disk-category cloud_essd --performance-level PL1 --storage-cluster-id dbsc-cn-c4d2uea0000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyDiskDeployment --region cn-hangzhou --StorageClusterId 'dbsc-cn-c4d2uea0000' --PerformanceLevel PL1 --DryRun false --DiskCategory cloud_essd --DiskId 'd-bp131n0q38u3a4zi0000'"

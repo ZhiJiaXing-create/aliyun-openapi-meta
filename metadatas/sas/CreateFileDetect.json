@@ -1,5 +1,6 @@
 {
   "name": "CreateFileDetect",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "Decompress",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否识别压缩包并解压。取值：\n- **true**：是。\n- **false**：否。\n\n> Type 为 6 时不支持此参数。",
+        "en": "Specifies whether to decompress the archive for detection. Valid values:\n\n- **true**: Yes.\n\n- **false**: No.\n\n> This parameter is not supported when `Type` is set to `6`."
+      }
     },
     {
       "name": "DecompressMaxFileCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "解压的最大文件数。最大取值为1000。\n\nDecompress设置为true时，此参数不可为空。\n\n> Type 为 6 时不支持此参数。",
+        "en": "The maximum number of files that can be decompressed from an archive. The maximum value is 1000.\n\nThis parameter is required if you set `Decompress` to `true`.\n\n> This parameter is not supported when `Type` is set to `6`."
+      }
     },
     {
       "name": "DecompressMaxLayer",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当压缩包内，存在多个层级的压缩包嵌套时，解压的最大解压层数。最大取值为5。\n\nDecompress设置为true时，此参数不可为空。\n\n> Type 为 6 时不支持此参数。",
+        "en": "The maximum number of decompression layers for nested archives. The maximum value is 5.\n\nThis parameter is required if you set `Decompress` to `true`.\n\n> This parameter is not supported when `Type` is set to `6`."
+      }
     },
     {
       "name": "DownloadUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "文件下载链接。支持传入文件下载链接（公网URL）直接触发文件检测，不需要提前上传文件。\n\n> Skill压缩包目前只支持通过URL传入文件，所以Type为6时此参数必填。",
+        "en": "The download link for the file. You can provide a public URL to trigger file detection without uploading the file.\n\n> Skill archives can be submitted only by providing a download link. Therefore, this parameter is required when `Type` is set to `6`."
+      }
     },
     {
       "name": "HashKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "文件唯一标识。\n\nType为0时此参数必填，且必须为文件的MD5或SHA-256。\n\nType为6时此参数不用填，文件唯一标识通过接口返回值获取。",
+        "en": "The unique identifier of the file.\n\nThis parameter is required if `Type` is `0`. Its value must be the MD5 or SHA-256 hash of the file.\n\nIf you set `Type` to `6`, you do not need to specify this parameter. The operation returns the file's unique identifier in the response."
+      }
     },
     {
       "name": "OssKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "文件在OSS Bucket中的存储key。\n\n如果通过DownloadUrl推送文件检测，此参数可不填。此参数通过[CreateFileDetectUploadUrl](~~CreateFileDetectUploadUrl~~)接口获取。\n\n> Type 为 6 时不支持此参数。",
+        "en": "The storage key of the file in an Object Storage Service (OSS) bucket.\n\nIf you submit the file by using the `DownloadUrl` parameter, you can leave this parameter empty. To obtain the value of this parameter, call the [CreateFileDetectUploadUrl](~~CreateFileDetectUploadUrl~~) operation.\n\n> This parameter is not supported when `Type` is set to `6`."
+      }
     },
     {
       "name": "SourceIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问源的IP地址。",
+        "en": "The IP address of the source."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要检测的文件类型。取值：\n\n- **0**：恶意文件检测\n\n- **6**：Skill压缩包检测",
+        "en": "The type of the file to detect. Valid values:\n\n- **0**: Malicious file detection\n\n- **6**: Skill archive detection"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "文件推送检测",
+    "en": "CreateFileDetect"
+  },
+  "descriptions": {
+    "zh": "通过此接口将文件推送到云端检测，支持恶意文件检测和Skill压缩包检测两种场景。\n\n### 文件上传方式\n\n文件上传方式支持预先上传和下载链接。\n\n如果使用预先上传的方式，调用前请确认文件已成功上传，文件上传方式参考 CreateFileDetectUploadUrl 接口。\n\n如果使用下载链接的方式，请通过DownloadUrl参数传入可通过公网访问的下载链接。\n\n恶意文件检测场景支持以上两种方式。Skill压缩包检测场景（Type为6）暂不支持预先上传方式，只能传入下载链接。\n\n### 文件唯一标识\n\n文件检测相关接口均包含HashKey参数，表示此次检测文件的唯一标识，用于查询检测结果。\n\nSkill压缩包检测场景（Type为6）不需要提前计算HashKey，本接口将会返回全局唯一的UUID作为文件标识，后续通过该标识查询结果。\n\n恶意文件检测场景（Type为0）需要在调用接口前提前计算HashKey，且仅支持传入文件完整内容的MD5或SHA-256。\n\n计算文件内容的MD5或SHA-256值可以参考以下两个步骤：\n\n1. 使用MD5、SHA-256算法对数据进行加密，生成128位或256位的散列值。现有工具库包括Java的MessageDigest工具、Python的hashlib库等。\n\n2. 将生成的散列值编码为十六进制字符串形式，现有工具库包括Java的Codec工具、Python的hex函数等。请确认最终生成的字符串为数字和小写英文字符的组合，MD5为32个字符，SHA-256为64个字符。\n\n注意，单次检测的推送和查询接口必须使用同一个HashKey，否则无法正确推送检测和查询结果。",
+    "en": "Use this operation to submit a file to the cloud for detection. It supports two scenarios: malicious file detection and Skill archive detection.\n\n### File submission methods\n\nSubmit a file by either pre-uploading it or providing a download link.\n\nIf you use the pre-upload method, ensure the file is uploaded successfully before you call this operation. For details on how to upload a file, see the CreateFileDetectUploadUrl operation.\n\nIf you use a download link, specify a publicly accessible URL in the `DownloadUrl` parameter.\n\nThe malicious file detection scenario supports both methods. For the Skill archive detection scenario (when `Type` is `6`), the pre-upload method is not supported, and you must provide a download link.\n\n### Unique identifier\n\nAll API operations related to file detection include the `HashKey` parameter. This parameter specifies the file's unique identifier for a detection task, which you use to query the results.\n\nFor Skill archive detection (when `Type` is `6`), you do not need to calculate the `HashKey` in advance. This operation returns a globally unique UUID as the file's identifier, which you can use to query the results.\n\nFor malicious file detection (when `Type` is `0`), you must calculate the `HashKey` before you call this operation. The `HashKey` value must be the MD5 or SHA-256 hash of the entire file.\n\nTo calculate the MD5 or SHA-256 hash of a file, follow these steps:\n\n1. Use the MD5 or SHA-256 algorithm to generate a 128-bit or 256-bit hash value. You can use common libraries such as `MessageDigest` in Java or the `hashlib` library in Python.\n\n2. Encode the hash value into a hexadecimal string. You can use tools such as the `Codec` utility in Java or the `hex()` function in Python. Ensure that the final string consists of only digits and lowercase letters. An MD5 hash is 32 characters long, and a SHA-256 hash is 64 characters long.\n\nNote: You must use the same `HashKey` value when you submit a file for detection and when you query the results. Otherwise, both the submission and the query will fail."
+  },
   "example": {
     "unifiedCli": "aliyun sas create-file-detect --source-ip 115.213.XX.XX --type 0 --hash-key 0a212417e65c26ff133cfff28f6c0000 --oss-key 1/2022/06/23/15/41/16559701077444693a0c6-33b2-4cc2-a99f-9f38b8b80000 --download-url https://xxxxxxxx.oss-cn-hangzhou-1.aliyuncs.com/xxxxx/xxxxxxxxxxxxxx0Expires=1671448125_OSSAccessKeyId=xxx --decompress false --decompress-max-layer 1 --decompress-max-file-count 100 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas CreateFileDetect --region cn-hangzhou --Type 0 --SourceIp '115.213.XX.XX' --OssKey '1/2022/06/23/15/41/16559701077444693a0c6-33b2-4cc2-a99f-9f38b8b80000' --DecompressMaxFileCount 100 --HashKey 0a212417e65c26ff133cfff28f6c0000 --Decompress false --DecompressMaxLayer 1 --DownloadUrl 'https://xxxxxxxx.oss-cn-hangzhou-1.aliyuncs.com/xxxxx/xxxxxxxxxxxxxx0Expires=1671448125_OSSAccessKeyId=xxx'"

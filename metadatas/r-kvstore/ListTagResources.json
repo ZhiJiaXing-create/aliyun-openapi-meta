@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始Token，用来返回更多结果。\n> 第一次查询不需要提供本参数，如果一次查询没有返回全部结果，则可在后续查询中传入前一次返回的**NextToken**值以继续查询。",
+        "en": "The token used to start the next query to retrieve more results.\n\n> This parameter is not required in the first query. If not all results are returned in one query, you can specify the **NextToken** value returned for the query to perform the next query."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID。",
+        "en": "The region ID of the instance."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID列表。\n\n> * 本参数和**Tag**参数两者中必须传入一项。",
+        "en": "The IDs of the instances.\n\n> *   You must specify this parameter or the **Tag** parameter."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，取值固定为**INSTANCE**。",
+        "en": "The resource type. Set the value to **INSTANCE**."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "实例的标签信息。本参数和**ResourceId**参数两者中必须传入一项。",
+        "en": "The tags of the instance. You must specify this parameter or the **ResourceId** parameter."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的键。",
+            "en": "The keys of the tags associated with the instances you want to query."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的值。",
+            "en": "The values of the tags associated with the instances you want to query."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询标签列表",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "该API对应的控制台操作请参见[根据标签筛选实例](~~119160~~)和[查看实例绑定的标签](~~134038~~)。",
+    "en": "You can also query the relationships between instances and tags in the Tair (Redis OSS-compatible) console. For more information, see [Filter Tair (Redis OSS-compatible) instances by tag](~~119160~~) and [View tags bound to an instance](~~134038~~)."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore list-tag-resources --biz-region-id cn-hangzhou --resource-type INSTANCE --next-token 212db86sca4384811e0b5e8707ec20000 --resource-id r-bp1zxszhcgatnx0000 --tag Value=demovalue Key=demokey --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore ListTagResources --region cn-hangzhou --ResourceId.1 'r-bp1zxszhcgatnx0000' --Tag.1.Key demokey --NextToken 212db86sca4384811e0b5e8707ec20000 --Tag.1.Value demovalue --ResourceType INSTANCE --RegionId 'cn-hangzhou'"

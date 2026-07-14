@@ -1,5 +1,6 @@
 {
   "name": "BatchCreateRecords",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -9,54 +10,90 @@
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "待创建的DNS记录列表。",
+        "en": "The list of DNS records to create."
+      },
       "sub_parameters": [
         {
           "name": "AuthConf",
           "position": "Query",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "CNAME记录的源站鉴权信息。",
+            "en": "The origin authentication information of the CNAME record."
+          }
         },
         {
           "name": "BizName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "记录加速时的业务场景，取值：\n- **image_video**：视频图片。\n- **api**：api接口。\n- **web**：web网页。",
+            "en": "The business scenario for record acceleration. Valid values:\n- **image_video**: video and image.\n- **api**: API.\n- **web**: web page."
+          }
         },
         {
           "name": "Data",
           "position": "Query",
           "type": "Struct",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "记录的DNS信息，根据记录类型填写不同的字段。",
+            "en": "The DNS information of the record. Different fields are required based on the record type."
+          }
         },
         {
           "name": "Proxied",
           "position": "Query",
           "type": "Boolean",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "记录是否开启代理加速。只有CNAME记录与A/AAAA记录可以开启代理加速。取值：\n- **true**：开启代理。\n- **false**：关闭代理加速。",
+            "en": "Specifies whether to enable proxied acceleration for the record. Only CNAME records and A/AAAA records support proxied acceleration. Valid values:\n- **true**: Proxied acceleration is enabled.\n- **false**: Proxied acceleration is disabled."
+          }
         },
         {
           "name": "RecordName",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "记录名称。",
+            "en": "The record name."
+          }
         },
         {
           "name": "SourceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "CNAME记录的源站类型。添加CNAME记录时，需要填写此参数。取值：\n\n- **OSS**：OSS源站。\n- **S3**：S3源站。\n- **LB**：负载均衡器源站。\n- **OP**：源地址池源站。\n- **Domain**：普通域名源站。\n\n该参数不传或传空时，则默认为Domain，即普通域名源站类型。",
+            "en": "The origin type of the CNAME record. This parameter is required when you add a CNAME record. Valid values:\n\n- **OSS**: OSS origin.\n- **S3**: S3 origin.\n- **LB**: load balancing origin.\n- **OP**: IPAM pool origin.\n- **Domain**: common domain name origin.\n\nIf this parameter is left empty or not specified, the default value is Domain, which indicates a common domain name origin."
+          }
         },
         {
           "name": "Ttl",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "记录的过期时间，单位秒。当取值为1时，表示记录的过期时间为自动。",
+            "en": "The time-to-live (TTL) of the record, in seconds. A value of 1 indicates that the TTL is set to automatic."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "记录的DNS类型。",
+            "en": "The DNS type of the record."
+          }
         }
       ]
     },
@@ -64,9 +101,24 @@
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~2850189~~)接口获取。",
+        "en": "The site ID, which can be obtained by calling the [ListSites](~~2850189~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量创建解析记录",
+    "en": "Batch create DNS records"
+  },
+  "descriptions": {
+    "zh": "该API允许用户一次性创建或更新多个DNS记录条目，适用于需要管理大量DNS配置的场景。支持的记录类型包括但不限于A/AAAA、CNAME、NS、MX、TXT、CAA、SRV、URI等，并提供了详细的配置项以满足特定需求，如优先级(Priority)、标志位(Flag)、标签(Tag)、权重(Weight)等。此外，对于特定类型的记录，如CERT、SSHFP、SMIMEA和TLSA，还支持证书信息、加密算法等高级设置。\n\n成功与失败的记录操作将在响应中分别列出，以便于用户了解哪些记录处理成功，哪些记录处理失败及其原因。",
+    "en": "This API operation allows you to create or update multiple DNS records at a time. It is suitable for scenarios that require managing a large number of DNS configurations. Supported record types include but are not limited to A/AAAA, CNAME, NS, MX, TXT, CAA, SRV, and URI. Detailed configuration items are provided to meet specific requirements, such as Priority, Flag, Tag, and Weight. In addition, for specific record types such as CERT, SSHFP, SMIMEA, and TLSA, advanced settings such as certificate information and encryption algorithms are supported.\n\nSuccessfully and unsuccessfully processed records are listed separately in the response, so that you can identify which records are processed, which records failed, and the failure reasons."
+  },
   "example": {
     "unifiedCli": "aliyun esa batch-create-records --site-id 1234567890123 --record-list '[{\"RecordName\":\"www.example.com\",\"Type\":\"A/AAAA\",\"Proxied\":true,\"SourceType\":\"OSS\",\"BizName\":\"web\",\"Data\":{\"value\":\"2.2.2.2\"},\"Ttl\":60,\"AuthConf\":{\"SecretKey\":\"VIxuvJSA2S03f000000kp208dy5w7\",\"Version\":\"v4\",\"Region\":\"us-east-1\",\"AuthType\":\"private\",\"AccessKey\":\"u0Nkg5gBK0000000QF5wvKMM504JUHt\"}}]' --region cn-hangzhou",
     "legacyCli": "aliyun esa BatchCreateRecords --region cn-hangzhou --SiteId 1234567890123 --RecordList '[{\"RecordName\":\"www.example.com\",\"Type\":\"A/AAAA\",\"Proxied\":true,\"SourceType\":\"OSS\",\"BizName\":\"web\",\"Data\":{\"value\":\"2.2.2.2\"},\"Ttl\":60,\"AuthConf\":{\"SecretKey\":\"VIxuvJSA2S03f000000kp208dy5w7\",\"Version\":\"v4\",\"Region\":\"us-east-1\",\"AuthType\":\"private\",\"AccessKey\":\"u0Nkg5gBK0000000QF5wvKMM504JUHt\"}}]'"

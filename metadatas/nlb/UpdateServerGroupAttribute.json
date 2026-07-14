@@ -1,5 +1,6 @@
 {
   "name": "UpdateServerGroupAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,69 +9,120 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "Traffic scheduling policy for dual-stack NLB instances:\n\n- NonAffinity (default): Forwards requests to healthy backend servers based on the configured scheduling algorithm, regardless of the source IP protocol version (IPv4 or IPv6).\n\n- Affinity: Forwards requests based on source IP protocol affinity. IPv4 requests are forwarded exclusively to IPv4 backend servers, and IPv6 requests are forwarded exclusively to IPv6 backend servers.\n\n> This parameter only applies when the **AddressIPVersion** is set to **DualStack**."
+      }
     },
     {
       "name": "ConnectionDrainEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启连接优雅中断。取值：\n\n- **true**：开启。\n\n- **false**：不开启。",
+        "en": "Specifies whether to enable connection draining. Valid values:\n\n- **true**\n\n- **false**"
+      }
     },
     {
       "name": "ConnectionDrainTimeout",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置连接优雅中断超时时间。单位：秒。取值范围：**0**~**900**。",
+        "en": "The timeout period of connection draining. Unit: seconds. Valid values: **0** to **900**."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会更新服务器组信息。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "HealthCheckConfig",
       "position": "Body",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "健康检查相关配置。",
+        "en": "The ID of the region where the NLB instance is deployed.\n\nYou can call the operation to query the most recent region list."
+      }
     },
     {
       "name": "IpVersionAffinityMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "双栈模式下的流量调度策略：\n\n- NonAffinity（默认）：无亲和模式，转发时不区分来源的IP协议版本，按照调度算法向健康的后端转发。\n- Affinity：亲和模式，转发时根据请求来源的IP协议版本亲和转发，IPv4请求仅转发至IPv4后端，IPv6请求仅转发至IPv6后端。\n> 仅**AddressIPVersion**为**DualStack**时，该参数生效。",
+        "en": "Specifies whether to enable client IP address preservation. Valid values:\n\n- **true**\n\n- **false**\n\n> If **PreserveClientIpEnabled** is set to **false** and the server group is associated with a **TCPSSL** listener, you cannot change the value of this parameter to **true**."
+      }
     },
     {
       "name": "PreserveClientIpEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启客户端地址保持功能。取值：\n\n- **true**：开启。\n\n- **false**：关闭。\n\n>  当**PreserveClientIpEnabled**参数取值为**false**且服务器组已关联**TCPSSL**监听时，不支持将该参数的值修改为**true**。",
+        "en": "The health check configurations."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run but does not update the server group. The system checks the required parameters, the request format, and business limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. If the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "Scheduler",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度算法。取值：\n\n- **Wrr**：加权轮询，权重值越高的后端服务器，被轮询到的概率也越高。\n\n- **Wlc**：加权最小连接数，除了根据每台后端服务器设定的权重值来进行轮询，同时还考虑后端服务器的实际负载（即连接数）。当权重值相同时，当前连接数越小的后端服务器被轮询到的概率也越高。\n\n- **rr**：轮询，按照访问顺序依次将外部请求分发到后端服务器。\n\n- **sch**：源IP哈希：相同的源地址会调度到相同的后端服务器。\n\n- **tch**：四元组哈希，基于四元组（源IP、目的IP、源端口和目的端口）的一致性哈希，相同的流会调度到相同的后端服务器。\n\n- **qch**：QUIC ID哈希，支持将同一个QUIC ID的请求哈希到同一台后端服务器上。\n\n> 仅后端协议为UDP时，支持选择QUIC ID哈希。",
+        "en": "The scheduling algorithm. Valid values:\n\n- **Wrr**: weighted round-robin. Backend servers with higher weights receive more requests than backend servers with lower weights.\n\n- **Wlc**: weighted least connections. Requests are distributed to backend servers based on their weights and the number of connections. If two backend servers have the same weight, the backend server that has fewer connections receives more requests.\n\n- **rr**: round-robin. Requests are distributed to backend servers in sequence.\n\n- **sch**: source IP hash. Requests from the same source IP address are distributed to the same backend server.\n\n- **tch**: four-tuple hash. Requests are distributed to backend servers based on a hash of the four-tuple, which consists of the source IP address, destination IP address, source port, and destination port. This ensures that requests from the same flow are distributed to the same backend server.\n\n- **qch**: QUIC ID hash. Requests with the same QUIC ID are distributed to the same backend server.\n\n> You can set the scheduling algorithm to qch only when the backend protocol is UDP."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组ID。",
+        "en": "The ID of the server group."
+      }
     },
     {
       "name": "ServerGroupName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改后的服务器组名称。\n\n长度为2~128个字符，必须以大小写字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The new name of the server group.\n\nThe name must be 2 to 128 characters in length, start with a letter or a Chinese character, and can contain digits, periods (.), underscores (\\_), and hyphens (-)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新服务器组配置",
+    "en": "UpdateServerGroupAttribute"
+  },
   "example": {
     "unifiedCli": "aliyun nlb update-server-group-attribute --server-group-id sgp-atstuj3rtoptyui0000 --server-group-name NLB_ServerGroup1 --connection-drain-enabled false --connection-drain-timeout 10 --scheduler Wrr --ip-version-affinity-mode Affinity --preserve-client-ip-enabled false --health-check-config '{\"HealthCheckInterval\":5,\"HealthCheckUrl\":\"/test/index.html\",\"UnhealthyThreshold\":3,\"HealthCheckConnectTimeout\":100,\"HealthCheckHttpVersion\":\"HTTP1.0\",\"HealthCheckEnabled\":false,\"HealthCheckConnectPort\":0,\"HealthCheckReq\":\"hello\",\"HealthyThreshold\":3,\"HttpCheckMethod\":\"GET\",\"HealthCheckExp\":\"ok\",\"HealthCheckDomain\":\"SERVER_IP\",\"HealthCheckHttpCode\":[\"http_2xx\"],\"HealthCheckType\":\"TCP\"}' --biz-region-id cn-hangzhou --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun nlb UpdateServerGroupAttribute --region cn-hangzhou --HealthCheckConfig.HealthCheckConnectTimeout 100 --Scheduler Wrr --HealthCheckConfig.HealthCheckType TCP --DryRun false --ServerGroupId 'sgp-atstuj3rtoptyui0000' --HealthCheckConfig.HealthCheckReq hello --IpVersionAffinityMode Affinity --HealthCheckConfig.HealthCheckExp ok --HealthCheckConfig.HealthCheckHttpCode.1 http_2xx --PreserveClientIpEnabled false --HealthCheckConfig.HealthCheckHttpVersion 'HTTP1.0' --ConnectionDrainEnabled false --HealthCheckConfig.UnhealthyThreshold 3 --ConnectionDrainTimeout 10 --HealthCheckConfig.HealthCheckInterval 5 --HealthCheckConfig.HealthCheckDomain SERVER_IP --HealthCheckConfig.HealthCheckUrl '/test/index.html' --HealthCheckConfig.HealthCheckEnabled false --HealthCheckConfig.HealthCheckConnectPort 0 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --HealthCheckConfig.HttpCheckMethod GET --HealthCheckConfig.HealthyThreshold 3 --ServerGroupName NLB_ServerGroup1 --method POST --force"

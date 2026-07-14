@@ -1,5 +1,6 @@
 {
   "name": "CreateShardingDBInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,49 +9,81 @@
       "name": "AccountPassword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "root账号的密码，取值说明：\n- 由大写字母、小写字母、数字、特殊字符中的至少三种组成。\n- !@#$%^&*()_+-=为特殊字符。\n- 长度为8~32个字符。\n\n> 关于特殊字符导致数据库连接失败的问题请参见[如何解决连接串中账号密码包含特殊字符导致连接失败的问题？](~~471568~~)。",
+        "en": "The password of the root account. The password must meet the following requirements:\n\n- It must contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters.\n\n- Special characters include !@#$%^&\\*()\\_+-=\n\n- It must be 8 to 32 characters in length.\n\n> For information about how to resolve connection failures caused by special characters in passwords, see [How do I fix connection failures caused by special characters in a password?](~~471568~~)."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例是否自动续费，取值说明：\n\n- **true**：自动续费。\n- **false**：默认值，不自动续费，即手动续费。\n\n> 当**ChargeType**参数值为**PrePaid**时，该参数可用且为可选参数。",
+        "en": "Specifies whether to enable auto-renewal for the instance. Valid values:\n\n- **true**: Auto-renewal is enabled.\n\n- **false**: Auto-renewal is disabled. You must manually renew the instance. This is the default value.\n\n> This parameter is optional and takes effect only when you set the **ChargeType** parameter to **PrePaid**."
+      }
     },
     {
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群备份ID。\n\n\n> - 仅当 RestoreType=2或3 时需要且必填。",
+        "en": "The cluster backup ID.\n\n> - This parameter is required only when RestoreType is set to 2 or 3."
+      }
     },
     {
       "name": "ChargeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的付费类型，取值说明：\n\n- **PostPaid**：默认值，后付费（按量付费）。\n- **PrePaid**：预付费（包年包月）。\n\n> 当该参数的值为**PrePaid**时，您还需要配置**Period**参数。",
+        "en": "The billing method of the instance. Valid values:\n\n- **PostPaid**: pay-as-you-go. This is the default value.\n\n- **PrePaid**: subscription.\n\n> If you set this parameter to **PrePaid**, you must also specify the **Period** parameter."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "A client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "ConfigServer",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "ConfigServer节点的信息。",
+        "en": "The information of Configserver nodes."
+      },
       "sub_parameters": [
         {
           "name": "Class",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "ConfigServer的规格，取值说明：\n- **mdb.shard.2x.xlarge.d**：4核 8 GB（独享型），仅支持4.4及以上版本的实例。\n- **dds.cs.mid**：1核 2 GB（通用型），仅支持4.2及以下版本的实例。",
+            "en": "The instance type of the Configserver node. Valid values:\n\n- **mdb.shard.2x.xlarge.d**: 4-core 8 GB (dedicated). This instance type is available only for instances that run MongoDB 4.4 or later.\n\n- **dds.cs.mid**: 1-core 2 GB (general-purpose). This instance type is available only for instances that run MongoDB 4.2 or earlier."
+          }
         },
         {
           "name": "Storage",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "ConfigServer的存储空间，单位为GB。\n\n>具体取值受实例规格约束，取值详情请参见[分片集群实例规格表](~~311414~~)。",
+            "en": "The storage space of the Configserver node. Unit: GB.\n\n> The value of this parameter is constrained by the instance type. For more information, see [Sharded cluster instance types](~~311414~~)."
+          }
         }
       ]
     },
@@ -58,61 +91,101 @@
       "name": "DBInstanceDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例名称，取值说明：\n- 以中文、英文字母开头。\n- 可以包含数字、中文、英文、下划线（_）、点（.）和短横线（-）。\n- 长度为2~256个字符。",
+        "en": "The name of the instance. The name must meet the following requirements:\n\n- It must start with a Chinese character or a letter.\n\n- It can contain digits, Chinese characters, letters, underscores (\\_), periods (.), and hyphens (-).\n\n- It must be 2 to 256 characters in length."
+      }
     },
     {
       "name": "DestRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "异地备份所在地域。",
+        "en": "The region where the geo-redundant backup is stored."
+      }
     },
     {
       "name": "Encrypted",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启云盘加密",
+        "en": "Specifies whether to enable disk encryption."
+      }
     },
     {
       "name": "EncryptionKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义密钥ID。",
+        "en": "The custom key ID."
+      }
     },
     {
       "name": "Engine",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库引擎。固定取值：**MongoDB**。",
+        "en": "The database engine. Set the value to **MongoDB**."
+      }
     },
     {
       "name": "EngineVersion",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库版本号，取值：\n- **8.0**\n- **7.0**\n- **6.0**\n- **5.0**\n- **4.4**\n- **4.2**\n- **4.0**\n\n> - 关于存储引擎与版本的选择约束，请参见[版本与存储引擎](~~61906~~)。\n> - 调用本接口克隆实例时，该参数值需和源实例保持一致。",
+        "en": "The database version. Valid values:\n\n- **8.0**\n\n- **7.0**\n\n- **6.0**\n\n- **5.0**\n\n- **4.4**\n\n- **4.2**\n\n- **4.0**\n\n> * For more information about the constraints on storage engines and database versions, see [Versions and storage engines](~~61906~~).\n>\n> * When you clone an instance by calling this operation, the value of this parameter must be the same as that of the source instance."
+      }
     },
     {
       "name": "GlobalSecurityGroupIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的全局IP白名单模板，多个IP白名单模板请用英文逗号（,）分隔，不可重复。",
+        "en": "The global IP address whitelist templates of the instance. Separate multiple templates with commas (,). Each template must be unique."
+      }
     },
     {
       "name": "HiddenZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配置备可用区2，实现多可用区部署。取值说明：\n- **cn-hangzhou-g**：杭州可用区G。\n- **cn-hangzhou-h**：杭州可用区H。\n- **cn-hangzhou-i**：杭州可用区I。\n- **cn-hongkong-b**：中国香港可用区B。\n- **cn-hongkong-c**：中国香港可用区C。\n- **cn-hongkong-d**：中国香港可用区D。\n- **cn-wulanchabu-a**：乌兰察布可用区A。\n- **cn-wulanchabu-b**：乌兰察布可用区B。\n- **cn-wulanchabu-c**：乌兰察布可用区C。\n- **ap-southeast-1a**：新加坡可用区A。\n- **ap-southeast-1b**：新加坡可用区B。\n- **ap-southeast-1c**：新加坡可用区C。\n- **ap-southeast-5a**：雅加达可用区A。\n- **ap-southeast-5b**：雅加达可用区B。\n- **ap-southeast-5c**：雅加达可用区C。\n- **eu-central-1a**：法兰克福可用区A。\n- **eu-central-1b**：法兰克福可用区B。\n- **eu-central-1c**：法兰克福可用区C。\n\n> - 当实例为云盘类型时，该参数可用。\n> - 该参数值不能与**ZoneId**和**SecondaryZoneId**相同。\n> - 分片集群实例的多可用区部署策略，具体请参见[创建多可用区分片集群实例](~~117865~~)。",
+        "en": "The secondary zone 2 for multi-zone deployment. Valid values:\n\n- **cn-hangzhou-g**: Hangzhou Zone G.\n\n- **cn-hangzhou-h**: Hangzhou Zone H.\n\n- **cn-hangzhou-i**: Hangzhou Zone I.\n\n- **cn-hongkong-b**: Hong Kong (China) Zone B.\n\n- **cn-hongkong-c**: Hong Kong (China) Zone C.\n\n- **cn-hongkong-d**: Hong Kong (China) Zone D.\n\n- **cn-wulanchabu-a**: Ulanqab Zone A.\n\n- **cn-wulanchabu-b**: Ulanqab Zone B.\n\n- **cn-wulanchabu-c**: Ulanqab Zone C.\n\n- **ap-southeast-1a**: Singapore Zone A.\n\n- **ap-southeast-1b**: Singapore Zone B.\n\n- **ap-southeast-1c**: Singapore Zone C.\n\n- **ap-southeast-5a**: Jakarta Zone A.\n\n- **ap-southeast-5b**: Jakarta Zone B.\n\n- **ap-southeast-5c**: Jakarta Zone C.\n\n- **eu-central-1a**: Frankfurt Zone A.\n\n- **eu-central-1b**: Frankfurt Zone B.\n\n- **eu-central-1c**: Frankfurt Zone C.\n\n> * This parameter is available for disk-based instances.\n>\n> * The value of this parameter cannot be the same as the value of **ZoneId** or **SecondaryZoneId**.\n>\n> * For more information about the multi-zone deployment policy for sharded cluster instances, see [Create a multi-zone sharded cluster instance](~~117865~~)."
+      }
     },
     {
       "name": "Mongos",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "Mongos节点信息。",
+        "en": "The information of Mongos nodes."
+      },
       "sub_parameters": [
         {
           "name": "Class",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "Mongos节点的规格，取值详情请参见[分片集群实例规格表](~~311414~~)。\n\n> - 参数名中的**N**代表传入第几个Mongos节点的规格。例如，**Mongos.2.Class**表示传入第二个Mongos节点的规格。\n> - **N**的取值范围为**2**~**32**。",
+            "en": "The instance type of the Mongos node. For more information, see [Sharded cluster instance types](~~311414~~).\n\n> - **N** in the parameter name specifies the serial number of the Mongos node. For example, **Mongos.2.Class** specifies the instance type of the second Mongos node.\n>\n> - The value of **N** ranges from **2** to **32**."
+          }
         }
       ]
     },
@@ -120,55 +193,91 @@
       "name": "NetworkType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的网络类型，取值说明：\n\n**VPC**：专有网络。",
+        "en": "The network type of the instance. Valid values:\n\n**VPC**: virtual private cloud."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的购买时长，单位为月。\n\n取值范围：**1**~**9**（整数）、**12**、**24**、**36**、**60**。\n> 当**ChargeType**参数值为**PrePaid**时，该参数可用且为必填参数。",
+        "en": "The subscription duration of the instance. Unit: month.\n\nValid values: **1** to **9** (integer), **12**, **24**, **36**, and **60**.\n\n> This parameter is required and takes effect only when you set the **ChargeType** parameter to **PrePaid**."
+      }
     },
     {
       "name": "ProtocolType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问协议的类型，取值说明：\n- **mongodb**：MongoDB协议。\n- **dynamodb**：DynamoDB协议。",
+        "en": "The protocol type of the instance. Valid values:\n\n- **mongodb**: MongoDB protocol.\n\n- **dynamodb**: DynamoDB protocol."
+      }
     },
     {
       "name": "ProvisionedIops",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预配置IOPS",
+        "en": "The provisioned IOPS."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID，您可以通过调用[DescribeRegions](~~61933~~)接口查询地域ID。",
+        "en": "The region ID. You can call the [DescribeRegions](~~61933~~) operation to query the region ID."
+      }
     },
     {
       "name": "ReplicaSet",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "Shard节点的信息。",
+        "en": "The information of shard nodes."
+      },
       "sub_parameters": [
         {
           "name": "Class",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "Shard节点的规格，取值详情请参见[分片集群实例规格表](~~311414~~)。\n\n> - 参数名中的**N**代表传入第几个Shard节点的规格。例如，**ReplicaSet.2.Class**表示传入第二个Shard节点的规格。\n> - **N**的取值范围为**2**~**32**。",
+            "en": "The instance type of the shard node. For more information, see [Sharded cluster instance types](~~311414~~).\n\n> - **N** in the parameter name specifies the serial number of the shard node. For example, **ReplicaSet.2.Class** specifies the instance type of the second shard node.\n>\n> - The value of **N** ranges from **2** to **32**."
+          }
         },
         {
           "name": "ReadonlyReplicas",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "设置Shard节点的只读节点个数。\n\n取值范围：**0**~**5**（整数），默认值为**0**。\n>参数名中的**N**代表设置第几个Shard节点中的只读节点个数。例如，**ReplicaSet.2.ReadonlyReplicas**表示设置第二个Shard节点的只读节点个数。",
+            "en": "The number of read-only nodes in the shard node.\n\nValid values: **0** to **5**. The default value is **0**.\n\n> **N** in the parameter name specifies the serial number of the shard node. For example, **ReplicaSet.2.ReadonlyReplicas** specifies the number of read-only nodes in the second shard node."
+          }
         },
         {
           "name": "Storage",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "Shard节点的存储空间，单位为GB。\n\n> - 具体取值受实例规格约束，取值详情请参见[分片集群实例规格表](~~311414~~)。\n> - 参数名中的**N**代表的是传入第几个Shard节点的存储空间，例如：**ReplicaSet.2.Storage**表示传入第二个Shard节点的存储空间。",
+            "en": "The storage space of the shard node. Unit: GB.\n\n> - The value of this parameter is constrained by the instance type. For more information, see [Sharded cluster instance types](~~311414~~).\n>\n> - **N** in the parameter name specifies the serial number of the shard node. For example, **ReplicaSet.2.Storage** specifies the storage space of the second shard node."
+          }
         }
       ]
     },
@@ -176,73 +285,120 @@
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID，资源组详情请参见[查看资源组基本信息](~~151181~~)。"
+      }
     },
     {
       "name": "RestoreTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "选择要恢复的时间点，您可以配置7天内的任意时间点。格式为<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n>只有调用本接口克隆实例时，您需要配置该参数，同时还需要配置**SrcDBInstanceId**参数。",
+        "en": "The point in time to which you want to restore data. You can specify any point in time within the last seven days. The time is in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time is in Coordinated Universal Time (UTC).\n\n> This parameter is required only when you clone an instance by calling this operation. You must also specify the **SrcDBInstanceId** parameter."
+      }
     },
     {
       "name": "RestoreType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份恢复实例。\n\n- 1: 恢复实例到指定时间点\n- 2: 恢复已释放实例到指定备份集\n- 3: 恢复实例到指定的异地备份集",
+        "en": "The backup-based instance restoration method.\n\n- 1: Restore the instance to a specific point in time.\n\n- 2: Restore a released instance from a specific backup set.\n\n- 3: Restore the instance from a specific geo-redundant backup set."
+      }
     },
     {
       "name": "SecondaryZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配置备可用区1，实现多可用区部署。取值说明：\n- **cn-hangzhou-g**：杭州可用区G。\n- **cn-hangzhou-h**：杭州可用区H。\n- **cn-hangzhou-i**：杭州可用区I。\n- **cn-hongkong-b**：中国香港可用区B。\n- **cn-hongkong-c**：中国香港可用区C。\n- **cn-hongkong-d**：中国香港可用区D。\n- **cn-wulanchabu-a**：乌兰察布可用区A。\n- **cn-wulanchabu-b**：乌兰察布可用区B。\n- **cn-wulanchabu-c**：乌兰察布可用区C。\n- **ap-southeast-1a**：新加坡可用区A。\n- **ap-southeast-1b**：新加坡可用区B。\n- **ap-southeast-1c**：新加坡可用区C。\n- **ap-southeast-5a**：雅加达可用区A。\n- **ap-southeast-5b**：雅加达可用区B。\n- **ap-southeast-5c**：雅加达可用区C。\n- **eu-central-1a**：法兰克福可用区A。\n- **eu-central-1b**：法兰克福可用区B。\n- **eu-central-1c**：法兰克福可用区C。\n>- 当实例为云盘类型时，该参数可用。\n>- 该参数值不能与**ZoneId**和**HiddenZoneId**相同。\n>-  分片集群实例的多可用区部署策略，具体请参见[创建多可用区分片集群实例](~~117865~~)。",
+        "en": "The secondary zone 1 for multi-zone deployment. Valid values:\n\n- **cn-hangzhou-g**: Hangzhou Zone G.\n\n- **cn-hangzhou-h**: Hangzhou Zone H.\n\n- **cn-hangzhou-i**: Hangzhou Zone I.\n\n- **cn-hongkong-b**: Hong Kong (China) Zone B.\n\n- **cn-hongkong-c**: Hong Kong (China) Zone C.\n\n- **cn-hongkong-d**: Hong Kong (China) Zone D.\n\n- **cn-wulanchabu-a**: Ulanqab Zone A.\n\n- **cn-wulanchabu-b**: Ulanqab Zone B.\n\n- **cn-wulanchabu-c**: Ulanqab Zone C.\n\n- **ap-southeast-1a**: Singapore Zone A.\n\n- **ap-southeast-1b**: Singapore Zone B.\n\n- **ap-southeast-1c**: Singapore Zone C.\n\n- **ap-southeast-5a**: Jakarta Zone A.\n\n- **ap-southeast-5b**: Jakarta Zone B.\n\n- **ap-southeast-5c**: Jakarta Zone C.\n\n- **eu-central-1a**: Frankfurt Zone A.\n\n- **eu-central-1b**: Frankfurt Zone B.\n\n- **eu-central-1c**: Frankfurt Zone C.\n\n> * This parameter is available for disk-based instances.\n>\n> * The value of this parameter cannot be the same as the value of **ZoneId** or **HiddenZoneId**.\n>\n> * For more information about the multi-zone deployment policy for sharded cluster instances, see [Create a multi-zone sharded cluster instance](~~117865~~)."
+      }
     },
     {
       "name": "SecurityIPList",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的IP白名单，多个IP地址请用英文逗号（,）分隔，不可重复。支持如下三种格式：\n- 0.0.0.0/0\n- IP地址形式，例如：10.23.12.24。\n- CIDR形式，例如：10.23.12.0/24（无类域间路由，24表示了地址中前缀的长度，范围为1~32）。\n\n> - 每个实例最多添加1000个IP或IP段，即所有IP白名单分组内的IP或IP段总和不能超过1000。\n> - 0.0.0.0/0表示任何IP地址都可以访问实例的数据库，属于高危设置，请谨慎设置。",
+        "en": "The IP address whitelist of the instance. Separate multiple IP addresses with commas (,). Each IP address in the whitelist must be unique. The following formats are supported:\n\n- 0.0.0.0/0\n\n- IP addresses, such as 10.23.12.24.\n\n- CIDR blocks, such as 10.23.12.0/24. The /24 part indicates the prefix length of the CIDR block. The prefix length ranges from 1 to 32.\n\n> * You can add a maximum of 1,000 IP addresses or CIDR blocks to all IP address whitelists.\n>\n> * The 0.0.0.0/0 entry allows access from all IP addresses. This is a high-risk setting. Configure it with caution."
+      }
     },
     {
       "name": "SrcDBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源实例ID。\n>只有调用本接口克隆实例时，您需要配置该参数，同时还需要配置**RestoreTime**参数。",
+        "en": "The source instance ID.\n\n> This parameter is required only when you clone an instance by calling this operation. You must also specify the **RestoreTime** parameter."
+      }
     },
     {
       "name": "SrcRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源实例所在区域。\n\n>- 当备份恢复类型为已删除实例重建时，需要且必填\n>- 当备份恢复类型为异地备份克隆时，需要且必填",
+        "en": "The region of the source instance.\n\n> - This parameter is required when you recreate a released instance from a backup.\n>\n> - This parameter is required when you clone an instance from a geo-redundant backup."
+      }
     },
     {
       "name": "StorageEngine",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的存储引擎，取值固定为**WiredTiger**。\n\n> - 调用本接口克隆实例时，该参数需和源实例保持一致。\n> - 关于存储引擎与版本的选择约束，请参见[版本与存储引擎](~~61906~~)。",
+        "en": "The storage engine of the instance. Set the value to **WiredTiger**.\n\n> - When you clone an instance by calling this operation, the value of this parameter must be the same as that of the source instance.\n>\n> - For more information about the constraints on storage engines and database versions, see [Versions and storage engines](~~61906~~)."
+      }
     },
     {
       "name": "StorageType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "存储类型，取值说明： \n\n- **cloud_essd1**：ESSD PL1云盘。\n- **cloud_essd2**：ESSD PL2云盘。\n- **cloud_essd3**：ESSD PL3云盘。\n-  **local_ssd**：SSD本地盘。\n\n> - 4.4及以上版本实例只支持云盘，不填写默认选择**cloud_essd1**。\n> - 4.2及以下版本实例只支持本地盘，不填写默认选择**local_ssd**。",
+        "en": "The storage type. Valid values:\n\n- **cloud\\_essd1**: enhanced SSD (ESSD) PL1.\n\n- **cloud\\_essd2**: ESSD PL2.\n\n- **cloud\\_essd3**: ESSD PL3.\n\n- **local\\_ssd**: local SSD.\n\n> * Instances that run MongoDB 4.4 or later support only disks. If you do not specify this parameter, **cloud\\_essd1** is used.\n>\n> * Instances that run MongoDB 4.2 or earlier support only local disks. If you do not specify this parameter, **local\\_ssd** is used."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "用户自定义标签。",
+        "en": "The custom tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的键。\n> - **N**表示传入第几个标签的键。例如：**Tag.1.Key**表示传入第一个标签的键；**Tag.2.Key**表示传入第二个标签的键。",
+            "en": "The key of the tag.\n\n> - **N** specifies the serial number of the tag. For example, **Tag.1.Key** specifies the key of the first tag, and **Tag.2.Key** specifies the key of the second tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的值。\n> **N**表示传入第几个标签的值。例如：**Tag.1.Value**表示传入第一个标签的值；**Tag.2.Value**表示传入第二个标签的值。",
+            "en": "The value of the tag.\n\n> **N** specifies the serial number of the tag. For example, **Tag.1.Value** specifies the value of the first tag, and **Tag.2.Value** specifies the value of the second tag."
+          }
         }
       ]
     },
@@ -250,21 +406,44 @@
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "虚拟交换机ID。",
+        "en": "The virtual switch ID."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "专有网络（VPC）ID。",
+        "en": "The virtual private cloud (VPC) ID."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可用区ID，您可以通过调用[DescribeRegions](~~61933~~)接口查询可用区ID。",
+        "en": "The zone ID. You can call the [DescribeRegions](~~61933~~) operation to query the zone ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建或克隆分片集群实例",
+    "en": "CreateShardingDBInstance"
+  },
+  "descriptions": {
+    "zh": "- 请确保在使用该接口前，已充分了解云数据库MongoDB的收费方式和<props=\"china\">[价格](https://www.aliyun.com/price/product#/mongodb/detail)</props><props=\"intl\">[价格](https://www.alibabacloud.com/zh/product/apsaradb-for-mongodb/pricing)</props>。\n\n- 关于云数据库MongoDB实例的规格，请参见[实例规格表](~~57141~~)。\n- 如果需要创建单节点实例和副本集实例，您可以通过调用[CreateDBInstance](~~61763~~)接口创建。",
+    "en": "- Before you call this operation, make sure that you understand the billing methods and <props=\"china\">[pricing](https://www.aliyun.com/price/product#/mongodb/detail)</props><props=\"intl\">[pricing](https://www.alibabacloud.com/zh/product/apsaradb-for-mongodb/pricing)</props> of ApsaraDB for MongoDB.\n\n- For more information about the instance types of ApsaraDB for MongoDB, see [Instance types](~~57141~~).\n\n- To create a standalone or replica set instance, you can call the [CreateDBInstance](~~61763~~) operation."
+  },
   "example": {
     "unifiedCli": "aliyun dds create-sharding-db-instance --biz-region-id cn-hangzhou --zone-id cn-hangzhou-g --engine MongoDB --engine-version 4.4 --db-instance-description test --security-ip-list 192.168.xx.xx,192.168.xx.xx --account-password 123456Aa --charge-type PrePaid --period 1 --network-type VPC --vpc-id vpc-bp1n3i15v90el48nx0000 --vswitch-id vsw-bp1vj604nj5a9zz740000 --src-db-instance-id dds-bp11483712c10000 --restore-time 2022-03-08T02:30:25Z --client-token ETnLKlblzczshOTUbOCz0000 --storage-engine WiredTiger --auto-renew true --protocol-type mongodb --mongos Class=mdb.shard.2x.xlarge.d --replica-set Storage=10 ReadonlyReplicas=0 Class=dds.shard.standard --config-server Storage=20 Class=mdb.shard.2x.xlarge.d --resource-group-id rg-acfmyiu4ekp0000 --secondary-zone-id cn-hangzhou-h --hidden-zone-id cn-hangzhou-i --storage-type cloud_essd1 --global-security-group-ids g-qxieqf40xjst1ngpr3jz --tag Value=apitest Key=testdatabase --encrypted true --encryption-key 2axxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx --provisioned-iops 1960 --src-region cn-beijing --backup-id cb-xxx --restore-type 1 --dest-region cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun dds CreateShardingDBInstance --region cn-hangzhou --ConfigServer.1.Class 'mdb.shard.2x.xlarge.d' --ReplicaSet.1.ReadonlyReplicas 0 --ResourceGroupId 'rg-acfmyiu4ekp0000' --HiddenZoneId 'cn-hangzhou-i' --Encrypted true --AutoRenew true --BackupId 'cb-xxx' --ReplicaSet.1.Class 'dds.shard.standard' --EncryptionKey '2axxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' --StorageEngine WiredTiger --RestoreTime '2022-03-08T02:30:25Z' --Mongos.1.Class 'mdb.shard.2x.xlarge.d' --SecurityIPList '192.168.xx.xx,192.168.xx.xx' --NetworkType VPC --RestoreType 1 --Engine MongoDB --DBInstanceDescription test --Tag.1.Key testdatabase --EngineVersion '4.4' --StorageType cloud_essd1 --ZoneId 'cn-hangzhou-g' --VSwitchId 'vsw-bp1vj604nj5a9zz740000' --Period 1 --ProvisionedIops 1960 --SecondaryZoneId 'cn-hangzhou-h' --AccountPassword 123456Aa --SrcRegion 'cn-beijing' --VpcId 'vpc-bp1n3i15v90el48nx0000' --GlobalSecurityGroupIds 'g-qxieqf40xjst1ngpr3jz' --ChargeType PrePaid --ProtocolType mongodb --Tag.1.Value apitest --ReplicaSet.1.Storage 10 --RegionId 'cn-hangzhou' --SrcDBInstanceId 'dds-bp11483712c10000' --ClientToken ETnLKlblzczshOTUbOCz0000 --DestRegion 'cn-hangzhou' --ConfigServer.1.Storage 20"

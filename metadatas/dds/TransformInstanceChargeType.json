@@ -1,5 +1,6 @@
 {
   "name": "TransformInstanceChargeType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动支付订单，取值说明：\n\n- **true**：自动支付订单。\n- **false**：手动支付订单。\n\n> 默认值为**true**。",
+        "en": "Specifies whether to enable automatic payment. Valid values:\n\n- **true**\n\n- **false**\n\n> Default value: **true**."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "到期后是否自动续费，取值说明：\n\n- **true**：自动续费。\n- **false**：手动续费。\n\n> 默认值为**false**。",
+        "en": "Specifies whether to enable auto-renewal. Valid values:\n\n- **true**\n\n- **false**\n\n> Default value: **false**."
+      }
     },
     {
       "name": "BusinessInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "附加参数，业务信息。",
+        "en": "The business information. This is an additional parameter."
+      }
     },
     {
       "name": "ChargeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例付费类型，取值说明：\n- **PrePaid**：预付费，包年包月。\n- **PostPaid**：按量付费。",
+        "en": "The billing method of the instance. Valid values:\n\n- **PrePaid:** subscription.\n\n- **PostPaid:** pay-as-you-go."
+      }
     },
     {
       "name": "CouponNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用优惠券，取值说明：\n- **default**或**null**（默认）：使用优惠券。\n- **youhuiquan_promotion_option_id_for_blank**：不使用优惠券。",
+        "en": "The coupon code. Default value: `youhuiquan_promotion_option_id_for_blank`."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预付费时长，取值范围为：\n\n- 当PricingCycle单位为Month:**1**~**9**\n\n- 当PricingCycle单位为Year: **1**、**2**、**3**、**5**",
+        "en": "The subscription duration of the instance. Unit: months. Valid values: **1, 2, 3, 4, 5, 6, 7, 8, 9**\\*\\*\\*\\*, **12**, **24**, and **36**."
+      }
     },
     {
       "name": "PricingCycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例付费时长单位\n取值说明：\n- **Month：** 月\n-  **Year：** 年\n\n默认值：Month",
+        "en": "The unit of the subscription duration. Valid values:\n\n- **Month**: month.\n\n- **Year**: year.\n\nDefault value: Month."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "转换云数据库MongoDB实例的付费类型",
+    "en": "TransformInstanceChargeType"
+  },
+  "descriptions": {
+    "zh": "请确保在使用该接口前，已充分了解MongoDB产品的收费方式和<props=\"china\">[价格](https://www.aliyun.com/price/product#/mongodb/detail)</props><props=\"intl\">[价格](https://www.alibabacloud.com/zh/product/apsaradb-for-mongodb/pricing)</props>。\n\n\n\n调用本接口时，实例必须满足以下条件：\n\n- 实例状态为运行中。\n- 实例没有未完成支付的转换付费类型订单。\n- 实例规格不能为历史规格（不再售卖的规格），历史规格列表请参见[实例规格表](~~57141~~)。\n\n> 如需转换历史规格实例的付费类型，请先调用[ModifyDBInstanceSpec](~~61816~~)或[ModifyNodeSpec](~~61923~~)接口变更实例规格。",
+    "en": "Before you call this operation, make sure that you understand the billing methods and [pricing](https://www.alibabacloud.com/product/apsaradb-for-mongodb/pricing) of ApsaraDB for MongoDB\n\nBefore you call this API operation, make sure that the ApsaraDB for MongoDB instance meets the following requirements:\n\n- The instance is in the Running state.\n\n- Your instance has no unpaid billing method change orders.\n\n- The instance type is available for purchase. For more information about unavailable instance types, see [Instance types](~~57141~~).\n\n> To change the billing method of an instance whose instance type is no longer available to purchase, call the [ModifyDBInstanceSpec](~~61816~~) or [ModifyNodeSpec](~~61923~~) operation to change the instance type first."
+  },
   "example": {
     "unifiedCli": "aliyun dds transform-instance-charge-type --instance-id dds-2ze55b3ec56c0000 --period 1 --auto-pay true --business-info '“ActivityId_:_000000000' --auto-renew false --coupon-no default --charge-type PrePaid --pricing-cycle Month --region cn-hangzhou",
     "legacyCli": "aliyun dds TransformInstanceChargeType --region cn-hangzhou --CouponNo default --BusinessInfo '“ActivityId_:_000000000' --InstanceId 'dds-2ze55b3ec56c0000' --ChargeType PrePaid --PricingCycle Month --AutoRenew false --Period 1 --AutoPay true"

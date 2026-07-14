@@ -1,5 +1,6 @@
 {
   "name": "RebootInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- true：发送检查请求，不会重启实例。检查项包括是否填写了必选参数、请求格式、业务限制和ECS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- false：发送正常请求，通过检查后直接重启实例。\n\n默认值：false。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- true: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, service limits, and available ECS resources. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- false: performs a dry run and sends the request. If the request passes the dry run, the ECS instance is restarted.\n\nDefault value: false."
+      }
     },
     {
       "name": "ForceStop",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重启ECS实例前，是否强制关机。取值范围：\n\n-   true：强制关机。相当于典型的断电操作，所有未写入存储设备的缓存数据会丢失。\n\n-   false：正常关机。\n\n默认值：false。",
+        "en": "Specifies whether to forcefully stop the ECS instance before the instance is restarted. Valid values:\n\n- true: forcefully stops the ECS instance. If you set this parameter to true, this operation is equivalent to a power-off operation. Cache data that is not written to storage devices on the instance is lost.\n\n- false: normally stops the ECS instance.\n\nDefault value: false."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定实例的ID。",
+        "en": "The instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重启实例",
+    "en": "RebootInstance"
+  },
+  "descriptions": {
+    "zh": "该接口为异步接口，实例的重启不是立即完成的，成功调用后，实例会先进入启动中（`Starting`）状态，你可以调用[DescribeInstanceStatus](~~2679688~~)查看实例状态，当返回的状态为`Running`时代表重启成功。\n\n### 使用须知\n- 被安全锁定的实例不能通过调用该接口重启。更多信息，请参见[资源安全锁定对调用API的影响](~~25695~~)。\n- 您只能重启状态为**运行中**（`Running`）的ECS实例。",
+    "en": "该接口为异步接口，实例的重启不是立即完成的，成功调用后，实例会先进入启动中（`Starting`）状态，你可以调用 [DescribeInstanceStatus](~~2679688~~) 查看实例状态，当返回的状态为`Running`时代表重启成功。\n\n### 使用须知\n\n- 被安全锁定的实例不能通过调用该接口重启。更多信息，请参见[资源安全锁定对调用 API 的影响](~~25695~~)。\n\n- 您只能重启状态为**运行中**（`Running`）的 ECS 实例。"
+  },
   "example": {
     "unifiedCli": "aliyun ecs reboot-instance --instance-id i-bp67acfmxazb4ph0000 --force-stop false --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ecs RebootInstance --region cn-hangzhou --InstanceId 'i-bp67acfmxazb4ph0000' --ForceStop false --DryRun false"

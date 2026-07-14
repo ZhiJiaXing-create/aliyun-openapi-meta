@@ -1,5 +1,6 @@
 {
   "name": "CreateFileset",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，从您的客户端生成一个参数值，确保不同的请求间该参数值唯一。\n\nClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。\n\n> 若用户未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~).\n\n>  If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+      }
     },
     {
       "name": "DeletionProtection",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例释放保护属性，指定是否支持通过控制台或API（[DeleteFileset](~~2402263~~)）释放实例。\n\n-   true：开启实例释放保护。\n-   false（默认）：关闭实例释放保护。\n\n> 该属性只能限制手动释放操作，对系统释放操作不生效。",
+        "en": "Specifies whether to enable deletion protection to allow you to release the fileset by using the console or by calling the [DeleteFileset](~~2402263~~) operation.\n\n*   true: enables release protection.\n*   false (default): disables release protection.\n\n>  This parameter can protect filesets only against manual releases, but not against automatic releases."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Fileset的描述信息。\n\n- 长度为2~128个英文或中文字符。\n- 必须以大小写字母或中文开头，不能以http://和https://开头。\n- 可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The description of the fileset.\n\n*   The description must be 2 to 128 characters in length.\n*   The name must start with a letter and cannot start with http:// or https://.\n*   The description can contain letters, digits, colons (:), underscores (\\_), periods (.), and hyphens (-)."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检。\n\n预检操作会帮助您检查参数有效性、校验库存等，并不会实际创建实例，也不会产生费用。\n\n取值：\n\n- true：发送检查请求，不会创建实例。检查项包括是否填写了必需参数、请求格式、业务限制和NAS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回200 HttpCode，但FsetId为空。\n- false（默认）：发送正常请求，通过检查后直接创建实例。",
+        "en": "Specifies whether to perform a dry run.\n\nDuring the dry run, the system checks whether the request parameters are valid and whether the requested resources are available. During the dry run, no fileset is created and no fee is incurred.\n\nValid value:\n\n*   true: performs a dry run. The system checks the required parameters, request syntax, service limits, and available Apsara File Storage NAS (NAS) resources. Otherwise, an error message is returned. If the request passes the dry run, the HTTP status code 200 is returned. No value is returned for the FsetId parameter.\n*   false (default): performs a dry run and sends the request. If the request passes the dry run, a fileset is created."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。\n\n- CPFS：必须以`cpfs-`开头，例如cpfs-099394bd928c****。\n\n- CPFS智算版：必须以`bmcpfs-`开头，例如bmcpfs-290w65p03ok64ya****。",
+        "en": "The ID of the file system.\n\n*   The IDs of CPFS file systems must start with `cpfs-`. Example: cpfs-099394bd928c\\*\\*\\*\\*.\n*   The IDs of CPFS for Lingjun file systems must start with `bmcpfs-`. Example: bmcpfs-290w65p03ok64ya\\*\\*\\*\\*."
+      }
     },
     {
       "name": "FileSystemPath",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待创建的Fileset的绝对路径。\n\n- CPFS路径限制。\n  - 指定目录的父目录必须是文件系统中已存在的目录。\n  - 长度为2~1024个字符。\n  - 指定目录必须以正斜线（/）开头和结尾。\n - CPFS智算版路径限制。\n   - 长度为2~1024个字符。\n   - 指定目录必须以正斜线（/）开头和结尾。\n   - Fileset路径必须为新路径，不能为已存在路径，Fileset 路径不支持重命名，不支持路径为软链接。\n   - Fileset路径支持的最大深度为8层，根目录/为0层。例如，Fileset路径为/test/aaa/ccc/，则表示路径深度为3层。\n   - Fileset路径为多层目录时，父目录必须是已存在的目录。\n   - 不支持在 Fileset 中嵌套 Fileset，即当父目录已指定为Fileset，其子目录不支持指定为Fileset。一个 Fileset 路径只支持一个配额。\n   - 路径总长度最多为990个字符。",
+        "en": "The absolute path of the fileset.\n\n*   CPFS path limits.\n\n    *   The parent directory of the path that you specify must be an existing directory in the file system.\n    *   The path must be 2 to 1024 characters in length.\n    *   The path must start and end with a forward slash (/).\n\n*   Path limit of CPFS for Lingjun\n\n    *   The path must be 2 to 1024 characters in length.\n    *   The path must start and end with a forward slash (/).\n    *   The fileset path must be a new path and cannot be an existing path. Fileset paths cannot be renamed and cannot be symbolic links.\n    *   The maximum depth supported by a fileset path is eight levels. The depth of the root directory / is 0 levels. For example, the fileset path /test/aaa/ccc/ has three levels.\n    *   If the fileset path is a multi-level path, the parent directory must be an existing directory.\n    *   Nested filesets are not supported. If a fileset is specified as a parent directory, its subdirectory cannot be a fileset. A fileset path supports only one quota.\n    *   The path cannot exceed 990 characters in length."
+      }
     },
     {
       "name": "Quota",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配额信息。\n> 仅CPFS智算版2.7.0及以上版本支持此参数。",
+        "en": "The quota information.\n\n>  Only CPFS for Lingjun V2.7.0 and later support this parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建文件集",
+    "en": "CreateFileset"
+  },
+  "descriptions": {
+    "zh": "- CPFS使用说明\n\n  - 仅支持CPFS 2.2.0及以上版本创建Fileset。您可以在控制台文件系统详情页面查看版本信息。\n  - 单个CPFS文件系统最多支持创建10个Fileset。\n  - 父目录必须是已存在的目录。\n  - Fileset路径支持的最大深度为8层，根目录/为0层。例如，Fileset路径为/test/aaa/ccc/，则表示路径深度为3层。\n  - 不支持Fileset中嵌套Fileset。即当父目录已指定为Fileset，其子目录不支持指定为Fileset。\n  - Fileset最多支持100万个文件，如果文件数量超过此上限，添加新文件会返回`no space`错误信息。\n\n- CPFS智算版使用说明\n  - 仅支持CPFS智算版 2.7.0及以上版本创建Fileset。您可以在控制台文件系统详情页面查看版本信息。\n  - 单个CPFS文件系统最多支持创建500个Fileset。\n  - Fileset路径必须为新路径，不能为已存在路径，Fileset 路径不支持重命名，不支持路径为软链接。\n  - Fileset路径支持的最大深度为8层，根目录/为0层。例如，Fileset路径为/test/aaa/ccc/，则表示路径深度为3层。\n  - Fileset路径为多层目录时，父目录必须是已存在的目录。\n  - 不支持在 Fileset 中嵌套 Fileset，即当父目录已指定为Fileset，其子目录不支持指定为Fileset。一个 Fileset 路径只支持一个配额。\n  - Fileset容量配额，最小起步10 GiB，扩容单位为1 GiB。\n  - Fileset最多支持100亿个文件或目录，最小起步10000，扩容单位为1。\n  - 修改目录配额时，设置的配额容量或文件数必须高于已使用容量或文件数。\n  - 配额的统计有15分钟的延迟，当前的实际使用量15分钟之后才会生效。",
+    "en": "- CPFS使用说明\n\n  - 仅支持CPFS 2.2.0及以上版本创建Fileset。您可以在控制台文件系统详情页面查看版本信息。\n  - 单个CPFS文件系统最多支持创建10个Fileset。\n  - 父目录必须是已存在的目录。\n  - Fileset路径支持的最大深度为8层，根目录/为0层。例如，Fileset路径为/test/aaa/ccc/，则表示路径深度为3层。\n  - 不支持Fileset中嵌套Fileset。即当父目录已指定为Fileset，其子目录不支持指定为Fileset。\n  - Fileset最多支持100万个文件，如果文件数量超过此上限，添加新文件会返回`no space`错误信息。\n\n- CPFS智算版使用说明\n  - 仅支持CPFS智算版 2.7.0及以上版本创建Fileset。您可以在控制台文件系统详情页面查看版本信息。\n  - 单个CPFS文件系统最多支持创建500个Fileset。\n  - Fileset路径必须为新路径，不能为已存在路径，Fileset 路径不支持重命名，不支持路径为软链接。\n  - Fileset路径支持的最大深度为8层，根目录/为0层。例如，Fileset路径为/test/aaa/ccc/，则表示路径深度为3层。\n  - Fileset路径为多层目录时，父目录必须是已存在的目录。\n  - 不支持在 Fileset 中嵌套 Fileset，即当父目录已指定为Fileset，其子目录不支持指定为Fileset。一个 Fileset 路径只支持一个配额。\n  - Fileset容量配额，最小起步10 GiB，扩容单位为1 GiB。\n  - Fileset最多支持100亿个文件或目录，最小起步10000，扩容单位为1。\n  - 修改目录配额时，设置的配额容量或文件数必须高于已使用容量或文件数。\n  - 配额的统计有15分钟的延迟，当前的实际使用量15分钟之后才会生效。"
+  },
   "example": {
     "unifiedCli": "aliyun nas create-fileset --file-system-id bmcpfs-290w65p03ok64y00000 --file-system-path /test/ --dry-run false --deletion-protection false --description '内部事务目录' --client-token 123e4567-e89b-12d3-a456-426655400000 --quota FileCountLimit=10000 SizeLimit=10737418240 --region cn-hangzhou",
     "legacyCli": "aliyun nas CreateFileset --region cn-hangzhou --FileSystemPath '/test/' --Quota.FileCountLimit 10000 --Description '内部事务目录' --Quota.SizeLimit 10737418240 --DryRun false --FileSystemId 'bmcpfs-290w65p03ok64y00000' --DeletionProtection false --ClientToken '123e4567-e89b-12d3-a456-426655400000' --method POST --force"

@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需查询的标签所绑定资源所在的实例ID。\n> 如果您需查询的是Topic、Group的标签，则必须填写该参数。",
+        "en": "The ID of the instance where the tagged resource is located.\n\n> If you query tags for a topic or group, you must specify this parameter."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一页查询开始的Token。",
+        "en": "The token that is used to start the next page of a paginated query."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID列表。",
+        "en": "A list of resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。枚举类型。取值如下：\n\n- **INSTANCE**\n- **TOPIC**\n- **GROUP**",
+        "en": "The resource type. This is an enumeration. Valid values:\n\n- **INSTANCE**\n\n- **TOPIC**\n\n- **GROUP**"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。列表元素个数不得超过 20。",
+        "en": "A list of tags. The list can contain a maximum of 20 elements."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n- 若输入该参数，则参数取值不允许为空字符串。\n- 最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the resource.\n\n- If you specify this parameter, its value cannot be an empty string.\n\n- The value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n- 若输入该参数，参数取值允许为空字符串。\n- 最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the resource.\n\n- If you specify this parameter, its value can be an empty string.\n\n- The value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源绑定的标签列表",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>\n\n调用**ListTagResources**接口时，标签键**Tag.N.Key**和资源ID **ResourceId.N**至少需要输入一个。您可以查询某资源下的所有标签，也可以根据指定标签键查询标签值及标签所绑定的资源。\n- 若输入标签键**Tag.N.Key**，则可以查询标签值**Tag.N.Value**和标签所绑定的资源ID **ResourceId.N**。\n- 若输入资源ID **ResourceId.N**，则可以查询指定资源下所有的标签信息，包括标签键**Tag.N.Key**及标签值**Tag.N.Value**。",
+    "en": "><notice>\n\nThe OpenAPI provided by Alibaba Cloud is a control-plane API used to manage and query resources of Alibaba Cloud services. Integrate this API only on the control plane. Do not use this OpenAPI on the core data link to send or receive messages. Otherwise, threats may occur on the data link.\n\n></notice>\n\nWhen you call the **ListTagResources** operation, specify at least one of the tag key **Tag.N.Key** or the resource ID **ResourceId.N**. You can query all tags for a resource. You can also query tag values and the resources to which the tags are attached based on a specified tag key.\n\n- If you specify the tag key **Tag.N.Key**, you can query the tag value **Tag.N.Value** and the ID of the attached resource **ResourceId.N**.\n\n- If you specify the resource ID **ResourceId.N**, you can query all tag information for the specified resource, including the tag key **Tag.N.Key** and the tag value **Tag.N.Value**."
+  },
   "example": {
     "unifiedCli": "aliyun ons list-tag-resources --instance-id MQ_INST_1880770869020000_BXSuW61e --resource-type TOPIC --next-token caeba00000be03f84eb48b699f0a4883 --tag Value=ServiceA Key=CartService --resource-id test --region cn-hangzhou",
     "legacyCli": "aliyun ons ListTagResources --region cn-hangzhou --ResourceId.1 test --Tag.1.Key CartService --NextToken caeba00000be03f84eb48b699f0a4883 --InstanceId MQ_INST_1880770869020000_BXSuW61e --Tag.1.Value ServiceA --ResourceType TOPIC"

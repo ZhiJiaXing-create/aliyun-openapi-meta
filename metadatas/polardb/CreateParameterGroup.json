@@ -1,5 +1,6 @@
 {
   "name": "CreateParameterGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DBType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库引擎类型，当前仅支持**MySQL**。",
+        "en": "The type of the database engine. Only **MySQL** is supported."
+      }
     },
     {
       "name": "DBVersion",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库引擎版本号，取值范围如下：\n\n- **5.6**\n\n- **5.7**\n\n- **8.0**",
+        "en": "The version of the database engine. Valid values:\n\n- **5.6**\n\n- **5.7**\n\n- **8.0**"
+      }
     },
     {
       "name": "ParameterGroupDesc",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "参数模板的描述，长度为0~199个字符。",
+        "en": "The description of the parameter template. It must be 0 to 199 characters in length."
+      }
     },
     {
       "name": "ParameterGroupName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "参数模板的名称，需满足如下要求：\n\n- 由英文、数字、和下划线（_）组成，以字母开头，不能包含中文，不能以下划线（_）结尾。\n\n- 长度为8~64个字符。",
+        "en": "The name of the parameter template. The name must meet the following requirements:\n\n- It must start with a letter and can contain letters, digits, and underscores (\\_). It cannot contain Chinese characters or end with an underscore (\\_).\n\n- It must be 8 to 64 characters in length."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "参数及其值的JSON串，参数的值都是字符串类型，例如`{\"wait_timeout\":\"86400\",\"innodb_old_blocks_time\":\"1000\"}`。\n\n> 您可以通过接口[DescribeParameterTemplates](~~207428~~)查看目标数据库引擎版本数据库集群的所有参数详情，包括参数名称、取值范围等。",
+        "en": "A JSON string that consists of parameters and their values. The values of the parameters must be strings. For example: `{\"wait_timeout\":\"86400\",\"innodb_old_blocks_time\":\"1000\"}`.\n\n> You can call the [DescribeParameterTemplates](~~207428~~) operation to view the details of all parameters for a specific database engine version. The details include parameter names and value ranges."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "参数模板所在地域的地域ID。\n\n> 您可以通过接口[DescribeRegions](~~98041~~)查看地域ID。",
+        "en": "The ID of the region where the parameter template is located.\n\n> You can call the [DescribeRegions](~~98041~~) operation to query region IDs."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建参数模板",
+    "en": "CreateParameterGroup"
+  },
+  "descriptions": {
+    "zh": "参数模板可以批量管理集群的参数，您可以使用参数模板功能，快速应用模板到PolarDB集群上。详情请参见[使用参数模板](~~207009~~)。\n\n> 当前仅支持PolarDB MySQL版集群。",
+    "en": "Parameter templates allow you to manage cluster parameters in batches. You can use this feature to quickly apply parameter templates to PolarDB clusters. For more information, see [Use parameter templates](~~207009~~).\n\n> This feature is available only for PolarDB for MySQL clusters."
+  },
   "example": {
     "unifiedCli": "aliyun polardb create-parameter-group --biz-region-id cn-hangzhou --db-type MySQL --db-version 8.0 --parameter-group-name test_group --parameter-group-desc test_group --parameters wait_timeout_:_86400_,_innodb_old_blocks_time_:_1000 --resource-group-id rg-0000000000 --region cn-hangzhou",
     "legacyCli": "aliyun polardb CreateParameterGroup --region cn-hangzhou --DBVersion '8.0' --Parameters 'wait_timeout_:_86400_,_innodb_old_blocks_time_:_1000' --ResourceGroupId 'rg-0000000000' --ParameterGroupName test_group --ParameterGroupDesc test_group --RegionId 'cn-hangzhou' --DBType MySQL"

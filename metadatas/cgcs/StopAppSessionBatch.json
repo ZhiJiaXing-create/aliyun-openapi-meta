@@ -1,0 +1,102 @@
+{
+  "name": "StopAppSessionBatch",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AppId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "应用ID。",
+        "en": "Application ID."
+      }
+    },
+    {
+      "name": "AppVersion",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "应用版本ID。",
+        "en": "Application Version ID."
+      }
+    },
+    {
+      "name": "BatchId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "批量操作ID。\n> 支持ASCII字符，且不能超过64个字符。",
+        "en": "Batch operation ID.  \n> Supports ASCII characters and cannot exceed 64 characters."
+      }
+    },
+    {
+      "name": "ProjectId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "项目ID。",
+        "en": "Project ID."
+      }
+    },
+    {
+      "name": "StopParam",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "停止容器参数。",
+        "en": "Stop container parameters."
+      },
+      "sub_parameters": [
+        {
+          "name": "Key",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "目前支持的枚举值。取值为reason ，表示停止原因。",
+            "en": "Currently supported enumeration values. When the value is \"reason\", it indicates the stop reason."
+          }
+        },
+        {
+          "name": "Value",
+          "position": "Query",
+          "type": "Any",
+          "required": false,
+          "description": {
+            "zh": "Key对应的取值。",
+            "en": "Value corresponding to the key."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "position": "Query",
+      "type": "Array",
+      "required": false,
+      "description": {
+        "zh": "自定义标签。",
+        "en": "Custom tags."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量停止应用会话",
+    "en": "Batch Stop Application Sessions"
+  },
+  "descriptions": {
+    "zh": "发起批量停止后，批量停止的进度会通过HTTP接口返回，直到在线数量为0或超时。\n> HTTP接口是接收会话启动、停止、串流等信息的一种方式。目前消息保存1天，重试策略为退避重试，最多重试176次。\n\n事件类型为**BATCH_STOP**。\n><notice>不区分对接模式，仅推送HTTP接口。></notice> \n\n| 名称 | 类型 | 是否必选 |说明|\n| ------ | ------ | ------ |------ |\n|eventType|String|是|事件类型。|\n|eventDetail|Object[EventDetail]|是|事件详情，<br>当任务成功时，返回该参数。|\n\nEventDetail数据结构如下所示。\n|名称|类型|是否必选|说明|\n|------|------|------|------|\n|appId|String|是|应用ID。|\n|appVersion|String|是|应用版本ID。|\n|batchId|String|是|批量ID。|\n|projectId|String|是|项目ID。|\n|playersCount|Integer|是|剩余在线数量。|\n|timestamp|String|是|统计时间戳。|",
+    "en": "After initiating a batch stop, the progress of the batch stop is returned through an HTTP API until the number of online sessions becomes 0 or a timeout occurs.  \n> The HTTP API is a method for receiving information such as session start, stop, and streaming. Currently, messages are retained for 1 Day, and the retry policy is backoff retry, with a maximum of 176 retries.\n\nThe event type is **BATCH_STOP**.  \n><notice>Regardless of the integration pattern, only the HTTP API is used for push.></notice> \n\n| Name | Type | Required | Description |\n| ------ | ------ | ------ |------ |\n| eventType | String | Yes | Event type. |\n| eventDetail | Object[EventDetail] | Yes | Event details.<br>This parameter is returned when the job succeeds. |\n\nThe EventDetail data structure is as follows.  \n| Name | Type | Required | Description |\n|------|------|------|------|\n| appId | String | Yes | Application ID. |\n| appVersion | String | Yes | Application Version ID. |\n| batchId | String | Yes | Batch ID. |\n| projectId | String | Yes | Project ID. |\n| playersCount | Integer | Yes | Remaining online quantity. |\n| timestamp | String | Yes | Statistics UNIX timestamp. |"
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "name": "UpdateProcessDefinition",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ApprovalNodes",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "审批节点列表。注意：系统策略不生效。",
+        "en": "A list of approval nodes. This parameter does not apply to system policies."
+      },
+      "sub_parameters": [
+        {
+          "name": "AccountType",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "节点审批人类型：\n- DataWorksProjectRole 空间角色\n- DataWorksProjectMember 空间成员\n- TableAdministrator 表负责人\n- TableOrProjectAdministrator 表或空间管理员\n- AliyunResourceOwner 阿里云账号\n- MaxComputeRole MC管理员\n- DLFAdmin DlfLegacy管理员\n- DLFNextAdmin DLFNext管理员\n- TenantRole 租户角色\n- EmrAdministrator Emr管理员\n- LindormAdministrator Lindorm管理员\n- AliyunRamUser RAM子账号",
+            "en": "The approver type for the node. Valid values:\n\n- `DataWorksProjectRole`: A workspace role.\n\n- `DataWorksProjectMember`: A workspace member.\n\n- `TableAdministrator`: A table administrator.\n\n- `TableOrProjectAdministrator`: The administrator of the table or project.\n\n- `AliyunResourceOwner`: An Alibaba Cloud account.\n\n- `MaxComputeRole`: A MaxCompute administrator.\n\n- `DLFAdmin`: A DlfLegacy administrator.\n\n- `DLFNextAdmin`: A DLFNext administrator.\n\n- `TenantRole`: A tenant role.\n\n- `EmrAdministrator`: An EMR administrator.\n\n- `LindormAdministrator`: A Lindorm administrator.\n\n- `AliyunRamUser`: A RAM user."
+          }
+        },
+        {
+          "name": "Assignees",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "当AccountType为不同类型，对应不同语义：\n- DataWorksProjectMember声明空间成员UserId\n- DataWorksProjectRole声明空间角色code\n- MaxComputeRole声明MC的角色\n- TenantRole声明租户角色code\n- AliyunRamUser声明RAM userId",
+            "en": "Specifies the approvers. The required value depends on the `AccountType`:\n\n- If `AccountType` is `DataWorksProjectMember`, this parameter specifies the user IDs of workspace members.\n\n- If `AccountType` is `DataWorksProjectRole`, this parameter specifies the codes of workspace roles.\n\n- If `AccountType` is `MaxComputeRole`, this parameter specifies the MaxCompute roles.\n\n- If `AccountType` is `TenantRole`, this parameter specifies the codes of tenant roles.\n\n- If `AccountType` is `AliyunRamUser`, this parameter specifies the user IDs of RAM users."
+          }
+        },
+        {
+          "name": "ExtensionProperties",
+          "position": "FormData",
+          "type": "Struct",
+          "required": false,
+          "description": {
+            "zh": "当 `AccountType ` 为不同类型，需要提供不同额外声明：\n\n- `DataWorksProjectMember`: key 为 projectId, value 为空间成员 UserId，多个使用逗号分割\n- `MaxComputeRole`: key 为 MaxCompute 的 project, value 为 MC 中 role name，多个使用逗号分割",
+            "en": "Additional properties that are required for specific `AccountType` values:\n\n- If `AccountType` is `DataWorksProjectMember`: The key is `projectId` and the value is the user ID of a workspace member. Use commas (,) to separate multiple user IDs.\n\n- If `AccountType` is `MaxComputeRole`: The key is the MaxCompute project name and the value is the role name in MaxCompute. Use commas (,) to separate multiple role names."
+          }
+        },
+        {
+          "name": "Name",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "节点名称",
+            "en": "The name of the node."
+          }
+        }
+      ]
+    },
+    {
+      "name": "ClientToken",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "幂等参数。用于避免多次调用导致操作重复。",
+        "en": "An idempotent parameter. It ensures that retried requests do not result in duplicate operations."
+      }
+    },
+    {
+      "name": "Description",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "流程定义描述",
+        "en": "The description of the process definition."
+      }
+    },
+    {
+      "name": "Id",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "流程定义ID",
+        "en": "The ID of the process definition."
+      }
+    },
+    {
+      "name": "Name",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "流程定义名称",
+        "en": "The name of the process definition."
+      }
+    },
+    {
+      "name": "NotificationServices",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "通知服务声明",
+        "en": "The notification service configurations."
+      },
+      "sub_parameters": [
+        {
+          "name": "Channel",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "通知渠道，枚举\n\n- Mail\n- Sms\n- DingRobot\n- Weixin",
+            "en": "The notification channel. Valid values:\n\n- Mail\n\n- Sms\n\n- DingRobot\n\n- Weixin"
+          }
+        },
+        {
+          "name": "Extension",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "扩展信息，JSON 格式，如 {\"atAll\":\"true\"} 声明是否@所有人",
+            "en": "Additional information in JSON format. For example, use {\"atAll\":\"true\"} to specify whether to notify all members."
+          }
+        },
+        {
+          "name": "Receiver",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "Channel 为DingRobot/Weixin时需指定 WebhookUrl",
+            "en": "The webhook URL. This parameter is required when `Channel` is set to `DingRobot` or `Weixin`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "RuleConditions",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "条件规则列表。注意：系统策略不生效。",
+        "en": "A list of rule conditions. This parameter does not apply to system policies."
+      },
+      "sub_parameters": [
+        {
+          "name": "Expression",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "条件表达式((#type=='typeValue')).如 ((#odpsProject=='PX_BEIJING_TEST'))",
+            "en": "The conditional expression. Format: ((#type=='typeValue')). For example: ((#odpsProject=='PX\\_BEIJING\\_TEST'))."
+          }
+        },
+        {
+          "name": "Scope",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "规则生效阶段：\n- **Deployment** 用于判定\"提交申请时是否匹配该审批策略\n- **Running** 用于审批流程执行判定是否免审批【仅支持MaxCompute类型】",
+            "en": "The phase in which the rule takes effect. Valid values:\n\n- **Deployment**: Determines whether the approval policy applies when an application is submitted.\n\n- **Running**: Determines whether to skip the approval during the approval process. This phase is supported only for MaxCompute."
+          }
+        },
+        {
+          "name": "Type",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "条件类型，枚举：\n\n- `odpsProject`, \n- `hologresInstanceId`\n- `sensibleLevel`, \n- `tableGuid`, \n- `projectId`",
+            "en": "The type of the condition. Valid values:\n\n- `odpsProject`\n\n- `hologresInstanceId`\n\n- `sensibleLevel`\n\n- `tableGuid`\n\n- `projectId`"
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新审批流程定义",
+    "en": "UpdateProcessDefinition"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 该接口允许用户修改现有的审批流程定义，包括名称、描述、规则条件、通知服务和审批节点等。\n- `Id` 是必须提供的参数，用来指定要更新的审批流程定义。\n- 如果需要覆盖现有配置，请设置 `Overwrite` 参数为 `true`。\n- `ClientToken` 可选，用于保证请求的幂等性。",
+    "en": "## Request\n\n- Use this API to modify an existing approval process definition, including its name, description, rule conditions, notification service, and approval nodes.\n\n- The required `Id` parameter identifies the approval process definition to update.\n\n- To overwrite the existing configuration, set the `Overwrite` parameter to `true`.\n\n- The optional `ClientToken` parameter ensures request idempotency."
+  },
+  "example": {
+    "unifiedCli": "aliyun dataworks-public update-process-definition --id 177554881536128 --name 'MaxCompute_表审批' --description 'lwt_ide_simple_项目_MaxCompute_表审批策略' --rule-conditions Type=odpsProject Scope=Deployment Expression=#odpsProject==_PX_BEIJING_TEST --notification-services Extension=atAll_:_true Channel=Mail Receiver=https://dingtalk.com --approval-nodes '[{\"ExtensionProperties\":{\"key\":\"example-string\"},\"Assignees\":\"DataWorksProjectMember\",\"AccountType\":\"TableOrProjectAdministrator\",\"Name\":\"default-name\"}]' --client-token 1AFAE64E-D1BE-432B-A90000 --api-version 2024-05-18 --region cn-hangzhou",
+    "legacyCli": "aliyun dataworks-public UpdateProcessDefinition --region cn-hangzhou --NotificationServices '[{\"Extension\":\"atAll_:_true\",\"Channel\":\"Mail\",\"Receiver\":\"https://dingtalk.com\"}]' --Description 'lwt_ide_simple_项目_MaxCompute_表审批策略' --ApprovalNodes '[{\"ExtensionProperties\":{\"key\":\"example-string\"},\"Assignees\":\"DataWorksProjectMember\",\"AccountType\":\"TableOrProjectAdministrator\",\"Name\":\"default-name\"}]' --RuleConditions '[{\"Type\":\"odpsProject\",\"Scope\":\"Deployment\",\"Expression\":\"#odpsProject==_PX_BEIJING_TEST\"}]' --Id 177554881536128 --ClientToken '1AFAE64E-D1BE-432B-A90000' --Name 'MaxCompute_表审批'"
+  }
+}

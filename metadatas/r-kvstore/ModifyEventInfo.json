@@ -1,5 +1,6 @@
 {
   "name": "ModifyEventInfo",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,50 @@
       "name": "ActionParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "动作相关的参数，Json格式。\n当**TaskAction**取值**modifySwitchTime**时，本参数ActionParams取值为 `{\"recoverMode\": \"xxx\", \"recoverTime\": \"xxx\"}`。\n* **recoverMode**表示任务恢复模式，取值为：\n  * **imePoint**：按照指定时间点执行。\n  * **immediate**: 立即执行。\n  * **maintainTime**：按照运维时间执行。\n\n* **recoverTime**表示指定的时间点，UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ，当**recoverMode**为**timePoint**时，该参数必填。",
+        "en": "The parameters for the action, in JSON format. For example: `{\"recoverMode\": \"xxx\", \"recoverTime\": \"xxx\"}`.\n\n- **recoverMode**: The recovery mode. Valid values:\n\n  - **timePoint**: Executes the task at the time specified by `recoverTime`.\n\n  - **immediate**: Executes the task immediately.\n\n  - **maintainTime**: Executes the task during the maintenance window.\n\n- **recoverTime**: The time to execute the task. This parameter is required when **recoverMode** is set to **timePoint**. Specify the time in the `yyyy-MM-ddTHH:mm:ssZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "EventAction",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "事件处理动作，取值说明：\n- **archive**：归档\n- **undo**：不处理",
+        "en": "The action to perform on the event. Valid values:\n\n- **archive**: Archives the event.\n\n- **undo**: Cancels processing for the event."
+      }
     },
     {
       "name": "EventId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "事件ID。如需查询多个，使用英文逗号分隔，最多支持20个。",
+        "en": "The ID of the event. You can specify up to 20 event IDs. Separate multiple IDs with commas."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The ID of the region."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改事件信息",
+    "en": "Modify event information"
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore modify-event-info --biz-region-id cn-hangzhou --event-id 5422964 --event-action archive --action-params recoverTime_:_2023-04-17T14:02:35Z_,_recoverMode_:_timePoint --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore ModifyEventInfo --region cn-hangzhou --EventAction archive --ActionParams 'recoverTime_:_2023-04-17T14:02:35Z_,_recoverMode_:_timePoint' --EventId 5422964 --RegionId 'cn-hangzhou'"

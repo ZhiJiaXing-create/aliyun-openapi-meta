@@ -1,5 +1,6 @@
 {
   "name": "MergeImageFace",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,13 +9,21 @@
       "name": "AddWatermark",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否添加水印。取值范围如下：\n\n- False（默认）：不添加水印。\n- True：添加水印。",
+        "en": "Specifies whether to add a watermark. Valid values:\n\n- False (default): Do not add a watermark.\n- True: Add a watermark."
+      }
     },
     {
       "name": "ImageURL",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待融合的人脸照片，仅在模板图为单人场景下使用。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n输入限制：\n- 图像格式：JPG、JPEG、PNG。\n- 图像大小：不超过20 MB。\n- 图像分辨率：大于等于128×128像素，小于等于2000×2000像素，最长边小于等于2000像素。\n- URL地址中不能包含中文字符。\n\n> - 当图像分辨率超过最大限制时，请先将图片进行缩放，调整图片大小，具体请参见[图片缩放](~~44688~~)。\n- **ImageURL**与**MergeInfos**二选一。",
+        "en": "The URL of the face image to be fused. This parameter is used only in single-face template scenarios. We recommend that you use an OSS URL in the China (Shanghai) region. For local files or OSS URLs in other regions, see [File URL processing](~~155645~~).\nInput limits:\n- Image format: JPG, JPEG, or PNG.\n- Image size: up to 20 MB.\n- Image resolution: at least 128 × 128 pixels and at most 2000 × 2000 pixels. The longest side must be at most 2000 pixels.\n- The URL cannot contain Chinese characters.\n\n> - If the image resolution exceeds the maximum limit, resize the image first. For more information, see [Image resizing](~~44688~~).\n- Specify either **ImageURL** or **MergeInfos**."
+      }
     },
     {
       "name": "MergeInfos",
@@ -26,13 +35,21 @@
           "name": "ImageURL",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "该人脸待替换的图像URL。",
+            "en": "The URL of the image to replace the face."
+          }
         },
         {
           "name": "TemplateFaceID",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "多脸模板对应的某个人脸的子ID。",
+            "en": "The sub-ID of a specific face in the multi-face template."
+          }
         }
       ]
     },
@@ -40,21 +57,44 @@
       "name": "ModelVersion",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "提供两版模型，分别支持脸型适配（v1）与非脸型适配（v2）的效果，具有一定区分度。默认值为v1（脸型适配版本）。",
+        "en": "The model version. Two model versions are available: v1 (with face shape adaptation) and v2 (without face shape adaptation), which produce different results. Default value: v1 (face shape adaptation version)."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "人脸模板的模板ID。\n\n> 需要先上传模版，具体操作，请参见[图像人脸融合模板增加](~~203512~~)。",
+        "en": "The template ID of the face template.\n\n> Upload a template first. For more information, see [AddFaceImageTemplate](~~203512~~)."
+      }
     },
     {
       "name": "WatermarkType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印类型。取值范围如下：\n\n- EN（默认）：英文水印。\n- CN：中文水印。",
+        "en": "The watermark type. Valid values:\n\n- EN (default): English watermark.\n- CN: Chinese watermark."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "合并图像人脸",
+    "en": "Merge image face"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n图像人脸融合功能可以将用户图中的人脸融合到模板图中的人脸位置，生成一张包含用户图人脸特征的新图像。特别注意的是，该功能严格要求使用者事先获得用户图和模版图的授权，不得用于非法或有违道德约束的场景中。\n关于该接口功能的示例图如下：\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221108/mzue/MergeImageFace.png\" width=\"400)\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 当前能力可在视觉智能开放平台有完整的免费产品体验，您可以单击[立即试用](https://vision.aliyun.com/experience/detail?&tagName=facebody&children=MergeImageFace)对该能力进行更直观试用以及在线购买。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n- 娱乐应用：用户将自己的人脸和已获授权的合法图像中的人物人脸进行融合。\n- 影视制作：适用于影视制作公司，在后期制作中通过人脸融合提升制作效率与降低成本。\n- 影楼获客：适用于影楼或者个人摄影工作室，将客户的人脸融合到摄影样片中，达到试妆、试衣、试拍的效果。\n\n## 特色优势 \n- 高保真、低违和效果：融合后的人脸保留了替换者人脸身份信息的视觉特征，而融入被替换者人脸中又无违和感。\n- 表情肤色一致性：融合后的人脸最大限度保留被替换者的面目表情、肤色一致性。\n- 支持复杂人脸角度：支持模版人脸偏侧一定角度，融合后的结果真实稳定。\n- 脸型适配：支持自适应的匹配用户脸的脸型，提升融合结果的辨识度。\n- 支持多人脸和指定人脸：支持模版图像中多个人脸，并指定每个人脸与目标人脸进行单独融合。\n\n## 接入指引\n\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[人脸人体服务](https://vision.aliyun.com/facebody)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_facebody_public_cn#/open)。\n\n><notice>于2024年7月17日及以后开通该能力的用户可直接调用，不需提交申请。\n2024年7月17日之前开通该服务的用户如需调用，可通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们添加到白名单。\n></notice>\n\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/facebody/2019-12-30/MergeImageFace?lang=JAVA&sdkStyle=old&params=%7B%7D&tab=DEMO)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 前提条件：已通过[图像人脸融合模板增加接口](~~203512~~)（AddFaceImageTemplate）创建生成了TemplateId。\n6. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为人脸人体（facebody）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n7. 示例代码：该能力常用语言的示例代码，请参见[图像人脸融合示例代码](~~467963~~)。\n\n8. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n- 图像格式：JPG、JPEG、PNG。\n- 图像大小：不超过20 MB。\n- 图像分辨率：大于等于128×128像素，小于等于2000×2000像素，最长边小于等于2000像素。\n- URL地址中不能包含中文字符。\n\n> 当图像分辨率超过最大限制时，请先将图片进行缩放，调整图片大小，具体请参见[图片缩放](~~44688~~)。\n\n## 图像质量建议\n\n- 要求保证图像中的人脸清晰。图像中人脸尺寸建议大于64×64像素，人脸区域建议不大于全图区域的2/3。\n- 建议图像中人脸五官区域轮廓完整，无明显遮挡。人脸融合算法支持人脸偏侧一定角度，在偏侧角度不超过30度的情况下能取得更佳效果。\n- 含有多人脸的图像，建议图像中人脸个数不超过5个。\n\n推荐图像示例：\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/jris/MergeImageFacetuijian.png\" width=\"300)\n不推荐图像示例：\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/rkbx/MergeImageFacebutuijian.png\" width=\"300)\n\n## 计费说明\n关于图像人脸融合的计费方式及报价，请参见[计费介绍](~~184049~~)。\n> 下方调试接口为付费接口，如需免费体验调试请前往[体验中心](https://vision.aliyun.com/experience/detail?&tagName=facebody&children=MergeImageFace)。",
+    "en": "## Feature description\nThe image face fusion feature merges a face from a user-provided image into the face position in a template image, generating a new image that contains the facial features of the user-provided image. Note that this feature strictly requires users to obtain authorization for both the user image and the template image in advance. Do not use this feature for illegal purposes or scenarios that violate ethical standards.\nThe following figure shows an example of this operation:\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221108/mzue/MergeImageFace.png\" width=\"400)\n\n> - You can go to [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for online assistance.\n- You can try this feature for free on the Visual Intelligence Open Platform. Click [Try Now](https://vision.aliyun.com/experience/detail?&tagName=facebody&children=MergeImageFace) to experience this feature or purchase it online.\n- For questions about API integration, usage, or consultation regarding the Alibaba Cloud Visual Intelligence Open Platform, join the DingTalk group (23109592) to contact us.\n\n## Common scenarios\n- Entertainment applications: Users merge their own faces with faces in images for which authorization has been legally obtained.\n- Film and television production: Suitable for film and television production companies to improve production efficiency and reduce costs through face fusion during post-production.\n- Photography studio customer acquisition: Suitable for photography studios or personal photography workshops to merge customer faces into sample photos, achieving virtual makeup, outfit, and photo preview effects.\n\n## Advantages \n- High fidelity with natural results: The fused face retains the visual identity features of the replacement face while blending seamlessly into the target face.\n- Expression and skin tone consistency: The fused face preserves the facial expression and skin tone consistency of the target face to the greatest extent.\n- Complex face angles supported: Template faces tilted at certain angles are supported, producing stable and realistic fusion results.\n- Face shape adaptation: Adaptive matching of the user's face shape is supported, improving the recognizability of fusion results.\n- Multiple faces and specified faces supported: Multiple faces in the template image are supported, and each face can be individually fused with a target face.\n\n## Integration guide\n\n1. Register an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **Sign Up** in the upper-right corner, and follow the instructions to complete account registration.\n2. Activate the service: Make sure you have activated the [Face and Body service](https://vision.aliyun.com/facebody). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_facebody_public_cn#/open).\n\n><notice>Users who activated this feature on or after July 17, 2024 can directly invoke the operation without the need to commit an application.\nUsers who activated this service before July 17, 2024 and need to invoke the operation can join the DingTalk group (23109592) to contact us and be added to the whitelist.\n></notice>\n\n3. Create an AccessKey pair: Make sure you have [created an AccessKey pair](~~175144~~). If you are using a RAM user AccessKey, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/facebody/2019-12-30/MergeImageFace?lang=JAVA&sdkStyle=old&params=%7B%7D&tab=DEMO) to debug this feature online, view complete sample code and SDK dependency information, or download the complete project.\n5. Before you begin: Create a TemplateId by invoking the [AddFaceImageTemplate](~~203512~~) (increase face image template) operation.\n6. Development and integration steps:\n- Select the SDK language you want to use from the [SDK overview](~~145033~~).\n- Find and install the SDK package for the Face and Body (facebody) AI category in the corresponding SDK documentation.\n- Modify the sample code provided in the References as needed and invoke the operation.\n\n7. Sample code: For sample code in commonly used languages, see [Image face fusion sample code](~~467963~~).\n\n8. Direct client calls: Common client invocation methods for this platform include the following:\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~).\n\n## Input limits\n- Image format: JPG, JPEG, or PNG.\n- Image size: up to 20 MB.\n- Image resolution: at least 128 × 128 pixels and at most 2000 × 2000 pixels. The longest side must be at most 2000 pixels.\n- The URL cannot contain Chinese characters.\n\n> If the image resolution exceeds the maximum limit, resize the image first. For more information, see [Image resizing](~~44688~~).\n\n## Image quality recommendations\n\n- Ensure that faces in the image are clear. The face size should be at least 64 × 64 pixels, and the face area should not exceed 2/3 of the total image area.\n- Ensure that the facial features are complete and not significantly occluded. The face fusion algorithm supports faces tilted at certain angles and achieves better results when the tilt angle does not exceed 30 degrees.\n- For images with multiple faces, the number of faces should not exceed 5.\n\nRecommended image examples:\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/jris/MergeImageFacetuijian.png\" width=\"300)\nNot recommended image examples:\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/rkbx/MergeImageFacebutuijian.png\" width=\"300).\n\n## Billing description\nFor the billable methods and pricing of image face fusion, see [Billing overview](~~184049~~).\n> The debugging operation below is a paid operation. For a free trial, go to the [Experience Center](https://vision.aliyun.com/experience/detail?&tagName=facebody&children=MergeImageFace)."
+  },
   "example": {
     "unifiedCli": "aliyun facebody merge-image-face --template-id 6cd509ea-54fa-4730-8e9d-c94cadcda048 --image-url http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/facebody/MergeImageFace/MergeImageFace-1.png --model-version v1 --add-watermark false --watermark-type EN --merge-infos ImageURL=http://invi-label.oss-cn-shanghai.aliyuncs.com/label/temp/faceswap/ref/ref.jpg TemplateFaceID=6cd509ea-54fa-4730-8e9d-c94cadcda048_0 --api-version 2019-12-30 --region cn-hangzhou",
     "legacyCli": "aliyun facebody MergeImageFace --region cn-hangzhou --WatermarkType EN --ImageURL 'http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/facebody/MergeImageFace/MergeImageFace-1.png' --AddWatermark false --ModelVersion v1 --MergeInfos.1.TemplateFaceID '6cd509ea-54fa-4730-8e9d-c94cadcda048_0' --TemplateId '6cd509ea-54fa-4730-8e9d-c94cadcda048' --MergeInfos.1.ImageURL 'http://invi-label.oss-cn-shanghai.aliyuncs.com/label/temp/faceswap/ref/ref.jpg'"

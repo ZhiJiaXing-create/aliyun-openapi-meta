@@ -1,5 +1,6 @@
 {
   "name": "ProduceEditingProjectVideo",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用ID。默认取值： **app-1000000**。使用说明，请参见[多应用](~~113600~~)。",
+        "en": "The Application ID. Default value: **app-1000000**. For more information, see [Use apps](~~113600~~)."
+      }
     },
     {
       "name": "CoverURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云剪辑工程封面。",
+        "en": "The cover URL of the cloud editing project."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云剪辑工程描述。",
+        "en": "The description of the cloud editing project."
+      }
     },
     {
       "name": "MediaMetadata",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "合成视频的元数据，JSON格式。具体结构定义，请参见[MediaMetadata](~~52839#title-rtf-ry5-gjp~~)。",
+        "en": "The metadata of the synthesized video, in JSON format. For more information about the schema, see [MediaMetadata](~~52839#title-rtf-ry5-gjp~~)."
+      }
     },
     {
       "name": "ProduceConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "合成配置，JSON格式。具体结构定义，请参见[ProduceConfig](~~52839#title-ybl-7cs-y7d~~)。\n<notice>\nStorageLocation字段在文件存储地域为上海时，可以忽略；在文件存储地域为其他地域时，为必填项。\n</notice>",
+        "en": "The synthesis configuration, in JSON format. For more information about the schema, see [ProduceConfig](~~52839#title-ybl-7cs-y7d~~).\n><notice>The `StorageLocation` field can be omitted if the storage Region is Shanghai. This field is required for all other storage Regions.></notice>"
+      }
     },
     {
       "name": "ProjectId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云剪辑工程ID。可通过以下方式获取：\n- 登录[点播控制台](https://vod.console.aliyun.com)，选择**制作中心** > **视频剪辑**，查看ID。\n- 通过[创建云剪辑工程](~~69048~~)接口创建工程时，为返回参数ProjectId的值。",
+        "en": "The ID of the cloud editing project. You can obtain the ID in one of the following ways:\n\n- Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Production Center** > **Video Editing** to view the project ID.\n\n- The `ProjectId` returned by the [CreateEditingProject](~~69048~~) operation."
+      }
     },
     {
       "name": "Timeline",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云剪辑工程时间线，JSON格式。具体结构定义，请参见[Timeline](~~52839#07bc7fe0f2xuh~~)。\n>请确保每个VideoTrackClip对象中都包含有效的MediaId，否则会导致请求失败。",
+        "en": "The timeline of the cloud editing project, in JSON format. For more information about the schema, see [timeline](~~52839#07bc7fe0f2xuh~~).\n\n> Ensure each `VideoTrackClip` object contains a valid `MediaId`. Otherwise, the request fails."
+      }
     },
     {
       "name": "Title",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云剪辑工程标题。",
+        "en": "The title of the cloud editing project."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义设置，为JSON字符串，最大允许256个字符，支持消息回调等设置。具体结构定义，请参见[UserData](~~86952#title-vz7-xzs-0c5~~)。\n\n> 此参数中消息回调的使用前提是需要在控制台配置HTTP回调地址和勾选对应的回调事件类型才能使用，否则回调设置不生效。",
+        "en": "Custom settings in a JSON string. The string can be up to 256 characters in length and supports settings such as message callbacks. For more information about the schema, see [UserData](~~86952#title-vz7-xzs-0c5~~).\n\n> To use the message callback feature, you must configure an HTTP callback URL and select the corresponding event types in the ApsaraVideo VOD console. Otherwise, the callback settings do not take effect."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "视频合成",
+    "en": "ProduceEditingProjectVideo"
+  },
+  "descriptions": {
+    "zh": "- **请确保在使用该接口前，已充分了解视频点播产品的收费方式和价格。云剪辑为付费功能，计费详情，请参见[剪辑合成计费](~~188310#section-pyv-b8h-bo7~~)。**\n- 该接口为[异步接口](~~3027551~~)，提交任务后返回云剪辑工程 ID（此时视频尚未完成合成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[获取单个云剪辑工程](~~69052~~)主动查询任务状态。\n- 云剪辑时间线所使用的视频资源，既可以是素材管理中的素材，也可以是媒体库中的视频，使用媒体库中的视频需要确保其状态为正常（Normal）。\n- 合成视频依据ProjectId与Timeline进行，具体逻辑如下：\n    - ProjectId与Timeline不能同时为空，否则合成视频没有任何依据。\n    - 如果ProjectId为空，Timeline不为空，则自动创建一个云剪辑工程，以Timeline为时间线，同时提取Timeline中引用的素材并设置为云剪辑工程的素材，之后进行视频合成。\n    - 如果ProjectId不为空，Timeline为空，则根据ProjectId获取最新保存的Timeline，并以此进行视频合成。\n    - 如果ProjectId与Timeline均不为空，则以传入的Timeline为准，进行视频合成，同时更新对应的云剪辑工程（Timeline和云剪辑工程素材）。如果填写其他字段，则对相应的云剪辑工程字段进行更新。\n\n- 视频轨、图片轨、字幕轨的轨道数每种均限制最多100个。\n- 素材总数不能超过200个，素材文件总大小不能超过1 TB。\n- 输入或输出Bucket所在Region，必须和使用VOD服务的Region保持一致。\n- 当输出为视频时，成片分辨率有以下限制：\n  - 宽高都不能小于128px。\n  - 宽高都不能大于4096px。\n  - 短边不能大于2160px。\n\n- 视频合成完成后，会自动上传到视频点播中，因此，视频合成完成之后，点播服务会发送**媒体合成完成**和**视频上传完成**的事件通知。合成视频转码完成后，会发送**视频单个清晰度转码完成**和**视频全部清晰度转码完成**的事件通知。\n- 您还可以为合成视频添加特效。更多详情，请参见[特效](~~69082~~)。",
+    "en": "- **Important: Cloud editing is a paid feature. Before you call this operation, review the billing methods and pricing of ApsaraVideo VOD. For more information, see [Online editing and production](~~188310#section-pyv-b8h-bo7~~).**\n\n- This is an [asynchronous API](~~3027551~~). After you submit a task, the system returns the ID of the cloud editing project. Production does not begin immediately. The task is processed asynchronously, and the final result is sent via a callback. You can also call the [GetEditingProject](~~69052~~) operation to query the task status.\n\n- A cloud editing timeline can use video resources from material management or the media library. If you use videos from the media library, ensure their status is Normal.\n\n- The service synthesizes videos based on `ProjectId` and `Timeline`. The logic is as follows:\n\n  - You must provide either `ProjectId` or `Timeline`.\n\n  - If you provide a `Timeline` but no `ProjectId`, the system automatically creates a new cloud editing project. This `Timeline` becomes the project's timeline, and any material referenced in it is added to the project. The system then proceeds with video synthesis.\n\n  - If you provide a `ProjectId` but no `Timeline`, the system retrieves the most recently saved timeline for that project to synthesize the video.\n\n  - If you provide both `ProjectId` and `Timeline`, the system uses the specified `Timeline` to synthesize the video and updates the project's timeline and materials. If you specify other parameters, the system also updates the corresponding project fields.\n\n- You can use a maximum of 100 tracks for each of the following types: video tracks, image tracks, and subtitle tracks.\n\n- The total number of materials cannot exceed 200, and the total file size of all materials cannot exceed 1 TB.\n\n- The Region of the input or output bucket must be the same as the Region where you use the ApsaraVideo VOD service.\n\n- The output video resolution must meet the following constraints:\n\n  - The width and height cannot be less than 128 px.\n\n  - The width and height cannot be greater than 4,096 px.\n\n  - The shorter dimension cannot be greater than 2,160 px.\n\n- After the service synthesizes a video, it automatically uploads the video to ApsaraVideo VOD. The service then sends event notifications for **media synthesis completion** and **video upload completion**. After the synthesized video is transcoded, the service sends event notifications for **TranscodeComplete** and **AllStreamTranscodeComplete**.\n\n- You can also add special effects to the synthesized video. For more information, see [Special effects](~~69082~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vod produce-editing-project-video --project-id fb2101bf24b4cb318787dc0000 --timeline VideoTracks_:_VideoTrackClips_:_MediaId_:_cc3308ac59615a54328bc34430000_,_MediaId_:_da87a9cff645cd88bc6d8326e40000 --title Cloud_Clip_Project_Title --description Cloud_clip_project_description --cover-url https://example.aliyundoc.com/6AB4D0E1E1C74468883510000.png --media-metadata Description_:_Synthetic_Video_Description_,_Title_:_Synthetic_userData_test --produce-config TemplateGroupId_:_6d11e25ea30a4c465435c740000 --user-data Extend_:_width_:1280,_id_:_028a8e56b1ebf6bb7afc740000_,_height_:720_,_MessageCallback_:_CallbackURL_:_https://example.aliyundoc.com/2016-08-15/proxy/httpcallback/testcallback/_,_CallbackType_:_http --app-id app-0000 --region cn-hangzhou",
     "legacyCli": "aliyun vod ProduceEditingProjectVideo --region cn-hangzhou --Timeline 'VideoTracks_:_VideoTrackClips_:_MediaId_:_cc3308ac59615a54328bc34430000_,_MediaId_:_da87a9cff645cd88bc6d8326e40000' --Description Cloud_clip_project_description --AppId 'app-0000' --UserData 'Extend_:_width_:1280,_id_:_028a8e56b1ebf6bb7afc740000_,_height_:720_,_MessageCallback_:_CallbackURL_:_https://example.aliyundoc.com/2016-08-15/proxy/httpcallback/testcallback/_,_CallbackType_:_http' --ProjectId fb2101bf24b4cb318787dc0000 --Title Cloud_Clip_Project_Title --MediaMetadata 'Description_:_Synthetic_Video_Description_,_Title_:_Synthetic_userData_test' --CoverURL 'https://example.aliyundoc.com/6AB4D0E1E1C74468883510000.png' --ProduceConfig 'TemplateGroupId_:_6d11e25ea30a4c465435c740000'"

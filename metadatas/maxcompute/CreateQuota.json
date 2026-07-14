@@ -1,5 +1,6 @@
 {
   "name": "CreateQuota",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/api/v1/quotas",
@@ -8,27 +9,54 @@
       "name": "chargeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "计费类型；后付费：payasyougo/预付费：subscription",
+        "en": "The billing method. Valid values: payasyougo (pay-as-you-go) and subscription."
+      }
     },
     {
       "name": "commodityCode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "商品code；eg. 中国站： 后付费的商品code为odps， 预付费的商品code为odpsplus ； 国际站 ：后付费的商品code为odps_intl， 预付费的商品code为odpsplus_intl；",
+        "en": "The commodity code. Example: On Alibaba Cloud China Website (www.aliyun.com), the commodity code for pay-as-you-go is odps and the commodity code for subscription is odpsplus. On Alibaba Cloud International Website (www.alibabacloud.com), the commodity code for pay-as-you-go is odps_intl and the commodity code for subscription is odpsplus_intl."
+      }
     },
     {
       "name": "commodityData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配额商品规格\n\n><notice>\n\n- 仅在预付费(subscription)情况下需要填写\ncu 最小单位为50\nord_time 支持包月(month)和包年(year)\n\n- 创建之后 commodityData 不支持修改,如需修改请在MaxCompute控制台操作\n\n></notice>",
+        "en": "The commodity specifications of the quota.\n\n><notice>\n\n- This parameter is required only for subscription quotas.\nThe minimum unit for cu is 50.\nord_time supports monthly (month) and yearly (year) billing.\n\n- After creation, commodityData cannot be modified. To modify it, go to the MaxCompute console.\n\n></notice>"
+      }
     },
     {
       "name": "partNickName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "><notice>仅在预付费(subscription)情况下需要填写></notice>",
+        "en": "><notice>This parameter is required only for subscription quotas.></notice>"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建Quota",
+    "en": "Create a quota"
+  },
+  "descriptions": {
+    "zh": "**请确保在使用该接口前，已充分了解MaxCompute产品的收费方式和[价格](https://www.aliyun.com/product/maxcompute/pricing?spm=5176.30275541.J_ZGek9Blx07Hclc3Ddt9dg.2.19502f3dPPfezu&scm=20140722.S_card@@%E4%BA%A7%E5%93%81@@143540.S_new~UND~card.ID_card@@%E4%BA%A7%E5%93%81@@143540-RL_MaxCompute-LOC_2024SPSearchCard-OR_ser-PAR1_213c994b17738148516424527d0d07-V_4-RE_new9-P0_0-P1_0)。**",
+    "en": "**Before using this operation, make sure that you fully understand the billing method and [pricing](https://www.aliyun.com/product/maxcompute/pricing?spm=5176.30275541.J_ZGek9Blx07Hclc3Ddt9dg.2.19502f3dPPfezu&scm=20140722.S_card@@%E4%BA%A7%E5%93%81@@143540.S_new~UND~card.ID_card@@%E4%BA%A7%E5%93%81@@143540-RL_MaxCompute-LOC_2024SPSearchCard-OR_ser-PAR1_213c994b17738148516424527d0d07-V_4-RE_new9-P0_0-P1_0) of MaxCompute.**"
+  },
   "example": {
     "unifiedCli": "aliyun maxcompute create-quota --charge-type payasyougo --commodity-data CU_:50,_ord_time_:_1:Month_,_autoRenew_:false --part-nick-name MyQuota --commodity-code odps --region cn-hangzhou",
     "legacyCli": "aliyun maxcompute POST /api/v1/quotas --region cn-hangzhou --commodityData 'CU_:50,_ord_time_:_1:Month_,_autoRenew_:false' --chargeType payasyougo --partNickName MyQuota --commodityCode odps --header \"Content-Type=application/json\""

@@ -1,5 +1,6 @@
 {
   "name": "GetQuotaUsage",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/quotas/[nickname]/usage",
@@ -8,63 +9,110 @@
       "name": "aggMethod",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "聚合算法。当获取计算Quota计算资源消耗数据时，为优化页面体验，每个指标至多支持展示60个点，因此当时间范围大于1h时，图表默认使用区间范围内（所选时间范围的分钟数/60）的平均值聚合数据，您可以根据自身需求更改聚合算法。",
+        "en": "The aggregation algorithm. For a better page experience, up to 60 points can be displayed for each metric. If you select a time range longer than 1 hour, the chart uses the average value within the range (minutes of the selected time range/60) to aggregate data by default. You can change the aggregation algorithm based on your business requirements."
+      }
     },
     {
       "name": "from",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间点。该时间是指写入日志数据时指定的日志时间。\n\n- 请求参数**from**和**to**定义的时间区间遵循左闭右开原则，即该时间区间包括区间开始时间点，但不包括区间结束时间点。如果**from**和**to**的值相同，则为无效区间，函数直接返回错误。\n- Unix时间戳格式，表示从1970-1-1 00:00:00 UTC计算起的秒数。",
+        "en": "The time when the query starts. The value is the log time that is specified when log data is written.\n\n- The time range that is specified in this operation is a left-closed, right-open interval. The interval includes the start time specified by the **from** parameter, but does not include the end time specified by the **to** parameter. If you set the **from** and **to** parameters to the same value, the time range is invalid and an error message is returned.\n\n- This value is a UNIX timestamp representing the number of seconds that have elapsed since January 1, 1970, 00:00:00 UTC."
+      }
     },
     {
       "name": "nickname",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一级Quota昵称。",
+        "en": "The alias of the level-1 quota."
+      }
     },
     {
       "name": "plotTypes",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "图表类型。",
+        "en": "The types of the charts."
+      }
     },
     {
       "name": "productId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Quota类型。默认为odps。\n- ODPS：计算Quota；\n- TUNNEL：数据传输服务Quota。",
+        "en": "The quota type. Default value: ODPS.\n\n- ODPS: computing quota\n\n- TUNNEL: Tunnel quota"
+      }
     },
     {
       "name": "region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "subQuotaNickname",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "二级Quota昵称。",
+        "en": "The alias of the level-2 quota."
+      }
     },
     {
       "name": "tenantId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID。可以通过登录MaxCompute控制台，在左侧导航栏选择租户管理>租户属性查看。",
+        "en": "The ID of the tenant. You can log on to the MaxCompute console, and choose Tenants > Tenant Property from the left-side navigation pane to view the tenant ID."
+      }
     },
     {
       "name": "to",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间点。该时间是指写入日志数据时指定的日志时间。\n\n- 请求参数**from**和**to**定义的时间区间遵循左闭右开原则，即该时间区间包括区间开始时间点，但不包括区间结束时间点。如果**from**和**to**的值相同，则为无效区间，函数直接返回错误。\n- Unix时间戳格式，表示从1970-1-1 00:00:00 UTC计算起的秒数。",
+        "en": "The time when the query ends. The value is the log time that is specified when log data is written.\n\n- The time range that is specified in this operation is a left-closed, right-open interval. The interval includes the start time specified by the **from** parameter, but does not include the end time specified by the **to** parameter. If you set the **from** and **to** parameters to the same value, the time range is invalid and an error message is returned.\n\n- This value is a UNIX timestamp representing the number of seconds that have elapsed since January 1, 1970, 00:00:00 UTC."
+      }
     },
     {
       "name": "yAxisTypes",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据指标字段。",
+        "en": "The data metric fields."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取Quota资源消耗信息",
+    "en": "GetQuotaUsage"
+  },
   "example": {
     "unifiedCli": "aliyun maxcompute get-quota-usage --nickname os_quota_p --tenant-id 478403690625249 --biz-region cn-chengdu --from 1669081045 --to 1669360870 --sub-quota-nickname ot_tunnel_quota --agg-method max --product-id ODPS --plot-types cpu --y-axis-types your_project_name --region cn-hangzhou",
     "legacyCli": "aliyun maxcompute GET /api/v1/quotas/os_quota_p/usage --region cn-hangzhou --aggMethod max --productId ODPS --plotTypes cpu --tenantId 478403690625249 --yAxisTypes your_project_name --from 1669081045 --to 1669360870 --region 'cn-chengdu' --subQuotaNickname ot_tunnel_quota --header \"Content-Type=application/json\""

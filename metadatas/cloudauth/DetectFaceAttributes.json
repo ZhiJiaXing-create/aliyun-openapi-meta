@@ -1,5 +1,6 @@
 {
   "name": "DetectFaceAttributes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "BizType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "使用实人认证服务的业务场景标识。",
+        "en": "The business scenario identifier for the ID Verification service."
+      }
     },
     {
       "name": "MaterialValue",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待检测照片，格式描述见上传图片地址的说明。同一张图片最多检测其中的5张人脸。",
+        "en": "The photo to be detected. For format details, see the notes on uploading image addresses. A maximum of 5 faces can be detected in a single image."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "人脸属性纯服务端API",
+    "en": "Server-side face attribute detection API"
+  },
+  "descriptions": {
+    "zh": "请求方法：仅支持以HTTPS POST方法发送请求。\n\n接口描述：对输入照片中人脸的有效性相关属性进行检测，便于业务方判定该照片是否满足自身业务留存或比对的要求。目前支持的人脸有效性相关属性有：是否人脸、是否模糊、是否戴眼镜、脸部姿态、是否笑脸等。\n\n上传图片地址的说明：在传入图片时，您需要上传其对应的HTTP、OSS地址或Base64编码。\n\n- HTTP地址：可访问的公网HTTP地址。例如，`http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`。\n- Base64编码：通过base64编码的图片，格式为`base64://<图片 base64 字符串>`。\n\n图片限制：\n\n- 不支持本地图片的相对路径或绝对路径。\n- 单张图片大小请控制在2 MB内，避免算法拉取超时。\n- 单个请求的Body有8 MB的大小限制，请计算好请求中所有图片和其他信息的大小，不要超限。\n- 使用Base64传递图片时，接口的请求方法需要改成 POST；图片Base64字符串需要去掉头部描述，如`data:image/png;base64`。",
+    "en": "Request method: Only HTTPS POST requests are supported.\n\nOperation description: Detects validity-related attributes of faces in an input photo, helping you determine whether the photo meets your business requirements for retention or comparison. Currently supported face validity attributes include: whether a face is present, whether the face is blurry, whether glasses are worn, facial pose, and whether the face is smiling.\n\nNotes on uploading image addresses: When submitting an image, provide its HTTP URL, OSS address, or Base64 encoding.\n\n- HTTP address: A publicly accessible HTTP URL. For example, `http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`.\n- Base64 encoding: A Base64-encoded image in the format `base64://<Base64-encoded image string>`.\n\nImage limits:\n\n- Relative paths or absolute paths of local images are not supported.\n- Keep the size of a single image within 2 MB to avoid algorithm fetch timeouts.\n- The request body has a size limit of 8 MB. Make sure the total size of all images and other information in the request does not exceed this limit.\n- When using Base64 to transmit images, set the request method to POST. Remove the header description from the Base64 character string, such as `data:image/png,base64`."
+  },
   "example": {
     "unifiedCli": "aliyun cloudauth detect-face-attributes --material-value http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg --biz-type RPBasicTest --api-version 2019-03-07 --region cn-hangzhou",
     "legacyCli": "aliyun cloudauth DetectFaceAttributes --region cn-hangzhou --MaterialValue 'http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg' --BizType RPBasicTest"

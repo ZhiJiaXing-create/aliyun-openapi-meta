@@ -1,5 +1,6 @@
 {
   "name": "DescribeContainerGroupStatus",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "ContainerGroupIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ECI实例ID序列。最多20个，字符串需按照JSON格式传入。",
+        "en": "The IDs of the Elastic Container Instance (ECI) instances. You can specify a maximum of 20 IDs. The value must be a JSON-formatted string."
+      }
     },
     {
       "name": "Limit",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "限定此次返回资源（ECI实例）的数量。默认为200个。\n\n> 返回结果可能小于指定的数量，但不会多于指定的数量。",
+        "en": "The maximum number of ECI instances to return. The default value is 200.\n\n> The number of instances returned is less than or equal to the specified value."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始的Token，NextToken为空表示没有下一个。    \n首次查询时无需设置该参数，后续查询的Token从返回结果中获取。",
+        "en": "The token to retrieve the next page of results. You do not need to set this parameter for the first request. You can get the token from the `NextToken` parameter in the response to the previous request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "SinceSecond",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回最近几秒内有状态更新的ECI实例状态，用于轮询查询状态。",
+        "en": "The time in seconds. The operation returns the status of ECI instances that were updated within this time period. This parameter is used for polling."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "ECI实例绑定的标签。",
+        "en": "The tags attached to the ECI instance."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ECI实例的标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ECI实例的标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -64,15 +101,30 @@
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机ID。",
+        "en": "The vSwitch ID."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可用区ID。",
+        "en": "The zone ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量查询容器组状态",
+    "en": "DescribeContainerGroupStatus"
+  },
   "example": {
     "unifiedCli": "aliyun eci describe-container-group-status --biz-region-id cn-hangzhou --zone-id cn-hangzhou-k --vswitch-id vsw-uf6h3rbwbm90urjwa0000 --resource-group-id rg-uf66jeqopgqa9hdn0000 --container-group-ids eci-bp17gw49eu09yiwm0000_,_eci-bp19aq49du01abcm0000_,_eci-2zegym1qhbmdfr1s0000 --since-second 60 --tag Value=testValue Key=testKey --next-token d78f2dd8-5979-42fe-xaee-b16db43be5bc --limit 200 --region cn-hangzhou",
     "legacyCli": "aliyun eci DescribeContainerGroupStatus --region cn-hangzhou --Tag.1.Key testKey --ZoneId 'cn-hangzhou-k' --ResourceGroupId 'rg-uf66jeqopgqa9hdn0000' --ContainerGroupIds 'eci-bp17gw49eu09yiwm0000_,_eci-bp19aq49du01abcm0000_,_eci-2zegym1qhbmdfr1s0000' --NextToken 'd78f2dd8-5979-42fe-xaee-b16db43be5bc' --VSwitchId 'vsw-uf6h3rbwbm90urjwa0000' --Tag.1.Value testValue --SinceSecond 60 --RegionId 'cn-hangzhou' --Limit 200"

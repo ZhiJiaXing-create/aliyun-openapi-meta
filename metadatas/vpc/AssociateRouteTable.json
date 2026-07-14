@@ -1,5 +1,6 @@
 {
   "name": "AssociateRouteTable",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定交换机的路由表所属的VPC的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPC to which the route table belongs.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "RouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定到交换机的路由表的ID。",
+        "en": "The ID of the route table."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定路由表的交换机的ID。",
+        "en": "The ID of the vSwitch."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将路由表和交换机绑定",
+    "en": "AssociateRouteTable"
+  },
+  "descriptions": {
+    "zh": "**AssociateRouteTable**接口属于异步接口，即系统返回一个请求ID，但该路由表并未绑定完成，系统后台的绑定任务仍在进行。您可以调用[DescribeVSwitchAttributes](~~94567~~)查询路由表的绑定状态：\n- 当交换机处于**Pending**状态时，表示路由表正在绑定中。\n- 当交换机处于**Available**状态时，表示路由表绑定成功。",
+    "en": "**AssociateRouteTable** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeVSwitchAttributes](~~94567~~) operation to query the status of the task:\n\n*   If the vSwitch is in the **Pending** state, the route table is being associated with the vSwitch.\n*   If the vSwitch is in the **Available** state, the route table is associated with the vSwitch."
+  },
   "example": {
     "unifiedCli": "aliyun vpc associate-route-table --biz-region-id cn-hangzhou --route-table-id vtb-bp145q7glnuzdvzu20000 --vswitch-id vsw-25ncdvfaue40000 --client-token 02fb3da4-130e-11e9-8e44-0016e04115b --region cn-hangzhou",
     "legacyCli": "aliyun vpc AssociateRouteTable --region cn-hangzhou --RouteTableId 'vtb-bp145q7glnuzdvzu20000' --VSwitchId 'vsw-25ncdvfaue40000' --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-11e9-8e44-0016e04115b'"

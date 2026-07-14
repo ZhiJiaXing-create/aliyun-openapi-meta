@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,53 +9,96 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当请求的返回结果被截断时，可以使用NextToken获取从当前截断位置之后的内容。",
+        "en": "The token that is used to initiate the next request if the response of the current request is truncated. You can use the token to initiate another request and obtain the remaining records."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果的条数。当返回结果达到PageSize限制被截断时，返回参数IsTruncated将等于true。\n取值范围：1~100。默认值：100。",
+        "en": "The number of entries per page. If a response is truncated because it reaches the value of PageSize, the value of IsTruncated will be true. Valid values: 1 to 100. Default value: 100."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID。\n\nN的取值范围为：1~50。 当资源类型为user时，资源ID为RAM用户ID。\n> 必须指定 ResourceId、ResourcePrincipalName两个参数中的一个参数，但不能同时指定。",
+        "en": "The ID of resource N.\n\nValid values of N: 1 to 50. If ResourceType is set to user, the resource ID is the ID of the RAM user.\n\n> You must specify only one of the following parameters: ResourceId and ResourcePrincipalName."
+      }
     },
     {
       "name": "ResourcePrincipalName",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源名称。\n\nN的取值范围为：1~50。 当资源类型为user时，资源名称为RAM用户名。\n> 必须指定 ResourceId、ResourcePrincipalName两个参数中的一个参数，但不能同时指定。",
+        "en": "The name of resource N.\n\nValid values of N: 1 to 50. If ResourceType is set to user, the resource name is the name of the RAM user.\n\n> You must specify only one of the following parameters: ResourceId and ResourcePrincipalName."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源类型。取值：\n- user：RAM用户。",
+        "en": "The type of the resource. Valid value:\n\n- user: a RAM user"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表，最多包含20个子项。",
+        "en": "The tag value.\n\nValid values of N: 1 to 20. N must be consecutive."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。\n\nN的取值范围：1~20，N必须连续。",
+            "en": "The key of tag N.\n\nValid values of N: 1 to 20. N must be consecutive."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。\n\nN的取值范围：1~20，N必须连续。",
+            "en": "The value of tag N.\n\nValid values of N: 1 to 20. N must be consecutive."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源与标签的关系",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n请求中至少指定以下任一参数，以确定查询对象：\n- `ResourceId.N`\n- `Tag.N.Key`\n- `Tag.N.Key`和`Tag.N.Value`",
+    "en": "###\n\nYou must specify at least one of the following parameters or parameter pairs in a request to determine a query object:\n\n- `ResourceId.N`\n\n- `Tag.N.Key`\n\n- `Tag.N.Key` and `Tag.N.Value`"
+  },
   "example": {
     "unifiedCli": "aliyun ims list-tag-resources --resource-principal-name test@example.onaliyun.com --next-token caeba0bbb2be03f84eb48b699f0a4883 --page-size 2 --resource-type user --resource-id 207329002493920000 --tag Value=alice Key=operator --region cn-hangzhou",
     "legacyCli": "aliyun ims ListTagResources --region cn-hangzhou --ResourceId.1 207329002493920000 --Tag.1.Key operator --NextToken caeba0bbb2be03f84eb48b699f0a4883 --PageSize 2 --ResourcePrincipalName.1 'test@example.onaliyun.com' --Tag.1.Value alice --ResourceType user"

@@ -1,5 +1,6 @@
 {
   "name": "AsymmetricEncrypt",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Algorithm",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "加密算法。",
+        "en": "The encryption algorithm."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启DryRun模式。\n\n- true：开启\n- false（默认值）：关闭\n\nDryRun模式用于测试API调用，验证您是否具有相应资源的权限，以及请求参数是否配置正确。DryRun模式开启后，KMS会始终返回失败并提示失败原因。失败原因包含如下：\n\n- DryRunOperationError：不配置DryRun参数时，请求会成功。\n- ValidationError：请求中指定的参数有误。\n- AccessDeniedError：您无权在KMS资源上执行该操作。",
+        "en": "Specifies whether to enable the dry run feature.\n\n- true: enables the feature.\n\n- false (default): disables the feature.\n\nThe dry run feature is used to test the API call and verify the permissions on the specified resources and the validity of the request parameters. If you enable the dry run feature, KMS always returns a failed result and a failure reason. The failure reasons include the following:\n\n- DryRunOperationError: The request would have succeeded if the DryRun parameter was not specified.\n\n- ValidationError: The specified parameters in the request are invalid.\n\n- AccessDeniedError: You are not authorized to perform this operation on the KMS resource."
+      }
     },
     {
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥的ID，也可以指定为密钥别名或密钥资源名称（ARN）。关于别名的详细介绍，请参见[管理密钥别名](~~480655~~)。\n>访问其他阿里云账号下的密钥时，必须输入密钥ARN。密钥ARN的格式为`acs:kms:${region}:${account}:key/${keyid}`。",
+        "en": "The ID of the key. You can also specify the alias or the Amazon Resource Name (ARN) of the key. For more information about aliases, see [Manage aliases](~~480655~~).\n\n> To access a key of another Alibaba Cloud account, you must specify the ARN of the key. The key ARN is in the format of `acs:kms:${region}:${account}:key/${keyid}`."
+      }
     },
     {
       "name": "KeyVersionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥版本ID。密钥版本的全局唯一标识符。  \n\n> 您可以调用[ListKeyVersions](~~133966~~)接口获取KeyVersionId（密钥版本ID）。",
+        "en": "The ID of the key version. The ID must be a globally unique identifier.\n\n> To obtain the key version ID, call the [ListKeyVersions](~~133966~~) operation."
+      }
     },
     {
       "name": "Plaintext",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要加密的明文，使用Base64编码。",
+        "en": "The plaintext to be encrypted. The value must be Base64-encoded."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "使用非对称密钥进行加密",
+    "en": "AsymmetricEncrypt"
+  },
+  "descriptions": {
+    "zh": "### 注意事项\n\n- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 本接口可以通过共享网关或专属网关调用。详细介绍，请参见[阿里云SDK](~~601559~~)。\n\n  - 共享网关：通过公网、VPC域名访问KMS，该方式需要打开公网开关。具体操作，请参见[通过公网访问KMS实例中的密钥](~~2856718~~)。\n  - 专属网关：通过KMS私网地址（`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`）访问KMS。\n\n\n### QPS限制\n- 通过共享网关调用：本接口的单用户QPS限制为200次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。\n- 通过专属网关调用：本接口的单用户QPS限制以您KMS实例的计算性能规格为准。详细介绍，请参见[性能数据](~~480120~~)。\n\n\n### 详细说明\n仅支持**Usage**为**ENCRYPT/DECRYPT**的非对称密钥。支持的加密算法如下表：\n\n| KeySpec        | Algorithm           | 说明  |  可加密的最大字节数 |\n| ------------- |------------   | ----- |  ----- |\n| RSA_2048 | RSAES\\_OAEP\\_SHA_256  | RSAES-OAEP using SHA-256 and MGF1 with SHA-256| 190 |\n| RSA_2048 | RSAES\\_OAEP\\_SHA_1      | RSAES-OAEP using SHA1 and MGF1 with SHA1 | 214 |\n| RSA_3072 | RSAES\\_OAEP\\_SHA_256  | RSAES-OAEP using SHA-256 and MGF1 with SHA-256| 318 |\n| RSA_3072 | RSAES\\_OAEP\\_SHA_1      | RSAES-OAEP using SHA1 and MGF1 with SHA1 | 342 |\n| EC_SM2 | SM2PKE | SM2椭圆曲线公钥加密算法 | 6047 |\n\n本文将提供一个示例，使用密钥ID为`key-hzz630494463ejqjx****\n`、密钥版本ID为`2ab1a983-7072-4bbc-a582-584b5bd8****`的非对称密钥，通过加密算法`RSAES_OAEP_SHA_1`对明文`SGVsbG8gd29ybGQ=`进行加密。",
+    "en": "### Precautions\n\n- For information about the permissions that are required to call this operation, see [Resource Access Management](~~2767210~~).\n\n- This operation can be called through a shared gateway or a dedicated gateway. For more information, see [Alibaba Cloud SDK](~~601559~~).\n\n  - Shared gateway: You can access KMS over the Internet or using a VPC domain name. To access KMS over the Internet, you must enable Internet access. For more information, see [Access a key in a KMS instance over the Internet](~~2856718~~).\n\n  - Dedicated gateway: You can access KMS using the private endpoint of KMS (`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`).\n\n### QPS limits\n\n- If you use a shared gateway: The number of queries per second (QPS) for a single user is limited to 200. If the limit is exceeded, API calls are throttled. This may affect your business. We recommend that you plan your API calls to avoid exceeding this limit.\n\n- If you use a dedicated gateway: The QPS limit for a single user depends on the computing performance specifications of your KMS instance. For more information, see [Performance metrics](~~480120~~).\n\n### Description\n\nThis operation supports only asymmetric keys that have the **Usage** parameter set to **ENCRYPT/DECRYPT**. The following table describes the supported encryption algorithms.\n\n| KeySpec   | Algorithm             | Description                                        | Maximum number of bytes that can be encrypted |\n| --------- | --------------------- | -------------------------------------------------- | --------------------------------------------- |\n| RSA\\_2048 | RSAES\\_OAEP\\_SHA\\_256 | RSAES-OAEP using SHA-256 and MGF1 with SHA-256     | 190                                           |\n| RSA\\_2048 | RSAES\\_OAEP\\_SHA\\_1   | RSAES-OAEP using SHA1 and MGF1 with SHA1           | 214                                           |\n| RSA\\_3072 | RSAES\\_OAEP\\_SHA\\_256 | RSAES-OAEP using SHA-256 and MGF1 with SHA-256     | 318                                           |\n| RSA\\_3072 | RSAES\\_OAEP\\_SHA\\_1   | RSAES-OAEP using SHA1 and MGF1 with SHA1           | 342                                           |\n| EC\\_SM2   | SM2PKE                | SM2 elliptic curve public key encryption algorithm | 6047                                          |\n\nIn this example, the plaintext `SGVsbG8gd29ybGQ=` is encrypted using an asymmetric key with the key ID `key-hzz630494463ejqjx****`, the key version ID `2ab1a983-7072-4bbc-a582-584b5bd8****`, and the `RSAES_OAEP_SHA_1` encryption algorithm."
+  },
   "example": {
     "unifiedCli": "aliyun kms asymmetric-encrypt --plaintext SGVsbG8gd29ybGQ= --key-id key-hzz630494463ejqjx0000 --key-version-id 2ab1a983-7072-4bbc-a582-584b5bd80000 --algorithm RSAES_OAEP_SHA_1 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun kms AsymmetricEncrypt --region cn-hangzhou --Plaintext 'SGVsbG8gd29ybGQ=' --DryRun false --KeyId 'key-hzz630494463ejqjx0000' --KeyVersionId '2ab1a983-7072-4bbc-a582-584b5bd80000' --Algorithm RSAES_OAEP_SHA_1"

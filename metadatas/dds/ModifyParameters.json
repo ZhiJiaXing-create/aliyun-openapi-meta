@@ -1,5 +1,6 @@
 {
   "name": "ModifyParameters",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "CharacterType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的角色类型，取值说明：\n\n- **db**：shard角色。\n- **cs**：config server角色。\n- **mongos**：mongos角色。",
+        "en": "The type of the node. Valid values:\n\n- **db**: shard node.\n\n- **cs**: Configserver node.\n\n- **mongos**: mongos node."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n>当本参数传入的是分片集群实例ID时，还需要传入NodeId参数。",
+        "en": "The instance ID.\n\n> If this parameter is a sharded cluster instance ID, you must also specify the NodeId parameter."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分片集群实例中的Mongos节点ID或Shard节点ID。\n>当DBInstanceId参数传入的是分片集群实例ID时，本参数才可用。",
+        "en": "The ID of the mongos or shard node in the sharded cluster instance.\n\n> This parameter is active only when the DBInstanceId parameter is set to a sharded cluster instance ID."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要修改的参数及参数值，格式为JSON串，例如：{\"ParameterName1\":\"ParameterValue1\",\"ParameterName2\":\"ParameterValue2\"}。\n>您可以通过调用[DescribeParameterTemplates](~~67618~~)接口查询默认的参数模板列表。",
+        "en": "The parameters and their new values. The value must be a JSON string. Example: {\"ParameterName1\":\"ParameterValue1\",\"ParameterName2\":\"ParameterValue2\"}.\n\n> Call the [DescribeParameterTemplates](~~67618~~) operation to query the list of default parameter templates."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。您可以通过调用[DescribeRegions](~~61933~~)接口查询。",
+        "en": "The region ID of the instance. To query the latest region list, call the [DescribeRegions](~~61933~~) operation."
+      }
     },
     {
       "name": "SwitchMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改MongoDB实例参数的时间点，取值：\n\n- 0：立刻修改。\n\n- 1：在可运维时间内修改。",
+        "en": "The time to apply the parameter modifications. Valid values:\n\n- 0: Immediately.\n\n- 1: During the maintenance window."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改MongoDB实例的参数",
+    "en": "ModifyParameters"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口时，云数据库MongoDB实例的状态为运行中。\n- 如果修改的参数中包含需要重启才能生效的参数，调用本接口后实例将自动重启。您可以调用[DescribeParameterTemplates](~~67618~~)接口查询哪些参数修改后需要重启实例才能生效。",
+    "en": "- When you call this operation, the instance status must be running.\n- If you call this operation to modify specific instance parameters that require a restart to take effect, the instance is automatically restarted after the operation is called. You can call the [DescribeParameterTemplates](~~67618~~) operation to identify which parameters require an instance restart to take effect after modification."
+  },
   "example": {
     "unifiedCli": "aliyun dds modify-parameters --biz-region-id cn-hangzhou --db-instance-id dds-bp19f409d750000 --node-id d-bp1b7bb3bbe0000 --parameters operationProfiling.mode_:_all_,_operationProfiling.slowOpThresholdMs_:_200 --character-type db --switch-mode 0 --region cn-hangzhou",
     "legacyCli": "aliyun dds ModifyParameters --region cn-hangzhou --Parameters 'operationProfiling.mode_:_all_,_operationProfiling.slowOpThresholdMs_:_200' --DBInstanceId 'dds-bp19f409d750000' --NodeId 'd-bp1b7bb3bbe0000' --RegionId 'cn-hangzhou' --CharacterType db --SwitchMode 0"

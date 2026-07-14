@@ -1,5 +1,6 @@
 {
   "name": "RestoreMedia",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "MediaIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "媒体ID，即音/视频ID（VideoId）。多个ID之间使用半角逗号（,）分隔，最多支持20个。可通过以下方式获取：\n\n- 通过控制台上传的音/视频，可登录点播控制台，选择媒资库 > 音/视频查看音/视频ID。\n- 通过获取音视频上传地址和凭证接口获取上传地址和凭证时，为返回参数VideoId的值。\n- 音/视频上传后，可通过搜索媒体信息接口查询，为请求后返回参数VideoId的值。",
+        "en": "The ID of the media asset (VideoId). Separate multiple IDs with commas (,). You can specify a maximum of 20 IDs. You can use one of the following methods to obtain the ID of the media asset:\n\n*   Log on to the ApsaraVideo VOD console. In the left-side navigation pane, choose Media Files > Audio/Video. On the Video and Audio page, view the ID of the media asset. This method is applicable to files that are uploaded by using the ApsaraVideo VOD console.\n*   Obtain the value of VideoId from the response to the CreateUploadVideo operation that you call to upload media assets.\n*   Obtain the value of VideoId from the response to the SearchMedia operation that you call to query the media ID after the media asset is uploaded."
+      }
     },
     {
       "name": "RestoreDays",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "解冻时长。默认1天，归档媒资最多7天，冷归档媒资最多365天",
+        "en": "The number of days during which media assets remain in the restored state. Default value: 1. The maximum validity period of a restored Archive media asset is 7 days and the maximum validity period of a restored Cold Archive media asset is 365 days."
+      }
     },
     {
       "name": "RestoreTier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "解冻优先级（仅冷归档媒资需要），不传则取默认值**Standard**。取值：\n- **Expedited**：高级，表示1小时内完成解冻、\n- **Standard**（默认）：标准，默认值，表示2~5小时内完成解冻。\n- **Bulk**：批量，表示5~12小时内完成解冻。",
+        "en": "The restoration priority. This parameter is required only when you restore a Cold Archive media file. Valid values:\n\n*   **Expedited**: The file is restored within 1 hour.\n*   **Standard**: The file is restored within 2 to 5 hours.\n*   **Bulk**: The file is restored within 5 to 12 hours."
+      }
     },
     {
       "name": "Scope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "变更范围，不传则取默认值**All**。取值：\n- **All**（默认）： 将整个媒资的资源（源文件和转码流）做分级存储。\n- **SourceFile**：仅对媒资ID下的视频源文件做分级存储，源文件之外的资源为标准存储。",
+        "en": "The modification range. Valid values:\n\n*   **All**: restores all resources, including the source files and transcoded streams.\n*   **SourceFile**: restores only the source files."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解冻媒资",
+    "en": "RestoreMedia"
+  },
+  "descriptions": {
+    "zh": "- 请确保在使用该接口前，已充分了解视频点播产品的收费方式和价格。视频点播中解冻媒资产生存储费用，计费详情，请参见[媒资存储计费](~~188308#section-e97-xrp-mzz~~)。\n- 仅归档及冷归档的音视频可用，解冻成功后，文件可以进行访问。解冻中的音视频不能修改存储类型。\n解冻会产生取回流量，冷归档音视频解冻成功后，会生成一份标准存储类型的文件副本用于访问，文件副本在解冻时间结束前会收取标准存储费用。",
+    "en": "You can call this operation to restore only Archive and Cold Archive audio and video files. You can access the audio and video files after the files are restored. You cannot change the storage class of an audio or video file that is being restored. You are charged for the retrieval traffic generated during restoration. After a Cold Archive audio or video file is restored, a Standard replica of the file is generated for access. You are charged for the storage of the replica before the file returns to the frozen state."
+  },
   "example": {
     "unifiedCli": "aliyun vod restore-media --media-ids 8bc8e94fe4e55abde857180000,eb186180e989dd560000 --scope All --restore-days 2 --restore-tier Standard --region cn-hangzhou",
     "legacyCli": "aliyun vod RestoreMedia --region cn-hangzhou --Scope All --RestoreTier Standard --RestoreDays 2 --MediaIds '8bc8e94fe4e55abde857180000,eb186180e989dd560000'"

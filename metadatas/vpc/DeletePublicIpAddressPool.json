@@ -1,5 +1,6 @@
 {
   "name": "DeletePublicIpAddressPool",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除地址池。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "PublicIpAddressPoolId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IP地址池的实例ID。",
+        "en": "The ID of the IP address pool."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要创建的IP地址池所在的地域ID。",
+        "en": "The ID of the region where you want to create the IP address pool."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除IP地址池",
+    "en": "DeletePublicIpAddressPool"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请了解以下内容：\n- 删除IP地址池前，请确保该地址池内的IP地址没有被使用。\n- **DeletePublicIpAddressPool**接口属于异步接口，即系统会先返回一个请求ID，但IP地址池并未删除完成，系统后台的删除任务仍在进行。您可以调用[ListPublicIpAddressPools](~~429433~~)查询IP地址池的状态。 \n\n    - 当IP地址池处于**Deleting**状态时，表示IP地址池正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当查询不到该IP地址池时，表示IP地址池删除完成。\n\n- **DeletePublicIpAddressPool**接口不支持并发删除同一个IP地址池。",
+    "en": "Before you call this operation, take note of the following items:\n\n*   Before you delete an IP address pool, make sure that no IP address in the pool is being used.\n\n*   **DeletePublicIpAddressPool** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [ListPublicIpAddressPools](~~429433~~) operation to query the status of the task.\n\n    *   If the IP address pool is in the **Deleting** state, the IP address pool is being deleted. In this state. you can only query the IP address pool and cannot perform other operations.\n    *   If you cannot query the IP address pool, the IP address pool is deleted.\n\n*   You cannot repeatedly call the **DeletePublicIpAddressPool** operation to delete an IP address pool within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-public-ip-address-pool --public-ip-address-pool-id pippool-6wetvn6fumkgycssx0000 --client-token 0c593ea1-3bea-11e9-b96b-88e9fe60000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeletePublicIpAddressPool --region cn-hangzhou --DryRun false --PublicIpAddressPoolId 'pippool-6wetvn6fumkgycssx0000' --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe60000'"

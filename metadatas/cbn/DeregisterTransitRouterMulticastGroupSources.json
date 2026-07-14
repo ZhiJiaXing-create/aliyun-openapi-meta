@@ -1,5 +1,6 @@
 {
   "name": "DeregisterTransitRouterMulticastGroupSources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among all requests. The token can contain only ASCII characters."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token on your client. Make sure that the token is unique among different requests. The \\`ClientToken\\` parameter can contain only ASCII characters."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会删除组播源。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接删除组播源。",
-        "en": "Specifies whether to perform a dry run, without sending the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Sends a check request without deleting the multicast source. The check includes required parameters, request format, and business limits. If the check fails, the corresponding error is returned. If the check passes, the `DryRunOperation` error code is returned.\n\n- **false** (default): Sends a normal request. After the request passes the check, the multicast source is deleted."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "组播源所属的组播组的IP地址。",
-        "en": "The IP address of the multicast group to which the multicast source belongs."
+        "en": "The IP address of the multicast group that contains the multicast source."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "组播源ID列表。",
-        "en": "A list of multicast source IDs."
+        "en": "The list of multicast source IDs."
       }
     },
     {
@@ -51,10 +52,21 @@
       "required": true,
       "description": {
         "zh": "组播源所属的组播域ID。",
-        "en": "The ID of the multicast domain to which the multicast source belongs."
+        "en": "The ID of the multicast domain that contains the multicast source."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除组播源",
+    "en": "DeregisterTransitRouterMulticastGroupSources"
+  },
+  "descriptions": {
+    "zh": "`DeregisterTransitRouterMulticastGroupSources`接口属于异步接口，即系统会先返回一个**RequestId**，但组播源未被完全删除，系统后台的删除任务仍在进行。您可以调用`ListTransitRouterMulticastGroups`接口查询组播源的状态。 \n\n- 当组播源处于**Deregistering**状态时，表示组播源正在被删除，在该状态下，您只能对组播源执行查询操作，不能执行其他操作。\n- 当`ListTransitRouterMulticastGroups`接口无法在组播域下查询到该组播源的信息时，表示组播源已被成功删除。\n\n在调用DeregisterTransitRouterMulticastGroupSources接口过程时请确保输入的参数值无误。如果您输入的参数有误调用接口后仍然会返回RequestId，但不会删除组播源。",
+    "en": "`DeregisterTransitRouterMulticastGroupSources` is an asynchronous operation. After you send a request, the system returns a `RequestId`, but the multicast source is not deleted immediately. The system deletes the multicast source in the background. You can call `ListTransitRouterMulticastGroups` to query the status of the multicast source.\n\n- If a multicast source is in the `Deregistering` state, it is being deleted. In this state, you can only query the multicast source. You cannot perform other operations.\n\n- If you cannot find the multicast source in the multicast domain when you call `ListTransitRouterMulticastGroups`, the multicast source has been deleted.\n\nEnsure that you specify correct parameter values when you call the DeregisterTransitRouterMulticastGroupSources operation. If you specify an incorrect parameter, the operation returns a RequestId but does not delete the multicast source."
+  },
   "example": {
     "unifiedCli": "aliyun cbn deregister-transit-router-multicast-group-sources --client-token 123e4567-e89b-12d3-a456-42660000 --transit-router-multicast-domain-id tr-mcast-domain-91wpg6wbhchjeq0000 --group-ip-address 239.XX.XX.2 --network-interface-ids eni-p0weuda3lszwzjly0000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeregisterTransitRouterMulticastGroupSources --region cn-hangzhou --TransitRouterMulticastDomainId 'tr-mcast-domain-91wpg6wbhchjeq0000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-42660000' --NetworkInterfaceIds.1 'eni-p0weuda3lszwzjly0000' --GroupIpAddress '239.XX.XX.2'"

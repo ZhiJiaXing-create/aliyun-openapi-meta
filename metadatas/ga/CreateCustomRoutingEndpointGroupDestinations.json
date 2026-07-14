@@ -1,5 +1,6 @@
 {
   "name": "CreateCustomRoutingEndpointGroupDestinations",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DestinationConfigurations",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "终端节点组的映射信息配置。\n\n您需要输入终端节点组后端服务端口范围和协议类型，输入信息与关联的监听端口范围将形成映射关系。\n\n单次调用本接口最多可输入20个映射端口范围和协议类型信息。",
+        "en": "The mapping configurations of the endpoint group.\n\nSpecify the service port ranges and protocol types of the backend services for the endpoint group. The specified information is mapped to the associated listener port ranges.\n\nYou can specify up to 20 port ranges and protocol types in a single invoke of this operation."
+      },
       "sub_parameters": [
         {
           "name": "FromPort",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "终端节点组后端服务起始端口。\n\n取值范围：**1**~**65499**，且需满足**FromPort**≤**ToPort**，即终端节点组后端服务起始端口需小于等于终端节点组后端服务结束端口。\n\n单次调用本接口最多可输入20条后端服务起始端口信息。",
+            "en": "The start port of the backend service port range for the endpoint group.\n\nValid values: **1** to **65499**. The value of **FromPort** must be less than or equal to the value of **ToPort**.\n\nYou can specify up to 20 start ports in a single request."
+          }
         },
         {
           "name": "Protocols",
           "position": "Query",
           "type": "RepeatList",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "终端节点组后端服务协议类型。取值：\n\n- **TCP**：TCP协议。\n\n- **UDP**：UDP协议。\n\n- **TCP,UDP**：TCP和UDP协议。",
+            "en": "The protocol types of the backend services for the endpoint group. Valid values:\n\n- **TCP**: TCP protocol.\n\n- **UDP**: UDP protocol.\n\n- **TCP,UDP**: TCP and UDP protocols.\n\nThe Terms of Service apply to the selected protocols."
+          }
         },
         {
           "name": "ToPort",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "终端节点组后端服务结束端口。\n\n取值范围：**1**~**65499**，且需满足**FromPort**≤**ToPort**，即终端节点组后端服务起始端口需小于等于终端节点组后端服务结束端口。\n\n单次调用本接口最多可输入20条后端服务结束端口信息。",
+            "en": "The end port of the backend service port range for the endpoint group.\n\nValid values: **1** to **65499**. The value of **FromPort** must be less than or equal to the value of **ToPort**.\n\nYou can specify up to 20 end ports in a single request."
+          }
         }
       ]
     },
@@ -40,21 +61,44 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建终端节点组的映射信息。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接创建终端节点组的映射信息。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: performs a dry run. The system checks the required parameters, request syntax, and business limitations without actually creating the mapping configurations create an endpoint group. If the request fails the dry run, the corresponding error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): performs a dry run and sends the request. If the request passes the dry run, an HTTP 2xx status code is returned and the mapping configurations create an endpoint group are created."
+      }
     },
     {
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点组ID。",
+        "en": "The endpoint group ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Alibaba Cloud Global Accelerator (GA) instance. Set the value to **ap-southeast-1**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自定义路由监听所关联终端节点组的映射信息",
+    "en": "Create mapping configurations for a custom routing listener endpoint group"
+  },
+  "descriptions": {
+    "zh": "全球加速实例能够根据配置的监听端口范围、目标终端节点组的映射信息（协议和端口范围），以及终端节点（交换机vSwitch）的IP地址信息，生成端口映射表，从而确定性地将流量路由到交换机中特定IP地址和端口。\n\n本接口用于创建自定义路由监听所关联终端节点组的映射信息。在调用本接口时，请注意以下事项：\n- **CreateCustomRoutingEndpointGroupDestinations**接口属于异步接口，即系统会先返回一个请求ID，但终端节点组的映射信息并未创建完成，系统后台的创建任务仍在进行。您可以通过调用[DescribeCustomRoutingEndpointGroup](~~449373~~)接口查询终端节点组的状态，来确认终端节点组的映射信息是否创建完成： \n    - 当终端节点组处于**updating**状态时，表示终端节点组的映射信息正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示终端节点组的映射信息创建完成。\n- **CreateCustomRoutingEndpointGroupDestinations**接口不支持在同一个全球加速实例内并发创建自定义路由监听所关联终端节点组的映射信息。\n### 前提条件\n创建自定义路由监听所关联终端节点组的映射信息前，请确保您已完成以下操作：\n- 已创建标准型全球加速实例。具体操作，请参见[CreateAccelerator](~~206786~~)。\n- 已将带宽包与标准型全球加速实例绑定。具体操作，请参见[BandwidthPackageAddAccelerator](~~153239~~)。\n- 您已部署了相关应用，作为全球加速的后端服务接收转发的请求。自定义路由类型监听的后端服务类型仅支持交换机（vSwitch）。\n- 您已经申请了自定义路由类型监听使用权限并创建了自定义路由类型监听。监听支持选择自定义路由类型的功能邀测中，如需使用，请联系阿里云客户经理。创建自定义路由类型监听，请参见[CreateListener](~~153253~~)。\n- 您已创建了自定义路由类型监听的终端节点组。具体操作，请参见[CreateCustomRoutingEndpointGroups](~~449363~~)。",
+    "en": "An Alibaba Cloud Global Accelerator (GA) instance can generate a port mapping table based on the configured listener port range, the mapping configurations (protocols and port ranges) of the destination endpoint group, and the IP address information of the endpoints (vSwitches). This enables deterministic routing of traffic to specific IP addresses and ports within the vSwitches.\n\nThis operation creates mapping configurations for an endpoint group that is associated with a custom route listener. When you invoke this operation, take note of the following items:\n- **CreateCustomRoutingEndpointGroupDestinations** is an asynchronous operation. After you send a request, the system returns a request ID, but the mapping configurations for the endpoint group are not yet created. The creation node continues to run in the background. You can invoke the [DescribeCustomRoutingEndpointGroup](~~449373~~) operation to query the status of the endpoint group and confirm whether the mapping configurations are created: \n    - If the endpoint group is in the **updating** state, the mapping configurations are being created. In this state, you can only execute query operations.\n    - If the endpoint group is in the **active** state, the mapping configurations are created.\n- **CreateCustomRoutingEndpointGroupDestinations** does not support concurrent creation of mapping configurations for endpoint groups associated with custom route listeners within the same Alibaba Cloud Global Accelerator (GA) instance.\n### Before you begin\nBefore you create mapping configurations for an endpoint group associated with a custom route listener, make sure that you have completed the following operations:\n- A standard Alibaba Cloud Global Accelerator (GA) instance is created. For more information, see [CreateAccelerator](~~206786~~).\n- A bandwidth plan is attached to the standard Global Accelerator instance. For more information, see [BandwidthPackageAddAccelerator](~~153239~~).\n- You have completed the deployment of the required applications as backend services to accept forwarded requests from Global Accelerator. Custom route listeners support only vSwitches as backend service types.\n- You have obtained the permissions to use custom route listeners and created a custom route listener. The custom route listener type is in invitational preview. To use this feature, contact your account manager. To create a custom route listener, see [CreateListener](~~153253~~).\n- You have created an endpoint group for the custom route listener. For more information, see [CreateCustomRoutingEndpointGroups](~~449363~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-custom-routing-endpoint-group-destinations --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --endpoint-group-id epg-bp14sz7ftcwwjgrdm0000 --destination-configurations '[{\"Protocols\":[\"TCP\"],\"FromPort\":80,\"ToPort\":80}]' --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateCustomRoutingEndpointGroupDestinations --region cn-hangzhou --EndpointGroupId 'epg-bp14sz7ftcwwjgrdm0000' --DestinationConfigurations.1.ToPort 80 --DryRun false --DestinationConfigurations.1.Protocols.1 TCP --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DestinationConfigurations.1.FromPort 80"

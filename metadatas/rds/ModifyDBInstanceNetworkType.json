@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBInstanceNetworkType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClassicExpiredDays",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "经典网络地址保留的天数，取值**1-120**，单位：天。默认值：**7**。\n>若传入参数**RetainClassic**=**True**，则该参数必传。",
+        "en": "The number of days for which you want to retain the classic network endpoint. Valid values: **1 to 120**. Default value: **7**.\n\n> If you set the **RetainClassic** parameter to **True**, you must also specify this parameter."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "InstanceNetworkType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标网络类型，取值固定为**VPC**：专有网络。",
+        "en": "The network type after the modification. Set the value to **VPC**."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置实例的内网IP，需要在指定交换机的IP地址范围内。系统默认通过**VPCId**和**VSwitchId**自动分配。",
+        "en": "The internal IP address of the instance. The internal IP address must be within the CIDR block supported by the specified vSwitch. The system automatically assigns a private IP address to an instance based on the values of **VPCId** and **VSwitchId**."
+      }
     },
     {
       "name": "ReadWriteSplittingClassicExpiredDays",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "读写分离的经典网络地址保留的天数，取值**1-120**，单位：天。默认值：**7**。\n>当实例存在经典网络类型的读写分离地址，且**RetainClassic**=**True**，本参数有效。",
+        "en": "The number of days for which you want to retain the read/write splitting endpoint of the classic network type. Valid values: **1 to 120**. Default value: **7**.\n\n>  This parameter takes effect only when a read/write splitting endpoint of the classic network type exists and the **RetainClassic** parameter is set to **True**."
+      }
     },
     {
       "name": "ReadWriteSplittingPrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置实例的内网读写分离地址的IP，需要在指定交换机的IP地址范围内。系统默认通过**VPCId**和**VSwitchId**自动分配。\n\n>当前实例存在经典网络类型的读写分离地址时，该值有效。",
+        "en": "The internal IP address that corresponds to the read/write splitting endpoint of the instance. The internal IP address must be within the CIDR block supported by the specified vSwitch. The system automatically assigns a private IP address to an instance based on the values of **VPCId** and **VSwitchId**.\n\n>  This parameter is valid when a read/write splitting endpoint of the classic network type exists."
+      }
     },
     {
       "name": "RetainClassic",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否保留经典网络地址，取值：\n* **True**：保留\n* **False**（默认）：不保留",
+        "en": "Specifies whether to retain the classic network endpoint. Valid values:\n\n*   **True**: retains the classic network endpoint.\n*   **False** (default): does not retain the classic network endpoint."
+      }
     },
     {
       "name": "VPCId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VPC ID。",
+        "en": "The VPC ID."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机ID，若传入**VPCId**，则该参数必传。",
+        "en": "The ID of the vSwitch. This parameter is required if the **VPCId** parameter is specified."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "经典网络切换为VPC网络",
+    "en": "ModifyDBInstanceNetworkType"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n- [RDS MySQL更改网络类型](~~96109~~)\n- [RDS PostgreSQL更改网络类型](~~96761~~)\n- [RDS SQL Server更改网络类型](~~95707~~)",
+    "en": "### [](#)Supported database engines\n\n*   RDS MySQL\n*   RDS PostgreSQL\n*   RDS SQL Server\n\n### [](#)References\n\n> : Before you call this operation, carefully read the following documentation. Make sure that you fully understand the prerequisites and impacts for calling this operation.\n\n*   [Change the network type of an ApsaraDB RDS for MySQL instance](~~96109~~)\n*   [Change the network type of an ApsaraDB RDS for PostgreSQL instance](~~96761~~)\n*   [Change the network type of an ApsaraDB RDS for SQL Server instance](~~95707~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-db-instance-network-type --db-instance-id rm-uf6wjk50000 --retain-classic True --classic-expired-days 7 --instance-network-type VPC --read-write-splitting-classic-expired-days 7 --vpc-id vpc-uf6f7l4fg900000 --vswitch-id vsw-uf6adz52c2p0000 --private-ip-address 172.10.XX.XX --read-write-splitting-private-ip-address 192.168.XX.XX --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyDBInstanceNetworkType --region cn-hangzhou --RetainClassic True --PrivateIpAddress '172.10.XX.XX' --ClassicExpiredDays 7 --DBInstanceId 'rm-uf6wjk50000' --VPCId 'vpc-uf6f7l4fg900000' --ReadWriteSplittingPrivateIpAddress '192.168.XX.XX' --VSwitchId 'vsw-uf6adz52c2p0000' --ReadWriteSplittingClassicExpiredDays 7 --InstanceNetworkType VPC"

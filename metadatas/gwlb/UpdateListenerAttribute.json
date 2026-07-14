@@ -1,5 +1,6 @@
 {
   "name": "UpdateListenerAttribute",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the RequestId of the request as the ClientToken. The RequestId of each request is different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会更新监听属性。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a normal request. If the request passes the check, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "ListenerDescription",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义监听描述。\n\n长度限制为2~256个字符，支持中文和英文字母，可包含数字、半角逗号（,）、半角句号（.）、半角分号（;）、正斜线（/）、at（@）、下划线（_）和短划线（-）。",
+        "en": "The description of the listener.\n\nThe description must be 2 to 256 characters in length and can contain letters, digits, commas (,), periods (.), semicolons (;), forward slashes (/), at signs (@), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听ID。",
+        "en": "The listener ID."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器组ID。",
+        "en": "The server group ID."
+      }
     },
     {
       "name": "TcpIdleTimeout",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "TCP连接空闲超时时间。取值范围：**60**-**6000**秒。",
+        "en": "The timeout period of an idle TCP connection. Valid values: **60** to **6000**. Unit: seconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新监听属性",
+    "en": "UpdateListenerAttribute"
+  },
+  "descriptions": {
+    "zh": "**UpdateListenerAttribute** 接口属于异步接口，即系统返回一个请求 ID，但该监听的配置尚未更新成功，系统后台的更新任务仍在进行。您可以调用 **GetListenerAttribute** 查询监听的配置的更新状态：\n\n- 当监听器处于 **Configuring** 状态时，表示监听的配置正在更新中。\n- 当监听器处于 **Running** 状态时，表示监听的配置更新成功。",
+    "en": "The **UpdateListenerAttribute** operation is asynchronous. After you send a request, the system returns a request ID. The listener configuration is then updated in the background. You can call the **GetListenerAttribute** operation to query the update status of the listener:\n\n- If a listener is in the **Configuring** state, the listener configuration is being updated.\n\n- If a listener is in the **Running** state, the listener configuration is updated."
+  },
   "example": {
     "unifiedCli": "aliyun gwlb update-listener-attribute --listener-id lsn-lxce8iqbof2vl00000 --listener-description listener_description --server-group-id sgp-sp8d2r6y7t0xtl0000 --tcp-idle-timeout 350 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun gwlb UpdateListenerAttribute --region cn-hangzhou --TcpIdleTimeout 350 --ListenerDescription listener_description --DryRun false --ServerGroupId 'sgp-sp8d2r6y7t0xtl0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ListenerId 'lsn-lxce8iqbof2vl00000'"

@@ -1,5 +1,6 @@
 {
   "name": "AcceptVpcPeerConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token from your client to make sure that it is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会接收VPC对等连接请求。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Sends a request without accepting the VPC peering connection request. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the check passes, the `DryRunOperation` error code is returned.\n\n- **false** (default): Sends a normal request. After the check passes, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "接收端需要接收的VPC对等连接实例ID。",
+        "en": "The ID of VPC peering connection."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。\n\n关于资源组的更多信息，请参见[什么是资源组](~~94475~~)。",
+        "en": "The ID of the resource group.\n\nFor more information, see [What is a resource group?](~~94475~~)"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。至少输入1个标签键，最多支持输入20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The key of the tag. You can specify 1 to 20 tag keys. It cannot be an empty string.\n\nThe tag key can be up to 128 characters in length. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。至少输入1个标签值，最多支持输入20个标签值。一旦传入该值，可以为空字符串。\n\n最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The value of the tag. You can specify 1 to 20 tag values. It can be an empty string.\n\nThe tag value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "接收VPC对等连接",
+    "en": "AcceptVpcPeerConnection"
+  },
+  "descriptions": {
+    "zh": "- 对于跨账号的VPC对等连接，只有接收端接收了连接请求后VPC对等连接实例才会激活。\n\n- **AcceptVpcPeerConnection**接口属于异步接口，即系统会先返回一个**RequestId**，但该VPC对等连接实例并未激活完成，系统后台的激活任务仍在进行。您可以调用[GetVpcPeerConnectionAttribute](~~426100~~)查询VPC对等连接实例的状态。\n\n    - 当VPC对等连接实例处于**Updating**状态时，表示VPC对等连接实例正在激活中。\n\n    - 当VPC对等连接实例处于**Activated**状态时，表示VPC对等连接实例激活完成。\n\n- **AcceptVpcPeerConnection**接口不支持对同一个VPC对等连接实例并发发起接收VPC对等连接实例的请求。",
+    "en": "- A cross-account VPC peering connection is activated only after the accepter VPC accepts the request.\n\n- **AcceptVpcPeerConnection** is an asynchronous operation. After you send a request, the system returns a **RequestId** while running the task in the background. Call [GetVpcPeerConnectionAttribute](~~426100~~) to query the status of the VPC peering connection instance.\n\n  - **Updating** indicates that the VPC peering connection is being activated.\n\n  - **Activated** indicates that the VPC peering connection is activated.\n\n- **AcceptVpcPeerConnection** does not support concurrent requests for the same VPC peering connection."
+  },
   "example": {
     "unifiedCli": "aliyun vpcpeer accept-vpc-peer-connection --instance-id pcc-guzvyqlj0n6e100000 --dry-run false --client-token 02fb3da4-130e-11e9-8e44-0010000 --resource-group-id rg-acfmxazb4ph6aiy0000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpcpeer AcceptVpcPeerConnection --region cn-hangzhou --Tag.1.Key FinanceDept --ResourceGroupId 'rg-acfmxazb4ph6aiy0000' --InstanceId 'pcc-guzvyqlj0n6e100000' --Tag.1.Value FinanceJoshua --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

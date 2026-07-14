@@ -1,5 +1,6 @@
 {
   "name": "ImportKeyMaterial",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "EncryptedKeyMaterial",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "使用**GetParametersForImport**返回的公钥加密并用base64编码后的密钥材料。",
+        "en": "The key material encrypted with the public key returned by **GetParametersForImport**, and then Base64-encoded."
+      }
     },
     {
       "name": "ImportToken",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "通过调用**GetParametersForImport**获得的导入令牌。",
+        "en": "The import token obtained by calling **GetParametersForImport**."
+      }
     },
     {
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待导入的主密钥ID。",
+        "en": "The ID of the CMK to be imported."
+      }
     },
     {
       "name": "KeyMaterialExpireUnix",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥材料过期时间。  \n不指定该参数或取值为0，表示密钥材料不会过期。\n\n> 取值不可早于调用该API的时间（以服务器时间为准）。",
+        "en": "The time when the key material expires.\n\nIf this parameter is not specified or set this parameter to 0, the key material does not expire.\n\n> The value cannot be earlier than the time when the operation is called (based on the server time)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "导入密钥材料",
+    "en": "ImportKeyMaterial"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 调用[CreateKey](~~28947~~)创建主密钥时，可以选择其密钥材料来源为外部，即将**Origin**设置为**EXTERNAL**。此API用于将密钥材料导入符合上述描述的CMK中。\n\n- 要查看CMK的**Origin**，请参见[DescribeKey](~~28952~~)。\n- 在导入密钥材料之前， 需要调用[GetParametersForImport](~~68621~~)先获得导入密钥材料需要的参数，即用于加密密钥材料的公钥（PublicKey）和导入令牌（ImportToken）。\n\n> - 对密钥类型为**Aliyun_AES_256**的CMK，密钥材料必须为256位；对密钥类型为**Aliyun_SM4**的CMK，密钥材料必须为128位。\n> - 您可以为密钥材料设置过期时间，也可以设置其永不过期。\n> - 您可以随时为指定的CMK重新导入密钥材料，并重新指定过期时间，但必须导入相同的密钥材料。\n> - 导入的密钥材料过期或者被删除后，指定的CMK将无法使用，需要再次导入相同的密钥材料才可正常使用。\n> - 同样的密钥材料可导入不同的CMK中，但使用其中一个CMK加密的数据或生成的数据密钥（Data Key）无法使用另一个CMK解密。",
+    "en": "When you call [CreateKey](~~28947~~) to create a CMK, you can set **Origin** to **EXTERNAL** to specify that the key material comes from an external source. Use this operation to import the key material into such a CMK.\n\n- To view the CMK **Origin**, see [DescribeKey](~~28952~~).\n\n- Before importing key material, call [GetParametersForImport](~~68621~~) to obtain the parameters required for the import, including the public key and import token.\n\n> * For a CMK of type **Aliyun\\_AES\\_256**, the key material must be 256 bits. For a CMK of type **Aliyun\\_SM4**, the key material must be 128 bits.\n>\n> * You can set the expiration time for the key material, or you can set it to never expire.\n>\n> * You can reimport the key material and reset the expiration time for the specified CMK at any time, but the same key material must be imported.\n>\n> * After the imported key material expires or is deleted, the specified CMK becomes unavailable until the same key material is imported again.\n>\n> * The same key material can be imported into multiple CMKs, but data or data keys encrypted by one CMK cannot be decrypted by another CMK.\n\nFor more information about the access policy required for a RAM user or RAM role to call this operation, see [Resource Access Management](~~2767210~~)."
+  },
   "example": {
     "unifiedCli": "aliyun kms import-key-material --key-id 1234abcd-12ab-34cd-56ef-123456780000 --encrypted-key-material bCPZx7I6v6KXsqEpr2OXKxuj2CCRtKdwp75Bw+BGncYqBdfjFBYRtOE6HRlT0oeiRDWzwnw9OA54OL36smDJrq4Lo9x0CyYDiuKnRkcKtMtlzW0din7Pd7IlZWWRdVueiw2qpzl7PkUWQGTdsdbzpfJJQ+qj/cRIrk/E83UGyeyytSpgnb+lu0xEYcPajRyWNsbi98N3pqqQzHXNNHO2NJqHlnQgglqTiBEjkGeKFhfKmTc3vjulIdVa3EaVIN6lwWfgx+UUYSrvbA77WDYKlDsZ4SbK2/T7za9Tp1qU7Ynqba7OKGVVj7PMbiaO80AxWZnjUMYCgEp5w7V+seOXqw== --import-token Base64String --key-material-expire-unix 0 --region cn-hangzhou",
     "legacyCli": "aliyun kms ImportKeyMaterial --region cn-hangzhou --EncryptedKeyMaterial 'bCPZx7I6v6KXsqEpr2OXKxuj2CCRtKdwp75Bw+BGncYqBdfjFBYRtOE6HRlT0oeiRDWzwnw9OA54OL36smDJrq4Lo9x0CyYDiuKnRkcKtMtlzW0din7Pd7IlZWWRdVueiw2qpzl7PkUWQGTdsdbzpfJJQ+qj/cRIrk/E83UGyeyytSpgnb+lu0xEYcPajRyWNsbi98N3pqqQzHXNNHO2NJqHlnQgglqTiBEjkGeKFhfKmTc3vjulIdVa3EaVIN6lwWfgx+UUYSrvbA77WDYKlDsZ4SbK2/T7za9Tp1qU7Ynqba7OKGVVj7PMbiaO80AxWZnjUMYCgEp5w7V+seOXqw==' --KeyId '1234abcd-12ab-34cd-56ef-123456780000' --KeyMaterialExpireUnix 0 --ImportToken Base64String"

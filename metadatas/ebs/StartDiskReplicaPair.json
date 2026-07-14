@@ -1,5 +1,6 @@
 {
   "name": "StartDiskReplicaPair",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "OneShot",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否立刻进行一次同步。取值范围：\n- true：立刻开始数据同步。\n- false：在RPO时间周期之后才开始数据同步。\n\n默认值：false。",
+        "en": "Specifies whether to immediately synchronize data. Valid values:\n\n*   true: immediately synchronizes data.\n*   false: synchronizes data based on the recovery point objective (RPO).\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系中主盘或从盘所属的地域ID。您可以调用[DescribeDiskReplicaPairs](~~354206~~)查询存量异步复制关系的地域信息。",
+        "en": "The region ID of the primary or secondary disk in the replication pair. You can call the [DescribeDiskReplicaPairs](~~354206~~) operation to query the region information of replication pairs."
+      }
     },
     {
       "name": "ReplicaPairId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系的ID。",
+        "en": "The ID of the replication pair."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "开始云盘异步复制",
+    "en": "StartDiskReplicaPair"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 异步复制功能支持的地域请参见[云盘异步复制概述](~~314563~~)。\n\n- 只能启动处于**已创建**（`created`）或者**已停止**（`stopped`）状态的异步复制关系。\n\n- 异步复制被启动后，系统会自动进行第一次异步复制操作，此时异步复制关系会处于**初始同步中**（`initial_syncing`）的状态，该次操作会把主盘的全量数据复制到从盘。",
+    "en": "## [](#)Usage notes\n\n*   For information about the regions in which async replication is available, see [Overview](~~314563~~).\n*   Only replication pairs that are in the **Created** (`created`) or **Stopped** (`stopped`) state can be activated.\n*   After a replication pair is activated, it enters the **Initial Syncing** (`initial_syncing`) state and the system performs the first asynchronous replication to replicate all data from the primary disk to the secondary disk."
+  },
   "example": {
     "unifiedCli": "aliyun ebs start-disk-replica-pair --biz-region-id cn-hangzhou --replica-pair-id pair-cn-dsa0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --one-shot false --region cn-hangzhou",
     "legacyCli": "aliyun ebs StartDiskReplicaPair --region cn-hangzhou --OneShot false --RegionId 'cn-hangzhou' --ReplicaPairId 'pair-cn-dsa0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

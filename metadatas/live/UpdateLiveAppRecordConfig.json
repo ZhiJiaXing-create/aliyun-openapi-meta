@@ -1,5 +1,6 @@
 {
   "name": "UpdateLiveAppRecordConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。",
+        "en": "The AppName of the live stream."
+      }
     },
     {
       "name": "DelayTime",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "断流拼接时长。\n直播断流时长超过设定的拼接时长后，将会生成新文件，断流拼接时长支持15~21600秒。",
+        "en": "The window in seconds for merging fragmented recording after an interruption. If a stream disconnects and reconnects within this window, the recording will continue in the same file. Valid values: 15 to 21600."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The main streaming domain."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "录制结束时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n> EndTime与StartTime相差不应超过7天，超过7天将按照7天计算。只在流级别录制（StreamName不为空）有效。",
+        "en": "The recording end time. Format: *yyyy-MM-dd*T*HH:mm:ss*Z (UTC time).\n\n> This parameter is only effective for stream-level recordings. The interval between EndTime and StartTime cannot exceed 7 days."
+      }
     },
     {
       "name": "OnDemand",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按需录制。取值：\n\n- **0**：关闭。\n- **1**：通过HTTP回调方式。\n- **2**：解析推流参数按需录制。\n- **7**：默认不录制，可以通过[RealTimeRecordCommand](~~2847882~~)接口手动控制录制开启或停止。\n\n>当OnDemand取值为**1**时，需要先通过[AddLiveRecordNotifyConfig](~~2847891~~)接口配置OnDemandUrl，否则默认不录制。",
+        "en": "Specifies the recording mode. Valid values:\n\n- **0**: disables on-demand recording.\n\n- **1**: On-demand recording via HTTP callback.\n\n- **2**: On-demand recording by parsing parameters in the ingest URL.\n\n- **7**: Manual recording. You can call the [RealTimeRecordCommand](~~2847882~~) API to manually start or stop recording.\n\n> If you set OnDemand to **1**, you need to call the [AddLiveRecordNotifyConfig](~~2847891~~) API to configure the OnDemandUrl parameter. Otherwise, ApsaraVideo Live does not perform on-demand recording."
+      }
     },
     {
       "name": "OssEndpoint",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储的Endpoint名称。\n\n直播录制文件存储至OSS，需提前创建OSS Bucket，创建方法请参见[配置OSS](~~84932~~) 。",
+        "en": "The endpoint for OSS storage. You must create an OSS bucket before using this feature. See [Configure OSS](~~84932~~)."
+      }
     },
     {
       "name": "RecordFormat",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "记录详情。",
+        "en": "The recording details."
+      },
       "sub_parameters": [
         {
           "name": "CycleDuration",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "周期录制时长。单位：秒。不填则默认为6小时。\n\n> - 如果在一个录制周期内，直播流发生了断流，但是在断流拼接时长内，该直播流又正常推流，那么仍会在同一个录制文件中继续录制。\n>- 一条直播流必须断流超过断流拼接时长，才会生成录制文件。",
+            "en": "The duration of a single recording cycle in seconds. If not specified, the default value is 6 hours\n\n> If a live stream is interrupted during a recording cycle but resumes normal streaming within the merge window, recording will continue in the same file. A recording file is generated only when a live stream is interrupted for longer than the merge window."
+          }
         },
         {
           "name": "Format",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "格式。目前支持M3U8、FLV、MP4、CMAF。取值：\n\n><notice>RecordFormat和TranscodeRecordFormat两者至少需要设置一个。如果选择m3u8或cmaf格式，必须同时设置请求参数RecordFormat.N.SliceOssObjectPrefix和RecordFormat.N.SliceDuration。\n></notice>\n\n- m3u8。\n- flv。\n- mp4。\n- cmaf。",
+            "en": "The recording format. Valid values:\n\n><notice>\n\nIf you choose m3u8 or cmaf, you must also set SliceOssObjectPrefix and SliceDuration. At least one of RecordFormat or TranscodeRecordFormat must be specified.\n\n></notice>\n\n- m3u8\n\n- flv\n\n- mp4\n\n- cmaf"
+          }
         },
         {
           "name": "SliceDuration",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "单个切片时长。单位：秒。\n\n><notice>当RecordFormat.N.Format（格式）设为m3u8或cmaf时，本参数才有效。\n></notice>\n\n不填则默认为30秒。取值范围：5s~30s。",
+            "en": "The duration of a single segment. Unit: seconds\n\n> This parameter takes effect only if you set the RecordFormat.N.Format parameter to m3u8 or cmaf.\n\nIf you do not specify this parameter, the default value 30 seconds is used. Valid values: 5 to 30."
+          }
         }
       ]
     },
@@ -70,37 +111,61 @@
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "录制开始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n> 设置的时间必须是实际推流时间开始7天之内，只在流级别录制（StreamName不为空）有效。",
+        "en": "The recording start time. Format: *yyyy-MM-dd*T*HH:mm:ss*Z (UTC time).\n\n> This parameter is only effective for stream-level recordings (i.e., when `StreamName` is specified). The time must be within 7 days of the actual stream start time."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播流名称。",
+        "en": "The name of the live stream."
+      }
     },
     {
       "name": "TranscodeRecordFormat",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "转码记录详情。",
+        "en": "The transcoded stream recording configuration."
+      },
       "sub_parameters": [
         {
           "name": "CycleDuration",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "转码流录制周期录制时长。单位：秒。不填则默认为6小时。",
+            "en": "The transcoded stream recording cycle. Unit: seconds. If you do not specify this parameter, the default value 6 hours is used."
+          }
         },
         {
           "name": "Format",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "转码流录制格式。目前支持M3U8、FLV、MP4、CMAF。取值：\n><notice>这如果选择m3u8或cmaf格式，必须同时设置请求参数TranscodeRecordFormat.N.SliceOssObjectPrefix和TranscodeRecordFormat.N.SliceDuration。\n></notice>\n\n- m3u8。\n- flv。\n- mp4。\n- cmaf。",
+            "en": "The format of the transcoded stream recording. Valid values:\n\n> If you choose m3u8 or cmaf, you must specify the TranscodeRecordFormat.N.SliceOssObjectPrefix and TranscodeRecordFormat.N.SliceDuration parameters.\n\n- m3u8\n\n- flv\n\n- mp4\n\n- cmaf"
+          }
         },
         {
           "name": "SliceDuration",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "转码流录制单个切片时长，单位：秒。\n\n><notice>当TranscodeRecordFormat.N.Format（转码流录制格式）设为m3u8或cmaf时，本参数才生效。\n></notice>\n\n不填则默认为30秒。取值范围：5s~30s。",
+            "en": "The duration of a single segment for transcoded stream recording. Unit: seconds.\n\n> This parameter takes effect only if you set the TranscodeRecordFormat.N.Format parameter to m3u8 or cmaf.\n\nIf you do not specify this parameter, the default value 30 seconds is used. Valid values: 5 to 30."
+          }
         }
       ]
     },
@@ -108,9 +173,24 @@
       "name": "TranscodeTemplates",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码流录制的转码模板组。",
+        "en": "The transcoding template group details."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新直播录制",
+    "en": "UpdateLiveAppRecordConfig"
+  },
+  "descriptions": {
+    "zh": "先获取主播流域名，再调用本接口更新录制配置。\n## QPS限制\n本接口的单用户QPS限制为30次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "## QPS limit\n\nYou can call this operation up to 30 times per second per account. Requests that exceed this limit are dropped and you may experience service interruptions."
+  },
   "example": {
     "unifiedCli": "aliyun live update-live-app-record-config --domain-name example.com --app-name liveApp0000 --oss-endpoint learn.developer.aliyundoc.com --stream-name teststream --start-time 2018-04-10T09:57:21Z --end-time 2018-04-16T09:57:21Z --on-demand 1 --delay-time 180 --record-format Format=m3u8 CycleDuration=1 SliceDuration=30 --transcode-record-format Format=m3u8 CycleDuration=21600 SliceDuration=30 --transcode-templates sd --region cn-hangzhou",
     "legacyCli": "aliyun live UpdateLiveAppRecordConfig --region cn-hangzhou --RecordFormat.1.Format m3u8 --EndTime '2018-04-16T09:57:21Z' --DomainName 'example.com' --StartTime '2018-04-10T09:57:21Z' --DelayTime 180 --RecordFormat.1.CycleDuration 1 --RecordFormat.1.SliceDuration 30 --AppName liveApp0000 --StreamName teststream --OssEndpoint 'learn.developer.aliyundoc.com' --TranscodeTemplates.1 sd --TranscodeRecordFormat.1.Format m3u8 --OnDemand 1 --TranscodeRecordFormat.1.SliceDuration 30 --TranscodeRecordFormat.1.CycleDuration 21600"

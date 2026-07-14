@@ -1,5 +1,6 @@
 {
   "name": "UpdateVpcEndpointServiceResourceAttribute",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AutoAllocatedEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否允许资源自动分配，取值：\n\n- **true**：允许资源自动分配。\n\n- **false**：不允许资源自动分配。",
+        "en": "Specifies whether to enable automatic resource allocation. Valid values:\n\n- **true**: Enables automatic resource allocation.\n\n- **false**: Disables automatic resource allocation."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client to ensure that the value is unique among different requests. **ClientToken** can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会修改终端节点服务资源的相关属性。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: sends a check request without modifying the properties of the service resource. The system checks the required parameters, request format, and service limits. If the request fails the check, an error is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. After the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改服务资源的地域ID。\n\n您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The ID of the region where you want to modify the service resource.\n\nCall the [DescribeRegions](~~120468~~) operation to obtain the region ID."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务资源ID。",
+        "en": "The ID of the service resource."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点服务的ID。",
+        "en": "The ID of the endpoint service."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务资源所属的可用区。服务资源为ALB/NLB/GWLB时，ZoneId为需要填写。",
+        "en": "The zone where the service resource is located. This parameter is required if the service resource is an Application Load Balancer (ALB), a Network Load Balancer (NLB), or a Gateway Load Balancer (GWLB)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改终端节点服务资源的属性",
+    "en": "UpdateVpcEndpointServiceResourceAttribute"
+  },
+  "descriptions": {
+    "zh": "- 修改终端节点服务资源的属性之前，请确保终端节点服务处于**Active**状态，您可以通过调用[GetVpcEndpointServiceAttribute](~~469330~~)接口，查询终端节点服务状态。\n- **UpdateVpcEndpointServiceResourceAttribute**接口不支持在同一个终端节点服务ID下并发修改终端节点服务资源的相关属性。",
+    "en": "- Before you modify the properties of a service resource, ensure that the endpoint service is in the **Active** state. You can call the [GetVpcEndpointServiceAttribute](~~469330~~) operation to query the status of the endpoint service.\n\n- The **UpdateVpcEndpointServiceResourceAttribute** operation does not support concurrent modifications to the properties of service resources that belong to the same endpoint service."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink update-vpc-endpoint-service-resource-attribute --biz-region-id cn-hangzhou --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --service-id epsrv-hp3vpx8yqxblby3i0000 --resource-id lb-hp32z1wp5peaoox2q0000 --zone-id cn-hangzhou-i --auto-allocated-enabled true --region cn-hangzhou",
     "legacyCli": "aliyun privatelink UpdateVpcEndpointServiceResourceAttribute --region cn-hangzhou --ZoneId 'cn-hangzhou-i' --ResourceId 'lb-hp32z1wp5peaoox2q0000' --DryRun false --RegionId 'cn-hangzhou' --AutoAllocatedEnabled true --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --ServiceId 'epsrv-hp3vpx8yqxblby3i0000'"

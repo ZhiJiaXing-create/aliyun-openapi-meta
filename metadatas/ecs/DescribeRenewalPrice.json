@@ -1,5 +1,6 @@
 {
   "name": "DescribeRenewalPrice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ExpectedRenewDay",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "统一到期日。指定该参数后，将查询实例续费至统一到期日的价格信息。取值范围：1~28。\n\n关于统一到期日功能的更多信息，请参见[统一实例到期日](~~108486~~)。\n\n> 续费时长参数（`Period`、`PeriodUnit`）与统一到期日参数（`ExpectedRenewDay`）不能同时设置。",
+        "en": "The unified expiration date. After you specify this parameter, the price for renewing the instance to the unified expiration date is returned. Valid values: 1 to 28.\n\nFor more information about the unified expiration date feature, see [Settings for instance expires](~~108486~~).\n\n> The renewal duration parameters (`Period` and `PeriodUnit`) and the unified expiration date parameter (`ExpectedRenewDay`) cannot be set at the same time."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定续费时长。取值范围：\n\n- 当参数`PriceUnit`取值为`Month`时：1~9。\n- 当参数`PriceUnit`取值为`Year`时：1~3。\n\n默认值：1。\n\n> 续费时长参数（`Period`、`PeriodUnit`）与统一到期日参数（`ExpectedRenewDay`）不能同时设置。",
+        "en": "The renewal duration. Valid values:\n\n- When `PriceUnit` is set to `Month`: 1 to 9.\n- When `PriceUnit` is set to `Year`: 1 to 3.\n\nDefault value: 1.\n\n> The renewal duration parameters (`Period` and `PeriodUnit`) and the unified expiration date parameter (`ExpectedRenewDay`) cannot be set at the same time."
+      }
     },
     {
       "name": "PriceUnit",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定续费周期。取值范围：\n\n- Month：续费周期为一个月。\n- Year：续费周期为一年。\n\n默认值：Month。",
+        "en": "The unit of the renewal duration. Valid values:\n\n- Month: the renewal duration is measured in months.\n- Year: the renewal duration is measured in years.\n\nDefault value: Month."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the instance. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询续费价格的资源ID。参数`ResourceType`取值为`instance`时，`ResourceId`可以理解为`InstanceId`。",
+        "en": "The ID of the resource whose renewal price you want to query. When `ResourceType` is set to `instance`, `ResourceId` is equivalent to `InstanceId`."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询续费价格的资源类型。取值：instance。\n\n默认值：instance。",
+        "en": "The type of the resource whose renewal price you want to query. Valid values: instance.\n\nDefault value: instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源续费价格",
+    "en": "Query resource renewal price"
+  },
+  "descriptions": {
+    "zh": "- 仅支持查询包年包月ECS实例续费时长的价格或者续费至统一到期日的价格。\n- 参数设置的注意事项如下：\n    - 只设置必选参数时，默认查询实例续费时长1个月的价格信息。\n    - 不支持同时查询续费时长价格和续费至统一到期日的价格，即续费时长参数（`Period`、`PeriodUnit`）与续费至统一到期日参数（`ExpectedRenewDay`）不能同时设置。",
+    "en": "- Only the price for renewing a subscription ECS instance for a specified duration or renewing it to a unified expiration date is supported.\n- Note the following when you set the parameters:\n    - If you set only the required parameters, the price for renewing the instance for one month is returned by default.\n    - You cannot query the renewal duration price and the unified expiration date price at the same time. The renewal duration parameters (`Period` and `PeriodUnit`) and the unified expiration date parameter (`ExpectedRenewDay`) cannot be set at the same time."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-renewal-price --biz-region-id cn-hangzhou --resource-type instance --resource-id i-bp1f2o4ldh8l29zv0000 --period 1 --price-unit Month --expected-renew-day 5 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeRenewalPrice --region cn-hangzhou --PriceUnit Month --ResourceId 'i-bp1f2o4ldh8l29zv0000' --Period 1 --ExpectedRenewDay 5 --ResourceType instance --RegionId 'cn-hangzhou'"

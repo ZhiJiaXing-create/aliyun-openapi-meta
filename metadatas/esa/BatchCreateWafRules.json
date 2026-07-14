@@ -1,5 +1,6 @@
 {
   "name": "BatchCreateWafRules",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "Configs",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "各规则配置列表，指定每个规则的详细配置。\n\n**各 Phase 下的必填子字段**（仅适用于本批量接口支持的两个 phase）：\n\n- `http_anti_scan`：必须提供 `Type`，以及 `ManagedList` 或 `RateLimit` 中至少一项；\n- `http_bot`：需提供高级模式 Bots 相关配置（子字段以 `WafRuleConfig` 数据结构定义为准）。\n\n> 说明：`http_custom` / `http_whitelist` 等其他阶段不能使用本批量接口，请使用单条接口 `CreateWafRule`；对应子字段约束以单条接口文档为准。\n\n> 注意：无 `Configs` 或 子字段缺失时服务返回 `InvalidParameter(400)` / `Rule.Config.Malformed`。",
+        "en": "The list of rule configurations. Specifies the detailed configuration for each rule.\n\n**Required subfields for each phase** (applicable only to the two phases supported by this batch operation):\n\n- `http_anti_scan`: You must specify `Type` and at least one of `ManagedList` or `RateLimit`.\n- `http_bot`: You must specify the advanced mode bots configuration. The subfields are defined in the `WafRuleConfig` data structure.\n\n> Note: Other phases such as `http_custom` and `http_whitelist` cannot use this batch operation. Use the single-rule operation `CreateWafRule` instead. The subfield constraints are described in the single-rule operation documentation.\n\n> If `Configs` is not specified or required subfields are missing, the service returns `InvalidParameter(400)` or `Rule.Config.Malformed`."
+      }
     },
     {
       "name": "Phase",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF 规则运行阶段，本**批量接口仅支持**以下两个 phase（其他 phase 请使用单条接口 `CreateWafRule` / `UpdateWafRule`）：\n- `http_anti_scan`：扫描防护规则\n- `http_bot`：高级模式 Bots\n\n> 说明：`http_anti_scan` / `http_bot` 两个阶段**仅支持批量创建**，单条接口 `CreateWafRule` 不接受这两个取值；反之其他 phase（如 `http_custom`、`http_whitelist` 等）只能通过单条接口创建，不能使用本批量接口。\n\n**必填约束**：此参数虽在 spec 中标注为可选（required: false），但本批量接口实际调用时**必须传入**，未提供时服务返回 `InvalidParameter(400)`。\n\n**套餐前置条件**：`http_anti_scan` 需要站点具备 **high 及以上套餐**，basic 套餐调用会返回 `Phase.HttpAntiScan.NotSupport`。请在调用前确认站点套餐等级。",
+        "en": "The WAF rule execution phase. This **batch operation supports only** the following two phases. For other phases, use the single-rule operations `CreateWafRule` or `UpdateWafRule`:\n- `http_anti_scan`: scan protection rules\n- `http_bot`: advanced mode bots\n\n> Note: The `http_anti_scan` and `http_bot` phases **support only batch creation**. The single-rule operation `CreateWafRule` does not accept these two values. Conversely, other phases such as `http_custom` and `http_whitelist` can be created only by using single-rule operations and cannot use this batch operation.\n\n**Required constraint**: Although this parameter is marked as optional (required: false) in the specification, it is **required** when you call this batch operation. If this parameter is not specified, the service returns `InvalidParameter(400)`.\n\n**Plan prerequisite**: `http_anti_scan` requires the site to have a **high or higher plan**. Calling this operation with a basic plan returns `Phase.HttpAntiScan.NotSupport`. Verify the site plan before calling this operation."
+      }
     },
     {
       "name": "RulesetId",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF规则集的ID，可通过调用[ListWafRulesets](~~2878359~~)接口获取。",
+        "en": "The ID of the WAF ruleset. You can call the [ListWafRulesets](~~2878359~~) operation to obtain the ruleset ID."
+      }
     },
     {
       "name": "Shared",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "多规则共享配置，指定多个规则的共有属性。\n\n**条件必填**：此参数虽在 spec 中标注为可选（required: false），但当 `Phase=http_anti_scan` 时**实际必填**，未提供时服务返回 `InvalidParameter(400)`。\n\n**子字段要求**：`http_anti_scan` 阶段下 Shared 必须包含 `Name`（规则名称）、`Action`（规则动作）等共享字段；其他 Phase 下 Shared 的必填子字段以具体 Phase 为准。",
+        "en": "The shared configuration for multiple rules. Specifies the common properties of multiple rules.\n\n**Conditionally required**: Although this parameter is marked as optional (required: false) in the specification, it is **required** when `Phase=http_anti_scan`. If this parameter is not specified, the service returns `InvalidParameter(400)`.\n\n**Subfield requirements**: In the `http_anti_scan` phase, Shared must include shared fields such as `Name` (rule name) and `Action` (rule action). For other phases, the required subfields of Shared vary depending on the specific phase."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~2850189~~)接口获取。",
+        "en": "The site ID. You can call the [ListSites](~~2850189~~) operation to obtain the site ID."
+      }
     },
     {
       "name": "SiteVersion",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "站点配置的版本号。开启了配置版本管理的站点，可以通过该参数指定配置生效的站点版本，默认为版本0。",
+        "en": "The version number of the site configuration. For sites with version management enabled, you can use this parameter to specify the site version on which the configuration takes effect. The default value is 0."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量创建WAF规则",
+    "en": "Batch create WAF rules"
+  },
   "example": {
     "unifiedCli": "aliyun esa batch-create-waf-rules --site-id 1 --site-version 0 --phase http_anti_scan --ruleset-id 10000001 --shared example-string --configs '[\"example-string\"]' --region cn-hangzhou",
     "legacyCli": "aliyun esa BatchCreateWafRules --region cn-hangzhou --SiteId 1 --RulesetId 10000001 --Phase http_anti_scan --Configs '[\"example-string\"]' --Shared 'example-string' --SiteVersion 0"

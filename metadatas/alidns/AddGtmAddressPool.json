@@ -1,5 +1,6 @@
 {
   "name": "AddGtmAddressPool",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,30 +10,42 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "地址池列表。",
+        "en": "The list of addresses in the address pool."
+      },
       "sub_parameters": [
         {
           "name": "LbaWeight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "地址池权重。",
+            "en": "The weight of the address."
+          }
         },
         {
           "name": "Mode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "地址池模式。取值：\n\n- **SMART**：智能返回\n- **ONLINE**：永远在线\n- **OFFLINE**：永远离线",
+            "en": "The mode of the address. Valid values:\n\n- **SMART**: smart return\n\n- **ONLINE**: always online\n\n- **OFFLINE**: always offline"
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "地址池地址。",
+            "en": "The address."
+          }
         }
-      ],
-      "description": {
-        "zh": "地址池列表。",
-        "en": "The address pools."
-      }
+      ]
     },
     {
       "name": "EvaluationCount",
@@ -41,7 +54,7 @@
       "required": false,
       "description": {
         "zh": "连续失败次数。",
-        "en": "The number of consecutive failures."
+        "en": "The number of consecutive failed health checks."
       }
     },
     {
@@ -51,7 +64,7 @@
       "required": true,
       "description": {
         "zh": "实例ID。",
-        "en": "The ID of the GTM instance for which you want to create an address pool."
+        "en": "The instance ID."
       }
     },
     {
@@ -61,7 +74,7 @@
       "required": false,
       "description": {
         "zh": "检查间隔，单位：秒，取值范围：60。",
-        "en": "The health check interval. Unit: seconds. Set the value to 60."
+        "en": "The health check interval. Unit: seconds. The value must be 60."
       }
     },
     {
@@ -69,24 +82,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "监控城市节点列表。",
+        "en": "The list of city nodes for monitoring."
+      },
       "sub_parameters": [
         {
           "name": "CityCode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控节点的城市Code。具体取值请参考DescribeGtmMonitorAvailableConfig的返回值。",
+            "en": "The city code of the monitoring node. For information about valid values, see the response of DescribeGtmMonitorAvailableConfig."
+          }
         },
         {
           "name": "IspCode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "- 具体取值可参考：DescribeGtmMonitorAvailableConfig接口返回数据。\n- GroupType为BGP或Overseas时，IspCityNode.N.IspCode为非必传值，默认为465。\n- GroupType为非BGP或Overseas时，IspCityNode.N.IspCode为必传值。并与IspCityNode.N.CityCode匹配使用。",
+            "en": "- For information about valid values, see the response of DescribeGtmMonitorAvailableConfig.\n\n- If GroupType is set to Border Gateway Protocol (BGP) or Overseas, IspCityNode.N.IspCode is optional. The default value is 465.\n\n- If GroupType is not set to BGP or Overseas, IspCityNode.N.IspCode is required and must be used with IspCityNode.N.CityCode."
+          }
         }
-      ],
-      "description": {
-        "zh": "监控城市节点列表。",
-        "en": "The monitored nodes."
-      }
+      ]
     },
     {
       "name": "Lang",
@@ -95,7 +116,7 @@
       "required": false,
       "description": {
         "zh": "用户语言。",
-        "en": "The language of the values of specific response parameters."
+        "en": "The response language."
       }
     },
     {
@@ -105,7 +126,7 @@
       "required": true,
       "description": {
         "zh": "最小可用地址数量。",
-        "en": "The minimum number of available addresses in the address pool."
+        "en": "The minimum number of available addresses."
       }
     },
     {
@@ -115,7 +136,7 @@
       "required": false,
       "description": {
         "zh": "扩展信息。根据不同协议，进行传参：\n\nHTTP、HTTPS：\n \n- port：检查端口\n- failureRate：失败比例\n- code：返回码（大于此值会被判定为异常）。取值：400、500。\n- host：Host设置\n- path：URL路径\n\nPING:\n\n- packetNum：ping包数目\n- packetLossRate：丢包率\n- failureRate：失败比例\n\nTCP：\n\n- port：检查端口\n- failureRate：失败比例",
-        "en": "The extended information. The required parameters vary based on the value of ProtocolType.\n\nWhen ProtocolType is set to HTTP or HTTPS:\n\n*   port: the port that you want to check\n*   failureRate: the failure rate\n*   code: the return code. The health check result is deemed abnormal if the returned value is greater than the specified value. Valid values: 400 and 500.\n*   host: the host settings\n*   path: the URL path\n\nWhen ProtocolType is set to PING:\n\n*   packetNum: the number of ping packets\n*   packetLossRate: the packet loss rate\n*   failureRate: the failure rate\n\nWhen ProtocolType is set to TCP:\n\n*   port: the port that you want to check\n*   failureRate: the failure rate"
+        "en": "The extended information. The parameters that you must configure vary based on the health check protocol.\n\nHTTP and HTTPS:\n\n- port: The health check port.\n\n- failureRate: The failure rate.\n\n- code: The return code. A response with a return code greater than the specified value is considered abnormal. Valid values: 400 and 500.\n\n- host: The host setting.\n\n- path: The URL path.\n\nPING:\n\n- packetNum: The number of ping packets.\n\n- packetLossRate: The packet loss rate.\n\n- failureRate: The failure rate.\n\nTCP:\n\n- port: The health check port.\n\n- failureRate: The failure rate."
       }
     },
     {
@@ -125,7 +146,7 @@
       "required": false,
       "description": {
         "zh": "健康检查开启状态。取值：\n\n- **OPEN**：开启\n- **CLOSE**（默认）：关闭",
-        "en": "Specifies whether to enable the health check. Valid values:\n\n*   **OPEN**: enables the health check.\n*   **CLOSE**: disables the health check. This is the default value."
+        "en": "The status of the health check. Valid values:\n\n- **OPEN**: enabled\n\n- **CLOSE** (default): disabled"
       }
     },
     {
@@ -145,7 +166,7 @@
       "required": false,
       "description": {
         "zh": "检查协议。取值：\n\n- HTTP\n- HTTPS\n- Ping\n- TCP",
-        "en": "The health check protocol. Valid values:\n\n*   HTTP\n*   HTTPS\n*   Ping\n*   TCP"
+        "en": "The health check protocol. Valid values:\n\n- HTTP\n\n- HTTPS\n\n- Ping\n\n- TCP"
       }
     },
     {
@@ -165,10 +186,17 @@
       "required": true,
       "description": {
         "zh": "地址池类型。取值：\n\n- **IP**：IPv4地址\n- **DOMAIN**：域名",
-        "en": "The type of the address pool. Valid values:\n\n*   **IP**: IPv4 address\n*   **DOMAIN**: domain name"
+        "en": "The type of the address pool. Valid values:\n\n- **IP**: IPv4 address\n\n- **DOMAIN**: domain name"
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新增地址池（旧版）",
+    "en": "AddGtmAddressPool"
+  },
   "example": {
     "unifiedCli": "aliyun alidns add-gtm-address-pool --lang en --instance-id gtm-cn-xxxxxxx --name '测试' --type IP --min-available-addr-num 1 --monitor-status OPEN --protocol-type TCP --interval 60 --evaluation-count 2 --timeout 5000 --monitor-extend-info host_:_aliyun.com_,_port_:80 --addr LbaWeight=1 Mode=SMART Value=1.1.XX.XX --isp-city-node CityCode=546 IspCode=465 --region cn-hangzhou",
     "legacyCli": "aliyun alidns AddGtmAddressPool --region cn-hangzhou --IspCityNode.1.CityCode 546 --InstanceId 'gtm-cn-xxxxxxx' --Timeout 5000 --EvaluationCount 2 --Lang en --MonitorExtendInfo 'host_:_aliyun.com_,_port_:80' --IspCityNode.1.IspCode 465 --Name '测试' --Type IP --Addr.1.Mode SMART --ProtocolType TCP --Addr.1.LbaWeight 1 --MinAvailableAddrNum 1 --Addr.1.Value '1.1.XX.XX' --MonitorStatus OPEN --Interval 60"

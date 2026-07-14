@@ -1,5 +1,6 @@
 {
   "name": "Rerank",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,13 +9,21 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 您可以调用[DescribeDBInstances](~~86911~~)接口查看目标地域下所有的AnalyticDB PostgreSQL实例的详情，包括实例ID。",
+        "en": "Instance ID.\n\n> You can call the [DescribeDBInstances](~~86911~~) API to view details of all AnalyticDB PostgreSQL instances in the target region, including the instance ID."
+      }
     },
     {
       "name": "Documents",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要重新排序的文档列表。",
+        "en": "List of documents to be re-ordered."
+      }
     },
     {
       "name": "Instruct",
@@ -26,39 +35,70 @@
       "name": "MaxChunksPerDoc",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "超出模型窗口时，允许将文本切分的最大块数：\n- bge-reranker-v2-m3：默认值是10。\n- bge-reranker-v2-minicpm-layerwise：默认值是5：\n\n> 切分举例\n> - 如果使用bge-reranker-v2-minicpm-layerwise模型，则最大单推理窗口为2048tokens，此时如果query是48tokens，单个document参数内容为9000tokens，则会被分为：1-2000为第一个，2001-4000为第二个，以此类推，并且切分个数超过MaxChunksPerDoc后，后面的语句会被丢弃。",
+        "en": "Maximum number of chunks allowed when the text exceeds the model window:\n- bge-reranker-v2-m3: default value is 10.\n- bge-reranker-v2-minicpm-layerwise: default value is 5:\n\n> Example of splitting\n> - If using the bge-reranker-v2-minicpm-layerwise model, the maximum single inference window is 2048 tokens. If the query is 48 tokens and the content of a single document parameter is 9000 tokens, it will be divided as follows: 1-2000 for the first, 2001-4000 for the second, and so on. If the number of splits exceeds MaxChunksPerDoc, the remaining sentences will be discarded."
+      }
     },
     {
       "name": "Model",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Rerank模型，目前支持\n- bge-reranker-v2-m3:（默认值），性能较好，单条推理支持8192tokens，超出会被切分，效果可能下降。\n- bge-reranker-v2-minicpm-layerwise：效果相比v2-m3更优，单条推理支持2048tokens，超出会被切分，效果可能下降。",
+        "en": "Rerank model, currently supports:\n- bge-reranker-v2-m3: (default), better performance, supports 8192 tokens per inference, if exceeded, it will be split, which may reduce the effect.\n- bge-reranker-v2-minicpm-layerwise: better performance than v2-m3, supports 2048 tokens per inference, if exceeded, it will be split, which may reduce the effect."
+      }
     },
     {
       "name": "Query",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Rerank对应的查询语句。",
+        "en": "Query statement for Rerank."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在Region ID。",
+        "en": "Region ID where the instance is located."
+      }
     },
     {
       "name": "ReturnDocuments",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为false时，不返回Documents文本，仅仅返回文档排序的索引及rerank得分。",
+        "en": "If set to false, does not return the Documents text, only returns the index of the document order and the rerank score."
+      }
     },
     {
       "name": "TopK",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要返回的最相关文档的数量。",
+        "en": "Number of most relevant documents to return."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "精排",
+    "en": "Rerank"
+  },
   "example": {
     "unifiedCli": "aliyun gpdb rerank --db-instance-id gp-xxxxxxxxx --biz-region-id cn-hangzhou --query What_is_ADBPG0 --documents ADBPG是阿里云OLAP数据库。 --model bge-reranker-v2-m3 --instruct Given_a_web_search_query,_retrieve_relevant_passages_that_answer_the_query --topk 3 --return-documents false --max-chunks-per-doc 10 --region cn-hangzhou",
     "legacyCli": "aliyun gpdb Rerank --region cn-hangzhou --TopK 3 --MaxChunksPerDoc 10 --Instruct 'Given_a_web_search_query,_retrieve_relevant_passages_that_answer_the_query' --Query What_is_ADBPG0 --DBInstanceId 'gp-xxxxxxxxx' --ReturnDocuments false --Documents '[\"ADBPG是阿里云OLAP数据库。\"]' --Model 'bge-reranker-v2-m3' --RegionId 'cn-hangzhou'"

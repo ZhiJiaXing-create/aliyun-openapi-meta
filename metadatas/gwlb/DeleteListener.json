@@ -1,5 +1,6 @@
 {
   "name": "DeleteListener",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除监听。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. If the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听ID。",
+        "en": "The listener ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除监听",
+    "en": "DeleteListener"
+  },
+  "descriptions": {
+    "zh": "**DeleteListener** 接口属于异步接口，即系统返回一个请求 ID，但该监听尚未删除成功，系统后台的删除任务仍在进行。您可以调用 **GetListenerAttribute** 查询监听的删除状态：\n\n- 当监听器处于 **Deleting** 状态时，表示监听正在删除中。\n- 当查询不到该监听时，表示监听删除成功。",
+    "en": "**DeleteListener** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. The listener is not deleted immediately. You can call the **GetListenerAttribute** operation to query the status of the listener:\n\n- If the listener is in the **Deleting** state, it is being deleted.\n\n- If you cannot query the listener, it has been deleted."
+  },
   "example": {
     "unifiedCli": "aliyun gwlb delete-listener --listener-id lsn-brx2y3hqdincizg000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun gwlb DeleteListener --region cn-hangzhou --DryRun false --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ListenerId 'lsn-brx2y3hqdincizg000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateDBNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "AutoUseCoupon",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动使用优惠券，取值：\n* true（默认）：使用优惠券。\n* false：不使用优惠券。",
+        "en": "Specifies whether to automatically use coupons. Valid values:\n* true (default): Use coupons.\n* false: Do not use coupons."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，保证在不同请求间唯一，大小写敏感、不超过64个ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value. Make sure that the value is unique among different requests. The token is case-sensitive and can contain only ASCII characters. The token can be up to 64 characters in length."
+      }
     },
     {
       "name": "CloudProvider",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点所属的云服务商",
+        "en": "The cloud service provider to which the node belongs."
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "DBNode",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "新增节点的信息。",
+        "en": "The information about the new node."
+      },
       "sub_parameters": [
         {
           "name": "TargetClass",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新增节点的规格，需要与原有节点保持一致，详情请参见如下文档：\n* PolarDB MySQL版：[计算节点规格](~~102542~~)。 \n* PolarDB PostgreSQL版（兼容Oracle）：[计算节点规格](~~207921~~)。\n* PolarDB PostgreSQL版：[计算节点规格](~~209380~~)。\n>* DBNode.N.ZoneId和DBNode.N.TargetClass，至少填一个。 N为从1开始的整数，最大值=16-当前节点数。\n>* 当前仅PolarDB MySQL版集群支持一次增加多个只读节点，最多可增加至15个只读节点。\n>* 当集群为PolarDB PostgreSQL版（兼容Oracle）或PolarDB PostgreSQL版时，该参数必填；当集群为PolarDB MySQL版时，该参数非必填。",
+            "en": "The specification of the new node. The specification must be the same as that of the existing nodes. For more information, see the following topics:\n* PolarDB for MySQL: [Compute node specifications](~~102542~~). \n* PolarDB for PostgreSQL (Compatible with Oracle): [Compute node specifications](~~207921~~).\n* PolarDB for PostgreSQL: [Compute node specifications](~~209380~~).\n>* You must specify at least one of DBNode.N.ZoneId and DBNode.N.TargetClass. N is an integer that starts from 1. Maximum value of N = 16 - current number of nodes.\n>* Only PolarDB for MySQL clusters support adding multiple read-only nodes at a time. You can add up to 15 read-only nodes.\n>* This parameter is required for PolarDB for PostgreSQL (Compatible with Oracle) or PolarDB for PostgreSQL clusters. This parameter is optional for PolarDB for MySQL clusters."
+          }
         },
         {
           "name": "ZoneId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新增节点的可用区，需要与原有节点保持一致。您可以通过[DescribeRegions](~~98041~~)接口查询可用区ID。\n\n>* DBNode.N.ZoneId和DBNode.N.TargetClass，至少填一个。N为从1开始的整数，最大值=16-当前节点数。 \n>* 当前仅PolarDB MySQL版集群支持一次增加多个只读节点，最多可增加至15个只读节点。\n>* 当集群为PolarDB PostgreSQL版（兼容Oracle）或PolarDB PostgreSQL版时，该参数必填；当集群为PolarDB MySQL版时，该参数非必填。",
+            "en": "The zone of the new node. The zone must be the same as that of the existing nodes. You can call the [DescribeRegions](~~98041~~) operation to query zone IDs.\n\n>* You must specify at least one of DBNode.N.ZoneId and DBNode.N.TargetClass. N is an integer that starts from 1. Maximum value of N = 16 - current number of nodes. \n>* Only PolarDB for MySQL clusters support adding multiple read-only nodes at a time. You can add up to 15 read-only nodes.\n>* This parameter is required for PolarDB for PostgreSQL (Compatible with Oracle) or PolarDB for PostgreSQL clusters. This parameter is optional for PolarDB for MySQL clusters."
+          }
         }
       ]
     },
@@ -52,45 +81,80 @@
       "name": "DBNodeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点类型。取值范围：\n- RO\n- STANDBY\n- DLNode",
+        "en": "The node type. Valid values:\n- RO\n- STANDBY\n- DLNode."
+      }
     },
     {
       "name": "EndpointBindList",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定新增节点需要加入的集群连接地址的地址ID。若需要同时加入多个连接地址，多个连接地址ID间用英文逗号（,）分隔。\n> * 您可以通过调用[DescribeDBClusterEndpoints](~~98205~~)接口查看集群连接地址的详情，包括连接地址ID。\n>* 支持填入默认集群连接地址和自定义集群连接地址的地址ID。\n>* 若该参数留空，默认将新增节点加入所有开启了**新节点自动加入**功能（即`AutoAddNewNodes`取值为`Enable`）的集群连接地址。",
+        "en": "The ID of the cluster endpoint to which you want to add the new node. If you want to add the node to multiple endpoints, separate the endpoint IDs with commas (,).\n> * You can call the [DescribeDBClusterEndpoints](~~98205~~) operation to query the details of cluster endpoints, including endpoint IDs.\n>* You can specify the IDs of the default cluster endpoint and custom cluster endpoints.\n>* If you leave this parameter empty, the new node is added to all cluster endpoints that have the **Automatically Associate New Nodes** feature enabled (the value of `AutoAddNewNodes` is `Enable`)."
+      }
     },
     {
       "name": "ImciSwitch",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启列存索引。取值范围：\n\n- **ON**：开启\n\n- **OFF**：关闭（默认值）\n\n> PolarDB PostgreSQL版（兼容Oracle）和PolarDB PostgreSQL版不支持该参数。",
+        "en": "Specifies whether to enable In-Memory Column Index (IMCI). Valid values:\n\n- **ON**: enabled.\n\n- **OFF**: disabled. This is the default value.\n\n> PolarDB for PostgreSQL (Compatible with Oracle) and PolarDB for PostgreSQL do not support this parameter."
+      }
     },
     {
       "name": "PlannedEndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行目标定时任务的最晚时间。格式为`YYYY-MM-DDThh:mm:ssZ`（UTC）。\n> * 最晚时间需晚于开始时间的30分钟或以上。\n>* 若设置了`PlannedStartTime`但未指定该参数，执行目标任务的最晚时间默认为`开始时间+30分钟`。例如当设置`PlannedStartTime`为`2021-01-14T09:00:00Z`且该参数留空时，目标任务最晚将于`2021-01-14T09:30:00Z`开始执行。",
+        "en": "The latest time to start running the scheduled task. Specify the time in the `YYYY-MM-DDThh:mm:ssZ` format (UTC).\n> * The latest time must be at least 30 minutes later than the start time.\n>* If you specify `PlannedStartTime` but leave this parameter empty, the latest time defaults to `start time + 30 minutes`. For example, if you set `PlannedStartTime` to `2021-01-14T09:00:00Z` and leave this parameter empty, the task starts no later than `2021-01-14T09:30:00Z`."
+      }
     },
     {
       "name": "PlannedStartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行定时（即在目标时间段内执行）新增节点任务的最早时间。格式为`YYYY-MM-DDThh:mm:ssZ`（UTC）。\n> * 开始时间的取值范围为未来24小时内的任意时间点。例如当前时间为`2021-01-14T09:00:00Z`，此处允许填入的开始时间范围为`2021-01-14T09:00:00Z`~`2021-01-15T09:00:00Z`。\n>* 若该参数留空，默认立即执行新增节点任务。",
+        "en": "The earliest time to start running the scheduled task for adding nodes. Specify the time in the `YYYY-MM-DDThh:mm:ssZ` format (UTC).\n> * The start time must be within the next 24 hours. For example, if the current time is `2021-01-14T09:00:00Z`, you can specify a start time within the range of `2021-01-14T09:00:00Z` to `2021-01-15T09:00:00Z`.\n>* If you leave this parameter empty, the task for adding nodes is immediately run."
+      }
     },
     {
       "name": "PromotionCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "优惠券编号，不填时使用默认优惠券",
+        "en": "The coupon code. If you do not specify this parameter, the default coupon is used."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "增加PolarDB集群的只读节点",
+    "en": "Add read-only nodes to a polarDB cluster"
+  },
   "example": {
     "unifiedCli": "aliyun polardb create-db-nodes --resource-group-id rg-000000000000 --db-cluster-id pc-0000000000000 --client-token 6000170000591aed949d0f54a343f1a4233c1e7d1c5c000000 --endpoint-bind-list pe-0000000000000000,pe-0000000000000000 --planned-start-time 2021-01-14T09:00:00Z --planned-end-time 2021-01-14T09:30:00Z --db-node ZoneId=cn-qingdao-c TargetClass=polar.mysql.x4.medium --db-node-type RO --imci-switch ON --cloud-provider ENS --auto-use-coupon true --promotion-code 727xxxxxx934 --region cn-hangzhou",
     "legacyCli": "aliyun polardb CreateDBNodes --region cn-hangzhou --ResourceGroupId 'rg-000000000000' --PromotionCode 727xxxxxx934 --DBClusterId 'pc-0000000000000' --PlannedStartTime '2021-01-14T09:00:00Z' --ImciSwitch ON --DBNodeType RO --DBNode.1.ZoneId 'cn-qingdao-c' --AutoUseCoupon true --CloudProvider ENS --DBNode.1.TargetClass 'polar.mysql.x4.medium' --EndpointBindList 'pe-0000000000000000,pe-0000000000000000' --ClientToken 6000170000591aed949d0f54a343f1a4233c1e7d1c5c000000 --PlannedEndTime '2021-01-14T09:30:00Z'"

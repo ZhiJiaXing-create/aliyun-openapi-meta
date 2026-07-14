@@ -1,0 +1,146 @@
+{
+  "name": "Subscribe",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "DlqPolicy",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "死信队列策略。",
+        "en": "The dead-letter queue policy."
+      }
+    },
+    {
+      "name": "DmAttributes",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "邮箱推送相关属性，当 PushType=dm 时必填。JSON 格式，包含以下字段：\n\n- AccountName：发信地址，即 DirectMail 中配置的发信地址（如 notify@example.com）。\n- Subject：邮件主题。",
+        "en": "The email push attributes. This parameter is required when PushType is set to dm. The value is in JSON format and contains the following fields:\n\n- AccountName: The sender address configured in DirectMail (such as notify@example.com).\n- Subject: The email subject."
+      }
+    },
+    {
+      "name": "DysmsAttributes",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "短信推送相关属性，当 PushType=alisms 时必填。JSON 格式，包含以下字段：\n\n- TemplateCode：短信模板 Code，在短信服务控制台中获取。\n- SignName：短信签名名称。",
+        "en": "The SMS push attributes. This parameter is required when PushType is set to alisms. The value is in JSON format and contains the following fields:\n\n- TemplateCode: The SMS template code, which can be obtained from the Short Message Service console.\n- SignName: The SMS signature name."
+      }
+    },
+    {
+      "name": "Endpoint",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "## 接收消息的终端地址\n\n格式根据 `PushType` 不同而不同：\n\n- `PushType=http`：HTTP/HTTPS 回调 URL，如 `http://example.com/callback` 或 `https://example.com/callback`。\n- `PushType=queue`：目标队列 ARN，格式为 `acs:mns:{RegionId}:{主账号UID}:queues/{QueueName}`。\n- `PushType=dm`：邮箱推送终端，格式固定为 `smq-ep:dm:{主账号UID}:__dynamic`，其中 `{主账号UID}` 替换为您的阿里云主账号 UID。\n- `PushType=dysms`：短信推送终端，格式为 `smq-ep:dysms:{主账号UID}:{手机号码}`。\n- `PushType=kafka`：Kafka 推送终端，Kafka 推送类型已废弃。\n- `PushType=fc`：函数计算终端，格式为 `acs:fc:{RegionId}:{主账号UID}:services/{ServiceName}/functions/{FunctionName}`。\n- `PushType=eventbus`：事件总线终端，格式为 `acs:eventbridge:{RegionId}:{主账号UID}:eventbus/{EventBusName}`。",
+        "en": "## Endpoint address for receiving messages\n\nThe format varies depending on the value of `PushType`:\n\n- `PushType=http`: An HTTP/HTTPS callback URL, such as `http://example.com/callback` or `https://example.com/callback`.\n- `PushType=queue`: The ARN of the destination queue, in the format `acs:mns:{RegionId}:{Alibaba Cloud account ID}:queues/{QueueName}`.\n- `PushType=dm`: The email push endpoint, in the fixed format `smq-ep:dm:{Alibaba Cloud account ID}:__dynamic`. Replace `{Alibaba Cloud account ID}` with your Alibaba Cloud account ID.\n- `PushType=dysms`: The SMS push endpoint, in the format `smq-ep:dysms:{Alibaba Cloud account ID}:{PhoneNumber}`.\n- `PushType=kafka`: The Kafka push endpoint. The Kafka push type is deprecated.\n- `PushType=fc`: The Function Compute endpoint, in the format `acs:fc:{RegionId}:{Alibaba Cloud account ID}:services/{ServiceName}/functions/{FunctionName}`.\n- `PushType=eventbus`: The EventBridge endpoint, in the format `acs:eventbridge:{RegionId}:{Alibaba Cloud account ID}:eventbus/{EventBusName}`."
+      }
+    },
+    {
+      "name": "KafkaAttributes",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "Kafka 推送类型已废弃",
+        "en": "The Kafka push type is deprecated."
+      }
+    },
+    {
+      "name": "MessageTag",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "该订阅中消息过滤的标签（标签一致的消息才会被推送）。\n取值范围：不超过16个字符的字符串。\n\n默认不进行消息过滤。",
+        "en": "The tag used for message filtering in this subscription. Only messages with a matching tag are pushed. The value is a string of up to 16 characters.\n\nBy default, no message filtering is applied."
+      }
+    },
+    {
+      "name": "NotifyContentFormat",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "## 推送的消息内容格式\n\n取值：\n\n- `XML`：消息体以 XML 格式推送（默认）。\n- `JSON`：消息体以 JSON 格式推送。\n- `SIMPLIFIED`：仅推送消息体原始内容，不包含 SMQ 的元信息包装。",
+        "en": "## Format of the pushed message content\n\nValid values:\n\n- `XML`: The message body is pushed in XML format. This is the default value.\n- `JSON`: The message body is pushed in JSON format.\n- `SIMPLIFIED`: Only the raw message body content is pushed, without SMQ metadata wrapping."
+      }
+    },
+    {
+      "name": "NotifyStrategy",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "向Endpoint推送消息错误时的重试策略。取值说明如下：\n\n- BACKOFF_RETRY：退避重试。\n\n- EXPONENTIAL_DECAY_RETRY：指数衰减重试。",
+        "en": "The retry strategy when an error occurs while pushing messages to the endpoint. Valid values:\n\n- BACKOFF_RETRY: backoff retry.\n\n- EXPONENTIAL_DECAY_RETRY: exponential decay retry."
+      }
+    },
+    {
+      "name": "PushType",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "## 订阅的推送类型\n\n取值：\n\n- `http`：HTTP/HTTPS 推送，将消息推送到指定的 HTTP 或 HTTPS 回调地址。\n- `queue`：队列推送，将消息推送到指定的 SMQ 队列。\n- `dm`：邮箱推送，通过邮件服务（DirectMail）发送通知。需同时设置 `DmAttributes` 和 `StsRoleArn` 参数。\n- `dysms`：短信推送，通过阿里云短信服务发送通知。需同时设置 `DysmsAttributes` 参数。\n\n- `fc`：函数计算推送，将消息推送到阿里云函数计算（FC）。\n- `eventbus`：事件总线推送，将消息推送到 EventBridge 事件总线。\n\n**说明：**\n以下值已废弃，仅用于兼容旧订阅：\n\n- `mpush`：移动推送\n- `alisms`：旧版短信\n- `email`：旧版邮箱，请使用 `dm`\n- `kafka`：Kafka 推送类型已废弃。",
+        "en": "## Push type of the subscription\n\nValid values:\n\n- `http`: HTTP/HTTPS push. Pushes messages to a specified HTTP or HTTPS callback URL.\n- `queue`: Queue push. Pushes messages to a specified SMQ queue.\n- `dm`: Email push. Sends notifications through DirectMail. You must also set the `DmAttributes` and `StsRoleArn` parameters.\n- `dysms`: SMS push. Sends notifications through Alibaba Cloud Short Message Service. You must also set the `DysmsAttributes` parameter.\n\n- `fc`: Function Compute push. Pushes messages to Alibaba Cloud Function Compute (FC).\n- `eventbus`: EventBridge push. Pushes messages to an EventBridge event bus.\n\n**Note:**\nThe following values are deprecated and are only used for compatibility with legacy subscriptions:\n\n- `mpush`: Mobile push.\n- `alisms`: Legacy SMS.\n- `email`: Legacy email. Use `dm` instead.\n- `kafka`: Kafka push type is deprecated."
+      }
+    },
+    {
+      "name": "StsRoleArn",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "服务扮演的 RAM 角色 ARN。格式为 acs:ram::{主账号UID}:role/{RoleName}，其中 {主账号UID} 必须替换为调用 OpenAPI 的阿里云主账号 UID。",
+        "en": "The ARN of the RAM role assumed by the service. The format is acs:ram::{Alibaba Cloud account ID}:role/{RoleName}. Replace {Alibaba Cloud account ID} with the Alibaba Cloud account ID that calls the API operation."
+      }
+    },
+    {
+      "name": "SubscriptionName",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "订阅名称。",
+        "en": "The name of the subscription."
+      }
+    },
+    {
+      "name": "TenantRateLimitPolicy",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "限流策略",
+        "en": "The throttling policy."
+      }
+    },
+    {
+      "name": "TopicName",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "主题的名称。",
+        "en": "The name of the topic."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为主题创建Subscription",
+    "en": "Create a subscription for a topic"
+  }
+}

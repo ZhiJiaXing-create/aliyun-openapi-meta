@@ -1,5 +1,6 @@
 {
   "name": "CopyDatabaseBetweenInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源实例备份集ID。按备份集复制数据库时，可以通过查询备份列表接口DescribeBackups获取备份集ID。\n>调用接口时，**BackupId**和**RestoreTime**需传入任意一个。",
+        "en": "The ID of the backup set based on which you want to restore databases of the source instance. When you replicate databases by backup set, you can call the DescribeBackups operation to obtain the ID of the backup set.\n\n>  You must specify one of the **BackupId** and **RestoreTime** parameters."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源实例ID。可调用DescribeDBInstances获取。",
+        "en": "The source instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "DbNames",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待复制的数据库名称列表，格式如下：`{\"源实例的数据库名称\":\"目标实例的数据库名称\"}`。复制多个库时，用英文逗号（,）分隔。示例如下：\n\n- 复制单个库：`{\"zhttest\":\"zhttest\"}`\n- 复制多个库：`{\"zhttest01\":\"zhttest01\",\"zhttest02\":\"zhttest02\"}`\n\n> 目标实例的数据库名称可与源实例不同，但复制前需确保目标实例中不存在同名数据库。",
+        "en": "The names of the databases that you want to copy. Format: `Source database name 1,Source database name 2`."
+      }
     },
     {
       "name": "RestoreTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按时间点复制数据库，可以选择备份保留周期内的任意时间点。格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n>调用接口时，**BackupId**和**RestoreTime**需传入任意一个。",
+        "en": "The point in time when the system replicates databases. You can select a point in time within the backup retention period. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n> You must specify one of the **BackupId** and **RestoreTime** parameters."
+      }
     },
     {
       "name": "SyncUserPrivilege",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否复制用户和权限，取值：\n* **YES**：表示复制用户和权限。如果目标实例中有同名的用户，则该用户将叠加源实例的同名用户的权限。\n* **NO**（默认值）：表示不复制用户和权限。",
+        "en": "Specifies whether to copy users and permissions.\n\n*   **YES**: copies users and permissions. If the destination instance has a user whose name is the same as a user in the source instance, the permissions of the user in the source instance will also be granted to the user in the destination instance after you copy user permissions.\n*   **NO**: does not copy users and permissions.\n\nDefault value: **NO**."
+      }
     },
     {
       "name": "TargetDBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标实例ID。可调用DescribeDBInstances获取。",
+        "en": "The destination instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "RDS SQL Server实例间复制数据库",
+    "en": "CopyDatabaseBetweenInstances"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\nRDS SQL Server\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n[RDS SQL Server实例间数据库复制](~~95702~~)\n\n### 使用限制\n\n- 源实例和目标实例需在同一个阿里云账号下。\n- 目标实例中**不得存在**与源实例待复制数据库同名的数据库。\n- 目标实例的可用存储空间**需大于**源实例中待复制数据库占用的空间。存储空间不足时，请及时[扩容](~~95665~~)。\n- 源实例和目标实例需位于同一地域（可用区可不同），且网络类型需一致。\n- 源和目标实例不支持[Serverless实例](~~603466~~)类型。迁移Serverless实例，请[通过DTS迁移](~~210947~~)。\n- 传值时，BackupId或RestoreTime参数**必须任传其一**，都不传将报错。",
+    "en": "### Supported database engines\n\nRDS SQL Server\n\n### References\n\n> : Before you call this operation, read the following documentation and make sure that you fully understand the prerequisites and impacts of this operation.\n\n[Replicate databases between ApsaraDB RDS for SQL Server instances](~~95702~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds copy-database-between-instances --db-instance-id rm-bp172446ys9cf0000 --target-db-instance-id rm-bp1m71wvzfiq70000 --db-names zhttest_:_zhttest --backup-id 2593210000 --restore-time 2025-06-08T17:41:14Z --sync-user-privilege NO --region cn-hangzhou",
     "legacyCli": "aliyun rds CopyDatabaseBetweenInstances --region cn-hangzhou --SyncUserPrivilege NO --DbNames 'zhttest_:_zhttest' --DBInstanceId 'rm-bp172446ys9cf0000' --BackupId 2593210000 --TargetDBInstanceId 'rm-bp1m71wvzfiq70000' --RestoreTime '2025-06-08T17:41:14Z'"

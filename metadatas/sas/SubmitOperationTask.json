@@ -1,5 +1,6 @@
 {
   "name": "SubmitOperationTask",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "CheckId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "检查项的ID。\n\n> 您可调用[ListCheckResult](~~ListCheckResult~~)接口获取检查项ID。",
+        "en": "The ID of the check item.\n\n>  You can call the [ListCheckResult](~~ListCheckResult~~) operation to obtain the ID of the check item."
+      }
     },
     {
       "name": "DimensionType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "提交操作任务的任务维度：\n- 实例维度：INSTANCE\n- 检查项维度：CHECK_ID",
+        "en": "The dimension of the task that you want to submit. Valid values:\n\n*   Instance dimension: INSTANCE\n*   Check item dimension: CHECK_ID"
+      }
     },
     {
       "name": "OperationTaskInstances",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "提交实例任务所需的资产信息。",
+        "en": "The asset information required to submit the tasks for instances."
+      },
       "sub_parameters": [
         {
           "name": "InstanceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "服务器的实例ID。",
+            "en": "The instance ID of the server."
+          }
         },
         {
           "name": "RegionId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "服务器所在的地域的ID。",
+            "en": "The region ID of the server."
+          }
         },
         {
           "name": "TaskId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "回滚任务时回滚的任务ID。",
+            "en": "The ID of the task that you want to roll back"
+          }
         },
         {
           "name": "Vendor",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资产厂商。取值：\n\n- **0**：阿里云资产\n- **1**：云外资产\n- **2**：IDC资产\n- **3**、**4**、**5**、**7**：其它云资产\n- **8**：轻量级资产",
+            "en": "The service provider of the asset. Valid values:\n\n*   **0**: an asset provided by Alibaba Cloud.\n*   **1**: an asset outside Alibaba Cloud.\n*   **2**: an asset in a data center.\n*   **3**, **4**, **5**, and **7**: an asset from a third-party cloud service provider.\n*   **8**: a lightweight asset."
+          }
         }
       ]
     },
@@ -52,25 +81,41 @@
       "name": "RelationKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "提交操作时关联跨页选择的关联Key。\n> 您可调用[CreateAssetSelectionConfig](~~CreateAssetSelectionConfig~~)接口BusinessType字段获取关联Key。",
+        "en": "The key linked to cross-page selections during task submission.\n\n>  You can call the [CreateAssetSelectionConfig](~~CreateAssetSelectionConfig~~) operation to query the associated key from the BusinessType field."
+      }
     },
     {
       "name": "RepairTempParam",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "修复任务需要的临时参数。",
+        "en": "The temporary parameters required for the repair task."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "对应临时修复参数的名称。",
+            "en": "The name of the temporary repair parameter."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "临时修复参数对应的值。",
+            "en": "The value of the temporary repair parameter."
+          }
         }
       ]
     },
@@ -78,9 +123,20 @@
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "提交任务的任务类型：\n- 修复任务：REPAIR\n- 回滚任务：ROLLBACK",
+        "en": "The type of the task that you want to submit. Valid values:\n\n*   Repair task: REPAIR\n*   Rollback task: ROLLBACK"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交检查项修复回滚操作任务",
+    "en": "SubmitOperationTask"
+  },
   "example": {
     "unifiedCli": "aliyun sas submit-operation-task --check-id 132 --operation-task-instances TaskId=7d0b10e35e80c9e5ebac5f10540000 InstanceId=i-uf6533m4vuo3oa330000 Vendor=7 RegionId=cn-hangzhou --dimension-type CHECK_ID --type REPAIR --repair-temp-param Value=192.168.1XX.1XX Name=IPPort --relation-key CSPM_OPERATION_RELATION_KEY_173000 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas SubmitOperationTask --region cn-hangzhou --DimensionType CHECK_ID --Type REPAIR --CheckId 132 --OperationTaskInstances.1.TaskId 7d0b10e35e80c9e5ebac5f10540000 --RepairTempParam.1.Name IPPort --RepairTempParam.1.Value '192.168.1XX.1XX' --RelationKey CSPM_OPERATION_RELATION_KEY_173000 --OperationTaskInstances.1.Vendor 7 --OperationTaskInstances.1.InstanceId 'i-uf6533m4vuo3oa330000' --OperationTaskInstances.1.RegionId 'cn-hangzhou'"

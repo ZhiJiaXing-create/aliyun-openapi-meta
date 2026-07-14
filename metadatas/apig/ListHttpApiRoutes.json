@@ -1,9 +1,20 @@
 {
   "name": "ListHttpApiRoutes",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/v1/http-apis/[httpApiId]/routes",
   "parameters": [
+    {
+      "name": "backendServiceName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "后端服务名称，可根据该名称过滤路由",
+        "en": "The backend service name. You can use this name to filter routes."
+      }
+    },
     {
       "name": "consumerAuthorizationRuleId",
       "position": "Query",
@@ -11,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "根据特定的消费者授权规则ID过滤接口列表，响应中的接口列表仅包含已授权的接口。",
-        "en": "The string that is used to filter routes based on consumer authentication rules. Only authorized APIs are returned."
+        "en": "Filters the API list by a specific consumer authorization rule ID. The response only includes authorized APIs."
       }
     },
     {
@@ -21,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "路由的部署状态。",
-        "en": "The deployment state of the route.\n\nEnumerated values:\n\n*   Deploying: The route is being deployed.\n*   DeployedWithChanges: The route is deployed and modified.\n*   Undeploying: The route is being undeployed.\n*   NotDeployed: The route is not deployed.\n*   Deployed: The route is deployed.\n*   UndeployFailed: The route failed to be undeployed.\n*   DeployFailed: The route failed to be deployed."
+        "en": "The deployment status of the route."
       }
     },
     {
@@ -31,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "根据域名ID过滤路由信息。",
-        "en": "Specifies to filter routes by domain ID."
+        "en": "Filters route information by domain name ID."
       }
     },
     {
@@ -51,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "是否为部署场景",
-        "en": "Whether to filter for deployment scenario"
+        "en": "Specifies whether the request is for a deployment scenario."
       }
     },
     {
@@ -61,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "云原生API网关ID。",
-        "en": "The ID of the Cloud-native API Gateway instance."
+        "en": "The cloud-native API gateway ID."
       }
     },
     {
@@ -71,7 +82,7 @@
       "required": false,
       "description": {
         "zh": "HTTP API ID。",
-        "en": "The HTTP API ID."
+        "en": "HTTP API ID。"
       }
     },
     {
@@ -91,7 +102,7 @@
       "required": false,
       "description": {
         "zh": "按路由名称模糊查询。",
-        "en": "The route name keyword for a fuzzy search."
+        "en": "Fuzzy match by route name."
       }
     },
     {
@@ -101,7 +112,7 @@
       "required": false,
       "description": {
         "zh": "分页页码，从1开始，不填默认1.",
-        "en": "The page number of the page to return. Pages start from page 1. Default value: 1."
+        "en": "The page number, starting from 1. Default value: 1."
       }
     },
     {
@@ -111,7 +122,7 @@
       "required": false,
       "description": {
         "zh": "分页大小，有效范围[1, 100]，不填默认10。",
-        "en": "The number of entries per page. Valid values: 1 to 100. Default value: 10."
+        "en": "The page size. Valid values: 1 to 100. Default value: 10."
       }
     },
     {
@@ -121,7 +132,7 @@
       "required": false,
       "description": {
         "zh": "按路由路径模糊查询。",
-        "en": "The route path keyword for a fuzzy search."
+        "en": "Fuzzy match by route path."
       }
     },
     {
@@ -131,7 +142,7 @@
       "required": false,
       "description": {
         "zh": "响应中携带消费者授权信息。",
-        "en": "The consumer authorization information in the response."
+        "en": "Includes consumer authorization information in the response."
       }
     },
     {
@@ -141,7 +152,7 @@
       "required": false,
       "description": {
         "zh": "响应中每个路由信息携带指定消费者ID的授权规则列表。",
-        "en": "The authentication rules of the specified consumer in each route returned."
+        "en": "Includes the authorization rule list of the specified consumer ID for each route in the response."
       }
     },
     {
@@ -151,10 +162,17 @@
       "required": false,
       "description": {
         "zh": "响应中每个路由信息携带指定的插件ID的挂载信息。",
-        "en": "The mounting information of the specified plug-in in each route returned."
+        "en": "Includes the mount information of the specified plug-in ID for each route in the response."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询路由列表",
+    "en": "Query route list"
+  },
   "example": {
     "unifiedCli": "aliyun apig list-http-api-routes --http-api-id api-cr68g1dlhtgm31f000 --page-number 1 --page-size 10 --environment-id env-cpqnr6tlhtgubc000 --deploy-statuses NotDeployed --name itemcenter-gateway --name-like item --path-like /v1 --gateway-id gw-cpv4sqdl0000 --with-consumer-info-by-id cs-xxx --consumer-authorization-rule-id cas-xxx --with-auth-policy-info true --with-plugin-attachment-by-plugin-id pl-xxx --domain-id d-xxx --for-deploy true --backend-service-name test-svc --region cn-hangzhou",
     "legacyCli": "aliyun apig GET /v1/http-apis/api-cr68g1dlhtgm31f000/routes --region cn-hangzhou --pageNumber 1 --withPluginAttachmentByPluginId 'pl-xxx' --pageSize 10 --forDeploy true --deployStatuses NotDeployed --domainId 'd-xxx' --environmentId 'env-cpqnr6tlhtgubc000' --nameLike item --pathLike '/v1' --withAuthPolicyInfo true --backendServiceName 'test-svc' --name 'itemcenter-gateway' --consumerAuthorizationRuleId 'cas-xxx' --gatewayId 'gw-cpv4sqdl0000' --withConsumerInfoById 'cs-xxx' --header \"Content-Type=application/json\""

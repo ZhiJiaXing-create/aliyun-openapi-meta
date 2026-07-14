@@ -1,5 +1,6 @@
 {
   "name": "EnableScalingGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ActiveScalingConfigurationId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要在伸缩组内启用的伸缩配置的ID。",
+        "en": "The ID of the scaling configuration to be activated in the scaling group."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "启用伸缩组后需要加入伸缩组的ECS实例的ID，N的取值范围：1～20。\n\n指定加入伸缩组的ECS实例需要满足以下条件： \n       \n- 必须与伸缩组在同一个地域。\n\n- 必须处于Running状态。\n\n- 不能已加入到其他伸缩组中。\n\n- 付费方式为包年包月、按量付费或抢占式实例。\n\n- 如果伸缩组指定VswitchID，则不支持Classic类型的ECS实例加入伸缩组，也不支持其他VPC的ECS实例加入伸缩组。\n\n- 如果伸缩组没有指定VswitchID，则不支持VPC类型的ECS实例加入伸缩组。",
+        "en": "The ID of the ECS instance to add to the scaling group after the scaling group is enabled. Valid values of N: 1 to 20.\n\nThe ECS instances to be added to the scaling group must meet the following conditions: \n       \n- The instances must be in the same region as the scaling group.\n\n- The instances must be in the Running state.\n\n- The instances must not already belong to another scaling group.\n\n- The billing method of the instances must be subscription, pay-as-you-go, or spot instance.\n\n- If the scaling group has a specified VswitchID, classic network ECS instances cannot be added to the scaling group, and ECS instances from other VPCs cannot be added to the scaling group.\n\n- If the scaling group does not have a specified VswitchID, VPC-type ECS instances cannot be added to the scaling group."
+      }
     },
     {
       "name": "LaunchTemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板的ID，用于指定伸缩组从实例启动模板获取启动配置信息。",
+        "en": "The ID of the launch template. This parameter specifies that the scaling group obtains launch configuration information from the launch template."
+      }
     },
     {
       "name": "LaunchTemplateOverride",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "实例启动模板的覆盖层信息。",
+        "en": "The override information of the launch template."
+      },
       "sub_parameters": [
         {
           "name": "InstanceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "当您需要伸缩组按照实例规格容量进行伸缩时，请同时指定本参数和LaunchTemplateOverride.N.WeightedCapacity。\n\n本参数用于指定实例规格，会覆盖启动模板中的实例规格。您可以指定N个本参数，扩展启动模板支持N个实例规格。N的取值范围：1~10。\n> 仅当LaunchTemplateId参数指定了启动模板时，本参数生效。\n\nInstanceType的取值范围：在售的ECS实例规格，请参见[实例规格族](~~25378~~)。",
+            "en": "If you want the scaling group to scale based on the capacity of instance types, specify both this parameter and LaunchTemplateOverride.N.WeightedCapacity.\n\nThis parameter specifies ECS instance type and overrides ECS instance type in the launch template. You can specify N values for this parameter to extend the launch template to support N instance types. Valid values of N: 1 to 10.\n> This parameter takes effect only when the LaunchTemplateId parameter specifies a launch template.\n\nFor valid values of InstanceType, see [Instance families](~~25378~~)."
+          }
         },
         {
           "name": "WeightedCapacity",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "当您需要伸缩组按照实例规格容量进行伸缩时，在指定LaunchTemplateOverride.N.InstanceType后，再指定本参数。两个参数一一对应，N需要保持一致。\n\n本参数用于指定实例规格的权重，即实例规格的单台实例在伸缩组中表示的容量大小。权重越大，满足期望容量所需的本实例规格的实例数量越少。\n\n由于每个实例规格的vCPU个数、内存大小等性能指标会有差异，您可以根据自身需求，给不同的实例规格配置不同的权重。\n\n 例如：\n\n- 当前容量：0。\n- 期望容量：6。\n- ecs.c5.xlarge规格容量：4。\n\n为满足期望容量，伸缩组将为用户扩容2台ecs.c5.xlarge实例。\n\n>扩容时伸缩组的容量不得超过最大容量（MaxSize）与实例规格的最大权重之和。\n\nWeightedCapacity的取值范围：1~500。",
+            "en": "If you want the scaling group to scale based on the capacity of instance types, specify this parameter after you specify LaunchTemplateOverride.N.InstanceType. The two parameters correspond to each other on a one-to-one basis, and the values of N must be the same.\n\nThis parameter specifies the weight of the instance type, which represents the capacity of a single instance of this type in the scaling group. A higher weight means that fewer instances of this type are required to meet the expected capacity.\n\nBecause instance types differ in the number of vCPUs, memory size, and other performance metrics, you can assign different weights to different instance types based on your requirements.\n\n For example:\n\n- Current capacity: 0.\n- Expected capacity: 6.\n- Capacity of the ecs.c5.xlarge instance type: 4.\n\nTo meet the expected capacity, the scaling group scales out by adding 2 ecs.c5.xlarge instances.\n\n>During a scale-out, the capacity of the scaling group cannot exceed the sum of the maximum capacity (MaxSize) and the maximum weight among the instance types.\n\nValid values of WeightedCapacity: 1 to 500."
+          }
         }
       ]
     },
@@ -46,27 +71,54 @@
       "name": "LaunchTemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板的版本。取值范围： \n\n- 固定的模板版本号。\n- Default：始终使用模板默认版本。\n- Latest：始终使用模板最新版本。",
+        "en": "The version of the launch template. Valid values: \n\n- A fixed template version number.\n- Default: always uses the default version of the template.\n- Latest: always uses the latest version of the template."
+      }
     },
     {
       "name": "LoadBalancerWeight",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加入伸缩组中ECS实例或ECI实例作为后端服务器的权重，N的取值范围：1～20，该参数取值范围：1~100。\n\n默认值：50。",
+        "en": "The weight of the ECS instance or elastic container instance as a backend server of the associated Server Load Balancer (SLB) instance. Valid values of N: 1 to 20. Valid values of this parameter: 1 to 100.\n\nDefault value: 50."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "启用一个伸缩组",
+    "en": "Enable a scaling group"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 当伸缩组处于Inactive状态，且伸缩组配置了组内实例的配置信息来源（伸缩配置、启动模板或者在创建伸缩组时指定ECS实例）时，才可以调用该接口来启用伸缩组。否则，会调用失败。\n\n    >一个伸缩组在同一时刻有且只有一个生效的实例配置信息来源。在调用接口时，您可以为伸缩组指定伸缩配置或启动模板。如果调用该接口前您已经为伸缩组配置了实例配置信息来源，在调用时再指定伸缩配置或启动模板会覆盖原有的配置信息。\n\n- 当该接口指定了加入伸缩组的ECS实例（InstanceId.N），调用该接口后，弹性伸缩会判断在加入ECS实例后伸缩组的ECS实例数量（Total Capacity）是否在最小值（MinSize）和最大值（MaxSize）之间：\n\n    - 如果伸缩组的Total Capacity小于MinSize，调用成功后，弹性伸缩服务会自动创建差额的按量付费的ECS实例。\n\n     例如：创建伸缩组时，指定MinSize为5，在启用伸缩组的InstanceId.N参数中指定2台已有ECS实例，则弹性伸缩在加入2台已有ECS实例之后，再自动创建3台ECS实例。 \n\n    - 如果伸缩组的Total Capacity大于MaxSize，则调用失败。",
+    "en": "## Operation description\n\n- You can invoke this operation to enable a scaling group only when the scaling group is in the Inactive state and has an instance configuration source (a scaling configuration, a launch template, or ECS instances specified during scaling group creation). Otherwise, the invocation fails.\n\n    >A scaling group can have only one active instance configuration source at a time. When you invoke this operation, you can specify a scaling configuration or launch template for the scaling group. If you have already configured an instance configuration source for the scaling group before invoking this operation, specifying a scaling configuration or launch template overwrites the existing configuration.\n\n- If you specify ECS instances (InstanceId.N) to add to the scaling group when invoking this operation, Auto Scaling checks whether the total number of ECS instances (Total Capacity) in the scaling group falls between the minimum value (MinSize) and the maximum value (MaxSize) after the ECS instances are added:\n\n    - If the Total Capacity of the scaling group is less than MinSize, Auto Scaling performs automatic creation of pay-as-you-go ECS instances to make up the difference.\n\n     For example, if you set MinSize to 5 when creating the scaling group and specify 2 existing ECS instances in the InstanceId.N parameter when enabling the scaling group, Auto Scaling adds the 2 existing ECS instances and then performs automatic creation of 3 more ECS instances. \n\n    - If the Total Capacity of the scaling group is greater than MaxSize, the invocation failed."
+  },
   "example": {
     "unifiedCli": "aliyun ess enable-scaling-group --scaling-group-id asg-bp14wlu85wrpchm00000 --active-scaling-configuration-id asc-bp1ffogfdauy0nu50000 --launch-template-id lt-m5e3ofjr1zn1aw70000 --launch-template-version Default --instance-id i-283vv0000 --load-balancer-weight 50 --launch-template-override WeightedCapacity=4 InstanceType=ecs.c5.xlarge --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess EnableScalingGroup --region cn-hangzhou --LaunchTemplateOverride.1.WeightedCapacity 4 --LaunchTemplateOverride.1.InstanceType 'ecs.c5.xlarge' --ActiveScalingConfigurationId 'asc-bp1ffogfdauy0nu50000' --ScalingGroupId 'asg-bp14wlu85wrpchm00000' --LoadBalancerWeight.1 50 --LaunchTemplateVersion Default --LaunchTemplateId 'lt-m5e3ofjr1zn1aw70000' --RegionId 'cn-hangzhou' --InstanceId.1 'i-283vv0000'"

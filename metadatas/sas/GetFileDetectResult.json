@@ -1,5 +1,6 @@
 {
   "name": "GetFileDetectResult",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "HashKeyList",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件标识列表。最多传入100个元素。",
+        "en": "An array of up to 100 unique file identifiers."
+      }
     },
     {
       "name": "SourceIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问源IP地址。",
+        "en": "The source IP address of the request."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要检测的文件类型。取值：\n\n-  **0**：恶意文件检测\n\n-  **6**：Skill压缩包检测",
+        "en": "The type of file to detect. Valid values:\n\n- **0**: malicious file detection\n\n- **6**: Skill compressed package detection"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取文件检测结果",
+    "en": "GetFileDetectResult"
+  },
+  "descriptions": {
+    "zh": "推送检测过的文件才能获取检测结果，检测结果将保留5小时，5小时内可重复查询。推送检测接口请参考[CreateFileDetect](~~CreateFileDetect~~)。\n\n### 文件唯一标识\n\n文件检测相关接口均包含 HashKey 参数，表示此次检测文件的唯一标识，用于查询检测结果。\n\n在Skill压缩包检测场景下（Type为6），请通过[CreateFileDetect](~~CreateFileDetect~~)接口的返回值获取。\n\n在恶意文件检测场景下（Type为0），仅支持传入文件完整内容的MD5或SHA-256。\n\n### 查询检测结果\n\n恶意文件检测场景（Type为0）可以通过Ext扩展字段里的FileLabel对文件属性进行筛选，例如通过组合encrypted、Zip这两个属性筛选加密的压缩包。支持的文件标签-压缩文件类型：Zip、RAR、7-Zip、XAR、ZLib、GZip、tar；可以通过Ext扩展字段里的Highlight字段定位Webshell文件的恶意代码段。Highlight字段为列表类型，列表中每个元素对应一段代码范围，数字表示相对文件头部的偏移字符数。\n\nSkill压缩包检测场景（Type为6）可以通过Ext字段获取本次检测报告，其中包含深度意图分析、提示词检测、敏感信息识别、恶意脚本等检测结果。如果希望查询压缩包中单个文件的详情，请通过[ListCompressFileDetectResult](~~ListCompressFileDetectResult~~)接口查询。",
+    "en": "You can retrieve detection results only for submitted files. Results are retained for 5 hours and can be queried multiple times during this period. To submit a file for detection, call the [CreateFileDetect](~~CreateFileDetect~~) operation.\n\n### Unique file identifier\n\nAll file detection operations use the `HashKey` parameter. `HashKey` is a unique file identifier used to query the corresponding file detection result.\n\nFor Skill compressed package detection (when Type is 6), obtain the `HashKey` from the response of the [CreateFileDetect](~~CreateFileDetect~~) operation.\n\nFor malicious file detection (when Type is 0), the `HashKey` must be the MD5 or SHA-256 hash of the entire file.\n\n### Query detection results\n\nIn a malicious file detection scenario (when `Type` is `0`), you can filter files by their attributes using the `FileLabel` field in the `Ext` field. For example, you can combine the `encrypted` and `Zip` attributes to filter for encrypted compressed packages. Supported file tags for compressed packages include: `Zip`, `RAR`, `7-Zip`, `XAR`, `ZLib`, `GZip`, and `tar`. You can also use the `Highlight` field in the `Ext` field to locate malicious code segments in `WebShell` files. The `Highlight` field is a list in which each element represents a code range. The numbers indicate the character offset from the beginning of the file.\n\nIn a Skill compressed package detection scenario (when `Type` is `6`), you can retrieve the detection report from the `Ext` field. This report includes results from deep intent analysis, prompt injection detection, sensitive information recognition, and malicious script detection. To query the details of an individual file within the compressed package, call the [ListCompressFileDetectResult](~~ListCompressFileDetectResult~~) operation."
+  },
   "example": {
     "unifiedCli": "aliyun sas get-file-detect-result --source-ip 183.46.XX.XX --hash-key-list 0a212417e65c26ff133cfff28f9c0000 --type 0 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas GetFileDetectResult --region cn-hangzhou --Type 0 --SourceIp '183.46.XX.XX' --HashKeyList.1 0a212417e65c26ff133cfff28f9c0000"

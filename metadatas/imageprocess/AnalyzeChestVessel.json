@@ -1,0 +1,82 @@
+{
+  "name": "AnalyzeChestVessel",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "DataFormat",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "图像格式。目前只支持DICOM和NIFTI。",
+        "en": "The image format. Only DICOM and NIFTI are supported."
+      }
+    },
+    {
+      "name": "DataSourceType",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输入数据的类型，支持`HTTP_FILES`和`HTTP_NII`。\n\n- `HTTP_FILES`为序列文件，对应DataFormat为DICOM。\n- `HTTP_NII`为单个文件，对应DataFormat为NIFTI。",
+        "en": "The type of the input data. Valid values: `HTTP_FILES` and `HTTP_NII`.\n\n- `HTTP_FILES`: series files. The corresponding DataFormat is DICOM.\n- `HTTP_NII`: a single file. The corresponding DataFormat is NIFTI."
+      }
+    },
+    {
+      "name": "OrgId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构代码。",
+        "en": "The code of the data source organization."
+      }
+    },
+    {
+      "name": "OrgName",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构名称。",
+        "en": "The name of the data source organization."
+      }
+    },
+    {
+      "name": "URLList",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": true,
+      "description": {
+        "zh": "1",
+        "en": "1."
+      },
+      "sub_parameters": [
+        {
+          "name": "URL",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "图像URL地址。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n\n> URLList.N.URL中的N为该图像URL在当前List中的顺序（从1开始）。当直接使用API请求时，输入URLList的填充会以URLList.1.URL=url1，URLList.2.URL=url2，......的方式指定参数和参数值，参数对以&连接，其中url1、url2、......等具体值请根据实际情况进行替换；当使用SDK填充URLList时，可直接使用SDK提供的相应的方法。",
+            "en": "The URL of the image. We recommend that you use an OSS URL in the Shanghai region. If the file is stored locally or in an OSS bucket outside the Shanghai region, refer to [File URL processing](~~155645~~).\n\n> N in URLList.N.URL indicates the sequence number of the image URL in the current list (starting from 1). When you directly use the API, specify the URLList parameters in the format of URLList.1.URL=url1, URLList.2.URL=url2, and so on. Separate parameter pairs with ampersands (&). Replace url1, url2, and other values with actual values. When you use an SDK, use the corresponding methods provided by the SDK to populate URLList."
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "主动脉瘤肺动脉高压检测",
+    "en": "Aortic aneurysm and pulmonary hypertension detection"
+  },
+  "descriptions": {
+    "zh": "## 服务说明\n由于产品业务调整，主动脉瘤肺动脉高压检测服务将迁移至达摩院[达医智影官网](https://damomed.com)，主动脉瘤肺动脉高压检测服务于2025年11月26日起停止新用户开通调用，历史开通过该服务的老用户可继续调用，2026年11月26日后该服务将下架，不再支持新老用户调用视觉智能开放平台的服务。如果对服务迁移有疑问，您可前往达摩院[达医智影官网](https://damomed.com)联系相关人员。\n\n## 功能描述 \n主动脉瘤肺动脉高压检测能力可以对输入的胸部CT平扫DICOM影像数据中的主动脉及肺动脉进行分割，并分别提取其中心线，然后根据中心线生成最佳视角的Stretch CPR图像、Cross Section图像及环绕血管一周的Straightened CPR图像，同时返回每根血管的最大直径，沿中心线上每隔1毫米处垂直于血管的血管截面积及这些点在原始图像病人坐标系中的位置。\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n\n## 输入限制\n- 图像格式：DICOM、NIFTI。\n- 如果输入格式为DICOM，每次请求帧数最少20帧最多600帧；如果输入格式为NIFTI，每次请求须有且仅有一例数据。\n- URL地址中不能包含中文字符。\n\n## 调用步骤\n该能力为异步能力，需分两步进行调用。\n第一步调用AnalyzeChestVessel接口提交任务，请求成功后，得到一个任务ID。\n第二步调用[GetAsyncJobResult](~~607824~~)接口查询结果，根据任务ID查询任务执行状态和结果。如果任务还在处理中，可稍等一段时间后再进行查询。当同一个任务还未处理完时，建议不要重复提交任务。\n\n## 计费说明\n主动脉瘤肺动脉高压检测能力目前处于公测期，可免费调用。",
+    "en": "## Operation description\nDue to product business adjustments, the aortic aneurysm and pulmonary hypertension detection service will be migrated to the Alibaba DAMO Academy [DAMO Medical Imaging website](https://damomed.com). Starting from November 26, 2025, new users can no longer activate or call this service. Existing users who have previously activated this service can continue to use it. After November 26, 2026, this service will be delisted and will no longer be available to any users on the Visual Intelligence Platform. If you have questions about the service migration, visit the Alibaba DAMO Academy [DAMO Medical Imaging website](https://damomed.com) to contact the relevant personnel.\n\n## Feature description \nThe aortic aneurysm and pulmonary hypertension detection feature segments the aorta and pulmonary artery from input chest non-contrast CT DICOM images, extracts their centerlines, and generates optimal-view Stretch CPR images, Cross Section images, and Straightened CPR images that wrap around each vessel. It also returns the maximum diameter of each vessel, the cross-sectional area perpendicular to the vessel at 1 mm intervals along the centerline, and the positions of these points in the patient coordinate system of the original image.\n\n> - You can access [online consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for human assistance.\n- To learn more about Alibaba Cloud Visual Intelligence Platform API integration, usage, or consultation, join the DingTalk group (23109592) to contact us.\n\n## Input limits\n- Image format: DICOM or NIFTI.\n- If the input format is DICOM, each request must contain a minimum of 20 frames and a maximum of 600 frames. If the input format is NIFTI, each request must contain exactly one data instance.\n- The URL cannot contain Chinese characters.\n\n## Procedure\nThis is an asynchronous operation that requires two steps.\nStep 1: Call the AnalyzeChestVessel operation to submit a task. If the request is successful, a task ID is returned.\nStep 2: Call the [GetAsyncJobResult](~~607824~~) operation to query the result. Use the task ID to check the task execution status and result. If the task is still being processed, wait a moment before querying again. Do not submit duplicate tasks while the same task is still being processed.\n\n## Billing description\nThe aortic aneurysm and pulmonary hypertension detection feature is currently in public preview and can be called for free."
+  }
+}

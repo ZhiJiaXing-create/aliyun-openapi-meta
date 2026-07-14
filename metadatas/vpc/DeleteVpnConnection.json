@@ -1,5 +1,6 @@
 {
   "name": "DeleteVpnConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the IPsec-VPN connection is created.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VpnConnectionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接的ID。",
+        "en": "The ID of the IPsec-VPN connection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除指定的IPsec连接",
+    "en": "DeleteVpnConnection"
+  },
+  "descriptions": {
+    "zh": "- **DeleteVpnConnection**接口属于异步接口，即系统返回一个请求ID，但该IPsec连接尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeVpnGateway](~~73720~~)查询VPN网关实例的状态，来确定IPsec连接的删除状态：\n    - 当VPN网关实例处于**updating**状态时，表示IPsec连接正在删除中。\n    - 当VPN网关实例处于**active**状态时，表示IPsec连接删除成功。\n- **DeleteVpnConnection**接口不支持在同一VPN网关下并发删除指定的IPsec连接。\n\n> 删除IPsec连接后，本地IDC与阿里云之间的连接将中断。",
+    "en": "*   **DeleteVpnConnection** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeVpnGateway](~~73720~~) operation to query the status of a VPN gateway.\n\n    *   If a VPN gateway is in the **updating** state, the IPsec-VPN connection is being deleted.\n    *   If a VPN gateway is in the **active** state, the IPsec-VPN connection has been deleted.\n\n*   You cannot call the **DeleteVpnConnection** operation to delete multiple IPsec-VPN connections for a VPN gateway at a time.\n\n>  After an IPsec-VPN connection between a data center and Alibaba Cloud is deleted, the connection between the data center and Alibaba Cloud is closed."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-vpn-connection --biz-region-id cn-hangzhou --client-token 02fb3da4-130e-11e9-8e44-0016e04115b --vpn-connection-id vco-bp1bbi27hojx80nck0000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteVpnConnection --region cn-hangzhou --RegionId 'cn-hangzhou' --VpnConnectionId 'vco-bp1bbi27hojx80nck0000' --ClientToken '02fb3da4-130e-11e9-8e44-0016e04115b'"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBClusterAccessWhitelist",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,22 +9,44 @@
       "name": "DBClusterIPArrayAttribute",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP白名单分组属性。设置为**hidden**后控制台不可见。\n\n> - 已在控制台显示的IP白名单分组不支持隐藏。\n> - 当**WhiteListType**取值为**IP**时该参数才支持配置。",
+        "en": "The attribute of the IP whitelist group. If this parameter is set to **hidden**, the group is not displayed in the console.\n\n> - IP whitelist groups that are already displayed in the console cannot be hidden.\n> - This parameter takes effect only when **WhiteListType** is set to **IP**."
+      }
     },
     {
       "name": "DBClusterIPArrayName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP白名单分组的名称。分组名称长度需为2~120个字符；由小写字母和数字组成；以字母开头，以字母或数字结尾。\n\n- 如果传入的白名单分组名称不存在，则会创建该白名单分组。\n- 如果传入的白名单分组名称已存在，则会修改该白名单分组。\n- 不传入则修改default分组。 \n\n> - 1个集群最多支持50个IP白名单分组。\n> - 当**WhiteListType**取值为**IP**时该参数才支持配置。",
+        "en": "The name of the IP whitelist group. The name must be 2 to 120 characters in length and can contain lowercase letters and digits. The name must start with a letter and end with a letter or digit.\n\n- If the specified whitelist group name does not exist, a new whitelist group is created.\n- If the specified whitelist group name already exists, the whitelist group is modified.\n- If this parameter is not specified, the default group is modified. \n\n> - A maximum of 50 IP whitelist groups are supported for a cluster.\n> - This parameter takes effect only when **WhiteListType** is set to **IP**."
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "ModifyMode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "IP白名单的修改方式，取值范围如下：\n- **Cover**：覆盖原IP白名单（默认值）。\n- **Append**：追加IP。\n- **Delete**：删除IP。\n\n>当**WhiteListType**取值为**IP**时该参数才支持配置。",
+        "en": "The method used to modify the IP whitelist. Valid values:\n- **Cover**: overwrites the original IP whitelist (default value).\n- **Append**: appends IP addresses to the whitelist.\n- **Delete**: removes IP addresses from the whitelist.\n\n> This parameter takes effect only when **WhiteListType** is set to **IP**."
+      }
+    },
+    {
+      "name": "PfsInstanceId",
       "position": "Query",
       "type": "String",
       "required": false
@@ -32,23 +55,42 @@
       "name": "SecurityGroupIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全组ID，多个安全组间用英文逗号（,）隔开。\n\n> - 1个集群最多支持3个安全组。\n> - 当**WhiteListType**取值为**SecurityGroup**时该参数才支持配置。",
+        "en": "The security group IDs. Separate multiple security group IDs with commas (,).\n\n> - A maximum of 3 security groups are supported for a cluster.\n> - This parameter takes effect only when **WhiteListType** is set to **SecurityGroup**."
+      }
     },
     {
       "name": "SecurityIps",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP白名单分组中的IP地址或地址段。所有IP白名单分组累积支持1000个IP地址或地址段，多个IP间用英文逗号（,）隔开，支持如下两种格式： \n\n- IP地址形式，例如：10.23.12.24。\n- CIDR形式，例如：10.23.12.24/24（无类域间路由，24表示地址中前缀的长度，长度范围为1~32）。\n\n>当**WhiteListType**取值为**IP**时该参数才支持配置。",
+        "en": "The IP addresses or CIDR blocks in the IP whitelist group. A maximum of 1,000 IP addresses or CIDR blocks can be added to all IP whitelist groups. Separate multiple IP addresses with commas (,). The following two formats are supported: \n\n- IP address format, such as 10.23.12.24.\n- CIDR format, such as 10.23.12.24/24, where 24 indicates the prefix length of the CIDR block. The prefix length ranges from 1 to 32.\n\n> This parameter takes effect only when **WhiteListType** is set to **IP**."
+      }
     },
     {
       "name": "WhiteListType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "白名单类型。取值范围如下：\n\n- **IP**：IP白名单分组。\n- **SecurityGroup**：安全组。\n\n默认值为**IP**。",
+        "en": "The type of the whitelist. Valid values:\n\n- **IP**: IP whitelist group.\n- **SecurityGroup**: security group.\n\nDefault value: **IP**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建或修改集群的白名单",
+    "en": "Create or modify cluster whitelist"
+  },
   "example": {
-    "unifiedCli": "aliyun polardb modify-db-cluster-access-whitelist --db-cluster-id pc-0000000000000 --security-ips 10.23.12.24 --db-cluster-ip-array-name default --db-cluster-ip-array-attribute hidden --white-list-type IP --security-group-ids sg-000000000 --modify-mode Cover --region cn-hangzhou",
-    "legacyCli": "aliyun polardb ModifyDBClusterAccessWhitelist --region cn-hangzhou --SecurityIps '10.23.12.24' --DBClusterIPArrayName default --WhiteListType IP --DBClusterId 'pc-0000000000000' --DBClusterIPArrayAttribute hidden --SecurityGroupIds 'sg-000000000' --ModifyMode Cover"
+    "unifiedCli": "aliyun polardb modify-db-cluster-access-whitelist --db-cluster-id pc-0000000000000 --security-ips 10.23.12.24 --db-cluster-ip-array-name default --db-cluster-ip-array-attribute hidden --white-list-type IP --security-group-ids sg-000000000 --modify-mode Cover --pfs-instance-id pfs-xxx --region cn-hangzhou",
+    "legacyCli": "aliyun polardb ModifyDBClusterAccessWhitelist --region cn-hangzhou --SecurityIps '10.23.12.24' --DBClusterIPArrayName default --PfsInstanceId 'pfs-xxx' --WhiteListType IP --DBClusterId 'pc-0000000000000' --DBClusterIPArrayAttribute hidden --SecurityGroupIds 'sg-000000000' --ModifyMode Cover"
   }
 }

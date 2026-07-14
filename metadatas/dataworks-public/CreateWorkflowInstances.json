@@ -1,5 +1,6 @@
 {
   "name": "CreateWorkflowInstances",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "AutoStartEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建后是否直接运行，默认为true。",
+        "en": "The default value is true."
+      }
     },
     {
       "name": "Comment",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建的原因说明。",
+        "en": "The reason for the creation."
+      }
     },
     {
       "name": "DefaultRunProperties",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运行时配置。",
+        "en": "The runtime configuration."
+      }
     },
     {
       "name": "EnvType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "项目环境。\n- Prod：生产\n- Dev：开发",
+        "en": "The project environment. Valid values:\n\n- Prod\n\n- Dev"
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "名称。",
+        "en": "The name."
+      }
     },
     {
       "name": "Periods",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "补数据周期设置。",
+        "en": "The configuration of the data backfilling period."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "项目ID。",
+        "en": "The project ID."
+      }
     },
     {
       "name": "TagCreationPolicy",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签创建策略。\n- Append：追加模式，在继承手动业务流程已有标签的基础上追加新的标签。\n- Overwrite：覆盖模式，不继承手动业务流程已有标签，直接创建标签。",
+        "en": "The tag creation policy. Valid values:\n\n- Append: New tags are added on top of the existing tags of the manual workflow.\n\n- Overwrite: Existing tags of the manual workflow are not inherited. New tags are created directly."
+      }
     },
     {
       "name": "Tags",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "任务标签列表。",
+        "en": "The task tag list."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -76,27 +121,54 @@
       "name": "TaskParameters",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务参数，为特定任务设置参数。JSON格式，key为任务ID，value的格式参考任务脚本参数（GetTask接口的结果Task.Script.Parameter）。",
+        "en": "The task-specific parameters. The value is in the JSON format. The key specifies the task ID. You can call the GetTask operation to obtain the format of the value by querying the script parameters."
+      }
     },
     {
       "name": "Type",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作流实例的类型。\n\n- SupplementData：补数据。RootTaskIds与IncludeTaskIds的填写方法随补数据模式而变化，见DefaultRunProperties.Mode参数说明\n- ManualWorkflow：手动业务流程。WorkflowId需要填手动业务流程的WorkflowId，RootTaskIds选填，不填则会使用手动业务流程默认的根节点列表。\n- Manual：手动任务。仅需填RootTaskIds，即为要运行的手动任务列表。\n- SmokeTest：冒烟测试。仅需填RootTaskIds，即为要运行的测试任务列表。\n- TriggerWorkflow：触发式工作流。WorkflowId需要填触发式工作流的WorkflowId，IncludeTaskIds选填，不填则会运行整个工作流。",
+        "en": "The type of the workflow instance. Valid values:\n\n- SupplementData: Data backfill. The usage of RootTaskIds and IncludeTaskIds varies based on the backfill mode. See the description of the DefaultRunProperties.Mode parameter.\n\n- ManualWorkflow: Manually triggered workflow. WorkflowId is required for a manual workflow. RootTaskIds is optional. If not specified, the system uses the default root task list of the manual workflow.\n\n- Manual: Manual task. You only need to specify RootTaskIds. This is the list of manual tasks to run.\n\n- SmokeTest: Smoke test. You only need to specify RootTaskIds. This is the list of test tasks to run.\n\n- TriggerWorkflow: Triggered Workflow You must specify the WorkflowId of the triggered workflow. IncludeTaskIds is optional. If you do not specify IncludeTaskIds, the entire workflow runs."
+      }
     },
     {
       "name": "WorkflowId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "所属工作流的ID。周期任务的WorkflowId均为1。",
+        "en": "The ID of the workflow to which the instance belongs. This parameter is set to 1 for auto triggered tasks."
+      }
     },
     {
       "name": "WorkflowParameters",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工作流参数，当指定唯一工作流（`WorkflowId != 1`）时生效。若为周期工作流、触发式工作流，格式为key=value，优先级低于任务参数；若为手动业务流程，格式为JSON，优先级高于任务参数。",
+        "en": "The workflow parameters. This parameter takes effect when a specific workflow is specified (`WorkflowId != 1`). For scheduled workflows and triggered workflows, the format is key=value, and these parameters have lower priority than task parameters. For manual workflows, the format is JSON, and these parameters have higher priority than task parameters."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建工作流实例",
+    "en": "CreateWorkflowInstances"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用。",
+    "en": "DataWorks Basic Edition or higher is required."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public create-workflow-instances --project-id 100 --env-type Prod --workflow-id 1 --name WorkflowInstance1 --periods '{\"EndTime\":\"23:59:59\",\"BizDates\":[{\"StartBizDate\":\"2024-11-20\",\"EndBizDate\":\"2024-11-24\"}],\"StartTime\":\"00:00:00\"}' --type SupplementData --workflow-parameters key=value_format:_key1=value1_key2=value2_JSON_format:_key1_:_value1_,_key2_:_value2 --task-parameters 1001_:_key1=val2_key2=val2_,_1002_:_key1=val2_key2=val2 --auto-start-enabled true --default-run-properties '{\"Order\":\"Asc\",\"ExcludeTaskIds\":[4321],\"ExcludeProjectIds\":[200],\"PriorityWeightStrategy\":\"Upstream\",\"Priority\":1,\"Mode\":\"ManualSelection\",\"RunPolicy\":{\"Immediately\":false,\"Type\":\"Daily\",\"EndTime\":\"23:59:59\",\"StartTime\":\"00:00:00\"},\"RuntimeResource\":\"S_res_group_524258031846018_1684XXXXXXXXX\",\"RootTaskIds\":[1234],\"Analysis\":{\"Enabled\":true,\"Blocked\":true},\"IncludeProjectIds\":[100],\"Parallelism\":2,\"Alert\":{\"Type\":\"Succes\",\"NoticeType\":\"Sms\"},\"IncludeTaskIds\":[1234]}' --comment create_for_test --tags Value=tagValue Key=tagKey --tag-creation-policy Append --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public CreateWorkflowInstances --region cn-hangzhou --WorkflowParameters 'key=value_format:_key1=value1_key2=value2_JSON_format:_key1_:_value1_,_key2_:_value2' --Comment create_for_test --DefaultRunProperties '{\"Order\":\"Asc\",\"ExcludeTaskIds\":[4321],\"ExcludeProjectIds\":[200],\"PriorityWeightStrategy\":\"Upstream\",\"Priority\":1,\"Mode\":\"ManualSelection\",\"RunPolicy\":{\"Immediately\":false,\"Type\":\"Daily\",\"EndTime\":\"23:59:59\",\"StartTime\":\"00:00:00\"},\"RuntimeResource\":\"S_res_group_524258031846018_1684XXXXXXXXX\",\"RootTaskIds\":[1234],\"Analysis\":{\"Enabled\":true,\"Blocked\":true},\"IncludeProjectIds\":[100],\"Parallelism\":2,\"Alert\":{\"Type\":\"Succes\",\"NoticeType\":\"Sms\"},\"IncludeTaskIds\":[1234]}' --ProjectId 100 --WorkflowId 1 --TagCreationPolicy Append --EnvType Prod --Name WorkflowInstance1 --Periods '{\"EndTime\":\"23:59:59\",\"BizDates\":[{\"StartBizDate\":\"2024-11-20\",\"EndBizDate\":\"2024-11-24\"}],\"StartTime\":\"00:00:00\"}' --Type SupplementData --TaskParameters '1001_:_key1=val2_key2=val2_,_1002_:_key1=val2_key2=val2' --AutoStartEnabled true --Tags '[{\"Value\":\"tagValue\",\"Key\":\"tagKey\"}]'"

@@ -1,5 +1,6 @@
 {
   "name": "DescribeErrorLogRecords",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "EndTime",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，格式为Unix时间戳，单位为毫秒。\n><notice>该字段类型为Long，在序列化/反序列化的过程中可能导致精度丢失，请注意数值不得大于9007199254740991。></notice>",
+        "en": "The end of the time range to query. The value is a UNIX timestamp. Unit: milliseconds.\n\n><notice>\n\nThis field is of the Long type. During serialization and deserialization, precision may be lost. Make sure that the value does not exceed 9007199254740991.\n\n</notice>"
+      }
     },
     {
       "name": "Filters",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "筛选条件。\n\n> 仅支持RDS MySQL、RDS PostgreSQL、PolarDB MySQL版、PolarDB PostgreSQL版、PolarDB PostgreSQL版（兼容Oracle）的错误日志筛选。",
+        "en": "The filter conditions.\n\n> Error log filtering is supported only for RDS MySQL, RDS PostgreSQL, PolarDB for MySQL, PolarDB for PostgreSQL, and PolarDB for PostgreSQL (compatible with Oracle)."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "筛选参数，需填写为filters。",
+            "en": "The filter parameter. Set the value to filters."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "筛选的错误日志内容。",
+            "en": "The content of the error log to filter."
+          }
         }
       ]
     },
@@ -34,39 +51,74 @@
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "NodeId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。",
+        "en": "The node ID."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页大小，最大值为100。",
+        "en": "The number of entries per page. Maximum value: 100."
+      }
     },
     {
       "name": "Role",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点角色：\n\n- db\n- mongos\n\n> 仅云数据库MongoDB版实例支持。",
+        "en": "The node role:\n\n- db\n- mongos\n\n> This parameter is supported only for ApsaraDB for MongoDB instances."
+      }
     },
     {
       "name": "StartTime",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间，格式为Unix时间戳，单位为毫秒。\n\n><notice>该字段类型为Long，在序列化/反序列化的过程中可能导致精度丢失，请注意数值不得大于9007199254740991。></notice>",
+        "en": "The beginning of the time range to query. The value is a UNIX timestamp. Unit: milliseconds.\n\n><notice>\n\nThis field is of the Long type. During serialization and deserialization, precision may be lost. Make sure that the value does not exceed 9007199254740991.\n\n</notice>"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询错误日志明细",
+    "en": "DescribeErrorLogRecords"
+  },
+  "descriptions": {
+    "zh": "本接口用于查询实例指定时间范围内的错误日志明细。\n\n使用该接口需满足以下前提条件：\n\n- 目标数据库引擎为：RDS MySQL、RDS PostgreSQL、PolarDB MySQL 版、PolarDB PostgreSQL 版、PolarDB PostgreSQL版（兼容Oracle）、云数据库 MongoDB 版。\n- 使用阿里云或 DAS 的 SDK 时，建议使用最新版本。\n- 使用 SDK 调用 DAS 服务时，需要将地域指定为 cn-shanghai。",
+    "en": "This operation queries the error log details of an instance within a specified time range.\n\nThe following prerequisites must be met to use this operation:\n\n- **Engine**: RDS MySQL, RDS PostgreSQL, PolarDB for MySQL, PolarDB for PostgreSQL, PolarDB for PostgreSQL (compatible with Oracle), or ApsaraDB for MongoDB.\n- **SDK version**: Use the latest version of the Alibaba Cloud SDK.\n- **Region**: If you call the API via the SDK, set the region ID to `cn-shanghai`."
+  },
   "example": {
     "unifiedCli": "aliyun das describe-error-log-records --instance-id pc-bp1u5mas9exx70000 --node-id pi-bp16v3824rt730000 --role db --start-time 1731983066000 --end-time 1732069466000 --page-number 1 --page-size 10 --filters Value=deadlock Key=filters --region cn-hangzhou",
     "legacyCli": "aliyun das DescribeErrorLogRecords --region cn-hangzhou --Role db --Filters.1.Key filters --EndTime 1732069466000 --PageSize 10 --InstanceId 'pc-bp1u5mas9exx70000' --PageNumber 1 --Filters.1.Value deadlock --NodeId 'pi-bp16v3824rt730000' --StartTime 1731983066000"

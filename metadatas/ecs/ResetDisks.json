@@ -1,5 +1,6 @@
 {
   "name": "ResetDisks",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "云盘列表。",
+        "en": "The disks to roll back. You can specify up to 10 disks."
+      },
       "sub_parameters": [
         {
           "name": "DiskId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定待回滚的云盘ID。N的取值范围为1~10。",
+            "en": "The ID of the disk to roll back."
+          }
         },
         {
           "name": "SnapshotId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例快照中，指定云盘对应的快照ID。N的取值范围为1~10。",
+            "en": "The ID of the snapshot from an instance snapshot that is used to roll back the disk."
+          }
         }
       ]
     },
@@ -28,15 +41,34 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否预检本次请求。取值范围：\n\n- true：发送检查请求，不会直接回滚云盘。检查项包括是否填写了必选参数、请求格式和资源状态限制。如果检查不通过，则返回对应错误信息。如果检查通过，则返回错误码`DryRunOperation`。\n- false：发送正常请求，通过检查后直接发起云盘回滚操作。\n\n默认值：false。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- true: performs a dry run to check the request. The disks are not rolled back. The check verifies required parameters, the request format, and resource states. If the request fails the check, the operation returns an error message. If the request passes the check, the operation returns the `DryRunOperation` error code.\n\n- false: sends a normal request. After the request passes the check, the operation rolls back the disks.\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call the [DescribeRegions](~~25609~~) operation to query the latest Alibaba Cloud regions."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量重置磁盘",
+    "en": "ResetDisks"
+  },
+  "descriptions": {
+    "zh": "该接口即将废弃，建议您使用[ResetDisk](~~25520~~)回滚云盘。",
+    "en": "This API is deprecated. Use [ResetDisk](~~25520~~) to roll back a cloud disk instead."
+  },
   "example": {
     "unifiedCli": "aliyun ecs reset-disks --biz-region-id cn-hangzhou --dry-run false --disk SnapshotId=s-j6cdofbycydvg7ey0000 DiskId=d-j6cf7l0ewidb78lq0000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs ResetDisks --region cn-hangzhou --Disk.1.DiskId 'd-j6cf7l0ewidb78lq0000' --Disk.1.SnapshotId 's-j6cdofbycydvg7ey0000' --DryRun false --RegionId 'cn-hangzhou'"

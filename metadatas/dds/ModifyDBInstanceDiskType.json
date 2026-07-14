@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBInstanceDiskType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动付费。取值：\n- **true**：自动付费，请确保账号有足够的余额。\n<props=\"china\">- **false**：控制台手动付费。您可以登录云数据库MongoDB控制台，在页面右上角选择**费用** > **费用与成本**，在左侧导航栏，选择**订购订单**>**我的订单**，在**商品订单**页签找到目标订单进行支付。</props>\n<props=\"intl\">- **false**：控制台手动付费。您可以登录云数据库MongoDB控制台，在页面右上角选择**费用** > **费用与成本**，在左侧导航栏，单击**订单管理**，在**商品订单**页面找到目标订单进行支付。</props>\n\n默认值为：**true**。",
+        "en": "Specifies whether to enable automatic payment. Valid values:\n\n- **true**: Enables automatic payment. Make sure that your account has a sufficient balance.\n\n<props=\"china\">\n\n- **false**: Disables automatic payment. To pay for the order, log on to the ApsaraDB for MongoDB console. In the upper-right corner of the page, choose **Expenses** > **Expenses and Costs**. In the navigation pane on the left, choose **Subscription Orders** > **My Orders**. On the **Product Orders** tab, find the order and complete the payment.\n\n</props>\n\n\n<props=\"intl\">\n\n- **false**: Disables automatic payment. To pay for the order, log on to the ApsaraDB for MongoDB console. In the upper-right corner of the page, choose **Expenses** > **Expenses and Costs**. In the navigation pane on the left, click **Order Management**. On the **Product Orders** page, find the order and complete the payment.\n\n</props>\n\n\nDefault value: **true**."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启自动续费，取值说明：\n- **true**：开启自动续费。\n- **false**：不开启自动续费。\n\n默认值为 **false**",
+        "en": "Specifies whether to enable auto-renewal for the instance. Valid values:\n\n- **true**: Enables auto-renewal.\n\n- **false**: Disables auto-renewal.\n\nDefault value: **false**"
+      }
     },
     {
       "name": "BusinessInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "附加参数，业务信息。",
+        "en": "The business information. This is an additional parameter."
+      }
     },
     {
       "name": "CouponNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "优惠码，默认为`youhuiquan_promotion_option_id_for_blank`。",
+        "en": "The coupon code. The default value is `youhuiquan_promotion_option_id_for_blank`."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "DbInstanceStorageType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改后的磁盘类型，取值：\n- **cloud_auto**：ESSD AutoPL 云盘。",
+        "en": "The disk type after the modification. Valid value:\n\n- **cloud\\_auto**: ESSD AutoPL disk."
+      }
     },
     {
       "name": "ExtraParam",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "附加参数。",
+        "en": "An additional parameter."
+      }
     },
     {
       "name": "OrderType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "变配类型，取值：\n\n- **UPGRADE**：升级配置。\n- **DOWNGRADE**：降级配置。\n\n> 当实例付费方式为包年包月时，该参数可用。",
+        "en": "The order type. Valid values:\n\n- **UPGRADE**: Upgrades the instance configuration.\n\n- **DOWNGRADE**: Downgrades the instance configuration.\n\n> This parameter is available only when the instance uses the subscription billing method."
+      }
     },
     {
       "name": "ProvisionedIops",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预配置性能（IOPS）。取值范围为 0~50000。",
+        "en": "The provisioned IOPS. Valid values: 0 to 50000."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例磁盘类型",
+    "en": "ModifyDBInstanceDiskType"
+  },
+  "descriptions": {
+    "zh": "- 磁盘空间小于40GB，不支持此功能。\n- 只支持变配至cloud_auto云盘类型。\n- 单个实例两次修改IOPS预配置性能的时间间隔需超过一小时。更多说明，请参见[修改ESSD AutoPL云盘性能配置](~~413275~~)。",
+    "en": "- This feature is not supported for instances with less than 40 GB of disk space.\n\n- You can change the disk type only to an ESSD AutoPL disk (cloud\\_auto).\n\n- The interval between two consecutive modifications to the provisioned input/output operations per second (IOPS) of an instance must be longer than one hour. For more information, see [Modify the performance of an ESSD AutoPL disk](~~413275~~)."
+  },
   "example": {
     "unifiedCli": "aliyun dds modify-db-instance-disk-type --db-instance-storage-type cloud_auto --provisioned-iops 1960 --db-instance-id dds-bp1fa5efaa930000 --auto-pay true --business-info '“ActivityId_:_000000000' --coupon-no youhuiquan_promotion_option_id_for_blank --extra-param async --auto-renew false --order-type UPGRADE --region cn-hangzhou",
     "legacyCli": "aliyun dds ModifyDBInstanceDiskType --region cn-hangzhou --CouponNo youhuiquan_promotion_option_id_for_blank --BusinessInfo '“ActivityId_:_000000000' --OrderType UPGRADE --ExtraParam async --DBInstanceId 'dds-bp1fa5efaa930000' --AutoRenew false --DbInstanceStorageType cloud_auto --AutoPay true --ProvisionedIops 1960"

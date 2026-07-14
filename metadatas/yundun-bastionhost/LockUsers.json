@@ -1,5 +1,6 @@
 {
   "name": "LockUsers",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要锁定的用户所在堡垒机实例的ID。\n> 您可以调用[DescribeInstances](~~153281~~)接口获取该参数。",
+        "en": "The ID of the bastion host to which the users to be locked belong.\n\n> You can call the [DescribeInstances](~~153281~~) operation to query the ID of the bastion host."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定要锁定的用户所在堡垒机的区域ID。\n> 区域ID和区域名称的对应关系，请参见[地域和可用区](~~40654~~)。",
+        "en": "The region ID of the bastion host to which the users to be locked belong.\n\n> For more information about the mapping between region IDs and region names, see [Regions and zones](~~40654~~)."
+      }
     },
     {
       "name": "UserIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要锁定的用户ID。该参数为JSON格式的字符串，最多支持添加100个用户ID，多个ID之间使用半角逗号（,）隔开。\n> 您可以调用[ListUsers](~~204522~~)接口获取用户ID。",
+        "en": "The ID of the user to be locked. The value is a JSON string. You can add up to 100 user IDs. If you specify multiple IDs, separate the IDs with commas (,).\n\n> You can call the [ListUsers](~~204522~~) operation to query the ID of the user."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量锁定堡垒机用户",
+    "en": "LockUsers"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n本接口用于批量锁定堡垒机用户。如果某个用户在一段时间内无需使用堡垒机进行运维操作，您可以使用本接口锁定该用户，被锁定的用户将无法登录服务器进行运维操作。如果后续需要解锁该用户，您可使用[UnlockUsers](~~204590~~)接口来解锁。\n\n### QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "# Description\n\nLocks one or more bastion host users to prevent them from performing O\\&M operations. If a user does not need to use a bastion host within a specific period of time, lock the user account. Locked users cannot log on to or perform O\\&M operations on the hosts on which they have permissions. To unlock users later, use the [UnlockUsers](~~204590~~) operation.\n\n# Limits\n\nYou can call this operation up to 10 times per second per account. If the number of the calls per second exceeds the limit, throttling is triggered. As a result, your business may be affected. We recommend that you take note of the limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun yundun-bastionhost lock-users --instance-id bastionhost-cn-st220aw0000 --biz-region-id cn-hangzhou --user-ids 1_,_2_,_3 --region cn-hangzhou",
     "legacyCli": "aliyun yundun-bastionhost LockUsers --region cn-hangzhou --InstanceId 'bastionhost-cn-st220aw0000' --RegionId 'cn-hangzhou' --UserIds '1_,_2_,_3'"

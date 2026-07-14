@@ -1,5 +1,6 @@
 {
   "name": "DeleteVpcEndpoint",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. **ClientToken** can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除终端节点。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and sends the request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的终端节点ID。",
+        "en": "The ID of the endpoint that you want to delete."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的终端节点所属的地域ID。您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The region ID of the endpoint that you want to delete. Call the [DescribeRegions](~~120468~~) operation to obtain the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除终端节点",
+    "en": "DeleteVpcEndpoint"
+  },
+  "descriptions": {
+    "zh": "- 删除终端节点之前，请先删除终端节点中已添加的可用区。\n- **DeleteVpcEndpoint**接口属于异步接口，即系统会返回一个请求ID，但该终端节点尚未删除完成，系统后台删除任务仍在进行中。您可以调用[GetVpcEndpointAttribute](~~469349~~)查询终端节点的删除状态：\n\n  - 当终端节点处于**Deleting**状态时，表示终端节点正在删除中。\n  - 当查询不到指定的终端节点时，表示终端节点删除成功。",
+    "en": "- Before you delete an endpoint, make sure that all zones associated with the endpoint have been deleted.\n\n- **DeleteVpcEndpoint** is an asynchronous operation. After you send a request, the system returns a request ID and deletes the endpoint in the background. You can call the [GetVpcEndpointAttribute](~~469349~~) operation to query the status of the endpoint.\n\n  - If the endpoint status is **Deleting**, the endpoint is being deleted.\n\n  - If the endpoint cannot be queried, the endpoint has been deleted."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink delete-vpc-endpoint --biz-region-id cn-hangzhou --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --endpoint-id ep-hp33b2e43fays7s80000 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink DeleteVpcEndpoint --region cn-hangzhou --EndpointId 'ep-hp33b2e43fays7s80000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760'"

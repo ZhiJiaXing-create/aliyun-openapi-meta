@@ -1,5 +1,6 @@
 {
   "name": "SegmentCloth",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClothClass",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服饰类别，取值范围：\n- tops：上衣\n- coat：外套\n- skirt：裙装\n- pants：裤装\n- bag：包类\n- shoes：鞋子\n- hat：帽子",
+        "en": "The clothing category. Valid values:\n- tops: Upper garment\n- coat: Outerwear\n- skirt: Skirt/Dress\n- pants: Trousers\n- bag: Bag\n- shoes: Shoes\n- hat: Hat"
+      }
     },
     {
       "name": "ImageURL",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "图像URL地址。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。",
+        "en": "The image URL. We recommend using an OSS link in the Shanghai region. If the file is stored locally or in a non-Shanghai region OSS, see [File URL Processing](~~155645~~)."
+      }
     },
     {
       "name": "OutMode",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回分割结果的类型，影响ImageURL字段的返回内容，用户非必选。\n\n- 0（默认值）：默认的主体服饰分割结果。\n\n- 1：用户指定class类别的组合分割结果。",
+        "en": "The type of segmentation result to return, which affects the content returned in the ImageURL field. This is an optional parameter.\n\n- 0 (default): The default main clothing segmentation result.\n\n- 1: A combined segmentation result of user-specified class categories."
+      }
     },
     {
       "name": "ReturnForm",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定返回的图像格式，取值范围：\n\n- whiteBK：返回白底图。\n- mask：返回单通道mask。\n- 如果不设置，则返回四通道PNG图。\n> - 该参数的设置只对输出结果的ImageURL有效，对ClassUrl无效，ClassUrl固定返回的是mask通道图。",
+        "en": "Specifies the format of the returned image. Valid values:\n\n- whiteBK: Returns a white background image.\n- mask: Returns a single-channel mask.\n- If not set, a four-channel PNG image is returned.\n> - This parameter only applies to the output ImageURL. It does not affect ClassUrl, which always returns a mask channel image."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "服饰分割",
+    "en": "Clothing Segmentation"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n服饰分割能力可以对输入人台服饰、真人服饰、纯服饰、虚拟人服饰等场景图片中的主体服饰进行像素级抠图，并返回抠图结果。服饰分割主要是针对图片中的服装进行精细化分割，服饰分割标准支持外套、上装（含内衬）、裤装、裙装、帽子、鞋子、包包品类分割，其他皮带、领带等装饰品等内容建议使用[商品分割](~~151961~~)。\n关于该接口功能的示例图如下：\n输入原图（左）和输出结果图（右）\n- 识别出服饰类别为：tops（上衣）、skirt（裙装）、shoes（鞋子）\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/xnvf/SegmentClothtops_skirt_shoes.png\" width=\"400)\n- 识别出服饰类别为：tops（上衣）、pants（裤装）、shoes（鞋子）、bag（包类）\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/hptw/SegmentClothtops_pants_shoes_bag.png\" width=\"400)\n- 识别出服饰类别为：hat（帽子）\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/guxr/SegmentClothhat.png\" width=\"400)\n\n您可以传入ReturnForm参数指定返回结果形式：\n- 指定为**mask**，返回二值遮罩图。\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/zadd/SegmentClothmask.png\" width=\"400)\n- 指定为**whiteBK**，返回纯白背景的白底图。\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/nwyz/SegmentClothwhiteBK.png\" width=\"400)\n- 不指定参数，返回无背景的图。\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/mkru/SegmentCloth.png\" width=\"400)\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 当前能力可在视觉智能开放平台有完整的免费产品体验，您可以单击[立即试用](https://vision.aliyun.com/experience/detail?&tagName=imageseg&children=SegmentCloth)对该能力进行更直观试用以及在线购买。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n- 电商服饰分割：可对电商服饰图片进行前景分割处理，实现服饰的背景分离和替换，实现电商服饰主图批量处理和制作。\n- 虚拟试衣制作：在婚纱摄影、民族服饰、汉服、仿妆等虚拟试衣场景，通过图片服饰前处理环节进行服饰分割，再通过AIGC生成技术进行换装试穿。\n- 个性化智能识别：可针对图片中的外套、上装（含内衬）、裤装、裙装、帽子、鞋子、包包品类指定类别mask进行分割处理返回，实现指定个性化服饰类型抠图处理。\n\n## 特点优势\n- 多类型自动识别：自动识别出图像中的主体服饰，不需要额外指定服装位置，可返回指定类别mask。\n- 适用多服饰场景：适用于人台服饰、真人服饰、纯服饰、虚拟人服饰等精细化抠图场景。\n- 复杂全类目分割：适合多服饰商品以及复杂背景条件下的服饰主体分割，实现精细化全类目分割。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[分割抠图服务](https://vision.aliyun.com/imageseg)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_imageseg_public_cn#/open)。\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/imageseg/2019-12-30/SegmentCloth?lang=JAVA&sdkStyle=dara&params=%7B%22ImageURL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageseg%2FSegmentCloth%2FSegmentCloth1.jpg%22%7D&tab=DEMO)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为分割抠图（imageseg）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 示例代码：该能力常用语言的示例代码，请参见[服饰分割示例代码](~~605161~~)。\n\n7. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n- 图像格式：PNG、JPEG、JPG、BMP。\n- 图像大小：不超过3 MB。\n- 图像分辨率：大于50×50像素，且小于3000×3000像素。\n- URL地址中不能包含中文字符。\n\n## 计费说明\n关于服饰分割的计费方式及报价，请参见[计费介绍](~~190132~~)。\n\n> 下方调试接口为付费接口，如需免费体验调试请前往[体验中心](https://vision.aliyun.com/experience/detail?&tagName=imageseg&children=SegmentCloth)。",
+    "en": "## Feature Description\nThe clothing segmentation feature can perform pixel-level segmentation on the main clothing in input images of mannequin outfits, real-person outfits, standalone garments, and virtual character outfits, and return the segmentation result. Clothing segmentation primarily performs fine-grained segmentation of clothing in images. The standard clothing segmentation supports segmentation of outerwear, upper garments (including lining), trousers, skirts, hats, shoes, and bags. For other items such as belts, ties, and other accessories, we recommend using [Product Segmentation](~~151961~~).\nThe following shows example images of this feature:\nInput original image (left) and output result image (right)\n- Identified clothing categories: tops (upper garment), skirt (skirt/dress), shoes (shoes)\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/xnvf/SegmentClothtops_skirt_shoes.png\" width=\"400)\n- Identified clothing categories: tops (upper garment), pants (trousers), shoes (shoes), bag (bag)\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/hptw/SegmentClothtops_pants_shoes_bag.png\" width=\"400)\n- Identified clothing category: hat (hat)\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/guxr/SegmentClothhat.png\" width=\"400)\n\nYou can pass the ReturnForm parameter to specify the format of the returned result:\n- Specify as **mask** to return a binary mask image.\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/zadd/SegmentClothmask.png\" width=\"400)\n- Specify as **whiteBK** to return a white background image.\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/nwyz/SegmentClothwhiteBK.png\" width=\"400)\n- If no parameter is specified, a transparent background image is returned.\n![](https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20231213/mkru/SegmentCloth.png\" width=\"400)\n\n> - You can visit [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) to get online assistance.\n- This feature is available for free trial on the Vision Intelligence Open Platform. You can click [Try Now](https://vision.aliyun.com/experience/detail?&tagName=imageseg&children=SegmentCloth) to try this feature interactively and make online purchases.\n- For questions about Alibaba Cloud Vision Intelligence Open Platform Vision AI API access, interface usage, or consultation, please contact us by joining the DingTalk group (23109592).\n\n## Use Cases\n- E-commerce clothing segmentation: Perform foreground segmentation on e-commerce clothing images to achieve background separation and replacement, enabling batch processing and creation of e-commerce clothing main images.\n- Virtual try-on creation: In scenarios such as wedding photography, ethnic costumes, traditional Chinese clothing (Hanfu), and cosplay makeup, perform clothing segmentation as a pre-processing step, then use AIGC generation technology for outfit changing and virtual try-on.\n- Personalized intelligent recognition: Perform segmentation processing for specified category masks of outerwear, upper garments (including lining), trousers, skirts, hats, shoes, and bags in images, enabling customized clothing type segmentation.\n\n## Key Advantages\n- Multi-type automatic recognition: Automatically identifies the main clothing in images without specifying clothing positions, and can return specified category masks.\n- Applicable to multiple clothing scenarios: Suitable for fine-grained segmentation scenarios including mannequin outfits, real-person outfits, standalone garments, and virtual character outfits.\n- Complex full-category segmentation: Suitable for multi-clothing product and complex background conditions for main clothing segmentation, achieving fine-grained full-category segmentation.\n\n## Getting Started\n1. Register an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **Register Now** in the upper-right corner, and follow the instructions to complete account registration.\n2. Activate the service: Make sure you have activated the [Image Segmentation service](https://vision.aliyun.com/imageseg). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_imageseg_public_cn#/open).\n3. Create an AccessKey: Make sure you have [created an AccessKey](~~175144~~). If you are using a RAM user AccessKey, you need to grant the AliyunVIAPIFullAccess permission to the RAM user. For detailed instructions, see [RAM Authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/imageseg/2019-12-30/SegmentCloth?lang=JAVA&sdkStyle=dara&params=%7B%22ImageURL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageseg%2FSegmentCloth%2FSegmentCloth1.jpg%22%7D&tab=DEMO) to debug the feature online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development integration steps:\n- Select the SDK language you want to use from the [SDK Overview](~~145033~~).\n- Find the SDK package for the AI category Image Segmentation (imageseg) in the corresponding language SDK documentation and install it.\n- Refer to the sample code provided in the documentation, make appropriate modifications, and call the API.\n\n6. Sample code: For sample code in commonly used languages for this feature, see [Clothing Segmentation Sample Code](~~605161~~).\n\n7. Client-side direct calls: Common client-side call methods for this feature include the following.\n- [Web frontend direct call](~~467779~~)\n- [Mini program direct call](~~467780~~)\n- [Android direct call](~~467781~~)\n- [iOS direct call](~~467782~~)\n\n## Input Limits\n- Image format: PNG, JPEG, JPG, BMP.\n- Image size: No more than 3 MB.\n- Image resolution: Greater than 50×50 pixels and less than 3000×3000 pixels.\n- The URL must not contain Chinese characters.\n\n## Billing\nFor information about the billing methods and pricing of clothing segmentation, see [Billing Overview](~~190132~~).\n\n> The debugging interface below is a paid interface. For free trial and debugging, please go to the [Experience Center](https://vision.aliyun.com/experience/detail?&tagName=imageseg&children=SegmentCloth)."
+  },
   "example": {
     "unifiedCli": "aliyun imageseg segment-cloth --image-url http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageseg/SegmentCloth/SegmentCloth1.jpg --out-mode 1 --cloth-class tops --return-form whiteBK --region cn-hangzhou",
     "legacyCli": "aliyun imageseg SegmentCloth --region cn-hangzhou --ImageURL 'http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageseg/SegmentCloth/SegmentCloth1.jpg' --ClothClass.1 tops --OutMode 1 --ReturnForm whiteBK"

@@ -1,0 +1,74 @@
+{
+  "name": "ListNodeTypes",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET",
+  "pathPattern": "/api/v1/nodetypes",
+  "parameters": [
+    {
+      "name": "AcceleratorType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "按加速器类型（CPU/GPU）。",
+        "en": "The accelerator type used to filter the results. Valid values: `CPU` and `GPU`."
+      }
+    },
+    {
+      "name": "GPUType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "按卡类型，支持模糊匹配。",
+        "en": "The GPU type used to filter the results. Fuzzy matching is supported."
+      }
+    },
+    {
+      "name": "NodeTypes",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "资源节点规格列表，按逗号分隔，不设置会返回所有资源节点规格的机器列表。",
+        "en": "A comma-separated list of node types. If omitted, all node types are returned."
+      }
+    },
+    {
+      "name": "QuotaId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定资源配额ID，和`ResourceGroupIds` 二选一必填。",
+        "en": "The quota ID. You must specify either this parameter or `ResourceGroupIds`."
+      }
+    },
+    {
+      "name": "ResourceGroupIds",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定资源组ID列表，按逗号分隔，和`QuotaIds`参数二选一必填。约束：需校验传入的`ResourceGroupId`的`UserId`和请求的`UserId`一致；传入的`ResourceGroup`列表类型需一致；传入的`ResourceGroup`列表现阶段记录的VPC需一致。",
+        "en": "A comma-separated list of resource group IDs. You must specify either this parameter or `QuotaId`. The `UserId` for the specified `ResourceGroupId` must match the `UserId` of the requesting user. All specified `resource group` instances must be of the same type and associated with the same Virtual Private Cloud (VPC)."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取节点规格列表",
+    "en": "ListNodeTypes"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 该API用于获取符合特定过滤条件的资源节点规格列表。\n- `ResourceGroupIds` 和 `QuotaId` 参数二选一必填，且需确保传入的资源组ID或配额ID与请求用户一致。\n- 支持通过多种参数进行过滤，如加速器类型、GPU类型等，以满足不同场景下的需求。\n- 返回结果包括资源节点规格详情及其统计信息，帮助用户更好地了解当前可用资源情况。",
+    "en": "## Description\n\n- Lists the node types that match the specified filter criteria.\n\n- You must specify either the `ResourceGroupIds` or `QuotaId` parameter. The specified resource group IDs or quota ID must belong to the requesting user.\n\n- You can filter the results by using parameters such as accelerator type and GPU type.\n\n- The response includes details and statistics for each node type, indicating the availability of your resources."
+  },
+  "example": {
+    "unifiedCli": "aliyun paistudio list-node-types --resource-group-ids rg123,rg456 --quota-id quota123 --node-types ecs.c6.large,ecs.gn7i-c32g1.8xlarge --accelerator-type GPU --gpu-type A10 --api-version 2022-01-12 --region cn-hangzhou",
+    "legacyCli": "aliyun paistudio GET /api/v1/nodetypes --region cn-hangzhou --QuotaId quota123 --ResourceGroupIds 'rg123,rg456' --GPUType A10 --NodeTypes 'ecs.c6.large,ecs.gn7i-c32g1.8xlarge' --AcceleratorType GPU --header \"Content-Type=application/json\""
+  }
+}

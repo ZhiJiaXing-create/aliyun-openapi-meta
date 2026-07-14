@@ -1,70 +1,128 @@
 {
   "name": "CreateDeploymentSet",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
   "parameters": [
     {
+      "name": "Affinity",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "部署集的亲和度级别，在部署集的实例会按该亲和度分布，取值范围：1-10，默认为1。",
+        "en": "The affinity level of the deployment set. This level determines how instances are distributed within the set. The value must be an integer from 1 to 10. Default value: 1."
+      }
+    },
+    {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。\n\n**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "A client-generated token that you can use to ensure request idempotence. The token must be unique across requests.\n\nThe **ClientToken** value must be an ASCII string of up to 64 characters. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "DeploymentSetName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "部署集名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以`http://`和`https://`开头。可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The name of the deployment set. The name must be 2 to 128 characters long and start with a letter. It can contain digits, colons (:), underscores (\\_), and hyphens (-). The name cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "部署集描述信息。长度为2~256个英文或中文字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the deployment set. The description must be 2 to 256 characters long and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "Domain",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": ">该参数已废弃。",
+        "en": "> This parameter is deprecated."
+      }
     },
     {
       "name": "Granularity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": ">该参数已废弃。",
+        "en": "> This parameter is deprecated."
+      }
     },
     {
       "name": "GroupCount",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为部署集组高可用策略设置分组数量。取值范围：1~7。\n\n默认值：3。\n\n> 该参数仅当`Strategy=AvailabilityGroup`时生效。",
+        "en": "The number of partitions in the deployment set group. Valid values: 1 to 7.\n\nDefault value: 3.\n\n> This parameter is valid only when `Strategy` is set to `AvailabilityGroup`."
+      }
     },
     {
       "name": "OnUnableToRedeployFailedInstance",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "部署集内实例宕机迁移后，缺乏可供打散的实例库存的紧急处理方案。取值范围： \n         \n- CancelMembershipAndStart：将实例移出部署集，宕机迁移后即刻启动实例。\n- KeepStopped：维持实例的部署集属性，实例保持停止状态。\n\n默认值：CancelMembershipAndStart。",
+        "en": "The policy for an instance that fails to be redeployed after a failover due to insufficient resources. Valid values:\n\n- CancelMembershipAndStart: Removes the instance from the deployment set and starts the instance immediately after failover.\n\n- KeepStopped: Keeps the instance in the deployment set and in the Stopped state.\n\nDefault value: CancelMembershipAndStart."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "部署集所属地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The ID of the region for the deployment set. You can call the [DescribeRegions](~~25609~~) operation to view the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "Strategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "部署策略。取值范围：\n- Availability：高可用策略。\n- AvailabilityGroup：部署集组高可用策略。\n- LowLatency：网络低时延策略。\n\n默认值：Availability。",
+        "en": "The deployment strategy. Valid values:\n\n- Availability: High availability strategy.\n\n- AvailabilityGroup: High availability strategy for deployment set groups.\n\n- LowLatency: Low-latency strategy.\n\nDefault value: Availability."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "部署类型。取值范围：\n- host：物理机\n- sw：交换机\n- rack：机架\n\n默认值：host。",
+        "en": "The deployment granularity. Valid values:\n\n- host: Spreads instances across different hosts.\n\n- sw: Spreads instances across different switches.\n\n- rack: Spreads instances across different racks.\n\nDefault value: host."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在指定的地域内创建部署集",
+    "en": "CreateDeploymentSet"
+  },
   "example": {
     "unifiedCli": "aliyun ecs create-deployment-set --biz-region-id cn-hangzhou --on-unable-to-redeploy-failed-instance CancelMembershipAndStart --description testDescription --client-token 123e4567-e89b-12d3-a456-426655440000 --deployment-set-name testDeploymentSetName --domain example-string --granularity example-string --strategy Availability --group-count 1 --type host --region cn-hangzhou",
     "legacyCli": "aliyun ecs CreateDeploymentSet --region cn-hangzhou --OnUnableToRedeployFailedInstance CancelMembershipAndStart --Type host --Description testDescription --GroupCount 1 --Strategy Availability --DeploymentSetName testDeploymentSetName --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Domain 'example-string' --Granularity 'example-string'"

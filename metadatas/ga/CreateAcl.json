@@ -1,5 +1,6 @@
 {
   "name": "CreateAcl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "访问控制策略组条目，即IP地址条目或IP地址段条目。\n\n一次最多支持添加50个条目。",
+        "en": "The access control policy group entries, which are IP address entries or CIDR block entries.\n\nYou can add up to 50 entries at a time."
+      },
       "sub_parameters": [
         {
           "name": "Entry",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "访问控制策略组条目，即IP地址条目(192.168.XX.XX)或IP地址段条目(10.0.XX.XX/24)。\n\n一次最多支持添加50个条目。",
+            "en": "The access control policy group entry, which is an IP address entry (192.168.XX.XX) or a CIDR block entry (10.0.XX.XX/24).\n\nYou can add up to 50 entries at a time."
+          }
         },
         {
           "name": "EntryDescription",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "访问控制策略组条目备注内容。\n\n一次最多支持添加50个条目备注。\n\n长度限制为1~256个字符，允许包含字母、数字、短划线（-）、正斜线（/）、半角句号（.）和下划线（_），支持中文字符。",
+            "en": "The description of the access control policy group entry.\n\nYou can add descriptions for up to 50 entries at a time.\n\nThe description must be 1 to 256 characters in length and can contain letters, digits, hyphens (-), forward slashes (/), periods (.), underscores (_), and Chinese characters."
+          }
         }
       ]
     },
@@ -28,59 +41,106 @@
       "name": "AclName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问控制策略组的名称。\n\n名称长度为 1~128 个字符，以大小写字母或中文开头，可包含数字、半角句号（.）下划线（_）和短划线（-）。",
+        "en": "The name of the access control policy group.\n\nThe name must be 1 to 128 characters in length and must start with a letter or a Chinese character. It can contain digits, periods (.), underscores (_), and hyphens (-)."
+      }
     },
     {
       "name": "AddressIPVersion",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "访问控制策略组的IP版本。取值：\n- **IPv4**。\n- **IPv6**。",
+        "en": "The IP version of the access control policy group. Valid values:\n- **IPv4**\n- **IPv6**"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会创建访问控制策略组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: performs a dry run without creating the access control policy group. The system checks the required parameters, request format, and business limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): sends a Normal request, passes the dry run, and returns an HTTP 2xx status code and directly performs the operation."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the Alibaba Cloud Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "访问控制策略组的标签信息。",
+        "en": "The label information of the access control policy group."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "访问控制策略组的标签键。一旦输入该值，则不允许为空字符串。\n\n最多支持64个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n最多支持输入20个标签键。",
+            "en": "The label key of the access control policy group. Once specified, the label key cannot be an empty string.\n\nThe label key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nYou can specify up to 20 label keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "访问控制策略组的标签值。一旦输入该值，可以为空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n最多支持输入20个标签值。",
+            "en": "The label value of the access control policy group. Once specified, the label value can be an empty string.\n\nThe label value can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nYou can specify up to 20 label values."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建访问控制策略组",
+    "en": "Create an access control policy group"
+  },
+  "descriptions": {
+    "zh": "**CreateAcl**接口属于异步接口，即系统会先返回一个访问控制策略组ID，但访问控制策略组并未创建完成，系统后台的创建任务仍在进行。您可以调用[GetAcl](~~258292~~)或[ListAcls](~~258291~~)查询访问控制策略组的状态：\n- 当访问控制策略组处于**init**状态时，表示访问控制策略组正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n- 当访问控制策略组处于**active**状态时，表示访问控制策略组创建完成。",
+    "en": "**CreateAcl** is an asynchronous operation. After you invoke the operation, the system returns an access control policy group ID but the access control policy group is not yet created. The creation node continues to run in the background. You can invoke [GetAcl](~~258292~~) or [ListAcls](~~258291~~) to query the status of the access control policy group:\n- If the access control policy group is in the **init** state, the access control policy group is being created. In this state, you can only execute query operations and cannot execute other operations.\n\n- If the access control policy group is in the **active** state, the access control policy group is created."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-acl --biz-region-id cn-hangzhou --acl-name test-acl --address-ip-version IPv4 --acl-entries Entry=10.0.XX.XX/24 EntryDescription=test-entry --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --dry-run false --resource-group-id rg-acfmwj7wvng3jbi --tag Value=tag-value Key=tag-key --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateAcl --region cn-hangzhou --Tag.1.Key 'tag-key' --AclEntries.1.EntryDescription 'test-entry' --ResourceGroupId 'rg-acfmwj7wvng3jbi' --AclEntries.1.Entry '10.0.XX.XX/24' --AddressIPVersion IPv4 --Tag.1.Value 'tag-value' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --AclName 'test-acl'"

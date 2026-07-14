@@ -1,5 +1,6 @@
 {
   "name": "AddDiskReplicaPair",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一致性复制组所属的地域ID。",
+        "en": "The region ID of the replication pair-consistent group."
+      }
     },
     {
       "name": "ReplicaGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一致性复制组ID。",
+        "en": "The ID of the replication pair-consistent group."
+      }
     },
     {
       "name": "ReplicaPairId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "复制对ID。您可以调用[DescribeDiskReplicaPairs](~~354206~~)查询已创建的复制对ID。",
+        "en": "The ID of the replication pair. You can call the [DescribeDiskReplicaPairs](~~354206~~) operation to query the IDs of existing replication pairs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加复制对到一致性复制组",
+    "en": "AddDiskReplicaPair"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 一致性复制组功能支持的地域请参见[云盘异步复制概述](~~314563~~)。\n\n- 只有复制对与一致性复制组的数据复制方向相同（即生产地域、生产可用区、容灾地域、容灾可用区分别相同）时，才能将复制对加入到该一致性复制组中。\n\n- 要添加的复制对和添加到的一致性复制组均要处于**已创建**（`created`）或者**已停止**（`stopped`）状态。\n\n- 单个一致性复制组中最大支持添加17个复制对。\n\n- 将复制对添加到一致性复制组后，复制对原有的RPO会失效，并按照一致性复制组的RPO进行运行。",
+    "en": "## [](#)Usage notes\n\n*   For information about the regions in which the replication pair-consistent group feature is available, see [Overview](~~314563~~).\n*   A replication pair and a replication pair-consistent group replicate in the same direction if they have the same primary region (production region), primary zone (production zone), secondary region (disaster recovery region), and secondary zone (disaster recovery zone). A replication pair can be added only to a replication pair-consistent group that replicates in the same direction as the replication pair.\n*   Before you can add a replication pair to a replication pair-consistent group, make sure that the pair and the group are in the **Created** (`created`) or **Stopped** (`stopped`) state.\n*   Up to 17 replication pairs can be added to a single replication pair-consistent group.\n*   After replication pairs are added to a replication pair-consistent group, the recovery point objective (RPO) of the group takes effect on the pairs in place of their original RPOs."
+  },
   "example": {
     "unifiedCli": "aliyun ebs add-disk-replica-pair --biz-region-id cn-hangzhou --replica-group-id pg-myreplica0000 --replica-pair-id pair-cn-dsa0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ebs AddDiskReplicaPair --region cn-hangzhou --RegionId 'cn-hangzhou' --ReplicaPairId 'pair-cn-dsa0000' --ReplicaGroupId 'pg-myreplica0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

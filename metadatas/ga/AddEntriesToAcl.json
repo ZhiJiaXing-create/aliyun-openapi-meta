@@ -1,5 +1,6 @@
 {
   "name": "AddEntriesToAcl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "需要添加的访问控制策略组条目，即IP地址条目或IP地址段条目。\n\n一次最多支持添加50个条目。",
+        "en": "The access control policy group entries to add. An entry can be an IP address or a CIDR block.\n\nYou can add up to 50 entries at a time."
+      },
       "sub_parameters": [
         {
           "name": "Entry",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "需要添加的访问控制策略组条目，即IP地址条目或IP地址段条目。\n一次最多支持添加50个条目。\n\n> 该参数必填。",
+            "en": "The access control policy group entry to add. An entry can be an IP address or a CIDR block. You can add up to 50 entries at a time.\n\n> This parameter is required."
+          }
         },
         {
           "name": "EntryDescription",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "访问控制策略组条目备注内容。\n\n一次最多支持添加50个条目备注。\n\n长度限制为1~256个字符，允许包含字母、数字、短划线（-）、正斜线（/）、半角句号（.）和下划线（_），支持中文字符。",
+            "en": "The description of the access control policy group entry.\n\nYou can add descriptions for up to 50 entries at a time.\n\nThe description must be 1 to 256 characters in length and can contain letters, digits, hyphens (-), forward slashes (/), periods (.), and underscores (_). Chinese characters are supported."
+          }
         }
       ]
     },
@@ -28,27 +41,54 @@
       "name": "AclId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "访问控制策略组ID。",
+        "en": "The ID of the access control policy group."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of a request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会在访问控制策略组中添加IP条目。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: performs a dry run. The system checks the required parameters, request format, and business limitations without actually adding IP entries to the access control policy group. If the check fails, the corresponding error is returned. If the check succeeds, the `DryRunOperation` error code is returned.\n- **false** (default): sends a normal request. If the check succeeds, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在访问控制策略组中添加IP条目",
+    "en": "Add IP entries to an access control policy group"
+  },
+  "descriptions": {
+    "zh": "- **AddEntriesToAcl**接口属于异步接口，即系统会先返回一个请求ID，但IP条目并未添加完成，系统后台的添加任务仍在进行。您可以调用[GetAcl](~~258292~~)或[ListAcls](~~258291~~)查询访问控制策略组的状态：\n    - 当访问控制策略组处于**configuring**状态时，表示IP条目正在添加中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当访问控制策略组处于**active**状态时，表示IP条目添加完成。\n- **AddEntriesToAcl**接口不支持在同一个全球加速实例内并发为访问控制策略组添加IP条目。",
+    "en": "- **AddEntriesToAcl** is an asynchronous operation. After a request is sent, the system returns a request ID, but the IP entries are not yet added. The addition node continues in the background. You can call [GetAcl](~~258292~~) or [ListAcls](~~258291~~) to query the status of the access control policy group:\n    - If the access control policy group is in the **configuring** state, the IP entries are being added. In this state, you can only perform query operations and cannot perform other operations.\n    - If the access control policy group is in the **active** state, the IP entries are added.\n- You cannot concurrently call **AddEntriesToAcl** to add IP entries to an access control policy group within the same Global Accelerator (GA) instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga add-entries-to-acl --biz-region-id cn-hangzhou --acl-id nacl-hp34s2h0xx1ht4nwo0000 --acl-entries Entry=10.0.XX.XX/24 EntryDescription=test-entry --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ga AddEntriesToAcl --region cn-hangzhou --AclEntries.1.EntryDescription 'test-entry' --AclEntries.1.Entry '10.0.XX.XX/24' --AclId 'nacl-hp34s2h0xx1ht4nwo0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898'"

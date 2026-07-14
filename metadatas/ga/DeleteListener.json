@@ -1,5 +1,6 @@
 {
   "name": "DeleteListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The ID of the GA instance for which you want to delete a listener."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的监听的ID。",
+        "en": "The ID of the listener that you want to delete."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除监听",
+    "en": "DeleteListener"
+  },
+  "descriptions": {
+    "zh": "- 调用**DeleteListener**接口前，请确保要删除的监听下不存在终端节点组。删除终端节点组，请参见：\n    - [DeleteEndpointGroup](~~2253305~~)：删除智能路由类型监听关联的终端节点组。\n    - [DeleteEndpointGroups](~~2253311~~)：批量删除智能路由类型监听关联的终端节点组。\n    - [DeleteCustomRoutingEndpointGroups](~~2303183~~)：批量删除自定义路由类型监听关联的终端节点组。\n- **DeleteListener**接口属于异步接口，即系统会先返回一个请求ID，但监听并未删除完成，系统后台的删除任务仍在进行。您可以调用[DescribeListener](~~153254~~)查询监听的状态：\n    - 当监听处于**deleting**状态时，表示监听正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到该监听时，表示监听删除完成。\n- **DeleteListener**接口不支持在同一个全球加速实例内并发删除监听。",
+    "en": "*   Before you call the **DeleteListener** operation, make sure that no endpoint groups are associated with the listener that you want to delete. For information about how to delete an endpoint group, see the following topics:\n\n    *   [DeleteEndpointGroup](~~2253305~~): deletes an endpoint group that is associated with an intelligent routing listener.\n    *   [DeleteEndpointGroups](~~2253311~~): deletes multiple endpoint groups that are associated with intelligent routing listeners at the same time.\n    *   [DeleteCustomRoutingEndpointGroups](~~2303183~~): deletes multiple endpoint groups that are associated with custom routing listeners at the same time.\n\n*   **DeleteListener** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. You can call the [DescribeListener](~~153254~~) operation to query the status of the listener.\n\n    *   If the listener is in the **deleting** state, the listener is being deleted. In this case, you can perform only query operations.\n    *   If the listener cannot be queried, the listener is deleted.\n\n*   You cannot repeatedly call the **DeleteListener** operation to delete the listeners of the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-listener --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp1odcab8tmno0hdq0000 --listener-id lsr-bp1bpn0kn908w4nbw0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteListener --region cn-hangzhou --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --ListenerId 'lsr-bp1bpn0kn908w4nbw0000'"

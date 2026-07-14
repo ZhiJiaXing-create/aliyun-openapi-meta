@@ -1,5 +1,6 @@
 {
   "name": "ResetLogShipper",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "HotTtl",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全局热存储层数据保存时间。\n\n> 取值范围：大于等于7天，小于日志存储时间。",
+        "en": "The global retention period of hot data.\n\n>  The value of this parameter must be at least 7 and smaller than the log retention period. Unit: days."
+      }
     },
     {
       "name": "LogMetaList",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "云安全中心日志分析的配置信息。",
+        "en": "The settings of the log analysis feature."
+      },
       "sub_parameters": [
         {
           "name": "ConfigLogStore",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定要配置的LogStore。\n>您可以调用[DescribeLogMeta](~~DescribeLogMeta~~)接口获取该参数。",
+            "en": "The Logstore that you want to configure.\n\n>  You can call the [DescribeLogMeta](~~DescribeLogMeta~~) operation to query the Logstore."
+          }
         },
         {
           "name": "HotTtl",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "LogStore热存储层数据保存时间。\n\n> 取值范围：大于等于7天，小于日志存储时间。指定单LogStore热存储层数据保存时间会覆盖全局设置。",
+            "en": "The retention period of hot data in the Logstore.\n\n>  The value of this parameter must be at least 7 and smaller than the log retention period. Unit: days. If you specify this parameter for the Logstore, the global retention period of hot data specified by the HotTtl parameter is overwritten."
+          }
         },
         {
           "name": "Status",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "当前启用状态。取值：\n- **disabled**：未启用。\n- **enabled**：启用。",
+            "en": "The status of the log analysis feature. Valid values:\n\n*   **disabled**\n*   **enabled**"
+          }
         },
         {
           "name": "Ttl",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "LogStore日志保存天数。\n\n> 指定单LogStore日志保存天数会覆盖全局设置。",
+            "en": "The log retention period of the Logstore.\n\n>  If you specify this parameter for the Logstore, the global log retention period specified by the Ttl parameter is overwritten."
+          }
         }
       ]
     },
@@ -46,9 +71,20 @@
       "name": "Ttl",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全局日志保存天数。\n\n> 仅日志后付费模式支持。",
+        "en": "The global log retention period.\n\n>  This parameter is supported only when the log analysis feature uses the pay-as-you-go billing method."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重置并升级日志分析服务",
+    "en": "ResetLogShipper"
+  },
   "example": {
     "unifiedCli": "aliyun sas reset-log-shipper --ttl 180 --hot-ttl 7 --log-meta-list Status=enabled HotTtl=7 Ttl=60 ConfigLogStore=sas-security-log --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas ResetLogShipper --region cn-hangzhou --HotTtl 7 --LogMetaList.1.HotTtl 7 --LogMetaList.1.Status enabled --LogMetaList.1.ConfigLogStore 'sas-security-log' --LogMetaList.1.Ttl 60 --Ttl 180"

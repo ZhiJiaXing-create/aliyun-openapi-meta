@@ -1,5 +1,6 @@
 {
   "name": "UpdateDnsGtmMonitor",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "连续次数。",
-        "en": "The maximum number of consecutive exceptions detected. If the number of consecutive exceptions detected reaches the maximum number, the application service is deemed abnormal."
+        "en": "The number of consecutive health checks."
       }
     },
     {
@@ -29,24 +30,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "监控城市节点列表。",
+        "en": "The list of city nodes for health checks."
+      },
       "sub_parameters": [
         {
           "name": "CityCode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控节点-城市Code。",
+            "en": "The city code of the health check node."
+          }
         },
         {
           "name": "IspCode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控节点-运营商code。",
+            "en": "The carrier code of the health check node."
+          }
         }
-      ],
-      "description": {
-        "zh": "监控城市节点列表。",
-        "en": "The monitored nodes."
-      }
+      ]
     },
     {
       "name": "Lang",
@@ -55,7 +64,7 @@
       "required": false,
       "description": {
         "zh": "部分返回参数语言。默认值：en。取值范围：en、zh、ja。",
-        "en": "The language of the values of specific response parameters. Default value: en. Valid values: en, zh, and ja."
+        "en": "The language of the response. Default value: en. Valid values: en, zh, and ja."
       }
     },
     {
@@ -65,7 +74,7 @@
       "required": true,
       "description": {
         "zh": "健康检查配置id。<props=\"china\">可通过调用[DescribeDnsGtmInstanceAddressPool](https://help.aliyun.com/zh/dns/api-alidns-2015-01-09-describednsgtminstanceaddresspool?spm=a2c4g.11186623.help-menu-29697.d_0_5_1_3_9_6.7db77000nMCPI1)获取</props>\n<props=\"intl\">可通过调用[DescribeDnsGtmInstanceAddressPool](https://www.alibabacloud.com/help/zh/dns/api-alidns-2015-01-09-describednsgtminstanceaddresspool?spm=a2c63.p38356.help-menu-search-29697.d_0)获取</props>",
-        "en": "The ID of the health check configuration."
+        "en": "The ID of the health check configuration. You can call the [DescribeDnsGtmInstanceAddressPool](https://www.alibabacloud.com/help/en/dns/api-alidns-2015-01-09-describednsgtminstanceaddresspool) operation to obtain the ID."
       }
     },
     {
@@ -75,7 +84,7 @@
       "required": true,
       "description": {
         "zh": "扩展信息，各协议检查所需参数：\n\n- HTTP(S)：\n\n\t- port：检查端口\n\t- host：Host设置\n\t- path：URL路径\n\t- code：返回码大于设定值时则认为健康检查异常，例如设置为400，当返回码为404时，判定健康检查结果异常。\n\t- failureRate：失败率\n\t- sni：是否开启sni，仅在HTTPS协议时使用。\n\t    - true-开启\n\t    - false-未开启\n\t- nodeType：地址池类型为DOMAIN时，健康检查监控节点类型：\n\t    - IPV4\n\t    - IPV6\n\n- PING：\n\n\t- failureRate：失败率\n\t- packetNum：ping包数\n\t- packetLossRate：ping丢包率\n\t- nodeType：地址池类型为DOMAIN时，健康检查监控节点类型：\n\t    - IPV4\n\t    - IPV6\n\n- TCP：\n\n\t- port：检查端口\n\t- failureRate：失败率\n\t- nodeType：地址池类型为DOMAIN时，健康检查监控节点类型：\n\t    - IPV4\n\t    - IPV6",
-        "en": "The extended information. The required parameters vary based on the health check protocol.\n\n*   HTTP or HTTPS\n\n    *   port: the port that you want to check\n\n    *   host: the host settings\n\n    *   path: the URL path\n\n    *   code: the return code. If the return value of code is greater than the specified value, the health check result is deemed abnormal. For example, if code is set to 400 and the code 404 is returned, the health check result is deemed abnormal.\n\n    *   failureRate: the failure rate\n\n    *   sni: specifies whether to enable server name indication (SNI). This parameter is available only when ProtocolType is set to HTTPS. Valid values:\n\n        *   true: enables SNI.\n        *   false: disables SNI.\n\n    *   nodeType: the type of the monitoring node when the address pool type is domain name. Valid values:\n\n        *   IPV4\n        *   IPV6\n\n*   PING\n\n    *   failureRate: the failure rate\n\n    *   packetNum: the number of ping packets\n\n    *   packetLossRate: the loss rate of ping packets\n\n    *   nodeType: the type of the monitoring node when the address pool type is domain name. Valid values:\n\n        *   IPV4\n        *   IPV6\n\n*   TCP\n\n    *   port: the port that you want to check\n\n    *   failureRate: the failure rate\n\n    *   nodeType: the type of the monitoring node when the address pool type is domain name. Valid values:\n\n        *   IPV4\n        *   IPV6"
+        "en": "The extended information. The required parameters vary based on the health check protocol.\n\n- HTTP(S):\n\n  - port: The port for the health check.\n\n  - host: The Host header.\n\n  - path: The URL path.\n\n  - code: The health check is considered abnormal if the returned status code is greater than the specified value. For example, if you set this parameter to 400, a returned status code of 404 is considered abnormal.\n\n  - failureRate: The failure rate.\n\n  - sni: Specifies whether to enable Server Name Indication (SNI). This parameter is available only for the HTTPS protocol.\n\n    - true: Enable SNI.\n\n    - false: Disable SNI.\n\n  - nodeType: The type of the node for health checks when the address pool type is DOMAIN.\n\n    - IPV4\n\n    - IPV6\n\n- PING:\n\n  - failureRate: The failure rate.\n\n  - packetNum: The number of ping packets.\n\n  - packetLossRate: The packet loss rate.\n\n  - nodeType: The type of the node for health checks when the address pool type is DOMAIN.\n\n    - IPV4\n\n    - IPV6\n\n- TCP:\n\n  - port: The port for the health check.\n\n  - failureRate: The failure rate.\n\n  - nodeType: The type of the node for health checks when the address pool type is DOMAIN.\n\n    - IPV4\n\n    - IPV6"
       }
     },
     {
@@ -85,7 +94,7 @@
       "required": true,
       "description": {
         "zh": "检查协议：\n\n- HTTP\n- HTTPS\n- PING\n- TCP",
-        "en": "The protocol used for the health check. Valid values:\n\n*   HTTP\n*   HTTPS\n*   PING\n*   TCP"
+        "en": "The health check protocol. Valid values:\n\n- HTTP\n\n- HTTPS\n\n- PING\n\n- TCP"
       }
     },
     {
@@ -95,10 +104,17 @@
       "required": false,
       "description": {
         "zh": "超时时间，单位毫秒。",
-        "en": "The timeout period. Unit: milliseconds."
+        "en": "The timeout period for a health check. Unit: milliseconds."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改健康检查",
+    "en": "UpdateDnsGtmMonitor"
+  },
   "example": {
     "unifiedCli": "aliyun alidns update-dns-gtm-monitor --lang en --monitor-config-id Monito000000 --protocol-type http --interval 60 --evaluation-count 2 --timeout 3000 --monitor-extend-info code_:200,_path_:_index.htm_,_host_:_aliyun.com --isp-city-node CityCode=123 IspCode=123 --region cn-hangzhou",
     "legacyCli": "aliyun alidns UpdateDnsGtmMonitor --region cn-hangzhou --IspCityNode.1.CityCode 123 --ProtocolType http --Timeout 3000 --EvaluationCount 2 --Lang en --MonitorExtendInfo 'code_:200,_path_:_index.htm_,_host_:_aliyun.com' --MonitorConfigId Monito000000 --IspCityNode.1.IspCode 123 --Interval 60"

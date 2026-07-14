@@ -1,5 +1,6 @@
 {
   "name": "GetVideoPlayAuth",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ApiVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "API版本号，固定取值为**1.0.0**。",
+        "en": "The API version. Set the value to **1.0.0**."
+      }
     },
     {
       "name": "AuthInfoTimeout",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播放凭证过期时间，单位：**秒**。如果凭证过期则无法获取播放地址，需要重新获取凭证。\n\n- 默认为**100**秒。\n- 取值范围：`[100,3000]`。",
+        "en": "The time-to-live (TTL) of the playback credential, in **seconds**. If the credential expires, you cannot get the playback URL. Get a new credential.\n\n- Default value: **100**.\n\n- Valid values: `[100,3000]`."
+      }
     },
     {
       "name": "ReferenceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义ID，仅支持小写字母、大写字母、数字、横线、下划线，长度 6-64 位。用户维度唯一。",
+        "en": "A custom ID that is 6 to 64 characters in length. It can contain letters, digits, hyphens (-), and underscores (\\_). The ID must be unique for each user."
+      }
     },
     {
       "name": "VideoId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "音/视频ID，仅支持传入单个音/视频ID。可通过以下方式获取：\n- 通过控制台上传的视频，可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看音/视频ID。\n- 通过[CreateUploadVideo](~~55407~~)接口上传音/视频时，音/视频ID为返回参数VideoId的值。\n- 音/视频上传后，可通过[SearchMedia](~~86044~~)接口查询音/视频ID，为请求后返回参数VideoId的值。",
+        "en": "The ID of the audio or video file. You can specify only one ID. You can obtain the ID in one of the following ways:\n\n- Log on to the [VOD console](https://vod.console.aliyun.com). In the navigation pane, choose **Media Assets** > **Audio/Video** to view the file ID.\n\n- Call the [CreateUploadVideo](~~55407~~) operation to upload a file. The value of the VideoId parameter in the response is the file ID.\n\n- After a file is uploaded, call the [SearchMedia](~~86044~~) operation to query the file ID. The value of the VideoId parameter in the response is the file ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取音视频播放凭证",
+    "en": "GetVideoPlayAuth"
+  },
+  "descriptions": {
+    "zh": "- 使用阿里云播放器SDK（适用于PlayAuth播放方式），调用本接口来获取播放凭证，阿里云播放器SDK通过播放凭证自动获取播放地址进行播放，更多信息，请参见[阿里云播放器SDK](~~125579~~)。\n- 如果播放凭证过期则无法获取播放地址，需要重新获取播放凭证。",
+    "en": "- If you use PlayAuth for playback, you must use the ApsaraVideo Player SDK. Call this operation to obtain a playback credential, which the SDK uses to automatically retrieve the playback URL. For more information, see [ApsaraVideo Player SDK](~~125579~~).\n\n- If a playback credential expires, you cannot retrieve the playback URL. You must obtain a new credential."
+  },
   "example": {
     "unifiedCli": "aliyun vod get-video-play-auth --video-id dfde02284a5c46622a097adaf44a0000 --auth-info-timeout 100 --biz-api-version 1.0.0 --reference-id 123-123 --region cn-hangzhou",
     "legacyCli": "aliyun vod GetVideoPlayAuth --region cn-hangzhou --ApiVersion '1.0.0' --VideoId dfde02284a5c46622a097adaf44a0000 --ReferenceId '123-123' --AuthInfoTimeout 100"

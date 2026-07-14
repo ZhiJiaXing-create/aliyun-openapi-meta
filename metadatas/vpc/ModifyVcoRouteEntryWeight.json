@@ -1,5 +1,6 @@
 {
   "name": "ModifyVcoRouteEntryWeight",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "NewWeight",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改的目的路由条目新的权重值。取值：\n\n- **0**：表示低优先级。\n- **100**：表示高优先级。",
+        "en": "The new weight of the destination-based route that you want to modify. Valid values:\n\n*   **0**: a low priority\n*   **100**: a high priority"
+      }
     },
     {
       "name": "NextHop",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改的目的路由条目的下一跳。",
+        "en": "The next hop of the destination-based route that you want to modify."
+      }
     },
     {
       "name": "OverlayMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "隧道协议。仅取值：**Ipsec**（默认值），表示IPsec隧道协议。",
+        "en": "The tunneling protocol. Set the value to **Ipsec**, which specifies the IPsec tunneling protocol."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the IPsec-VPN connection.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "RouteDest",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改的目的路由条目的目标网段。",
+        "en": "The destination CIDR block of the destination-based route that you want to modify."
+      }
     },
     {
       "name": "VpnConnectionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接ID。",
+        "en": "The ID of the IPsec-VPN connection."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改的目的路由条目的权重值。取值：\n\n- **0**：表示低优先级。\n- **100**：表示高优先级。",
+        "en": "The current weight of the destination-based route that you want to modify. Valid values:\n\n*   **0**: a low priority\n*   **100**: a high priority"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改IPsec连接下目的路由条目的权重值",
+    "en": "ModifyVcoRouteEntryWeight"
+  },
+  "descriptions": {
+    "zh": "- **ModifyVcoRouteEntryWeight**接口属于异步接口，即系统先返回一个请求ID，但该目的路由条目的权重值尚未修改成功，系统后台的修改任务仍在进行。您可以调用[DescribeVpnConnection](~~53046~~)查询目的路由条目的权重值的修改状态：\n    - 当IPsec连接处于**updating**状态时，表示目的路由条目的权重值正在修改中。\n    - 当IPsec连接处于**attached**状态时，表示目的路由条目的权重值修改成功。\n- **ModifyVcoRouteEntryWeight**接口不支持在同一IPsec连接下并发修改目的路由条目的权重值。",
+    "en": "*   **ModifyVcoRouteEntryWeight** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeVpnConnection](~~53046~~) operation to query the status of the associated IPsec-VPN connection and determine whether the weight of the specified destination-based route is modified.\n\n    *   If the IPsec-VPN connection is in the **updating** state, the weight of the destination-based route is being modified.\n    *   If the IPsec-VPN connection is in the **attached** state, the weight of the destination-based route is modified.\n\n*   You cannot repeatedly call the **ModifyVcoRouteEntryWeight** operation for the same IPsec-VPN connection within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-vco-route-entry-weight --biz-region-id cn-hangzhou --vpn-connection-id vco-p0w2jpkhi2eeop6q60000 --route-dest 192.168.10.0/24 --weight 100 --new-weight 0 --next-hop vco-p0w2jpkhi2eeop6q60000 --overlay-mode Ipsec --client-token 123e4567-e89b-12d3-a456-42660000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyVcoRouteEntryWeight --region cn-hangzhou --RouteDest '192.168.10.0/24' --NewWeight 0 --OverlayMode Ipsec --NextHop 'vco-p0w2jpkhi2eeop6q60000' --RegionId 'cn-hangzhou' --VpnConnectionId 'vco-p0w2jpkhi2eeop6q60000' --ClientToken '123e4567-e89b-12d3-a456-42660000' --Weight 100"

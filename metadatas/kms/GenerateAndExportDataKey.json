@@ -1,5 +1,6 @@
 {
   "name": "GenerateAndExportDataKey",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启DryRun模式。\n\n- true：开启\n- false（默认值）：关闭\n\nDryRun模式用于测试API调用，验证您是否具有相应资源的权限，以及请求参数是否配置正确。DryRun模式开启后，KMS会始终返回失败并提示失败原因。失败原因包含如下：\n\n- DryRunOperationError：不配置DryRun参数时，请求会成功。\n- ValidationError：请求中指定的参数有误。\n- AccessDeniedError：您无权在KMS资源上执行该操作。",
+        "en": "Specifies whether to enable the dry run feature.\n\n- true: enables the feature.\n\n- false (default): disables the feature.\n\nThe DryRun mode is used to test API calls and verify the permissions on the resources that you have access to and the validity of the request parameters. If you enable the DryRun mode, KMS always returns a failure response and the cause of the failure. The following failure causes are included:\n\n- DryRunOperationError: The request would have succeeded if the DryRun parameter is not specified.\n\n- ValidationError: The parameters specified in the request are invalid.\n\n- AccessDeniedError: You are not authorized to perform this operation on the KMS resource."
+      }
     },
     {
       "name": "EncryptionContext",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "key/value对的JSON字符串，如果指定了该参数，则在解密或者使用其他密钥转加密时需要提供同样的参数，详情请参见[EncryptionContext说明](~~42975~~)。",
+        "en": "A JSON string that consists of key-value pairs. If you specify this parameter, you must specify the same parameter when you call the Decrypt operation or other operations to re-encrypt the data key. For more information, see [EncryptionContext](~~42975~~)."
+      }
     },
     {
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥的ID，也可以指定为密钥别名或密钥资源名称（ARN）。关于别名的详细介绍，请参见[管理密钥别名](~~480655~~)。\n>访问其他阿里云账号下的密钥时，必须输入密钥ARN。密钥ARN的格式为`acs:kms:${region}:${account}:key/${keyid}`。",
+        "en": "The ID of the key. You can also specify the alias or Amazon Resource Name (ARN) of the key. For more information about aliases, see [Manage aliases](~~480655~~).\n\n> To access a key in another Alibaba Cloud account, you must specify the ARN of the key. The key ARN is in the format of `acs:kms:${region}:${account}:key/${keyid}`."
+      }
     },
     {
       "name": "KeySpec",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定生成的数据密钥的长度，取值：\n\n- AES_256：256位的对称密钥。\n- AES_128：128位的对称密钥。\n\n> 建议使用KeySpec或者NumberOfBytes来指定数据密钥长度。如果两者都不指定，KMS生成256位的数据密钥；如果两者都被指定，KMS会忽略KeySpec参数。",
+        "en": "The length of the data key that you want to generate. Valid values:\n\n- AES\\_256: a 256-bit symmetric key.\n\n- AES\\_128: a 128-bit symmetric key.\n\n> We recommend that you use the KeySpec or NumberOfBytes parameter to specify the length of a data key. If you do not specify either of the parameters, KMS generates a 256-bit data key. If you specify both parameters, KMS ignores the KeySpec parameter."
+      }
     },
     {
       "name": "NumberOfBytes",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定生成的数据密钥的长度。\n\n取值：1~1024。\n\n单位：字节。",
+        "en": "The length of the data key that you want to generate.\n\nValid values: 1 to 1024.\n\nUnit: bytes."
+      }
     },
     {
       "name": "PublicKeyBlob",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Base64编码的公钥。",
+        "en": "The public key that is encoded in Base64."
+      }
     },
     {
       "name": "WrappingAlgorithm",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "使用PublicKeyBlob所指定的公钥，加密（Wrap）数据密钥时的加密算法。算法详情，请参见[AsymmetricDecrypt](~~148130~~)。  \n取值：\n\n- RSAES_OAEP_SHA_256\n- RSAES_OAEP_SHA_1\n- SM2PKE",
+        "en": "The encryption algorithm that is used to encrypt the data key using the public key specified by PublicKeyBlob. For more information about encryption algorithms, see [AsymmetricDecrypt](~~148130~~).<br> Valid values:<br><br>\n\n- RSAES\\_OAEP\\_SHA\\_256\n\n- RSAES\\_OAEP\\_SHA\\_1\n\n- SM2PKE"
+      }
     },
     {
       "name": "WrappingKeySpec",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "PublicKeyBlob密钥的类型。密钥类型详情，请参见[非对称密钥简介](~~148147~~)。  \n取值：\n\n- RSA_2048\n- EC_SM2",
+        "en": "The type of the key specified by PublicKeyBlob. For more information about key types, see [Introduction to asymmetric keys](~~148147~~).<br> Valid values:<br><br>\n\n- RSA\\_2048\n\n- EC\\_SM2"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "生成一个数据密钥并加密导出",
+    "en": "GenerateAndExportDataKey"
+  },
+  "descriptions": {
+    "zh": "### 注意事项\n\n- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 本接口可以通过共享网关或专属网关调用。详细介绍，请参见[阿里云SDK](~~601559~~)。\n\n  - 共享网关：通过公网、VPC域名访问KMS，该方式需要打开公网开关。具体操作，请参见[通过公网访问KMS实例中的密钥](~~2856718~~)。\n  - 专属网关：通过KMS私网地址（`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`）访问KMS。\n\n\n### 详细说明\n建议您使用以下方式将数据密钥导入到密码模块中，用于数据加密和数据解密：\n\n1.调用GenerateAndExportDataKey接口，获得KMS密钥加密和指定公钥加密的数据密钥。\n\n2.将KMS密钥加密数据密钥得到的密文保存在KMS，或者云数据库等存储服务中，用于密钥的备份和恢复。\n\n3.将公钥加密数据密钥的密文，导入到公钥对应私钥所在的密码模块，实现KMS到密码模块的密钥分发，使用数据密钥对相应的数据进行加解密运算。\n\n> 在请求中指定的KMS密钥，仅会被用作数据密钥的加密，和数据密钥的生成没有关系。KMS也不会记录或存储随机生成的数据密钥，您需要负责记录数据密钥或数据密钥的密文。",
+    "en": "### Notes\n\n- For more information about the access policy required for a RAM user or RAM role to use this operation, see [Resource Access Management](~~2767210~~).\n\n- This operation is accessible through a shared gateway or a dedicated gateway. For more information, see [Alibaba Cloud SDK](~~601559~~).\n\n  - Shared gateway: You can access KMS over the Internet or a VPC. To access KMS over the Internet, you must enable Internet access. For more information, see [Access KMS instances over the Internet](~~2856718~~).\n\n  - Dedicated gateway: You can access KMS using the private endpoint of KMS (`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`).\n\n### Description\n\nWe recommend that you import the data key to a cryptographic module for data encryption and data decryption as follows:\n\n1\\. Call the GenerateAndExportDataKey operation to obtain the data key encrypted by a KMS key and a specified public key.\n\n2\\. Save the ciphertext of the data key that is encrypted by the KMS key to KMS or a storage service, such as ApsaraDB, for key backup and recovery.\n\n3\\. Import the ciphertext of the data key that is encrypted by the public key to the cryptographic module that contains the corresponding private key. This process distributes the key from KMS to the cryptographic module. You can then use the data key to encrypt and decrypt data.\n\n> The KMS key that you specify in the request is used only to encrypt the data key and is not used to generate the data key. KMS does not record or store the randomly generated data key. You are responsible for recording the data key or its ciphertext."
+  },
   "example": {
     "unifiedCli": "aliyun kms generate-and-export-data-key --key-id 1234abcd-12ab-34cd-56ef-123456780000 --key-spec AES_256 --number-of-bytes 32 --encryption-context Example=Example --public-key-blob MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAndKfC2ReLL2+y8a0+ZBBeAft/uBYo86GZiYJuflqgUzKxpyuvlo3uQkBv6b+nx+0tz8g8v7GhpPWMSW5L9mNHYsvYFsa7jTxsYdt17yj6GlUHPuMIs8hr5qbwl38IHU1iIa7nYWwE2fb3ePOvLDACRJVgGpU0yxioW80d2QD+9aU4jF5dlAahcfgsNzo2CXzCUc1+xbmNuq7Rp+H9VJB9dyYOwqnW3RhOLBo21FzpORapf0UiRlrHRpk1V6ez+aE1dofaYh/9bh0m6ioxj7j5hpZbWccuEZTMBKd+cbuBkRhJzc6Tti6qwZbDiu4fUwbZS0Tqpuo1UadiyxMW00000000 --wrapping-key-spec RSA_2048 --wrapping-algorithm RSAES_OAEP_SHA_256 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun kms GenerateAndExportDataKey --region cn-hangzhou --WrappingKeySpec RSA_2048 --EncryptionContext '{\"Example\":\"Example\"}' --PublicKeyBlob 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAndKfC2ReLL2+y8a0+ZBBeAft/uBYo86GZiYJuflqgUzKxpyuvlo3uQkBv6b+nx+0tz8g8v7GhpPWMSW5L9mNHYsvYFsa7jTxsYdt17yj6GlUHPuMIs8hr5qbwl38IHU1iIa7nYWwE2fb3ePOvLDACRJVgGpU0yxioW80d2QD+9aU4jF5dlAahcfgsNzo2CXzCUc1+xbmNuq7Rp+H9VJB9dyYOwqnW3RhOLBo21FzpORapf0UiRlrHRpk1V6ez+aE1dofaYh/9bh0m6ioxj7j5hpZbWccuEZTMBKd+cbuBkRhJzc6Tti6qwZbDiu4fUwbZS0Tqpuo1UadiyxMW00000000' --KeySpec AES_256 --DryRun false --KeyId '1234abcd-12ab-34cd-56ef-123456780000' --WrappingAlgorithm RSAES_OAEP_SHA_256 --NumberOfBytes 32"

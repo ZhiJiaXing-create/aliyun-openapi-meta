@@ -1,5 +1,6 @@
 {
   "name": "DeleteGatewayFileShares",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制删除。可能值：\n\n- true：强制删除同步未完成的文件共享，请谨慎操作。\n\n- false（默认）：不删除同步未完成的文件共享。",
+        "en": "Specifies whether to force delete the file share. Valid values:\n\n- true: Force deletes the file share even if data synchronization is incomplete. Use this option with caution.\n\n- false (default): Does not delete the file share if data synchronization is incomplete."
+      }
     },
     {
       "name": "GatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关ID。",
+        "en": "The ID of the gateway."
+      }
     },
     {
       "name": "IndexId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件共享在网关内部的ID。可以通过DescribeGatewayFileShares接口获得。",
+        "en": "The ID of the file share. You can call the DescribeGatewayFileShares operation to query the IDs of file shares."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除文件共享",
+    "en": "DeleteGatewayFileShares"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n><warning>\n\n- 删除共享会导致您的业务和数据同步中断，请谨慎操作。\n- 当删除NFS共享时，建议您先在客户端执行卸载操作。若客户端未先执行卸载操作，而直接删除共享或网关，会导致挂载点无法正常卸载。此后对挂载目录的任何操作均会出现卡住或长时间无响应的情况。\n- 删除共享并不会终止网关计费，如果您无需使用网关，可以通过调用[DeleteGateway](https://help.aliyun.com/zh/csg/developer-reference/api-sgw-2018-05-11-deletegateway?spm=a2c4g.11186623.help-menu-53923.d_5_1_3_1_3.15947491Vl7Ja9&scm=20140722.H_2874297._.OR_help-T_cn~zh-V_1)接口删除网关以避免持续产生费用。\n></warning></props>",
+    "en": "### Description\n\n><warning>\n\n- Deleting a file share interrupts services and data synchronization. Use this operation with caution.\n\n- Before you delete a Network File System (NFS) share, unmount it from the client. If you delete the share or the gateway before you unmount it, the mount target cannot be unmounted. Subsequent operations on the mount directory will freeze or become unresponsive.\n\n- Deleting a file share does not stop billing for the gateway. If you no longer need the gateway, call the [DeleteGateway](https://help.aliyun.com/zh/csg/developer-reference/api-sgw-2018-05-11-deletegateway?spm=a2c4g.11186623.help-menu-53923.d_5_1_3_1_3.15947491Vl7Ja9\\&scm=20140722.H_2874297._.OR_help-T_cn~zh-V_1) operation to delete the gateway and avoid further charges.\n\n></warning>"
+  },
   "example": {
     "unifiedCli": "aliyun sgw delete-gateway-file-shares --gateway-id gw-000eg44nmxbsfwbv0000 --index-id NFSalex000 --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun sgw DeleteGatewayFileShares --region cn-hangzhou --IndexId NFSalex000 --Force false --GatewayId 'gw-000eg44nmxbsfwbv0000'"

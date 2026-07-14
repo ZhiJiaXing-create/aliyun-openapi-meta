@@ -1,5 +1,6 @@
 {
   "name": "CreateNetwork",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,98 @@
       "name": "CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络的网段。您可以使用以下网段或其子集作为network的网段：\n\n- 10.0.0.0/8（默认值）。\n- 172.16.0.0/12。\n- 192.168.0.0/16。",
+        "en": "The CIDR block of the network. You can use one of the following CIDR blocks or their subsets:\n\n- 10.0.0.0/8 (default).\n\n- 172.16.0.0/12.\n\n- 192.168.0.0/16."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "描述信息。\n\n长度为2~256个字符，必须以字母或中文开头，但不能以http://或https://开头。",
+        "en": "A description of the network.\n\nMust be 2 to 256 characters long, start with a letter or a Chinese character, and cannot start with http\\:// or https\\://."
+      }
+    },
+    {
+      "name": "EnableIpv6",
+      "position": "Query",
+      "type": "Boolean",
       "required": false
     },
     {
       "name": "EnsRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ENS的节点ID。",
+        "en": "The node ID of ENS."
+      }
+    },
+    {
+      "name": "Ipv6Isp",
+      "position": "Query",
+      "type": "String",
+      "required": false
     },
     {
       "name": "NetworkName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络名称。命名规则如下：\n\n- 长度为2~128个英文或中文字符。\n- 必须以大小字母或中文开头，不能以 http://和https://开头。\n- 可以包含数字、英文冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The network name. Follow these naming rules:\n\n- Must be 2 to 128 characters long, using English or Chinese characters.\n\n- Must start with a letter or a Chinese character. Cannot start with http\\:// or https\\://.\n\n- Can contain digits, colons (:), underscores (\\_), or hyphens (-)."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源标签",
+        "en": "Resource tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签键。N的取值范围为**1**~**20**。\n\n- 不能以`aliyun`、`acs:`、`http://`或`https://`开头。\n- 最多支持64个字符。\n- 不允许传入空字符串。",
+            "en": "The tag key for the instance. N ranges from **1** to **20**.\n\n- Cannot start with `aliyun`, `acs:`, `http://`, or `https://`.\n\n- Supports up to 64 characters.\n\n- Cannot be an empty string."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。N 的取值范围：1~20。一旦传入该值，可以为空字符串。最多支持 128 个字符，不能以acs:开头，不能包含http://或者https://。",
+            "en": "The tag value for the resource. N ranges from 1 to 20. This value can be an empty string once provided. It supports up to 128 characters, cannot start with acs:, and cannot contain http\\:// or https\\://."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建网络",
+    "en": "CreateNetwork"
+  },
+  "descriptions": {
+    "zh": "- API调用频率：100次/秒。\n- 单用户调用频率：5次/秒。",
+    "en": "- API call frequency: 100 calls per second.\n\n- Per-user call frequency: 5 calls per second."
+  },
   "example": {
     "unifiedCli": "aliyun ens create-network --ens-region-id cn-beijing-telecom --cidr-block 192.168.0.0/24 --network-name abc --description this_is_my_first_network --tag Value=tagValue Key=key1 --enable-ipv6 true --ipv6-isp telecom --region cn-hangzhou",
     "legacyCli": "aliyun ens CreateNetwork --region cn-hangzhou --Ipv6Isp telecom --Tag.1.Key key1 --NetworkName abc --Description this_is_my_first_network --Tag.1.Value tagValue --CidrBlock '192.168.0.0/24' --EnsRegionId 'cn-beijing-telecom' --EnableIpv6 true"

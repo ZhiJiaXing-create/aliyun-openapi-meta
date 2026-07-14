@@ -1,5 +1,6 @@
 {
   "name": "DeleteVSwitch",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除交换机。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行删除。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: Sends a check request without deleting the VSwitch. The check items include whether required parameters are specified, the request format, and service limits. If the check fails, the corresponding error is returned. If the check succeeds, the error code `DryRunOperation` is returned.\n- **false** (default): Sends a normal request. After the check succeeds, an HTTP 2xx status code is returned and the VSwitch is directly deleted."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要删除的交换机的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VSwitch to delete.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query region IDs."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的交换机的ID。",
+        "en": "The ID of the VSwitch to delete."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除交换机",
+    "en": "DeleteVSwitch"
+  },
+  "descriptions": {
+    "zh": "调用该接口删除交换机时，请注意以下事项： \n\n- 删除交换机之前，需要先释放或移走VPC内的所有资源，包括交换机、云产品实例、路由器接口、HaVip等。  \n\n- 只有处于**Available**状态的交换机可以被删除。  \n\n- 交换机所在的VPC正在创建或删除交换机或路由条目时，无法删除交换机。 \n\n- **DeleteVSwitch**接口属于异步接口，即系统会返回一个请求ID，但该交换机尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeVSwitchAttributes](~~94567~~)查询交换机的删除状态：\n    - 当交换机处于**Pending**状态时，表示交换机正在删除中。\n    - 当查询不到指定的交换机时，表示交换机删除成功。\n\n- **DeleteVSwitch**接口不支持并发删除同一个交换机。",
+    "en": "When you call this operation to delete a VSwitch, take note of the following items:\n\n- Before you delete a VSwitch, you must release or migrate all resources in the VPC, including VSwitches, cloud product instances, router interfaces, and HaVip resources.\n\n- Only VSwitches in the **Available** state can be deleted.\n\n- A VSwitch cannot be deleted if the VPC to which it belongs is creating or deleting a VSwitch or route entry.\n\n- The **DeleteVSwitch** operation is asynchronous. After you send a request, the system returns a request ID, but the VSwitch is not yet deleted. The deletion task is still running in the background. You can call [DescribeVSwitchAttributes](~~94567~~) to query the deletion status of the VSwitch:\n    - If the VSwitch is in the **Pending** state, the VSwitch is being deleted.\n    - If the specified VSwitch cannot be found, the VSwitch is deleted.\n\n- The **DeleteVSwitch** operation does not support concurrent deletion of the same VSwitch."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-vswitch --vswitch-id vsw-asdfjlna0000 --biz-region-id cn-hangzhou --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteVSwitch --region cn-hangzhou --VSwitchId 'vsw-asdfjlna0000' --DryRun false --RegionId 'cn-hangzhou'"

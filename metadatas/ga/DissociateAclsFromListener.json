@@ -1,5 +1,6 @@
 {
   "name": "DissociateAclsFromListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AclIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "访问控制策略组ID，一次最多支持将2个访问控制策略组与监听解除关联。",
+        "en": "The ID of the ACL. You can disassociate up to two ACLs from a listener."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会将访问控制策略组与监听解除关联。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to only precheck the request. Default value: false. Valid values:\n\n*   **true**: prechecks the request without performing the operation. The system prechecks the required parameters, request syntax, and limits. If the request fails the precheck, an error message is returned. If the request passes the precheck, the `DryRunOperation` error code is returned.\n*   **false**: sends the request. If the request passes the precheck, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听ID。",
+        "en": "The ID of the listener."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将ACL与监听解除关联",
+    "en": "DissociateAclsFromListener"
+  },
+  "descriptions": {
+    "zh": "- **DissociateAclsFromListener**接口属于异步接口，即系统会先返回一个请求ID，但访问控制策略组与监听解除关联并未完成，系统后台的解关联任务仍在进行。您可以调用[DescribeListener](~~153254~~)查询监听的状态：\n    - 当监听处于**updating**状态时，表示访问控制策略组与监听正在解除关联中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当监听处于**active**状态时，表示访问控制策略组与监听已解除关联。\n- **DissociateAclsFromListener**接口不支持在同一个全球加速实例内并发解除访问控制策略组与监听的关联。",
+    "en": "## Description\n\n*   **DissociateAclsFromListener** is an asynchronous operation. After you send a request, the system returns a request ID, but the operation is still being performed in the system background. You can call the [DescribeListener](~~153254~~) operation to query the state of a listener:\n\n    *   If the listener is in the **updating** state, ACLs are being disassociated from the listener. In this case, you can perform only query operations.\n    *   If the listener is in the **active** state, ACLs are disassociated from the listener.\n\n*   The **DissociateAclsFromListener** operation cannot be repeatedly called for the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga dissociate-acls-from-listener --biz-region-id cn-hangzhou --acl-ids nacl-hp34s2h0xx1ht4nwo0000 --listener-id lsr-bp1bpn0kn908w4nbw0000 --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ga DissociateAclsFromListener --region cn-hangzhou --AclIds.1 'nacl-hp34s2h0xx1ht4nwo0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --ListenerId 'lsr-bp1bpn0kn908w4nbw0000'"

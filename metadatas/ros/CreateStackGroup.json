@@ -1,5 +1,6 @@
 {
   "name": "CreateStackGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "AdministrationRoleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建自助管理权限模式的资源栈组时，需指定的供ROS扮演的RAM管理员角色名称。若不指定，则使用AliyunROSStackGroupAdministrationRole作为默认值。ROS以该角色身份进一步扮演执行角色（AliyunROSStackGroupExecutionRole）来操作资源栈组中资源栈实例所对应的资源栈。\n\n长度为1~64个字符，可包含英文字母、数字和短划线（-）。\n\n> 当PermissionModel取值为SELF_MANAGED时，该参数必填。",
+        "en": "The RAM role for the administrator account in a self-managed stack group. ROS assumes this role to perform operations. Default: AliyunROSStackGroupAdministrationRole.\n\n1 to 64 characters. Can contain letters, digits, and hyphens (-).\n\n> This parameter is required when PermissionModel is set to SELF\\_MANAGED."
+      }
     },
     {
       "name": "AutoDeployment",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自动部署设置信息。\n>仅当PermissionModel为SERVICE_MANAGED时，需要指定该参数。",
+        "en": "The automatic deployment settings.\n\n> You must specify this parameter if PermissionModel is set to SERVICE\\_MANAGED."
+      }
     },
     {
       "name": "Capabilities",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈组选项列表，最大长度为1。",
+        "en": "The options for the stack group. Maximum: one option."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求的幂等性。该值由客户端生成，并且必须是全局唯一的。   \n长度不超过64个字符，可包含英文字母、数字、短划线（-）和下划线（_）。  \n更多信息，请参见[如何保证幂等性](~~134212~~)。",
+        "en": "The client token for idempotency. Must be unique across requests. Can contain letters, digits, underscores (\\_), and hyphens (-), up to 64 characters. [How to ensure idempotence](~~134212~~)."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈组描述。  \n长度为1~256个字符。",
+        "en": "The stack group description. 1 to 256 characters."
+      }
     },
     {
       "name": "ExecutionRoleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建自助管理权限模式的资源栈组时，需指定的供管理员角色（AliyunROSStackGroupAdministrationRole）扮演的RAM执行角色名称。若不指定，则使用AliyunROSStackGroupExecutionRole作为默认值。ROS以该角色身份来操作资源栈组中资源栈实例所对应的资源栈。\n\n长度为1~64个字符，可包含英文字母、数字和短划线（-）。\n> 当PermissionModel取值为SELF_MANAGED时，该参数必填。",
+        "en": "The RAM role for the execution account in a self-managed stack group. The administrator role assumes this role to perform stack operations. Default: AliyunROSStackGroupExecutionRole.\n\n1 to 64 characters. Can contain letters, digits, and hyphens (-).\n\n> This parameter is required when PermissionModel is set to SELF\\_MANAGED."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源栈组参数列表。",
+        "en": "The parameters of the stack group."
+      },
       "sub_parameters": [
         {
           "name": "ParameterKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "参数的名称。如果未指定参数的名称和值，则ROS将使用模板中指定的默认值。\n\nN最大值为200。  \n\n> Parameters为可选参数。若指定了Parameters，则Parameters.N.ParameterKey为必选参数。",
+            "en": "The key of parameter N. If not specified, ROS uses the default name and value defined in the template.\n\nMaximum value of N: 200.\n\n> Parameters is optional. If you specify Parameters, you must also specify Parameters.N.ParameterKey."
+          }
         },
         {
           "name": "ParameterValue",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "参数的值。\n\nN最大值为200。  \n\n> Parameters为可选参数。若指定了Parameters，则Parameters.N.ParameterValue为必选参数。",
+            "en": "The value of parameter N.\n\nMaximum value of N: 200.\n\n> Parameters is optional. If you specify Parameters, you must also specify Parameters.N.ParameterValue."
+          }
         }
       ]
     },
@@ -64,49 +101,81 @@
       "name": "PermissionModel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "授权模式。\n\n取值：\n\n- SELF_MANAGED（默认值）：自助管理权限模式。使用该模式时，您需要事先在管理员账号和目标账号中手动创建RAM角色，建立二者的信任关系，然后在目标账号中部署资源栈。\n\n- SERVICE_MANAGED：服务管理权限模式。使用该模式时，ROS会为管理员账号和目标账号自动创建服务关联角色，管理员账号通过服务关联角色在目标账号中部署资源栈。\n\n>当您使用服务管理权限模式部署资源栈时，当前账号必须是资源目录的企业管理账号或委派管理员账号，且已开启可信访问。更多信息，请参见[设置委派管理员账号](~~308253~~)和[开启可信访问](~~298229~~)。",
+        "en": "The permission model of the stack group.\n\nValid values:\n\n- SELF\\_MANAGED (default): Create RAM roles for the administrator and execution accounts and establish a trust relationship between them.\n\n- SERVICE\\_MANAGED: ROS automatically creates service-linked roles for the administrator and execution accounts.\n\n> To use SERVICE\\_MANAGED, your account must be the management account or a delegated administrator account of a resource directory with trusted access enabled. [Manage a delegated administrator account](~~308253~~) and [Enable trusted access](~~298229~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈组所属的地域ID。\n\n您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the stack group. Call [DescribeRegions](~~131035~~) to query available regions."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。如果不指定该参数，资源栈组将加入默认资源组。  \n关于资源组的更多信息，请参见[什么是资源组](~~94475~~)。",
+        "en": "The resource group ID. Defaults to the default resource group. [Resource groups](~~94475~~)."
+      }
     },
     {
       "name": "StackArn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈的 ARN，形如 `acs:ros:${RegionId}:${AccountId}:stack/${StackId}`。资源栈组将根据此资源栈的模板和参数进行创建。\n\n> - 仅支持**自助管理权限模式**。\n> - 若指定StackArn，则不能指定Parameters。\n> - 您必须且仅能指定TemplateBody、TemplateURL、TemplateId或StackArn其中一个参数。",
+        "en": "The stack ARN in the format acs:ros:${RegionId}:${AccountId}:stack/${StackId}. The stack group uses the template and parameters of this stack.\n\n> - Only supported in self-managed permission mode.\n>\n> - If StackArn is specified, Parameters must not be specified.\n>\n> - You must specify **only one** of TemplateBody, TemplateURL, TemplateId, or StackArn."
+      }
     },
     {
       "name": "StackGroupName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈组名称。名称在单个地域内唯一。   \n长度不超过255个字符，必须以数字或英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_）。",
+        "en": "The stack group name. Must be unique within a region. 1 to 255 characters. Can contain letters, digits, hyphens (-), and underscores (\\_). Must start with a letter or digit."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源栈组的标签。",
+        "en": "The tags of the stack group."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "资源栈组的标签键。\n\n> Tags为可选参数。如果需要指定Tags，则Tags.N.Key必须指定。",
+            "en": "The tag key of the stack group.\n\n> Tags is optional. If you want to specify Tags, you must also specify Tags.N.Key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源栈组的标签值。",
+            "en": "The tag value of the stack group."
+          }
         }
       ]
     },
@@ -114,27 +183,54 @@
       "name": "TemplateBody",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板主体的结构。长度为1~524,288个字节。如果长度较大，则建议通过HTTP POST+Body Param的方式，将参数放在请求体中进行传递，避免因URL过长而导致请求失败。                                                               \n>您必须且仅能指定TemplateBody、TemplateURL、TemplateId或StackArn其中一个参数。",
+        "en": "The template body. 1 to 524,288 bytes. For large templates, pass the body in the HTTP POST request body to avoid URL length limits.\n\n> Specify exactly one of TemplateBody, TemplateURL, and TemplateId."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板ID。支持共享模板和私有模板。\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId或StackArn其中一个参数。",
+        "en": "The template ID. Applies to shared and private templates.\n\n> Specify exactly one of TemplateBody, TemplateURL, and TemplateId."
+      }
     },
     {
       "name": "TemplateURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含模板主体的文件的位置。URL必须指向位于HTTP Web服务器（HTTP或HTTPS）或阿里云OSS存储桶中的模板（1~524,288个字节）。OSS存储桶的URL，例如oss://ros/template/demo或oss://ros/template/demo?RegionId=cn-hangzhou。如未指定OSS地域，默认与接口参数RegionId相同。\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId或StackArn其中一个参数。",
+        "en": "The URL of the template file. Supports HTTP, HTTPS, and OSS URLs. 1 to 524,288 bytes. Examples: oss\\://ros/template/demo, oss\\://ros/template/demo?RegionId=cn-hangzhou. If no region ID is specified for the OSS bucket, the RegionId value applies.\n\n> Specify exactly one of TemplateBody, TemplateURL, and TemplateId."
+      }
     },
     {
       "name": "TemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板版本。如果不指定，默认取最新版本。\n>TemplateVersion仅在指定TemplateId时生效。",
+        "en": "The template version. Defaults to the latest version.\n\n> TemplateVersion takes effect only if you specify TemplateId."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建资源栈组",
+    "en": "CreateStackGroup"
+  },
+  "descriptions": {
+    "zh": "资源栈组是针对ROS资源栈的管理单元。\n### 授权模式\n资源编排为您提供自助管理权限和服务管理权限两种模式创建资源栈组， 您可以使用管理员账号在不同地域下创建资源栈组，实现跨账号、跨地域的创建资源栈。更多信息，请参见[概览](~~154578~~)。\n#### 自助管理权限模式\n请先为管理员账号和目标账号分别创建RAM角色并建立二者之间的联系。具体操作，请参见[授权自助管理权限](~~154640~~)。\n\n当管理员账号（账号A）在杭州地域下创建一个自助管理权限模式的资源栈组，可以在杭州地域和北京地域分别为目标账号（账号B和账号C）创建对应的资源栈。其中管理员账号和目标账号均为阿里云账号。更多信息，请参见[概览](~~154578~~)。\n\n当您选择该模式时，请输入PermissionModel参数为SELF_MANAGED，并配置AdministrationRoleName和ExecutionRoleName等相关参数。\n#### 服务管理权限模式\n您可以使用企业管理账号或委派管理员账号创建服务管理权限模式的资源栈组。更多信息，请参见[设置委派管理员账号](~~308253~~)。\n\n管理员账号（账号A）在杭州地域创建一个服务管理权限模式的资源栈组，在杭州地域和北京地域分别为资源目录中指定的资源夹创建资源栈，此时ROS会自动获取资源夹中的所有成员账号（账号B和账号C）为目标账号。其中管理员账号是资源目录的企业管理账号或委派管理员账号，目标账号是资源目录的成员账号。更多信息，请参见[概览](~~154578~~)。\n\n当您选择该模式时，请输入PermissionModel参数为SERVICE_MANAGED，并完成相关参数配置。\n\n您可以在创建服务管理权限模式的资源栈组时，开启自动部署。当对应资源夹中有新账号加入或账号移除时，ROS将会自动对资源栈实例进行创建或删除。\n\n\n\n\n本文将提供一个示例，在杭州地域`cn-hangzhou`使用ID为`5ecd1e10-b0e9-4389-a565-e4c15efc****`的模板创建一个名为`MyStackGroup`的资源栈组，其使用自助管理权限模式。",
+    "en": "A stack group manages multiple ROS stacks as a unit, enabling you to create stacks across Alibaba Cloud accounts and regions.\n\nStack groups support two permission models:\n\n- Self-managed: Both the administrator and execution accounts are Alibaba Cloud accounts.\n\n- Service-managed: The administrator account is the management account or delegated administrator account of a resource directory. The execution account is a member account of that directory.\n\n[Overview](~~154578~~).\n\nThis example creates a self-managed stack group named `MyStackGroup` in the `China (Hangzhou)` region using template `5ecd1e10-b0e9-4389-a565-e4c15efc****`."
+  },
   "example": {
     "unifiedCli": "aliyun ros create-stack-group --biz-region-id cn-hangzhou --stack-group-name MyStackGroup --description StackGroup_Description --template-body ROSTemplateFormatVersion_:_2015-09-01 --template-url oss://ros-template/demo --client-token 123e4567-e89b-12d3-a456-426655440000 --administration-role-name AliyunROSStackGroupAdministrationRole --execution-role-name AliyunROSStackGroupExecutionRole --template-id 5ecd1e10-b0e9-4389-a565-e4c15efc0000 --template-version v1 --parameters ParameterValue=12 ParameterKey=Amount --resource-group-id rg-acfmxazb4ph6aiy0000 --permission-model SELF_MANAGED --tags Value=test Key=usage --auto-deployment Enabled=true RetainStacksOnAccountRemoval=true --capabilities ExpandModules --stack-arn acs:ros:cn-hangzhou:1754580000000000:stack/4a65f506-c3cc-43b6-af06-3f0000000000 --region cn-hangzhou",
     "legacyCli": "aliyun ros CreateStackGroup --region cn-hangzhou --Description StackGroup_Description --ResourceGroupId 'rg-acfmxazb4ph6aiy0000' --StackGroupName MyStackGroup --Parameters.1.ParameterKey Amount --TemplateVersion v1 --AdministrationRoleName AliyunROSStackGroupAdministrationRole --StackArn 'acs:ros:cn-hangzhou:1754580000000000:stack/4a65f506-c3cc-43b6-af06-3f0000000000' --TemplateBody 'ROSTemplateFormatVersion_:_2015-09-01' --Parameters.1.ParameterValue 12 --Capabilities.1 ExpandModules --TemplateURL 'oss://ros-template/demo' --AutoDeployment '{\"Enabled\":true,\"RetainStacksOnAccountRemoval\":true}' --Tags.1.Value test --PermissionModel SELF_MANAGED --ExecutionRoleName AliyunROSStackGroupExecutionRole --Tags.1.Key usage --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --TemplateId '5ecd1e10-b0e9-4389-a565-e4c15efc0000'"

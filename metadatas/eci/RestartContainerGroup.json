@@ -1,5 +1,6 @@
 {
   "name": "RestartContainerGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "A client token to ensure the idempotence of the request. Generate a unique value for this parameter from your client. The token can contain only ASCII characters and must be no more than 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "ContainerGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECI实例ID，即容器组ID。",
+        "en": "The ID of the ECI instance. This is also the ID of the container group."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The ID of the region."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重启一个容器组",
+    "en": "RestartContainerGroup"
+  },
+  "descriptions": {
+    "zh": "- 仅状态为启动中（Pending）或者运行中（Running）的ECI实例支持重启，已经运行完成的ECI实例不支持重启。\n- 创建时间早于2019-03-07 15:00:00的ECI实例不支持重启。\n- 重启中的ECI实例状态将变更为Restarting。",
+    "en": "- You can restart only ECI instances that are in the Pending or Running state. You cannot restart instances that have completed their run.\n\n- You cannot restart ECI instances that were created before 15:00:00 on March 7, 2019.\n\n- During the restart process, the status of the ECI instance changes to Restarting."
+  },
   "example": {
     "unifiedCli": "aliyun eci restart-container-group --biz-region-id cn-hangzhou --container-group-id eci-2zelg8vwnlzdhf8hv0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun eci RestartContainerGroup --region cn-hangzhou --ContainerGroupId 'eci-2zelg8vwnlzdhf8hv0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyResourceLogFieldConfig",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,90 @@
       "name": "DeliveryType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "日志投递类型。取值：\n\n- **sls**： 表示阿里云日志服务。\n- **kafka**：表示外发投递到kafka日志。\n- **syslog**：表示外发投递到syslog日志。",
+        "en": "The log delivery type. Valid values:\n\n- **sls**: Alibaba Cloud Simple Log Service.\n\n- **kafka**: Delivers logs to an external Kafka cluster.\n\n- **syslog**: Delivers logs to an external syslog server."
+      }
     },
     {
       "name": "ExtendConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "日志投递扩展配置。以一系列参数构造的 JSON 格式转化成字符串。\n> 详细信息，请参见**日志投递扩展配置**参数描述。",
+        "en": "The extension configuration for log delivery. This is a JSON object converted to a string.\n\n> For more information, see the description of the **ExtendConfig** parameter."
+      }
     },
     {
       "name": "FieldList",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需投递的日志字段列表。使用\"a,b,c,……\"格式表示。\n\n>   - 需要包含所有必选日志字段, 您可以通过调用[DescribeCommonLogFields](~~DescribeCommonLogFields~~)接口查看WAF日志服务支持的日志字段信息。 \n> - 当日志字段中包含**request_header**时，需要使用**投递扩展配置**（**ExtendConfig**）参数指定需要投递的请求头。",
+        "en": "The list of log fields to deliver. Use the \\`a,b,c,...\\` format.\n\n> - Include all required log fields. Call [DescribeCommonLogFields](~~DescribeCommonLogFields~~) to view the log fields that WAF Simple Log Service supports.\n>\n> - If the log fields include **request\\_header**, use the **ExtendConfig** parameter to specify the request headers to deliver."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF实例的ID。\n\n> 您可以调用[DescribeInstance](~~433756~~)查询当前WAF实例的ID。",
+        "en": "The ID of the WAF instance.\n\n> Call [DescribeInstance](~~433756~~) to query the ID of the current WAF instance."
+      }
     },
     {
       "name": "LogDeliveryStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "日志投递策略，支持多个策略。以一系列参数构造的 JSON 数组格式转化成字符串。\n\n> 详细信息，请参见**日志投递策略**参数描述。",
+        "en": "The log delivery policies. Multiple policies are supported. This is a JSON array of policy objects converted to a string.\n\n> For more information, see the description of the **LogDeliveryStrategy** parameter."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF实例所属地域。取值：\n\n- **cn-hangzhou**：表示中国内地。\n\n- **ap-southeast-1**：表示非中国内地。",
+        "en": "The region where the WAF instance resides. Valid values:\n\n- **cn-hangzhou**: the Chinese mainland.\n\n- **ap-southeast-1**: outside the Chinese mainland."
+      }
     },
     {
       "name": "Resource",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的防护对象。",
+        "en": "The protected object to modify."
+      }
     },
     {
       "name": "ResourceManagerResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云资源组ID。",
+        "en": "The ID of the Alibaba Cloud resource group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改防护对象的日志字段配置",
+    "en": "ModifyResourceLogFieldConfig"
+  },
   "example": {
     "unifiedCli": "aliyun waf-openapi modify-resource-log-field-config --instance-id waf_v3prepaid_public_cn-uax00003k0e --field-list account,acl_action,acl_rule_id,acl_rule_type,acl_test,antiscan_action,antiscan_rule_id,antiscan_rule_type,antiscan_test,body_bytes_sent,bypass_matched_ids --extend-config request_header_:_Ali-Cdn-Real-Ip --delivery-type sls --resource-manager-resource-group-id rg-acfm000q --biz-region-id cn-hangzhou --resource cwaf-000-waf --log-delivery-strategy logType_:_blockLog_,_rate_:100_,_logType_:_normalRequestLog_,_rate_:100_,_logType_:_checkLog_,_rate_:100 --api-version 2021-10-01 --region cn-hangzhou",
     "legacyCli": "aliyun waf-openapi ModifyResourceLogFieldConfig --region cn-hangzhou --ResourceManagerResourceGroupId 'rg-acfm000q' --InstanceId 'waf_v3prepaid_public_cn-uax00003k0e' --Resource 'cwaf-000-waf' --RegionId 'cn-hangzhou' --LogDeliveryStrategy 'logType_:_blockLog_,_rate_:100_,_logType_:_normalRequestLog_,_rate_:100_,_logType_:_checkLog_,_rate_:100' --ExtendConfig 'request_header_:_Ali-Cdn-Real-Ip' --FieldList 'account,acl_action,acl_rule_id,acl_rule_type,acl_test,antiscan_action,antiscan_rule_id,antiscan_rule_type,antiscan_test,body_bytes_sent,bypass_matched_ids' --DeliveryType sls"

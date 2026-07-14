@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "是否拥有下一次查询的令牌（Token）。取值：\n\n- 第一次查询和没有下一次查询时，均无需填写。\n\n- 如果有下一次查询，取值为上一次API调用返回的NextToken值。",
-        "en": "The token that determines the start point of the query. Valid values:\n\n*   If this is your first query and no next queries are to be sent, ignore this parameter.\n*   If a subsequent query is to be sent, set the parameter to the value of NextToken that is returned from the last call."
+        "en": "The token that is used for the next query. Valid values:\n\n- If this is your first query or no next query is to be sent, you do not need to specify this parameter.\n\n- If a subsequent query is to be sent, set the value to the NextToken value that is returned from the last API call."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "资源实例所属地域ID。\n\n当资源类型为Cen和BandwidthPackage不需要填写，其余类型必填。",
-        "en": "The ID of the region where the resource is deployed.\n\nYou can ignore this parameter if ResourceType is set to Cen or BandwidthPackage."
+        "en": "The ID of the region where the resource is deployed.\n\nThis parameter is not required for the Cen and BandwidthPackage resource types. It is required for all other resource types."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "云企业网实例ID。\n\n一次最多支持输入20个云企业网实例ID。",
-        "en": "The IDs of the CEN instances.\n\nYou can specify at most 20 IDs in each call."
+        "en": "The ID of the CEN instance.\n\nYou can enter a maximum of 20 CEN instance IDs."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "资源类型。取值：\n\n**Cen**，表示云企业网实例。\n\n**BandwidthPackage**，表示带宽包实例。\n\n**TransitRouter**，表示转发路由器实例。\n\n**TransitRouterVpcAttachment**，表示Vpc连接实例。\n\n**TransitRouterVbrAttachment**，表示Vbr连接实例。\n\n**TransitRouterPeerAttachment**，表示跨地域连接实例。\n\n**TransitRouterVpnAttachment**，表示Vpn连接实例。\n\n**TransitRouterRouteTable**，表示路由表实例。\n\n**Flowlog**，表示Flowlog实例。\n\n**TransitRouterMulticastDomain**，表示组播域实例。",
-        "en": "The type of the resource to which you want to add the tag. Valid values:\n\n**Cen**: CEN instance\n\n**BandwidthPackage**: bandwidth plan\n\n**TransitRouter**: transit router\n\n**TransitRouterVpcAttachment**: virtual private cloud (VPC) connection\n\n**TransitRouterVbrAttachment**: virtual border router (VBR) connection\n\n**TransitRouterPeerAttachment**: inter-region connection\n\n**TransitRouterVpnAttachment**: VPN connection\n\n**TransitRouterRouteTable**: route table\n\n**Flowlog**: flow log\n\n**TransitRouterMulticastDomain**: multicast domain"
+        "en": "The resource type. Valid values:\n\n**Cen**: a CEN instance.\n\n**BandwidthPackage**: a bandwidth plan.\n\n**TransitRouter**: a transit router.\n\n**TransitRouterVpcAttachment**: a VPC connection.\n\n**TransitRouterVbrAttachment**: a VBR connection.\n\n**TransitRouterPeerAttachment**: an inter-region connection.\n\n**TransitRouterVpnAttachment**: a VPN connection.\n\n**TransitRouterRouteTable**: a route table.\n\n**Flowlog**: a flow log.\n\n**TransitRouterMulticastDomain**: a multicast domain."
       }
     },
     {
@@ -59,26 +60,45 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "云企业网实例的标签信息。\n\n一次最多支持查询20个标签。",
+        "en": "The tags of the CEN instance.\n\nYou can query a maximum of 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。\n\n一个标签键最多支持输入64个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key can be up to 64 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`.\n\nYou can enter a maximum of 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。\n\n一个标签值最多支持输入128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n一次最多支持输入20个标签的标签值。",
+            "en": "The tag value.\n\nThe tag value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`.\n\nYou can enter a maximum of 20 tag values."
+          }
         }
-      ],
-      "description": {
-        "zh": "云企业网实例的标签信息。\n\n一次最多支持查询20个标签。",
-        "en": "The information about the tags that are added to the CEN instance.\n\nYou can query at most 20 tags in each call."
-      }
+      ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询CEN实例已经绑定的标签列表",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "在调用ListTagResources接口时，请求参数**ResourceId.N**和**Tag.N.Key**至少选择输入一个：\n\n- 如果只输入**ResourceId.N**，表示要查询指定云企业网实例下已经绑定的标签信息。\n- 如果只输入**Tag.N.Key**，表示要查询已绑定此标签键的所有云企业网实例的信息。\n- 如果同时输入**ResourceId.N**和**Tag.N.Key**，表示要查询指定云企业网实例下绑定的指定标签的信息。\n    - 请确保**ResourceId.N**和**Tag.N.Key**的值相互对应，如果不对应，则返回结果为空。\n    - 如果同时输入了多个标签键，则多个标签键之间为**与**的关系。",
+    "en": "When you call the ListTagResources operation, you must specify at least one of the **ResourceId.N** and **Tag.N.Key** request parameters.\n\n- If you specify only **ResourceId.N**, the system queries the tags that are attached to the specified CEN instance.\n\n- If you specify only **Tag.N.Key**, the system queries all CEN instances that are associated with the specified tag key.\n\n- If you specify both **ResourceId.N** and **Tag.N.Key**, the system queries for tags that match the specified tag key and are attached to the specified CEN instance.\n\n  - The specified CEN instance must be associated with the specified tag key. Otherwise, an empty result is returned.\n\n  - If you specify multiple tag keys, the relationship between the tag keys is **AND**."
+  },
   "example": {
     "unifiedCli": "aliyun cbn list-tag-resources --resource-type cen --next-token FFmyTO70tTpLG6I3FmYAXGKPd0000 --page-size 10 --resource-id cen-8z69wtwqel33lq0000 --tag Value=Bp Key=test --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun cbn ListTagResources --region cn-hangzhou --ResourceId.1 'cen-8z69wtwqel33lq0000' --Tag.1.Key test --NextToken FFmyTO70tTpLG6I3FmYAXGKPd0000 --PageSize 10 --Tag.1.Value Bp --ResourceType cen --RegionId 'cn-hangzhou'"

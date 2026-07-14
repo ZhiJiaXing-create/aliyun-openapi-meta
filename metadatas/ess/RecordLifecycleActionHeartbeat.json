@@ -1,5 +1,6 @@
 {
   "name": "RecordLifecycleActionHeartbeat",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "heartbeatTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期挂钩为伸缩组活动设置的等待时间，等待状态超时后会执行默认执行策略。取值范围：30~21600，单位：秒。\n\n创建了生命周期挂钩后，您可以调用本接口延长ECS实例的等待时间，也可以调用[CompleteLifecycleAction](~~73847~~)提前结束伸缩活动的等待状态。\n\n默认值：600。",
+        "en": "The wait time that the lifecycle hook sets for the scaling group activity. After the wait state times out, the default policy is executed. Valid values: 30 to 21600. Unit: seconds.\n\nAfter a lifecycle hook is created, you can call this operation to extend the wait time of the ECS instance, or call [CompleteLifecycleAction](~~73847~~) to end the wait state of the scaling activity in advance.\n\nDefault value: 600."
+      }
     },
     {
       "name": "lifecycleActionToken",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩活动的等待状态标识符，您可以在实例被挂起的状态下，从生命周期挂钩指定的MNS队列中，接收消息对应的详情页中获取。\n\n也可以调用[DescribeLifecycleActions](~~202473~~)获取。\n\n还可以从生命周期挂钩指定的MNS主题中获取该值。",
+        "en": "The token that indicates the wait state of the scaling activity. You can obtain this token from the details of the message received from the Simple Message Queue (formerly MNS) queue specified by the lifecycle hook when the instance is in the suspended state.\n\nYou can also call [DescribeLifecycleActions](~~202473~~) to obtain this token.\n\nAlternatively, you can obtain this value from the Simple Message Queue (formerly MNS) topic specified by the lifecycle hook."
+      }
     },
     {
       "name": "lifecycleHookId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "生命周期挂钩的ID。",
+        "en": "The ID of the lifecycle hook."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "延长生命周期挂钩触发后被挂起等待时间",
+    "en": "Extend the wait time after a lifecycle hook is triggered"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n只能在ECS实例被挂起的状态下调用该接口来延长等待时间。\n\nECS实例的等待时间不能超过6小时，每次等待状态最多能被延时20次。",
+    "en": "## Operation description\n\nYou can call this operation to extend the wait time only when the ECS instance is in the suspended state.\n\nThe wait time of an ECS instance cannot exceed 6 hours, and each wait state can be extended up to 20 times."
+  },
   "example": {
     "unifiedCli": "aliyun ess record-lifecycle-action-heartbeat --lifecycle-hook-id ash-bp1fxuqyi98w0aib0000 --lifecycle-action-token F324B880-900E-4968-85DD-816911130000 --heartbeat-timeout 600 --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess RecordLifecycleActionHeartbeat --region cn-hangzhou --lifecycleActionToken 'F324B880-900E-4968-85DD-816911130000' --lifecycleHookId 'ash-bp1fxuqyi98w0aib0000' --RegionId 'cn-hangzhou' --heartbeatTimeout 600"

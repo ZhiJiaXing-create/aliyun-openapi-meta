@@ -1,5 +1,6 @@
 {
   "name": "GetCursorTime",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/logstores/[logstore]/shards/[shardId]?type=cursor_time",
@@ -8,27 +9,54 @@
       "name": "cursor",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "希望获取时间戳的游标 Cursor。接口[GetCursor](~~2771314~~)可以获取Cursor。\n\n> 如果Cursor取值小于Begin Cursor或者Cursor取值大于End Cursor，返回InvalidCursor；当Shard中无数据时，返回当前时间。",
+        "en": "The cursor for which you want to obtain the timestamp. Call the [GetCursor](~~2771314~~) operation to obtain a cursor.\n\n> If the value of the cursor is less than the begin cursor or greater than the end cursor, InvalidCursor is returned. If the shard contains no data, the current time is returned."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Logstore名称。",
+        "en": "The logstore name."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Project名称。",
+        "en": "The project name."
+      }
     },
     {
       "name": "shardId",
       "position": "Path",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Shard ID。",
+        "en": "The shard ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通过Cursor查询服务器端时间",
+    "en": "GetCursorTime"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n\n- Host由Project名称和日志服务Endpoint构成，您需要在Host中指定Project。\n- 已创建并获取AccessKey。更多信息，请参见[访问密钥](~~29009~~)。\n\n 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维。RAM用户需具备操作日志服务资源的权限。具体操作，请参见[创建RAM用户及授权](~~47664~~)。\n- 已明确您查询日志所属的Project名称、所属地域、Logstore名称等。如何查询，请参见[管理Project](~~48984~~)和[管理Logstore](~~48990~~)。\n### 鉴权资源\n下表列出了API对应的授权信息。您可以在RAM权限策略语句的Action元素中添加该信息，用于为RAM用户或RAM角色授予调用此API的权限。\n|动作（Action）  | 授权策略中的资源描述方式（Resource）  |\n| :------------ | :------------ |\n| `log:GetCursorOrData`  | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}`  |",
+    "en": "### Description\n\n- The host consists of a project name and a Simple Log Service endpoint. You must specify the project in the host.\n\n- Create and obtain an AccessKey pair. For more information, see [AccessKey pair](~~29009~~).\n\nAn AccessKey pair that belongs to an Alibaba Cloud account has access permissions on all API operations. Using this AccessKey pair poses a high security threat. For security, we recommend that you create and use a RAM user to call API operations or perform routine operations and maintenance (O\\&M). The RAM user must be granted the permissions to perform operations on Simple Log Service resources. For more information, see [Create and authorize a RAM user](~~47664~~).\n\n- Obtain the project name, the project's region, and the logstore name. For more information, see [Manage a project](~~48984~~) and [Manage a logstore](~~48990~~).\n\n### Authorization\n\nThe following table describes the authorization information for this operation. Add this information to the Action element of a RAM policy to grant a RAM user or RAM role the permissions to call this API operation.\n\n| Action                | Resource description in an authorization policy                                    |\n| --------------------- | ---------------------------------------------------------------------------------- |\n| `log:GetCursorOrData` | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}` |"
+  },
   "example": {
     "unifiedCli": "aliyun sls get-cursor-time --project ali-test-project --logstore ali-test-logstore --shard-id 0 --cursor MTU0NzQ3MDY4MjM3NjUxMzQ0Ng== --region cn-hangzhou",
     "legacyCli": "aliyun sls GET /logstores/ali-test-logstore/shards/0?type=cursor_time --project ali-test-project --region cn-hangzhou --cursor 'MTU0NzQ3MDY4MjM3NjUxMzQ0Ng==' --header \"Content-Type=application/json\""

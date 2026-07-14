@@ -1,5 +1,6 @@
 {
   "name": "ModifyVSwitchCidrReservationAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "A client token used to ensure the idempotence of the request.\n\nGenerate a unique value from your client for this parameter to guarantee uniqueness across different requests. ClientToken supports only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may differ for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建资源（接口功能）。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run of the request. Valid values:\n- **true**: Sends a dry run request without creating any resource (performing the API operation). The system checks whether required parameters are specified, whether the request format is valid, and whether business limits are met. If the check fails, an error is returned. If the check passes, the error code `DryRunOperation` is returned.\n- **false** (default): Sends a normal request. If the check passes, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "交换机所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the vSwitch is deployed.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VSwitchCidrReservationDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改的交换机预留网段的描述信息。不填则为空，默认值为空。\n\n描述长度为2~256个字符，以英文字母或中文开头，不能以`http://`和`https://`开头。",
+        "en": "The new description of the reserved CIDR block. The default value is empty.\n\nThe description must be 2 to 256 characters in length. It must start with a letter and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "VSwitchCidrReservationId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的交换机预留网段的实例ID。",
+        "en": "The ID of the reserved CIDR block."
+      }
     },
     {
       "name": "VSwitchCidrReservationName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改的交换机预留网段的名称。\n\n名称长度为2~128个字符，以英文字母或中文开头，可包含数字、下划线（_）和短划线（-）。",
+        "en": "The new name of the reserved CIDR block.\n\nThe name must be 2 to 128 characters in length and can contain letters, digits, underscores (\\_), and hyphens (-). It must start with a letter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改交换机预留网段的名称和描述信息",
+    "en": "Modify the name and description of a reserved CIDR block for a vSwitch"
+  },
+  "descriptions": {
+    "zh": "**ModifyVSwitchCidrReservationAttribute**接口不支持在同一个交换机中并发修改预留网段的名称和描述信息。",
+    "en": "The **ModifyVSwitchCidrReservationAttribute** API does not support concurrent modification of the name and description of a reserved CIDR block within the same vSwitch."
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-vswitch-cidr-reservation-attribute --vswitch-cidr-reservation-id vcr-bp1m12saqteraw3rp0000 --vswitch-cidr-reservation-name ReservationName --vswitch-cidr-reservation-description ReservationDescription --biz-region-id cn-hangzhou --dry-run false --client-token 02fb3da4-230e-11e9-8e44-0016e04115b --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyVSwitchCidrReservationAttribute --region cn-hangzhou --VSwitchCidrReservationDescription ReservationDescription --DryRun false --VSwitchCidrReservationId 'vcr-bp1m12saqteraw3rp0000' --RegionId 'cn-hangzhou' --VSwitchCidrReservationName ReservationName --ClientToken '02fb3da4-230e-11e9-8e44-0016e04115b'"

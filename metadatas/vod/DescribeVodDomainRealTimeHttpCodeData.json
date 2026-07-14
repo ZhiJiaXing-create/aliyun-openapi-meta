@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodDomainRealTimeHttpCodeData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的加速域名。\n- 多个域名用半角逗号（,）分隔，一次最多支持100个域名查询。\n- 查询多个域名时，返回的数据为各域名合并后的数据值。\n- 您可以登录[视频点播控制台](https://vod.console.aliyun.com)，从左侧导航选择**配置管理 > 分发加速配置 > 域名管理**，查看您已接入到视频点播的加速域名，或者调用[DescribeVodUserDomains](~~DescribeVodUserDomains~~)接口查询加速域名列表。",
+        "en": "The accelerated domain name.\n\n*   You can specify multiple domain names and separate them with commas (,). You can specify at most 100 domain names in each call.\n*   If you specify multiple domain names, merged data is returned.\n*   To obtain the accelerated domain name, perform the following steps: Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Configuration Management > CDN Configuration > Domain Names**. On the Domain Names page, view the accelerated domain names. Alternatively, you can call the [DescribeVodUserDomains](~~DescribeVodUserDomains~~) operation to query the accelerated domain names."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间点。日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n>  The end time must be later than the start time."
+      }
     },
     {
       "name": "IspNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商英文名。不传该参数默认查询所有运营商。",
+        "en": "The name of the ISP. If you do not set this parameter, all ISPs are queried."
+      }
     },
     {
       "name": "LocationNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域英文名。不传该参数默认查询所有地域。",
+        "en": "The name of the region. If you do not set this parameter, data in all regions is queried."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的起始时间点。日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实时HTTP状态码",
+    "en": "DescribeVodDomainRealTimeHttpCodeData"
+  },
+  "descriptions": {
+    "zh": "- 目前该接口服务地址仅支持：**华东 2（上海）**。\n- 支持批量查询，一次最多查询100个域名数据。\n- 如果您不指定`StartTime`和`EndTime`，该接口默认返回过去1小时的数据；指定`StartTime`和`EndTime`，该接口返回指定时间段的数据。\n\n**返回数据时间粒度**\n\n根据您指定`StartTime`和`EndTime`时间跨度，会返回不同的数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n|时间粒度  |单次查询的时间跨度   |  可查询历史数据时间范围  |  数据延迟   |\n| ------------- |------------   | ----------- | ----------- |\n|1分钟  | 单次查询的时间跨度 ≤ 1小时   |7天  |5分钟  |\n|5分钟  | 1小时 ＜ 单次查询的时间跨度 ＜ 3天  |93天  |15分钟  |\n|1小时  | 3天 ≤ 单次查询的时间跨度 ＜31天 |186天  |一般延迟 3-4 小时  |",
+    "en": "* This operation is supported only in the **China (Shanghai)** region.\n* You can specify a maximum of 100 accelerated domain names.\n* If you specify neither `StartTime` nor `EndTime`, the data of the last 1 hour is queried. You can specify both `StartTime` and `EndTime` parameters to query data of a specified time range.\n\n**Time granularity**\n\nThe time granularity varies with the time range specified by the `StartTime` and `EndTime` parameters. The following table describes the time period within which historical data is available and the data delay.\n\n|Time granularity|Time range per query|Historical data available (days)|Data latency|\n|---|---|---|---|\n|1 minute|Time range per query ≤ 1 hour|7 days|5 minutes|\n|5 minutes|1 hour &#x3C; Time range per query &#x3C; 3 days|93 days|15 minutes|\n|1 hour|3 days ≤ Time range per query &#x3C; 31 days|186 days|3 to 4 hours|"
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-domain-real-time-http-code-data --domain-name example.com --start-time 2019-11-30T05:39:00Z --end-time 2019-11-30T05:40:00Z --isp-name-en unicom --location-name-en shanghai --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodDomainRealTimeHttpCodeData --region cn-hangzhou --IspNameEn unicom --EndTime '2019-11-30T05:40:00Z' --DomainName 'example.com' --LocationNameEn shanghai --StartTime '2019-11-30T05:39:00Z'"

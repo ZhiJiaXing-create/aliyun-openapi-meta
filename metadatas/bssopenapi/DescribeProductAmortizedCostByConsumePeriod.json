@@ -1,5 +1,6 @@
 {
   "name": "DescribeProductAmortizedCostByConsumePeriod",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -10,7 +11,8 @@
       "type": "RepeatList",
       "required": false,
       "description": {
-        "zh": "摊销月筛选条件。\n最多元素个数：10。"
+        "zh": "摊销月筛选条件。\n最多元素个数：10。",
+        "en": "The filter conditions for the amortization month.\nMaximum number of elements: 10."
       }
     },
     {
@@ -19,7 +21,8 @@
       "type": "RepeatList",
       "required": false,
       "description": {
-        "zh": "资源归属账号筛选条件。 \n资源归属账号ID，资源归属账号是实际使用资源的账号。 \n最多元素个数：10。"
+        "zh": "资源归属账号筛选条件。 \n资源归属账号ID，资源归属账号是实际使用资源的账号。 \n最多元素个数：10。",
+        "en": "The filter conditions for the IDs of resource owners.\nThe resource owner is the account that actually uses the resources.\nMaximum number of elements: 10."
       }
     },
     {
@@ -28,7 +31,8 @@
       "type": "RepeatList",
       "required": false,
       "description": {
-        "zh": "账单购买者ID筛选条件。\n子账号ID。设置可查看财务云子账号账单，不填默认查看当前调用账号及其所有子账号。\n最多元素个数：10。"
+        "zh": "账单购买者ID筛选条件。\n子账号ID。设置可查看财务云子账号账单，不填默认查看当前调用账号及其所有子账号。\n最多元素个数：10。",
+        "en": "The filter conditions for the IDs of bill purchasers.\nThis is the ID of a RAM user. Set this parameter to view the bills of a RAM user. If you do not set this parameter, the bills of the current account and all its RAM users are returned.\nMaximum number of elements: 10."
       }
     },
     {
@@ -37,7 +41,8 @@
       "type": "String",
       "required": true,
       "description": {
-        "zh": "账期月\n格式：YYYY－MM。"
+        "zh": "账期月\n格式：YYYY－MM。",
+        "en": "The billing cycle.\nFormat: YYYY-MM."
       }
     },
     {
@@ -46,7 +51,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "财务单元code。"
+        "zh": "财务单元code。",
+        "en": "The code of the cost center."
       }
     },
     {
@@ -55,7 +61,8 @@
       "type": "Integer",
       "required": false,
       "description": {
-        "zh": "本次读取的最大数据记录数量。默认值：20，最大值：300。"
+        "zh": "本次读取的最大数据记录数量。默认值：20，最大值：300。",
+        "en": "The maximum number of data records to return in this call. Default value: 20. Maximum value: 300."
       }
     },
     {
@@ -64,7 +71,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "用来表示当前调用开始读取的位置，参数值必须为空或者使用返回结果中的NextToken设值，否则会报错。空代表从头开始读取。"
+        "zh": "用来表示当前调用开始读取的位置，参数值必须为空或者使用返回结果中的NextToken设值，否则会报错。空代表从头开始读取。",
+        "en": "The token that marks the position from which to start the query. If you leave this parameter empty, the query starts from the beginning. If you specify this parameter, set it to the value of `NextToken` that is returned in the last call."
       }
     },
     {
@@ -73,7 +81,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "产品。\n参考取值来源：\n查QueryProductList 查询产品信息，\n查DescribeResourcePackageProduct 查询某个资源包产品的信息。"
+        "zh": "产品。\n参考取值来源：\n查QueryProductList 查询产品信息，\n查DescribeResourcePackageProduct 查询某个资源包产品的信息。",
+        "en": "The product code. To obtain this value, call the QueryProductList operation to query product information or the DescribeResourcePackageProduct operation to query information about a resource plan."
       }
     },
     {
@@ -82,7 +91,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "产品明细。"
+        "zh": "产品明细。",
+        "en": "The details of the product."
       }
     },
     {
@@ -91,10 +101,22 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "订阅类型。取值：\n\n- Subscription：预付费。\n- PayAsYouGo：后付费。"
+        "zh": "订阅类型。取值：\n\n- Subscription：预付费。\n- PayAsYouGo：后付费。",
+        "en": "The subscription type. Valid values:\n\n- Subscription: subscription.\n\n- PayAsYouGo: pay-as-you-go."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询产品账期月摊销成本",
+    "en": "DescribeProductAmortizedCostByConsumePeriod"
+  },
+  "descriptions": {
+    "zh": "- 摊销成本不作为结算及对账依据。摊销成本提供费用分摊能力，将您在云上产生的费用（含预付费和后付费）按照指定的分摊规则进行分摊。\n- 当月最终数据在次月6日12点后支持使用（月中会发生包括但不限于以下少数场景：延迟出账，退款，调账，欠费核销等）。当月数据中不包含未结算（未出账，累账中）的后付费数据。\n- 摊销成本数据支持近12个月数据。\n- 摊销成本中分拆项相关数据在分账账单数据出具后延迟48小时更新（若需使用分拆费用请提前开通[分账账单](https://usercenter2.aliyun.com/finance/split-bill)）；非分拆项相关数据在明细账单出具后延迟48小时更新。\n- 2021年8月（不含）之前的摊销成本月中不更新，仅于摊销次月6日12点后统一更新，也不支持提供分拆型云产品（例如：CDN、OSS、共享带宽等）各个分拆项（例如：域名、Bucket、EIP等）的具体费用。\n- 摊销成本数据需要用户开通[摊销成本](https://usercenter2.aliyun.com/finance/amortized-costs)后才可提供，自开通后延迟48小时可使用。",
+    "en": "- Amortized costs are used for cost allocation and cannot be used for settlement or reconciliation. This feature allocates your cloud expenses, including both subscription and pay-as-you-go fees, based on specified rules.\n\n- The final data for a given month is available after 12:00 on the sixth day of the following month. This delay ensures that potential mid-month events, such as delayed billing, refunds, bill adjustments, and overdue payment write-offs, are included. Data for the current month does not include unsettled pay-as-you-go fees that have not yet been billed or are still accumulating.\n\n- Amortized cost data for the past 12 months is available.\n\n- Data related to attached resources is updated in the amortized costs 48 hours after the corresponding split bill is generated. To view the costs of attached resources, you must first enable [split bills](https://usercenter2.aliyun.com/finance/split-bill). Data that is not related to attached resources is updated 48 hours after the detailed bill is generated.\n\n- For months before August 2021, amortized costs were not updated mid-month and were only updated after 12:00 on the sixth day of the following month. Additionally, for this period, specific costs for attached resources, such as domain names, buckets, and EIPs, for products such as CDN, OSS, and Internet Shared Bandwidth are not available.\n\n- Amortized cost data is provided only after you enable the [Amortized Cost](https://usercenter2.aliyun.com/finance/amortized-costs) feature. The data is available 48 hours after you enable it."
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi describe-product-amortized-cost-by-consume-period --billing-cycle 2022-10 --amortization-period-filter 2022-09 --subscription-type Subscription --product-code rds --product-detail rds --cost-unit-code '123#' --bill-user-id-list 123 --bill-owner-id-list 123 --next-token CAESEgoQCg4KCmdtdF9jcmVhdGUEARgBIkgKCQBwhGmPcAEAAAo7AzYAAAAxTDgwMDcxMjg3ZDJhNmM3ZDguTDgwMDAwMDAwMDAwMzE1MTIuTDgwMDcyZDMyZTJkYzg3N2U --max-results 20 --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi DescribeProductAmortizedCostByConsumePeriod --region cn-hangzhou --SubscriptionType Subscription --BillUserIdList.1 123 --BillingCycle '2022-10' --AmortizationPeriodFilter.1 '2022-09' --ProductDetail rds --NextToken CAESEgoQCg4KCmdtdF9jcmVhdGUEARgBIkgKCQBwhGmPcAEAAAo7AzYAAAAxTDgwMDcxMjg3ZDJhNmM3ZDguTDgwMDAwMDAwMDAwMzE1MTIuTDgwMDcyZDMyZTJkYzg3N2U --ProductCode rds --BillOwnerIdList.1 123 --CostUnitCode '123#' --MaxResults 20"

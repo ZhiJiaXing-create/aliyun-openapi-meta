@@ -1,0 +1,106 @@
+{
+  "name": "SendFile",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AndroidInstanceIdList",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": true,
+      "description": {
+        "zh": "实例列表。",
+        "en": "The IDs of one or more cloud phone instances."
+      }
+    },
+    {
+      "name": "AutoInstall",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "上传的应用是否自动安装。",
+        "en": "Specifies whether to automatically install the application after the file is uploaded."
+      }
+    },
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。不超过 100 个字符。",
+        "en": "A client-generated token that ensures request idempotence and prevents duplicate submissions. The token can contain up to 100 characters."
+      }
+    },
+    {
+      "name": "FileMd5",
+      "position": "Query",
+      "type": "String",
+      "required": false
+    },
+    {
+      "name": "SourceFilePath",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "将文件上传到云手机内部的上传路径。\n\n> 当UploadType是OSS或者OSS_BRIDGED，云手机内部的上传路径SourceFilePath必须是目录，例如：/sdcard/Download；当UploadType是DOWNLOAD_URL，云手机内部的上传路径SourceFilePath必须是文件，例如：/sdcard/Download/MyFile.txt。\n>",
+        "en": "The destination path on the cloud phone.\n\n> If `UploadType` is `OSS` or `OSS_BRIDGED`, `SourceFilePath` must specify a directory, for example, `/sdcard/Download/`. If `UploadType` is `DOWNLOAD_URL`, `SourceFilePath` must specify a full file path, for example, `/sdcard/Download/MyFile.txt`."
+      }
+    },
+    {
+      "name": "TargetFileName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "从OSS上传到云手机的文件名称。\n\n> 当UploadType是OSS或者OSS_BRIDGED，TargetFileName字段选填，如果TargetFileName为空，OSS文件上传到云手机的文件名称保留源文件名称，如果TargetFileName不为空，源文件上传到云手机的SourceFilePath路径下文件名称为TargetFileName的值；当UploadType是DOWNLOAD_URL，TargetFileName字段不生效。\n>",
+        "en": "The name for the destination file on the cloud phone.\n\n> This parameter is optional and takes effect only when `UploadType` is set to `OSS` or `OSS_BRIDGED`. If you specify this parameter, the file is saved with this name in the path specified by `SourceFilePath`. If you leave this parameter empty, the source file name is used. This parameter is ignored when `UploadType` is set to `DOWNLOAD_URL`."
+      }
+    },
+    {
+      "name": "UploadEndpoint",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "文件上传到OSS的服务域名，UploadType为OSS和OSS_BRIDGED时，UploadEndpoint必填。\n\n> 当云手机和OSS Bucket处于相同地域，域名可填写内网域名，加快传输速率，不产生公网网络费用，杭州为例： `oss-cn-hangzhou-internal.aliyuncs.com` 。具体的域名列表映射可参考[OSS地域和访问域名](~~31837~~)。",
+        "en": "The service endpoint of Object Storage Service (OSS). This parameter is required if `UploadType` is `OSS` or `OSS_BRIDGED`.\n\n> If the cloud phone instance and the OSS bucket are in the same region, you can specify an internal endpoint to accelerate data transfer and avoid public data transfer costs. For example, the internal endpoint for the China (Hangzhou) region is `oss-cn-hangzhou-internal.aliyuncs.com`. For a complete list of endpoints, see [OSS regions and endpoints](~~31837~~)."
+      }
+    },
+    {
+      "name": "UploadType",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "上传文件所在的存储类型。\n\n- OSS\n 当上传的文件是OSS资源，上传文件所在的存储类型是OSS。\n- DOWNLOAD_URL\n 当上传的文件是文件的公网下载链接，上传文件所在的存储类型是DOWNLOAD_URL。\n- OSS_BRIDGED\n 通过公网下载链接同步到OSS，再通过OSS内网分发到云手机实例。",
+        "en": "The storage type of the source file. Valid values:\n\n- **OSS**: The file is stored in Object Storage Service (OSS).\n\n- **DOWNLOAD\\_URL**: The file is accessible via a public download link.\n\n- **OSS\\_BRIDGED**: The service first downloads the file from a public download link to an internal OSS bucket, and then distributes it to the cloud phone instances over the internal network."
+      }
+    },
+    {
+      "name": "UploadUrl",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "- 当UploadType是OSS，UploadUrl是文件上传到OSS的云端地址。\n> 可使用的OSS Bucket名，必须以“cloudphone-saved-bucket-”前缀的Bucket Bucket，例如“cloudphone-saved-bucket-example”，并创建OSS文件夹作为备份目录。UploadUrl的拼写规则是“oss://”+“Bucket名”+“/”+“文件夹名称”+“上传的文件名称”。\n- 当UploadType是DOWNLOAD或者OSS_BRIDGED，UploadUrl是文件的公网下载地址。",
+        "en": "- If `UploadType` is `OSS`, this parameter specifies the URI of the source object in Object Storage Service (OSS).\n\n> The URI must be in the `oss://<bucket-name>/<object-key>` format. The specified OSS bucket name must have the `cloudphone-saved-bucket-` prefix, for example, `cloudphone-saved-bucket-example`.\n\n- If `UploadType` is `DOWNLOAD_URL` or `OSS_BRIDGED`, this parameter specifies the public download link of the source file."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "文件上传到云手机",
+    "en": "SendFile"
+  },
+  "descriptions": {
+    "zh": "目前仅支持将OSS对象存储服务的文件或者文件夹发送到云手机。",
+    "en": "Use this operation to send files or folders from Object Storage Service (OSS) to cloud phones."
+  }
+}

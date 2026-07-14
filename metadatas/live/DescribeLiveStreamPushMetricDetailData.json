@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveStreamPushMetricDetailData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "直播流所属应用名称。指定应用名称，查询对应应用流粒度的数据。",
+        "en": "The name of the application to which the live stream belongs. Specify the application name to query data at the stream granularity for the corresponding application."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "- 需要查询的加速域名。仅支持单个域名查询，传多个域名将报错。\n- 不指定AppName和StreamName时，按指定加速域名返回此域名下所有流粒度的数据，所有查询数据不聚合。\n- DomainName不为空且AppName为all和StreamName为all时，返回指定加速域名下所有流粒度的聚合数据。",
+        "en": "- The accelerated domain name to query. Only a single domain name can be queried. An error is returned if you specify multiple domain names.\n- If you do not specify AppName or StreamName, data at the stream granularity for all streams under the specified accelerated domain name is returned without aggregation.\n- If DomainName is specified and both AppName and StreamName are set to all, aggregate data at the stream granularity for all streams under the specified accelerated domain name is returned."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据结束时间点，日期格式按照ISO8601表示法，并使用UTC时间，结束时间需大于起始时间，且不能相差超过1天。\n\n格式为：YYYY-MM-DDThh:mm:ssZ。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the UTC time zone. The end time must be later than the start time, and the difference cannot exceed 1 day.\n\nFormat: YYYY-MM-DDThh:mm:ssZ."
+      }
     },
     {
       "name": "NextPageToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询token，每次查询最多返回5000行数据，当要查询的数据超过5000行时，响应数据会提供下次查询数据的起始索引。\n\n请求时传入该token，将从上一次查询结束的下一行继续查询未获取的数据。",
+        "en": "The paging query token. Each query returns a maximum of 5,000 rows of data. If the data to be queried exceeds 5,000 rows, the response includes the start index for the next query.\n\nPass this token in the request to continue querying data from the row after the last row returned in the previous query."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据起始时间点，日期格式按照ISO8601表示法，并使用UTC时间。\n\n格式为：YYYY-MM-DDThh:mm:ssZ。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the UTC time zone.\n\nFormat: YYYY-MM-DDThh:mm:ssZ."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "直播流名称。指定StreamName时，按指定AppName的指定StreamName，返回流粒度的数据（指定StreamName时，必须指定AppName）。",
+        "en": "The name of the live stream. If you specify StreamName, data at the stream granularity is returned for the specified StreamName under the specified AppName. You must specify AppName when you specify StreamName."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定域名推流流粒度批量数据",
+    "en": "Query batch stream-granularity data for stream ingest of a specified domain name"
+  },
+  "descriptions": {
+    "zh": "- 仅支持单个域名查询，多个域名会报错。\n- 数据最大查询跨度：24小时。\n- 数据最小查询粒度：1分钟。\n- 数据最大查询范围：31天。\n- 本接口为监控数据接口，数据采集处理方式不同于计费，不能用于计算用量进行对账参考。\n\n## QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Only a single domain name can be queried. An error is returned if you specify multiple domain names.\n- Maximum query time range per request: 24 hours.\n- Minimum query granularity: 1 minute.\n- Maximum query period: 31 days.\n- This is a monitoring data API. The data collection and processing method differs from that used for billing. Do not use this API to calculate usage for billing reconciliation.\n\n## QPS limit\nThe maximum number of queries per second (QPS) per user for this operation is 10. If the number of calls per second exceeds the limit, throttling is triggered. This may affect your business. Call this operation as appropriate."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-stream-push-metric-detail-data --biz-region-id cn-hangzhou --domain-name example.com --start-time 2022-09-10T20:00:00Z --end-time 2022-09-10T21:00:00Z --app-name liveApp0000 --stream-name liveStream0000 --next-page-token UjsM9x3aVcJi9a0-ArwJUTTC67C00037C0= --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveStreamPushMetricDetailData --region cn-hangzhou --StreamName liveStream0000 --EndTime '2022-09-10T21:00:00Z' --DomainName 'example.com' --NextPageToken 'UjsM9x3aVcJi9a0-ArwJUTTC67C00037C0=' --StartTime '2022-09-10T20:00:00Z' --RegionId 'cn-hangzhou' --AppName liveApp0000"

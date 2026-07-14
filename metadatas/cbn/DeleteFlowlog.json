@@ -1,5 +1,6 @@
 {
   "name": "DeleteFlowlog",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, ClientToken is set to the value of RequestId. The value of RequestId may be different for each request."
+        "en": "The unique, one-use client token that is used to ensure the idempotence of the request. It can contain only ASCII characters.\n\n> If you leave this parameter empty, the system automatically uses the **request ID** as the **client token**."
       }
     },
     {
@@ -41,10 +42,21 @@
       "required": true,
       "description": {
         "zh": "流日志所属地域ID。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
-        "en": "The ID of the region where the flow log is deployed.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query the most recent region list."
+        "en": "The ID of the region where the flow log is deployed.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query region IDs."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除流日志",
+    "en": "DeleteFlowlog"
+  },
+  "descriptions": {
+    "zh": "`DeleteFlowlog`接口属于异步接口，即系统会先返回一个**RequestId**，但流日志并未被完全删除，系统后台的删除任务仍在进行。您可以调用`DescribeFlowlogs`接口查询流日志的状态。\n- 当流日志处于**Deleting**状态时，表示流日志正在被删除，在该状态下，您只能执行查询操作，不能执行其他操作。\n- 当`DescribeFlowlogs`接口无法查询到该流日志时，表示流日志已被完全删除。",
+    "en": "This operation is executed asynchronously. After receiving a request, the system returns a **request ID** before it finishes deleting the flow log. The task is continued in the backend. You can call `DescribeFlowlogs` to check whether the flow log has been deleted.\n\n- If the flow log is in the **Deleting** state, it is still being deleted. In this case, you can query information about the flow log but cannot perform other operations on it.\n- If the `DescribeFlowlogs` call fails because the flow log is not found, it has been deleted."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-flowlog --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --flow-log-id flowlog-m5evbtbpt0000 --cen-id cen-7qthudw0ll6jmc0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteFlowlog --region cn-hangzhou --CenId 'cen-7qthudw0ll6jmc0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --FlowLogId 'flowlog-m5evbtbpt0000'"

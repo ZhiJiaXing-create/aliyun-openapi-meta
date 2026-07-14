@@ -1,5 +1,6 @@
 {
   "name": "DeletePublicIpAddressPoolCidrBlock",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IP地址网段。",
+        "en": "The CIDR block."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotency of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除IP地址网段。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n- **true**: performs only a dry run. The CIDR block is not deleted. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "PublicIpAddressPoolId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IP地址池的实例ID。",
+        "en": "The instance ID of the IPAM pool."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除IP地址网段的IP地址池所在的地域ID。",
+        "en": "The region ID of the IP address pool from which you want to delete the CIDR block."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将IP地址段从IP地址池中删除",
+    "en": "Delete a CIDR block from an IP address pool"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请了解以下内容：\n- 删除IP地址网段前，请确保该IP地址网段没有被使用。\n- **DeletePublicIpAddressPoolCidrBlock**接口属于异步接口，即系统会先返回一个请求ID，但IP地址网段并未删除完成，系统后台的删除任务仍在进行。您可以调用[ListPublicIpAddressPoolCidrBlocks](~~429436~~)查询IP地址池中IP地址网段的状态。 \n    - 当IP地址网段处于**Deleting**状态时，表示IP地址网段正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到该IP地址网段时，表示IP地址网段删除完成。\n- **DeletePublicIpAddressPoolCidrBlock**接口不支持并发删除同一个IP地址网段。",
+    "en": "Before you call this operation, take note of the following items:\n- Before you delete a CIDR block, make sure that the CIDR block is not in use.\n- **DeletePublicIpAddressPoolCidrBlock** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the deletion task in the background. You can call [ListPublicIpAddressPoolCidrBlocks](~~429436~~) to query the status of the CIDR block in the IP address pool. \n    - If the CIDR block is in the **Deleting** state, the CIDR block is being deleted. In this state, you can only perform query operations.\n    - If the CIDR block cannot be found, the CIDR block is deleted.\n- **DeletePublicIpAddressPoolCidrBlock** does not support concurrent deletion of the same CIDR block."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-public-ip-address-pool-cidr-block --public-ip-address-pool-id pippool-6wetvn6fumkgycssx0000 --cidr-block 47.0.XX.XX/24 --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeletePublicIpAddressPoolCidrBlock --region cn-hangzhou --DryRun false --CidrBlock '47.0.XX.XX/24' --PublicIpAddressPoolId 'pippool-6wetvn6fumkgycssx0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

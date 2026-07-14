@@ -1,5 +1,6 @@
 {
   "name": "SetDeviceProperty",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备名称。\n><notice> 如果传入该参数，需同时传入**ProductKey**。\n></notice>",
+        "en": "The DeviceName of the device.\n\n> If you configure this parameter, you must specify a value for the **ProductKey** parameter."
+      }
     },
     {
       "name": "IotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备ID。物联网平台为该设备颁发的ID，设备的唯一标识符。\n><notice> **IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果传入该参数，则无需传入**ProductKey**和**DeviceName**。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。\n></notice>",
+        "en": "The ID of the device. The ID is a unique identifier that is issued by IoT Platform to the device.\n\n> The IotId parameter specifies a globally unique identifier (GUID) for the device. The value of the **IotId** parameter corresponds to a combination of the values of the **ProductKey** and **DeviceName** parameters. If you specify a value for this parameter, you do not need to configure the **ProductKey** or **DeviceName** parameter. If you specify values for the **IotId**, **ProductKey**, and **DeviceName** parameters, the value of the **IotId** parameter takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the elastic container instance. You can view the ID of the instance on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.****\n>*   If no **Overview** page or **ID** is generated for your instance, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "Items",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要设置的属性信息，数据格式为JSON。\n\n每个属性信息由标识符与属性值 (key:value) 构成，多个属性用英文逗号隔开。\n\n例如，设置智能灯的如下两个属性：\n\n- 标识符为**Switch**的开关属性，数据类型为**Bool**，设置值为**1**（开）。\n\n- 标识符为**Color**的灯颜色属性，数据类型为**String**，设置值为**blue**。\n\n那么要设置的属性信息，JSON格式如下：\n\n`Items={\"Switch\":1,\"Color\":\"blue\"}`\n\n> 如果设置自定义模块testFb（非默认模块）的属性，则格式为：`Items={\"testFb:Switch\":1,\"testFb:Color\":\"blue\"}`",
+        "en": "The properties that you want to specify. The properties must be in the JSON format.\n\nEach property consists of a **key-value pair in the key:value format**. Separate multiple properties with commas (,).\n\nFor example, you can configure the following properties for a smart lamp:\n\n*   A switch property whose key is **Switch** and whose data type is **BOOLEAN**. The value is **1**. The value 1 indicates that the light is on.\n*   A color property whose key is **Color** and whose data type is **STRING**. The value is **blue**.\n\nIn this case, you can specify the following properties in the JSON format:\n\n`Items={\"Switch\":1,\"Color\":\"blue\"}`\n\n>  If you specify properties for the custom module testFb, set the Items parameter to `{\"testFb:Switch\":1,\"testFb:Color\":\"blue\"}`. The testFb module is not the default module."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备所属的产品**ProductKey**。\n><notice> 如果传入该参数，需同时传入**DeviceName**。\n></notice>",
+        "en": "The ProductKey of the product to which the device belongs.\n\n> If you configure this parameter, you must also specify a value for the **DeviceName** parameter."
+      }
     },
     {
       "name": "Qos",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定调用本接口时，消息的发送方式。取值：\n\n- **0**（默认）：最多发送一次。\n- **1**：最少发送一次。如果QoS=1消息未接收到PUBACK消息，会在设备重连时，重新推送给设备。",
+        "en": "Specifies the message delivery method when invoking this API. Valid values:  \n\n- **0** (default): Deliver at most once.  \n- **1**: Deliver at least once. If a QoS=1 message does not receive a PUBACK message, it will be resent to the device upon reconnection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为指定设备设置属性值",
+    "en": "Set property values for a specified device"
+  },
+  "descriptions": {
+    "zh": "因为云端下发属性设置命令和设备收到并执行该命令是异步的，所以调用该接口时，返回的成功结果只表示云端下发属性设置的请求成功，不能保证设备端收到并执行了该请求。即需设备端SDK成功响应云端设置设备属性值的请求，设备属性值才能真正设置成功。\n\n><notice>物模型功能定义数据类型为float或double时，对应参数值（即使值为整数）至少携带一位小数位。例如10.0、11.1。\n></notice>\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为500。\n\n > RAM用户共享阿里云账号配额。",
+    "en": "Because the process of the cloud sending a property setting command and the device receiving and executing the command is asynchronous, a successful response from this API only indicates that the cloud has successfully sent the property setting request. It does not guarantee that the device has received and executed the request. The device property value is only successfully set after the device-side software development kit (SDK) successfully responds to the cloud's request to set the device property value.  \n\n><notice>When the data type defined in the Thing Specification Language model is float or double, the corresponding parameter value (even if it is an integer) must include at least one decimal place. For example: 10.0 or 11.1.  \n></notice>  \n\n## Queries per second (QPS) limit  \nThe maximum queries per second (QPS) for a single Alibaba Cloud account calling this API is 500.  \n\n > Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot set-device-property --iot-instance-id iot-v6400000 --product-key a1BwAGV0000 --device-name light --iot-id Q7uOhVRdZRRlDnTLv000000100 --items Switch_:1,_Color_:_blue --qos 1 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot SetDeviceProperty --region cn-hangzhou --IotId Q7uOhVRdZRRlDnTLv000000100 --IotInstanceId 'iot-v6400000' --Qos 1 --Items 'Switch_:1,_Color_:_blue' --ProductKey a1BwAGV0000 --DeviceName light"

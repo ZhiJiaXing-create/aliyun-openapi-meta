@@ -1,5 +1,6 @@
 {
   "name": "DescribeNatGatewayAssociateNetworkInterfaces",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,65 +9,112 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "Filter",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过滤信息，支持传入键值对查询结果进行过滤。",
+        "en": "The filter information. You can specify key-value pairs to filter the query results."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批次查询时每次显示的条目数。取值范围：**1~100**，默认值为 **20**。",
+        "en": "The number of entries per page for a paged query. Valid values: **1** to **100**. Default value: **20**."
+      }
     },
     {
       "name": "NatGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的NAT网关的ID。",
+        "en": "The ID of the NAT gateway to query."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否拥有下一次查询的令牌（Token）。取值：\n\n- 第一次查询和没有下一次查询时，均无需填写。\n\n- 如果有下一次查询，取值为上一次 API 调用返回的 **NextToken** 值。",
+        "en": "The pagination token. Valid values:\n\n- If this is the first query or no subsequent query is required, leave this parameter empty.\n\n- If a subsequent query is required, set the value to the **NextToken** value returned in the previous API call."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "NAT网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the NAT gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源标签列表。",
+        "en": "The list of resource tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签键。最多支持输入20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持64个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the instance. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签键。最多支持输入20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持64个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the instance. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询VPC NAT关联的弹性网卡列表",
+    "en": "Query elastic network interfaces (ENIs) associated with a VPC NAT gateway"
+  },
   "example": {
     "unifiedCli": "aliyun vpc describe-nat-gateway-associate-network-interfaces --biz-region-id cn-hangzhou --nat-gateway-id ngw-bp1uewa15k4iy57700000 --resource-group-id rg-acfmxazdjdhd0000 --tag Value=FinanceJoshua Key=FinanceDept --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF0000 --filter Value=ep-8psre8c8936596cd0000 Key=ResourceId --next-token caeba0bbb2be03f84eb48b699f0a0000 --max-results 20 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DescribeNatGatewayAssociateNetworkInterfaces --region cn-hangzhou --Tag.1.Key FinanceDept --ResourceGroupId 'rg-acfmxazdjdhd0000' --NextToken caeba0bbb2be03f84eb48b699f0a0000 --Filter.1.Value 'ep-8psre8c8936596cd0000' --MaxResults 20 --Tag.1.Value FinanceJoshua --RegionId 'cn-hangzhou' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF0000' --NatGatewayId 'ngw-bp1uewa15k4iy57700000' --Filter.1.Key ResourceId --method POST --force"

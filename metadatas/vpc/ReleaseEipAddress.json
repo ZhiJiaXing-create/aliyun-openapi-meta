@@ -1,5 +1,6 @@
 {
   "name": "ReleaseEipAddress",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "AllocationId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要释放的EIP的ID。",
+        "en": "The ID of the EIP to release."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要释放的EIP所在的地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the EIP to release. You can call [DescribeRegions](~~36063~~) to query the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "释放指定EIP",
+    "en": "Release a specified EIP"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请了解以下内容：\n\n- 释放EIP前，请确保满足以下条件：\n\n    - 只有处于**Available**状态的EIP才可以被释放。\n\n    - 仅按量计费类型的EIP支持释放，包年包月类型的EIP不支持释放。\n\n- **ReleaseEipAddress**接口属于异步接口，即系统会先返回一个请求ID，但该EIP实例并未释放完成，系统后台的释放任务仍在进行。您可以调用[DescribeEipAddresses](~~120193~~)查询EIP实例的状态：\n\n    - 当EIP实例处于**Releasing**状态时，表示EIP实例正在释放中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当查询不到该EIP实例时，表示EIP实例释放完成。\n\n- **ReleaseEipAddress**接口不支持并发释放同一个EIP实例。",
+    "en": "Before you begin:\n\n- Before releasing an EIP, make sure the following conditions are met:\n\n    - Only EIPs in the **Available** state can be released.\n\n    - Only EIPs that use the pay-as-you-go billing method can be released. Subscription EIPs cannot be released.\n\n- The **ReleaseEipAddress** operation is asynchronous. After you invoke this operation, the system returns a request ID, but the EIP instance has not been released yet. The release node continues to execute in the background. You can invoke [DescribeEipAddresses](~~120193~~) to query the status of the EIP instance:\n\n    - If the EIP instance is in the **Releasing** state, the EIP instance is being released. In this state, you can only execute query operations and cannot execute other operations.\n\n    - If the EIP instance cannot be found, the EIP instance has been released.\n\n- The **ReleaseEipAddress** operation does not support concurrent release of the same EIP instance."
+  },
   "example": {
     "unifiedCli": "aliyun vpc release-eip-address --biz-region-id cn-hangzhou --allocation-id eip-2zeerraiwb7uj6i0d0000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc ReleaseEipAddress --region cn-hangzhou --AllocationId 'eip-2zeerraiwb7uj6i0d0000' --RegionId 'cn-hangzhou'"

@@ -1,5 +1,6 @@
 {
   "name": "ListInventoryEntries",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "组件过滤规则。",
+        "en": "The filter rules for the component."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "某个组件下的返回内容里面的单个值的名称(N取值范围1-5)。",
+            "en": "The name of the component property. Valid values of N: 1 to 5."
+          }
         },
         {
           "name": "Operator",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "组件的比较符(N取值范围1-5)。\n取值范围：\n- Equal\n- NotEqual\n- BeginWith\n- LessThan\n- GreaterThan",
+            "en": "The comparison operator that is used to filter property values. Valid values of N: 1 to 5. Valid values:\n\n*   Equal\n*   NotEqual\n*   BeginWith\n*   LessThan\n*   GreaterThan"
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "组件返回结果的名称都对应的值(第一个N的取值范围1-5，第二个N的取值范围为1-20)。",
+            "en": "The values of properties. Valid values of the first N: 1 to 5. Valid values of the second N: 1 to 20."
+          }
         }
       ]
     },
@@ -34,33 +51,60 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小。取值范围：1-100。默认为50。",
+        "en": "The number of entries per page. Valid values: 1 to 100. Default value: 50."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "翻页标记的Token。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results. You do not need to specify this parameter for the first request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The ID of the region in which the instance resides."
+      }
     },
     {
       "name": "TypeName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "组件名称。\n取值范围：\n\n- ACS:InstanceInformation\n- ACS:Application\n- ACS:File\n- ACS:Network\n- ACS:WindowsRole\n- ACS:Service\n- ACS:WindowsRegistry\n- ACS:WindowsUpdate",
+        "en": "The name of the component. Valid values:\n\n*   ACS:InstanceInformation\n*   ACS:Application\n*   ACS:File\n*   ACS:Network\n*   ACS:WindowsRole\n*   ACS:Service\n*   ACS:WindowsRegistry\n*   ACS:WindowsUpdate"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询一个实例下的配置清单记录",
+    "en": "ListInventoryEntries"
+  },
   "example": {
     "unifiedCli": "aliyun oos list-inventory-entries --instance-id i-bp1cpoxxxwxxxxxxxxxx --type-name ACS:InstanceInformation --max-results 50 --next-token MTRBMDc0NjAtRUJFNy00N0NBLTk3NTctMTJDQzA --filter '[{\"Operator\":\"Equal\",\"Value\":[\"ubuntu\"],\"Name\":\"PlatformName\"}]' --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun oos ListInventoryEntries --region cn-hangzhou --TypeName 'ACS:InstanceInformation' --NextToken MTRBMDc0NjAtRUJFNy00N0NBLTk3NTctMTJDQzA --InstanceId 'i-bp1cpoxxxwxxxxxxxxxx' --Filter.1.Value.1 ubuntu --MaxResults 50 --RegionId 'cn-hangzhou' --Filter.1.Operator Equal --Filter.1.Name PlatformName"

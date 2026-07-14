@@ -1,5 +1,6 @@
 {
   "name": "DeleteTransitRouter",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. ClientToken can contain only ASCII characters.\n\n>  If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** may be different for each API request."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. ClientToken can contain only ASCII characters.\n\n> If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** may be different for each API request."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次删除请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接删除转发路由器实例。\n- **true**：发送检查请求，只进行校验，不会删除转发路由器实例。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。",
-        "en": "Specifies whether only to precheck the request. Check items include permissions and the status of the transit router. Valid values:\n\n*   **false** (default): sends the request. If the request passes the precheck, the transit router is deleted.\n*   **true**: prechecks the request but does not delete the transit router. If you use this value, the system checks the required parameters and the request syntax. If the request fails to pass the precheck, an error message is returned. If the request passes the precheck, the `DryRunOperation` error code is returned."
+        "en": "Specifies whether only to precheck the request. Check items include permissions and the status of the transit router. Valid values:\n\n- **false** (default): sends the request. If the request passes the precheck, the transit router is deleted.\n- **true**: prechecks the request but does not delete the transit router. If you use this value, the system checks the required parameters and the request syntax. If the request fails to pass the precheck, an error message is returned. If the request passes the precheck, the `DryRunOperation` error code is returned."
       }
     },
     {
@@ -35,6 +36,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除转发路由器实例",
+    "en": "DeleteTransitRouter"
+  },
+  "descriptions": {
+    "zh": "**DeleteTransitRouter**接口属于异步接口，即系统会先返回一个**RequestId**，但该转发路由器实例并未删除完成，系统后台的删除任务仍在进行。您可以调用**ListTransitRouters**接口查询转发路由器实例的状态。 \n\n- 当转发路由器实例处于**Deleting**状态时，表示转发路由器实例正在删除中，在该状态下，您只能对转发路由器实例执行查询操作，不能执行其他操作。\n- 当查询不到指定的转发路由器实例时，表示转发路由器实例删除完成。\n\n### 前提条件\n\n删除转发路由器实例前，请确保满足以下条件：\n\n- 转发路由器实例下不存在任何连接。\n    - 删除专有网络VPC（Virtual Private Cloud）连接，请参见[DeleteTransitRouterVpcAttachment](~~261220~~)。\n    - 删除专线网关ECR（Express Connect Router）连接，请参见[DeleteTransitRouterEcrAttachment](~~2715447~~)。\n    - 删除云连接网CCN（Cloud Connect Network）连接，请参见[DetachCenChildInstance](~~65915~~)。\n    - 删除VPN连接，请参见[DeleteTransitRouterVpnAttachment](~~443992~~)。\n    - 删除跨地域连接，请参见[DeleteTransitRouterPeerAttachment](~~261227~~)。\n    - 删除边界路由器VBR（Virtual Border Router）连接，请参见[DeleteTransitRouterVbrAttachment](~~261223~~)。\n- 转发路由器实例下不存在自定义路由表。具体操作，请参见[DeleteTransitRouterRouteTable](~~261235~~)。\n- 转发路由器实例默认路由表下不存在自定义路由条目、路由前缀以及聚合路由。具体操作，请参见\n    - 删除企业版转发路由器自定义路由条目，请参见[DeleteTransitRouterRouteEntry](~~468291~~)。\n    - 解绑前缀列表，请参见[DeleteTransitRouterPrefixListAssociation](~~468312~~)。\n    - 删除聚合路由，请参见[DeleteTransitRouteTableAggregation](~~476070~~)。\n- 转发路由器实例下不存在组播域。删除组播域，请参见[DeleteTransitRouterMulticastDomain](~~468386~~)。\n- 转发路由器实例下不存在流量标记策略。删除流量标记策略，请参见[DeleteTrafficMarkingPolicy](~~468324~~)。",
+    "en": "**DeleteTransitRouter** is an asynchronous operation. After you send a request, the **request ID** is returned but the operation is still being performed in the system background. You can call **ListTransitRouters** to query the status of a transit router.\n\n- If a transit router is in the **Deleting** state, the transit router is being deleted. In this case, you can query the transit router but cannot perform other operations.\n- If a transit router cannot be found, the transit router is deleted.\n\n#### Prerequisites\n\nBefore you delete a transit router, make sure that the following prerequisites are met:\n\n- No network instance connections are created on the transit router.\n\n  - For more information about how to delete a virtual private cloud (VPC) connection, see [DeleteTransitRouterVpcAttachment](~~261220~~).\n  - For more information about how to delete a virtual border router (VBR) connection, see [DeleteTransitRouterVbrAttachment](~~261223~~).\n  - For more information about how to delete a Cloud Connect Network (CCN) connection, see [DetachCenChildInstance](~~65915~~).\n  - For more information about how to delete a VPN connection, see [DeleteTransitRouterVpnAttachment](~~443992~~).\n  - For more information about how to delete an inter-region connection, see [DeleteTransitRouterPeerAttachment](~~261227~~).\n- No custom route tables are created on the transit router. For more information about how to delete a custom route table, see [DeleteTransitRouterRouteTable](~~261235~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-transit-router --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --transit-router-id tr-uf654ttymmljlvh2x0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteTransitRouter --region cn-hangzhou --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --TransitRouterId 'tr-uf654ttymmljlvh2x0000'"

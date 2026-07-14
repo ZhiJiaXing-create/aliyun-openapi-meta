@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBInstanceConnectionString",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,13 +9,21 @@
       "name": "CurrentConnectionString",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前连接地址，即待修改的连接地址。",
+        "en": "The current connection address—the address to modify."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 当本参数传入的是分片集群实例ID时，还需要传入**NodeId**参数。",
+        "en": "The ID of the instance.\n\n> If you specify the ID of a sharded cluster instance, you must also specify the **NodeId** parameter."
+      }
     },
     {
       "name": "ForceModifySuffix",
@@ -32,19 +41,31 @@
       "name": "NewConnectionString",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新的连接地址，要求如下：\n- 以小写字母开头。\n- 以小写字母或数字结尾。\n- 由小写字母、数字和连字符（-） 组成。\n- 长度为8~63个字符。\n\n> 仅需传入连接地址的前缀部分，前缀以外的部分不可修改。",
+        "en": "The new connection address. It must meet these requirements:\n\n- Start with a lowercase letter.\n\n- End with a lowercase letter or digit.\n\n- Contain only lowercase letters, digits, and hyphens (-).\n\n- Be 8 to 63 characters long.\n\n> Specify only the prefix of the connection address. You cannot change any part beyond the prefix."
+      }
     },
     {
       "name": "NewPort",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新的端口，端口范围需要在1000~65535之间。\n> 当**DBInstanceId**参数传入的是云盘实例ID时，本参数才可用。",
+        "en": "The new port number. Valid values are from 1000 to 65535.\n\n> This parameter is valid only when **DBInstanceId** specifies the ID of a cloud disk instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分片集群实例中的Mongos节点ID，每次调用仅能传入一个Mongos节点ID。\n\n> 当**DBInstanceId**参数传入的是分片集群实例ID时，本参数才可用。",
+        "en": "The ID of a Mongos node in a sharded cluster instance. You can specify only one Mongos node ID per call.\n\n> This parameter is valid only when **DBInstanceId** specifies the ID of a sharded cluster instance."
+      }
     },
     {
       "name": "PortModifyOnly",
@@ -53,6 +74,17 @@
       "required": false
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例的连接地址和端口",
+    "en": "ModifyDBInstanceConnectionString"
+  },
+  "descriptions": {
+    "zh": "支持修改连接地址和端口的实例类型如下：\n- 支持修改本地盘和云盘版实例的连接地址。\n- 分片集群仅支持修改Mongos节点的连接地址。",
+    "en": "You can modify the connection address and port for the following instance types:\n\n- You can modify the connection address and port for instances that use local disks or cloud disks.\n\n- For sharded cluster instances, you can modify only the connection address of Mongos nodes."
+  },
   "example": {
     "unifiedCli": "aliyun dds modify-db-instance-connection-string --db-instance-id dds-bpxxxxxxxx --node-id s-bpxxxxxxxx --current-connection-string s-bpxxxxxxxx.mongodb.rds.aliyuncs.com --new-connection-string aliyuntest111 --new-port 3310 --port-modify-only true --network-type vpc --force-modify-suffix true --region cn-hangzhou",
     "legacyCli": "aliyun dds ModifyDBInstanceConnectionString --region cn-hangzhou --ForceModifySuffix true --NewPort 3310 --CurrentConnectionString 's-bpxxxxxxxx.mongodb.rds.aliyuncs.com' --DBInstanceId 'dds-bpxxxxxxxx' --NetworkType vpc --NodeId 's-bpxxxxxxxx' --PortModifyOnly true --NewConnectionString aliyuntest111"

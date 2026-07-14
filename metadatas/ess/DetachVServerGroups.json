@@ -1,5 +1,6 @@
 {
   "name": "DetachVServerGroups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "ForceDetach",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否从待移除虚拟服务器组中移除当前伸缩组内的实例。 \n\n- true：移除。如果该参数取值为`true`，则从伸缩组中移除负载均衡实例时，系统会将负载均衡实例后端服务器上与伸缩组关联的实例移除。\n\n- false：不移除。如果该参数取值为`false`，则从伸缩组中移除负载均衡实例时，系统不会从负载均衡实例后端服务器上移除与伸缩组关联的实例。\n\n默认值：false。",
+        "en": "Specifies whether to remove the instances in the current scaling group from the virtual server groups to be removed. \n\n- true: removes the instances. If you set this parameter to `true`, the system removes the instances that are associated with the scaling group from the backend servers of the load balancing instance when the load balancing instance is removed from the scaling group.\n\n- false: does not remove the instances. If you set this parameter to `false`, the system does not remove the instances that are associated with the scaling group from the backend servers of the load balancing instance when the load balancing instance is removed from the scaling group.\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组所属地域的ID，例如`cn-hangzhou`、`cn-shanghai`。更多信息，请参见[地域和可用区](~~40654~~)。",
+        "en": "The ID of the region where the scaling group resides, such as `ap-southeast-1` or `cn-shanghai`. For more information, see [Regions and zones](~~40654~~)."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     },
     {
       "name": "VServerGroup",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "伸缩组关联的虚拟服务器组的信息集合。",
+        "en": "The information about the virtual server groups associated with the scaling group."
+      },
       "sub_parameters": [
         {
           "name": "LoadBalancerId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "虚拟服务器组所属负载均衡实例的ID。\n\nN为负载均衡实例编号，取值范围：1~5。\n\n>支持最多一次从伸缩组移除5个负载均衡实例。",
+            "en": "The ID of the load balancing instance to which the virtual server group belongs.\n\nN specifies the load balancing instance number. Valid values: 1 to 5.\n\n>You can remove up to five load balancing instances from a scaling group at a time."
+          }
         },
         {
           "name": "VServerGroupAttribute",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "虚拟服务器属性列表。",
+            "en": "The attribute column list of virtual server groups."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "DetachVServerGroups",
+    "en": "DetachVServerGroups"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 确定待移除的虚拟服务器组时，需要同时指定以下参数：\n\n    - 负载均衡实例ID（LoadBalancerId）\n    - 虚拟服务器组ID（VServerGroupId） \n    - 虚拟服务器组端口号（Port）\n\n- 如果请求参数中的虚拟服务器组与伸缩组中的虚拟服务器组相匹配，则移除该虚拟服务器组。如果未能匹配，则忽略移除请求，且接口不报错。\n\n- 如果移除伸缩组的负载均衡实例时，您需要确认该负载均衡实例不再向伸缩组内实例分发请求，避免造成服务请求丢失的情况。",
+    "en": "## Operation description\n\n- To confirm the virtual server groups to remove, you must specify the following request parameters at the same time:\n\n    - LoadBalancerId: the instance ID of the load balancing instance.\n    - VServerGroupId: the ID of the virtual server group. \n    - Port: the port number of the virtual server group.\n\n- If the virtual server groups specified in the request parameters match those associated with the scaling group, the virtual server groups are removed. If no match is found, the removal request is ignored and no error is returned.\n\n- When you remove a load balancing instance from a scaling group, confirm that the load balancing instance no longer distributes requests to instances in the scaling group to prevent service request loss."
+  },
   "example": {
     "unifiedCli": "aliyun ess detach-vserver-groups --biz-region-id cn-hangzhou --scaling-group-id asg-bp1fo0dbtsbmqa9h0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --force-detach false --vserver-group '[{\"LoadBalancerId\":\"lb-bp1p90y3ya9h8s62d0000\",\"VServerGroupAttribute\":[{\"VServerGroupId\":\"rsp-bp1jp1rge0000\",\"Port\":22}]}]' --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess DetachVServerGroups --region cn-hangzhou --VServerGroup.1.VServerGroupAttribute.1.Port 22 --ScalingGroupId 'asg-bp1fo0dbtsbmqa9h0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ForceDetach false --VServerGroup.1.VServerGroupAttribute.1.VServerGroupId 'rsp-bp1jp1rge0000' --VServerGroup.1.LoadBalancerId 'lb-bp1p90y3ya9h8s62d0000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateDataQualityScan",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "幂等参数。",
+        "en": "The idempotency token."
+      }
     },
     {
       "name": "ComputeResource",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量监控在运行时使用的计算引擎，可空，如果没有指定，则使用Spec中所指定的数据源连接。",
+        "en": "The compute engine used at runtime. If not specified, the data source defined in the Spec is used."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量监控描述信息。",
+        "en": "The description of the data quality monitor."
+      }
     },
     {
       "name": "Hooks",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "数据质量监控运行结束后的Hook配置。",
+        "en": "The Hook configurations after the data quality monitoring run ends."
+      },
       "sub_parameters": [
         {
           "name": "Condition",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Hook触发条件，当满足这个条件时，会触发Hook运行。目前只支持一种表达式写法：\n\n指定多组规则严重类型和规则校验状态，如`results.any { r -> r.status == 'Fail' && r.rule.severity == 'Normal' || r.status == 'Error' && r.rule.severity == 'High' || r.status == 'Warn' && r.rule.severity == 'High' }`，代表执行的规则中，如果有severity为Normal的规则校验结果是Fail、或者severity为High的规则校验结果是Error、或者severity为High的规则校验结果是Warn，则满足条件。条件表达式中severity的枚举与Spec中severity的枚举一致、status的枚举与DataQualityResult中的status一致。",
+            "en": "The Hook trigger condition. The hook will run if the condition is met. Currently, only one type of expression syntax is supported:\n\nYou can specify multiple combinations of rule severity levels and validation statuses using an expression such as `results.any { r -> r.status == 'Fail' && r.rule.severity == 'Normal' || r.status == 'Error' && r.rule.severity == 'High' || r.status == 'Warn' && r.rule.severity == 'High' }`. This expression means the condition is met if any executed rule has a result of Fail with severity Normal, Error with severity High, or Warn with severity High. In the condition expression, the values of severity and status are predefined enums. The values of severity must match those defined in the Spec, and the values of status must match those in DataQualityResult."
+          }
         },
         {
           "name": "Type",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Hook类型。取值范围：\n- BlockTaskInstance：阻塞任务实例调度",
+            "en": "The type of the Hook.\n\nValid values:\n\n- BlockTaskInstance: Blocks the scheduling of the task instance."
+          }
         }
       ]
     },
@@ -46,31 +71,51 @@
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量监控名称。",
+        "en": "The data quality monitoring name."
+      }
     },
     {
       "name": "Owner",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量监控负责人用户ID。",
+        "en": "The ID of the user who owns of the data quality monitor."
+      }
     },
     {
       "name": "Parameters",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "数据质量监控执行参数定义。",
+        "en": "The definition of execution parameters for the data quality monitoring."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "参数名。",
+            "en": "The parameter name."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "参数值。",
+            "en": "The parameter values."
+          }
         }
       ]
     },
@@ -78,27 +123,54 @@
       "name": "ProjectId",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DataWorks工作空间的ID。您可以登录[DataWorks控制台](https://dataworks.console.aliyun.com/overview)，进入工作空间配置页面获取工作空间ID。需要用该参数来确定本次API调用操作的DataWorks工作空间。",
+        "en": "The DataWorks workspace ID. You can log on to the DataWorks console and go to the workspace configuration page to obtain the workspace ID. This parameter is required to specify the target DataWorks workspace for this API operation."
+      }
     },
     {
       "name": "RuntimeResource",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量监控运行时，使用的资源组。",
+        "en": "The resource group used during execution of the data quality monitoring."
+      }
     },
     {
       "name": "Spec",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量监控的内容的Spec代码，详情请参见[数据质量Spec配置说明](~~2963394~~)。",
+        "en": "Spec code for the content of the data quality monitoring."
+      }
     },
     {
       "name": "Trigger",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量监控触发设置。",
+        "en": "The trigger configurations of the data quality monitoring task."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据质量监控",
+    "en": "CreateDataQualityScan"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用",
+    "en": "DataWorks Basic Edition or a higher edition is required."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public create-data-quality-scan --description Daily_data_quality_scanning_of_ods_tables. --project-id 101 --owner 952795270000 --spec datasets_:_type_:_Table_,_dataSource_:_name_:_odps_first_,_envType_:_Prod_,_tables_:_ods_d_user_info_,_filter_:_pt_=_yyyymmdd-1_,_rules_:_assertion_:_row_count_0_,_templateId_:_SYSTEM:field:null_value:fixed_,_pass_:_when_=_0_,_name_:_The_id_cannot_be_empty._,_severity_:_High_,_identity_:_a-customized-data-quality-rule-uuid --parameters Value=yyyymmdd-1 Name=triggerTime --runtime-resource Cu=0.25 Id=0525242e-d0ee-4bda-bc73-765d82f6a34a Image=i-xxxxxx --compute-resource '{\"Runtime\":{\"HiveConf\":\"mapreduce.job.queuename=dq_queue\",\"SparkConf\":\"spark.yarn.queue=dq_queue\",\"Engine\":\"Hive\"},\"EnvType\":\"Dev\",\"Name\":\"emr_first\"}' --trigger '{\"Type\":\"BySchedule\",\"TaskIds\":[1004979033]}' --hooks Condition=results.any_r_-_r.status_==_Fail_r.rule.severity_==_Normal_r.status_==_Error_r.rule.severity_==_High_r.status_==_Warn_r.rule.severity_==_High Type=BlockTaskInstance --name data_quality_scan_001 --client-token a-customized-uuid --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public CreateDataQualityScan --region cn-hangzhou --Owner 952795270000 --Description 'Daily_data_quality_scanning_of_ods_tables.' --Parameters '[{\"Value\":\"yyyymmdd-1\",\"Name\":\"triggerTime\"}]' --Trigger '{\"Type\":\"BySchedule\",\"TaskIds\":[1004979033]}' --ProjectId 101 --ComputeResource '{\"Runtime\":{\"HiveConf\":\"mapreduce.job.queuename=dq_queue\",\"SparkConf\":\"spark.yarn.queue=dq_queue\",\"Engine\":\"Hive\"},\"EnvType\":\"Dev\",\"Name\":\"emr_first\"}' --Hooks '[{\"Condition\":\"results.any_r_-_r.status_==_Fail_r.rule.severity_==_Normal_r.status_==_Error_r.rule.severity_==_High_r.status_==_Warn_r.rule.severity_==_High\",\"Type\":\"BlockTaskInstance\"}]' --Spec 'datasets_:_type_:_Table_,_dataSource_:_name_:_odps_first_,_envType_:_Prod_,_tables_:_ods_d_user_info_,_filter_:_pt_=_yyyymmdd-1_,_rules_:_assertion_:_row_count_0_,_templateId_:_SYSTEM:field:null_value:fixed_,_pass_:_when_=_0_,_name_:_The_id_cannot_be_empty._,_severity_:_High_,_identity_:_a-customized-data-quality-rule-uuid' --ClientToken 'a-customized-uuid' --RuntimeResource '{\"Cu\":0.25,\"Id\":\"0525242e-d0ee-4bda-bc73-765d82f6a34a\",\"Image\":\"i-xxxxxx\"}' --Name data_quality_scan_001"

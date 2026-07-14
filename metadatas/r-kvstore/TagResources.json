@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID。",
+        "en": "The region ID of the instance."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，取值固定为**INSTANCE**。",
+        "en": "The resource type. Set the value to **INSTANCE**."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "实例的标签信息。",
+        "en": "The tags of the instance."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签的键。\n\n> * **N**表示传入第几个标签的键。例如**Tag.1.Key**表示传入第一个标签的键；**Tag.2.Key**表示传入第二个标签的键。\n> * 如果标签的键不存在，则自动创建。",
+            "en": "The key of the tag associated with the instance.\n\n> * **N** specifies the serial number of the tag. For example, **Tag.1.Key** specifies the key of the first tag and **Tag.2.Key** specifies the key of the second tag.\n> * If the key of the tag does not exist, the key is automatically created."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签的值。\n\n> **N**表示传入第几个标签的值。例如**Tag.1.Value**表示传入第一个标签的值；**Tag.2.Value**表示传入第二个标签的值。",
+            "en": "The value of the tag associated with the instance.\n\n> **N** specifies the serial number of the tag. For example, **Tag.1.Value** specifies the value of the first tag and **Tag.2.Value** specifies the value of the second tag."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为一个或多个实例绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "在实例数量较多的情况下，您可以创建多个标签，为实例绑定不同的标签对其进行分类，之后通过标签进行实例筛选。\n\n* 标签由一对键（key）值（value）组成，键在同账号同地域下唯一，值无此限制。\n* 若设置的标签不存在，则自动创建该标签并绑定到目标实例。\n* 若实例已经绑定了有相同键的标签，则进行覆盖绑定。\n* 每个实例最多可以绑定20个标签。\n* 每次调用最多设置50个实例进行批量标签绑定。\n\n该API对应的控制台操作请参见[新建标签](~~118779~~)。",
+    "en": "If you have a large number of instances, you can create multiple tags and add these tags to the instances. Then, you can filter instances by tag.\n\n*   A tag consists of a key and a value. Each key must be unique in a region for an Alibaba Cloud account. Different keys can be mapped to the same value.\n*   If the tag that you specify does not exist, this tag is automatically created and added to the specified instance.\n*   If the key of the specified tag is the same as that of an existing tag, the specified tag overwrites the existing tag.\n*   You can add up to 20 tags to each instance.\n*   You can add tags to up to 50 instances in each request.\n\nYou can also add tags to instances in the Tair (Redis OSS-compatible) console. For more information, see [Create a tag](~~118779~~)."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore tag-resources --biz-region-id cn-hangzhou --resource-type INSTANCE --resource-id r-bp1zxszhcgatnx0000 --tag Value=demovalue Key=demokey --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore TagResources --region cn-hangzhou --ResourceId.1 'r-bp1zxszhcgatnx0000' --Tag.1.Key demokey --Tag.1.Value demovalue --ResourceType INSTANCE --RegionId 'cn-hangzhou'"

@@ -1,5 +1,6 @@
 {
   "name": "GetPfsSqlSummaries",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "Asc",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否升序排序，默认为**false**。\n\n- **true**：是。\n- **false**：否。",
+        "en": "Sort in ascending order. Default is **false**.\n\n- **true**: Yes.\n\n- **false**: No."
+      }
     },
     {
       "name": "EndTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询结束时间，格式为Unix时间戳，单位为毫秒。\n> 查询结束时间需晚于查询开始时间，最多可查看最近一个月内任意七天的数据。",
+        "en": "End time of the query, in Unix timestamp format, in milliseconds.\n\n> The end time must be later than the start time. You can query data for any seven-day period within the last 30 days."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。",
+        "en": "Database instance ID."
+      }
     },
     {
       "name": "Keywords",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SQL文本关键词，多个关键词以空格分隔。",
+        "en": "Keywords in the SQL text. Separate multiple keywords with spaces."
+      }
     },
     {
       "name": "NodeId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n> 对于RDS MySQL集群系列或PolarDB MySQL版数据库实例，需要提供节点ID。",
+        "en": "Node ID.\n\n> Provide a node ID for RDS MySQL Cluster Edition or PolarDB for MySQL database instances."
+      }
     },
     {
       "name": "OrderBy",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段，默认为**count**。\n\n- **count**：执行次数。\n\n- **avgLatency**：平均执行时间。\n\n- **rowsExamined**：总扫描行数。\n\n- **rowsExaminedAvg**：平均扫描行数。\n\n- **rowsSentAvg**：平均返回行数。",
+        "en": "Field to sort by. Default is **count**.\n\n- **count**: Number of executions.\n\n- **avgLatency**: Average execution time.\n\n- **rowsExamined**: Total number of scanned rows.\n\n- **rowsExaminedAvg**: Average number of scanned rows.\n\n- **rowsSentAvg**: Average number of returned rows."
+      }
     },
     {
       "name": "PageNo",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询的页码，从1开始，默认为1。",
+        "en": "Page number for paged queries. Start from 1. Default is 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询每页最大记录数，默认为10，最大为100。",
+        "en": "Maximum number of records per page for paged queries. Default is 10. Maximum is 100."
+      }
     },
     {
       "name": "SqlId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SQL ID。\n\n> 传入SQL ID时，统计目标SQL ID的全量请求数据；为空时，统计整个数据库实例的全量请求数据。",
+        "en": "SQL ID.\n\n> If you specify an SQL ID, the system returns statistics for that SQL ID only. If you leave this parameter empty, the system returns statistics for the entire database instance."
+      }
     },
     {
       "name": "StartTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询开始时间，格式为Unix时间戳，单位为毫秒。",
+        "en": "Start time of the query, in Unix timestamp format, in milliseconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询按照SQL ID维度统计的全量请求数据",
+    "en": "GetPfsSqlSummaries"
+  },
+  "descriptions": {
+    "zh": "使用该接口需满足以下前提条件：\n\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n- 目标数据库实例为RDS MySQL或PolarDB MySQL版。\n- 目标数据库实例已开启性能洞察（新版），详情请参见[性能洞察（新版）](~~469117~~)。",
+    "en": "Prerequisites for using this API:\n\n- Use the latest version of the Alibaba Cloud or DAS SDK.\n\n- When calling the DAS service using the SDK, specify the region as cn-shanghai.\n\n- The target database instance is RDS MySQL or PolarDB MySQL.\n\n- The target database instance has Performance Insight (New Version) enabled. For more information, see [Performance Insight (New Version)](~~469117~~)."
+  },
   "example": {
     "unifiedCli": "aliyun das get-pfs-sql-summaries --instance-id rm-uf61swc4cru0b0000 --node-id r-0000-db-0 --sql-id 651b56fe9418d48edb8fdf0980ec0000 --keywords select_update --start-time 1675833788056 --end-time 1679297005999 --order-by count --asc false --page-no 1 --page-size 10 --region cn-hangzhou",
     "legacyCli": "aliyun das GetPfsSqlSummaries --region cn-hangzhou --OrderBy count --Asc false --Keywords select_update --EndTime 1679297005999 --PageSize 10 --InstanceId 'rm-uf61swc4cru0b0000' --NodeId 'r-0000-db-0' --StartTime 1675833788056 --PageNo 1 --SqlId 651b56fe9418d48edb8fdf0980ec0000"

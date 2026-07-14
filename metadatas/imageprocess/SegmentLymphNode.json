@@ -1,0 +1,82 @@
+{
+  "name": "SegmentLymphNode",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BodyPart",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "期望输出的危及器官所在的身体部位。当前版本只支持CHEST。\n\n- CHEST：胸部\n- HEAD：头颅",
+        "en": "The body part where the organs at risk are located for the expected output. The current version supports only CHEST. Valid values:\n\n- CHEST: chest\n- HEAD: head."
+      }
+    },
+    {
+      "name": "DataFormat",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "图片的格式。支持DICOM或NIFTI。",
+        "en": "The format of the image. Valid values: DICOM and NIFTI."
+      }
+    },
+    {
+      "name": "OrgId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "当前渠道（即主账号）下的子渠道（即机构，如医院）标识。",
+        "en": "The identifier of the sub-channel (organization, such as a hospital) under the current channel (primary account)."
+      }
+    },
+    {
+      "name": "OrgName",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "当前渠道（即主账号）下的子渠道（即机构，如医院）名称。",
+        "en": "The name of the sub-channel (organization, such as a hospital) under the current channel (primary account)."
+      }
+    },
+    {
+      "name": "URLList",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": true,
+      "description": {
+        "zh": "图像URL列表。",
+        "en": "The list of image URLs."
+      },
+      "sub_parameters": [
+        {
+          "name": "URL",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "DICOM序列文件URL列表或NIFTI文件URL列表\\[\"url\",\"url\",...]。\n推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n\n> URLList.N.URL中的N为该图像URL在当前List中的顺序（从1开始）。当直接使用API请求时，输入URLList的填充会以URLList.1.URL=url1，URLList.2.URL=url2，......的方式指定参数和参数值，参数对以&连接，其中url1、url2、......等具体值请根据实际情况进行替换；当使用SDK填充URLList时，可直接使用SDK提供的相应的方法。",
+            "en": "The URL list of DICOM series files or NIFTI files \\[\"url\",\"url\",...].\nWe recommend that you use Object Storage Service (OSS) links in the China (Shanghai) region. If the files are stored locally or in OSS in a region other than China (Shanghai), refer to [File URL processing](~~155645~~).\n\n> N in URLList.N.URL indicates the sequence number of the image URL in the current list (starting from 1). When you directly use the API, specify URLList parameters in the format of URLList.1.URL=url1, URLList.2.URL=url2, and so on. Connect parameter pairs with ampersands (&). Replace url1, url2, and other values with actual values. When you use an SDK, use the corresponding methods provided by the SDK."
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "放疗淋巴站分割",
+    "en": "Lymph node segmentation for radiotherapy"
+  },
+  "descriptions": {
+    "zh": "## 服务说明\n由于产品业务调整，放疗淋巴站分割服务将迁移至达摩院[达医智影官网](https://damomed.com)，放疗淋巴站分割服务于2025年11月26日起停止新用户开通调用，历史开通过该服务的老用户可继续调用，2026年11月26日后该服务将下架，不再支持新老用户调用视觉智能开放平台的服务。如果对服务迁移有疑问，您可前往达摩院[达医智影官网](https://damomed.com)联系相关人员。\n\n## 功能描述\n放疗淋巴站分割能力可以根据输入的胸部平扫或增强CT，指定目标部位，进行淋巴站分割。其中，目标部位为胸部（CHEST），最终以NIFTI格式mask的形式给出淋巴站分割的结果。\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n体检筛查：支持输入胸部平扫CT评估肠癌风险，可输出分类结果和病灶分割结果。\n\n## 特色优势\n- 肠癌风险评估：输出正常肠、肠癌、非肠癌病变的三分类概率，其中三者中最高的一项为分类结果。\n- 病灶可视化：输出正常肠、肠癌、非肠癌病变的体积及对应的分割结果（以NIFTI文件标识）。\n\n\n## 输入限制\nURLList长度大于20且小于600（即每个序列的slice张数最少20张，最大支持600张），每个URL需通过HTTP协议可访问。\n\n## 调用步骤\n该能力为异步能力，需分两步进行调用。\n第一步调用SegmentLymphNode接口提交任务，请求成功后，得到一个任务ID。\n第二步调用[GetAsyncJobResult](~~607824~~)接口查询结果，根据任务ID查询任务执行状态和结果。如果任务还在处理中，可稍等一段时间后再进行查询。当同一个任务还未处理完时，建议不要重复提交任务。\n\n## 计费说明\n放疗淋巴站分割能力目前处于公测期，可免费调用。",
+    "en": "## Service notice\nDue to product business adjustments, the lymph node segmentation for radiotherapy service will be migrated to the Alibaba DAMO Academy [DaMo Medical Imaging website](https://damomed.com). Starting from November 26, 2025, new users will no longer be able to activate and call this service. Existing users who have previously activated this service can continue to use it. After November 26, 2026, this service will be delisted and will no longer be available to any users on the Visual Intelligence Open Platform. If you have questions about the service migration, visit the Alibaba DAMO Academy [DaMo Medical Imaging website](https://damomed.com) to contact the relevant personnel.\n\n## Feature description\nThe lymph node segmentation for radiotherapy feature segments lymph node stations based on input chest plain or contrast-enhanced CT scans for a specified target body part. The target body part is the chest (CHEST). The segmentation result is provided as a NIFTI format mask.\n\n> - You can access [online consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for human assistance.\n- To learn about API integration, usage, or consultation for Alibaba Cloud Visual Intelligence Open Platform visual AI capabilities, join the DingTalk group (23109592) to contact us.\n\n## Common scenarios\nHealth screening: Supports input of chest plain CT scans to assess colorectal cancer risk. The output includes classification results and lesion segmentation results.\n\n## Benefits\n- Colorectal cancer risk assessment: Outputs three-class probabilities for normal intestine, colorectal cancer, and non-colorectal cancer lesions. The highest probability among the three is the classification result.\n- Lesion visualization: Outputs the volume and corresponding segmentation results (identified by NIFTI files) for normal intestine, colorectal cancer, and non-colorectal cancer lesions.\n\n## Input limits\nThe length of URLList must be greater than 20 and less than 600 (that is, each series must contain at least 20 slices and at most 600 slices). Each URL must be accessible over HTTP.\n\n## Procedure\nThis feature is asynchronous and requires two steps.\nStep 1: Call the SegmentLymphNode operation to submit a task. If the request is successful, a task ID is returned.\nStep 2: Call the [GetAsyncJobResult](~~607824~~) operation to query the result based on the task ID. If the task is still being processed, wait and try again later. Do not submit duplicate tasks while the same task is still being processed.\n\n## Billing description\nThe lymph node segmentation for radiotherapy feature is currently in public preview and can be called for free."
+  }
+}

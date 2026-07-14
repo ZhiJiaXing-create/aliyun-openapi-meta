@@ -1,5 +1,6 @@
 {
   "name": "ModifyCapacityReservation",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -10,7 +11,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。"
+        "zh": "保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "A client token to ensure the idempotence of the request. Generate a token from your client and make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length.\n\n> If this parameter is not specified, the system uses the RequestId as the ClientToken. The RequestId of each API request is different."
       }
     },
     {
@@ -19,7 +21,8 @@
       "type": "Boolean",
       "required": false,
       "description": {
-        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会预留资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。"
+        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会预留资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Sends a check request but does not reserve any resources. The system checks the request for required parameters, format, and service limits. If the check fails, an error is returned. If the check passes, the `DryRunOperation` error code is returned.\n\n- **false** (default): Sends a normal request. After the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
       }
     },
     {
@@ -28,7 +31,8 @@
       "type": "String",
       "required": true,
       "description": {
-        "zh": "应用型负载均衡实例ID。"
+        "zh": "应用型负载均衡实例ID。",
+        "en": "The ID of the Application Load Balancer (ALB) instance."
       }
     },
     {
@@ -37,7 +41,8 @@
       "type": "Struct",
       "required": false,
       "description": {
-        "zh": "预留的最小负载均衡器容量。"
+        "zh": "预留的最小负载均衡器容量。",
+        "en": "The minimum LCU value to reserve."
       }
     },
     {
@@ -46,10 +51,22 @@
       "type": "Boolean",
       "required": false,
       "description": {
-        "zh": "是否取消资源预留。取值：\n* **true**：取消资源预留。\n* **false**（默认值）：不取消资源预留。创建、修改资源预留时可不填写此属性。"
+        "zh": "是否取消资源预留。取值：\n* **true**：取消资源预留。\n* **false**（默认值）：不取消资源预留。创建、修改资源预留时可不填写此属性。",
+        "en": "Specifies whether to cancel the LCU reservation. Valid values:\n\n- **true**: Cancels the LCU reservation.\n\n- **false** (default): Does not cancel the LCU reservation. You do not need to specify this parameter when creating or updating an LCU reservation."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改资源预留",
+    "en": "ModifyCapacityReservation"
+  },
+  "descriptions": {
+    "zh": "**ModifyCapacityReservation**接口属于异步接口，即系统返回一个请求ID，但该资源预留尚未完成，系统后台的预留任务仍在进行。您可以调用DescribeCapacityReservation查询资源预留的状态：\n   - 当资源预留处于**Pending**状态时，表示资源预留正在进行中。\n   - 当资源预留处于**Provisioned**状态时，表示资源预留已经完成。\n   - 当资源预留处于**Rebalancing**状态时，表示资源预留正在在可用区间重新分配。",
+    "en": "**ModifyCapacityReservation** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. The LCU reservation is not immediately updated. You can call the DescribeCapacityReservation operation to query the status of an LCU reservation:\n\n- If an LCU reservation is in the **Pending** state, it is being created.\n\n- If an LCU reservation is in the **Provisioned** state, it is created.\n\n- If an LCU reservation is in the **Rebalancing** state, it is being rebalanced across zones."
+  },
   "example": {
     "unifiedCli": "aliyun alb modify-capacity-reservation --load-balancer-id alb-iv9gj3spak6fbj0000 --reset-capacity-reservation false --minimum-load-balancer-capacity CapacityUnits=100 --dry-run false --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --region cn-hangzhou",
     "legacyCli": "aliyun alb ModifyCapacityReservation --region cn-hangzhou --DryRun false --LoadBalancerId 'alb-iv9gj3spak6fbj0000' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --ResetCapacityReservation false --MinimumLoadBalancerCapacity.CapacityUnits 100 --method POST --force"

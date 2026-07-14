@@ -1,5 +1,6 @@
 {
   "name": "CreateSnapshot",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "快照说明。\n\n限制：\n\n- 长度为2~256个英文或中文字符。\n- 不能以`http://`和`https://`开头。\n- 默认为空。",
+        "en": "The description of the snapshot.\n\nLimits:\n\n*   The description must be 2 to 256 characters in length.\n*   The description cannot start with `http://` or `https://`.\n*   This parameter is empty by default."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "极速型NAS高级型文件系统ID。必须以`extreme-`开头，例如`extreme-01dd****`",
+        "en": "The ID of the advanced Extreme NAS file system. The value must start with `extreme-`, for example, `extreme-01dd****`."
+      }
     },
     {
       "name": "RetentionDays",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "快照的保留时间。\n\n单位：天\n\n取值：\n\n- -1（默认值）：永久保存，当快照数量达到额度上限后被自动删除。\n- 1~65536：指定保存天数，保留时间到期后快照会被自动释放。",
+        "en": "The retention period of the snapshot.\n\nUnit: days.\n\nValid values:\n\n*   \\-1 (default). Auto snapshots are permanently retained. After the number of auto snapshots exceeds the upper limit, the earliest auto snapshot is automatically deleted.\n*   1 to 65536: Auto snapshots are retained for the specified days. After the retention period of auto snapshots expires, the auto snapshots are automatically deleted."
+      }
     },
     {
       "name": "SnapshotName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "快照名称。\n\n限制：\n\n- 长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以`http://`和`https://`开头。\n- 可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。\n- 为防止和自动快照的名称冲突，不能以auto开头。",
+        "en": "The snapshot name.\n\nLimits:\n\n*   The name must be 2 to 128 characters in length. The name must start with a letter and cannot start with `http://` or `https://`.\n*   The name can contain letters, digits, colons (:), underscores (\\_), and hyphens (-).\n*   The name cannot start with auto because snapshots whose names start with auto are recognized as auto snapshots."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建快照",
+    "en": "CreateSnapshot"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">\n\n- 该功能免费公测中，公测期间不保障[文件存储NAS服务等级协议（SLA）](https://terms.aliyun.com/legal-agreement/terms/suit_bu1_ali_cloud/suit_bu1_ali_cloud201803061139_99860.html?spm=a2c4g.11186623.0.0.40a34bbe4vbvKY)。\n- 仅极速型NAS高级型支持创建快照。\n- 一个文件系统最多支持创建128份快照。\n- 文件系统挂载的实例必须处于正常状态，否则无法创建快照。\n- 如果创建快照还未完成，您无法为该文件系统再次创建快照。\n- 如果创建快照时文件系统正好达到过期释放时间，文件系统会被释放的同时也会删除创建中（Creating）的快照。\n- 创建快照可能会轻微降低文件系统的性能，I/O性能短暂变慢，建议您避开业务高峰。\n- 快照只会备份某一时刻的数据，创建快照期间，操作文件系统产生的增量数据不会同步到快照中。\n- 您手动创建的快照会一直保留，直至账户欠费停止服务15天后被删除。请定期删除不再需要的快照，避免快照容量持续扣费。\n\n</props>\n<props=\"intl\">\n\n- 该功能免费公测中，公测期间不保障[文件存储NAS服务等级协议（SLA）](https://www.alibabacloud.com/help/legal/latest/network-attached-storage-service-level-agreement)。\n- 仅极速型NAS高级型支持创建快照。\n- 一个文件系统最多支持创建128份快照。\n- 文件系统挂载的实例必须处于正常状态，否则无法创建快照。\n- 如果创建快照还未完成，您无法为该文件系统再次创建快照。\n- 如果创建快照时文件系统正好达到过期释放时间，文件系统会被释放的同时也会删除创建中（Creating）的快照。\n- 创建快照可能会轻微降低文件系统的性能，I/O性能短暂变慢，建议您避开业务高峰。\n- 快照只会备份某一时刻的数据，创建快照期间，操作文件系统产生的增量数据不会同步到快照中。\n- 您手动创建的快照会一直保留，直至账户欠费停止服务15天后被删除。请定期删除不再需要的快照，避免快照容量持续扣费。\n\n</props>",
+    "en": "*   The snapshot feature is in public preview and is provided free of charge. [File Storage NAS Service Level Agreement (SLA)](https://www.alibabacloud.com/help/legal/latest/network-attached-storage-service-level-agreement) is not guaranteed in public preview.\n*   Only advanced Extreme NAS file systems support the snapshot feature.\n*   You can create a maximum of 128 snapshots for a file system.\n*   The compute node on which a file system is mounted must function as expected. Otherwise, you cannot create a snapshot for the file system.\n*   You can create only one snapshot for a file system at a time.\n*   If the file system expires when a snapshot is being created, the file system is released and the snapshot is deleted.\n*   When you create a snapshot for a file system, the I/O performance of the file system may be degraded for a short period of time. We recommend that you create snapshots during off-peak hours.\n*   A snapshot is a backup of a file system at a specific point in time. After you create a snapshot, incremental data that is generated in the file system will not be synchronized to the snapshot.\n*   Manually created snapshots will not be deleted until 15 days after the service is suspended due to overdue payments. We recommend that you delete unnecessary snapshots at regular intervals to prevent extra fees incurred by the snapshots."
+  },
   "example": {
     "unifiedCli": "aliyun nas create-snapshot --file-system-id extreme-01dd0000 --snapshot-name FinanceJoshua --description FinanceDepet --retention-days 30 --region cn-hangzhou",
     "legacyCli": "aliyun nas CreateSnapshot --region cn-hangzhou --Description FinanceDepet --FileSystemId 'extreme-01dd0000' --RetentionDays 30 --SnapshotName FinanceJoshua"

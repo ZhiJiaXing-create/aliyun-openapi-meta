@@ -1,5 +1,6 @@
 {
   "name": "DescribeAuditRecords",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,75 +9,134 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n> 当本参数传入的是分片集群实例ID时，还需要传入**NodeId**参数。",
+        "en": "The instance ID.\n\n> If you set this parameter to the ID of a sharded cluster instance, you must also specify the **NodeId** parameter."
+      }
     },
     {
       "name": "Database",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名，默认为所有数据库。",
+        "en": "The name of the database. By default, all databases are queried."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，必须晚于查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n> 查询结束时间距查询开始时间不得超过24个小时，超过则调用失败。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n> The time range between the start time and the end time cannot exceed 24 hours. Otherwise, the operation fails."
+      }
     },
     {
       "name": "Form",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "审计记录返回的展示类型，取值：\n- **File**：触发审计日志文件的生成，若传入这个值，只返回公共参数。\n- **Stream**（默认值）：返回数据流。\n\n>  **File** 参数已废弃",
+        "en": "The format of the returned audit records. Valid values:\n\n- **File**: Triggers the generation of an audit log file. If you set this parameter to File, only common parameters are returned.\n\n- **Stream** (default): Returns a data stream.\n\n> The **File** parameter is deprecated."
+      }
     },
     {
       "name": "LogicalOperator",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "关键字搜索的逻辑操作， 默认值为and。",
+        "en": "The logical operator for the keyword search. The default value is and."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分片集群实例中Mongos节点ID或Shard节点ID。\n\n> 当**DBInstanceId**参数传入的是分片集群实例ID时，本参数才可用。",
+        "en": "The ID of a Mongos node or a shard node in the sharded cluster instance.\n\n> This parameter is available only when **DBInstanceId** is set to the ID of a sharded cluster instance."
+      }
     },
     {
       "name": "OrderType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按时间的升降序对查询到的慢日志进行排序。取值：\n- **asc**：按时间升序排序。\n- **desc**：按时间降序排序。",
+        "en": "The order in which to sort the returned audit log entries by time. Valid values:\n\n- **asc**: Sorts the entries in ascending order.\n\n- **desc**: Sorts the entries in descending order."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码。大于0，且不超过Integer的最大值，默认值为**1**。",
+        "en": "The page number to return. The value must be greater than 0 and must not exceed the maximum value of the integer data type. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数。取值：**30**（默认值）、**50**、**100**。",
+        "en": "The number of entries to return on each page. Valid values: **30** (default), **50**, and **100**."
+      }
     },
     {
       "name": "QueryKeywords",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "关键字查询。多个关键字以空格分隔，不超过10个关键字。",
+        "en": "The keywords for the query. You can specify up to 10 keywords. Separate multiple keywords with spaces."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "User",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库账号，默认为所有账号。",
+        "en": "The database account. By default, all accounts are queried."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例的审计日志",
+    "en": "DescribeAuditRecords"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口时，实例的审计日志须处于开通状态，否则返回的审计日志内容为空。\n- 本接口适用于规格类型为**通用型本地盘版**和**独享型本地盘版**实例。\n- 本接口限制每分钟调用30次，如超过这个限制会被限流，请勿高频调用。如需高频调用，请使用Logstore，详情请参见[管理Logstore](~~48990~~)。",
+    "en": "- When you call this operation, ensure that the audit log feature of the instance is enabled. Otherwise, the operation returns an empty audit log.\n\n- This operation is applicable only to **general-purpose local-disk** and **dedicated local-disk** instances.\n\n- You can call this operation up to 30 times per minute. To call this operation at a higher frequency, use a Logstore. For more information, see [Manage a Logstore](~~48990~~)."
+  },
   "example": {
     "unifiedCli": "aliyun dds describe-audit-records --db-instance-id dds-bp12c5b040dc0000 --node-id d-bp128a0034360000 --start-time 2019-03-13T12:11:14Z --end-time 2019-03-13T13:11:14Z --database database0000 --user test --form Stream --query-keywords slow --logical-operator and --page-size 30 --page-number 1 --order-type asc --region cn-hangzhou",
     "legacyCli": "aliyun dds DescribeAuditRecords --region cn-hangzhou --User test --OrderType asc --EndTime '2019-03-13T13:11:14Z' --QueryKeywords slow --PageSize 30 --DBInstanceId 'dds-bp12c5b040dc0000' --Form Stream --PageNumber 1 --LogicalOperator and --NodeId 'd-bp128a0034360000' --StartTime '2019-03-13T12:11:14Z' --Database database0000"

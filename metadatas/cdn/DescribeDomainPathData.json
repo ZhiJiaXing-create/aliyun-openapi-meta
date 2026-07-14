@@ -1,5 +1,6 @@
 {
   "name": "DescribeDomainPathData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "加速域名。\n>仅支持单个域名查询。",
+        "en": "The accelerated domain name.\n\n> You can specify only one domain name in each call."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间，日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-DDThh:mm:ssZ。开始时间和结束时间，间隔小于30天。例如：2016-10-21T04:00:00Z。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. The interval between the start time and end time must be less than 30 days. Example: 2016-10-21T04:00:00Z."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "取得第几页。从**1**开始。",
+        "en": "The number of the page to return. Pages start from page **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小。\n取值：**1**~**1000**之间的任意整数。",
+        "en": "The number of entries to return on each page. Valid values: integers from **1** to **1000**."
+      }
     },
     {
       "name": "Path",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路径，以正斜线（/）开头，不填表示查询所有路径。如果路径是目录，需要以正斜线（/）结尾。\n\n> 路径信息不支持模糊匹配，需要指定查询的目录深度，只能设置为一个固定值，例如设置一级目录/path/，表示数据统计时，固定统计一级目录的带宽。",
+        "en": "The paths that you want to query. Separate paths with forward slashes (/). If you do not set this parameter, all paths are queried. If you set the value to a directory, it must end with a forward slash (/).\n\n> Fuzzy match is not supported. If you want data to be collected based on a directory, you can specify a specific directory, for example, directory/path/. In this case, bandwidth data is collected based on directory/path/."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始时间，日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-DDThh:mm:ssZ。\n例如：2016-10-20T04:00:00Z。",
+        "en": "Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. Example: 2016-10-20T04:00:00Z."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "按目录维度获取监控数据",
+    "en": "DescribeDomainPathData"
+  },
+  "descriptions": {
+    "zh": "- 该接口仅支持白名单用户（域名峰值带宽10 Gbps以上）调用，需要<props=\"china\">[提交工单](https://selfservice.console.aliyun.com/ticket/createIndex)</props><props=\"intl\">[提交工单](https://workorder-intl.console.aliyun.com/?spm=5176.2020520001.aliyun_topbar.18.dbd44bd3e4f845#/ticket/createIndex)</props>申请，符合条件的情况下将在后台进行配置。\n- 单用户调用频率：6000次/分。\n- 目前仅支持对账号下的指定域名开启目录维度带宽统计，不支持对全部域名开启。\n- 域名下所有文件的平均大小需要大于1 MB。\n- 每个域名的目录数量不超过100个，超过100个目录的情况下，数据的精度将会降低，查询的不准确。\n- 不指定StartTime和EndTime时，默认读取过去24小时的数据，同时支持按指定的起止时间查询，两者需要同时指定。\n- 最多可获取最近30天的数据。",
+    "en": "- This operation is available only to users that are on the whitelist. If the daily peak bandwidth value of your workloads reaches 10 Gbit/s, you can [submit a ticket](https://workorder-intl.console.aliyun.com/?spm=5176.2020520001.aliyun_topbar.18.dbd44bd3e4f845#/ticket/createIndex) to apply to be included in the whitelist.\n\n- Each account can call this operation up to 6,000 times per second.\n\n- Data collection by directory is available only to specified domain names within your Alibaba Cloud account. It cannot be enabled for all domain names within your Alibaba Cloud account.\n\n- The average size of the files that belong to the domain name must be larger than 1 MB.\n\n- The number of directories specified for a single domain name cannot exceed 100. If the number of directories exceeds 100, the data accuracy reduces.\n\n- If you do not set StartTime or EndTime, data collected within the last 24 hours is queried. If you set both StartTime and EndTime, data within the specified time range is queried.\n\n- You can query data collected within the last 30 days."
+  },
   "example": {
     "unifiedCli": "aliyun cdn describe-domain-path-data --page-number 1 --page-size 20 --path /path/ --start-time 2016-10-20T04:00:00Z --end-time 2016-10-21T04:00:00Z --domain-name example.com --region cn-hangzhou",
     "legacyCli": "aliyun cdn DescribeDomainPathData --region cn-hangzhou --Path '/path/' --PageSize 20 --EndTime '2016-10-21T04:00:00Z' --PageNumber 1 --DomainName 'example.com' --StartTime '2016-10-20T04:00:00Z'"

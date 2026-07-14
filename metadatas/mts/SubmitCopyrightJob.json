@@ -1,5 +1,6 @@
 {
   "name": "SubmitCopyrightJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "CallBack",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务结果回调URL，目前仅支持HTTP地址。",
+        "en": "The callback URL for job results. Only HTTP URLs are supported."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印信息描述。",
+        "en": "A description of the watermark information."
+      }
     },
     {
       "name": "Input",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待添加水印的媒体文件OSS地址，目前仅支持视频文件，JSON对象。详细信息请参见[Input详情](~~29253~~)。\n\n> - OSS的地域需要与当前MPS所在地域保持一致。\n  \n- Bucket：输入文件OSS Bucket名称。\n- Location：OSS所在地域，必须和MPS服务所在地域一致。\n- Object：待检测OSS Object。",
+        "en": "The location of the input media object in OSS, specified as a JSON object. Currently, only video files are supported. For more information, see [Input](~~29253~~).\n\n> - The OSS bucket must be in the same region as MPS.\n\n- `Bucket`: The name of the input OSS bucket.\n\n- `Location`: The region of the OSS bucket. This must be the same as the MPS region.\n\n- `Object`: The object in the OSS bucket to be processed."
+      }
     },
     {
       "name": "Level",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印级别，取值0/1/2，表示嵌入通道，0u，1uv，2yuv。",
+        "en": "The watermark embedding channel. Valid values: 0 (U channel), 1 (UV channels), and 2 (YUV channels)."
+      }
     },
     {
       "name": "Message",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待添加的水印信息。",
+        "en": "The watermark message to embed."
+      }
     },
     {
       "name": "Output",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件输出OSS地址，JSON对象。\n\n> - OSS的地域需要与当前MPS所在地域保持一致。",
+        "en": "The location of the output object in OSS, specified as a JSON object.\n\n> - The OSS bucket must be in the same region as MPS."
+      }
     },
     {
       "name": "Params",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印任务参数，JSONString。目前支持设置参数如下：\n\n- algoType：算法类型，默认值为v1。\n  - v1：长视频版权水印，仅支持3min以上的。\n  - v2：短视频版权水印。",
+        "en": "Additional parameters for the watermarking job, specified as a JSON string. The following parameter is supported:\n\n- `algoType`: The algorithm type. Default value: `v1`.\n\n  - `v1`: The copyright watermark algorithm for long-form video. It supports only videos that are 3 minutes or longer.\n\n  - `v2`: The copyright watermark algorithm for short-form video."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印嵌入开始时间，单位为秒，不填写默认为0。",
+        "en": "The start time for embedding the watermark, in seconds. If this parameter is not specified, the default value is 0."
+      }
     },
     {
       "name": "TotalTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印嵌入总时间，单位为秒，不填写默认为视频时长。",
+        "en": "The total duration for embedding the watermark, in seconds. If unspecified, the watermark is applied to the entire video."
+      }
     },
     {
       "name": "Url",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可公网访问的视频URL链接。填写后优先将其作为任务输入，其次再考虑Input输入。",
+        "en": "A publicly accessible URL of the video. If specified, this URL is used as the job input and overrides the `Input` parameter."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，最大长度1024字节。",
+        "en": "User-defined data. The maximum length is 1,024 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交视频版权水印作业",
+    "en": "Submit Video Copyright Watermarking Job"
+  },
+  "descriptions": {
+    "zh": "- 提交视频版权水印作业默认仅支持3分钟及以上视频，视频时间过短会导致接口调用失败或无输出。如果需要对3分钟以内的短视频添加版权水印，可以通过Params参数指定，详见参数描述。\n\n- 提交视频版权水印作业每次接口的调用，都是对独立视频进行添加水印，不支持多个视频同时提交。\n\n- 目前数字水印相关接口只支持华东2（上海）、华北 2（北京）地域使用。更多使用限制请参见[数字水印](~~2527021#893034503fwvw~~)。\n\n- 该接口为[异步接口](~~3027615~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询视频版权水印作业](~~2834792~~)主动查询任务状态。",
+    "en": "- By default, copyright watermark jobs support only videos that are 3 minutes or longer. Submitting a video shorter than this duration may cause the API call to fail or produce no output. To add a copyright watermark to a short-form video (under 3 minutes), configure the `Params` parameter. For details, see the parameter description.\n\n- Each API call processes one video.\n\n- Currently, APIs related to digital watermark are available only in the China (Shanghai) and China (Beijing) regions. For more usage limitations, see [digital watermark](~~2527021#893034503fwvw~~).\n\n- This is an [asynchronous API](~~3027615~~). After a job is submitted, the service returns a job ID and queues the job for background processing. The final result is delivered through a callback. You can also query the job status with the [QueryCopyrightJob](~~2834792~~) API."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-copyright-job --input Bucket_:_example-bucket_,_Location_:_oss-cn-shanghai_,_Object_:_example.mp4 --biz-output Bucket_:_example-bucket_,_Location_:_oss-cn-shanghai_,_Object_:_example_result.mp4 --message T-Head_Semiconductor --start-time 0 --total-time 10 --level 2 --description Address:_Shangke_Road,_Pudong_New_Area,_Shanghai --call-back http://example.com/callback --url http://www.example.com/video/test.mp4 --user-data 123 --params algoType_:_v2 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitCopyrightJob --region cn-hangzhou --Input 'Bucket_:_example-bucket_,_Location_:_oss-cn-shanghai_,_Object_:_example.mp4' --CallBack 'http://example.com/callback' --Description 'Address:_Shangke_Road,_Pudong_New_Area,_Shanghai' --Message 'T-Head_Semiconductor' --UserData 123 --Output 'Bucket_:_example-bucket_,_Location_:_oss-cn-shanghai_,_Object_:_example_result.mp4' --StartTime 0 --TotalTime 10 --Params 'algoType_:_v2' --Level 2 --Url 'http://www.example.com/video/test.mp4'"

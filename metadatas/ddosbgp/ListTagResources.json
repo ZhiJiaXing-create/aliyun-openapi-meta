@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,53 +9,96 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询凭证（Token）。取值为上一次调用本接口返回的**NextToken**参数值，初次调用接口时无需设置该参数。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results. You do not need to specify this parameter for the first request. You must specify the token that is obtained from the previous query as the value of **NextToken**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DDoS原生防护实例所在地域ID。\n\n> 您可以调用[DescribeRegions](~~118703~~)查询DDoS原生防护支持的所有地域ID。",
+        "en": "The ID of the region where the Anti-DDoS Origin instance resides.\n\n>  You can call the [DescribeRegions](~~118703~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DDoS原生防护实例在资源管理服务中所属的资源组ID。\n\n不设置该参数表示默认资源组。",
+        "en": "The ID of the resource group to which the Anti-DDoS Origin instance belongs in Resource Management.\n\nIf you do not specify this parameter, the instance belongs to the default resource group."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的原生防护实例的ID列表。\n\n> **ResourceId**和**Tag Key-Value对**不能同时为空。",
+        "en": "The IDs of the Anti-DDoS Origin instances to query.\n\n>  The **ResourceId** parameter and the **key-value pair for the Tag parameter** cannot be left empty at the same time."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的资源的类型。取值固定为**INSTANCE**，表示实例。",
+        "en": "The type of the resource to query. Set the value to **INSTANCE**."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "要查询的标签键值对。",
+        "en": "The key-value pair of the tag to query."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "要查询的标签键。\n\n> **ResourceId**和**Tag Key-Value对**不能同时为空。",
+            "en": "The key of the tag to query.\n\n>  The **ResourceId** parameter and the **key-value pair for the Tag parameter** cannot be left empty at the same time."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "要查询的标签值。\n\n> **ResourceId**和**Tag Key-Value对**不能同时为空。",
+            "en": "The value of the tag to query.\n\n>  The **ResourceId** parameter and the **key-value pair for the Tag parameter** cannot be left empty at the same time."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源和标签的对应关系",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "本接口用于批量查询DDoS原生防护实例绑定的标签。\n\n### QPS限制\n\n本接口的单用户QPS限制为10次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。",
+    "en": "You can call the ListTagResources operation to query the tags that are added to Anti-DDoS Origin instances at a time.\n\n### [](#qps-)Limits\n\nYou can call this API operation up to 10 times per second per account. If the number of calls per second exceeds the limit, throttling is triggered. As a result, your business may be affected. We recommend that you take note of the limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun ddosbgp list-tag-resources --resource-group-id rg-acfm2pz25js0000 --biz-region-id cn-hangzhou --resource-type INSTANCE --next-token RGuYpqDdKhzXb8C3.D1BwQgc1tMBsoxdGiEKHHUUCf0000 --resource-id ddosbgp-cn-n6w1r7nz0000 --tag Value=testValue1 Key=testKey1 --api-version 2018-07-20 --region cn-hangzhou",
     "legacyCli": "aliyun ddosbgp ListTagResources --region cn-hangzhou --ResourceId.1 'ddosbgp-cn-n6w1r7nz0000' --Tag.1.Key testKey1 --ResourceGroupId 'rg-acfm2pz25js0000' --NextToken 'RGuYpqDdKhzXb8C3.D1BwQgc1tMBsoxdGiEKHHUUCf0000' --Tag.1.Value testValue1 --ResourceType INSTANCE --RegionId 'cn-hangzhou'"

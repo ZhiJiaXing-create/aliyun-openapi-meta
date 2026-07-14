@@ -1,5 +1,6 @@
 {
   "name": "UpdateSecurityPolicyAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "Ciphers",
       "position": "Body",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "支持的加密套件列表，具体依赖TLSVersion值。最多支持添加32个加密套件。\n\nTLSv1.0和TLSv1.1 支持：\n- **ECDHE-ECDSA-AES128-SHA**\n- **ECDHE-ECDSA-AES256-SHA**\n- **ECDHE-RSA-AES128-SHA**\n- **ECDHE-RSA-AES256-SHA**\n- **AES128-SHA**\n- **AES256-SHA**\n- **DES-CBC3-SHA**\n\nTLSv1.2支持：\n-   **ECDHE-ECDSA-AES128-SHA**\n-   **ECDHE-ECDSA-AES256-SHA**\n-   **ECDHE-RSA-AES128-SHA**\n-   **ECDHE-RSA-AES256-SHA**\n-   **AES128-SHA**\n-   **AES256-SHA**\n-   **DES-CBC3-SHA**\n-   **ECDHE-ECDSA-AES128-GCM-SHA256**\n-   **ECDHE-ECDSA-AES256-GCM-SHA384**\n-   **ECDHE-ECDSA-AES128-SHA256**\n-   **ECDHE-ECDSA-AES256-SHA384**\n-   **ECDHE-RSA-AES128-GCM-SHA256**\n-   **ECDHE-RSA-AES256-GCM-SHA384**\n-   **ECDHE-RSA-AES128-SHA256**\n-   **ECDHE-RSA-AES256-SHA384**\n-   **AES128-GCM-SHA256**\n-   **AES256-GCM-SHA384**\n-   **AES128-SHA256**\n-   **AES256-SHA256**\n-   **ECDHE-ECDSA-CHACHA20-POLY1305**\n-   **ECDHE-RSA-CHACHA20-POLY1305**\n\nTLSv1.3支持：\n- **TLS_AES_128_GCM_SHA256**\n- **TLS_AES_256_GCM_SHA384**\n- **TLS_CHACHA20_POLY1305_SHA256**\n- **TLS_AES_128_CCM_SHA256**\n- **TLS_AES_128_CCM_8_SHA256**",
+        "en": "The cipher suites supported by the security policy. Valid values of this parameter vary based on the value of TlsVersions. You can specify up to 32 cipher suites.\n\nTLSv1.0 and TLSv1.1 support the following cipher suites:\n\n*   **ECDHE-ECDSA-AES128-SHA**\n*   **ECDHE-ECDSA-AES256-SHA**\n*   **ECDHE-RSA-AES128-SHA**\n*   **ECDHE-RSA-AES256-SHA**\n*   **AES128-SHA**\n*   **AES256-SHA**\n*   **DES-CBC3-SHA**\n\nTLSv1.2 supports the following cipher suites:\n\n*   **ECDHE-ECDSA-AES128-SHA**\n*   **ECDHE-ECDSA-AES256-SHA**\n*   **ECDHE-RSA-AES128-SHA**\n*   **ECDHE-RSA-AES256-SHA**\n*   **AES128-SHA**\n*   **AES256-SHA**\n*   **DES-CBC3-SHA**\n*   **ECDHE-ECDSA-AES128-GCM-SHA256**\n*   **ECDHE-ECDSA-AES256-GCM-SHA384**\n*   **ECDHE-ECDSA-AES128-SHA256**\n*   **ECDHE-ECDSA-AES256-SHA384**\n*   **ECDHE-RSA-AES128-GCM-SHA256**\n*   **ECDHE-RSA-AES256-GCM-SHA384**\n*   **ECDHE-RSA-AES128-SHA256**\n*   **ECDHE-RSA-AES256-SHA384**\n*   **AES128-GCM-SHA256**\n*   **AES256-GCM-SHA384**\n*   **AES128-SHA256**\n*   **AES256-SHA256**\n\nTLSv1.3 supports the following cipher suites:\n\n*   **TLS_AES\\_128\\_GCM_SHA256**\n*   **TLS_AES\\_256\\_GCM_SHA384**\n*   **TLS_CHACHA20\\_POLY1305\\_SHA256**\n*   **TLS_AES\\_128\\_CCM_SHA256**\n*   **TLS_AES\\_128\\_CCM\\_8\\_SHA256**"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nYou can use the client to generate the token. Ensure that the token is unique among different requests. Only ASCII characters are allowed.\n\n>  If you do not set this parameter, the value of **RequestId** is used.**** The value of **RequestId** is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会更新自定义安全策略。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: validates the request without performing the operation. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the validation, the corresponding error message is returned. If the request passes the validation, the `DryRunOperation` error code is returned.\n*   **false** (default): validates the request and performs the operation. If the request passes the validation, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The ID of the region where the NLB instance is deployed.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "SecurityPolicyId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "TLS安全策略ID。",
+        "en": "The ID of the TLS security policy."
+      }
     },
     {
       "name": "SecurityPolicyName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全策略名称。\n\n长度为1~200个字符，支持中文和大小写英文字母，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The name of the security policy.\n\nThe name must be 1 to 200 characters in length, and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "TlsVersions",
       "position": "Body",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "支持的TLS协议版本，取值：**TLSv1.0**、**TLSv1.1**、**TLSv1.2**和**TLSv1.3**。最多支持添加4个TLS协议版本。",
+        "en": "The supported TLS versions. Valid values: **TLSv1.0**, **TLSv1.1**, **TLSv1.2**, and **TLSv1.3**. You can specify up to four TLS versions."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新自定义安全策略属性",
+    "en": "UpdateSecurityPolicyAttribute"
+  },
   "example": {
     "unifiedCli": "aliyun nlb update-security-policy-attribute --tls-versions TLSv1.0 --security-policy-id sp-wuytp9pa000000 --security-policy-name TLSCipherPolicy --ciphers ECDHE-ECDSA-AES128-SHA --biz-region-id cn-hangzhou --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun nlb UpdateSecurityPolicyAttribute --region cn-hangzhou --Ciphers.1 'ECDHE-ECDSA-AES128-SHA' --SecurityPolicyId 'sp-wuytp9pa000000' --DryRun false --SecurityPolicyName TLSCipherPolicy --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --TlsVersions.1 'TLSv1.0'"

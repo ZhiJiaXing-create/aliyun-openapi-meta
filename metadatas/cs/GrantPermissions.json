@@ -1,5 +1,6 @@
 {
   "name": "GrantPermissions",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/permissions/users/[uid]",
@@ -9,42 +10,70 @@
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "请求体参数",
+        "en": "The request body parameters."
+      },
       "sub_parameters": [
         {
           "name": "cluster",
           "position": "Body",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "授权目标集群ID。\n\n- 当`role_type`参数的值是`all-clusters`时，此参数的值传空字符串。",
+            "en": "The ID of the cluster to be authorized.\n\n- If the value of the `role_type` parameter is `all-clusters`, set this parameter to an empty string."
+          }
         },
         {
           "name": "is_custom",
           "position": "Body",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "该授权是否是自定义授权（`role_name`使用自定义的ClusterRole名称）。",
+            "en": "Specifies whether the authorization is a custom authorization, which means `role_name` uses a custom ClusterRole name."
+          }
         },
         {
           "name": "is_ram_role",
           "position": "Body",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否是RAM角色授权。",
+            "en": "Specifies whether the authorization is for a RAM role."
+          }
         },
         {
           "name": "namespace",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "命名空间名称，集群维度授权时默认为空。",
+            "en": "The namespace name. This parameter is empty by default for cluster-level authorization."
+          }
         },
         {
           "name": "role_name",
           "position": "Body",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "预置的角色名称，取值：\n\n- `admin`: 管理员。\n- `admin-view`: 只读管理员。\n- `ops`：运维人员。\n- `dev`：开发人员。\n- `restricted`: 受限用户。\n- 自定义的ClusterRole名称。\n\n><notice>\n\n- `admin`、`admin-view`、`ops`：不支持命名空间维度的授予。\n- `admin-view`： 暂不支持所有集群维度的授予。\n></notice>",
+            "en": "The name of the preset role. Valid values:\n\n- `admin`: administrator.\n- `admin-view`: read-only administrator.\n- `ops`: O&M engineer.\n- `dev`: developer.\n- `restricted`: restricted user.\n- Custom ClusterRole name.\n\n><notice>\n\n- `admin`, `admin-view`, `ops`: cannot be granted at the namespace level.\n- `admin-view`: cannot be granted at the all-clusters level.\n></notice>."
+          }
         },
         {
           "name": "role_type",
           "position": "Body",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "授权类型，取值：\n\n- `cluster`：集群维度。\n- `namespace`: 命名空间维度。\n- `all-clusters`: 所有集群维度。",
+            "en": "The authorization type. Valid values:\n\n- `cluster`: cluster level.\n- `namespace`: namespace level.\n- `all-clusters`: all-clusters level."
+          }
         }
       ]
     },
@@ -52,9 +81,24 @@
       "name": "uid",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RAM用户或RAM角色的ID。",
+        "en": "The ID of the Resource Access Management (RAM) user or RAM role."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "全量更新RAM用户或角色的集群授权信息",
+    "en": "Update all RBAC permissions of a RAM user or role"
+  },
+  "descriptions": {
+    "zh": "- 如果调用这个API的账号是RAM用户账号，请先确保该账号已拥有修改其他RAM用户或RAM角色集群授权信息的权限，否则API将返回`StatusForbidden`或`ForbiddenGrantPermissions`错误码。具体操作，请参见[子账号如何给其他子账号进行RBAC授权](~~119035~~) 。\n\n- 全量更新RAM用户或RAM角色集群授权信息操作会覆盖目标RAM用户或RAM角色已有的集群权限，请求时需要包含想要授权给目标RAM用户或RAM角色的所有权限配置。",
+    "en": "- If the account that invokes this API operation is a RAM user, make sure that the account has been granted the permission to modify the RBAC authorization information of other Resource Access Management (RAM) users or RAM roles. Otherwise, the API operation returns the `StatusForbidden` or `ForbiddenGrantPermissions` fault. For more information, see [Grant RBAC permissions to a RAM user](~~119035~~).\n\n- The operation of fully updating the RBAC authorization information of a RAM user or RAM role overwrites the existing cluster permissions of the target RAM user or RAM role. Include all permission configurations that you want to grant to the target RAM user or RAM role in the request."
+  },
   "example": {
     "unifiedCli": "aliyun cs grant-permissions --uid 23670000 --biz-body role_name=ops cluster=c796c60000 role_type=cluster namespace=test is_custom=false is_ram_role=false --region cn-hangzhou",
     "legacyCli": "aliyun cs POST /permissions/users/23670000 --region cn-hangzhou --header \"Content-Type=application/json\" --body [{\"role_name\":\"ops\",\"cluster\":\"c796c60000\",\"role_type\":\"cluster\",\"namespace\":\"test\",\"is_custom\":false,\"is_ram_role\":false}]"

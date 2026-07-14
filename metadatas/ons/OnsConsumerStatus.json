@@ -1,5 +1,6 @@
 {
   "name": "OnsConsumerStatus",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Detail",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否查询详细信息。取值说明如下：\n\n- **true**：要查询详细信息，即可获取返回参数**ConsumerConnectionInfoList**和**DetailInTopicList**信息。\n\n- **false**：默认值，不查询详细信息，即返回参数**ConsumerConnectionInfoList**和**DetailInTopicList**为空。",
+        "en": "Whether to return detailed information. Valid values:\n\n- **true**: Return detailed information, including **ConsumerConnectionInfoList** and **DetailInTopicList**.\n\n- **false**: Default. Do not return detailed information. **ConsumerConnectionInfoList** and **DetailInTopicList** are empty."
+      }
     },
     {
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询的消费端Group ID。",
+        "en": "The group ID of the consumer to query."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需查询的Group ID所对应的实例ID。",
+        "en": "The instance ID associated with the group ID to query."
+      }
     },
     {
       "name": "NeedJstack",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否打印Jstack信息。取值说明如下：\n- **true**：要打印Jstack信息，可在**Jstack**返回参数中获取堆栈信息。\n >如需打印Jstack信息，请确保您的入参**Detail**设置为**true**。\n\n- **false**：默认值，不打印Jstack信息，**Jstack**返回参数为空。",
+        "en": "Whether to print Jstack information. Valid values:\n\n- **true**: Print Jstack information. Retrieve stack trace from the **Jstack** response field.\n\n> To print Jstack information, set the **Detail** request parameter to **true**.\n\n- **false**: Default. Do not print Jstack information. The **Jstack** response field is empty."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询Group ID消费状态",
+    "en": "OnsConsumerStatus"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>\n\n- 本接口一般用于在粗略判断消费堆积以及客户端在线状态后，需要排查消费异常原因的场景。可以根据返回结果判断出指定Group ID的订阅关系是否一致、负载均衡是否正常以及获取在线客户端的Jstack信息等。\n- 使用本接口需要调用大量后端接口以完成数据聚合，因此查询速度慢，不建议频繁调用。",
+    "en": "><notice>\n\nAlibaba Cloud OpenAPIs are management APIs. They manage and query Alibaba Cloud resources. Use them only in management workflows. Do not rely on OpenAPIs in core message publishing or consuming workflows. Doing so may introduce risks.\n\n></notice>\n\n- You can use this operation to troubleshoot abnormal consumption after you confirm message accumulation or client online status. The response helps you verify the consistency of subscription relationships for a specified group ID, confirm normal load balancing, and retrieve Jstack information for online clients.\n\n- This operation calls many backend interfaces to aggregate data, which can cause it to run slowly. Therefore, avoid frequent calls."
+  },
   "example": {
     "unifiedCli": "aliyun ons ons-consumer-status --group-id GID_test_group_id --detail true --need-jstack true --instance-id MQ_INST_111111111111_DOxxxxxx --region cn-hangzhou",
     "legacyCli": "aliyun ons OnsConsumerStatus --region cn-hangzhou --NeedJstack true --InstanceId MQ_INST_111111111111_DOxxxxxx --Detail true --GroupId GID_test_group_id"

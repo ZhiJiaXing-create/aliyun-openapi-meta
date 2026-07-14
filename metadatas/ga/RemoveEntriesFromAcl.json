@@ -1,5 +1,6 @@
 {
   "name": "RemoveEntriesFromAcl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,12 +10,20 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "待删除的访问控制策略组条目，一次最多支持删除50条。",
+        "en": "The entries that you want to delete. You can delete up to 50 entries at a time."
+      },
       "sub_parameters": [
         {
           "name": "Entry",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "访问控制策略组条目，即IP地址条目或IP地址段条目。\n一次最多支持删除50条。\n\n> 该参数必填。",
+            "en": "The entry (IP address or CIDR block) that you want to delete. You can delete up to 50 entries at a time.\n\n>  This parameter is required."
+          }
         }
       ]
     },
@@ -22,27 +31,54 @@
       "name": "AclId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "访问控制策略组ID。",
+        "en": "The ACL ID."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false**(default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the GA instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除访问控制策略组中的IP条目",
+    "en": "RemoveEntriesFromAcl"
+  },
+  "descriptions": {
+    "zh": "- **RemoveEntriesFromAcl**接口属于异步接口，即系统会先返回一个请求ID，但IP条目并未删除完成，系统后台的删除任务仍在进行。您可以调用[GetAcl](~~258292~~)或[ListAcls](~~258291~~)查询访问控制策略组的状态：\n    - 当访问控制策略组处于**configuring**状态时，表示IP条目正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当访问控制策略组处于**active**状态时，表示IP条目删除完成。\n- **RemoveEntriesFromAcl**接口不支持在同一个全球加速实例内并发删除访问控制策略组中的IP条目。",
+    "en": "*   **RemoveEntriesFromAcl** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetAcl](~~258292~~) or [ListAcls](~~258291~~) operation to query the status of the ACL from which you want to delete IP entries.\n\n    *   If the ACL is in the **configuring** state, it indicates that the IP entries are being deleted. In this case, you can perform only query operations.\n    *   If the ACL is in the **active** state, it indicates that the IP entries are deleted.\n\n*   The **RemoveEntriesFromAcl** operation holds an exclusive lock on the Global Accelerator (GA) instance. While the operation is in progress, you cannot call the same operation in the same Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun ga remove-entries-from-acl --biz-region-id cn-hangzhou --acl-id nacl-hp34s2h0xx1ht4nwo0000 --acl-entries Entry=10.0.XX.XX/24 --client-token 593B0448-D13E-4C56-AC0D-FDF0FDE0E9A3 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ga RemoveEntriesFromAcl --region cn-hangzhou --AclEntries.1.Entry '10.0.XX.XX/24' --AclId 'nacl-hp34s2h0xx1ht4nwo0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '593B0448-D13E-4C56-AC0D-FDF0FDE0E9A3'"

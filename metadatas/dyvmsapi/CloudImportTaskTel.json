@@ -1,0 +1,182 @@
+{
+  "name": "CloudImportTaskTel",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BridgeVoicePath",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "座席接听时自动在双侧播放开场白语音，指定语音变量值；企业语音库里的语音变量值",
+        "en": "Specifies the voice file from the enterprise voice library that plays as an opening statement for both parties when an agent answers a call."
+      }
+    },
+    {
+      "name": "BridgeVoiceType",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "座席接听时自动在双侧播放开场白语音类型，默认为3。\n- 1：公共语音库；\n- 2：企业语音库，静态话术；\n- 3：企业语音库，动态话术（座席号），传bridgeVoicePath后生效。",
+        "en": "The type of the opening statement audio to play when an agent answers a call. This parameter takes effect only if `BridgeVoicePath` is specified. Default value: 3. Valid values:\n\n- 1: A file from the public voice library.\n\n- 2: A static script from the enterprise voice library.\n\n- 3: A dynamic script from the enterprise voice library (which can include variables such as the agent ID)."
+      }
+    },
+    {
+      "name": "EnterpriseId",
+      "position": "Query",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "呼叫中心id",
+        "en": "The ID of the call center."
+      }
+    },
+    {
+      "name": "FileId",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "批次Id；传此值表示在批次中增加号码",
+        "en": "The ID of the batch. If you specify this parameter, the numbers are added to the existing batch."
+      }
+    },
+    {
+      "name": "ImportTelAutoStart",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "是否自动启动任务，默认为0。\n- 0：不自动启动\n- 1：自动启动",
+        "en": "Specifies whether to automatically start the task after the import is complete. Default value: 0. Valid values:\n\n- 0: Does not automatically start the task.\n\n- 1: Automatically starts the task."
+      }
+    },
+    {
+      "name": "IsRepeat",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "是否排重，默认为1。\n- 0：不排重\n- 1：任务内排重\n- 2：导入号码排重\n- 3：批次内排重\n\n> - 任务内排重与批次内排重不能同时支持，如果中途切换，则从本次切换开始进行排重。",
+        "en": "Specifies the deduplication policy. Default value: 1. Valid values:\n\n- 0: Disables deduplication.\n\n- 1: Deduplicates numbers within the current task.\n\n- 2: Deduplicates numbers in the current import.\n\n- 3: Deduplicates numbers within the current batch.\n\n> * Deduplication within a task and deduplication within a batch cannot be enabled at the same time. If you switch between these policies, the new policy applies to subsequent imports."
+      }
+    },
+    {
+      "name": "Name",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "批次名称",
+        "en": "The name of the batch."
+      }
+    },
+    {
+      "name": "Priority",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "优先级；默认0，值越大越优先，最大999999",
+        "en": "The priority of the batch. The default value is 0. A larger value indicates a higher priority. The maximum value is 999999."
+      }
+    },
+    {
+      "name": "TaskId",
+      "position": "Query",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "任务Id",
+        "en": "The ID of the task."
+      }
+    },
+    {
+      "name": "TaskTelList",
+      "position": "Query",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "任务号码列表；CtiLinkTaskTel中只有Tel是必选字段，长度大小不超过8MB 注：获取导入失败明细，需配置[事件推送](../字段定义/推送变量和值/预测外呼导入号码失败推送变量.md)",
+        "en": "A list of numbers to import for the task. The size of the request body cannot exceed 8 MB. In a `CtiLinkTaskTel` object, only the `Tel` field is required. Note: Configure [event notification](../%E5%AD%97%E6%AE%B5%E5%AE%9A%E4%B9%89/%E6%8E%A8%E9%80%81%E5%8F%98%E9%87%8F%E5%92%8C%E5%80%BC/%E9%A2%84%E6%B5%8B%E5%A4%96%E5%91%BC%E5%AF%BC%E5%85%A5%E5%8F%B7%E7%A0%81%E5%A4%B1%E8%B4%A5%E6%8E%A8%E9%80%81%E5%8F%98%E9%87%8F.md) to receive details about failed imports."
+      },
+      "sub_parameters": [
+        {
+          "name": "BackupTels",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "备选号码，tel呼叫不通时，呼叫备选号码最多支持8个，号码之间用英文逗号\",\"分隔",
+            "en": "A comma-separated list of up to eight backup numbers to call if the primary number (specified by `Tel`) is unreachable."
+          }
+        },
+        {
+          "name": "Clid",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "电话号对应的外显号码",
+            "en": "The caller ID to display for the phone number."
+          }
+        },
+        {
+          "name": "ClidGroup",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "使用clidGroup需要账号支持按标识路由，使用此参数是clid参数无效",
+            "en": "Your account must support routing by identifier to use this parameter. If you specify this parameter, the `Clid` parameter becomes invalid."
+          }
+        },
+        {
+          "name": "Priority",
+          "position": "Query",
+          "type": "Long",
+          "required": false,
+          "description": {
+            "zh": "优先级，默认为0，值越大优先级越高，最大999999",
+            "en": "The priority of the number. The default value is 0. A larger value indicates a higher priority. The maximum value is 999999."
+          }
+        },
+        {
+          "name": "Property",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "属性，json格式",
+            "en": "Custom properties for the number, in JSON format."
+          }
+        },
+        {
+          "name": "Tel",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "电话号",
+            "en": "The phone number."
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "任务号码导入",
+    "en": "CloudImportTaskTel"
+  },
+  "descriptions": {
+    "zh": "按批次导入号码，一次导入一个批次。\n\n限制：一个批次最多10w个号码，一个任务最多100w个号码，一个企业最多1000w个号码。\n\n可创建批次数：≤ 10 万个。\n可导入号码数：≤100 万个。\n单批次可导入号码数：≤ 10 万个。\n超额处理：当触发上述任一限制时，本次请求失败。\n\n提供「删除任务内号码」接口：业务平台可根据实际情况定期自动删除任务内已完成的批次或号码。\n删除任务内号码后，平台已呼叫过的通话记录明细、录音文件会继续保留。",
+    "en": "Import numbers by batch. Each request processes a single batch.\n\nLimits: A maximum of 100,000 numbers per batch, 1,000,000 numbers per task, and 10,000,000 numbers per enterprise.\n\nThe maximum number of batches is 100,000. Any request that exceeds these limits will fail.\n\nThe `Delete numbers in a task` API lets your business platform periodically and automatically delete completed batches or numbers from a task. Even after these numbers are deleted, the platform retains the call detail records and recording files for any calls made using them."
+  }
+}

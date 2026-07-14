@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodDomainHitRateData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的加速域名。\n\n- 不传入该参数，则默认返回所有加速域名的合并数据。\n- 支持批量查询，多个域名之间用半角逗号（,）分隔，一次最多支持500个域名查询。\n- 您可以登录[视频点播控制台](https://vod.console.aliyun.com)，从左侧导航选择**配置管理 > 分发加速配置 > 域名管理**，查看您已接入到视频点播的加速域名，或者调用[DescribeVodUserDomains](~~DescribeVodUserDomains~~)接口查询加速域名列表。",
+        "en": "The accelerated domain name.\n\n*   If you leave this parameter empty, the merged data of all your accelerated domain names is returned.\n*   You can specify multiple domain names and separate them with commas (,). You can specify a maximum of 500 domain names in each call.\n*   To obtain the accelerated domain name, perform the following steps: Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Configuration Management > CDN Configuration > Domain Names**. On the Domain Names page, view the accelerated domain names. Alternatively, you can call the [DescribeVodUserDomains](~~DescribeVodUserDomains~~) operation to query the accelerated domain names."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n>  The end time must be later than the start time."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置查询数据的时间粒度。单位：秒。取值：**300**、**3600**和**86400**。不传和传的值不支持时，使用默认值。根据您指定的`StartTime`和`EndTime`的时间跨度，支持设置的时间粒度如下：\n\n- 3天以内（不包含3天整）支持：**300**（默认）、**3600**、**86400**。\n- 3-31天（不包含31天整）支持：**3600**（默认）和**86400**。\n- 31天以上支持：**86400**（默认）。",
+        "en": "The time granularity. Unit: seconds. Valid values: **300**, **3600**, and **86400**. If you leave this parameter empty or specify an invalid value, the default value is used. The supported time granularity varies based on the time range specified by `EndTime` and `StartTime`. The following content describes the supported time granularity.\n\n*   Time range per query < 3 days: **300** (default), **3600**, and **86400**\n*   3 days ≤ Time range per query < 31 days: **3600** (default) and **86400**\n*   31 days ≤ Time range per query ≤ 90 days: **86400** (default)"
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点。 日期格式按照 ISO8601 表示法，并使用 UTC 时间，格式为 yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询字节命中率",
+    "en": "DescribeVodDomainHitRateData"
+  },
+  "descriptions": {
+    "zh": "- 目前该接口服务地址仅支持：**华东 2（上海）**。\n- 支持批量查询，一次最多查询500个域名数据。\n- 如果您不指定`StartTime`和`EndTime`，该接口默认返回过去24小时的数据；指定`StartTime`和`EndTime`，该接口返回指定时间段的数据。\n\n**返回数据时间粒度**\n\n根据您指定`StartTime`和`EndTime`的时间跨度，且未同时设置`Interval`的情况下，默认返回的数据时间粒度，以及对应的可查询历史数据时间范围和数据延迟如下：\n|时间粒度  |单次查询的时间跨度   |  可查询历史数据时间范围  |  数据延迟   |\n| ------------- |------------   | ----------- | ----------- |\n|5分钟  | 单次查询的时间跨度 ＜ 3天   |93天  |15分钟  |\n|1小时  | 3天 ≤ 单次查询的时间跨度 ＜ 31天  |186 天  |一般延迟 3-4 小时  |\n| 1天 | 31天 ≤ 单次查询的时间跨度 ≤ 366天 |366 天  |一般延迟 4 小时，不超过 24 小时  |",
+    "en": "* This operation is supported only in the **China (Shanghai)** region.\n* You can specify a maximum of 500 accelerated domain names.\n* If you specify neither `StartTime` nor `EndTime`, the data of the last 24 hours is queried. You can specify both `StartTime` and `EndTime` parameters to query data of a specified time range.\n\n**Time granularity**\n\nThe time granularity varies with the time range specified by the `StartTime` and `EndTime` parameters. The following table describes the time period within which historical data is available and the data delay when you do not set `Interval`.\n\n|Time granularity|Time range per query|Historical data available|Data delay|\n|---|---|---|---|\n|5 minutes|Time range per query &#x3C; 3 days|93 days|15 minutes|\n|1 hour|3 days ≤ Time range per query &#x3C; 31 days|186 days|3 to 4 hours|\n|1 day|31 days ≤ Time span of a single query ≤ 366 days|366 days|4 hours in most cases, not more than 24 hours|"
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-domain-hit-rate-data --domain-name example.com --start-time 2024-01-20T13:59:58Z --end-time 2024-01-20T14:59:58Z --interval 300 --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodDomainHitRateData --region cn-hangzhou --EndTime '2024-01-20T14:59:58Z' --DomainName 'example.com' --StartTime '2024-01-20T13:59:58Z' --Interval 300"

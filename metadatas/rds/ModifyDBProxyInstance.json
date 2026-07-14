@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBProxyInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,49 +9,81 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "DBProxyEngineType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "废弃参数，无需配置。",
+        "en": "A deprecated parameter. You do not need to specify this parameter."
+      }
     },
     {
       "name": "DBProxyInstanceNum",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设置代理实例数量。当取值为0的时候，表示这个实例关闭此种类型代理服务。取值：**1**~**16**。\n>更多的代理实例能处理更多的请求，您可以根据监控数据了解代理实例的负载，然后设置合理的代理实例数量。",
+        "en": "The number of database proxies. If you set this parameter to 0, the database proxy feature is disabled for the instance. Valid values: **1** to **16**.\n\n>  The capability of the database proxy feature to process requests increases with the number of database proxies that are enabled. You can monitor the load on the instance and specify an appropriate number of database proxies based on the load monitoring data."
+      }
     },
     {
       "name": "DBProxyInstanceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库代理实例类型，取值：\n- **common**：通用型代理\n- **exclusive**：独享型代理（默认）",
+        "en": "The database proxy type. Valid values:\n\n*   **common**: general-purpose database proxy\n*   **exclusive** (default): dedicated database proxy"
+      }
     },
     {
       "name": "DBProxyNodes",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "代理节点列表。\n>当前代理实例为多可用区部署时，该参数必传。",
+        "en": "List of proxy nodes.\n\n> This parameter must be passed when the current proxy instance is deployed in multiple availability zones."
+      },
       "sub_parameters": [
         {
           "name": "cpuCores",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点CPU核数，取值**1**~**16**。\n>选择**DBProxyNodes**时，该参数必选。",
+            "en": "The number of cpu cores for the node, valid values: **1** to **16**.\n>This parameter is required when selecting **DBProxyNodes**."
+          }
         },
         {
           "name": "nodeCounts",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "可用区中代理节点数量，取值**1**~**2**。\n>选择**DBProxyNodes**时，该参数必选。",
+            "en": "The number of proxy nodes in the availability zone, valid values: **1** to **16**.\n>This parameter is required when selecting **DBProxyNodes**."
+          }
         },
         {
           "name": "zoneId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点所在的可用区 ID。\n>选择**DBProxyNodes**时，该参数必选。",
+            "en": "The id of the availability zone where the node is located.\n>This parameter is required when selecting **DBProxyNodes**."
+          }
         }
       ]
     },
@@ -58,37 +91,61 @@
       "name": "EffectiveSpecificTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定时间生效。格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n>**EffectiveTime**为**SpecificTime**时，该参数必传。",
+        "en": "The point in time that you want to specify. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n>  If the **EffectiveTime** parameter is set to **SpecificTime**, you must specify this parameter."
+      }
     },
     {
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生效时间，取值：\n\n* **Immediate**：立即生效。\n* **MaintainTime**：在可运维时间段内生效，请参见ModifyDBInstanceMaintainTime。\n* **SpecificTime**：指定时间生效。\n\n默认值：**MaintainTime**。",
+        "en": "The effective time. Valid values:\n\n*   **Immediate**: The effective time is immediate.\n*   **MaintainTime**: The effective time is within the maintenance window. For more information, see ModifyDBInstanceMaintainTime.\n*   **SpecificTime**: The effective time is a specified point in time.\n\nDefault value: **MaintainTime**."
+      }
     },
     {
       "name": "MigrateAZ",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "迁移代理可用区列表。\n>当前仅支持RDS MySQL云盘版代理实例迁移可用区。",
+        "en": "The list of available zones for migration agents.\n\n> Currently, only RDS MySQL cloud disk version agent instance migration is supported."
+      },
       "sub_parameters": [
         {
           "name": "dbProxyEndpointId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "代理连接地址 ID。可以通过接口 DescribeDBProxyEndpoint 获取。\n>选择**MigrateAZ**时，该参数必选。",
+            "en": "The proxy connection address ID. You can obtain it through the DescribeDBProxyEndpoint interface.\n\n> This parameter is required when MigrateAZ is selected."
+          }
         },
         {
           "name": "destVSwitchId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "代理实例迁移对应的目标VSwitch ID。\n>选择**MigrateAZ**时，该参数必选。",
+            "en": "The target VSwitchId corresponding to the proxy instance migration.\n\n> This parameter is required when MigrateAZ is selected."
+          }
         },
         {
           "name": "destVpcId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "代理实例迁移对应的目标VPC ID。\n>选择**MigrateAZ**时，该参数必选。",
+            "en": "The target vpc id corresponding to the proxy instance migration."
+          }
         }
       ]
     },
@@ -96,15 +153,34 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。可调用DescribeRegions获取。",
+        "en": "The region ID. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "VSwitchIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "废弃参数，无需配置。",
+        "en": "The ID of the vSwitch in the destination zone. You can call the [DescribeVSwitches](~~610431~~) operation to query existing vSwitches.\n\n>  Only database proxies for ApsaraDB RDS for MySQL instances that use cloud disks can be migrated to different zones."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更数据库代理实例配置",
+    "en": "ModifyDBProxyInstance"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n\n> 云数据库RDS MySQL集群系列于2023年10月17日起逐步在各个单元赠送代理数量为1的数据库独享代理服务，详情请参见[【优惠】RDS MySQL集群版赠送代理数量为1的数据库独享代理服务](~~2555466~~)。",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   PostgreSQL\n\n>  Starting October 17, 2023, ApsaraDB RDS for MySQL instances that run RDS Cluster Edition offer one free-of-charge dedicated database proxy for each unit in phases. For more information, see [\\[Special offers/Price changes\\] One dedicated proxy is provided free of charge for ApsaraDB RDS for MySQL instances on RDS Cluster Edition](~~2555466~~)."
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-db-proxy-instance --db-instance-id rm-t4n3a0000 --db-proxy-instance-type exclusive --db-proxy-instance-num 2 --effective-time MaintainTime --effective-specific-time 2019-07-10T13:15:12Z --biz-region-id cn-hangzhou --db-proxy-engine-type normal --vswitchids vsw-uf6adz52c2p0000 --db-proxy-nodes cpuCores=1 zoneId=cn-hangzhou-c nodeCounts=2 --migrate-az destVpcId=vpc-2vcicu73rdylp0000 destVSwitchId=vsw-sw0qq49d1m0000 dbProxyEndpointId=yhw42900000000 --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyDBProxyInstance --region cn-hangzhou --DBProxyInstanceNum 2 --DBInstanceId 'rm-t4n3a0000' --EffectiveTime MaintainTime --VSwitchIds 'vsw-uf6adz52c2p0000' --EffectiveSpecificTime '2019-07-10T13:15:12Z' --RegionId 'cn-hangzhou' --DBProxyNodes '[{\"cpuCores\":\"1\",\"zoneId\":\"cn-hangzhou-c\",\"nodeCounts\":\"2\"}]' --DBProxyInstanceType exclusive --MigrateAZ '[{\"destVpcId\":\"vpc-2vcicu73rdylp0000\",\"destVSwitchId\":\"vsw-sw0qq49d1m0000\",\"dbProxyEndpointId\":\"yhw42900000000\"}]' --DBProxyEngineType normal"

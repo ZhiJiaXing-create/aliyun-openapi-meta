@@ -1,5 +1,6 @@
 {
   "name": "DetachDBInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多详情，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "DBInstance",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RDS实例的ID，单次最多支持移除5个RDS实例。",
+        "en": "The ID of the RDS instance. You can remove up to five RDS instances at a time."
+      }
     },
     {
       "name": "ForceDetach",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当RDS实例从伸缩组移除时，是否移除RDS实例IP白名单中属于伸缩组内实例的私网IP。取值范围：\n\n- true：移除。\n\n- false：不移除。\n\n默认值：false。",
+        "en": "Specifies whether to remove the private IP addresses of instances in the scaling group from the IP whitelist of the RDS instance when the RDS instance is removed from the scaling group. Valid values:\n\n- true: Removes the private IP addresses.\n\n- false: Does not remove the private IP addresses.\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "RemoveSecurityGroup",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组是否移除关联数据库时添加的安全组白名单。仅针对`AttachMode`参数取值为`SecurityGroup`的数据库有效，取值范围：\n\n- true：会移除伸缩组关联数据库时添加的安全组ID。\n- false：不会移除伸缩组关联数据库时添加的安全组ID。\n\n默认值：false。",
+        "en": "Specifies whether to remove the security group whitelist that was added when the scaling group was associated with the database. This parameter takes effect only for databases whose `AttachMode` parameter is set to `SecurityGroup`. Valid values:\n\n- true: Removes the security group ID that was added when the scaling group was associated with the database.\n- false: Does not remove the security group ID that was added when the scaling group was associated with the database.\n\nDefault value: false."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除一个或多个RDS实例",
+    "en": "Remove one or more RDS instances"
+  },
   "example": {
     "unifiedCli": "aliyun ess detach-db-instances --scaling-group-id asg-bp1igpak5ft1flyp0000 --force-detach false --client-token 123e4567-e89b-12d3-a456-426655440000 --db-instance rm-bp12cy30000 --biz-region-id cn-hangzhou --remove-security-group false --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess DetachDBInstances --region cn-hangzhou --RemoveSecurityGroup false --ScalingGroupId 'asg-bp1igpak5ft1flyp0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DBInstance.1 'rm-bp12cy30000' --ForceDetach false"

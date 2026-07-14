@@ -1,5 +1,6 @@
 {
   "name": "ImageBlindCharacterWatermark",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "FunctionType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定调用功能。包括：\n- encode_text：为采用老版本模型添加文字水印。\n\n- encode_text_plus：为采用新版本模型1添加文字水印。\n\n- encode_text_bold：为采用新版本模型2添加文字水印。\n\n- decode_text：为采用老版本模型解码图像中的文字水印，对应加水印方法encode_text。\n\n- decode_text_plus：为采用新版本模型1解码图像中的文字水印，对应加水印方法encode_text_plus。\n\n- decode_text_bold：为采用新版本模型2解码图像中的文字水印，对应加水印方法encode_text_bold。",
+        "en": "The function type. Valid values:\n- encode_text: adds a text watermark by using the legacy model.\n\n- encode_text_plus: adds a text watermark by using the new model 1.\n\n- encode_text_bold: adds a text watermark by using the new model 2.\n\n- decode_text: decodes the text watermark in an image by using the legacy model. This corresponds to the encode_text watermark method.\n\n- decode_text_plus: decodes the text watermark in an image by using the new model 1. This corresponds to the encode_text_plus watermark method.\n\n- decode_text_bold: decodes the text watermark in an image by using the new model 2. This corresponds to the encode_text_bold watermark method."
+      }
     },
     {
       "name": "OriginImageURL",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "原始图像。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n>- 当FunctionType为`encode_text`、`encode_text_plus`、`encode_text_bold`或`decode_text`时，该参数必填。\n- 当FunctionType为`decode_text_plus`或`decode_text_bold`时，该参数不填。",
+        "en": "The URL of the original image. We recommend that you use an OSS URL in the Shanghai region. If the file is stored locally or in an OSS bucket outside the Shanghai region, see [File URL processing](~~155645~~).\n>- This parameter is required when FunctionType is set to `encode_text`, `encode_text_plus`, `encode_text_bold`, or `decode_text`.\n- Do not set this parameter when FunctionType is set to `decode_text_plus` or `decode_text_bold`."
+      }
     },
     {
       "name": "OutputFileType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "输出图格式。可以选择`png`、`jpg`、`bmp`三种格式，默认`png`。\n>- 当FunctionType为`encode_text`、`encode_text_plus`或`encode_text_bold`时，该参数必填。\n- 当FunctionType为`decode_text`、`decode_text_plus`或`decode_text_bold`时，该参数不填。",
+        "en": "The output image format. Valid values: `png`, `jpg`, and `bmp`. Default value: `png`.\n>- This parameter is required when FunctionType is set to `encode_text`, `encode_text_plus`, or `encode_text_bold`.\n- Do not set this parameter when FunctionType is set to `decode_text`, `decode_text_plus`, or `decode_text_bold`."
+      }
     },
     {
       "name": "QualityFactor",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "输出图像的质量大小。图像越大质量越高，取值范围1~100，默认100。\n>仅当OutputFileType为`jpg`时有效。",
+        "en": "The quality of the output image. A larger value indicates higher quality. Valid values: 1 to 100. Default value: 100.\n>This parameter takes effect only when OutputFileType is set to `jpg`."
+      }
     },
     {
       "name": "Text",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待加入的水印文字，字数不超过16个，超过会影响加水印效果。\n>- 当FunctionType为`encode_text`、`encode_text_plus`或`encode_text_bold`时，该参数必填。\n- 当FunctionType为`decode_text`、`decode_text_plus`或`decode_text_bold`时，该参数不填。",
+        "en": "The watermark text to be added. The text can contain up to 16 characters. Exceeding this limit affects the watermark quality.\n>- This parameter is required when FunctionType is set to `encode_text`, `encode_text_plus`, or `encode_text_bold`.\n- Do not set this parameter when FunctionType is set to `decode_text`, `decode_text_plus`, or `decode_text_bold`."
+      }
     },
     {
       "name": "WatermarkImageURL",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待解析图，即带有文字水印的合成图。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n>- 当FunctionType为`decode_text`、`decode_text_plus`或`decode_text_bold`时，该参数必填。\n- 当FunctionType为`encode_text`、`encode_text_plus`或`encode_text_bold`，该参数不填。",
+        "en": "The URL of the image to be parsed, which is the composite image that contains the text watermark. We recommend that you use an Object Storage Service (OSS) URL in the Shanghai region. If the file is stored locally or in an OSS bucket outside the Shanghai region, see [File URL processing](~~155645~~).\n>- This parameter is required when FunctionType is set to `decode_text`, `decode_text_plus`, or `decode_text_bold`.\n- Do not set this parameter when FunctionType is set to `encode_text`, `encode_text_plus`, or `encode_text_bold`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "图像隐形文字水印",
+    "en": "Invisible character watermark for images"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n图像隐形文字水印能力可以为图片添加或者解析指定文字水印。\n关于该接口功能的示例图如下：\n![](https://img.alicdn.com/tfs/TB1jJ0SAkY2gK0jSZFgXXc5OFXa-746-395.png)\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 当前能力可在视觉智能开放平台有完整的免费产品体验，您可以单击[立即试用](https://vision.aliyun.com/experience/detail?&tagName=imageenhan&children=ImageBlindCharacterWatermark)对该能力进行更直观试用以及在线购买。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n- 著作权保护：图片的作者依法享有著作权。在图像中增加隐形水印，可以为图片的作者或被授权人证明图片的著作权归属，避免图片在未获得作者授权的情况下被非法使用。\n- 防止信息泄露：在涉密信息的图片中，对不同的访问者打上不同的隐形水印。如果图片一旦被泄露，可以通过解析隐形水印，排查出泄密源。\n\n## 特色优势\n隐形水印与传统图章水印相比，其无法被观看者察觉，不影响图片效果。水印无法被使用者察觉，也无法通过普通的去水印方法去除，但可以通过图像隐形文字水印解析出水印，证明图片的著作权归属。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[图像生产服务](https://vision.aliyun.com/imageenhan)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_imageenhan_public_cn#/open)。\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/imageenhan/2019-09-30/ImageBlindCharacterWatermark?lang=JAVA&sdkStyle=dara&params=%7B%22OriginImageURL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageenhan%2FImageBlindCharacterWatermark%2FImageBlindCharacterWatermark1.png%22%2C%22Text%22%3A%22%E9%98%BF%E9%87%8C%E4%BA%91%E7%89%88%E6%9D%83%E6%89%80%E6%9C%89%22%2C%22FunctionType%22%3A%22encode_text_plus%22%2C%22QualityFactor%22%3A100%2C%22OutputFileType%22%3A%22jpg%22%7D&tab=DEMO)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为图像生产（imageenhan）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n\n- 图像格式：JPEG、JPG、PNG、BMP。\n- 图像大小：不超过3 MB。\n- 图像分辨率：大于5×5像素。\n- URL地址中不能包含中文字符。\n\n## 计费说明\n关于图像隐形文字水印的计费方式及报价，请参见[计费介绍](~~202482~~)。\n\n> 下方调试接口为付费接口，如需免费体验调试请前往[体验中心](https://vision.aliyun.com/experience/detail?&tagName=imageenhan&children=ImageBlindCharacterWatermark)。",
+    "en": "## Feature description\nThe invisible character watermark feature allows you to add or parse specified text watermarks in images.\nThe following figure shows an example of this feature:\n![](https://img.alicdn.com/tfs/TB1jJ0SAkY2gK0jSZFgXXc5OFXa-746-395.png)\n\n> - You can join [online consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) to get help from our support team.\n- You can try this feature for free on the Visual Intelligence Platform. Click [Try Now](https://vision.aliyun.com/experience/detail?&tagName=imageenhan&children=ImageBlindCharacterWatermark) to experience this feature or purchase it online.\n- For questions about API integration, usage, or consultation regarding the Alibaba Cloud Visual Intelligence Platform, join the DingTalk group (23109592) to contact us.\n\n## Common scenarios\n- Copyright protection: Image authors are entitled to copyrights by law. Adding invisible watermarks to images helps authors or parties with authorization prove copyright ownership and prevents unauthorized access and illegal use of images.\n- Information leak prevention: In images containing confidential information, different invisible watermarks can be applied for different parties that access the images. If an image is leaked, the invisible watermark can be parsed to trace the source of the leak.\n\n## Advantages\nCompared with traditional stamp watermarks, invisible watermarks cannot be perceived by viewers and do not affect the visual quality of images. The watermarks cannot be detected by users or removed by common watermark removal methods. However, the watermarks can be parsed by the invisible character watermark feature to prove copyright ownership of images.\n\n## Integration guide\n1. Register an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **China Site Account** in the upper-right corner, and follow the instructions to complete the registration.\n2. Activate the service: Make sure that you have activated the [Image Production service](https://vision.aliyun.com/imageenhan). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_imageenhan_public_cn#/open).\n3. Create an AccessKey pair: Make sure that you have [created an AccessKey pair](~~175144~~). If you are using a RAM user AccessKey, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/imageenhan/2019-09-30/ImageBlindCharacterWatermark?lang=JAVA&sdkStyle=dara&params=%7B%22OriginImageURL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageenhan%2FImageBlindCharacterWatermark%2FImageBlindCharacterWatermark1.png%22%2C%22Text%22%3A%22%E9%98%BF%E9%87%8C%E4%BA%91%E7%89%88%E6%9D%83%E6%89%80%E6%9C%89%22%2C%22FunctionType%22%3A%22encode_text_plus%22%2C%22QualityFactor%22%3A100%2C%22OutputFileType%22%3A%22jpg%22%7D&tab=DEMO) to debug this feature online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development integration steps:\n- Select the SDK language that you want to use from the [SDK overview](~~145033~~).\n- Find the SDK package for the Image Production (imageenhan) category in the corresponding SDK documentation and install it.\n- Modify the sample code provided in the references as needed and invoke the API operation.\n\n6. Direct client calls: Common client call methods for this feature include the following:\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~).\n\n## Input limits\n\n- Image format: JPEG, JPG, PNG, or BMP.\n- Image size: up to 3 MB.\n- Image resolution: greater than 5 × 5 pixels.\n- The URL cannot contain Chinese characters.\n\n## Billable methods\nFor information about the billable methods and pricing of the invisible character watermark feature, see [Billing overview](~~202482~~).\n\n> The debugging API operation below is a paid operation. To try it for free, go to the [Experience Center](https://vision.aliyun.com/experience/detail?&tagName=imageenhan&children=ImageBlindCharacterWatermark)."
+  },
   "example": {
     "unifiedCli": "aliyun imageenhan image-blind-character-watermark --function-type encode_text --text '阿里云版权所有一二三四五六七八九' --watermark-image-url https://viapi-doc.oss-cn-shanghai.aliyuncs.com/imageenhan/xxxxx.jpg --output-file-type jpg --quality-factor 100 --origin-image-url https://viapi-test.oss-cn-shanghai.aliyuncs.com/test-team/xxxxx.jpg --region cn-hangzhou",
     "legacyCli": "aliyun imageenhan ImageBlindCharacterWatermark --region cn-hangzhou --OutputFileType jpg --QualityFactor 100 --WatermarkImageURL 'https://viapi-doc.oss-cn-shanghai.aliyuncs.com/imageenhan/xxxxx.jpg' --OriginImageURL 'https://viapi-test.oss-cn-shanghai.aliyuncs.com/test-team/xxxxx.jpg' --FunctionType encode_text --Text '阿里云版权所有一二三四五六七八九'"

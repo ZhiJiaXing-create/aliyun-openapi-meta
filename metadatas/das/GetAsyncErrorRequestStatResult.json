@@ -1,5 +1,6 @@
 {
   "name": "GetAsyncErrorRequestStatResult",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DbName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The name of the database."
+      }
     },
     {
       "name": "End",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询结束时间，格式为Unix时间戳，单位为毫秒。\n\n> 查询结束时间需晚于查询开始时间，且查询开始时间和查询结束时间的间隔不能超过1天。",
+        "en": "The end time of the query, specified as a Unix timestamp in milliseconds.\n\n> The end time must be later than the start time. The interval between the start time and the end time cannot exceed 1 day."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n> 对于PolarDB MySQL版实例，需要提供节点ID。",
+        "en": "The ID of the node.\n\n> This parameter is required for PolarDB for MySQL instances."
+      }
     },
     {
       "name": "SqlIdList",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SQL ID，多个SQL ID请使用英文逗号分隔。您可以调用[GetAsyncErrorRequestListByCode](~~410746~~)接口查询实例中产生MySQL错误码的SQL ID。",
+        "en": "One or more SQL IDs. Separate multiple SQL IDs with commas. You can call the [GetAsyncErrorRequestListByCode](~~410746~~) operation to query the SQL IDs that generated MySQL error codes on the instance."
+      }
     },
     {
       "name": "Start",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询开始时间，格式为Unix时间戳，单位为毫秒。\n\n> 查询开始时间需在数据库实例SQL洞察存储时长范围内，最大不能早于当前时间90天。",
+        "en": "The start time of the query, specified as a Unix timestamp in milliseconds.\n\n> The start time must be within the data retention period of SQL Explorer for the database instance. The start time cannot be earlier than 90 days before the current time."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取指定SQL的执行错误次数",
+    "en": "GetAsyncErrorRequestStatResult"
+  },
+  "descriptions": {
+    "zh": "> 异步调用后不会立即返回完整结果，当返回数据中**isFinish**取值为**false**时，请等待1s后重新发起调用，直到**isFinish**取值为**true**时，返回完整结果。\n\n\n- 目前仅支持RDS MySQL和PolarDB MySQL版实例，请确保在使用该接口前，该实例已经开启DAS企业版，具体请参见[购买DAS企业版](~~163298~~)。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。",
+    "en": "> This is an asynchronous call, so the complete results are not returned immediately. If the **isFinish** field in the response is **false**, wait 1s and retry the call. The complete results are returned when **isFinish** is **true**.\n\n- This operation supports only RDS MySQL and PolarDB for MySQL instances. Before you call this operation, ensure that DAS Enterprise Edition is enabled for the instance. For more information, see [Purchase DAS Enterprise Edition](~~163298~~).\n\n- When you use an SDK to call DAS, you must set the region to cn-shanghai."
+  },
   "example": {
     "unifiedCli": "aliyun das get-async-error-request-stat-result --instance-id rm-2ze8g2am976240000 --node-id pi-bp179lg03445l0000 --sql-id-list ad78a4e7d3ce81590c9dc2d5f4bc0000,0f92feacd92c048b06a16617a6330000 --start 1642556990714 --end 1642566830000 --db-name testdb01 --region cn-hangzhou",
     "legacyCli": "aliyun das GetAsyncErrorRequestStatResult --region cn-hangzhou --InstanceId 'rm-2ze8g2am976240000' --Start 1642556990714 --NodeId 'pi-bp179lg03445l0000' --End 1642566830000 --DbName testdb01 --SqlIdList 'ad78a4e7d3ce81590c9dc2d5f4bc0000,0f92feacd92c048b06a16617a6330000'"

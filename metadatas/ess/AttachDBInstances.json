@@ -1,5 +1,6 @@
 {
   "name": "AttachDBInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AttachMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组与数据库关联方式。取值范围：\n\n- SecurityIp：修改IP白名单模式，通过将扩容实例自动添加到数据库白名单（目前仅RDS数据库支持）进行关联。\n- SecurityGroup：安全组模式，通过将伸缩配置安全组添加至数据库安全组白名单进行关联，实现安全组下实例数据库访问。\n\n默认值：SecurityIp。",
+        "en": "The mode in which the scaling group is associated with the database. Valid values:\n\n- SecurityIp: IP whitelist mode. The system automatically adds the private IP addresses of scaled-out instances to the IP whitelist of the database. Currently, only ApsaraDB RDS databases are supported.\n- SecurityGroup: security group mode. The system adds the security group specified in the scaling configuration to the security group whitelist of the database, which allows instances in the security group to access the database.\n\nDefault value: SecurityIp."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多详情，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, refer to [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "DBInstance",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RDS实例的ID，N的取值范围：1~5。",
+        "en": "The ID of the RDS instance. Valid values of N: 1 to 5."
+      }
     },
     {
       "name": "ForceAttach",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当RDS实例添加到伸缩组时，是否把当前伸缩组内实例的私网IP全部添加到RDS实例IP白名单中。取值范围：\n\n- true：添加。\n\n- false：不添加。\n\n默认值：false。",
+        "en": "Specifies whether to add the private IP addresses of all instances in the current scaling group to the IP whitelist of the RDS instance when the RDS instance is added to the scaling group. Valid values:\n\n- true: Adds the private IP addresses.\n\n- false: Does not add the private IP addresses.\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库类型。取值范围：\n\n- RDS。\n- Redis。\n- MongoDB。\n\n默认值：RDS。",
+        "en": "The type of the database. Valid values:\n\n- RDS\n- Redis\n- MongoDB\n\nDefault value: RDS."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加一个或多个RDS实例",
+    "en": "Add one or more apsaraDB RDS instances"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n向伸缩组添加RDS实例时需要满足以下条件：\n\n- RDS实例与伸缩组必须属于同一账号。\n\n- RDS实例必须处于未锁定状态，关于锁定策略，请参见[RDS使用须知](~~41872~~)。\n\n- RDS实例必须处于运行中状态。\n\n- 如果将伸缩组中已存在的RDS实例再次添加到伸缩组，则伸缩组内的RDS实例数量不会改变，但系统会尝试把当前伸缩组内的ECS实例私网IP全部加入到RDS实例的IP白名单中。\n\n>添加RDS实例后，RDS IP白名单的default分组中包含的IP不能超过1000条。关于IP白名单，请参见[设置白名单](~~96118~~)。",
+    "en": "## Operation description\n\nThe following conditions must be met when you add ApsaraDB RDS instances to a scaling group:\n\n- The RDS instances and the scaling group must belong to the same Alibaba Cloud account.\n\n- The RDS instances must be in an unlocked state. For more information about the lock policy, refer to [Chinese documentation](~~41872~~).\n\n- The RDS instances must be in the Running state.\n\n- If you add an RDS instance that already exists in the scaling group, the number of RDS instances in the scaling group does not change. However, the system attempts to add the private IP addresses of all ECS instances in the scaling group to the IP whitelist of the RDS instance.\n\n> After you add an RDS instance, the default group of the RDS IP whitelist can contain a maximum of 1,000 IP addresses. For more information about IP whitelists, refer to [Set a whitelist](~~96118~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ess attach-db-instances --scaling-group-id asg-bp1avr6ensitts3w0000 --force-attach false --client-token 123e4567-e89b-12d3-a456-426655440000 --db-instance rm-bp12cy30000 --biz-region-id cn-hangzhou --attach-mode SecurityIp --type RDS --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess AttachDBInstances --region cn-hangzhou --AttachMode SecurityIp --Type RDS --ScalingGroupId 'asg-bp1avr6ensitts3w0000' --ForceAttach false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DBInstance.1 'rm-bp12cy30000'"

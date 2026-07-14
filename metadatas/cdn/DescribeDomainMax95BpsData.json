@@ -1,5 +1,6 @@
 {
   "name": "DescribeDomainMax95BpsData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Cycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "95带宽峰值周期，默认值为**day**。取值：\n\n- **day**：按日查询95峰值。\n- **month**：按月查询95峰值。",
+        "en": "The cycle to query the 95th percentile bandwidth data. Default value: **day**. Valid values:\n\n- **day**: queries the 95th percentile bandwidth data by day.\n\n- **month**: queries the 95th percentile bandwidth data by month."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的加速域名。若参数为空，默认返回所有加速域名合并后的数据。\n\n> 不支持批量域名查询。",
+        "en": "The accelerated domain name. If you do not specify a domain name, data of all domain names is queried.\n\n> You cannot specify multiple domain names in a DescribeDomainMax95BpsData request."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取结束时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取起始时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "TimePoint",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询95带宽峰值",
+    "en": "DescribeDomainMax95BpsData"
+  },
+  "descriptions": {
+    "zh": "**分三种方式查询：**\n- 当同时指定StartTime和EndTime时，若EndTime与StartTime差值在24小时内，则查询StartTime所在当天的95峰值，否则查询StartTime所在月份的95峰值。\n- 当同时指定TimePoint和Cycle时，返回TimePoint所在周期的95峰值。\n- 当指定StartTime和EndTime时，若额外指定了Cycle，可以返回查询范围内所有指定cycle对应的95峰值。<br>\n<br>\n当这三种方式都不指定时，默认返回过去24小时的95峰值。<br>\n<br>\n* 数据最大查询跨度：90天\n* 数据最小查询粒度：1天\n* 数据最大查询范围：90天<br>\n<br>\n- 单用户调用频率：100次/秒。\n- 获取数据单位：bit/s。",
+    "en": "**You can use one of the following methods to query data:**\n\n- If you specify the StartTime and EndTime parameters and the time range that is specified by these parameters is less than or equal to 24 hours, the 95th percentile bandwidth data on the day of the start time is returned. If the time range that is specified by these parameters is more than 24 hours, the 95th percentile bandwidth data in the month of the start time is returned.\n\n- If you specify the TimePoint and Cycle parameters, the 95th percentile bandwidth data of the cycle is returned.\n\n- If you specify the StartTime, EndTime, and Cycle parameters, the 95th percentile bandwidth data of the cycle is returned.\n\nIf you do not use one of the methods, the 95th percentile bandwidth data of the previous 24 hours is returned by default.\n\n- Maximum time range to query: 90 days\n\n- Minimum data granularity to query: 1 day\n\n- Historical data available: 90 days\n\n* Each account can call this operation up to 100 times per second.\n\n* The unit of the bandwidth data returned is bit/s."
+  },
   "example": {
     "unifiedCli": "aliyun cdn describe-domain-max-95-bps-data --domain-name example.com --start-time 2017-12-21T08:00:00Z --end-time 2017-12-22T08:00:00Z --time-point 2017-12-21T10:00:00Z --cycle month --region cn-hangzhou",
     "legacyCli": "aliyun cdn DescribeDomainMax95BpsData --region cn-hangzhou --EndTime '2017-12-22T08:00:00Z' --DomainName 'example.com' --StartTime '2017-12-21T08:00:00Z' --TimePoint '2017-12-21T10:00:00Z' --Cycle month"

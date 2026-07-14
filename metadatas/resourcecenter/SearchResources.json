@@ -1,5 +1,6 @@
 {
   "name": "SearchResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "过滤条件。",
+        "en": "The filter conditions."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件键。取值见下方`支持的过滤参数`。",
+            "en": "The key of the filter condition. For more information about the valid values, see the \"`Supported filter parameters`\" section below."
+          }
         },
         {
           "name": "MatchType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "匹配方式。\n\n取值：\n- Equals，表示相等匹配。\n- Prefix，表示前缀匹配。\n- Contains，表示包含某值。\n- NotContains，表示不包含某值。\n- Exists，表示存在。\n- NotExists，表示不存在。",
+            "en": "The matching method. Valid values:\n\n- Equals: Exact match.\n\n- Prefix: Prefix match.\n\n- Contains: Contains a value.\n\n- NotContains: Does not contain a value.\n\n- Exists: The key exists.\n\n- NotExists: The key does not exist."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件值。",
+            "en": "The value of the filter condition."
+          }
         }
       ]
     },
@@ -34,39 +51,74 @@
       "name": "IncludeDeletedResources",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否包含已删除资源。",
+        "en": "Specifies whether to include deleted resources. Valid values:\n\n- true\n\n- false"
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页的最大数据条数。\n\n取值范围：1~500。\n\n默认值：20。",
+        "en": "The maximum number of entries per page.\n\nValid values: 1 to 500.\n\nDefault value: 20."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询返回结果下一页的令牌。\n\n当返回结果数据总条数超过`MaxResults`限制，则数据会被截断，您可以使用`NextToken`查询下一页数据。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results. You do not need to specify this parameter for the first request. You must specify the token that is obtained from the previous query as the value of `NextToken`."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "SearchExpression",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索关键词。资源中心会根据相关性对搜索结果进行过滤和排序。\n当不指定排序参数时，默认优先展示与关键词匹配度更高的资源。",
+        "en": "The search keyword. Resource Center filters and sorts the search results based on relevance. If you do not specify a sorting parameter, resources that better match the keyword are displayed with higher priority."
+      }
     },
     {
       "name": "SortCriterion",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序参数。",
+        "en": "The sorting parameters."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "搜索当前账号的资源",
+    "en": "SearchResources"
+  },
+  "descriptions": {
+    "zh": "- 仅能搜索当前账号下有权限访问的资源。\n- 仅能搜索[支持资源中心的云服务及资源类型](~~477798~~)。\n- SearchResources接口默认最多返回20条数据，您可以通过指定`MaxResults`参数调整最大返回条目数。\n- 如果返回结果中不存在`NextToken`，则表示没有更多数据。否则，则表示还有更多数据。如果想要查询后续页，需要将SearchResources接口的`NextToken`参数设置为上一次返回结果中获取到的`NextToken` 。如果未输入`NextToken`参数，查询时默认返回第一页的数据。\n- 通过设置一个或多个过滤条件，可以精确资源的搜索范围。支持的过滤参数以及匹配方式见下文。多个过滤条件之间是逻辑与`AND`的关系，只有同时满足所有过滤条件的资源才会被返回。每个过滤条件内部是逻辑或`OR`的关系，只要满足任意一个过滤条件值的资源都会被返回。\n- 您可以在[示例中心](https://api.aliyun.com/api-tools/demo/ResourceCenter)获取更多查询示例。",
+    "en": "- You can search only for resources in your current account that you are permitted to access.\n\n- You can search only for the [Alibaba Cloud services and resource types that are supported by Resource Center](~~477798~~).\n\n- By default, the SearchResources operation returns a maximum of 20 entries. You can specify the `MaxResults` parameter to change the maximum number of entries that are returned.\n\n- If the response does not include a `NextToken` value, no more results are available. To retrieve the next page of results, include the `NextToken` value from the previous response in your next request. If you do not specify the `NextToken` parameter, the first page of results is returned.\n\n- You can set one or more filter conditions to narrow the search scope. For information about the supported filter parameters and matching methods, see the following sections. Multiple filter conditions are combined by a logical `AND`. Only resources that meet all filter conditions are returned. The values within a filter condition are combined by a logical `OR`. Resources that meet any value of the filter condition are returned.\n\n- For more query examples, see [API Explorer](https://api.aliyun.com/api-tools/demo/ResourceCenter)."
+  },
   "example": {
     "unifiedCli": "aliyun resourcecenter search-resources --next-token eyJzZWFyY2hBZnRlcnMiOlsiMTAwMTU2Nzk4MTU1OSJd0000 --max-results 10 --filter '[{\"MatchType\":\"Equals\",\"Value\":[\"过滤条件值。\"],\"Key\":\"RegionId\"}]' --resource-group-id rg-acfmzawhxxc0000 --sort-criterion Order=ASC Key=CreateTime --search-expression keywords --include-deleted-resources true --region cn-hangzhou",
     "legacyCli": "aliyun resourcecenter SearchResources --region cn-hangzhou --Filter.1.MatchType Equals --NextToken eyJzZWFyY2hBZnRlcnMiOlsiMTAwMTU2Nzk4MTU1OSJd0000 --ResourceGroupId 'rg-acfmzawhxxc0000' --SortCriterion.Order ASC --Filter.1.Value.1 '过滤条件值。' --IncludeDeletedResources true --MaxResults 10 --SortCriterion.Key CreateTime --SearchExpression keywords --Filter.1.Key RegionId --method POST --force"

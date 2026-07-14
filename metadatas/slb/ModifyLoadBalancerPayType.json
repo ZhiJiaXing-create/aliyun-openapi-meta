@@ -1,5 +1,6 @@
 {
   "name": "ModifyLoadBalancerPayType",
+  "deprecated": true,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动付费。取值：\n\n- **true**：自动付费。\n\n- **false（默认值）**：不自动付费。\n\n>只有当**PayType**的参数取值为**PrePay**时有效，即仅对按量计费实例有效。",
+        "en": "Specifies whether to enable automatic payment. Valid values:\n\n- **true**: yes\n\n- **false** (default): no\n\n> This parameter is valid only when the `PayType` parameter is set to **PrePay**. This parameter is valid only for pay-as-you-go instances."
+      }
     },
     {
       "name": "Duration",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计费时长。\n\n* 如果**PricingCycle**为**month**，取值**1**~**9**。\n\n* 如果**PricingCycle**为**year**，取值**1**~**5**。\n\n>只有当**PayType**的参数取值为**PrePay**时有效，即仅对按量计费实例有效。",
+        "en": "The subscription duration.\n\n- If **PricingCycle** is set to **month**, the valid values are **1** to **9**.\n\n- If **PricingCycle** is set to **year**, the valid values are **1** to **3**.\n\n> This parameter is valid only when the **PayType** parameter is set to **PrePay**. This parameter is valid only for pay-as-you-go instances."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例的ID。",
+        "en": "The ID of the CLB instance."
+      }
     },
     {
       "name": "PayType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "负载均衡实例付费模式，取值：\n\n<props=\"china\">- **PrePay**：包年包月。</props>\n\n- **PayOnDemand**（默认值）：按量付费。\n\n按量计费转为包年包月计费，该参数取值只能为**PrePay**，且该实例之前的计费模式必须为**PayOnDemand**。",
+        "en": "The billing method of the CLB instance. Valid values:\n\n- **PayOnDemand** (default): pay-as-you-go\n\nTo change the billing method of a pay-as-you-go CLB instance to subscription, you must set the parameter to **PrePay**. In addition, the previous billing method of the CLB instance must be **PayOnDemand**."
+      }
     },
     {
       "name": "PricingCycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计费周期。\n\n取值：**year**或**month** 。\n\n>只有当**PayType**的参数取值为**PrePay**时有效，即仅对按量计费实例有效。",
+        "en": "The billing cycle.\n\nValid values: **year** and **month**.\n\n> This parameter is valid only when the **PayType** parameter is set to **PrePay**. This parameter is valid only for pay-as-you-go instances."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例的地域ID。\n\n您可以从[地域和可用区](~~40654~~)列表或通过调用[DescribeRegions](~~25609~~)接口查询地域ID。",
+        "en": "The ID of the region where the CLB instance is deployed.\n\nYou can query the region ID from the [Regions and zones](~~40654~~) list or by calling the [DescribeRegions](~~25609~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将按量计费实例转换为包年包月实例（已废弃）",
+    "en": "ModifyLoadBalancerPayType"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">\n\n> CLB包年包月实例2024年12月01日00:00:00起停止新购。详细信息请参见[传统型负载均衡CLB包年包月停售公告](https://help.aliyun.com/zh/slb/product-overview/announcement-of-suspension-of-traditional-load-balancing-clb-package-year-and-month?spm=a2c4g.11186623.help-menu-27537.d_0_1_2.29f5f9f2WbxpDz)。\n\n</props>\n\n<props=\"china\">仅按规格计费（公网为按固定带宽计费）的实例支持调用ModifyLoadBalancerPayType接口，按使用量计费实例不支持调用该接口。</props>",
+    "en": "<props=\"china\">\n\n> CLB 包年包月实例 2024 年 12 月 01 日 00:00:00 起停止新购。详细信息请参见[传统型负载均衡 CLB 包年包月停售公告](https://help.aliyun.com/zh/slb/product-overview/announcement-of-suspension-of-traditional-load-balancing-clb-package-year-and-month?spm=a2c4g.11186623.help-menu-27537.d_0_1_2.29f5f9f2WbxpDz)。\n\n</props>\n\n<props=\"china\">\n\n仅按规格计费（公网为按固定带宽计费）的实例支持调用 ModifyLoadBalancerPayType 接口，按使用量计费实例不支持调用该接口。\n\n</props>"
+  },
   "example": {
     "unifiedCli": "aliyun slb modify-load-balancer-pay-type --biz-region-id cn-hangzhou --load-balancer-id lb-bp1b6c719dfa08ex00000 --pay-type PrePay --pricing-cycle month --duration 1 --auto-pay false --api-version 2014-05-15 --region cn-hangzhou",
     "legacyCli": "aliyun slb ModifyLoadBalancerPayType --region cn-hangzhou --PricingCycle month --LoadBalancerId 'lb-bp1b6c719dfa08ex00000' --Duration 1 --RegionId 'cn-hangzhou' --PayType PrePay --AutoPay false"

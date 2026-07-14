@@ -1,5 +1,6 @@
 {
   "name": "DescribeEniMonitorData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据的结束时间点。按照[ISO 8601](~~25696~~)标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。如果指定的秒（ss）不是00，则自动换算为下一分钟。",
+        "en": "The end of the time range to query. Specify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. If the value of seconds (ss) is not 00, the time is rounded up to the next minute."
+      }
     },
     {
       "name": "EniId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "辅助网卡的ID。默认查询指定实例上所有已绑定的辅助网卡。",
+        "en": "The secondary ENI ID. By default, all secondary ENIs that are bound to the specified instance are queried."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "辅助网卡绑定的实例ID。",
+        "en": "The ID of the instance to which the secondary ENI is bound."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取监控数据的间隔时间，单位：秒。取值范围：\n- 60。\n- 600。\n- 3600。\n\n默认值：60。",
+        "en": "The interval at which to retrieve the monitoring data. Unit: seconds. Default value: Month. Valid values:\n\n- 60\n\n- 600\n\n- 3600\n\nDefault: 60."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据的起始时间点。按照[ISO 8601](~~25696~~)标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。如果指定的秒（ss）不是00，则自动换算为下一分钟。",
+        "en": "The beginning of the time range to query. Specify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. If the value of seconds (ss) is not 00, the time is rounded up to the next minute."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询辅助网卡监控数据",
+    "en": "DescribeEniMonitorData"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n可查询的辅助网卡流量信息包括辅助网卡收发数据包的数量、内网出入流量、辅助网卡收发丢包的数量。当返回信息中缺少部分内容时，可能是由于系统没有获取到相应的信息。例如，当实例处于已停止（Stopped）状态或者辅助网卡没有挂载到实例上，即处于可用（Available）状态时，无法获取到相应的信息。调用该接口时，您需要注意： \n\n-  一次最多返回400条数据，需满足`（EndTime–StartTime）/Period`小于等于400的条件限制，即返回参数`TotalCount`不能超过400，否则将返回`InvalidParameter.TooManyDataQueried`的错误提示。  \n\n- 一次最多能查询近30天内的监控信息，即指定的参数`StartTime`距今不能超过30天。",
+    "en": "## [](#)Usage notes\n\nThe monitoring data of a secondary ENI includes the amount of traffic sent and received over the internal network, the number of packets sent and received by the secondary ENI, and the number of sent and received packets that are dropped by the secondary ENI. Specific information may be missing from the returned monitoring data. This may be because the system cannot obtain the relevant information. For example, if the instance to which the secondary ENI is attached is in the Stopped state or if the secondary ENI is not attached to an instance and is in the Available state, the monitoring data of the secondary ENI cannot be obtained. Take note of the following items:\n\n- Up to 400 monitoring data entries can be returned at a time. Make sure that the `TotalCount` value does not exceed 400. The value is calculated by using the following formula: `TotalCount = (EndTime - StartTime)/Period`. If the TotalCount value is greater than 400, the `InvalidParameter.TooManyDataQueried` error is returned.\n\n- You can query the monitoring data in the last 30 days. If the value of `StartTime` is more than 30 days earlier than the current time, an error is returned."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-eni-monitor-data --eni-id eni-bp19da36d6xdwey0000 --biz-region-id cn-hangzhou --instance-id i-bp1a5zr3u7nq9cx0000 --start-time 2018-05-21T12:19:00Z --end-time 2018-05-21T12:22:00Z --period 60 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeEniMonitorData --region cn-hangzhou --EniId 'eni-bp19da36d6xdwey0000' --EndTime '2018-05-21T12:22:00Z' --InstanceId 'i-bp1a5zr3u7nq9cx0000' --StartTime '2018-05-21T12:19:00Z' --Period 60 --RegionId 'cn-hangzhou'"

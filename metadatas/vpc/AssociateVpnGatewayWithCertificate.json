@@ -1,5 +1,6 @@
 {
   "name": "AssociateVpnGatewayWithCertificate",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "CertificateId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "证书ID。",
+        "en": "The ID of the certificate."
+      }
     },
     {
       "name": "CertificateType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "证书类型。取值：\n\n- **Encryption**：表示指定SSL证书为加密证书。\n- **Signature**：表示指定SSL证书为签名证书。",
+        "en": "The type of the certificate. Valid values:\n\n*   **Encryption**\n*   **Signature**"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：表示只预检此次请求合法性，不会进行绑定操作。检查项包括是否填写了必需参数、请求格式、实例状态等。如果检查不通过，则返回对应错误；如果检查通过，则返回对应请求ID。\n\n- **false**（默认值）：表示发送正常请求，通过检查后直接将VPN网关和证书进行绑定。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request passes the dry run, a request ID is returned. Otherwise, an error message is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPN gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VpnGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例ID。\n\n>仅国密型VPN网关支持绑定证书。",
+        "en": "The ID of the VPN gateway.\n\n> You can associate only VPN gateways of the SM type with certificates."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将VPN网关与证书关联",
+    "en": "AssociateVpnGatewayWithCertificate"
+  },
+  "descriptions": {
+    "zh": "在将VPN网关和SSL证书进行绑定前，请先了解以下信息：\n\n- 仅国密型VPN网关支持绑定SSL证书，您需要为国密型VPN网关绑定2个SSL证书，一个作为加密证书，一个作为签名证书。\n- SSL证书需使用国密算法。\n- 在同一个VPN网关实例下，不支持将同一个SSL证书同时指定为加密证书和签名证书。\n\n<props=\"china\">\n\n- 首次绑定VPN网关和SSL证书时，系统会自动创建一个名称为AliyunServiceRoleForVPNCertificate的服务关联角色，并且为该角色添加名称AliyunServiceRolePolicyForVPNCertificate的权限策略，授予VPN网关拥有访问其他云资源的权限。更多信息，请参见[AliyunServiceRoleForVPNCertificate](~~203323~~)。\n\n</props>\n\n- **AssociateVpnGatewayWithCertificate**接口属于异步接口，即系统先返回一个请求ID，但该VPN网关尚未成功绑定SSL证书，系统后台的绑定任务仍在进行。您可以调用[DescribeVpnGateway](~~73720~~)接口查询SSL证书的绑定状态：\n    - 当VPN网关处于**updating**状态时，表示SSL证书正在绑定中。\n    - 当VPN网关处于**active**状态时，表示SSL证书绑定成功。\n- **AssociateVpnGatewayWithCertificate**接口不支持为同一个VPN网关并发绑定SSL证书。\n\n### 前提条件\n\n请确保您已经在阿里云数字证书管理服务控制台拥有2个使用国密算法的SSL证书。关于SSL证书的更多信息，请参见[什么是数字证书管理服务](~~28535~~)。",
+    "en": "Before you associate a VPN gateway with an SSL certificate, take note of the following items:\n\n*   You can associate only VPN gateways of the ShangMi (SM) type with SSL certificates. You need to associate a VPN gateway of the SM type with two SSL certificates, one as the encryption certificate and the other as the signature certificate.\n\n*   The SSL certificates must use the SM algorithm.\n\n*   You cannot specify one SSL certificate as both the encryption certificate and signature certificate for one VPN gateway.\n\n*   **AssociateVpnGatewayWithCertificate** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeVpnGateway](~~73720~~) operation to query the status of the task.\n\n    *   If the VPN gateway is in the **updating** state, the SSL certificate is being associated.\n    *   If the VPN gateway is in the **active** state, the SSL certificate is being associated.\n\n*   You cannot call **AssociateVpnGatewayWithCertificate** within a specific period of time.\n\n### [](#)Prerequisites\n\nMake sure that you have two SSL certificates that use the SM algorithm in the Certificate Management Service console. For more information about SSL certificates, see [What is Certificate Management Service?](~~28535~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vpc associate-vpn-gateway-with-certificate --biz-region-id cn-hangzhou --vpn-gateway-id vpn-bp1q8bgx4xnkm2ogj0000 --certificate-type Signature --certificate-id 6bfe4218-ea1d0000 --client-token 0c593ea1-3bea0000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc AssociateVpnGatewayWithCertificate --region cn-hangzhou --CertificateType Signature --VpnGatewayId 'vpn-bp1q8bgx4xnkm2ogj0000' --CertificateId '6bfe4218-ea1d0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea0000'"

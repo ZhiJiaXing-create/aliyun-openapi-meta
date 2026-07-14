@@ -1,5 +1,6 @@
 {
   "name": "SwitchDBInstanceNetType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "ConnectionStringPrefix",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自定义连接地址的前辍。由字母，数字组成，小写字母开头，8~64个字符。完整连接地址为：前缀.引擎名.rds.aliyuncs.com。例如test1234.mysql.rds.aliyuncs.com。",
+        "en": "The prefix of the custom endpoint. The prefix must be 8 to 64 characters in length and can contain letters and digits. It must start with a lowercase letter. A valid endpoint is in the following format: Prefix.Database engine.rds.aliyuncs.com. Example: test1234.mysql.rds.aliyuncs.com."
+      }
     },
     {
       "name": "ConnectionStringType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接地址类型，取值：\n* **Normal**：普通连接\n* **ReadWriteSplitting**：读写分离连接\n\n默认返回所有连接。",
+        "en": "The type of the endpoint. Valid values:\n\n*   **Normal**\n*   **ReadWriteSplitting**\n\nBy default, the system returns both types of endpoints."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "端口号，取值：**3001~3999**。",
+        "en": "The number of the port that is used to connect to the instance. Valid values: **3001 to 3999**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "切换经典网络内外网地址",
+    "en": "SwitchDBInstanceNetType"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS SQL Server\n\n### 前提条件\n\n- 实例只有内网地址和外网地址其中一个。\n- 实例状态为运行中。\n- 24小时内切换次数低于20次。\n- 实例的网络类型为经典网络。\n\n### 注意事项\n切换后连接地址会发生变化，需要您修改代码中的连接地址并重启应用。",
+    "en": "### Supported database engines\n\n*   MySQL\n*   SQL Server\n\n### Prerequisites\n\n*   The instance is connected by using its internal or public endpoint.\n*   The instance is in the Running state.\n*   The number of times that you have switched the instance between its internal and public endpoints within the last 24 hours does not reach 20.\n*   The instance resides in the classic network.\n\n### Usage notes\n\nAfter the endpoint that is used to connect to the instance is changed, you must update the endpoint information in the code of your application and restart the application."
+  },
   "example": {
     "unifiedCli": "aliyun rds switch-db-instance-net-type --client-token ETnLKlblzczshOTUbOCz0000 --db-instance-id rm-bp10000 --connection-string-prefix new0000 --port 3306 --connection-string-type Normal --region cn-hangzhou",
     "legacyCli": "aliyun rds SwitchDBInstanceNetType --region cn-hangzhou --DBInstanceId 'rm-bp10000' --Port 3306 --ClientToken ETnLKlblzczshOTUbOCz0000 --ConnectionStringPrefix new0000 --ConnectionStringType Normal"

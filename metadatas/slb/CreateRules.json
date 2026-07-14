@@ -1,5 +1,6 @@
 {
   "name": "CreateRules",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -14,33 +15,60 @@
       "name": "ListenerPort",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例前端使用的监听端口。\n\n取值范围：**1~65535**。",
+        "en": "The frontend listener port of the load balancer instance.\n\nValid values: **1–65535**."
+      }
     },
     {
       "name": "ListenerProtocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "负载均衡实例前端使用的协议。\n\n> 相同端口存在不同协议监听时，此字段必选。",
+        "en": "The frontend protocol of the listener.\n\n> This parameter is required if you configure listeners that use different protocols on the same port."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例ID。",
+        "en": "The ID of the load balancer instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例的地域ID。\n\n您可以通过调用[DescribeRegions](~~27584~~)接口查询地域ID。",
+        "en": "The region ID of the load balancer instance.\n\nYou can call the [DescribeRegions](~~27584~~) operation to query region IDs."
+      }
     },
     {
       "name": "RuleList",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加的转发规则。一次请求中，最多可添加10条转发规则。每条转发规则包含以下参数：\n\n- **RuleName**（必选）：String类型。转发规则名称，长度为1~40个字符，支持字母、数字、短划线（-）、正斜线（/）、半角句号（.）和下划线（_）这些字符。同一个监听内不同规则的名称必须唯一。\n\n- **Domain**（可选）： String类型。转发规则关联的请求域名，与**Url**参数至少选择一个。\n\n- **Url**（可选）：String类型，可选，访问路径，长度限制为1~80个字符，只能使用中文、字母、数字和短划线（-）、正斜线（/）、半角句号（.）、百分号（%）、问号（?）、井号（#）和and（&amp;）这些字符。 URL不能只为正斜线（/），但必须以正斜线（/）开头，与**Domain**参数至少选择一个。\n\n- **VServerGroupId**（必选）：String类型。该转发规则的目标虚拟服务器组ID。\n\n> `Domain`和`Url`两者必须指定一个，也可以同时指定。`Domain`和`Url`的组合在同一个监听内必须唯一。",
+        "en": "The forwarding rules to add. You can add up to 10 forwarding rules in a single request. Each forwarding rule consists of the following parameters:\n\n- **RuleName** (Required): String. The name of the forwarding rule. The name must be 1 to 40 characters in length and can contain letters, digits, hyphens (-), forward slashes (/), periods (.), and underscores (\\_). Rule names must be unique within the same listener.\n\n- **Domain** (Optional): String. The domain name to associate with the forwarding rule. You must specify at least one of this parameter and the **Url** parameter.\n\n- **Url** (Optional): String. The URL path. The path must be 1 to 80 characters in length. It can contain Chinese characters, letters, digits, and the following special characters: `- / . % ? # &`. The URL path must start with a forward slash (/), but cannot be a single forward slash (/). You must specify at least one of this parameter and the **Domain** parameter.\n\n- **VServerGroupId** (Required): String. The ID of the target vServer group for the forwarding rule.\n\n> You must specify the `Domain` parameter, the `Url` parameter, or both. The combination of a `Domain` and a `Url` must be unique within the same listener."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为HTTP或HTTPS监听添加转发规则",
+    "en": "CreateRules"
+  },
   "example": {
     "unifiedCli": "aliyun slb create-rules --biz-region-id cn-hangzhou --load-balancer-id lb-bp1ca0zt07t934w000000 --listener-port 443 --listener-protocol https --rule-list RuleName_:_Rule2_,_Domain_:_test.com_,_VServerGroupId_:_rsp-bp114ni000000 --dry-run true --api-version 2014-05-15 --region cn-hangzhou",
     "legacyCli": "aliyun slb CreateRules --region cn-hangzhou --ListenerPort 443 --RuleList 'RuleName_:_Rule2_,_Domain_:_test.com_,_VServerGroupId_:_rsp-bp114ni000000' --DryRun true --LoadBalancerId 'lb-bp1ca0zt07t934w000000' --RegionId 'cn-hangzhou' --ListenerProtocol https"

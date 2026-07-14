@@ -1,0 +1,90 @@
+{
+  "name": "CreateLocalRecordDownloadByTimeJob",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BeginTime",
+      "position": "Query",
+      "type": "Integer",
+      "required": true,
+      "description": {
+        "zh": "开始时间，格式为10位的时间戳，单位为秒。取值范围0~2147483647。",
+        "en": "The start time, in the format of a 10-digit UNIX timestamp. Unit: seconds. Valid values: 0 to 2147483647."
+      }
+    },
+    {
+      "name": "DeviceName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频设备的设备名称。您可以在物联网平台控制台的**设备**页面，或调用[QueryDevice](~~69905~~)接口查看指定产品下设备的**DeviceName**。\n\n\n><notice>如果传入该参数，需同时传入**ProductKey**。\n></notice>",
+        "en": "The device name of the video device. You can view the **DeviceName** of devices under a specified product on the **Devices** page of the IoT Platform console or by calling the [QueryDevice](~~69905~~) operation.\n\n\n><notice>If you specify this parameter, you must also specify **ProductKey**.\n></notice>."
+      }
+    },
+    {
+      "name": "EndTime",
+      "position": "Query",
+      "type": "Integer",
+      "required": true,
+      "description": {
+        "zh": "结束时间，格式为10位的时间戳，单位为秒。取值范围为0~2147483647，必须大于开始时间**BeginTime**。",
+        "en": "The end time, in the format of a 10-digit UNIX timestamp. Unit: seconds. Valid values: 0 to 2147483647. The value must be greater than the value of **BeginTime**."
+      }
+    },
+    {
+      "name": "IotId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频设备的设备ID。可调用[QueryDeviceDetail](~~69594~~)接口查询。\n\n><notice>\n**IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果传入该参数，则无需传入**ProductKey**和**DeviceName**。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。\n></notice>",
+        "en": "The device ID of the video device. You can call the [QueryDeviceDetail](~~69594~~) operation to query the device ID.\n\n><notice>\n**IotId** is a globally unique identifier of a device and corresponds to a combination of **ProductKey** and **DeviceName** on a one-to-one basis. If you specify this parameter, you do not need to specify **ProductKey** or **DeviceName**. If you specify **IotId** together with **ProductKey** and **DeviceName**, **IotId** takes precedence.\n></notice>."
+      }
+    },
+    {
+      "name": "IotInstanceId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页签，查看当前实例的ID。",
+        "en": "The instance ID. You can view the ID of the current instance on the **Overview** tab of the IoT Platform console."
+      }
+    },
+    {
+      "name": "ProductKey",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频设备所属产品的**ProductKey**。\n\n您可以在物联网平台控制台的**产品**页面或调用[QueryProductList](~~69271~~)接口，查看当前实例下所有产品的信息。\n\n><notice>如果传入该参数，需同时传入**DeviceName**。\n></notice>",
+        "en": "The **ProductKey** of the product to which the video device belongs.\n\nYou can view the information about all products under the current instance on the **Products** page of the IoT Platform console or by calling the [QueryProductList](~~69271~~) operation.\n\n><notice>If you specify this parameter, you must also specify **DeviceName**.\n></notice>."
+      }
+    },
+    {
+      "name": "Speed",
+      "position": "Query",
+      "type": "Float",
+      "required": false,
+      "description": {
+        "zh": "设备上传倍速。 默认值**1.0**，取值范围为**0.125**~**8.0**。",
+        "en": "The upload speed multiplier of the device. Default value: **1.0**. Valid values: **0.125** to **8.0**."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "CreateLocalRecordDownloadByTimeJob",
+    "en": "CreateLocalRecordDownloadByTimeJob"
+  },
+  "descriptions": {
+    "zh": "## 使用限制\n\n- 单次按时间下载时长限制：30分钟。\n- 下载任务和文件最多保存时长为1天, 超时后可重新下载。\n- 单实例最多同时支持下载并发限制为10路（下载完成不计入）。\n- 若音视频编码参数发生变化，默认下载的录像为前半段录像。\n- 由于设备上行网络波动可能引起链路异常断开或者设备主动丢数据，上传和下载的录像可能为不完整的录像文件。\n- 下载的录像数据由设备推流逻辑实现决定，若推流数据异常可能出现下载录像时长与任务设置时间段不一致的情况。\n\n## QPS限制\n\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n\n> 单个阿里云账号下的所有RAM用户共享该阿里云账号的配额。",
+    "en": "## Limits\n\n- The maximum duration for a single time-based download is 30 minutes.\n- Download nodes and files are retained for up to 1 day. After the timeout, you can download the files again.\n- A maximum of 10 concurrent download nodes are supported per instance. Completed downloads are not counted.\n- If audio or video encoding parameters change, the downloaded recording contains only the first half of the recording by default.\n- Due to fluctuations in the upstream network of the device, the link may be abnormally disconnected or the device may actively discard data. As a result, the uploaded and downloaded recordings may be incomplete.\n- The downloaded recording data depends on the stream pushing logic of the device. If the stream pushing data is abnormal, the duration of the downloaded recording may be inconsistent with the time range in the node settings.\n\n## QPS limit\n\nEach Alibaba Cloud account can invoke this operation up to 50 times per second (QPS).\n\n> All Resource Access Management (RAM) users under an Alibaba Cloud account share the quota of the account."
+  }
+}

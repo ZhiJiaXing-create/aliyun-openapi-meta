@@ -1,5 +1,6 @@
 {
   "name": "UploadMediaByURL",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,106 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "应用ID。默认取值：**app-1000000**。 更多信息，请参见[多应用](~~113600~~)。",
+        "en": "The application ID. The default value is **app-1000000**. For more information, see [Multi-application service](~~113600~~)."
+      }
+    },
+    {
+      "name": "EnableFirstFrameCover",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false
+    },
+    {
+      "name": "GenerateThumbnail",
+      "position": "Query",
+      "type": "Boolean",
       "required": false
     },
     {
       "name": "SessionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义去重识别码，如果传递了该参数请求，当检测到在过去10分钟内曾有过相同识别码的请求，则会在本次请求时返回错误。\n>  \n> - 该去重识别码由您自定义设置，长度最长为50个字符，支持大小写英文字母、数字、短划线（-）和下划线（_），不传或者带空字符串表示不去重。",
+        "en": "A custom deduplication identifier. If you specify this parameter in a request, the service returns an error if a request with the same identifier is repeated within 10 minutes.\n\n> - You can customize the identifier. The identifier can be up to 50 characters in length and can contain uppercase letters, lowercase letters, digits, hyphens (-), and underscores (\\_). If you do not specify this parameter or pass an empty string, the service does not perform deduplication."
+      }
     },
     {
       "name": "StorageLocation",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "媒体文件存储地址。\n\n登录[点播控制台](https://vod.console.aliyun.com/?spm=a2c4g.11186623.2.15.6948257eaZ4m54#/vod/settings/censored)，选择**配置管理** > **媒资管理配置** > **存储管理**查看存储地址。不指定时会使用默认存储地址。",
+        "en": "The storage location of the media file.\n\nLog on to the [ApsaraVideo for VOD console](https://vod.console.aliyun.com/?spm=a2c4g.11186623.2.15.6948257eaZ4m54#/vod/settings/censored). In the left-side navigation pane, choose **Configuration Management** > **Media Asset Management** > **Storage** to view the storage location. If you do not specify this parameter, the default storage location is used."
+      }
     },
     {
       "name": "TemplateGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码模板组ID。可通过以下方式获取：\n- 登录[点播控制台](https://vod.console.aliyun.com)，选择**配置管理** > **媒体处理配置** > **转码模板组**查看转码模版组ID。\n- 通过[创建转码模板组](~~102665~~)接口创建转码模板组时，转码模板组ID为返回参数TranscodeTemplateGroupId的值。\n- 通过[查询转码配置列表](~~102669~~)接口查询转码模板组时，为请求后返回参数TranscodeTemplateGroupId的值。\n\n>- 不设置转码模板组ID，则按默认的转码模板组进行转码；设置了转码模板组ID时，会使用该指定的模板组进行转码。\n>- 可以在`UploadMetadatas`中进行设置，如果在UploadMetadatas中设置了TemplateGroupId，此处也设置了TemplateGroupId，则以UploadMetadatas中设置的TemplateGroupId为准。",
+        "en": "The ID of the transcoding template group. You can obtain the ID in one of the following ways:\n\n- Log on to the [ApsaraVideo for VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Configuration Management** > **Media Processing** > **Transcoding Template Groups** to view the transcoding template group ID.\n\n- The value of `TranscodeTemplateGroupId` in the response to the [AddTranscodeTemplateGroup](~~102665~~) operation.\n\n- The value of `TranscodeTemplateGroupId` in the response to the [ListTranscodeTemplateGroup](~~102669~~) operation.\n\n> * If you do not specify this parameter, the default transcoding template group is used. If you specify this parameter, the specified transcoding template group is used.\n>\n> * You can also set this parameter in `UploadMetadatas`. If you set `TemplateGroupId` in both `UploadMetadatas` and at this level, the `TemplateGroupId` in `UploadMetadatas` takes precedence."
+      }
     },
     {
       "name": "UploadMetadatas",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "上传媒体文件的元数据信息，为JSON字符串。\n\n- 与UploadURLs里的URL匹配才能生效。\n- JSON格式：`[UploadMetadata, UploadMetadata,…]`，需转为JSON字符串 。\n- 更多信息，请参见下表**UploadMetadata**。",
+        "en": "The metadata of the media file to be uploaded. The value must be a JSON string.\n\n- This parameter takes effect only when it matches a URL in `UploadURLs`.\n\n- The value must be a JSON string that represents an array of `UploadMetadata` objects.\n\n- For more information, see the **UploadMetadata** table below."
+      }
     },
     {
       "name": "UploadURLs",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "媒体源文件URL。\n- URL中需要包括扩展名, 比如`https://****.mp4`中mp4为扩展名。\n    - 如果URL中不包含扩展名，可以在`UploadMetadatas`中传入`FileExtension`来指定。\n    - 如果URL中有扩展名且同时传入`FileExtension`，以传入的`FileExtension`为准。\n    - 指定支持的扩展名，请参见[上传概述](~~55396~~)。\n\n> - URL编码，多个地址之间以半角逗号（,）分隔，最多支持20个， 避免存在特殊字符导致无法上传视频，需要**URL编码后**再做逗号拼接。",
+        "en": "The URLs of the source media files.\n\n- The URL must include the file extension. For example, mp4 is the file extension in `https://****.mp4`.\n\n  - If the URL does not contain a file extension, you can specify one by setting the `FileExtension` parameter in `UploadMetadatas`.\n\n  - If you specify a file extension in both the URL and the `FileExtension` parameter, the value of the `FileExtension` parameter takes precedence.\n\n  - For a list of supported file extensions, see [Overview of uploads](~~55396~~).\n\n> * You can specify up to 20 URLs. Separate multiple URLs with commas (,). To prevent upload failures caused by special characters, you must **URL-encode** each URL before you concatenate them with commas."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义设置。为JSON字符串，支持消息回调、上传加速等设置。更多信息，请参见[UserData](~~86952#UserData~~)。\n\n> - 此参数中消息回调的使用前提是需要在控制台配置HTTP回调地址和勾选对应的回调事件类型才能使用，否则回调设置不生效。控制台配置HTTP回调的操作，请参考[回调设置](~~86071~~)。\n> - 如需使用上传加速功能，您需要提交工单申请开通，更多信息，请参见[上传相关说明](~~55396~~)。关于如何提交工单，请参见[联系我们](~~464625~~)。",
+        "en": "Custom settings. The value must be a JSON string. This parameter supports features such as message callbacks and upload acceleration. For more information, see [UserData](~~86952#UserData~~).\n\n> - To use message callbacks, you must configure an HTTP callback URL and select the corresponding event types in the console. Otherwise, the callback settings do not take effect. For more information about how to configure HTTP callbacks in the console, see [Callback settings](~~86071~~).\n>\n> - To use the upload acceleration feature, you must submit a ticket to enable it. For more information, see [Upload-related notes](~~55396~~). For information on how to submit a ticket, see [Contact us](~~464625~~)."
+      }
     },
     {
       "name": "WorkflowId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工作流ID。可登录[点播控制台](https://vod.console.aliyun.com)，选择**配置管理** > **媒体处理配置** > **工作流管理**查看工作流ID。\n\n> 如果同时传递了WorkflowId和TemplateGroupId，以WorkflowId为准。使用说明，请参见[工作流](~~115347~~)。",
+        "en": "The workflow ID. To view the workflow ID, log on to the [ApsaraVideo for VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Configuration Management** > **Media Processing** > **Workflows**.\n\n> If you specify both `WorkflowId` and `TemplateGroupId`, `WorkflowId` takes precedence. For more information, see [Workflows](~~115347~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "URL批量拉取上传",
+    "en": "UploadMediaByURL"
+  },
+  "descriptions": {
+    "zh": "- **请确保在使用该接口前，已充分了解视频点播产品的收费方式和价格。媒资文件上传到视频点播中会产生存储费用，计费详情，请参见[媒资存储计费](~~188308#section_e97_xrp_mzz~~)。如果您已开通了存储传输加速，则上传媒资文件到视频点播时还将涉及上传加速费用，计费详情请参见[存储传输加速计费](~~188310#section_sta_zm2_tsv~~)。**\n- 本接口支持上传的媒体文件格式，请参见[媒体格式](~~55396#section-e27-2rj-mde~~)。\n- 本接口主要适用于文件没有存储在本地服务器或终端，需要通过公网访问的URL地址上传的场景。\n- 本接口为[异步上传接口](~~3027551~~)，非实时，不保证时效性，一般提交后会在数小时、甚至数天内完成迁移上传。如果对时效性要求较高，建议使用上传SDK上传。\n- 如果配置了回调，则上传完成后会收到[URL上传视频完成](~~86326~~)的事件通知，可以通过[获取URL上传信息](~~106830~~)接口查询上传状态。\n- 上传任务提交成功后，会在云端生成异步执行的任务，相应服务地域下所有用户提交的URL上传任务进行排队执行，完成时间受已有任务数量影响；上传完成后可根据事件通知（消息回调）返回的URL和视频ID等信息进行关联。\n- 本接口目前仅支持**华东2（上海）**、**华北2（北京）**、**华南1（深圳）**、**新加坡**、**美国**（**硅谷**）地域。\n- 同一个媒体文件URL，每次提交上传任务都会在点播中产生一个新的媒体资源（即产生新的媒体ID）。\n- 单个文件超过20GB时，将导致上传失败。如您有单个文件超过20GB的上传需求，请使用上传SDK进行上传。详细信息请参见[上传SDK概述](~~52200~~)。",
+    "en": "- **Before calling this operation, ensure you understand the billing methods and pricing of ApsaraVideo for VOD. Uploading media asset files to ApsaraVideo for VOD incurs storage fees. For more information, see [Media storage](~~188308#section_e97_xrp_mzz~~). If you have enabled storage transfer acceleration, uploading media asset files to ApsaraVideo for VOD also incurs upload acceleration fees. For more information, see [storage transfer acceleration](~~188310#section_sta_zm2_tsv~~).**\n\n- For a list of supported media formats, see [Media formats](~~55396#section-e27-2rj-mde~~).\n\n- Use this operation to upload files from a public URL instead of from a local server or device.\n\n- This is an [asynchronous upload API](~~3027551~~). The operation does not complete in real time and has no guaranteed processing time. A job may take several hours or even days to complete. For faster uploads, use an upload SDK.\n\n- If you configure a [callback](~~86326~~), you receive an `URLUploadComplete` event notification after the upload completes. You can call the [GetURLUploadInfos](~~106830~~) operation to query the upload status.\n\n- When you submit an upload job, the service creates an asynchronous task. The service queues URL upload jobs from all users in the same region. The time it takes to complete a job depends on the number of existing jobs. After the upload is complete, you can use the URL and video ID returned in the event notification to associate resources.\n\n- This operation is available only in the following regions: **China (Shanghai)**, **China (Beijing)**, **China (Shenzhen)**, **Singapore**, and **US** (**Silicon Valley**).\n\n- Each time you submit an upload job for the same media file URL, ApsaraVideo for VOD creates a new media resource with a new media ID.\n\n- If a single file exceeds 20 GB, the upload fails. If you need to upload files larger than 20 GB, use an upload SDK. For more information, see [Overview of upload SDKs](~~52200~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vod upload-media-by-url --upload-urls https://0000.mp4 --template-group-id ca3a8f6e4957b658067095860000 --storage-location outin-bfefbb90a47c000000163e1c7426.oss-cn-shanghai.aliyuncs.com --upload-metadatas SourceURL_:_https://example.aliyundoc.com/video01.mp4_,_Title_:_urlUploadTest --user-data MessageCallback_:_CallbackURL_:_http://example.aliyundoc.com_,_Extend_:_localId_:_xxx_,_test_:_www --app-id app-0000 --workflow-id e1e243b42548248197d6f74f90000 --session-id 5c62d40299034bbaa4c195da3300000 --enable-first-frame-cover true --generate-thumbnail true --region cn-hangzhou",
     "legacyCli": "aliyun vod UploadMediaByURL --region cn-hangzhou --UploadURLs 'https://0000.mp4' --EnableFirstFrameCover true --GenerateThumbnail true --AppId 'app-0000' --UserData 'MessageCallback_:_CallbackURL_:_http://example.aliyundoc.com_,_Extend_:_localId_:_xxx_,_test_:_www' --UploadMetadatas 'SourceURL_:_https://example.aliyundoc.com/video01.mp4_,_Title_:_urlUploadTest' --StorageLocation 'outin-bfefbb90a47c000000163e1c7426.oss-cn-shanghai.aliyuncs.com' --WorkflowId e1e243b42548248197d6f74f90000 --SessionId 5c62d40299034bbaa4c195da3300000 --TemplateGroupId ca3a8f6e4957b658067095860000"

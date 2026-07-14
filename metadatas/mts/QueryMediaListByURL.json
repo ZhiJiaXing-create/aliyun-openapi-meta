@@ -1,5 +1,6 @@
 {
   "name": "QueryMediaListByURL",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "FileURLs",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询的媒体文件地址，可以登录MPS控制台，通过**媒体管理** > **媒体列表**找到需要查询的媒体文件，单击**操作**列**管理**，在**获取转码地址**页签中获取媒体文件地址。用半角逗号（,）分隔，一次最多查询10个。\n- URL遵循RFC 3986（UTF8编码，并对保留字符进行URLEncode。更多信息，请参见[URLEncode说明](~~423796~~)），不超过3200字节。\n\n- 仅支持OSS HTTP地址，不支持CDN地址和HTTPS地址。",
+        "en": "The URLs of the media files that you want to query. To obtain the URL of a media file, log on to the MPS console, choose **Media Management** > **Media List**, find the media file, and then click **Manage** in the **Actions** column. On the **Get Transcoding URL** tab, you can obtain the URL of the media file. Separate multiple URLs with commas (,). You can query a maximum of 10 URLs at a time.\n\n- The URL must be compliant with RFC 3986. The URL must be encoded in UTF-8, and reserved characters must be URL-encoded. For more information, see [URL encoding](~~423796~~). The URL can be up to 3,200 bytes in length.\n\n- Only OSS HTTP URLs are supported. CDN and HTTPS URLs are not supported."
+      }
     },
     {
       "name": "IncludeMediaInfo",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果中是否包含媒体信息。\n- 取值范围：true（包含）、false（不包含）。\n\n- 默认值：**false**。\n\n    > 如需获取详细MediaInfo信息，请将本参数设置为true。",
+        "en": "Specifies whether to include media information in the response.\n\n- Valid values: true and false.\n\n- Default value: **false**.\n\n  > To obtain detailed MediaInfo, set this parameter to true."
+      }
     },
     {
       "name": "IncludePlayList",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果中是否包含播放信息。\n\n- 取值范围：true（包含）、false（不包含）。\n\n- 默认值：**false**。",
+        "en": "Specifies whether to include playback information in the response.\n\n- Valid values: true and false.\n\n- Default value: **false**."
+      }
     },
     {
       "name": "IncludeSnapshotList",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果中是否包含截图信息。\n- 取值范围：true（包含）、false（不包含）。\n\n- 默认值：**false**。",
+        "en": "Specifies whether to include snapshot information in the response.\n\n- Valid values: true and false.\n\n- Default value: **false**."
+      }
     },
     {
       "name": "IncludeSummaryList",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果中是否包含摘要列表。\n- 取值范围：true（是）、false（否）。\n\n- 默认值：**false**。",
+        "en": "Specifies whether to include a list of video synopses in the response.\n\n- Valid values: true and false.\n\n- Default value: **false**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通过媒体的输入地址进行媒体信息的查询",
+    "en": "Query media information by media input URL"
+  },
+  "descriptions": {
+    "zh": "- 本接口一次最多查询10个媒体文件。\n- 调用本接口前，请先调用[新增媒体](~~44458~~)接口新增媒体文件，再调用本接口查询媒体信息。\n- 本接口仅支持查询工作流处理的文件信息。新上传的媒体文件，需要工作流执行完成后，通过本接口获取的文件信息才会完整。非工作流处理任务要想获得视频数据信息，需要调用[SubmitMediaInfoJob](~~29220~~)处理媒体信息作业之后方可查看。\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "- You can query a maximum of 10 media files at a time.\n\n- Before you call this operation, you must call the [AddMedia](~~44458~~) operation to add media files. You can then call this operation to query media information.\n\n- This operation can query information only about files that have been processed by a workflow. For newly uploaded media files, the information returned by this operation is complete only after the workflow is executed. To retrieve information about videos that have not been processed by a workflow, you must call the [SubmitMediaInfoJob](~~29220~~) operation to submit a media information analysis job.\n\n## QPS limits\n\nThe queries per second (QPS) limit for this operation is 100 per user. Throttling is triggered if the limit is exceeded, which may affect your business. Plan your calls accordingly. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts query-media-list-by-url --file-urls http://example-bucket-0000.oss-cn-shanghai.aliyuncs.com/example.mp4 --include-play-list true --include-snapshot-list true --include-media-info true --include-summary-list true --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts QueryMediaListByURL --region cn-hangzhou --IncludeSummaryList true --FileURLs 'http://example-bucket-0000.oss-cn-shanghai.aliyuncs.com/example.mp4' --IncludeSnapshotList true --IncludeMediaInfo true --IncludePlayList true"

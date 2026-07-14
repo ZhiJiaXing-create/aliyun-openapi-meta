@@ -1,5 +1,6 @@
 {
   "name": "CreateLifecyclePolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST|PUT",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期策略描述。\n\n格式：\n长度为3-64个字符，必须以字母开头，可以包含英文字母、数字、下划线（_）或者短划线（-）。\n>仅 CPFS 智算版支持。",
+        "en": "The description of the lifecycle policy.\n\nFormat:\nThe description must be 3 to 64 characters in length, start with a letter, and can contain letters, digits, underscores (\\_), or hyphens (-).\n>Only CPFS for Lingjun is supported."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。",
+        "en": "The file system ID."
+      }
     },
     {
       "name": "LifecyclePolicyName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期管理策略名称。 长度为 3~64 个字符，必须以大写字母或小写字母开头，可以包含英文字母、数字、下划线（_）或者短划线（-）。\n\n>通用型 NAS 必须传入，CPFS 智算版无需填入。",
+        "en": "The Policy Name of the lifecycle management policy. The name must be 3 to 64 characters in length, start with an uppercase letter or lowercase letter, and can contain letters, digits, underscores (\\_), or hyphens (-).\n\n>This parameter is required for General-purpose NAS but not required for CPFS for Lingjun."
+      }
     },
     {
       "name": "LifecyclePolicyType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略类型\n- Auto（默认）：自动执行。\n-  OnDemand：按需执行。",
+        "en": "The policy type.\n- Auto (default): automatic execution.\n- OnDemand: on-demand execution."
+      }
     },
     {
       "name": "LifecycleRuleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期管理策略关联的管理规则。仅通用型 NAS 支持。\n\n取值：\n\n- DEFAULT_ATIME_14：距今14天未访问的文件。\n- DEFAULT_ATIME_30：距今30天未访问的文件。\n- DEFAULT_ATIME_60：距今60天未访问的文件 。\n- DEFAULT_ATIME_90：距今90天未访问的文件。\n- DEFAULT_ATIME_180：距今180天未访问的文件。仅当StorageType=Archive时，支持DEFAULT_ATIME_180。\n>- 如果该目录已经设置了低频策略，再次设置归档策略的时候，归档策略的时间要比低频策略设置的长。\n> -  仅通用型NAS支持该参数。",
+        "en": "The management rule associated with the lifecycle management policy. Only General-purpose NAS is supported.\n\nValid values:\n\n- DEFAULT_ATIME_14: files that have not been accessed for 14 days.\n- DEFAULT_ATIME_30: files that have not been accessed for 30 days.\n- DEFAULT_ATIME_60: files that have not been accessed for 60 days.\n- DEFAULT_ATIME_90: files that have not been accessed for 90 days.\n- DEFAULT_ATIME_180: files that have not been accessed for 180 days. DEFAULT_ATIME_180 is supported only when StorageType is set to Archive.\n>- If an IA storage class policy has already been configured for the directory, the archive policy duration must be longer than the IA storage class policy duration.\n> - Only General-purpose NAS supports this parameter."
+      }
     },
     {
       "name": "Path",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期管理策略关联目录的绝对路径。仅支持通用型NAS。\n\n- 通用型NAS仅支持关联单个目录。必须以正斜线（/）开头，并且是挂载点中真实存在的路径。\n\n> 仅支持通用型NAS。通用型NAS建议您配置Paths.N，可以同时关联多个目录。\n>- Path和Paths 有且只能存在一个入参。",
+        "en": "The absolute path of the directory associated with the lifecycle management policy. Only General-purpose NAS is supported.\n\n- General-purpose NAS supports associating only a single directory. The path must start with a forward slash (/) and must be an existing path in the mount target.\n\n> Only General-purpose NAS is supported. For General-purpose NAS, use Paths.N to associate multiple directories at the same time.\n>- Only one of Path and Paths can be specified."
+      }
     },
     {
       "name": "Paths",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期管理策略关联目录的绝对路径。",
+        "en": "The absolute paths of directories associated with the lifecycle management policy."
+      }
     },
     {
       "name": "RetrieveRules",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "文件数据取回规则，最多配置 1 个。\n>仅 CPFS 智算版文件系统支持。\n\n>LifecyclePolicyType为OnDemand，主动沉降（TransitRules）/取回规则（RetrieveRules）必须至少选填一个。",
+        "en": "The file data retrieval rules. A maximum of one rule can be configured.\n>Only CPFS for Lingjun file systems are supported.\n\n>When LifecyclePolicyType is set to OnDemand, at least one of TransitRules or RetrieveRules must be specified."
+      },
       "sub_parameters": [
         {
           "name": "Attribute",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的属性，取值：\n- RetrieveType:  取回方式",
+            "en": "The rule attribute. Valid values:\n- RetrieveType: the retrieval method."
+          }
         },
         {
           "name": "Threshold",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的阈值，取值：\n- RetrieveType\n    - AfterVisit： LifecyclePolicyType=Auto 支持，代表尽力 recall on visit\n    - All:  LifecyclePolicyType=OnDemand 支持，代表取回所有",
+            "en": "The rule threshold. Valid values:\n- RetrieveType\n    - AfterVisit: supported when LifecyclePolicyType is set to Auto. Indicates best-effort recall on visit.\n    - All: supported when LifecyclePolicyType is set to OnDemand. Indicates retrieving all data."
+          }
         }
       ]
     },
@@ -70,29 +111,56 @@
       "name": "StorageType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "分级存储类型。\n- InfrequentAccess：低频存储。\n- Archive：归档存储。\n\n>通用型 NAS支持 InfrequentAccess和Archive； CPFS 智算版仅支持 InfrequentAccess。",
+        "en": "The storage type.\n- InfrequentAccess: IA storage class.\n- Archive: Archive storage.\n\n>General-purpose NAS supports InfrequentAccess and Archive. CPFS for Lingjun supports only InfrequentAccess."
+      }
     },
     {
       "name": "TransitRules",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "文件数据转储规则，最多配置 1 个。\n\n>仅 CPFS 智算版文件系统的 LifecyclePolicyType=Auto 时支持",
+        "en": "The file data transit rules. A maximum of one rule can be configured.\n\n>Supported only when LifecyclePolicyType is set to Auto for CPFS for Lingjun file systems."
+      },
       "sub_parameters": [
         {
           "name": "Attribute",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的属性。\n\n取值：\n- Atime: 文件的访问时间。",
+            "en": "The rule attribute.\n\nValid values:\n- Atime: the access time of the file."
+          }
         },
         {
           "name": "Threshold",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的阈值。\n\n取值：\n- 当 Attribute 为 Atime 时，表示多少天未访问的文件，取值范围[0,365]",
+            "en": "The rule threshold.\n\nValid values:\n- When Attribute is set to Atime, the value indicates the number of days since the file was last accessed. Valid values: 0 to 365."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建生命周期管理策略",
+    "en": "Create a lifecycle management policy"
+  },
+  "descriptions": {
+    "zh": "- 仅通用型NAS文件系统和CPFS智算版支持创建生命周期管理策略。\n- 每个 CPFS 智算版文件系统最多创建 10 个 Auto 类型 和 100 个 OnDemand 类型的生命周期管理策略。\n- 每个地域可以创建 20 个通用型 NAS 的生命周期管理策略。",
+    "en": "- Only General-purpose NAS file systems and CPFS for Lingjun support creating lifecycle management policies.\n- Each CPFS for Lingjun file system supports a maximum of 10 Auto-type and 100 OnDemand-type lifecycle management policies.\n- A maximum of 20 lifecycle management policies can be created for General-purpose NAS in each region."
+  },
   "example": {
     "unifiedCli": "aliyun nas create-lifecycle-policy --file-system-id 31a8e40000 --lifecycle-policy-name lifecyclepolicy_01 --path /pathway/to/folder --lifecycle-rule-name DEFAULT_ATIME_14 --storage-type InfrequentAccess --paths “/path1 --description '描述' --lifecycle-policy-type Auto --transit-rules Attribute=Atime Threshold=3 --retrieve-rules Attribute=RetrieveType Threshold=All --region cn-hangzhou",
     "legacyCli": "aliyun nas CreateLifecyclePolicy --region cn-hangzhou --Path '/pathway/to/folder' --LifecyclePolicyName lifecyclepolicy_01 --StorageType InfrequentAccess --Description '描述' --TransitRules.1.Threshold 3 --RetrieveRules.1.Attribute RetrieveType --LifecycleRuleName DEFAULT_ATIME_14 --RetrieveRules.1.Threshold All --TransitRules.1.Attribute Atime --FileSystemId 31a8e40000 --Paths.1 '“/path1' --LifecyclePolicyType Auto"

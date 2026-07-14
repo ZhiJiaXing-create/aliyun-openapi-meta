@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveDomainBpsDataByLayer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播流域名。支持批量域名查询，多个域名用英文逗号（,）分隔。若参数为空，默认返回所有域名合并后数据。",
+        "en": "The streaming domain. You can specify multiple domain names separated by commas (,). If this parameter is left empty, the aggregated data of all domain names is returned by default."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间需大于起始时间，格式为：<i>yyyy-MM-ddTHH:mm:ssZ</i>（UTC时间）。",
+        "en": "The end of the time range to query, in the format of <i>yyyy-MM-ddTHH:mm:ssZ</i> (UTC). The end time must be later than the start time."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询数据的时间粒度，单位：秒（s）。取值：\n\n- **300**\n\n- **3600**\n\n- **86400**\n> -  数据间隔≤3天，支持数据时间粒度300、3600、86400。\n> - 3天＜数据间隔≤31天，支持数据时间粒度3600和86400。\n> - 数据间隔＞31天，支持数据时间粒度86400。\n> - 不传和传的值不支持时，使用默认值300。",
+        "en": "The time granularity of the data to query. Unit: seconds. Valid values:\n\n- **300**\n\n- **3600**\n\n- **86400**\n> - Time range ≤ 3 days: Valid data timestamp granularity values are 300, 3600, and 86400.\n> - 3 days < time range ≤ 31 days: Valid data timestamp granularity values are 3600 and 86400.\n> - Time range > 31 days: The only valid value is 86400.\n> - If this parameter is not specified or the specified value is not supported, the default value 300 is used."
+      }
     },
     {
       "name": "IspNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商英文名，不传为所有运营商。\n>您可调用[DescribeLiveRegionAndIsp](~~91077~~)接口获取区域英文名和运营商英文名。",
+        "en": "The name of the Internet service provider (ISP) in English. If this parameter is not specified, data for all ISPs is returned.\n>You can call the [DescribeLiveRegionAndIsp](~~91077~~) operation to query the English names of regions and ISPs."
+      }
     },
     {
       "name": "Layer",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询维度。可选：\n\n- 网络层（IPv4、IPv6）\n\n- 应用层（http、https、quic）\n\n- all（默认为all）\n\n允许值：all | IPv4 | IPv6 | http | https | quic（大小写敏感）。",
+        "en": "The query dimension. Valid values:\n\n- Network layer (IPv4, IPv6)\n\n- Application layer (http, https, quic)\n\n- all (default)\n\nValid values: all | IPv4 | IPv6 | http | https | quic (case-sensitive)."
+      }
     },
     {
       "name": "LocationNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "区域英文名，不传为所有区域 。\n>您可调用[DescribeLiveRegionAndIsp](~~91077~~)接口获取区域英文名和运营商英文名。",
+        "en": "The name of the region in English. If this parameter is not specified, data for all regions is returned.\n>You can call the [DescribeLiveRegionAndIsp](~~91077~~) operation to query the English names of regions and ISPs."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间，格式为：<i>yyyy-MM-ddTHH:mm:ssZ</i>（UTC时间）。\n>不填默认读取过去24小时数据，最小数据粒度为5分钟。",
+        "en": "The beginning of the time range to query, in the format of <i>yyyy-MM-ddTHH:mm:ssZ</i> (UTC).\n>If this parameter is not specified, data for the last 24 hours is returned by default. The minimum data granularity is 5 minutes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "按协议分类查询域名带宽及流量数据",
+    "en": "Query domain name bandwidth and traffic data by protocol"
+  },
+  "descriptions": {
+    "zh": "支持数据存储时长90天。\n支持批量域名查询，多个域名之间用英文逗号（,）分隔，最多支持500个域名。多个域名会按照聚合结果输出。\n**StartTime**和**EndTime**数据间隔跨度不同返回时间粒度也不同，具体如下：\n\n- 数据间隔≤3天，返回时间粒度五分钟。\n\n- 3天＜数据间隔≤31天，返回时间粒度1小时。\n\n- 数据间隔＞31天，返回时间粒度1天。\n\n>如果**StartTime**和**EndTime**均未指定数值，默认返回当前时间起24小时内数据。\n\n## QPS限制\n本接口的单用户QPS限制为20次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "The storage duration of data is up to 90 days.\nYou can query data for multiple domain names at a time. Separate multiple domain names with commas (,). A maximum of 500 domain names are supported. Data for multiple domain names is returned as aggregation results.\nThe time granularity of returned data varies based on the time range specified by **StartTime** and **EndTime**:\n\n- Time range ≤ 3 days: The time granularity is 5 minutes.\n\n- 3 days < time range ≤ 31 days: The time granularity is 1 hour.\n\n- Time range > 31 days: The time granularity is 1 day.\n\n>If neither **StartTime** nor **EndTime** is specified, data for the last 24 hours is returned by default.\n\n## QPS limit\nThe single-user QPS limit for this operation is 20 calls per second. If the limit is exceeded, API calls are throttled, which may affect your business. Invoke this operation appropriately."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-domain-bps-data-by-layer --biz-region-id cn-hangzhou --domain-name pull.aliyundoc.com --start-time 2022-03-15T16:00:00Z --end-time 2022-03-16T16:59:59Z --interval 300 --isp-name-en tele000 --location-name-en hangzhou --layer all --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveDomainBpsDataByLayer --region cn-hangzhou --IspNameEn tele000 --EndTime '2022-03-16T16:59:59Z' --DomainName 'pull.aliyundoc.com' --LocationNameEn hangzhou --StartTime '2022-03-15T16:00:00Z' --RegionId 'cn-hangzhou' --Layer all --Interval 300"

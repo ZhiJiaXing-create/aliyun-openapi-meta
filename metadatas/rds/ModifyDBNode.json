@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBNode",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,49 +9,81 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动支付。\n取值范围：\n\n1. **true**：自动支付。您需要确保账户余额充足。\n\n1. **false**：只生成订单不扣费。\n\n\n\n\n> 默认值为true。如果您的支付方式余额不足，可以将参数AutoPay设置为false，此时会生成未支付订单，您可以登录RDS管理控制台自行支付。\n>",
+        "en": "Specifies whether to automatically complete the payment. Valid values:\n\n1.  **true**: automatically completes the payment. Make sure that your account balance is sufficient.\n2.  **false**: does not automatically complete the payment. An unpaid order is generated.\n\n>  The default value is true. If your account balance is insufficient, you can set the AutoPay parameter to false to generate an unpaid order. Then, you can log on to the ApsaraDB RDS console to pay for the order."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性。",
+        "en": "The client token that is used to ensure the idempotence of the request."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "DBInstanceStorage",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新实例存储容量。单位：GB。详情请参见[实例规格](~~26312~~)。",
+        "en": "The new storage capacity of the instance. Unit: GB For more information, see [Instance types](~~26312~~)."
+      }
     },
     {
       "name": "DBInstanceStorageType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例储存类型，取值：\n* **cloud_essd**：ESSD PL1云盘\n* **cloud_essd2**：ESSD PL2云盘\n* **cloud_essd3**：ESSD PL3云盘",
+        "en": "The storage type of the instance. Valid values:\n\n*   **cloud_essd**: performance level 1 (PL1) enhanced SSD (ESSD)\n*   **cloud_essd2**: PL2 ESSD\n*   **cloud_essd3**: PL3 ESSD"
+      }
     },
     {
       "name": "DBNode",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "节点相关信息。\n> 该参数用于MySQL集群系列实例。",
+        "en": "The information about the node.\n\n>  This parameter is used for ApsaraDB RDS for MySQL instances that run RDS Cluster Edition."
+      },
       "sub_parameters": [
         {
           "name": "classCode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点规格信息。",
+            "en": "The specification information about the node."
+          }
         },
         {
           "name": "nodeId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点ID。",
+            "en": "The node ID."
+          }
         }
       ]
     },
@@ -58,21 +91,44 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对本次节点变更的操作执行预检查。取值范围：\n* **true**：执行预检查操作，不执行变更。检查项目包含请求参数、请求格式、业务限制和库存等。\n* **false**：发送正常请求，通过检查后直接执行变更（默认）。",
+        "en": "Specifies whether to perform a dry run. Valid values: Valid values:\n\n*   **true**: performs a dry run and does not perform the actual request. The system checks items such as the request parameters, request format, service limits, and available resources.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, the operation is performed."
+      }
     },
     {
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生效时间，取值：\n* **Immediate**（默认值）：立即生效。\n* **MaintainTime**：在可运维时间段内生效，请参见ModifyDBInstanceMaintainTime。",
+        "en": "The time when you want the change to take effect. Valid values:\n\n*   **Immediate** (default): The change immediately takes effect.\n*   **MaintainTime**: The effective time is within the maintenance window. For more information, see ModifyDBInstanceMaintainTime."
+      }
     },
     {
       "name": "ProduceAsync",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否异步执行生产。取值范围：\n* **true**：请求只下发订单，变更操作会异步执行（默认）。\n* **false**：请求下发的同时，通过检查后直接执行变更。\n\n> 默认值为true，变更操作异步执行。如果设置为false，变更操作同步执行，接口响应时间会相对较长。",
+        "en": "Specifies whether to asynchronously perform the operation. Valid values:\n\n*   **true** (default): sends only the order. The operation is asynchronously performed.\n*   **false**: sends the request. After the request passes the check, the operation is directly performed.\n\n>  The default value is true, which indicates that the change operation is asynchronously performed. If you set this parameter to false, the change operation is simultaneously performed. This prolongs the response time of the operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更RDS实例节点",
+    "en": "ModifyDBNode"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n\n### 相关功能文档\n [变更节点配置](~~2627998~~)\n><warning>该API操作涉及费用，请仔细阅读相关功能文档后再进行操作。></warning>",
+    "en": "### [](#)Supported database engine\n\n*   MySQL\n\n### [](#)References\n\n[Change instance specifications](~~2627998~~)\n\n>  Fees of an instance are changed if the call is successful. Before you call this operation, carefully read the related topics."
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-db-node --client-token ETnLKlblzczshOTUbOCzxxxxxxx --db-instance-id rm-bp1k8s41l2o520000 --db-instance-storage-type cloud_essd --db-instance-storage 20 --db-node classCode=mysql.n2.medium.xc nodeId=rn-6256r4a87xvv70000 --effective-time Immediate --auto-pay true --dry-run false --produce-async true --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyDBNode --region cn-hangzhou --DBNode '[{\"classCode\":\"mysql.n2.medium.xc\",\"nodeId\":\"rn-6256r4a87xvv70000\"}]' --DBInstanceId 'rm-bp1k8s41l2o520000' --EffectiveTime Immediate --DBInstanceStorage 20 --DryRun false --ProduceAsync true --AutoPay true --ClientToken ETnLKlblzczshOTUbOCzxxxxxxx --DBInstanceStorageType cloud_essd"

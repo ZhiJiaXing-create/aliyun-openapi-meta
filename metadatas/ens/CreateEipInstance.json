@@ -1,5 +1,6 @@
 {
   "name": "CreateEipInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,83 +9,146 @@
       "name": "Bandwidth",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "EIP的带宽峰值，默认值为5。取值范围：5~10000，单位：Mbps。",
+        "en": "The peak bandwidth of the EIP. Default value: 5. Unit: Mbit/s. Valid values: 5 to 10000."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，避免多次重试带来重复操作的问题。\n\n- 从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持 ASCII 字符，且不能超过 64 个字符 。\n\n- 当您使用了一个已经使用过的ClientToken，其他请求参数无变化，那么重复提交该请求后，客户端将收到与首次提交相同的结果，对您的服务端状态没有影响\n\n- 在接口超时或者错误码为PROCESSING的时候可以发起重试，幂等有效。返回结果是200 HTTPCode时，重试后客户端可以得到与上次相同的结果，但对您的服务端状态没有影响；返回结果是4xx HTTPCode时，且错误码不是PROCESSING则幂等无效。\n\n- ClientToken有效期为10分钟。",
+        "en": "A client-generated token that ensures the idempotence of the request. This prevents duplicate operations if you retry the request.\n\n- You can generate a unique, case-sensitive string that contains only ASCII characters and is no more than 64 characters in length.\n\n- If you use a previously used client token with the same request parameters, the server returns the same result as the original request without changing its state.\n\n- You can safely retry requests that time out or return a `PROCESSING` error code. Idempotence is guaranteed if the original request was successful (HTTP status code `200`). However, it is not guaranteed if the original request failed with an HTTP `4xx` error code other than `PROCESSING`.\n\n- The token is valid for 10 minutes."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述。",
+        "en": "The description."
+      }
     },
     {
       "name": "EnsRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ENS节点ID。",
+        "en": "The ID of the edge node."
+      }
     },
     {
       "name": "InstanceChargeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "EIP的计费方式，当前取值仅支持**PostPaid**（月按量计费）。",
+        "en": "The billing method of the EIP. The value is set to **PostPaid**, which is the pay-as-you-go billing method."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "EIP的实例ID。",
+        "en": "The ID of the EIP instance."
+      }
     },
     {
       "name": "InternetChargeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "EIP的计费方式，当前取值仅支持**95BandwidthByMonth**（月95带宽计费）。",
+        "en": "The metering method of the EIP. The value is set to **95BandwidthByMonth**, which indicates the monthly 95th percentile bandwidth metering method."
+      }
     },
     {
       "name": "IpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP地址",
+        "en": "The IP address. If you do not specify this parameter, the system automatically allocates an available IP address."
+      }
     },
     {
       "name": "Isp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商信息，取值：\n\n- **cmcc**：中国移动。\n- **unicom**：中国联通。\n- **telecom**：中国电信。",
+        "en": "The ISP. Valid values:\n\n- **cmcc**: China Mobile\n\n- **unicom**: China Unicom\n\n- **telecom**: China Telecom"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "EIP实例名称。",
+        "en": "The name of the EIP instance."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源标签",
+        "en": "The resource tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签键。N的取值范围为**1**~**20**。\n\n- 不能以`aliyun`、`acs:`、`http://`或`https://`开头。\n- 最多支持64个字符。\n- 不允许传入空字符串。",
+            "en": "The key of tag N that is added to the instance. Valid values of N: **1** to **20**.\n\n- The tag key cannot start with `aliyun`, `acs:`, `http://`, or `https://`.\n\n- The tag key can be up to 64 characters in length.\n\n- The tag key cannot be an empty string."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。不可超过128个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value. The value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建EIP",
+    "en": "Create an EIP"
+  },
+  "descriptions": {
+    "zh": "- API调用频率：5000次/秒。\n- 单用户调用频率：50次/秒。",
+    "en": "- API call rate: 5,000 requests per second.\n\n- Single-user call rate: 50 requests per second."
+  },
   "example": {
     "unifiedCli": "aliyun ens create-eip-instance --ens-region-id cn-suzhou-telecom --bandwidth 5 --instance-charge-type PostPaid --internet-charge-type 95BandwidthByMonth --name EIP1 --isp cmcc --description yourDescription --tag Value=tagValue Key=team --client-token 26C28756-2586-17AF-B802-0DC50D8FDEBB --ip-address example-string --instance-id example-string --region cn-hangzhou",
     "legacyCli": "aliyun ens CreateEipInstance --region cn-hangzhou --Tag.1.Key team --Description yourDescription --InstanceId 'example-string' --InstanceChargeType PostPaid --Bandwidth 5 --Isp cmcc --Tag.1.Value tagValue --IpAddress 'example-string' --EnsRegionId 'cn-suzhou-telecom' --ClientToken '26C28756-2586-17AF-B802-0DC50D8FDEBB' --InternetChargeType 95BandwidthByMonth --Name EIP1"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceAttachmentAttributes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要修改私有池匹配属性的实例ID。",
+        "en": "The ID of the instance for which you want to modify the attributes of the private pool."
+      }
     },
     {
       "name": "PrivatePoolOptions.Id",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "私有池ID，即弹性保障服务ID或者容量预定服务ID。\n\n- 当`PrivatePoolOptions.MatchCriteria`取值为`Target`时，该参数为必填项。\n- 当`PrivatePoolOptions.MatchCriteria`取值为`Open`或`None`时，该参数不传值。",
+        "en": "The ID of the private pool. Set the value to the ID of the elasticity assurance or capacity reservation that generates the private pool.\n\n- This parameter is required when `PrivatePoolOptions.MatchCriteria` is set to `Target`.\n\n- This parameter must be empty when `PrivatePoolOptions.MatchCriteria` is set to `Open` or `None`."
+      }
     },
     {
       "name": "PrivatePoolOptions.MatchCriteria",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "修改实例的私有池匹配模式。取值范围：\n\n- Open：开放模式。该模式下系统自动为实例匹配开放的私有池。如果没有符合条件的私有池容量，则使用公共池资源启动。\n- Target：指定模式。使用指定的私有池容量启动实例，如果该私有池容量不可用，则实例会启动失败。该模式下必须同时指定`PrivatePoolOptions.Id`参数，设置指定的私有池ID。\n- None：不使用。该模式下实例正常启动，不使用私有池。",
+        "en": "The new type of private pool. Valid values:\n\n- Open: open private pool. The system matches the instance with an open private pool. If no matching open private pools exist, the system uses resources in the public pool to start the instance.\n\n- Target: specified private pool. The system uses the capacity in a specified private pool to start the instance. If the specified private pool is unavailable, the instance cannot be started. You must use `PrivatePoolOptions.Id` to specify the ID of a private pool.\n\n- None: no private pool. The capacity in private pools is not used to start the instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "私有池所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the private pool. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例的私有池的属性",
+    "en": "ModifyInstanceAttachmentAttributes"
+  },
+  "descriptions": {
+    "zh": "私有池是弹性保障服务或容量预定服务在创建后生成的，关联了与私有池匹配的实例信息。您可以在创建实例时设置是否使用私有池启动，实例将会与弹性保障服务或容量预定服务进行匹配。\n\n- 调用该接口修改实例的私有池的属性后，实例不需要重启。\n- 当您调用以下接口时，系统会重新匹配实例的私有池。如果实例已匹配了指定的私有池，可能因私有池容量已用完或私有池失效等原因造成调用失败的问题。如果出现调用失败的问题，请先调用ModifyInstanceAttachmentAttributes接口将私有池的匹配模式修改为`Open`。\n    - [StartInstance - 重启启用节省停机模式的实例。](~~2679679~~)\n    - [ReActivateInstances - 重新启动已过期或欠费回收的实例。](~~2679707~~)\n    - [ModifyInstanceChargeType - 修改实例付费类型](~~2679704~~)。\n    - [ModifyPrepayInstanceSpec - 升级或降低实例规格](~~2679706~~)。\n    - [ReplaceSystemDisk - 更换操作系统](~~2679771~~)。",
+    "en": "A private pool is generated after an elasticity assurance or a capacity reservation is created. The private pool is associated with information about the instances that use the private pool. You can specify whether to use a private pool when you create an ECS instance to match the instance with the associated elasticity assurance or capacity reservation.\n\n- After you call this operation to modify the private pool attributes of an ECS instance, you do not need to restart the instance for the changes to take effect.\n\n- When you call the following operations on an ECS instance, the system attempts to match the instance with active private pools. If the instance is already matched to a specified private pool, the call to an operation may fail when the private pool capacity is used up or the private pool expires. If the call fails, call the ModifyInstanceAttachmentAttributes operation to change the type of the private pool to `Open`.\n\n  - [StartInstance](~~2679679~~): start an ECS instance that is stopped in economical mode.\n\n  - [ReActivateInstances](~~2679707~~): reactivates an ECS instance that has expired or is reclaimed due to an overdue payment.\n\n  - [ModifyInstanceChargeType](~~2679704~~): changes the billing method of an ECS instance.\n\n  - [ModifyPrepayInstanceSpec](~~2679706~~): changes the instance type of an ECS instance.\n\n  - [ReplaceSystemDisk](~~2679771~~): replaces the operating system of an ECS instance."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-instance-attachment-attributes --biz-region-id cn-hangzhou --instance-id i-bp67acfmxazb40000 --private-pool-options-match-criteria Open --private-pool-options-id eap-bp67acfmxazb40000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyInstanceAttachmentAttributes --region cn-hangzhou --InstanceId 'i-bp67acfmxazb40000' --RegionId 'cn-hangzhou' --PrivatePoolOptions.MatchCriteria Open --PrivatePoolOptions.Id 'eap-bp67acfmxazb40000'"

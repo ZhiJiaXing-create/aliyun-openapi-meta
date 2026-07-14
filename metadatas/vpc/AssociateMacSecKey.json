@@ -1,5 +1,6 @@
 {
   "name": "AssociateMacSecKey",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Cak",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥密码，只支持十六进制字符，小写会自动转换为大写，当加密算法类型是GCM-AES-128或者GCM-AES-XPN-128时，长度要求为32个十六进制字符，当加密算法类型是GCM-AES-256或者GCM-AES-XPN-256时，长度要求为64个十六进制字符",
+        "en": "The key secret. This parameter accepts only hexadecimal characters. Lowercase letters are automatically converted to uppercase. The cipher suite determines the required length of the key secret: 32 hexadecimal characters for GCM-AES-128 or GCM-AES-XPN-128, and 64 hexadecimal characters for GCM-AES-256 or GCM-AES-XPN-256."
+      }
     },
     {
       "name": "CipherSuite",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "加密算法类型，取值范围：\n\n- GCM-AES-128\n\n- GCM-AES-XPN-128\n\n- GCM-AES-256\n\n- GCM-AES-XPN-256",
+        "en": "The cipher suite. Valid values:\n\n- GCM-AES-128\n\n- GCM-AES-XPN-128\n\n- GCM-AES-256\n\n- GCM-AES-XPN-256"
+      }
     },
     {
       "name": "Ckn",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥名称，只支持十六进制字符，小写会自动转换为大写，当加密算法类型是GCM-AES-128或者GCM-AES-XPN-128时，长度要求为32个十六进制字符，当加密算法类型是GCM-AES-256或者GCM-AES-XPN-256时，长度要求为64个十六进制字符",
+        "en": "The key name. This parameter accepts only hexadecimal characters. Lowercase letters are automatically converted to uppercase. The cipher suite determines the required length of the key name: 32 hexadecimal characters for GCM-AES-128 or GCM-AES-XPN-128, and 64 hexadecimal characters for GCM-AES-256 or GCM-AES-XPN-256."
+      }
     },
     {
       "name": "PhysicalConnectionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线 ID。",
+        "en": "The ID of the Express Connect physical connection."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~448570~~)接口获取地域ID。",
+        "en": "The region ID of the Express Connect physical connection.\n\nYou can call the [DescribeRegions](~~448570~~) operation to obtain the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "关联MacSec密钥",
+    "en": "Associate MacSec Key"
+  },
+  "descriptions": {
+    "zh": "使用该功能需要满足以下条件：\n\n- 物理专线所在的设备支持MacSec特性\n\n- 物理专线需要付款完成\n\n- 只支持在独享物理专线配置\n\n其他使用说明：\n\n- 最多只支持配置3组Ckn和Cak\n\n- 关联当前处于Disassociated状态的密钥，会取消关联之前生效的密钥\n\n- 关联当前处于AssociatedFailed状态的密钥，会触发设备进行重新协商会话",
+    "en": "This operation has the following prerequisites:\n\n- The device that hosts the Express Connect physical connection supports the MacSec feature.\n\n- The Express Connect physical connection must be fully paid.\n\n- MacSec can be configured only on a dedicated physical connection.\n\nNote the following:\n\n- You can configure a maximum of three sets of Ckn and Cak.\n\n- If you associate a key that is in the Disassociated state, the system disassociates the previously active key.\n\n- If you associate a key that is in the AssociatedFailed state, the device renegotiates the session."
+  },
   "example": {
     "unifiedCli": "aliyun vpc associate-mac-sec-key --biz-region-id cn-hangzhou --physical-connection-id pc-bp1hp0wr072f60000 --cipher-suite GCM-AES-128 --ckn 0123456789ABCDEF0123456789ABCDEF --cak 0123456789ABCDEF0123456789ABCDEF --region cn-hangzhou",
     "legacyCli": "aliyun vpc AssociateMacSecKey --region cn-hangzhou --CipherSuite 'GCM-AES-128' --PhysicalConnectionId 'pc-bp1hp0wr072f60000' --Ckn 0123456789ABCDEF0123456789ABCDEF --RegionId 'cn-hangzhou' --Cak 0123456789ABCDEF0123456789ABCDEF"

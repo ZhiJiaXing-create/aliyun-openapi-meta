@@ -1,0 +1,54 @@
+{
+  "name": "UpdateServiceRollout",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "PUT",
+  "pathPattern": "/api/v2/services/[ClusterId]/[ServiceName]/rollout",
+  "parameters": [
+    {
+      "name": "ClusterId",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "**ClusterId**  \n* 类型: string\n* 必填: 是\n* 说明: 地域ID。服务所在的地域标识。\n* 示例值: cn-shanghai",
+        "en": "The region ID where the service is located.\n\n- Type: string\n\n- Required: Yes\n\n- Description: The ID of the region where the service is located.\n\n- Example: cn-shanghai"
+      }
+    },
+    {
+      "name": "ServiceName",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "**ServiceName**  \n* 类型: string\n* 必填: 是\n* 说明: 服务名称。要更新发布策略的服务名称。\n* 示例值: my-service",
+        "en": "The name of the service.\n\n- Type: string\n\n- Required: Yes\n\n- Description: The name of the service for which to update the release policy.\n\n- Example: my-service"
+      }
+    },
+    {
+      "name": "body",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "请求Body。",
+        "en": "The request body."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新服务更新计划",
+    "en": "UpdateServiceRollout"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- **至少提供一个参数**：必须在请求中指定`Partition`、`Batch`或`Paused`中的至少一个参数。\n- **互斥策略**：不能同时提供`Partition`和`Batch`配置。\n- **实时生效**：更新将立即生效，影响正在进行的服务发布过程。\n- **回退操作**：通过增加`Partition`值可以实现版本回退，但不会自动触发，需要手动更新服务镜像。\n- **暂停不影响参数**：暂停发布不会改变已设置的`Partition`或`Batch`参数，仅暂停执行当前策略。",
+    "en": "## Usage notes\n\n- **Provide at least one parameter**: Specify at least one of the `Partition`, `Batch`, or `Paused` parameters.\n\n- **Mutually exclusive strategies**: You cannot specify both the `Partition` and `Batch` parameters in the same request.\n\n- **Immediate effect**: Updates take effect immediately and affect ongoing service rollouts.\n\n- **Rollback**: You can perform a rollback by increasing the `Partition` value. However, this is not an automatic process, and you must manually update the service image.\n\n- **Pause does not affect parameters**: Pausing a rollout does not change the configured `Partition` or `Batch` parameters. It only suspends the current rollout strategy."
+  },
+  "example": {
+    "unifiedCli": "aliyun eas update-service-rollout --cluster-id cn-shanghai --service-name my-service --partition Partition=30% --batch BatchSize=25% Interval=60s --paused true --region cn-hangzhou",
+    "legacyCli": "aliyun eas PUT /api/v2/services/cn-shanghai/my-service/rollout --region cn-hangzhou --header \"Content-Type=application/json\" --body {\"Partition\":{\"Partition\":\"30%\"},\"Batch\":{\"BatchSize\":\"25%\",\"Interval\":\"60s\"},\"Paused\":true}"
+  }
+}

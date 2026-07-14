@@ -1,5 +1,6 @@
 {
   "name": "DeleteScalingGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ForceDelete",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "如果伸缩组存在ECS实例/ECI实例或正在进行伸缩活动，是否强制删除伸缩组并移出和释放ECS实例/ECI实例。取值范围：\n\n- true：强制删除伸缩组。会先停止伸缩组，拒绝接收新的伸缩活动请求，然后等待已有的伸缩活动完成，最后将伸缩组内所有ECS实例/ECI实例移出伸缩组（手动添加的ECS实例/ECI实例会被移出伸缩组，弹性伸缩自动创建的ECS实例/ECI实例会被自动删除）并删除伸缩组。 \n\n-  false：不强制删除伸缩组。满足以下两个条件时，会先停止伸缩组，然后再删除伸缩组。\n\n    - 伸缩组没有任何伸缩活动正在执行。 \n\n    - 伸缩组当前的ECS实例/ECI实例数量（Total Capacity）为0。 \n\n默认值：false。",
+        "en": "Specifies whether to force delete the scaling group and remove and release ECS instances or elastic container instances if the scaling group contains ECS instances or elastic container instances, or if a scaling activity is in progress. Valid values:\n\n- true: Force deletes the scaling group. The scaling group is first stopped and new scaling activity requests are rejected. After existing scaling activities are complete, all ECS instances and elastic container instances in the scaling group are removed from the scaling group. Manually added ECS instances and elastic container instances are removed, and ECS instances and elastic container instances that are automatically created by Auto Scaling are deleted. Then, the scaling group is deleted.\n\n-  false: Does not force delete the scaling group. The scaling group is stopped and then deleted if the following conditions are met:\n\n    - No scaling activity is being executed in the scaling group.\n\n    - The current number of ECS instances or elastic container instances (Total Capacity) in the scaling group is 0.\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除一个伸缩组",
+    "en": "Delete a scaling group"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n删除伸缩组需注意以下信息：\n\n- 删除伸缩组会删除相关联的伸缩配置、伸缩规则、伸缩活动、伸缩请求的信息。\n\n- 删除伸缩组不会删除定时任务、云监控报警任务、负载均衡实例以及RDS实例。\n\n- 如果创建伸缩组时设置了`开启伸缩组保护`功能，则您不能在控制台或者通过API删除该伸缩组，可以有效避免误删除伸缩组的操作。\n\n- 创建ECS实例时开启了`实例释放保护`功能，并加入伸缩组进行托管后，如果您需要删除伸缩组，则手动添加的ECS实例会被强制移出该伸缩组，自动创建的ECS实例也会随该伸缩组一起被自动释放掉。\n\n    >删除伸缩组前，为了避免伸缩组中的ECS实例被强制释放，即使您单独为ECS实例开启了实例释放保护功能，仍然需要在伸缩组中设置伸缩组内ECS实例的保护功能，使其在删除伸缩组时不会被强制释放。具体操作，请参见[SetInstancesProtection](~~459342~~)。",
+    "en": "## Operation description\n\nTake note of the following items when you delete a scaling group:\n\n- Deleting a scaling group also deletes the associated scaling configurations, scaling rules, scaling activities, and scaling requests.\n\n- Deleting a scaling group does not delete scheduled nodes, CloudMonitor event-triggered tasks, load balancing instances, or ApsaraDB RDS instances.\n\n- If you enabled the `Enable Scaling Group Protection` feature when you created the scaling group, you cannot delete the scaling group in the console or by calling an API operation. This effectively prevents accidental deletion of the scaling group.\n\n- If you enabled the `Instance Release Protection` feature when you created ECS instances and then added the instances to a scaling group for management, manually added ECS instances are forcibly removed from the scaling group and automatically created ECS instances are automatically released together with the scaling group when you delete the scaling group.\n\n    >Before you delete a scaling group, to prevent ECS instances in the scaling group from being forcibly released, you must enable the protection feature for ECS instances in the scaling group even if you have separately enabled instance release protection for the ECS instances. This ensures that the instances are not forcibly released when the scaling group is deleted. For more information, see [SetInstancesProtection](~~459342~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ess delete-scaling-group --scaling-group-id asg-bp18p2yfxow2dloq0000 --force-delete false --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess DeleteScalingGroup --region cn-hangzhou --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --ForceDelete false --RegionId 'cn-hangzhou'"

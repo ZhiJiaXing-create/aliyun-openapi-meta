@@ -1,5 +1,6 @@
 {
   "name": "AddFirewallRules",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,50 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组id。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "RuleConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要添加的防火墙规则的配置参数及其值的JSON串，参数的值都是字符串类型，例如：`{\"id\":\"test\",\"enabled\":\"true\",\"mode\":\"Collecting\",\"users\":{\"applies_to\":[]},\"endpoint\":\"[{\"EndpointName\":\"pe-************\",\"EndpointType\":\"Cluster\",\"DBEndpointDescription\":\"集群地址\"},{\"EndpointName\":\"pe-************\",\"EndpointType\":\"Custom\",\"DBEndpointDescription\":\"pc-************\"},{\"EndpointName\":\"pe-************\",\"EndpointType\":\"Custom\",\"DBEndpointDescription\":\"pc-************K\"}]\",\"type\":\"WhiteList\"}`。其中：\n* `\"id\"`：必填，表示防火墙规则名称。\n* `\"endpoint\"`：必填。对应实例Endpoint地址信息。",
+        "en": "A JSON string that contains the configuration parameters and their values for the firewall rule to add. All parameter values must be strings. For example: `{\"id\":\"test\",\"enabled\":\"true\",\"mode\":\"Collecting\",\"users\":{\"applies_to\":[]},\"endpoint\":\"[{\"EndpointName\":\"pe-************\",\"EndpointType\":\"Cluster\",\"DBEndpointDescription\":\"Cluster Address\"},{\"EndpointName\":\"pe-************\",\"EndpointType\":\"Custom\",\"DBEndpointDescription\":\"pc-************\"},{\"EndpointName\":\"pe-************\",\"EndpointType\":\"Custom\",\"DBEndpointDescription\":\"pc-************K\"}]\",\"type\":\"WhiteList\"}`. The JSON string contains the following parameters:\n\n- `\"id\"`: Required. The name of the firewall rule.\n\n- `\"endpoint\"`: Required. The information about the instance endpoint."
+      }
     },
     {
       "name": "RuleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "防火墙规则名称。一次仅支持输入一个规则名称。\n> * 您可以通过接口[DescribeFirewallRules](~~212573~~)查看目标集群下的所有防火墙规则详情，包括规则名称。\n> * 若输入的规则名称不存在于当前集群中，系统会自动根据该名称和`RuleConfig`值创建一个新的防火墙规则。",
+        "en": "The name of the firewall rule. You can specify only one rule name.\n\n> - Call the [DescribeFirewallRules](~~212573~~) operation to view the details of all firewall rules for the target cluster, including the rule names.\n>\n> - If the specified rule name does not exist in the cluster, the system automatically creates a new firewall rule based on the name and the value of the `RuleConfig` parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加防火墙规则",
+    "en": "AddFirewallRules"
+  },
   "example": {
     "unifiedCli": "aliyun polardb add-firewall-rules --db-cluster-id pc-00000000000000000 --rule-name testrule --rule-config id_:_test_,_enabled_:_true_,_mode_:_Collecting_,_users_:_applies_to_:_,_endpoint_:_EndpointName_:_pe-000000000000_,_EndpointType_:_Cluster_,_DBEndpointDescription_:_Cluster_Address_,_EndpointName_:_pe-000000000000_,_EndpointType_:_Custom_,_DBEndpointDescription_:_pc-000000000000_,_EndpointName_:_pe-000000000000_,_EndpointType_:_Custom_,_DBEndpointDescription_:_pc-000000000000K_,_type_:_WhiteList --resource-group-id rg-000000000000 --region cn-hangzhou",
     "legacyCli": "aliyun polardb AddFirewallRules --region cn-hangzhou --ResourceGroupId 'rg-000000000000' --DBClusterId 'pc-00000000000000000' --RuleConfig 'id_:_test_,_enabled_:_true_,_mode_:_Collecting_,_users_:_applies_to_:_,_endpoint_:_EndpointName_:_pe-000000000000_,_EndpointType_:_Cluster_,_DBEndpointDescription_:_Cluster_Address_,_EndpointName_:_pe-000000000000_,_EndpointType_:_Custom_,_DBEndpointDescription_:_pc-000000000000_,_EndpointName_:_pe-000000000000_,_EndpointType_:_Custom_,_DBEndpointDescription_:_pc-000000000000K_,_type_:_WhiteList' --RuleName testrule"

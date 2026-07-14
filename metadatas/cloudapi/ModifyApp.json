@@ -1,5 +1,6 @@
 {
   "name": "ModifyApp",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,19 +9,31 @@
       "name": "AppId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "APP的唯一标识",
+        "en": "The unique ID of the application."
+      }
     },
     {
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "支持汉字、英文字母、数字、英文格式的下划线，且必须以字母或汉字开始，4~26个字符，1个中文汉字算2个字符。\n\n若不修改，可不传该参数。",
+        "en": "The application name. The name can contain Chinese characters, letters, digits, and underscores (\\_). It must start with a letter or a Chinese character. The name must be 4 to 26 characters in length. Each Chinese character is counted as two characters.\n\nOmit this parameter if you do not want to modify the application name."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "APP描述信息，长度不超过180个字符。\n\n若不修改，可不传该参数。",
+        "en": "The description of the application. The description can be up to 180 characters in length.\n\nOmit this parameter if you do not want to modify the description."
+      }
     },
     {
       "name": "Disabled",
@@ -32,29 +45,56 @@
       "name": "Extend",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "扩展信息",
+        "en": "Extended information."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "指定规则所适用的对象标签，可设置多个。",
+        "en": "The object tags to which the rule applies."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签键。\n\nn 的取值范围为 `[1, 20]`",
+            "en": "The tag key.\n\nThe range for n is `[1, 20]`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。\n\nn 的取值范围为 `[1, 20]`",
+            "en": "The tag value.\n\nThe valid range for n is `[1, 20]`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改APP应用",
+    "en": "ModifyApp"
+  },
+  "descriptions": {
+    "zh": "- 此功能面向调用API的用户\n- 可修改**AppName**或者**Description**，若两个属性都为空，则不做修改，直接返回成功\n- 该接口调用的QPS限制为：单用户QPS不超过50",
+    "en": "- This operation is intended for API callers.\n\n- You can modify the **AppName** or **Description** parameter. If you do not specify these parameters, the application is not modified, but a success message is returned.\n\n- The queries per second (QPS) limit for this operation is 50 for each user."
+  },
   "example": {
     "unifiedCli": "aliyun cloudapi modify-app --app-id 20112314518278 --app-name jiedian_pord --description modidyTest --tag Value=value Key=key --extend 110461946884 --disabled true --api-version 2016-07-14 --region cn-hangzhou",
     "legacyCli": "aliyun cloudapi ModifyApp --region cn-hangzhou --Tag.1.Key key --Description modidyTest --AppId 20112314518278 --Extend 110461946884 --Tag.1.Value value --Disabled true --AppName jiedian_pord"

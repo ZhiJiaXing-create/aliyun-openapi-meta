@@ -1,5 +1,6 @@
 {
   "name": "CreateAutoProvisioningGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,57 @@
       "name": "AutoProvisioningGroupName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组的名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以`http://`和`https://`开头。可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The name of the auto provisioning group. The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character and cannot start with `http://` or `https://`. It can contain digits, colons (:), underscores (_), and hyphens (-)."
+      }
     },
     {
       "name": "AutoProvisioningGroupType",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "弹性供应组的交付类型。取值范围：\n\n- request：一次性异步交付。供应组仅在启动时异步交付实例集群，调度失败后不再重试。\n\n- instant：一次性同步交付。供应组仅在启动时同步创建实例，并在请求响应中返回创建成功的实例列表和创建失败的原因。\n\n- maintain：持续供应。供应组在启动时尝试交付实例集群，并监控实时容量，未达到目标容量则尝试继续创建ECS实例。\n\n默认值：maintain。",
+        "en": "The delivery type of the auto provisioning group. Valid values:\n\n- request: one-time asynchronous delivery. The group delivers an instance cluster asynchronously only at startup. If scheduling fails, no retry is performed.\n\n- instant: one-time synchronous delivery. The group synchronously creates instances only at startup and returns the list of successfully created instances and the causes of creation failures in the response.\n\n- maintain: continuous delivery. The group attempts to deliver an instance cluster at startup and monitors real-time capacity. If the target capacity is not reached, the group continues to create ECS instances.\n\nDefault value: maintain."
+      }
+    },
+    {
+      "name": "CandidateOptions",
+      "position": "Query",
+      "type": "Struct",
       "required": false
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "DataDiskConfig",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "实例数据盘信息列表。",
+        "en": "The list of data disk configurations."
+      },
       "sub_parameters": [
         {
           "name": "DiskCategory",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例数据盘类型。您可通过该参数指定多种候选磁盘类型，指定顺序作为各磁盘类型的优先级顺序，当某一种磁盘不可用时，自动更换磁盘类型。取值范围：\n\n-   cloud_efficiency：高效云盘。\n-   cloud_ssd：SSD云盘。\n-   cloud_essd：ESSD云盘。\n-   cloud：普通云盘。",
+            "en": "The category of the data disk. You can specify multiple candidate disk categories. The specified order determines the priority of each disk category. When a disk category is unavailable, the system automatically switches to the next category. Valid values:\n\n-   cloud_efficiency: ultra disk.\n-   cloud_ssd: standard SSD.\n-   cloud_essd: enterprise SSD (ESSD).\n-   cloud: basic disk."
+          }
         }
       ]
     },
@@ -40,19 +67,31 @@
       "name": "DefaultTargetCapacityType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "`PayAsYouGoTargetCapacity`和`SpotTargetCapacity`之和小于`TotalTargetCapacity`时，指定差额容量的计费方式。取值范围：\n\n- PayAsYouGo：按量付费实例。\n- Spot：抢占式实例。\n\n默认值：Spot。",
+        "en": "The billing method for the capacity difference when the sum of `PayAsYouGoTargetCapacity` and `SpotTargetCapacity` is less than `TotalTargetCapacity`. Valid values:\n\n- PayAsYouGo: pay-as-you-go instances.\n- Spot: spot instances.\n\nDefault value: Spot."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组的描述信息。",
+        "en": "The description of the auto provisioning group."
+      }
     },
     {
       "name": "ExcessCapacityTerminationPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组实时容量超过目标容量并触发缩容时，是否释放缩容的实例。取值范围：\n\n- termination：释放缩容的实例。\n- no-termination：只将缩容的实例移出弹性供应组。\n\n默认值：no-termination。",
+        "en": "Specifies whether to release instances when the real-time capacity of the auto provisioning group exceeds the target capacity and a scale-in event is triggered. Valid values:\n\n- termination: releases the scaled-in instances.\n- no-termination: only removes the scaled-in instances from the auto provisioning group.\n\nDefault value: no-termination."
+      }
     },
     {
       "name": "ExecutionMode",
@@ -64,37 +103,61 @@
       "name": "HibernationOptionsConfigured",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": ">该参数正在邀测中，暂未开放使用。",
+        "en": "> This parameter is in invitational preview and is not publicly available."
+      }
     },
     {
       "name": "LaunchConfiguration",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "启动配置参数。",
+        "en": "The launch configuration parameters."
+      }
     },
     {
       "name": "LaunchConfiguration.Arn",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": ">该参数正在邀测中，暂不支持使用。",
+        "en": "> This parameter is in invitational preview and is not available for use."
+      },
       "sub_parameters": [
         {
           "name": "AssumeRoleFor",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": ">该参数正在邀测中，暂不支持使用。",
+            "en": "> This parameter is in invitational preview and is not available for use."
+          }
         },
         {
           "name": "RoleType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": ">该参数正在邀测中，暂不支持使用。",
+            "en": "> This parameter is in invitational preview and is not available for use."
+          }
         },
         {
           "name": "Rolearn",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": ">该参数正在邀测中，暂不支持使用。",
+            "en": "> This parameter is in invitational preview and is not available for use."
+          }
         }
       ]
     },
@@ -102,103 +165,171 @@
       "name": "LaunchConfiguration.AutoReleaseTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按量付费实例的自动释放时间。按照[ISO 8601](~~25696~~)标准表示，使用UTC+0时间。格式为：`yyyy-MM-ddTHH:mm:ssZ`。\n\n- 如果秒（`ss`）取值不是`00`，则自动取为当前分钟（`mm`）开始时。\n\n- 最短释放时间为当前时间半小时之后。\n\n- 最长释放时间不能超过当前时间三年。",
+        "en": "The automatic release time of the pay-as-you-go instance. Specify the time in the [ISO 8601](~~25696~~) standard in the `yyyy-MM-ddTHH:mm:ssZ` format. The time must be in UTC.\n\n- If the value of seconds (`ss`) is not `00`, the time is automatically rounded down to the start of the current minute (`mm`).\n\n- The earliest release time is 30 minutes after the current time.\n\n- The latest release time cannot be more than three years from the current time."
+      }
     },
     {
       "name": "LaunchConfiguration.CreditSpecification",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置突发性能实例的运行模式。取值范围：\n\n- Standard：标准模式，实例性能请参见[什么是突发性能实例](~~59977~~)下的性能约束模式章节。\n- Unlimited：无性能约束模式，实例性能请参见[什么是突发性能实例](~~59977~~)下的无性能约束模式章节。\n\n默认值：无。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The running mode of the burstable instance. Valid values:\n\n- Standard: standard mode. For more information about instance performance, see the performance constrained mode section in [Overview of burstable instances](~~59977~~).\n- Unlimited: unlimited mode. For more information about instance performance, see the unlimited mode section in [Overview of burstable instances](~~59977~~).\n\nDefault value: none.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.DataDisk",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "扩展启动模板云盘配置列表。",
+        "en": "The list of data disk configurations in the launch configuration."
+      },
       "sub_parameters": [
         {
           "name": "AutoSnapshotPolicyId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘采用的自动快照策略 ID。\n\n当您设置该参数后，需要注意：\n- 仅创建一次性同步交付类型的弹性供应组（AutoProvisioningGroupType=instant）时，该参数生效。",
+            "en": "The ID of the automatic snapshot policy applied to the data disk.\n\nNote:\n- This parameter takes effect only when you create a one-time synchronous delivery auto provisioning group (AutoProvisioningGroupType=instant)."
+          }
         },
         {
           "name": "BurstingEnabled",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否开启Burst（性能突发）。取值范围：\n\n- true：是。\n- false：否。\n\n>当DiskCategory取值为cloud_auto时才支持设置该参数。更多信息，请参见[ESSD AutoPL云盘](~~368372~~)。",
+            "en": "Specifies whether to enable the performance burst feature. Valid values:\n\n- true: enables the feature.\n- false: disables the feature.\n\n> This parameter is supported only when DiskCategory is set to cloud_auto. For more information, see [ESSD AutoPL disks](~~368372~~)."
+          }
         },
         {
           "name": "Category",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘N的云盘类型。N的取值范围为1~16。取值范围：\n\n- cloud_efficiency：高效云盘。\n- cloud_ssd：SSD云盘。\n- cloud_essd：ESSD云盘。\n- cloud：普通云盘。\n\n对于I/O优化实例，默认值为cloud_efficiency。对于非I/O优化实例，默认值为cloud。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The category of data disk N. Valid values of N: 1 to 16. Valid values:\n\n- cloud_efficiency: ultra disk.\n- cloud_ssd: standard SSD.\n- cloud_essd: enterprise SSD (ESSD).\n- cloud: basic disk.\n\nFor I/O optimized instances, the default value is cloud_efficiency. For non-I/O optimized instances, the default value is cloud.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "DeleteWithInstance",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘是否随实例释放。取值范围：\n- true：数据盘随实例释放。\n- false：数据盘不随实例释放。\n\n默认值：true。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "Specifies whether the data disk is released when the instance is released. Valid values:\n- true: the data disk is released when the instance is released.\n- false: the data disk is not released when the instance is released.\n\nDefault value: true.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "Description",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘的描述。长度为2~256个英文或中文字符，不能以`http://`和`https://`开头。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The description of the data disk. The description must be 2 to 256 characters in length and cannot start with `http://` or `https://`. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "Device",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘的挂载点。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The mount point of the data disk. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "DiskName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以`http://`和`https://`开头。可以包含数字、半角句号（.）、半角冒号（:）、下划线（_）或者短划线（-）。\n\n默认值：空。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The name of the data disk. The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character and cannot start with `http://` or `https://`. It can contain digits, periods (.), colons (:), underscores (_), and hyphens (-).\n\nDefault value: empty.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "EncryptAlgorithm",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": ">该参数暂未开放使用。",
+            "en": "> This parameter is not publicly available."
+          }
         },
         {
           "name": "Encrypted",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘N是否加密。取值范围：\n\n- true：加密。\n- false：不加密。\n\n默认值：false。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "Specifies whether data disk N is encrypted. Valid values:\n\n- true: encrypted.\n- false: not encrypted.\n\nDefault value: false.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "KmsKeyId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘对应的KMS密钥ID。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The ID of the KMS key for the data disk. If both a launch template and launch configuration are specified, the launch template takes precedence."
+          }
         },
         {
           "name": "PerformanceLevel",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "创建ESSD云盘作为数据盘使用时，设置云盘的性能等级。N的取值必须和`LaunchConfiguration.DataDisk.N.Category`中的N保持一致。取值范围：\n\n- PL0：单盘最高随机读写IOPS 1万。\n- PL1（默认）：单盘最高随机读写IOPS 5万。\n- PL2：单盘最高随机读写IOPS 10万。\n- PL3：单盘最高随机读写IOPS 100万。\n\n有关如何选择ESSD性能等级，请参见[ESSD云盘](~~122389~~)。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The performance level of the enterprise SSD used as a data disk. The value of N must be consistent with the N in `LaunchConfiguration.DataDisk.N.Category`. Valid values:\n\n- PL0: a single disk can deliver up to 10,000 random read/write IOPS.\n- PL1 (default): a single disk can deliver up to 50,000 random read/write IOPS.\n- PL2: a single disk can deliver up to 100,000 random read/write IOPS.\n- PL3: a single disk can deliver up to 1,000,000 random read/write IOPS.\n\nFor information about how to select an ESSD performance level, see [ESSDs](~~122389~~).\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "ProvisionedIops",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ESSD AutoPL云盘预配置的读写IOPS。可能值：0~min{50,000, 1000*容量-基准性能}。\n\n基准性能=min{1,800+50*容量, 50000}。\n\n\n>当DiskCategory取值为cloud_auto时才支持设置该参数。更多信息，请参见[ESSD AutoPL云盘](~~368372~~)。",
+            "en": "The provisioned read/write IOPS of the ESSD AutoPL disk. Valid values: 0 to min{50,000, 1000 × capacity - baseline performance}.\n\nBaseline performance = min{1,800 + 50 × capacity, 50,000}.\n\n> This parameter is supported only when DiskCategory is set to cloud_auto. For more information, see [ESSD AutoPL disks](~~368372~~)."
+          }
         },
         {
           "name": "Size",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "第N个数据盘的容量大小，N的取值范围为1~16，单位为GiB。取值范围：\n\n- cloud_efficiency：20~32768。\n- cloud_ssd：20~32768。\n- cloud_essd：具体取值范围与`LaunchConfiguration.DataDisk.N.PerformanceLevel`的取值有关。\n    - PL0：40~32768。\n    - PL1：20~32768。\n    - PL2：461~32768。\n    - PL3：1261~32768\n- cloud：5~2000。\n\n> 该参数的取值必须大于等于参数`LaunchConfiguration.DataDisk.N.SnapshotId`指定的快照的大小。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The size of data disk N. Valid values of N: 1 to 16. Unit: GiB. Valid values:\n\n- cloud_efficiency: 20 to 32768.\n- cloud_ssd: 20 to 32768.\n- cloud_essd: depends on the value of `LaunchConfiguration.DataDisk.N.PerformanceLevel`.\n    - PL0: 40 to 32768.\n    - PL1: 20 to 32768.\n    - PL2: 461 to 32768.\n    - PL3: 1261 to 32768.\n- cloud: 5 to 2000.\n\n> The value of this parameter must be greater than or equal to the size of the snapshot specified by `LaunchConfiguration.DataDisk.N.SnapshotId`.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "SnapshotId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "创建数据盘N使用的快照。N的取值范围为1~16。\n\n指定该参数后，参数`LaunchConfiguration.DataDisk.N.Size`会被忽略，实际创建的云盘大小为指定的快照的大小。不能使用早于2013年7月15日（含）创建的快照，请求会报错被拒绝。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The ID of the snapshot used to create data disk N. Valid values of N: 1 to 16.\n\nAfter you specify this parameter, the `LaunchConfiguration.DataDisk.N.Size` parameter is ignored. The actual size of the created disk is the size of the specified snapshot. Snapshots created on or before July 15, 2013 cannot be used. Requests that use such snapshots are rejected.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         }
       ]
     },
@@ -206,169 +337,281 @@
       "name": "LaunchConfiguration.DeploymentSetId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "部署集ID。",
+        "en": "The ID of the deployment set."
+      }
     },
     {
       "name": "LaunchConfiguration.HostName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例主机名称。限制说明如下：\n\n- 半角句号（.）和短划线（-）不能作为首尾字符，更不能连续使用。\n- Windows实例：字符长度为2~15，不支持半角句号（.），不能全是数字。允许大小写英文字母、数字和短划线（-）。\n- 其他类型实例（Linux等）：字符长度为2~64，支持多个半角句号（.），点之间为一段，每段允许大小写英文字母、数字和短划线（-）。\n- 不支持同时设置`LaunchConfiguration.HostName`与`LaunchConfiguration.HostNames.N`，否则会返回报错信息。\n- 同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The hostname of the instance. The following limits apply:\n\n- Periods (.) and hyphens (-) cannot be used as the first or last characters and cannot be used consecutively.\n- Windows instances: The hostname must be 2 to 15 characters in length and cannot contain periods (.) or consist entirely of digits. It can contain letters, digits, and hyphens (-).\n- Instances of other types (such as Linux): The hostname must be 2 to 64 characters in length and can contain multiple periods (.). Each segment between periods can contain letters, digits, and hyphens (-).\n- You cannot specify both `LaunchConfiguration.HostName` and `LaunchConfiguration.HostNames.N`. Otherwise, an error is returned.\n- If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.HostNames",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为一台或多台实例指定不同的主机名称列表。限制说明如下：\n\n- 仅创建一次性同步交付类型的弹性供应组（`AutoProvisioningGroupType=instant`）时，该参数生效。\n- N表示实例个数，取值范围为1~1000，且需要和TotalTargetCapacity参数值保持一致。\n- 半角句号（.）和短划线（-）不能作为首尾字符，更不能连续使用。\n- 同时指定启动模板与启动配置信息时，优先使用启动模板配置。",
+        "en": "The list of hostnames for one or more instances. The following limits apply:\n\n- This parameter takes effect only when you create a one-time synchronous delivery auto provisioning group (`AutoProvisioningGroupType=instant`).\n- N indicates the number of instances. Valid values of N: 1 to 1000. The value must be consistent with the TotalTargetCapacity parameter.\n- Periods (.) and hyphens (-) cannot be used as the first or last characters and cannot be used consecutively.\n- If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.ImageFamily",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像族系名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The name of the image family. The name must be 2 to 128 characters in length. The name must start with a letter and cannot start with `aliyun` or `acs:`. The name cannot contain `http://` or `https://`. The name can contain digits, colons (:), underscores (_), or hyphens (-)."
+      }
     },
     {
       "name": "LaunchConfiguration.ImageId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像ID。启动实例时选择的镜像资源，您可以调用[DescribeImages](~~25534~~)查询可以使用的镜像资源。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The ID of the image used to launch instances. You can call [DescribeImages](~~25534~~) to query available image resources. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.InstanceDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例描述。长度为2~256个英文或中文字符，不能以`http://`和`https://`开头。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The description of the instance. The description must be 2 to 256 characters in length and cannot start with `http://` or `https://`. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.InstanceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例名称。长度为2~128个字符，必须以大小写字母或中文开头，不能以`http://`和`https://`开头。可以包含中文、英文、数字、半角冒号（:）、下划线（_）、半角句号（.）或者短划线（-）。\n\n默认值：实例的`InstanceId`。\n\n创建多台ECS实例时，您可以批量设置有序的实例名称。具体操作，请参见[批量设置有序的实例名称或主机名称](~~196048~~)。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The name of the instance. The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character and cannot start with `http://` or `https://`. It can contain Chinese characters, letters, digits, colons (:), underscores (_), periods (.), and hyphens (-).\n\nDefault value: the `InstanceId` of the instance.\n\nWhen you create multiple ECS instances, you can batch configure sequential instance names. For more information, see [Batch configure sequential names or hostnames for multiple instances](~~196048~~).\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.InternetChargeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络计费类型。取值范围：\n\n- PayByBandwidth：按固定带宽计费。\n- PayByTraffic：按使用流量计费。\n\n> 按使用流量计费模式下的出入带宽峰值都是带宽上限，不作为业务承诺指标。当出现资源争抢时，带宽峰值可能会受到限制。如果您的业务需要有带宽的保障，请使用按固定带宽计费模式。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The billing method for network usage. Valid values:\n\n- PayByBandwidth: pay-by-bandwidth.\n- PayByTraffic: pay-by-traffic.\n\n> In pay-by-traffic mode, the peak inbound and outbound bandwidths are used as upper limits of bandwidths instead of guaranteed performance metrics. When resources are contended, the peak bandwidths may be limited. If you require guaranteed bandwidth, use pay-by-bandwidth.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.InternetMaxBandwidthIn",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "公网入带宽最大值，单位为Mbit/s。取值范围：\n\n- 当公网出带宽小于等于10 Mbit/s时：1~10，默认为10。\n- 当公网出带宽大于10 Mbit/s时：1~`LaunchConfiguration.InternetMaxBandwidthOut`的取值，默认为`LaunchConfiguration.InternetMaxBandwidthOut`的取值。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The maximum inbound public bandwidth. Unit: Mbit/s. Valid values:\n\n- If the maximum outbound public bandwidth is less than or equal to 10 Mbit/s: 1 to 10. Default value: 10.\n- If the maximum outbound public bandwidth is greater than 10 Mbit/s: 1 to the value of `LaunchConfiguration.InternetMaxBandwidthOut`. Default value: the value of `LaunchConfiguration.InternetMaxBandwidthOut`.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.InternetMaxBandwidthOut",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "公网出带宽最大值，单位为Mbit/s。取值范围：0~100。\n\n默认值：0。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The maximum outbound public bandwidth. Unit: Mbit/s. Valid values: 0 to 100.\n\nDefault value: 0.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.IoOptimized",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否为I/O优化实例。取值范围：\n\n- none：非I/O优化。\n- optimized：I/O优化。\n\n已停售的实例规格实例默认值是none，其他实例规格默认值是optimized。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "Specifies whether the instance is an I/O optimized instance. Valid values:\n\n- none: non-I/O optimization.\n- optimized: I/O optimization.\n\nFor retired instance types, the default value is none. For other instance types, the default value is optimized.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.KeyPairName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "密钥对名称。\n\n-   Windows实例，忽略该参数。默认为空。\n-   Linux实例的密码登录方式会被初始化成禁止。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The name of the key pair.\n\n-   For Windows instances, this parameter is ignored and is empty by default.\n-   For Linux instances, password-based logon is disabled during initialization.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的密码。长度为8至30个字符，必须同时包含大小写英文字母、数字和特殊符号中的三类字符。特殊符号可以是：\n\n``()`~!@#$%^&*-_+=|{}`[]`:;'<>,.?/``\n\n其中，Windows实例不能以正斜线（/）为密码首字符。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The password of the instance. The password must be 8 to 30 characters in length and must contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters. The following special characters are supported:\n\n``()`~!@#$%^&*-_+=|{}`[]`:;'<>,.?/``\n\nFor Windows instances, the password cannot start with a forward slash (/).\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.PasswordInherit",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用镜像预设的密码。取值范围：\n\n- true：使用。\n- false：不使用。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "Specifies whether to use the password preset in the image. Valid values:\n\n- true: uses the preset password.\n- false: does not use the preset password.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.RamRoleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例RAM角色名称。您可以使用RAM API [ListRoles](~~28713~~)查询您已创建的实例RAM角色。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The name of the instance RAM role. You can call the RAM API [ListRoles](~~28713~~) to query the instance RAM roles that you have created. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所在的企业资源组ID。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The ID of the resource group to which the instance belongs. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SecurityEnhancementStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启安全加固。取值范围：\n\n-   Active：启用安全加固，只对公共镜像生效。\n-   Deactive：不启用安全加固，对所有镜像类型生效。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "Specifies whether to enable security hardening. Valid values:\n\n-   Active: enables security hardening. This value is applicable only to public images.\n-   Deactive: disables security hardening. This value is applicable to all image types.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SecurityGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所属的安全组ID。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The ID of the security group to which the instance belongs. If both a launch template and launch configuration information are specified, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SecurityGroupIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所属的安全组列表。",
+        "en": "The list of security groups to which the instance belongs."
+      }
     },
     {
       "name": "LaunchConfiguration.SystemDisk",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的系统盘信息。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The system disk information of the instance. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SystemDiskCategory",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统盘的云盘种类。取值范围：\n\n-   cloud_efficiency：高效云盘。\n-   cloud_ssd：SSD云盘。\n-   cloud_essd：ESSD云盘。\n-   cloud：普通云盘。\n\n已停售的实例规格且非I/O优化实例默认值为cloud，否则默认值为cloud_efficiency。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The category of the system disk. Valid values:\n\n-   cloud_efficiency: ultra disk.\n-   cloud_ssd: standard SSD.\n-   cloud_essd: enterprise SSD (ESSD).\n-   cloud: basic disk.\n\nFor retired instance types that are non-I/O optimization instances, the default value is cloud. For other instance types, the default value is cloud_efficiency.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SystemDiskDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统盘的描述。长度为2~256个英文或中文字符，不能以`http://`和`https://`开头。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The description of the system disk. The description must be 2 to 256 characters in length and cannot start with `http://` or `https://`.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SystemDiskName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统盘名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以`http://`和`https://`开头。可以包含数字、半角句号（.）、半角冒号（:）、下划线（_）或者短划线（-）。\n\n默认值：空。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The name of the system disk. The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character and cannot start with `http://` or `https://`. It can contain digits, periods (.), colons (:), underscores (_), and hyphens (-).\n\nDefault value: empty.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SystemDiskPerformanceLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建ESSD云盘作为系统盘使用时，设置云盘的性能等级。取值范围：\n\n- PL0（默认）：单盘最高随机读写IOPS 1万。\n- PL1：单盘最高随机读写IOPS 5万。\n- PL2：单盘最高随机读写IOPS 10万。\n- PL3：单盘最高随机读写IOPS 100万。\n\n有关如何选择ESSD性能等级，请参见[ESSD云盘](~~122389~~)。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The performance level (PL) of the enterprise SSD used as the system disk. Valid values:\n\n- PL0 (default): a single disk can deliver up to 10,000 random read/write IOPS.\n- PL1: a single disk can deliver up to 50,000 random read/write IOPS.\n- PL2: a single disk can deliver up to 100,000 random read/write IOPS.\n- PL3: a single disk can deliver up to 1,000,000 random read/write IOPS.\n\nFor information about how to select an ESSD performance level, see [ESSDs](~~122389~~).\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.SystemDiskSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统盘大小。单位为GiB，取值范围：20~500。该参数的取值必须大于或者等于max{20, LaunchConfiguration.ImageId对应的镜像大小}。\n\n默认值：max{40, 参数LaunchConfiguration.ImageId对应的镜像大小}。\n\n同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "The size of the system disk. Unit: GiB. Valid values: 20 to 500. The value of this parameter must be greater than or equal to max{20, size of the image specified by LaunchConfiguration.ImageId}.\n\nDefault value: max{40, size of the image specified by LaunchConfiguration.ImageId}.\n\nIf you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchConfiguration.Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "扩展启动模板标签列表。",
+        "en": "The list of tags in the launch configuration."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签键。N的取值范围：1~20。一旦传入该值，则不允许为空字符串。最多支持128个字符，不能以aliyun和acs:开头，不能包含`http://`或`https://`。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The tag key of the instance. Valid values of N: 1 to 20. The tag key cannot be an empty string. It can be up to 128 characters in length and cannot start with aliyun or acs:. It cannot contain `http://` or `https://`. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签值。N的取值范围：1~20。一旦传入该值，可以为空字符串。最多支持128个字符，不能以acs:开头，不能包含`http://`或者`https://`。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+            "en": "The tag value of the instance. Valid values of N: 1 to 20. The tag value can be an empty string. It can be up to 128 characters in length and cannot start with acs:. It cannot contain `http://` or `https://`. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+          }
         }
       ]
     },
@@ -376,91 +619,151 @@
       "name": "LaunchConfiguration.UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例自定义数据。需要以Base64方式编码，原始数据最多为32 KB。同时指定启动模板与启动配置信息时，优先使用启动模板。",
+        "en": "Instance user data of the instance. Instance user data must be Base64-encoded. The maximum size of the raw data is 32 KB. If you specify both a launch template and launch configuration information, the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchTemplateConfig",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "扩展启动模板列表。",
+        "en": "The list of extended launch templates."
+      },
       "sub_parameters": [
         {
           "name": "Architectures",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例规格所属的架构类型列表。",
+            "en": "The list of architecture types for instance types."
+          }
         },
         {
           "name": "BurstablePerformance",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否为性能突发实例规格。取值范围：\n\n- Exclude：不包含性能突发实例规格。\n- Include：包含性能突发实例规格。\n- Required：只包含性能突发实例规格。\n\n默认值：Include。",
+            "en": "Specifies whether to include burstable instance types. Valid values:\n\n- Exclude: excludes burstable instance types.\n- Include: includes burstable instance types.\n- Required: includes only burstable instance types.\n\nDefault value: Include."
+          }
         },
         {
           "name": "Cores",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例规格的vCPU内核数目列表。",
+            "en": "The list of vCPU core counts for instance types."
+          }
         },
         {
           "name": "ExcludedInstanceTypes",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "需要排除的实例规格列表。",
+            "en": "The list of instance types to exclude."
+          }
         },
         {
           "name": "ImageId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像ID，您可以通过该参数设置当前资源池使用的镜像，如果没有设置则默认使用 `LaunchConfiguration.ImageId`或者启动模板里配置的镜像信息。您可以通过[DescribeImages](~~25534~~)查询可用的镜像资源。\n注：仅当`AutoProvisioningGroupType = instant` 时支持该参数。",
+            "en": "The image ID. You can use this parameter to set the image for the current resource pool. If not set, the image specified in `LaunchConfiguration.ImageId` or the launch template is used by default. You can call [DescribeImages](~~25534~~) to query available image resources.\nNote: This parameter is supported only when `AutoProvisioningGroupType = instant`."
+          }
         },
         {
           "name": "InstanceFamilyLevel",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例规格族级别，用于筛选符合要求的实例规格范围。取值范围：\n\n- EntryLevel：入门级，即共享型实例规格。成本更低，但是无法保证实例计算性能的稳定。适用于平时CPU使用率低的业务场景。更多信息，请参见[共享型](~~108489~~)。\n- EnterpriseLevel：企业级。性能稳定，资源独享，适用于对稳定性要求高的业务场景。更多信息，请参见[实例规格族](~~25378~~)。\n- CreditEntryLevel：积分入门级，即突发性能实例。通过CPU积分来保证计算性能，适用于平时CPU使用率低、偶有突发CPU使用率的情况。更多信息，请参见[突发性能实例](~~59977~~)。\n\nN的取值范围：1~10。",
+            "en": "The level of the instance family, used to filter instance types that meet the requirements. Valid values:\n\n- EntryLevel: entry level, which refers to shared instance types. Lower cost but no guarantee of stable computing performance. Suitable for scenarios with low average CPU utilization. For more information, see [Shared instance families](~~108489~~).\n- EnterpriseLevel: enterprise level. Stable performance with dedicated resources. Suitable for scenarios that require high stability. For more information, see [Instance families](~~25378~~).\n- CreditEntryLevel: credit-based entry level, which refers to burstable instances. Uses CPU credits to ensure computing performance. Suitable for scenarios with low average CPU utilization and occasional bursts. For more information, see [Overview of burstable instances](~~59977~~).\n\nValid values of N: 1 to 10."
+          }
         },
         {
           "name": "InstanceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "扩展启动模板对应的实例规格，N的取值范围：1~20。取值范围：请参见[实例规格族](~~25378~~)。",
+            "en": "The instance type in the extended launch template. Valid values of N: 1 to 20. For valid values, see [Instance families](~~25378~~)."
+          }
         },
         {
           "name": "MaxPrice",
           "position": "Query",
           "type": "Double",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "扩展启动模板中，抢占式实例的价格上限。\n\n> 设置了`LaunchTemplateConfig`后，`LaunchTemplateConfig.N.MaxPrice`为必选参数。",
+            "en": "The maximum price for spot instances in the extended launch template.\n\n> After you set `LaunchTemplateConfig`, `LaunchTemplateConfig.N.MaxPrice` is required."
+          }
         },
         {
           "name": "MaxQuantity",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": ">该参数正在邀测中，暂不支持使用。",
+            "en": "> This parameter is in invitational preview and is not available for use."
+          }
         },
         {
           "name": "Memories",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例规格的内存大小列表。",
+            "en": "The list of memory sizes for instance types."
+          }
         },
         {
           "name": "Priority",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "扩展启动模板的优先级，取值为0时优先级最高。取值范围：0 ~ +∞。",
+            "en": "The priority of the extended launch template. A value of 0 indicates the highest priority. Valid values: 0 to +∞."
+          }
         },
         {
           "name": "VSwitchId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "扩展启动模板中，ECS实例加入的虚拟交换机的ID。扩展模板中启动的ECS实例的可用区由虚拟交换机决定。\n\n> 设置了`LaunchTemplateConfig`后，`LaunchTemplateConfig.N.VSwitchId`为必选参数。",
+            "en": "The ID of the vSwitch to which the ECS instance in the extended launch template is connected. The zone of the ECS instance created from the extended template is determined by the vSwitch.\n\n> If you specify LaunchTemplateConfig, LaunchTemplateConfig.N.VSwitchId is required."
+          }
         },
         {
           "name": "WeightedCapacity",
           "position": "Query",
           "type": "Double",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "扩展启动模板中，实例规格的权重。取值越高，单台实例满足计算力需求的能力越大，所需的实例数量越小。取值范围：大于0。\n\n您可以根据指定实例规格的计算力和集群单节点最低计算力得出权重值。假设单节点最低计算力为8 vCPU、60 GiB，则：\n\n- 8 vCPU、60 GiB的实例规格权重可以设置为1。\n- 16 vCPU、120 GiB的实例规格权重可以设置为2。",
+            "en": "The weight of the instance type in the extended launch template. A higher value indicates that a single instance can meet more computing power requirements, which reduces the number of instances required. Valid values: greater than 0.\n\nYou can calculate the weight based on the computing power of the specified instance type and the minimum computing power of a single node in the cluster. For example, if the minimum computing power of a single node is 8 vCPUs and 60 GiB:\n\n- The weight of an instance type with 8 vCPUs and 60 GiB can be set to 1.\n- The weight of an instance type with 16 vCPUs and 120 GiB can be set to 2."
+          }
         }
       ]
     },
@@ -468,97 +771,161 @@
       "name": "LaunchTemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组关联的实例启动模板的ID，您可以调用[DescribeLaunchTemplates](~~73759~~)查询可用的实例启动模板。同时指定启动模板与启动配置信息（`LaunchConfiguration.*`）时，优先使用启动模板。",
+        "en": "The ID of the instance launch template associated with the auto provisioning group. You can invoke [DescribeLaunchTemplates](~~73759~~) to query active instance launch templates. If you specify both a launch template and launch configuration information (`LaunchConfiguration.*`), the launch template takes precedence."
+      }
     },
     {
       "name": "LaunchTemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组关联的实例启动模板的版本，您可以调用[DescribeLaunchTemplateVersions](~~73761~~)查询可用的实例启动模板版本。\n\n默认值：启动模板的默认版本。",
+        "en": "The version of the instance launch template associated with the auto provisioning group. You can invoke [DescribeLaunchTemplateVersions](~~73761~~) to query active instance launch template versions.\n\nDefault value: the default version of the launch template."
+      }
     },
     {
       "name": "MaxSpotPrice",
       "position": "Query",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组内抢占式实例的最高价格。\n\n> 同时设置了`MaxSpotPrice`和`LaunchTemplateConfig.N.MaxPrice`时，以最低值为准。",
+        "en": "The maximum price for spot instances in the auto provisioning group.\n\n> If both `MaxSpotPrice` and `LaunchTemplateConfig.N.MaxPrice` are specified, the lower value is used."
+      }
     },
     {
       "name": "MinTargetCapacity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组的目标最小容量。取值范围：正整数。\n\n当您设置该参数后，需要注意：\n- 仅创建一次性同步交付类型的弹性供应组（`AutoProvisioningGroupType=instant`）时，该参数生效。\n- 如果当前地域下的实例库存小于该参数值，则会导致调用接口失败，不会创建实例。\n- 如果当前地域下的实例库存大于该参数值，则按照已设置的其他参数值正常创建实例。",
+        "en": "The minimum target capacity of the auto provisioning group. Valid values"
+      }
     },
     {
       "name": "PayAsYouGoAllocationStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建按量付费实例的策略。取值范围：\n\n- lowest-price：成本优化策略。选择价格最低的实例规格。\n\n- prioritized：优先级策略。按照`LaunchTemplateConfig.N.Priority`设定的优先级创建实例。\n\n默认值：lowest-price。",
+        "en": "The policy for creating pay-as-you-go instances. Valid values:\n\n- lowest-price: cost optimization policy. Selects the instance type with the lowest price.\n\n- prioritized: priority-based policy. Creates instances based on the priority specified by `LaunchTemplateConfig.N.Priority`.\n\nDefault value: lowest-price."
+      }
     },
     {
       "name": "PayAsYouGoTargetCapacity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组内，按量付费实例的目标容量。取值范围：小于等于`TotalTargetCapacity`的参数取值。",
+        "en": "The target capacity of pay-as-you-go instances in the auto provisioning group. Valid values: less than or equal to the parameter value of `TotalTargetCapacity`."
+      }
     },
     {
       "name": "PrePaidOptions",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包年包月实例的容量详细配置。",
+        "en": "The detailed capacity configuration for subscription instances."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "弹性供应组所在地域的ID，您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The ID of the region in which the auto provisioning group resides. You can invoke [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组所在的企业资源组ID。",
+        "en": "The ID of the resource group to which the auto provisioning group belongs."
+      }
     },
     {
       "name": "ResourcePoolOptions",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建实例时使用的资源池策略。当您设置该参数后，需要注意：\n- 该参数只在创建按量付费实例时生效。\n- 仅创建一次性同步交付类型的弹性供应组（`AutoProvisioningGroupType=instant`）时，该参数生效。",
+        "en": "The resource pool policy used to create instances. After you set this parameter, note the following items:\n- This parameter takes effect only when you create pay-as-you-go instances.\n- This parameter takes effect only when you create a one-time synchronization delivery auto provisioning group (`AutoProvisioningGroupType=instant`)."
+      }
     },
     {
       "name": "SpotAllocationStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建抢占式实例的策略。取值范围：\n\n- lowest-price：成本优化策略。选择价格最低的实例规格。\n\n- diversified：均衡可用区分布策略。在扩展启动模板指定的可用区内创建实例，均匀分布到各可用区。\n\n- capacity-optimized：容量优化分布策略。根据库存情况，选择最优的实例规格和可用区进行创建。\n\n默认值：lowest-price。",
+        "en": "The policy for creating spot instances. Valid values:\n\n- lowest-price: cost optimization policy. Selects the instance type with the lowest price.\n\n- diversified: balanced zone distribution policy. Creates instances in the zones specified in the extended launch template and evenly distributes them across zones.\n\n- capacity-optimized: capacity optimization distribution policy. Selects the optimal instance type and zone based on inventory availability.\n\nDefault value: lowest-price."
+      }
     },
     {
       "name": "SpotInstanceInterruptionBehavior",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "竞价实例中断时的行为。取值范围：\n\n- stop：停止实例。\n\n- terminate：释放实例。\n\n默认值：terminate。",
+        "en": "The action to take when a spot instance is interrupted. Valid values:\n\n- stop: stops the instance.\n\n- terminate: releases the instance.\n\nDefault value: terminate."
+      }
     },
     {
       "name": "SpotInstancePoolsToUseCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "在`SpotAllocationStrategy`为`lowest-price`时生效，表示弹性供应组选择价格最低的实例规格创建实例的数量。\n\n取值范围：低于`LaunchTemplateConfig.N`中N的取值。",
+        "en": "Takes effect when `SpotAllocationStrategy` is set to `lowest-price`. Specifies the number of instance types with the lowest prices from which the auto provisioning group creates instances.\n\nValid values: less than the value of N in `LaunchTemplateConfig.N`."
+      }
     },
     {
       "name": "SpotTargetCapacity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组内，抢占式实例的目标容量。取值范围：小于等于`TotalTargetCapacity`的参数取值。",
+        "en": "The target capacity of spot instances in the auto provisioning group. Valid values: less than or equal to the parameter value of `TotalTargetCapacity`."
+      }
     },
     {
       "name": "SystemDiskConfig",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "实例系统盘信息列表。",
+        "en": "The list of system disk configurations."
+      },
       "sub_parameters": [
         {
           "name": "DiskCategory",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例系统盘类型。您可通过该参数指定多种候选磁盘类型，指定顺序作为各磁盘类型的优先级顺序，当某一种磁盘不可用时，自动更换磁盘类型。取值范围：\n\n-   cloud_efficiency：高效云盘。\n-   cloud_ssd：SSD云盘。\n-   cloud_essd：ESSD云盘。\n-   cloud：普通云盘。",
+            "en": "The category of the system disk. You can specify multiple candidate disk categories. The specified order determines the priority of each disk category. When a disk category is unavailable, the system automatically switches to the next category. Valid values:\n\n-   cloud_efficiency: ultra disk.\n-   cloud_ssd: standard SSD.\n-   cloud_essd: enterprise SSD (ESSD).\n-   cloud: basic disk."
+          }
         }
       ]
     },
@@ -567,18 +934,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "弹性供应组绑定的标签列表。",
+        "en": "The tags to attach to the auto provisioning group."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性供应组的标签键。\n\nN 的取值范围：1~20。一旦传入该值，则不允许为空字符串。最多支持 128 个字符，不能以aliyun和acs:开头，不能包含http://或者https://。",
+            "en": "The tag key of the auto provisioning group.\n\nValid values of N: 1 to 20. The tag key cannot be an empty string. The tag key can be up to 128 characters in length and cannot start with aliyun or acs:. The tag key cannot contain http:// or https://."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性供应组的标签值。\n\nN 的取值范围：1~20。一旦传入该值，允许为空字符串。最多支持 128 个字符，不能包含http://或者https://。",
+            "en": "The tag value of the auto provisioning group.\n\nValid values of N: 1 to 20. The tag value can be an empty string. The tag value can be up to 128 characters in length and cannot contain http:// or https://."
+          }
         }
       ]
     },
@@ -586,33 +965,64 @@
       "name": "TerminateInstances",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "删除弹性供应组时，是否释放组内实例。取值范围：\n\n- true：释放组内实例。\n- false：保留组内实例。\n\n默认值：false。",
+        "en": "Specifies whether to release instances auto provisioning group when the auto-provisioning group is deleted. Valid values:\n\n- true: releases instances auto provisioning group.\n- false: retains instances auto provisioning group.\n\nDefault value: false."
+      }
     },
     {
       "name": "TerminateInstancesWithExpiration",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组到期时，是否释放组内实例。取值范围：\n\n- true：释放组内实例。\n- false：只将组内实例移出弹性供应组。\n\n默认值：false。",
+        "en": "Specifies whether to release instances auto provisioning group when the auto-provisioning group expires. Valid values:\n\n- true: releases instances auto provisioning group.\n- false: only removes instances from the auto-provisioning group.\n\nDefault value: false."
+      }
     },
     {
       "name": "TotalTargetCapacity",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "弹性供应组的目标总容量。取值范围：正整数。\n\n总容量必须大于等于`PayAsYouGoTargetCapacity`（指定的按量付费实例目标容量）和`SpotTargetCapacity`（指定的抢占式实例目标容量）取值之和。",
+        "en": "The total target capacity of the auto provisioning group. Valid values: positive integers.\n\nThe total capacity must be greater than or equal to the sum of `PayAsYouGoTargetCapacity` (the target capacity of pay-as-you-go instances) and `SpotTargetCapacity` (the target capacity of spot instances)."
+      }
     },
     {
       "name": "ValidFrom",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组的启动时间，和`ValidUntil`共同确定有效时段。\n\n按照[ISO 8601](~~25696~~)标准表示，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n默认值：该接口立即生效的时间戳。",
+        "en": "The time when the auto provisioning group is started. Used together with `ValidUntil` to determine the valid period.\n\nSpecify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC+0.\n\nDefault value: the UNIX timestamp at which the request takes effect immediately."
+      }
     },
     {
       "name": "ValidUntil",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性供应组的到期时间，和`ValidFrom`共同确定有效时段。\n\n按照[ISO 8601](~~25696~~)标准表示，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n默认值：2099-12-31T23:59:59Z。",
+        "en": "The time when the auto provisioning group expires. Used together with `ValidFrom` to determine the valid period.\n\nSpecify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC+0.\n\nDefault value: 2099-12-31T23:59:59Z."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建弹性供应组",
+    "en": "Create an auto provisioning group"
+  },
+  "descriptions": {
+    "zh": "- 弹性供应是一个使用抢占式实例和按量付费实例快速部署实例集群的方案，支持一键部署跨计费方式、跨可用区、跨实例规格族的实例集群。更多信息，请参见[使用弹性供应组API批量创建ECS实例](~~200772~~)。\n- 弹性供应以供应组为载体调度和维护计算资源，您可以通过弹性供应组稳定提供计算力，缓解抢占式实例的回收机制带来的不稳定因素。\n- 弹性供应为免费功能，但是您需要为通过弹性供应组创建出的实例资源付费。更多信息，请参见[抢占式实例计费](~~52088~~)和[按量付费](~~40653~~)。\n- 当您同时指定启动模板（`LaunchTemplateId`）与启动配置信息（`LaunchConfiguration.*`）时，系统优先使用启动模板。",
+    "en": "- Auto provisioning is a solution that uses spot instances and pay-as-you-go instances to quickly deploy instance clusters. It supports one-click deployment of instance clusters across billing methods, zones, and instance families. For more information, see [Use the auto provisioning group API to create ECS instances in batches](~~200772~~).\n- Auto provisioning uses provisioning groups to schedule and maintain compute resources. You can use an auto provisioning group to steadily provide computing power and mitigate the instability caused by the reclaim mechanism of spot instances.\n- Auto provisioning is a free feature, but you are charged for the instance resources created by the auto provisioning group. For more information, see [Spot instance billing](~~52088~~) and [Pay-as-you-go](~~40653~~).\n- If you specify both a launch template (`LaunchTemplateId`) and launch configuration information (`LaunchConfiguration.*`), the launch template takes precedence."
+  },
   "example": {
     "unifiedCli": "aliyun ecs create-auto-provisioning-group --biz-region-id cn-hangzhou --resource-group-id rg-bp67acfmxazb4p0000 --auto-provisioning-group-name apg-test --auto-provisioning-group-type maintain --spot-allocation-strategy diversified --spot-instance-interruption-behavior terminate --spot-instance-pools-to-use-count 2 --pay-as-you-go-allocation-strategy prioritized --excess-capacity-termination-policy termination --valid-from 2019-04-01T15:10:20Z --valid-until 2019-06-01T15:10:20Z --terminate-instances-with-expiration true --terminate-instances true --max-spot-price 2.0 --total-target-capacity 60 --pay-as-you-go-target-capacity 30 --spot-target-capacity 20 --default-target-capacity-type Spot --launch-template-id lt-bp1fgzds4bdogu030000 --launch-template-version 1 --description testDescription --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --launch-configuration-image-id m-bp1g7004ksh0oeuc0000 --launch-configuration-security-group-id sg-bp15ed6xe1yxeycg0000 --launch-configuration-io-optimized optimized --launch-configuration-internet-charge-type PayByTraffic --launch-configuration-internet-max-bandwidth-in 10 --launch-configuration-internet-max-bandwidth-out 10 --launch-configuration-instance-name k8s-node-_1,4_-alibabacloud --launch-configuration-host-name k8s-node-_1,4_-ecshost --launch-configuration-instance-description Instance_Description --launch-configuration-key-pair-name KeyPair_Name --launch-configuration-ram-role-name RAM_Name --launch-configuration-security-enhancement-strategy Active --launch-configuration-user-data ZWNobyBoZWxsbyBlY3Mh --launch-configuration-system-disk-category cloud_ssd --launch-configuration-system-disk-size 40 --launch-configuration-system-disk-name cloud_ssdSystem --launch-configuration-system-disk-description SystemDisk_Description --launch-configuration-system-disk-performance-level PL0 --launch-configuration-password-inherit true --launch-configuration-resource-group-id rg-bp67acfmxazb4p0000 --launch-configuration-credit-specification Standard --launch-configuration-password 'EcsV587!' --launch-configuration-deployment-set-id ds-bp1frxuzdg87zh4p0000 --launch-template-config '[{\"Priority\":1,\"VSwitchId\":\"vsw-sn5bsitu4lfzgc5o70000\",\"ExcludedInstanceTypes\":[\"ecs.n1.small/ecs.n1.0/070\"],\"Cores\":[2],\"WeightedCapacity\":2.0,\"InstanceFamilyLevel\":\"EnterpriseLevel\",\"ImageId\":\"aliyun_3_x64_20G_alibase_20210425.vhd\",\"MaxQuantity\":1,\"MaxPrice\":3.0,\"InstanceType\":\"ecs.g5.large\",\"BurstablePerformance\":\"Include\",\"Memories\":[4.0],\"Architectures\":[\"X86\"]}]' --launch-configuration-data-disk BurstingEnabled=false Description=DataDisk_Description Category=cloud_ssd KmsKeyId=0e478b7a-4262-4802-b8cb-00d3fb400000 PerformanceLevel=PL1 Size=20 Device=/dev/vd1 Encrypted=false DeleteWithInstance=true AutoSnapshotPolicyId=sp-bp67acfmxazb4p0000 DiskName=cloud_ssdData ProvisionedIops=40000 EncryptAlgorithm=example-string SnapshotId=s-bp17441ohwka0yuh0000 --launch-configuration-tag Value=TestValue Key=TestKey --system-disk-config DiskCategory=cloud_ssd --data-disk-config DiskCategory=cloud_efficiency --launch-configuration-host-names ecs-host-01 --min-target-capacity 20 --launch-configuration-security-group-ids sg-bp15ed6xe1yxeycg0000 --launch-configuration-system-disk BurstingEnabled=false KMSKeyId=0e478b7a-4262-4802-b8cb-00d3fb400000 Encrypted=false AutoSnapshotPolicyId=sp-bp67acfmxazb4p0000 ProvisionedIops=40000 EncryptAlgorithm=aes-256 --launch-configuration-arn AssumeRoleFor=1234567890120000 RoleType=344584339364950000:alice Rolearn=acs:ram::1234567890120000:role/adminrole --hibernation-options-configured false --launch-configuration-auto-release-time 2018-01-01T12:05:00Z --launch-configuration-image-family hangzhou-daily-update --tag Value=TestValue Key=TestKey --resource-pool-options '{\"Strategy\":\"PrivatePoolFirst\",\"PrivatePoolIds\":[\"eap-bp67acfmxazb40000\"]}' --launch-configuration '{\"AutoRenewPeriod\":1,\"SpotInterruptionBehavior\":\"Terminate\",\"AutoRenew\":true,\"CpuOptions\":{\"ThreadsPerCore\":2,\"Core\":2},\"SchedulerOptions\":{\"DedicatedHostId\":\"example-string\",\"DedicatedHostClusterId\":\"example-string\"},\"SecurityOptions\":{\"TrustedSystemMode\":\"example-string\"},\"Period\":1,\"SpotDuration\":1,\"ImageOptions\":{\"LoginAsNonRoot\":false},\"PeriodUnit\":\"Month\"}' --pre-paid-options '{\"SpecifyCapacityDistribution\":[{\"MinTargetCapacity\":5,\"InstanceTypes\":[\"ecs.c6.large\"]}]}' --execution-mode example-string --candidate-options TimeoutMinutes=60 Evaluate=true --region cn-hangzhou",
     "legacyCli": "aliyun ecs CreateAutoProvisioningGroup --region cn-hangzhou --LaunchConfiguration.HostName 'k8s-node-_1,4_-ecshost' --ResourceGroupId 'rg-bp67acfmxazb4p0000' --LaunchConfiguration.Period 1 --CandidateOptions.TimeoutMinutes 60 --LaunchConfiguration.CreditSpecification Standard --LaunchConfiguration.Tag.1.Value TestValue --LaunchConfiguration.DataDisk.1.DiskName cloud_ssdData --LaunchConfiguration.SystemDiskCategory cloud_ssd --MaxSpotPrice '2.0' --LaunchTemplateConfig.1.BurstablePerformance Include --LaunchConfiguration.Arn.1.Rolearn 'acs:ram::1234567890120000:role/adminrole' --Tag.1.Key TestKey --LaunchConfiguration.HostNames.1 'ecs-host-01' --LaunchConfiguration.DataDisk.1.SnapshotId 's-bp17441ohwka0yuh0000' --LaunchTemplateId 'lt-bp1fgzds4bdogu030000' --ExecutionMode 'example-string' --LaunchConfiguration.AutoRenew true --LaunchConfiguration.KeyPairName KeyPair_Name --LaunchConfiguration.SystemDisk.EncryptAlgorithm 'aes-256' --LaunchConfiguration.SchedulerOptions.DedicatedHostClusterId 'example-string' --CandidateOptions.Evaluate true --LaunchConfiguration.PeriodUnit Month --LaunchConfiguration.ImageFamily 'hangzhou-daily-update' --LaunchTemplateConfig.1.InstanceFamilyLevel EnterpriseLevel --LaunchConfiguration.AutoRenewPeriod 1 --LaunchTemplateVersion 1 --LaunchConfiguration.SystemDiskDescription SystemDisk_Description --LaunchConfiguration.InternetMaxBandwidthOut 10 --LaunchConfiguration.DataDisk.1.DeleteWithInstance true --LaunchConfiguration.CpuOptions.ThreadsPerCore 2 --Description testDescription --LaunchConfiguration.SystemDisk.ProvisionedIops 40000 --LaunchConfiguration.SystemDisk.BurstingEnabled false --LaunchConfiguration.ImageOptions.LoginAsNonRoot false --LaunchConfiguration.SystemDisk.AutoSnapshotPolicyId 'sp-bp67acfmxazb4p0000' --LaunchConfiguration.DataDisk.1.EncryptAlgorithm 'example-string' --PrePaidOptions.SpecifyCapacityDistribution.1.InstanceTypes.1 'ecs.c6.large' --HibernationOptionsConfigured false --DefaultTargetCapacityType Spot --LaunchTemplateConfig.1.MaxPrice '3.0' --SpotInstancePoolsToUseCount 2 --PrePaidOptions.SpecifyCapacityDistribution.1.MinTargetCapacity 5 --LaunchTemplateConfig.1.ExcludedInstanceTypes.1 'ecs.n1.small/ecs.n1.0/070' --SpotAllocationStrategy diversified --PayAsYouGoAllocationStrategy prioritized --AutoProvisioningGroupName 'apg-test' --LaunchTemplateConfig.1.InstanceType 'ecs.g5.large' --LaunchTemplateConfig.1.WeightedCapacity '2.0' --PayAsYouGoTargetCapacity 30 --LaunchConfiguration.SystemDiskName cloud_ssdSystem --LaunchConfiguration.DataDisk.1.AutoSnapshotPolicyId 'sp-bp67acfmxazb4p0000' --SpotInstanceInterruptionBehavior terminate --ValidUntil '2019-06-01T15:10:20Z' --LaunchTemplateConfig.1.Cores.1 2 --LaunchConfiguration.DataDisk.1.Size 20 --LaunchConfiguration.InternetMaxBandwidthIn 10 --LaunchTemplateConfig.1.VSwitchId 'vsw-sn5bsitu4lfzgc5o70000' --LaunchConfiguration.Arn.1.RoleType '344584339364950000:alice' --LaunchConfiguration.DeploymentSetId 'ds-bp1frxuzdg87zh4p0000' --LaunchConfiguration.CpuOptions.Core 2 --LaunchTemplateConfig.1.MaxQuantity 1 --AutoProvisioningGroupType maintain --ValidFrom '2019-04-01T15:10:20Z' --TerminateInstances true --LaunchConfiguration.AutoReleaseTime '2018-01-01T12:05:00Z' --LaunchConfiguration.SystemDisk.KMSKeyId '0e478b7a-4262-4802-b8cb-00d3fb400000' --LaunchConfiguration.IoOptimized optimized --LaunchConfiguration.InternetChargeType PayByTraffic --LaunchConfiguration.RamRoleName RAM_Name --LaunchConfiguration.DataDisk.1.ProvisionedIops 40000 --LaunchConfiguration.SecurityEnhancementStrategy Active --LaunchConfiguration.DataDisk.1.Device '/dev/vd1' --TerminateInstancesWithExpiration true --LaunchConfiguration.SpotDuration 1 --SpotTargetCapacity 20 --MinTargetCapacity 20 --DataDiskConfig.1.DiskCategory cloud_efficiency --Tag.1.Value TestValue --LaunchConfiguration.DataDisk.1.PerformanceLevel PL1 --LaunchTemplateConfig.1.Priority 1 --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --LaunchConfiguration.DataDisk.1.Description DataDisk_Description --LaunchConfiguration.UserData ZWNobyBoZWxsbyBlY3Mh --LaunchConfiguration.SecurityOptions.TrustedSystemMode 'example-string' --LaunchConfiguration.SystemDiskSize 40 --LaunchConfiguration.InstanceDescription Instance_Description --LaunchConfiguration.Tag.1.Key TestKey --LaunchTemplateConfig.1.ImageId 'aliyun_3_x64_20G_alibase_20210425.vhd' --LaunchConfiguration.SecurityGroupId 'sg-bp15ed6xe1yxeycg0000' --LaunchConfiguration.SystemDisk.Encrypted false --LaunchConfiguration.DataDisk.1.KmsKeyId '0e478b7a-4262-4802-b8cb-00d3fb400000' --LaunchConfiguration.ImageId 'm-bp1g7004ksh0oeuc0000' --LaunchConfiguration.DataDisk.1.Category cloud_ssd --TotalTargetCapacity 60 --ResourcePoolOptions '{\"Strategy\":\"PrivatePoolFirst\",\"PrivatePoolIds\":[\"eap-bp67acfmxazb40000\"]}' --LaunchConfiguration.DataDisk.1.Encrypted false --ExcessCapacityTerminationPolicy termination --LaunchConfiguration.SystemDiskPerformanceLevel PL0 --SystemDiskConfig.1.DiskCategory cloud_ssd --LaunchConfiguration.ResourceGroupId 'rg-bp67acfmxazb4p0000' --LaunchConfiguration.Arn.1.AssumeRoleFor 1234567890120000 --LaunchConfiguration.InstanceName 'k8s-node-_1,4_-alibabacloud' --LaunchTemplateConfig.1.Memories.1 '4.0' --LaunchConfiguration.Password 'EcsV587!' --LaunchConfiguration.SpotInterruptionBehavior Terminate --LaunchConfiguration.PasswordInherit true --LaunchTemplateConfig.1.Architectures.1 X86 --LaunchConfiguration.DataDisk.1.BurstingEnabled false --LaunchConfiguration.SchedulerOptions.DedicatedHostId 'example-string' --RegionId 'cn-hangzhou' --LaunchConfiguration.SecurityGroupIds.1 'sg-bp15ed6xe1yxeycg0000' --method POST --force"

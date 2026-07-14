@@ -1,5 +1,6 @@
 {
   "name": "AssociateAdditionalCertificatesWithListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The instance ID of the Alibaba Cloud Global Accelerator (GA)."
+      }
     },
     {
       "name": "Certificates",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "扩展证书列表。\n\n一次最多支持输入10个证书信息。",
+        "en": "The list of additional certificates.\n\nYou can specify up to 10 certificates at a time."
+      },
       "sub_parameters": [
         {
           "name": "Domain",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "证书指定生效的域名。一个域名只能绑定一个扩展证书。\n\n一次最多支持输入10个域名。",
+            "en": "The domain name for which the certificate takes effect. Each domain name can be bound to only one additional certificate.\n\nYou can specify up to 10 domain names at a time."
+          }
         },
         {
           "name": "Id",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "证书ID，当前仅支持服务器证书。\n\n一次最多支持输入10个证书ID。",
+            "en": "The certificate ID. Only server certificates are supported.\n\nYou can specify up to 10 certificate IDs at a time."
+          }
         }
       ]
     },
@@ -34,21 +51,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client to ensure uniqueness across different requests. ClientToken supports only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** of each API request is different."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听实例ID。仅支持HTTPS的监听。",
+        "en": "The instance ID of the listener. Only HTTPS listeners are supported."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Alibaba Cloud Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为HTTPS监听绑定扩展证书",
+    "en": "Bind additional certificates to an HTTPS listener"
+  },
+  "descriptions": {
+    "zh": "- 仅HTTPS协议的监听支持绑定扩展证书。\n- **AssociateAdditionalCertificatesWithListener**接口属于异步接口，即系统会先返回一个请求ID，但HTTPS监听和扩展证书并未绑定完成，系统后台的关联任务仍在进行。您可以调用[DescribeListener](~~153254~~)查询监听的状态：\n    - 当监听处于**updating**状态时，表示HTTPS监听和扩展证书正在绑定中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当监听处于**active**状态时，表示HTTPS监听和扩展证书绑定完成。\n- **AssociateAdditionalCertificatesWithListener**接口不支持在同一个全球加速实例内并发为HTTPS监听绑定扩展证书。",
+    "en": "- Only HTTPS protocol listeners support attaching extension certificates.\n- The **AssociateAdditionalCertificatesWithListener** operation is asynchronous. After you send a request, the system returns a request ID, but the attachment between the HTTPS listener and the extension certificates is not yet complete because the association node is still running in the background. You can invoke [DescribeListener](~~153254~~) to query the listener status:\n    - If the listener is in the **updating** state, the HTTPS listener and extension certificates are being attached. In this state, you can only execute query operations.\n    - If the listener is in the **active** state, the HTTPS listener and extension certificates are attached.\n- The **AssociateAdditionalCertificatesWithListener** operation does not support concurrent requests to attach extension certificates to HTTPS listeners within the same Alibaba Cloud Global Accelerator (GA) instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga associate-additional-certificates-with-listener --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp1odcab8tmno0hdq0000 --listener-id lsr-bp1bpn0kn908w4nbw0000 --certificates Id=609200-cn-hangzhou Domain=example.com --region cn-hangzhou",
     "legacyCli": "aliyun ga AssociateAdditionalCertificatesWithListener --region cn-hangzhou --Certificates.1.Domain 'example.com' --Certificates.1.Id '609200-cn-hangzhou' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --ListenerId 'lsr-bp1bpn0kn908w4nbw0000'"

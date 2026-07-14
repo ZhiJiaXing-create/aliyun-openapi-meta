@@ -1,5 +1,6 @@
 {
   "name": "CreateCen",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "The client token used to ensure the idempotence of the request.\n\nGenerate a unique parameter value from your client for each request. \\`ClientToken\\` supports only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the request as the **ClientToken**. The **RequestId** is different for each request."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "云企业网实例的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
-        "en": "The description of the CEN instance.\n\nThe description can be empty or 1 to 256 characters in length and cannot start with http:// or https://."
+        "en": "The description of the CEN instance.\n\nThe description can be empty or 1 to 256 characters in length. It cannot start with \\`http\\://\\` or \\`https\\://\\`."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "云企业网实例的名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
-        "en": "The name of the CEN instance.\n\nThe name can be empty or 1 to 128 characters in length and cannot start with http:// or https://."
+        "en": "The name of the CEN instance.\n\nThe name can be empty or 1 to 128 characters in length. It cannot start with \\`http\\://\\` or \\`https\\://\\`."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "设置网段重叠的级别。\n\n取值：**REDUCED**（默认值），表示网段可以有重叠，但是不能完全相同。",
-        "en": "The level of CIDR block overlapping.\n\nSet the value to **REDUCED** (default). This value specifies that CIDR blocks can overlap but cannot be the same."
+        "en": "The level of CIDR block overlap.\n\nSet the value to **REDUCED**. This is the default value. This value specifies that CIDR blocks can overlap but cannot be identical."
       }
     },
     {
@@ -49,26 +50,45 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
+        "en": "The tag information.\n\nYou can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key cannot be an empty string. It can be up to 64 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The tag value.\n\nThe tag value can be empty or a string of up to 128 characters. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nEach tag key must have a corresponding tag value. You can specify up to 20 tag values."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
-        "en": "The tags.\n\nYou can specify up to 20 tags in each call."
-      }
+      ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建云企业网实例",
+    "en": "CreateCen"
+  },
+  "descriptions": {
+    "zh": "**CreateCen**接口属于异步接口，即系统会先返回一个云企业网实例ID，但该云企业网实例并未创建完成，系统后台的创建任务仍在进行。您可以调用**DescribeCens**接口查询云企业网实例的状态。 \n\n- 当云企业网实例处于**Creating**状态时，表示云企业网实例正在创建中，在该状态下，您只能对云企业网实例执行查询操作，不能执行其他操作。\n- 当云企业网实例处于**Active**状态时，表示云企业网实例创建完成。",
+    "en": "**CreateCen** is an asynchronous operation. After a request is sent, the system returns a CEN instance ID, but the CEN instance is not created immediately. The creation task runs in the background. You can call the **DescribeCens** operation to query the status of the CEN instance.\n\n- If a CEN instance is in the **Creating** status, it is being created. In this status, you can only query the instance. You cannot perform other operations.\n\n- If a CEN instance is in the **Active** status, the instance is created."
+  },
   "example": {
     "unifiedCli": "aliyun cbn create-cen --client-token 02fb3da4-130e-11e9-8e44-0010000 --name testname --description testdesc --protection-level REDUCED --tag Value=tagtest Key=tagtest --region cn-hangzhou",
     "legacyCli": "aliyun cbn CreateCen --region cn-hangzhou --ProtectionLevel REDUCED --Tag.1.Key tagtest --Description testdesc --Tag.1.Value tagtest --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --Name testname"

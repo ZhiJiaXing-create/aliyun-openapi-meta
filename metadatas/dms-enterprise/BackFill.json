@@ -1,5 +1,6 @@
 {
   "name": "BackFill",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "Asc",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "补数据任务流运行顺序。取值：\n- **0**：降序。从大日期到小日期。\n- **1**：默认值，升序。从小日期到大日期。",
+        "en": "The running sequence of task flows for data backfill. Valid values:\n\n*   **0**: reverse chronological order.\n*   **1**: chronological order. This is the default value."
+      }
     },
     {
       "name": "BackFillDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "补数据业务时间。指定时间补数据需要填写该参数。",
+        "en": "The date for the data to be backfilled. This parameter is required if you specify a date for data backfill."
+      }
     },
     {
       "name": "BackFillDateBegin",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "补数据开始业务时间。指定时间范围补数据需要填写该参数。",
+        "en": "The start date of the date range for the data to be backfilled. This parameter is required if you specify a date range for data backfill."
+      }
     },
     {
       "name": "BackFillDateEnd",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "补数据结束业务时间。指定时间范围补数据需要填写该参数。",
+        "en": "The end date of the date range for the data to be backfilled. This parameter is required if you specify a date range for data backfill."
+      }
     },
     {
       "name": "DagId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务流ID，可通过调用接口[ListTaskFlow](~~424565~~)或[ListLhTaskFlowAndScenario](~~426672~~)获取该参数的值。",
+        "en": "The ID of the task flow. You can call the [ListTaskFlow](~~424565~~) or [ListLhTaskFlowAndScenario](~~426672~~) operation to query the task flow ID."
+      }
     },
     {
       "name": "FilterNodeIds",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过滤条件，指定任务流中无需补数据的节点Id列表。",
+        "en": "Filter condition, which specifies the list of node IDs in the task flow that do not need to supplement data."
+      }
     },
     {
       "name": "HistoryDagId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "历史任务流ID。\n\n> 若您未填写该参数，在调用API时，系统会自动获取最近发布的任务流版本ID作为该参数的值。若没有发布过任务流，系统获取不到任务流版本ID，则调用会出错。",
+        "en": "The ID of the historical task flow."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "补数据时间间隔，单位：小时。最小值：1，默认值：24。",
+        "en": "The interval at which data backfill is performed. Unit: hours. Minimum value: 1. Default value: 24."
+      }
     },
     {
       "name": "IsTriggerSubTree",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否运行下游节点。缺省时默认为true。",
+        "en": "Specifies whether to run descendant nodes. Default value: true."
+      }
     },
     {
       "name": "StartNodeIds",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "补数据开始节点ID列表。\n\n> 参数缺省时运行整个任务流。",
+        "en": "The number of nodes for which you want to backfill data."
+      }
     },
     {
       "name": "Tid",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID。\n> 取自系统右上角头像处悬停展示的租户ID信息，详情请参见[查看租户信息](~~181330~~)。",
+        "en": "The ID of the tenant.\n\n>  To view the ID of the tenant, go to the Data Management (DMS) console and move the pointer over the profile picture in the upper-right corner. For more information, see [View information about the current tenant](~~181330~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "给任务编排补数据",
+    "en": "BackFill"
+  },
+  "descriptions": {
+    "zh": "补充数据时，任务流按照日期串行执行，可指定按日期升序或降序执行。补充数据完成后，可指定日期或日期范围，以及节点范围来运行任务流。",
+    "en": "During a data backfill, task flows are run in sequence based on their dates. You can specify whether task flows are run in chronological or reverse chronological order. After the data backfill is complete, you can specify a date or date range, and a node range to run task flows."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise back-fill --tid 3000 --dag-id 15000 --start-node-ids 2 --filter-node-ids 12000 --is-trigger-sub-tree true --back-fill-date 2022-01-14 --back-fill-date-begin 2022-01-14 --back-fill-date-end 2022-09-29 --interval 24 --asc false --history-dag-id 16000 --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise BackFill --region cn-hangzhou --Asc false --HistoryDagId 16000 --BackFillDateBegin '2022-01-14' --IsTriggerSubTree true --FilterNodeIds '[12000]' --BackFillDateEnd '2022-09-29' --StartNodeIds '[2]' --BackFillDate '2022-01-14' --Tid 3000 --DagId 15000 --Interval 24"

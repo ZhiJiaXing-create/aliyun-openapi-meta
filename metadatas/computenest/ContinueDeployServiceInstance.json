@@ -1,5 +1,6 @@
 {
   "name": "ContinueDeployServiceInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。",
+        "en": "A client token that is used to ensure the idempotence of the request. Generate a unique value for this parameter from your client. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检，包括权限、实例状态校验等。可能的值：\n\n- true：发送请求，不创建服务实例。\n\n- false：发送请求，检查通过后创建服务实例。",
+        "en": "Specifies whether to perform a dry run. A dry run checks items such as permissions and the instance status. Valid values:\n\n- true: performs a dry run to check the request. The service instance is not deployed.\n\n- false: sends a regular request. If the request passes the check, the service instance is deployed."
+      }
     },
     {
       "name": "Option",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重新创建选项。",
+        "en": "The recreation options."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务实例配置参数。",
+        "en": "The configuration parameters of the service instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ServiceInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务实例ID。",
+        "en": "The ID of the service instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "继续部署服务实例",
+    "en": "ContinueDeployServiceInstance"
+  },
+  "descriptions": {
+    "zh": "待部署服务实例的服务类型为private、部署类型为ros时，部署失败后可调用ContinueDeployServiceInstance继续部署该服务实例。",
+    "en": "If a private service instance that uses the ROS deployment type fails to deploy, you can call the ContinueDeployServiceInstance operation to resume the deployment."
+  },
   "example": {
     "unifiedCli": "aliyun computenest continue-deploy-service-instance --client-token 123e4567-e89b-12d3-a456-426655440000 --service-instance-id si-0e6fca6a51a544200000 --biz-region-id cn-hangzhou --parameters NodeCount_:_3,_SystemDiskSize_:_40,_InstancePassword_:_000000 --dry-run false --option TryToFixSignalFailureByRerunEcsCommand --region cn-hangzhou",
     "legacyCli": "aliyun computenest ContinueDeployServiceInstance --region cn-hangzhou --Parameters 'NodeCount_:_3,_SystemDiskSize_:_40,_InstancePassword_:_000000' --ServiceInstanceId 'si-0e6fca6a51a544200000' --DryRun false --RegionId 'cn-hangzhou' --Option.1 TryToFixSignalFailureByRerunEcsCommand --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

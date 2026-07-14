@@ -1,5 +1,6 @@
 {
   "name": "AssociateVpcCidrBlock",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "IPv6CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VPC的指定IPv6网段。\n\n> 参数**SecondaryCidrBlock**和参数**Ipv6CidrBlock**不能都输入。",
+        "en": "The specified IPv6 CIDR block of the VPC.\n\n> You cannot specify both **SecondaryCidrBlock** and **Ipv6CidrBlock**."
+      }
     },
     {
       "name": "IpVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP地址的版本类型。取值：\n\n- **IPV4**：IPv4地址。\n- **IPV6**：IPv6地址，当**IpVersion**参数输入**IPV6**，**SecondaryCidrBlock**参数不传值时可以为VPC添加附加IPv6网段。",
+        "en": "The version of the IP address. Valid values:\n\n- **IPV4**: IPv4 address.\n- **IPV6**: IPv6 address. When **IpVersion** is set to **IPV6** and **SecondaryCidrBlock** is not specified, a secondary IPv6 CIDR block is added to the VPC."
+      }
     },
     {
       "name": "IpamPoolId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPAM地址池实例ID。",
+        "en": "The instance ID of the IPAM pool."
+      }
     },
     {
       "name": "Ipv6CidrMask",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过输入掩码的方式从IPAM地址池为VPC添加IPv6网段。\n\n> 指定IPAM地址池为VPC添加附加IPv6网段时，参数IPv6CidrBlock或Ipv6CidrMask至少输入一个。",
+        "en": "The subnet mask used to add an IPv6 CIDR block from an IPAM pool to the VPC.\n\n> When you use an IPAM pool to add a secondary IPv6 CIDR block to the VPC, you must specify at least one of IPv6CidrBlock and Ipv6CidrMask."
+      }
     },
     {
       "name": "Ipv6Isp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VPC的IPv6地址段类型，取值：\n\n- **BGP**（默认值）：阿里云BGP IPv6。\n- **ChinaMobile**：中国移动（单线）。\n- **ChinaUnicom**：中国联通（单线）。\n- **ChinaTelecom**：中国电信（单线）。\n\n> 如果是开通了单线带宽白名单的用户，该字段可以设置为**ChinaTelecom**（中国电信）、**ChinaUnicom**（中国联通）和**ChinaMobile**（中国移动）。",
+        "en": "The type of the IPv6 CIDR block of the VPC. Valid values:\n\n- **BGP** (default): Alibaba Cloud BGP IPv6.\n- **ChinaMobile**: China Mobile (single ISP).\n- **ChinaUnicom**: China Unicom (single ISP).\n- **ChinaTelecom**: China Telecom (single ISP).\n\n> If your account is included in the China single-ISP bandwidth whitelist, you can set this parameter to **ChinaTelecom** (China Telecom), **ChinaUnicom** (China Unicom), or **ChinaMobile** (China Mobile)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要添加附加网段的VPC所在地域ID。 \n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPC to which you want to add a secondary CIDR block. \n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "SecondaryCidrBlock",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要添加的附加IPv4网段，网段要求如下：\n\n- 建议您使用RFC 1918标准中指定的私有IPv4地址作为VPC的附加IPv4网段，网段掩码推荐使用16~28位。例如：10.0.0.0/16、172.16.0.0/16、192.168.0.0/16。\n- 使用除100.64.0.0/10、224.0.0.0/4、127.0.0.0/8、169.254.0.0/16及其子网外的自定义地址段作为专有网络的附加IPv4网段。\n\n配置限制如下：\n- 不能以0开头，网段掩码推荐使用16~28位。\n\n- 附加网段不得与VPC主网段及已添加的附加网段重叠。\n\n> 不通过IPAM地址池为VPC添加附加网段时，参数**SecondaryCidrBlock**和参数**Ipv6CidrBlock**必须输入一个且不能都输入。",
+        "en": "The secondary IPv4 CIDR block to add. The CIDR block must meet the following requirements:\n\n- Use a private IPv4 address specified in RFC 1918 as the secondary IPv4 CIDR block of the virtual private cloud (VPC). The subnet mask must be 16 to 28 bits in length. Examples: 10.0.0.0/16, 172.16.0.0/16, and 192.168.0.0/16.\n- You can use a custom CIDR block other than 100.64.0.0/10, 224.0.0.0/4, 127.0.0.0/8, 169.254.0.0/16, or their subnets as the secondary IPv4 CIDR block of the virtual private cloud (VPC).\n\nConfiguration limits:\n- The CIDR block cannot start with 0. The subnet mask must be 16 to 28 bits in length.\n\n- The secondary CIDR block cannot overlap with the primary CIDR block or existing secondary CIDR blocks of the VPC.\n\n> If you do not use an IPAM pool to add a secondary CIDR block to the VPC, you must specify either the **SecondaryCidrBlock** parameter or the **Ipv6CidrBlock** parameter, but not both."
+      }
     },
     {
       "name": "SecondaryCidrMask",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过输入掩码的方式从IPAM地址池为VPC添加附加IPv4网段。\n\n> 指定IPAM地址池为VPC添加附加IPv4网段时，参数SecondaryCidrBlock或SecondaryCidrMask至少输入一个。",
+        "en": "The subnet mask used to add a secondary IPv4 CIDR block from an IPAM pool to the VPC.\n\n> When you use an IPAM pool to add a secondary IPv4 CIDR block to the VPC, you must specify at least one of SecondaryCidrBlock and SecondaryCidrMask."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要添加附加网段的VPC的ID。",
+        "en": "The ID of the VPC to which you want to add a secondary CIDR block."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为VPC添加附加网段",
+    "en": "Add a secondary CIDR block to a VPC"
+  },
+  "descriptions": {
+    "zh": "- 一个VPC最多支持添加的附加网段个数如下：\n    - 一个VPC最多支持添加5个附加IPv4网段。\n    - 一个VPC最多支持添加5个附加IPv6网段。\n\n- **AssociateVpcCidrBlock**接口不支持并发为同一个VPC添加附加网段。",
+    "en": "- The maximum number of secondary CIDR blocks that can be added to a VPC is as follows:\n    - A maximum of 5 secondary IPv4 CIDR blocks can be added to a VPC.\n    - A maximum of 5 secondary IPv6 CIDR blocks can be added to a VPC.\n\n- The **AssociateVpcCidrBlock** operation does not support concurrently adding secondary CIDR blocks to the same VPC."
+  },
   "example": {
     "unifiedCli": "aliyun vpc associate-vpc-cidr-block --biz-region-id cn-hangzhou --vpc-id vpc-o6wrloqsdqc9io3mg0000 --secondary-cidr-block 192.168.0.0/16 --secondary-cidr-mask 16 --ipv6-cidr-block 2408:XXXX:0:6a::/56 --ipv6-isp BGP --ip-version IPV4 --ipam-pool-id ipam-pool-sycmt3p2a9v63i0000 --ipv6-cidr-mask 56 --region cn-hangzhou",
     "legacyCli": "aliyun vpc AssociateVpcCidrBlock --region cn-hangzhou --Ipv6Isp BGP --SecondaryCidrMask 16 --SecondaryCidrBlock '192.168.0.0/16' --VpcId 'vpc-o6wrloqsdqc9io3mg0000' --IpVersion IPV4 --IpamPoolId 'ipam-pool-sycmt3p2a9v63i0000' --RegionId 'cn-hangzhou' --IPv6CidrBlock '2408:XXXX:0:6a::/56' --Ipv6CidrMask 56"

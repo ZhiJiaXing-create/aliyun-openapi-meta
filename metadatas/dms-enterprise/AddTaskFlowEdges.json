@@ -1,5 +1,6 @@
 {
   "name": "AddTaskFlowEdges",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "DagId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务流ID，可通过调用接口[ListTaskFlow](~~424565~~)或[ListLhTaskFlowAndScenario](~~426672~~)获取该参数的值。",
+        "en": "The ID of the task flow. You can call the [ListTaskFlow](~~424565~~) or [ListLhTaskFlowAndScenario](~~426672~~) operation to query the task flow ID."
+      }
     },
     {
       "name": "Edges",
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "任务流边列表。",
+        "en": "The list of edges of the task flow."
+      },
       "sub_parameters": [
         {
           "name": "NodeEnd",
           "position": "Query",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "边的终点节点ID。",
+            "en": "The ID of the node where the end node of the edge is located."
+          }
         },
         {
           "name": "NodeFrom",
           "position": "Query",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "边的起点节点ID。",
+            "en": "The ID of the node where the start node of the edge is located."
+          }
         }
       ]
     },
@@ -34,9 +51,24 @@
       "name": "Tid",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID。\n> 取自系统右上角头像处悬停展示的租户ID信息，详情请参见[查看租户信息](~~181330~~)。",
+        "en": "The ID of the tenant.\n\n> : To view the ID of the tenant, go to the Data Management (DMS) console and move the pointer over the profile picture in the upper-right corner. For more information, see [View information about the current tenant](~~181330~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "任务流节点建立有向边",
+    "en": "AddTaskFlowEdges"
+  },
+  "descriptions": {
+    "zh": "### 注意事项\n新增的边需要满足以下限制，否则将无法成功添加：\n1. 指定的边端点存在于DagId指定的任务流DAG图中。 \n2. 添加后有向边后，DAG图不出现环。",
+    "en": "When you add directed edges for a task node, take note of the following limits:\n\n1. The endpoints of the specified edge exist in the Directed Acyclic Graph (DAG) of the task flow specified by DagId.\n2. After a backward edge is added, the DAG does not contain loops."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise add-task-flow-edges --tid 3000 --dag-id 15000 --edges NodeFrom=44000 NodeEnd=44000 --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise AddTaskFlowEdges --region cn-hangzhou --Edges '[{\"NodeFrom\":44000,\"NodeEnd\":44000}]' --Tid 3000 --DagId 15000"

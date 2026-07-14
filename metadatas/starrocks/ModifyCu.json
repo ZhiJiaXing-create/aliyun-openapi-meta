@@ -1,5 +1,6 @@
 {
   "name": "ModifyCu",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/webapi/resourceChange/modifyCu",
@@ -8,19 +9,31 @@
       "name": "FastMode",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否以快速重启模式重启。默认为 false。\n\n- true：以快速重启模式重启计算节点。分为多个批次重启计算节点，批次内并行重启，批次间串行执行；\n- false：以滚动重启模式重启计算节点。",
+        "en": "Specifies whether to restart the instance in fast restart mode. The default value is false.\n\n- true: Restarts the compute nodes in fast restart mode. The compute nodes are restarted in batches. Nodes within a batch are restarted in parallel, and batches are processed sequentially.\n\n- false: Restarts the compute nodes in rolling restart mode."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例 ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "NodeGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "计算组 ID。",
+        "en": "The compute group ID."
+      }
     },
     {
       "name": "PromotionOptionNo",
@@ -32,9 +45,24 @@
       "name": "Target",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标 CU 数量。",
+        "en": "The target number of CUs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改CU数量",
+    "en": "ModifyCu"
+  },
+  "descriptions": {
+    "zh": "请确保在使用该接口前，已充分了解 Serverless StarRocks 产品的收费方式和<props=\"china\">[计费项](https://help.aliyun.com/zh/emr/emr-serverless-starrocks/product-overview/billable-items?spm=a2c4g.11186623.help-menu-28066.d_0_1_1.4db82b05p3Gg0G)</props><props=\"intl\">[计费项](https://www.alibabacloud.com/help/en/emr/emr-serverless-starrocks/product-overview/billable-items?spm=a2c63.p38356.help-menu-28066.d_0_1_0.3aaf4b0b69jN1P)</props>。\n\n调用该接口时，您需要注意：\n\n- 只有标准版实例支持修改计算组 CU 数量，入门版实例不支持。\n\n- 只有计算组规格类型为标准版 (standard) 的实例支持增加磁盘数量。\n\n- 实例必须处于运行中（Running）状态。\n\n修改 CU 数量后，计费变化情况如下：\n\n- 按量付费：按照新的 CU 数量计费。\n\n- 包年包月：在计费周期内，会根据新旧配置的价格差和剩余天数（从次日 0 点到有效期结束）来计算应补缴的费用。",
+    "en": "Before you call this API, make sure that you understand the billing methods and <props=\"china\">[billable items](https://help.aliyun.com/zh/emr/emr-serverless-starrocks/product-overview/billable-items?spm=a2c4g.11186623.help-menu-28066.d_0_1_1.4db82b05p3Gg0G)</props><props=\"intl\">[billable items](https://www.alibabacloud.com/help/en/emr/emr-serverless-starrocks/product-overview/billable-items?spm=a2c63.p38356.help-menu-28066.d_0_1_0.3aaf4b0b69jN1P)</props> of Serverless StarRocks.\n\nWhen you call this API, note the following:\n\n- This operation is supported only for Standard Edition instances. It is not supported for Starter Edition instances.\n\n- You can increase the number of disks only for instances with a standard compute group specification.\n\n- The instance must be in the Running state.\n\nAfter you change the number of CUs, the billing for the instance is updated as follows:\n\n- Pay-as-you-go: You are billed based on the new number of CUs.\n\n- Subscription: A supplementary fee is charged. This fee is calculated based on the price difference between the old and new configurations and the remaining subscription period. The remaining period starts at 00:00 on the following day and ends when the subscription expires."
+  },
   "example": {
     "unifiedCli": "aliyun starrocks modify-cu --instance-id c-b25e21e243880000 --node-group-id ng-3d5ce64543540000 --target 4 --fast-mode true --promotion-option-no example-string --region cn-hangzhou",
     "legacyCli": "aliyun starrocks POST /webapi/resourceChange/modifyCu --region cn-hangzhou --Target 4 --InstanceId 'c-b25e21e243880000' --PromotionOptionNo 'example-string' --NodeGroupId 'ng-3d5ce64543540000' --FastMode true --header \"Content-Type=application/json\""

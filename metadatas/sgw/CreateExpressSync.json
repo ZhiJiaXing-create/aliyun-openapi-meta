@@ -1,5 +1,6 @@
 {
   "name": "CreateExpressSync",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "BucketName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。请注意：\n\n- 一个同步组只能设定一个OSS Bucket，所有对该Bucket内数据进行的改动都会被同步至本地。\n\n- 如果您还未创建任何连接至OSS Bucket的共享，请先创建文件网关与OSS Bucket之间的共享。",
+        "en": "The name of the bucket. Note:\n\n- You can specify only one OSS bucket for a synchronization group. All data changes in the bucket are synchronized to your on-premises environment.\n- If you have not created a share for the OSS bucket, you must first create a share between the file gateway and the OSS bucket."
+      }
     },
     {
       "name": "BucketPrefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Bucket子目录。如果您要对Bucket特定子目录内的数据改动进行同步，可以填写您需要的子目录。",
+        "en": "The prefix of the subdirectory in the bucket. If you want to synchronize data changes in a specific subdirectory of the bucket, you can specify the subdirectory."
+      }
     },
     {
       "name": "BucketRegion",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS Bucket所在地域。",
+        "en": "The region where the OSS bucket is located."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "极速同步组描述。长度限制为255个字符。",
+        "en": "The description of the express synchronization group. The description can be up to 255 characters in length."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "极速同步组名称。同步组名称长度限制1~128个字符，可以包含大小写字母、中文、数字、半角句号（.）、下划线（_）或短划线（-），同时必须以大小写字母或者中文开头。",
+        "en": "The name of the express synchronization group. The name must be 1 to 128 characters in length and can contain letters, Chinese characters, digits, periods (.), underscores (\\_), and hyphens (-). The name must start with a letter or a Chinese character."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建极速同步组",
+    "en": "CreateExpressSync"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n\n调用该接口时，您需要注意：\n\n<props=\"china\">- 请确保在使用该接口前，已充分了解阿里云轻量消息队列（原 MNS）产品的收费方式和[价格](https://help.aliyun.com/zh/mns/product-overview/pricing-1?spm=a2c4g.11186623.0.0.2a806f7cOKw4LV)。轻量消息队列（原 MNS）费用由主题（Topic）和队列（Queue）两部分组成，并按天进行计费。每个极速同步组按照一个Topic进行计费，每个加入同步组的共享都会按一个Queue进行计费。</props><props=\"intl\">- 请确保在使用该接口前，已充分了解阿里云轻量消息队列（原 MNS）产品的收费方式和价格。轻量消息队列（原 MNS）费用由主题（Topic）和队列（Queue）两部分组成，并按天进行计费。每个极速同步组按照一个Topic进行计费，每个加入同步组的共享都会按一个Queue进行计费。</props>\n\n- 极速同步功能依赖于阿里云轻量消息队列（原 MNS）实现，因此使用极速同步会产生相应服务的费用。\n\n- 使用极速同步功能，您可以将一个或多个连接至同一个OSS Bucket的共享加入一个同步组。对该Bucket中数据进行的任何改动都会同步至该同步组中所有共享的本地客户端，从而无需单独对每个共享进行反向同步，提高数据同步的效率和准确性。\n\n- 目前只有标准型、增强型及性能型的云存储网关支持极速同步功能。\n\n- 请确认您已创建文件网关并添加缓存，如果没有请创建文件网关及添加缓存。\n\n- 请确认您已创建OSS Bucket，并配置了文件网关与OSS Bucket之间的NFS或SMB共享。\n\n- 可加入极速同步组的相关Bucket信息可以通过DescribeSharesBucketInfoForExpressSync接口查询。\n\n- 请确认您已开通阿里云轻量消息队列（原 MNS）并授权。",
+    "en": "### Description\n\nNote the following when you call this operation:\n\n<props=\"china\">\n\n- Make sure that you understand the billing methods and [pricing](https://www.alibabacloud.com/help/en/message-service/latest/billing-overview) of Simple Message Queue (formerly MNS). You are charged daily for MNS topics and queues. Each express synchronization group is billed as a topic, and each share that is added to an express synchronization group is billed as a queue.\n\n</props><props=\"intl\">Make sure that you understand the billing methods and pricing of Simple Message Queue (formerly MNS). You are charged daily for MNS topics and queues. Each express synchronization group is billed as a topic, and each share that is added to an express synchronization group is billed as a queue.</props>\n- The express synchronization feature is built on Simple Message Queue (formerly MNS). Therefore, you are charged for using this feature.\n- The express synchronization feature lets you add one or more shares that are connected to the same OSS bucket to a synchronization group. Data changes in the bucket are then synchronized to the local clients of all shares in the group. This eliminates the need to perform a remote sync for each share, which improves the efficiency and accuracy of data synchronization.\n- Only Medium, Enhanced, and Performance Cloud Storage Gateway instances support the express synchronization feature.\n- Make sure that you have created a file gateway and added a cache.\n- Make sure that you have created an OSS bucket and configured an NFS or SMB share between the file gateway and the OSS bucket.\n- You can call the DescribeSharesBucketInfoForExpressSync operation to query the buckets that can be added to an express synchronization group.\n- Make sure that you have activated Simple Message Queue (formerly MNS) and granted the required permissions."
+  },
   "example": {
     "unifiedCli": "aliyun sgw create-express-sync --name alex-tb000 --description Synchronization_group_test --bucket-region cn-hangzhou --bucket-name sgw-test000 --bucket-prefix test000 --region cn-hangzhou",
     "legacyCli": "aliyun sgw CreateExpressSync --region cn-hangzhou --Description Synchronization_group_test --BucketName 'sgw-test000' --BucketRegion 'cn-hangzhou' --BucketPrefix test000 --Name 'alex-tb000'"

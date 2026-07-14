@@ -1,5 +1,6 @@
 {
   "name": "SubmitDynamicImageJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DynamicImageTemplateId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "动图模板ID。",
+        "en": "The dynamic image template ID."
+      }
     },
     {
       "name": "OverrideParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "覆盖参数（JSON字符串）。具体详情，请参见[OverrideParams](~~98618~~)。支持对动图模板配置中的参数进行覆盖。具体内容，请参见[DynamicImageTemplateConfig](~~52839~~)。",
+        "en": "The override parameters, specified as a JSON string. For more information, see [OverrideParams](~~98618~~). For details on the settings that can be overridden, see [DynamicImageTemplateConfig](~~52839~~)."
+      }
     },
     {
       "name": "VideoId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "视频ID。可通过以下方式获取：\n\n- 通过控制台上传的视频，可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看视频ID。\n- 通过[获取视频上传地址和凭证](~~55407~~)接口获取上传地址和凭证时，视频ID为返回参数VideoId的值。\n- 视频上传后，可通过[搜索媒体信息](~~86044~~)接口查询视频ID，为请求后返回参数VideoId的值。",
+        "en": "The video ID. You can get the video ID in the following ways:\n\n- Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Media Files** > **Audio/Video** to view the video ID.\n\n- The value of the `VideoId` parameter returned by the [CreateUploadVideo](~~55407~~) operation.\n\n- The value of the `VideoId` parameter returned by the [SearchMedia](~~86044~~) operation, which you can call after the video is uploaded."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交媒体动图作业",
+    "en": "SubmitDynamicImageJob"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n- 该接口为[异步接口](~~3027551~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[获取任务详情](~~2861326~~)主动查询任务状态。\n- 只有状态为**上传完成**、**转码中**、**正常**、**审核中**和**屏蔽**的视频才能发起动图作业。\n- 动图生产计入视频转码费用，且计费标准一致，按照分辨率和时长计费。具体收费详情，请参见[媒资转码计费](~~188308~~)。\n\n### QPS限制\n本接口的单用户QPS限制为30次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342790~~)。",
+    "en": "### Usage notes\n\n- This is an [asynchronous interface](~~3027551~~). After you submit a job, the operation returns a job ID and queues it for asynchronous processing. The final result is sent through a callback notification, or you can query the job status by calling the [GetDynamicImageJob](~~2861326~~) operation.\n\n- You can start a dynamic image job only for videos that are in the **Uploaded**, **Transcoding**, **Normal**, **UnderReview**, or **Blocked** state.\n\n- The fees for generating dynamic images are included in transcoding costs and are calculated using the same standard, which is based on video resolution and duration. For more information, see [media transcoding billing](~~188308~~).\n\n### QPS limit\n\nThe QPS limit for this operation is 30 queries per second (QPS) per user. The system throttles calls that exceed this limit, which may affect your business. Call this operation at a reasonable rate. For more information, see [QPS limits](~~342790~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vod submit-dynamic-image-job --video-id 7d2fbc3e273441bdb0e08e55f80000 --dynamic-image-template-id 1a443dc52ef10abc4794d70000000 --override-params Watermarks_:_Content_:_UserID:_66600_,_WatermarkId_:_8ca03c884944bd05efccc3123670000 --region cn-hangzhou",
     "legacyCli": "aliyun vod SubmitDynamicImageJob --region cn-hangzhou --VideoId 7d2fbc3e273441bdb0e08e55f80000 --DynamicImageTemplateId 1a443dc52ef10abc4794d70000000 --OverrideParams 'Watermarks_:_Content_:_UserID:_66600_,_WatermarkId_:_8ca03c884944bd05efccc3123670000'"

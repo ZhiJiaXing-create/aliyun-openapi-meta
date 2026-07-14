@@ -1,5 +1,6 @@
 {
   "name": "ListUsers",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,59 +9,99 @@
       "name": "DirectoryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目录ID。",
+        "en": "The CloudSSO directory ID."
+      }
     },
     {
       "name": "Filter",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过滤条件。\n\n格式：`<Attribute> <Operator> <Value>`，不区分大小写。目前`<Attribute>`只支持`UserName`，`Operator`只支持`eq`（Equals）和`sw`（Start With）。\n\n示例：Filter = \"UserName sw test\"，表示查询用户名称以test开头的全部用户。Filter = \"UserName eq testuser\"，表示查询用户名称为`testuser`的用户。",
+        "en": "The filter condition.\n\nThe format is `<Attribute> <Operator> <Value>`. The filter is not case-sensitive. The `<Attribute>` only supports `UserName`. The `<Operator>` only supports `eq` (equal to) and `sw` (starts with).\n\nExamples:\n\nIf you configure this parameter to `UserName sw test`, the system queries all users whose usernames start with `test`. If you configure this parameter to `UserName eq testuser`, the system queries the user whose username is `testuser`."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页的最大数据条数。\n\n取值范围：1~100。\n\n默认值：10。",
+        "en": "The maximum number of entries to return on each page.\n\nValid values: 1 to 100.\n\nDefault value: 10."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询返回结果下一页的令牌。首次调用API不需要`NextToken`。\n\n当您首次调用API时，如果返回数据总条数超过`MaxResults`限制，数据会被截断，只返回`MaxResults`条数据，同时，返回参数`IsTruncated`为`true`，返回一个`NextToken`。您可以使用上一次返回的`NextToken`继续调用API，其他请求参数保持不变，查询被截断的数据。您可以按此方法经过多次查询，直到`IsTruncated`为`false`时，表示全部数据查询完毕。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results. You do not need to specify this parameter for the first request.\n\nIf the total number of entries exceeds the value of `MaxResults`, the entries are truncated. The system returns the value of `MaxResults` and a `NextToken`. The `IsTruncated` parameter is set to `true`. You can use the returned `NextToken` in the next call to query the remaining entries. Keep the other request parameters unchanged. Repeat this process until the `IsTruncated` parameter is `false`. This indicates that all entries are returned."
+      }
     },
     {
       "name": "ProvisionType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户类型，用于查询的过滤条件。取值：\n\n- Manual：手动创建。\n- Synchronized：外部同步。",
+        "en": "The user type. This parameter is used as a filter condition. Valid values:\n\n- Manual: The user was manually created.\n\n- Synchronized: The user was synchronized from an external IdP."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户状态，用于查询的过滤条件。取值：\n\n- Enabled：启用。\n- Disabled：禁用。",
+        "en": "The user status. This parameter is used as a filter condition. Valid values:\n\n- Enabled\n\n- Disabled"
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "en": "The tags attached to the user."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The tag value."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询用户列表",
+    "en": "ListUsers"
+  },
   "example": {
     "unifiedCli": "aliyun cloudsso list-users --directory-id d-00fc2p610000 --status Enabled --provision-type Manual --filter UserName_sw_test --max-results 10 --next-token K1c3o9K7pFxoTtxH1Nm7MMLb7zrDGvftYBQBPDVv7AD3a8yhRb3Mk8L9ivmN6bFSjfkZNTAg3h40000 --tags Value=example-string Key=example-string --region cn-hangzhou",
     "legacyCli": "aliyun cloudsso ListUsers --region cn-hangzhou --Status Enabled --DirectoryId 'd-00fc2p610000' --Tags.1.Value 'example-string' --NextToken K1c3o9K7pFxoTtxH1Nm7MMLb7zrDGvftYBQBPDVv7AD3a8yhRb3Mk8L9ivmN6bFSjfkZNTAg3h40000 --Filter UserName_sw_test --ProvisionType Manual --MaxResults 10 --Tags.1.Key 'example-string'"

@@ -1,5 +1,6 @@
 {
   "name": "PublishVpcRouteEntries",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会发布路由。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并直接查询资源状况。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run without publishing route entries. The system checks the AccessKey pair, Resource Access Management (RAM) user authorization, and required parameters. If the check fails, the corresponding error is returned. If the check passes, the error code `DryRunOperation` is returned.\n\n- **false** (default): sends a Normal request. After the request passes the check, a 2xx HTTP status code is returned and the resource status is queried."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在的地域ID。您可以通过调用DescribeRegions接口获取地域ID。",
+        "en": "The region ID of the instance. You can call the DescribeRegions operation to query the region ID."
+      }
     },
     {
       "name": "RouteEntries",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "需要发布的路由条目信息列表，最多支持传入50条路由。",
+        "en": "The list of route entries to publish. A maximum of 50 routes can be specified."
+      },
       "sub_parameters": [
         {
           "name": "DestinationCidrBlock",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "路由条目的目标网段。",
+            "en": "The destination CIDR block of the route entry."
+          }
         },
         {
           "name": "RouteTableId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "路由条目的路由表ID。",
+            "en": "The route table ID of the route entry."
+          }
         }
       ]
     },
@@ -40,15 +61,30 @@
       "name": "TargetInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由发布目标实例ID",
+        "en": "The publish route entry target instance ID."
+      }
     },
     {
       "name": "TargetType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由发布目标的类型",
+        "en": "The type of the route publish target."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "发布VPC路由",
+    "en": "Publish VPC routes"
+  },
   "example": {
     "unifiedCli": "aliyun vpc publish-vpc-route-entries --biz-region-id cn-hangzhou --route-entries RouteTableId=vtb-2ze3jgygk9bmsj23s0000 DestinationCidrBlock=121.41.165.123/32 --target-type ECR --target-instance-id ecr-dhw2xsds50000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc PublishVpcRouteEntries --region cn-hangzhou --RouteEntries.1.RouteTableId 'vtb-2ze3jgygk9bmsj23s0000' --TargetType ECR --DryRun false --TargetInstanceId 'ecr-dhw2xsds50000' --RegionId 'cn-hangzhou' --RouteEntries.1.DestinationCidrBlock '121.41.165.123/32'"

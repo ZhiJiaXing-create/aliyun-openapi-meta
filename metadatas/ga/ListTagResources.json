@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,53 +9,96 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否拥有下一次查询的令牌（Token）。取值：\n- 第一次查询和没有下一次查询时，均无需填写。\n- 如果有下一次查询，取值为上一次API调用返回的NextToken值。",
+        "en": "The token that determines the start point of the next query. Valid values:\n\n*   If this is your first query and no next queries are to be sent, ignore this parameter.\n*   If a subsequent query is to be sent, set the parameter to the value of NextToken that is returned from the last call."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待查询标签信息的全球加速资源ID。\n- 当**ResourceType**取值为**accelerator**时，取值为标准型全球加速实例ID。\n- 当**ResourceType**取值为**basicaccelerator**时，取值为基础型全球加速实例ID。\n- 当**ResourceType**取值为**bandwidthpackage**时，取值为带宽包ID。\n- 当**ResourceType**取值为**acl**时，取值为访问控制策略组ID。\n- 当**ResourceType**取值为**endpointgroup**时，取值为终端节点组ID。\n\n最多支持输入50个全球加速资源ID。",
+        "en": "The IDs of the resources whose tag information you want to query.\n\n*   If you set **ResourceType** to **accelerator**, set the value of ResourceId to the ID of a standard GA instance.\n*   If you set **ResourceType** to **basicaccelerator**, set the value of ResourceId to the ID of a basic GA instance.\n*   If you set **ResourceType** to **bandwidthpackage**, set the value of ResourceId to the ID of a bandwidth plan.\n*   If you set **ResourceType** to **acl**, set the value of ResourceId to the ID of an ACL.\n*   If you set **ResourceType** to **endpointgroup**, set the value of ResourceId to the ID of an endpoint group.\n\nYou can specify up to 50 GA resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待查询标签信息的全球加速资源类型。取值：\n- **accelerator**：标准型全球加速实例。\n- **basicaccelerator**：基础型全球加速实例。\n- **bandwidthpackage**：带宽包。\n- **acl**：访问控制策略组。\n- **endpointgroup**：终端节点组。",
+        "en": "The type of the resource whose tag information you want to query. Valid values:\n\n*   **accelerator**: a standard GA instance\n*   **basicaccelerator**: a basic GA instance\n*   **bandwidthpackage**: a bandwidth plan\n*   **acl**: an access control list (ACL).\n*   **endpointgroup**: an endpoint group"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "全球加速资源的标签列表。\n\n最多输入20个标签。",
+        "en": "An array of tags of GA resources.\n\nYou can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "全球加速资源的标签键。一旦输入该值，则不允许为空字符串。\n\n最多支持64个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n最多支持输入20个标签键。",
+            "en": "The tag key of the GA resource. The tag key cannot be an empty string.\n\nThe tag key can be up to 64 characters in length and cannot contain `http://` or `https://`. It cannot start with `aliyun` or `acs:`.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "全球加速资源的标签值。一旦输入该值，可以为空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n最多支持输入20个标签值。",
+            "en": "The tag value of the GA resource. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and and cannot contain `http://` or `https://`. It cannot start with `aliyun` or `acs:`.\n\nYou can specify up to 20 tag values."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询全球加速资源已经绑定的标签列表",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "- 请求中至少指定参数**ResourceId**或**Tag**（**Key**与**Value**），以确定检索对象。\n- **Tag**是资源的标签，由一个键值对组成。仅指定**Key**时，则返回该标签键关联的所有标签值。仅指定**Value**会报错。\n- 如果您同时指定**Tag**和**ResourceId**筛选标签，则**ResourceId**必须满足所有输入的标签键值对。\n- 如果您同时指定多个标签键值对，返回结果为同时包含被指定的多个键值对的资源。",
+    "en": "*   You must specify **ResourceId** or **Tag** in the request to specify the object that you want to query.********\n*   **Tag** is a resource tag that consists of a key-value pair (Key and Value). If you specify only **Key**, all tag values that are associated with the specified tag key are returned. If you specify only **Value**, an error message is returned.\n*   If you specify **Tag** and **ResourceId** to filter tags, **ResourceId** must match all specified key-value pairs.\n*   If you specify multiple key-value pairs, resources that contain the key-value pairs are returned."
+  },
   "example": {
     "unifiedCli": "aliyun ga list-tag-resources --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --next-token FFmyTO70tTpLG6I3FmYAXGKPd0000 --resource-type accelerator --resource-id ga-bp149u6o36qt1as9b0000 --tag Value=valueTest Key=KeyTest --region cn-hangzhou",
     "legacyCli": "aliyun ga ListTagResources --region cn-hangzhou --ResourceId.1 'ga-bp149u6o36qt1as9b0000' --Tag.1.Key KeyTest --NextToken FFmyTO70tTpLG6I3FmYAXGKPd0000 --Tag.1.Value valueTest --ResourceType accelerator --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

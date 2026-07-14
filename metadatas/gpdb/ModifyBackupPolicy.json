@@ -1,5 +1,6 @@
 {
   "name": "ModifyBackupPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST|PUT",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "BackupRetentionPeriod",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据备份保留天数。默认7天，最大值定为7天，取值范围1~7。",
+        "en": "The number of days for which data backup files are retained. Default value: 7. Maximum value: 7. Valid values: 1 to 7."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 您可以调用[DescribeDBInstances](~~86911~~)接口查看目标地域下所有的AnalyticDB PostgreSQL实例的详情，包括实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "EnableRecoveryPoint",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启自动打恢复点。取值说明：\n\n- true（默认）：开启。\n- false：关闭。",
+        "en": "Specifies whether to enable automatic point-in-time backup.\n\n*   true\n*   false\n\nDefault value: true."
+      }
     },
     {
       "name": "PreferredBackupPeriod",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据备份周期，多个取值用英文逗号（,）隔开。取值说明：\n\n- Monday：周一。\n- Tuesday：周二。\n- Wednesday：周三。\n- Thursday：周四。\n- Friday：周五。\n- Saturday：周六。\n- Sunday：周日。",
+        "en": "The cycle based on which backups are performed. If more than one day of the week is specified, the days of the week are separated by commas (,). Valid values:\n\n*   Monday\n*   Tuesday\n*   Wednesday\n*   Thursday\n*   Friday\n*   Saturday\n*   Sunday"
+      }
     },
     {
       "name": "PreferredBackupTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据备份时间。默认值为00:00Z-01:00Z，格式：HH:mmZ-HH:mmZ（UTC时间）。",
+        "en": "The backup window. Specify the backup window in the HH:mmZ-HH:mmZ format. The backup window must be in UTC. Default value: 00:00-01:00."
+      }
     },
     {
       "name": "RecoveryPointPeriod",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "恢复点频次。取值说明：\n\n- **1**（默认）：每小时。\n- **2**：每两小时。\n- **4**：每四小时。\n- **8**：每八小时。",
+        "en": "The frequency of point-in-time backup.\n\n*   1: per hour\n*   2: per 2 hours\n*   4: per 4 hours\n*   8: per 8 hours\n\nDefault value: 8."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置实例备份策略",
+    "en": "ModifyBackupPolicy"
+  },
   "example": {
     "unifiedCli": "aliyun gpdb modify-backup-policy --db-instance-id gp-bp000000000000000 --preferred-backup-time 15:00Z-16:00Z --preferred-backup-period Tuesday,Thursday,Saturday --backup-retention-period 7 --enable-recovery-point true --recovery-point-period 8 --region cn-hangzhou",
     "legacyCli": "aliyun gpdb ModifyBackupPolicy --region cn-hangzhou --PreferredBackupPeriod 'Tuesday,Thursday,Saturday' --DBInstanceId 'gp-bp000000000000000' --PreferredBackupTime '15:00Z-16:00Z' --BackupRetentionPeriod 7 --EnableRecoveryPoint true --RecoveryPointPeriod 8"

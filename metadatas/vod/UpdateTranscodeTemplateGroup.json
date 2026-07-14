@@ -1,5 +1,6 @@
 {
   "name": "UpdateTranscodeTemplateGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Locked",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板组锁定状态。取值范围：\n\n- **Enabled**：锁定，处于锁定状态的模板组将无法被修改。\n- **Disabled**（默认）：不锁定。\n\n默认值为**Disabled**，传参时将修改模板组锁定状态，转码模板组名称和配置保持不变。",
+        "en": "The lock status of the transcoding template group. Valid values:\n\n- **Enabled**: The template group is locked. A locked template group cannot be modified.\n\n- **Disabled** (default): The template group is not locked.\n\nThe default value is **Disabled**. When you pass this parameter, the lock status of the template group is modified, but the name and configurations of the transcoding template group remain unchanged."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码模板组名称。\n\n- 长度不超过128个字节。\n- UTF-8编码。",
+        "en": "The name of the transcoding template group.\n\n- The name cannot exceed 128 bytes.\n\n- The value is encoded in UTF-8."
+      }
     },
     {
       "name": "TranscodeTemplateGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转码模板组ID。",
+        "en": "The ID of the transcoding template group."
+      }
     },
     {
       "name": "TranscodeTemplateList",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码模板配置信息（JSON字符串）。参数结构详情，请参见[TranscodeTemplate](~~52839#title-9mb-8o2-uu6~~)。",
+        "en": "The configurations of the transcoding template. The value must be a JSON string. For more information about the parameter structure, see [TranscodeTemplate](~~52839#title-9mb-8o2-uu6~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改转码配置",
+    "en": "UpdateTranscodeTemplateGroup"
+  },
+  "descriptions": {
+    "zh": "出于安全保护目的，处于锁定状态的转码模板组不能进行添加、修改、删除等操作。您可以调用[GetTranscodeTemplateGroup](~~GetTranscodeTemplateGroup~~)接口查询模板配置，通过返回的响应参数Locked，查看模板组是否被锁定；或调用本接口将模板组解锁后，再进行添加、修改、删除等操作。",
+    "en": "For security purposes, you cannot add, modify, or delete transcoding templates in a locked transcoding template group. You can call the [GetTranscodeTemplateGroup](~~GetTranscodeTemplateGroup~~) operation to query the template configurations and check whether the template group is locked based on the Locked response parameter. Alternatively, you can call this operation to unlock the template group before you add, modify, or delete templates."
+  },
   "example": {
     "unifiedCli": "aliyun vod update-transcode-template-group --name transcodetemplate --transcode-template-list Video_:_Bitrate_:_400_,_Codec_:_H.264_,_Fps_:_30_,_Audio_:_Codec_:_AAC_,_Bitrate_:_64_,_Definition_:_SD_,_EncryptType_:_Private_,_Container_:_Format_:_m3u8_,_PackageType_:_HLSPackage --locked Disabled --transcode-template-group-id 4c71a339fe0000052b4fa6f4527 --region cn-hangzhou",
     "legacyCli": "aliyun vod UpdateTranscodeTemplateGroup --region cn-hangzhou --Locked Disabled --TranscodeTemplateGroupId 4c71a339fe0000052b4fa6f4527 --TranscodeTemplateList 'Video_:_Bitrate_:_400_,_Codec_:_H.264_,_Fps_:_30_,_Audio_:_Codec_:_AAC_,_Bitrate_:_64_,_Definition_:_SD_,_EncryptType_:_Private_,_Container_:_Format_:_m3u8_,_PackageType_:_HLSPackage' --Name transcodetemplate"

@@ -1,5 +1,6 @@
 {
   "name": "ListEdgeTranscodeJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "机房ID。",
+        "en": "The data center ID."
+      }
     },
     {
       "name": "Keyword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索关键词，枚举：\n- 任务ID，任务ID支持精确匹配。\n- 任务名称，任务名称支持模糊搜索。",
+        "en": "The keyword for the search. Valid values:\n\n- Job ID: an exact match is supported.\n\n- Job name: a fuzzy search is supported."
+      }
     },
     {
       "name": "PageNo",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前页码。默认值为1.",
+        "en": "The page number. The default value is 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，即每页显示条数。默认值为10，最大值为100。",
+        "en": "The number of entries per page. The default value is 10. The maximum value is 100."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序规则，按CreateTime排序。默认是desc，枚举：\n- desc 降序排序。\n- asc 升序排序。",
+        "en": "The sorting rule. The results are sorted by CreateTime. The default value is desc. Valid values:\n\n- desc: descending order.\n\n- asc: ascending order."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "边缘转码任务状态，枚举：\n- 0 未启动。\n- 1 运行中。",
+        "en": "The status of the edge transcoding job. Valid values:\n\n- 0: The job has not started.\n\n- 1: The job is running."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "边缘转码类型，枚举：\n- common，通用(普通+窄带高清1.0)。\n- nbhd-2，窄带高清2.0。\n- ultra-hd，超高清。\n\n> 该参数不填写时，会展示用户有对应转码类型权限的转码模板",
+        "en": "The edge transcoding type. Valid values:\n\n- common: standard transcoding and Narrowband HD 1.0.\n\n- nbhd-2: Narrowband HD 2.0.\n\n- ultra-hd: ultra-high definition.\n\n> If you do not specify this parameter, transcoding templates for which you have permissions are displayed."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询边缘转码任务列表",
+    "en": "ListEdgeTranscodeJob"
+  },
+  "descriptions": {
+    "zh": "- 本接口用于查询边缘转码任务列表。\n\n- 用户需要具有访问边缘转码服务的权限，才能正常调用本接口。\n- 本接口只返回距今180天内的任务，且最后一次操作时间需要在这180天之内。\n## QPS限制\n本接口的单用户QPS限制为6000次/分钟。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- You can call this operation to query a list of edge transcoding jobs.\n\n- To call this operation, you must have permissions to access the edge transcoding service.\n\n- This operation returns only jobs that were created or modified in the last 180 days.\n\n## QPS limit\n\nThe queries per second (QPS) limit for a single user on this operation is 6,000 calls per minute. If you exceed this limit, your calls to the operation are throttled. This may affect your business. We recommend that you plan your calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun live list-edge-transcode-job --biz-region-id cn-hangzhou --cluster-id cluster-1 --type common --status 0 --page-no 1 --page-size 20 --sort-by desc --keyword test --region cn-hangzhou",
     "legacyCli": "aliyun live ListEdgeTranscodeJob --region cn-hangzhou --Status 0 --Type common --PageSize 20 --Keyword test --ClusterId 'cluster-1' --SortBy desc --PageNo 1 --RegionId 'cn-hangzhou'"

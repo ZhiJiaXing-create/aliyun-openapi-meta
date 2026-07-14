@@ -1,0 +1,92 @@
+{
+  "name": "ScreenChestCT",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "DataFormat",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "图片的格式。目前仅支持DICOM。",
+        "en": "The format of the image. Currently, only DICOM is supported."
+      }
+    },
+    {
+      "name": "Mask",
+      "position": "Body",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "该值控制输出算法输出的种类。十进制数。\n- bit位值为1，代表启用对应的算法。\n- bit位值为0，代表禁用对应的算法。\n\n\n例如Mask=3，二进制为00011，即调用**新冠病毒肺炎辅助诊断**和**冠脉钙化积分测算**两个算法；如果Mask=11，二进制为01011，即调用**新冠病毒肺炎辅助诊断**、**冠脉钙化积分测算**和**肋骨骨折检测**三个算法。系统仅识别二进制后五位的值，如果Mask=32，二进制为100000，后五位均为0，系统将无法识别对应算法，提示报错；如果Mask=33，二进制为100001，后五位为00001，即调用**新冠病毒肺炎辅助诊断**一个算法。具体对应关系请参见下表**算法启用与Mask值对应关系**。",
+        "en": "Controls the types of algorithms to output. Decimal number.\n- A bit value of 1 enables the corresponding algorithm.\n- A bit value of 0 disables the corresponding algorithm.\n\n\nFor example, if Mask=3, the binary representation is 00011, which calls the **COVID-19 pneumonia auxiliary diagnosis** and **coronary artery calcium score calculation** algorithms. If Mask=11, the binary representation is 01011, which calls the **COVID-19 pneumonia auxiliary diagnosis**, **coronary artery calcium score calculation**, and **rib fracture detection** algorithms. The system only recognizes the last five bits of the binary value. If Mask=32, the binary representation is 100000, and all last five bits are 0, so the system cannot identify any algorithm and returns an error. If Mask=33, the binary representation is 100001, and the last five bits are 00001, which calls only the **COVID-19 pneumonia auxiliary diagnosis** algorithm. For the specific mapping, see the **Algorithm enablement and Mask value mapping** table below."
+      }
+    },
+    {
+      "name": "OrgId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构代码。",
+        "en": "The code of the data source organization."
+      }
+    },
+    {
+      "name": "OrgName",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构名称。",
+        "en": "The name of the data source organization."
+      }
+    },
+    {
+      "name": "URLList",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": true,
+      "description": {
+        "zh": "DICOM序列的地址列表。",
+        "en": "The URL list of the DICOM series."
+      },
+      "sub_parameters": [
+        {
+          "name": "URL",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "图像URL地址。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n\n> URLList.N.URL中的N为该图像URL在当前List中的顺序（从1开始）。当直接使用API请求时，输入URLList的填充会以URLList.1.URL=url1，URLList.2.URL=url2，......的方式指定参数和参数值，参数对以&连接，其中url1、url2、......等具体值请根据实际情况进行替换；当使用SDK填充URLList时，可直接使用SDK提供的相应的方法。",
+            "en": "The image URL. We recommend that you use an OSS URL in the China (Shanghai) region. For files stored locally or in OSS URLs outside the China (Shanghai) region, see [File URL processing](~~155645~~).\n\n> N in URLList.N.URL indicates the sequence number of the image URL in the current list (starting from 1). When directly using the API request, specify URLList parameters in the format URLList.1.URL=url1&URLList.2.URL=url2&..., where url1, url2, and other values are replaced with actual values. When using the SDK to populate URLList, use the corresponding methods provided by the SDK."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verbose",
+      "position": "Body",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "是否在返回参数中输出相关字段，取值0、1和2，默认为0。\n- 0：表示在获取算法结果时不返回输入DICOM文件的URL列表，不输出**URLList**和**NestedUrlList**字段。如果没有输入该字段，默认为0。\n- 1：表示在获取算法结果时返回输入的DICOM文件的URL列表，默认以单序列格式输出，输出**URLList**字段。格式为：\n\n    ```\n{\n\"URLList\":[\"url\",\"url\",...]\n}\n    ```\n- 2：表示在获取算法结果时返回输入的DICOM文件的URL列表，默认以多序列格式输出，输出**NestedUrlList**字段。格式为：\n\n    ```\n{\n\"NestedUrlList\":\n  {\n  \"序列Id1\":[\"url\",\"url\",...] ,\n  \"序列Id2\":[\"url\",\"url\",...]\n   }\n}\n  ```\n\n\n> 当输入的**Verbose**为**1**，但提交的DICOM数据为多序列时，默认以**Verbose**为**2**的形式输出。",
+        "en": "Specifies whether to output related fields in the response. Valid values: 0, 1, and 2. Default value: 0.\n- 0: does not return the URL list of input DICOM files when retrieving algorithm results. The **URLList** and **NestedUrlList** fields are not output. If this field is not specified, the default value is 0.\n- 1: returns the URL list of input DICOM files when retrieving algorithm results. By default, the output is in single-series format, and the **URLList** field is output. Format:\n\n    ```\n{\n\"URLList\":[\"url\",\"url\",...]\n}\n    ```\n- 2: returns the URL list of input DICOM files when retrieving algorithm results. By default, the output is in multi-series format, and the **NestedUrlList** field is output. Format:\n\n    ```\n{\n\"NestedUrlList\":\n  {\n  \"序列Id1\":[\"url\",\"url\",...] ,\n  \"序列Id2\":[\"url\",\"url\",...]\n   }\n}\n  ```\n\n\n> If **Verbose** is set to **1** but the submitted DICOM data contains multiple series, the output defaults to the format of **Verbose** set to **2**."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "胸部CT平扫筛查",
+    "en": "Chest CT screening"
+  },
+  "descriptions": {
+    "zh": "## 功能描述 \n胸部CT平扫筛查能力基于常规胸部CT影像，实现了人体胸部多器官及多病种的检测及量化分析，主要功能如下：\n- 基于常规胸部CT自动测量冠状动脉的钙化积分值。\n- 自动检出肺结节，输出结节体积、平均灰度和AI结构化报告。\n- 自动分割肺叶区域肺炎病灶，输出病灶的大小和肺炎的类型等信息。\n- 检出肋骨骨折，并给出骨折的类型。\n- 可检测胸部平扫或增强CT中的肿大淋巴结，包含胸部的纵膈、肺门和锁骨上淋巴结。\n- 根据输入的胸部平扫CT评估胰腺癌风险。\n\n> 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n\n\n## 应用场景\n胸部CT平扫筛查与医疗影像应用集成后，面向医院、区域医共体医联体、体检机构以及第三方影像中心等机构的影像医生、临床医生提供常规胸部CT影像检测及量化分析。\n\n## 特色优势\n功能丰富，首次实现通过一次CT扫描和一次上传即可完成多器官和多病种的检测和量化分析。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[图像分析处理](https://vision.aliyun.com/imageprocess)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_imageprocess_public_cn#/open )。\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/imageprocess/2020-03-20/ScreenChestCT?lang=JAVA)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入：能力支持SDK方式调用，您可以选择合适的开发语言进行接入，具体操作，请参见[SDK总览](~~145033~~)。\n6. 示例代码：该能力常用语言查询异步任务结果的示例代码，请参见[查询异步任务结果示例代码](~~607974~~)。\n\n7. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n- 图像格式：DICOM。\n- 图像大小：不超过3 MB。\n- 图像分辨率：小于等于512×512像素。\n- 图像帧数：至少20帧，至多1600帧。\n- URL地址中不能包含中文字符。\n\n## 调用步骤\n该能力为异步能力，需分两步进行调用。\n第一步调用ScreenChestCT接口提交任务，请求成功后，得到一个任务ID。\n第二步调用[GetAsyncJobResult](~~607824~~)接口查询结果，根据任务ID查询任务执行状态和结果。如果任务还在处理中，可稍等一段时间后再进行查询。当同一个任务还未处理完时，建议不要重复提交任务。\n\n## 计费说明\n关于胸部CT平扫筛查的计费方式及报价，请参见[计费介绍](~~202483~~)。\n\n> 下方调试接口为付费接口。",
+    "en": "## Description \nThe chest CT screening feature analyzes routine chest CT images to detect and quantitatively analyze multiple organs and diseases in the human chest. Key features include:\n- Automatically measures coronary artery calcium scores based on routine chest CT images.\n- Automatically detects lung nodules and outputs nodule volume, average gray value, and AI-structured reports.\n- Automatically segments pneumonia lesions in lung lobe regions and outputs information such as lesion size and pneumonia type.\n- Detects rib fractures and identifies the fracture type.\n- Detects enlarged lymph nodes in non-contrast or contrast-enhanced chest CT images, including mediastinal, hilar, and supraclavicular lymph nodes.\n- Assesses pancreatic cancer risk based on input non-contrast chest CT images.\n\n> You can access [online consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for human assistance. To consult about Alibaba Cloud Visual Intelligence Platform visual AI API integration, API usage, or other questions, join the DingTalk group (23109592) to contact us.\n\n## Advantages\nFeature-rich. For the first time, a single CT scan and a single upload enables detection and quantitative analysis of multiple organs and diseases.\n\n## Getting started\n1. Create an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **China Site Account** in the upper-right corner, and follow the instructions to create an account.\n2. Activate the feature: Make sure you have activated [Image Analysis and Processing](https://vision.aliyun.com/imageprocess). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_imageprocess_public_cn#/open).\n3. Create an AccessKey pair: Make sure you have [created an AccessKey pair](~~175144~~). If you are using a RAM user AccessKey pair, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/imageprocess/2020-03-20/ScreenChestCT?lang=JAVA) to debug the feature online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development integration: The feature supports SDK-based calls. Select an appropriate programming language for integration. For more information, see [SDK overview](~~145033~~).\n6. Sample code: For sample code that queries asynchronous task results in common programming languages, see [Sample code for querying asynchronous task results](~~607974~~).\n\n7. Direct client calls: Common client call methods for this feature include the following:\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~).\n\n## Input limits\n- Image format: DICOM.\n- Image size: up to 3 MB.\n- Image resolution: up to 512 × 512 pixels.\n- Number of image frames: at least 20 and at most 1,600.\n- The URL cannot contain Chinese characters.\n\n## Procedure\nThis is an asynchronous operation that requires two steps.\nStep 1: Call the ScreenChestCT operation to submit a task. If the request is successful, a task ID is returned.\nStep 2: Call the [GetAsyncJobResult](~~607824~~) operation to query the result based on the task ID. If the task is still being processed, wait a moment before querying again. Do not resubmit a task that has not been processed."
+  }
+}

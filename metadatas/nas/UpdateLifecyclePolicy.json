@@ -1,5 +1,6 @@
 {
   "name": "UpdateLifecyclePolicy",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期策略描述。\n\n格式：\n长度为3-64个字符，必须以字母开头，可以包含英文字母、数字、下划线（_）或者短划线（-）。\n>仅 CPFS 智算版支持。",
+        "en": "The description of the lifecycle policy.\n\nThe description must be 3 to 64 characters long and must start with a letter. It can contain letters, digits, underscores (\\_), and hyphens (-).\n\n> This parameter is supported only for CPFS for AI file systems."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。",
+        "en": "The ID of the file system."
+      }
     },
     {
       "name": "LifecyclePolicyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "生命周期策略的 ID。\n>CPFS 智算版 文件系统必填。",
+        "en": "The ID of the lifecycle policy.\n\n> This parameter is required for CPFS for AI file systems."
+      }
     },
     {
       "name": "Paths",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期管理策略关联目录的绝对路径。",
+        "en": "The absolute paths of the directories to which the lifecycle policy applies."
+      }
     },
     {
       "name": "RetrieveRules",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "文件数据取回规则，最多配置 1 个。\n>仅 CPFS 智算版文件系统支持。",
+        "en": "The retrieval rule for files. You can specify only one retrieval rule.\n\n> This parameter is supported only for CPFS for AI file systems."
+      },
       "sub_parameters": [
         {
           "name": "Attribute",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的属性，取值：\n- RetrieveType:  取回方式",
+            "en": "The rule attribute. Valid value:\n\n- `RetrieveType`: The retrieval method."
+          }
         },
         {
           "name": "Threshold",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的阈值，取值：\n- RetrieveType\n    - AfterVisit： LifecyclePolicyType=Auto 支持，代表尽力 recall on visit\n    - All:  LifecyclePolicyType=OnDemand 支持，代表取回所有",
+            "en": "The retrieval method. Valid values:\n\n- If `Attribute` is set to `RetrieveType`:\n\n  - `AfterVisit`: Retrieves data on a best-effort basis after a file is accessed. This value is valid only when `LifecyclePolicyType` is `Auto`.\n\n  - `All`: Retrieves all data. This value is valid only when `LifecyclePolicyType` is `OnDemand`."
+          }
         }
       ]
     },
@@ -52,29 +81,52 @@
       "name": "StorageType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分级存储类型。\n- InfrequentAccess：低频存储（默认值）。\n- Archive：归档存储。",
+        "en": "The storage tier.\n\n- `InfrequentAccess`: The Infrequent Access storage tier. This is the default value.\n\n- `Archive`: The Archive storage tier."
+      }
     },
     {
       "name": "TransitRules",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "文件数据转储规则，最多配置 1 个。\n\n>仅 CPFS 智算版文件系统的 LifecyclePolicyType=Auto 时支持",
+        "en": "The transition rule for files. You can specify only one transition rule.\n\n> This parameter is supported only for CPFS for AI file systems when `LifecyclePolicyType` is set to `Auto`."
+      },
       "sub_parameters": [
         {
           "name": "Attribute",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的属性。\n\n取值：\n- Atime: 文件的访问时间。",
+            "en": "The rule attribute.\n\nValid value:\n\n- `Atime`: The last access time of a file."
+          }
         },
         {
           "name": "Threshold",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则的阈值。\n\n取值：\n- 当 Attribute 为 Atime 时，表示多少天未访问的文件，取值范围[1,365]",
+            "en": "The rule threshold.\n\nValid value:\n\n- If `Attribute` is set to `Atime`, this parameter specifies the number of days since a file was last accessed. The value must be between 1 and 365."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新生命周期管理策略的规则",
+    "en": "UpdateLifecyclePolicy"
+  },
   "example": {
     "unifiedCli": "aliyun nas update-lifecycle-policy --file-system-id bmcpfs-290w65p03ok64y00000 --storage-type InfrequentAccess --lifecycle-policy-id lsp-bp1234567890ab0000 --description Lifecycle_policy_description --paths /path1 --transit-rules Attribute=Atime Threshold=3 --retrieve-rules Attribute=RetrieveType Threshold=All --region cn-hangzhou",
     "legacyCli": "aliyun nas UpdateLifecyclePolicy --region cn-hangzhou --StorageType InfrequentAccess --Description Lifecycle_policy_description --TransitRules.1.Threshold 3 --RetrieveRules.1.Attribute RetrieveType --LifecyclePolicyId 'lsp-bp1234567890ab0000' --RetrieveRules.1.Threshold All --TransitRules.1.Attribute Atime --FileSystemId 'bmcpfs-290w65p03ok64y00000' --Paths.1 '/path1'"

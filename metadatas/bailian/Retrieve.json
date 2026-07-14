@@ -1,0 +1,242 @@
+{
+  "name": "Retrieve",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "/[WorkspaceId]/index/retrieve",
+  "parameters": [
+    {
+      "name": "DenseSimilarityTopK",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "向量检索 Top K，通过生成输入文本的向量并在知识库中检索与其向量表示最相似的 K 个文本切片。K的取值范围[0-100]。\n`DenseSimilarityTopK`和`SparseSimilarityTopK`二者之和小于等于200。\n\n默认值为100。",
+        "en": "The number of top-K similar text chunks to retrieve using vector retrieval. This is achieved by generating a vector representation of the query and searching the knowledge base for the K text chunks with the most similar vectors. The value must be an integer from 0 to 100. The sum of `DenseSimilarityTopK` and `SparseSimilarityTopK` must not exceed 200.\n\nDefault value: 100."
+      }
+    },
+    {
+      "name": "EnableReranking",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否开启重排序。更多信息，请参见[知识库](~~2807740~~)。取值范围：\n- true：开启。\n- false：不开启。\n\n默认值为 true。",
+        "en": "Specifies whether to enable reranking. For more information, see [Knowledge base](~~2807740~~). Valid values:\n\n- `true`: Enables reranking.\n\n- `false`: Disables reranking.\n\nDefault value: `true`."
+      }
+    },
+    {
+      "name": "EnableRewrite",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否开启<props=\"china\">[多轮对话改写](https://help.aliyun.com/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props><props=\"intl\">[多轮对话改写](https://www.alibabacloud.com/help/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props>。\n取值范围：\n- true：开启。\n- false：不开启。\n\n默认值为 false。",
+        "en": "Specifies whether to enable <props=\"china\">[conversational query rewriting](https://help.aliyun.com/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props><props=\"intl\">[conversational query rewriting](https://www.alibabacloud.com/help/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props>.\nValid values:\n\n- `true`: Enables conversational query rewriting.\n\n- `false`: Disables conversational query rewriting.\n\nDefault value: `false`."
+      }
+    },
+    {
+      "name": "Extra",
+      "position": "Query",
+      "type": "String",
+      "required": false
+    },
+    {
+      "name": "Images",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "支持在提问时传入图片URL地址。",
+        "en": "The URLs of images to include in the query."
+      }
+    },
+    {
+      "name": "IndexId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "知识库 ID，即 **CreateIndex** 接口返回的`Data.Id`。\n\n> - 请确保对应知识库已成功创建且未被删除。",
+        "en": "The ID of the knowledge base. This is the `Data.Id` value returned by the `CreateIndex` operation.\n\n> - Ensure the specified knowledge base exists and has not been deleted."
+      }
+    },
+    {
+      "name": "Query",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "输入文本（原始输入prompt）。Query的长度和字符没有限制。",
+        "en": "The query, which is the original user prompt. There are no limits on the length of the query."
+      }
+    },
+    {
+      "name": "QueryHistory",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "<props=\"china\">[多轮对话改写](https://help.aliyun.com/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props><props=\"intl\">[多轮对话改写](https://www.alibabacloud.com/help/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props>支持您传入自己管理的对话历史。仅在EnableRewrite=**true** 时生效（否则即使传入也不生效）。",
+        "en": "The conversation history, used for <props=\"china\">[conversational query rewriting](https://help.aliyun.com/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props><props=\"intl\">[conversational query rewriting](https://www.alibabacloud.com/help/model-studio/use-cases/rag-optimization#b7031e2ad6cji)</props>. This parameter is effective only when `EnableRewrite` is set to `true`."
+      },
+      "sub_parameters": [
+        {
+          "name": "content",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "对应角色的问题或者回答内容。",
+            "en": "The content of the message for the specified `role`."
+          }
+        },
+        {
+          "name": "role",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "角色。\n\n取值范围：\n\n- user：传入此角色，此时content表示您输入给阿里云百炼应用的文本。\n- assistant：传入此角色，此时content表示阿里云百炼应用的回复。",
+            "en": "The role of the entity that sent the message.\n\nValid values:\n\n- `user`: Indicates that the `content` is from the end user.\n\n- `assistant`: Indicates that the `content` is a response from the Model Studio application."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rerank",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "重排序配置。",
+        "en": "The reranking configurations."
+      },
+      "sub_parameters": [
+        {
+          "name": "ModelName",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "使用指定的排序模型。此处指定值将覆盖创建知识库时所选择的排序模型。取值范围：\n\n<props=\"china\">\n\n- qwen3-rerank-hybrid：qwen3-rerank(hybrid)排序。\n- qwen3-rerank：qwen3-rerank排序。\n- gte-rerank-hybrid：gte-rerank(hybrid)排序。\n- gte-rerank：gte-rerank排序。\n\n</props>\n\n<props=\"intl\">\n\n- gte-rerank-hybrid：官方排序。\n- gte-rerank：gte-rerank排序。\n\n\n\n</props>\n\n\n默认值为空，使用创建知识库时选择的排序模型。\n\n\n<props=\"china\">\n\n> 如仅需语义排序，可使用`qwen3-rerank`；若同时需要语义排序和文本匹配特征以确保相关性，建议使用`qwen3-rerank-hybrid`。\n>\n\n\n</props>\n\n\n\n<props=\"intl\">\n\n> 如仅需语义排序，可使用`gte-rerank`；若同时需要语义排序和文本匹配特征以确保相关性，建议使用`gte-rerank-hybrid`。\n>\n\n\n</props>\n\n\n\n<props=\"china\">\n\n> `gte-rerank-hybrid`与`gte-rerank`后续停止更新，不建议使用。\n>\n\n\n</props>",
+            "en": "The reranking model to use. Specifying a model here overrides the default model selected when the knowledge base was created. Valid values:\n\n<props=\"china\">\n\n- `qwen3-rerank-hybrid`: Performs reranking by using the qwen3-rerank (hybrid) model.\n\n- `qwen3-rerank`: Performs reranking by using the qwen3-rerank model.\n\n- `gte-rerank-hybrid`: Performs reranking by using the gte-rerank (hybrid) model.\n\n- `gte-rerank`: Performs reranking by using the gte-rerank model.\n\n</props>\n\n<props=\"intl\">\n\n- `gte-rerank-hybrid`: Performs reranking by using the gte-rerank (hybrid) model.\n\n- `gte-rerank`: Performs reranking by using the gte-rerank model.\n\n</props>\n\nIf you do not specify this parameter, the model configured for the knowledge base is used.\n\n<props=\"china\">\n\n> Use `qwen3-rerank` for semantic ranking only. We recommend `qwen3-rerank-hybrid` if you require both semantic ranking and text matching features for higher relevance.\n\n</props>\n\n<props=\"intl\">\n\n> Use `gte-rerank` for semantic ranking only. We recommend `gte-rerank-hybrid` if you require both semantic ranking and text matching features for higher relevance.\n\n</props>\n\n<props=\"china\">\n\n> The `gte-rerank-hybrid` and `gte-rerank` models are no longer updated and are not recommended for use.\n\n</props>"
+          }
+        },
+        {
+          "name": "RerankInstruct",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "<props=\"intl\">该参数暂不开放，请勿传入。</props>\n\n<props=\"china\">提供一个自然语言指令，用于精细化控制重排序模型的行为。\n<notice>此参数仅在 rerank_mode 设置为 \"custom\" 时生效。></notice></props>",
+            "en": "<props=\"intl\">\n\nThis parameter is not yet available. Do not specify a value for it.\n\n</props>\n\n<props=\"china\">\n\nA natural language instruction to fine-tune the behavior of the reranking model.\n\n><notice>\n\nThis parameter takes effect only when `RerankMode` is set to `custom`.\n\n></notice>\n\n</props>"
+          }
+        },
+        {
+          "name": "RerankMode",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "<props=\"china\">\n指定重排序模型的指令干预模式，以决定其评分偏好。\n\n**可选值：**\n\n- **qa**:（默认值） 问答模式。模型倾向于为能直接回答查询（Query）的候选项赋予更高分。建议在问答场景使用。\n\n- **similar**: 相似模式。模型倾向于为与查询内容一致性高的候选项赋予更高分。建议在匹配检索场景使用。\n\n- **custom**: 自定义模式。模型的排序行为由 rerank_instruct 参数中的指令决定。\n\n</props>\n\n<props=\"intl\">该参数暂不开放，请勿传入。</props>",
+            "en": "<props=\"china\">\n\nSpecifies the instruction intervention mode for the reranking model. This mode determines the model's scoring preference.\n\n**Valid values:**\n\n- `qa`: (Default) Q\\&A mode. The model assigns higher scores to candidates that directly answer the query. Recommended for Q\\&A scenarios.\n\n- `similar`: Similarity mode. The model assigns higher scores to candidates with high content similarity to the query. Recommended for match-based retrieval scenarios.\n\n- `custom`: Custom mode. The model's ranking behavior is determined by the instructions in the `RerankInstruct` parameter.\n\n</props>\n\n<props=\"intl\">\n\nThis parameter is not yet available. Do not specify a value for it.\n\n</props>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "RerankMinScore",
+      "position": "Query",
+      "type": "Float",
+      "required": false,
+      "description": {
+        "zh": "相似度阈值。该阈值表示允许召回的文本切片的最低相似度分数，用于筛选Rank模型返回的文本切片，即只有分数超过此数值的文本切片才会被召回。取值范围[0.01-1.00]。此参数的优先级大于知识库相似度阈值配置。\n\n当未指定具体值时，默认采用该知识库配置的相似度阈值。",
+        "en": "The similarity threshold for reranking. Only text chunks with a similarity score greater than this value are returned. The value must be between 0.01 and 1.00, inclusive. This parameter overrides the similarity threshold setting of the knowledge base.\n\nIf not specified, the threshold configured for the knowledge base is used."
+      }
+    },
+    {
+      "name": "RerankTopN",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "重排序后的 Top N 返回数据。取值范围[1-20]，默认值为5。",
+        "en": "The number of top-ranked text chunks to return after reranking. The value must be an integer from 1 to 20. Default value: 5."
+      }
+    },
+    {
+      "name": "Rewrite",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "多轮对话改写配置。",
+        "en": "Configuration for conversational query rewriting."
+      },
+      "sub_parameters": [
+        {
+          "name": "ModelName",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "多轮对话改写模型名称。它会基于会话上下文自动调整原始输入prompt（用户问题）以提升检索效果。取值范围：\n- conv-rewrite-qwen-1.8b：conv-rewrite-qwen-1.8b模型（目前只支持该模型）\n\n默认值为空，采用conv-rewrite-qwen-1.8b模型。",
+            "en": "Specifies the model for conversational query rewriting, which automatically rewrites the original query based on the conversation context to improve retrieval results. Valid value:\n\n- `conv-rewrite-qwen-1.8b`: The only model currently supported for this feature.\n\nIf this parameter is not specified, `conv-rewrite-qwen-1.8b` is used by default."
+          }
+        }
+      ]
+    },
+    {
+      "name": "SaveRetrieverHistory",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否保存历史文本切片召回测试数据。取值范围：\n- true：保存。\n- false：不保存。\n\n默认值为：false。",
+        "en": "Specifies whether to save the retrieval history for testing purposes. Valid values:\n\n- `true`: Saves the retrieval history.\n\n- `false`: Does not save the retrieval history.\n\nDefault value: `false`."
+      }
+    },
+    {
+      "name": "SearchFilters",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "支持通过SearchFilter设置个性化的检索条件（比如标签），对语义检索结果进行过滤，以排除与查询Query无关的信息。\n设置is_displayed_chunk_content参数为true生效筛选逻辑，具体内容请参见[知识库SearchFilters](~~2869641~~)。",
+        "en": "Specifies custom retrieval conditions, such as tags, to filter semantic retrieval results and exclude irrelevant information.\nThe filtering logic is applied only when the `is_displayed_chunk_content` parameter is set to `true`. For more information, see [SearchFilters for a knowledge base](~~2869641~~)."
+      }
+    },
+    {
+      "name": "SparseSimilarityTopK",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "关键词检索TopK，即在知识库中查找与输入文本的关键词精确匹配的切片。它可以帮助您过滤掉无关的文本切片，提供更准确的结果。\n取值范围[0-100]。\n`DenseSimilarityTopK`和`SparseSimilarityTopK`二者之和小于等于200。\n\n默认值为：100。",
+        "en": "The number of top-K text chunks to retrieve using keyword retrieval. This feature finds text chunks in the knowledge base that exactly match the keywords in the query. It helps filter out irrelevant text chunks and provide more accurate results.\nThe value must be an integer from 0 to 100.\nThe sum of `DenseSimilarityTopK` and `SparseSimilarityTopK` must not exceed 200.\n\nDefault value: 100."
+      }
+    },
+    {
+      "name": "WorkspaceId",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "知识库所属的业务空间 ID。获取方式请参见[如何使用业务空间](~~2587495~~)。",
+        "en": "The ID of the workspace that contains the knowledge base. For more information, see [How to use workspaces](~~2587495~~)."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "检索知识库",
+    "en": "Retrieve"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">\n\n- **调用方式**：可通过最新版[阿里云百炼SDK](https://api.aliyun.com/api-tools/sdk/bailian?version=2023-12-29)（配合阿里云访问密钥[AccessKey](~~116401~~)）或[Spring AI Alibaba](~~2990886~~)（配合阿里云百炼[API-Key](~~2712195~~)）检索知识库，两者均已封装复杂的签名计算逻辑，可简化您的调用过程。\n- **权限要求**：\n  - **RAM用户（子账号）**：需先获取阿里云百炼的[API权限](~~2848578~~)（可使用`AliyunBailianDataFullAccess`策略，该策略已包含本接口所需的sfm:Retrieve权限点），并[加入一个业务空间](~~2851098~~)后，才能调用本接口。\n  - **阿里云账号（主账号）**：默认拥有权限，可直接调用。\n- **响应延迟**：由于接口调用包含复杂的检索和匹配，响应时间可能较长，建议您合理设置请求的超时与重试策略。\n- **幂等性**：本接口具有幂等性。\n\n</props>\n\n\n<props=\"intl\">\n\n- **调用方式**：推荐使用最新版[阿里云百炼 SDK](https://api.alibabacloud.com/api-tools/sdk/bailian?version=2023-12-29)调用，SDK 已封装复杂的签名计算逻辑，可简化您的调用过程。\n- **权限要求**：\n  - **RAM用户（子账号）**：需先获取阿里云百炼的[API权限](~~2848578~~)（可使用`AliyunBailianDataFullAccess`策略，该策略已包含本接口所需的sfm:Retrieve权限点），并[加入一个业务空间](~~2851098~~)后，才能调用本接口。\n  - **阿里云账号（主账号）**：默认拥有权限，可直接调用。\n- **响应延迟**：由于接口调用包含复杂的检索和匹配，响应时间可能较长，建议您合理设置请求的超时与重试策略。\n- **幂等性**：本接口具有幂等性。\n</props>",
+    "en": "<props=\"china\">\n\n- **How to call**: To retrieve information from a knowledge base, use the latest [Alibaba Cloud Model Studio SDK](https://api.aliyun.com/api-tools/sdk/bailian?version=2023-12-29) with an [AccessKey](~~116401~~) or [Spring AI Alibaba](~~2990886~~) with an Alibaba Cloud Model Studio [API key](~~2712195~~). Both tools simplify your API calls by handling the complex signature calculation.\n\n- **Required permissions**:\n\n  - **RAM user (sub-account)**: To call this API, a RAM user must be granted [API permissions](~~2848578~~) for Alibaba Cloud Model Studio and [join a workspace](~~2851098~~). You can use the `AliyunBailianDataFullAccess` policy, which includes the required `sfm:Retrieve` permission.\n\n  - **Alibaba Cloud account (main account)**: This account has the required permissions by default and can call the API directly.\n\n- **Response latency**: This API call involves complex retrieval and matching operations, which can cause longer response times. We recommend configuring appropriate request timeouts and retry strategies.\n\n- **Idempotency**: This API is idempotent.\n\n</props>\n\n<props=\"intl\">\n\n- **How to call**: We recommend using the latest [Alibaba Cloud Model Studio SDK](https://api.alibabacloud.com/api-tools/sdk/bailian?version=2023-12-29) to call this API. The SDK simplifies API calls by handling the complex signature calculation.\n\n- **Required permissions**:\n\n  - **RAM user (sub-account)**: To call this API, a RAM user must be granted [API permissions](~~2848578~~) for Alibaba Cloud Model Studio and [join a workspace](~~2851098~~). You can use the `AliyunBailianDataFullAccess` policy, which includes the required `sfm:Retrieve` permission.\n\n  - **Alibaba Cloud account (main account)**: This account has the required permissions by default and can call the API directly.\n\n- **Response latency**: This API call involves complex retrieval and matching operations, which can cause longer response times. We recommend configuring appropriate request timeouts and retry strategies.\n\n- **Idempotency**: This API is idempotent.\n\n</props>"
+  }
+}

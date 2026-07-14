@@ -1,5 +1,6 @@
 {
   "name": "CreateResourceGroup",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "AliyunResourceGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云资源组ID。",
+        "en": "The ID of the Alibaba Cloud resource group."
+      }
     },
     {
       "name": "AliyunResourceTags",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "阿里云标签列表。",
+        "en": "The list of Alibaba Cloud tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签Key。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签value。",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -34,63 +51,114 @@
       "name": "AutoRenewEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动续费。",
+        "en": "Specifies whether to enable auto-renewal for the subscription."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "客户端幂等性标识，用于保证创建通用资源组操作的幂等性。",
+        "en": "A client token to ensure the idempotence of the request."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "创建通用资源组的名称，必须以字母开头，可包含字母、数字、下划线（_），最多128个字符。",
+        "en": "The name of the general-purpose resource group. It must be up to 128 characters long, start with a letter, and contain only letters, digits, and underscores (\\_)."
+      }
     },
     {
       "name": "PaymentDuration",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "付费时长。",
+        "en": "The subscription duration."
+      }
     },
     {
       "name": "PaymentDurationUnit",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "付费时长单位，Month代表包月，Year代表包年。",
+        "en": "The unit of the subscription duration. Valid values: `Month` and `Year`."
+      }
     },
     {
       "name": "PaymentType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源组的付费类型，PrePaid代表包年包月，PostPaid代表按量付费。",
+        "en": "The billing method of the resource group. `PrePaid` indicates subscription, and `PostPaid` indicates pay-as-you-go."
+      }
     },
     {
       "name": "Remark",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建通用资源组的备注，可包含字母、中文、数字、下划线（_），最多128个字符。",
+        "en": "The remark for the general-purpose resource group. It can be up to 128 characters long and can contain letters, Chinese characters, digits, and underscores (\\_)."
+      }
     },
     {
       "name": "Spec",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组规格,单位CU，当资源组付费模式为PrePaid时，必填。",
+        "en": "The specification of the resource group, in CUs. This parameter is required when `PaymentType` is set to `PrePaid`."
+      }
     },
     {
       "name": "VpcId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "默认绑定的VPC ID。",
+        "en": "The ID of the VPC to be bound by default."
+      }
     },
     {
       "name": "VswitchId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "默认绑定的交换机ID。",
+        "en": "The ID of the vSwitch to be bound by default."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建资源组",
+    "en": "CreateResourceGroup"
+  },
+  "descriptions": {
+    "zh": "1. 需要购买DataWorks基础版及以上版本才能使用。\n2. **请确保在使用该接口前，已充分了解Dataworks通用资源组的收费方式和[价格](~~2680173~~)。**\n3. **请确保在使用该接口前，已创建服务关联角色\nAliyunServiceRoleForDataWorks。**",
+    "en": "1. You must purchase DataWorks Basic Edition or higher to use this operation.\n\n2. **Before you call this operation, make sure that you understand how general-purpose resource groups in DataWorks are billed and review the [pricing](~~2680173~~).**\n\n3. **Before you call this operation, make sure that you have created the AliyunServiceRoleForDataWorks service-linked role.**"
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public create-resource-group --name common_resource_group --remark Create_a_serverless_resource_group_for_common_tasks --payment-type PrePaid --payment-duration-unit Month --payment-duration 1 --auto-renew-enabled true --spec 2 --vpc-id vpc-m2et4f3oc8m0000 --vswitch-id vsw-uf8usrhs7hjd90000 --client-token eb870033-74c8-4b1b-9664-04c4e7cc3465 --aliyun-resource-group-id rg-aek2kqofrgXXXXX --aliyun-resource-tags Value=value Key=key --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public CreateResourceGroup --region cn-hangzhou --AutoRenewEnabled true --AliyunResourceTags '[{\"Value\":\"value\",\"Key\":\"key\"}]' --AliyunResourceGroupId 'rg-aek2kqofrgXXXXX' --VpcId 'vpc-m2et4f3oc8m0000' --PaymentDurationUnit Month --PaymentType PrePaid --PaymentDuration 1 --Spec 2 --ClientToken 'eb870033-74c8-4b1b-9664-04c4e7cc3465' --VswitchId 'vsw-uf8usrhs7hjd90000' --Name common_resource_group --Remark Create_a_serverless_resource_group_for_common_tasks"

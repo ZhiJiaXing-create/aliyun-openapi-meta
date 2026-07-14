@@ -1,5 +1,6 @@
 {
   "name": "DescribeDBNodePerformance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "DBNodeId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库集群节点ID。",
+        "en": "The ID of the node in the PolarDB cluster."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间。格式为`yyyy-MM-ddTHH:mmZ`（UTC时间）。",
+        "en": "The end of the time range to query. Specify the time in the `yyyy-MM-ddTHH:mmZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "性能数据粒度。取值范围如下：\n\n- 5\n- 30\n- 60\n- 600\n- 1800\n- 3600\n- 86400",
+        "en": "The granularity of the performance data. Valid values:\n\n- 5\n\n- 30\n\n- 60\n\n- 600\n\n- 1800\n\n- 3600\n\n- 86400"
+      }
     },
     {
       "name": "Key",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询的性能指标，多个值间用英文逗号（,）分隔，详细参数请参见[性能参数表](~~141787~~)。\n\n\n>  - 最多可传入5个查询的性能指标。\n>  - 当您的集群开启固定规格集群的Serverless功能后，单独查询PolarDBCPU或PolarDBMemory指标时，会忽略Interval参数，固定按秒为单位返回性能指标列表。若您按指定的Interval参数返回数据，可以通过查询多个指标。",
+        "en": "The performance metrics to query. Separate multiple metrics with commas (,). For more information, see [Performance metrics](~~141787~~).\n\n> - You can query a maximum of five performance metrics.\n>\n> - If your cluster has Serverless enabled for fixed specifications, querying PolarDBCPU or PolarDBMemory alone ignores the Interval parameter and returns performance metrics per second. To get data at your specified Interval, query multiple metrics."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间。格式为`yyyy-MM-ddTHH:mmZ`（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the `yyyy-MM-ddTHH:mmZ` format. The time must be in Coordinated Universal Time (UTC)."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "特殊指标，目前仅支持orca。",
+        "en": "A special metric. Currently, only orca is supported."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询集群节点的性能数据",
+    "en": "DescribeDBNodePerformance"
+  },
+  "descriptions": {
+    "zh": "* 若监控频率为5秒/次：\n    - 当查询时间范围小于等于1小时，显示粒度为5秒。\n    - 当查询时间范围小于等于1天，显示粒度为1分钟。\n    - 当查询时间范围小于等于7天，显示粒度为10分钟。\n    - 当查询时间范围小于等于30天，显示粒度为1小时。\n    - 当查询范围大于30天，显示粒度为1天。\n\n* 若监控频率为60秒/次：\n    - 当查询范围小于等于1天，显示粒度为1分钟。\n    - 当查询范围小于等于7天，显示粒度为10分钟。\n    - 当查询范围小于等于30天，显示粒度为1小时。\n    - 当查询范围大于30天，显示粒度为1天。\n\n> 监控频率默认为60秒/次，您可以调用[ModifyDBClusterMonitor](~~159557~~)接口将其设置为5秒/次。",
+    "en": "- If the monitoring frequency is 5 seconds:\n\n  - If the query time range is 1 hour or less, the data granularity is 5 seconds.\n\n  - If the query time range is 1 day or less, the data granularity is 1 minute.\n\n  - If the query time range is 7 days or less, the data granularity is 10 minutes.\n\n  - If the query time range is 30 days or less, the data granularity is 1 hour.\n\n  - If the query time range is more than 30 days, the data granularity is 1 day.\n\n- If the monitoring frequency is 60 seconds:\n\n  - If the query time range is 1 day or less, the data granularity is 1 minute.\n\n  - If the query time range is 7 days or less, the data granularity is 10 minutes.\n\n  - If the query time range is 30 days or less, the data granularity is 1 hour.\n\n  - If the query time range is more than 30 days, the data granularity is 1 day.\n\n> The default monitoring frequency is 60 seconds. Call the [ModifyDBClusterMonitor](~~159557~~) operation to set it to 5 seconds."
+  },
   "example": {
     "unifiedCli": "aliyun polardb describe-db-node-performance --db-node-id pi-0000000000000 --interval 60 --type orca --key PolarDBDiskUsage --start-time 2020-09-23T01:00Z --end-time 2020-09-23T01:01Z --db-cluster-id pc-0000000000000000 --region cn-hangzhou",
     "legacyCli": "aliyun polardb DescribeDBNodePerformance --region cn-hangzhou --Type orca --EndTime '2020-09-23T01:01Z' --StartTime '2020-09-23T01:00Z' --DBClusterId 'pc-0000000000000000' --DBNodeId 'pi-0000000000000' --Key PolarDBDiskUsage --Interval 60"

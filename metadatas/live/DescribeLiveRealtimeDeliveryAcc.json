@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveRealtimeDeliveryAcc",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播流域名。\n- 支持单个或批量域名查询。批量查询时多个域名用英文逗号（,）分隔。\n- 若参数为空，默认返回所有直播域名合并后的数据。",
+        "en": "The streaming domain.\n- You can specify a single domain name or multiple domain names. Separate multiple domain names with commas (,).\n- If this parameter is not specified, the merged data of all live streaming domain names is returned by default."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n结束时间需大于起始时间。起止时间和结束时间，间隔不超过一年。",
+        "en": "The end time. Specify the time in the <i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z format (UTC).\n\nThe end time must be later than the start time. The interval between the start time and end time cannot exceed one year."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询数据的时间粒度。单位：秒（s）。取值：\n\n- **300**。\n- **3600**。\n- **86400**。\n\n不传或传的值不支持，且时间跨度不超过3天时，默认值300秒。超过3天默认值3600秒。超过30天默认值86400秒。",
+        "en": "The time granularity of the queried data. Unit: seconds. Valid values:\n\n- **300**\n- **3600**\n- **86400**\n\nIf this parameter is not specified or the specified value is not supported, the default value is 300 seconds when the time span does not exceed 3 days, 3600 seconds when the time span exceeds 3 days, and 86400 seconds when the time span exceeds 30 days."
+      }
     },
     {
       "name": "LogStore",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实时日志投递的Logstore。若参数为空，默认返回所有Logstore合并后数据。",
+        "en": "The Logstore for real-time log delivery. If this parameter is not specified, the merged data of all Logstores is returned by default."
+      }
     },
     {
       "name": "Project",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实时日志投递的Project。若参数为空，默认返回所有Project合并后数据。",
+        "en": "The Project for real-time log delivery. If this parameter is not specified, the merged data of all Projects is returned by default."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "起始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The start time. Specify the time in the <i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z format (UTC)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实时日志投递次数",
+    "en": "Query real-time log delivery count"
+  },
+  "descriptions": {
+    "zh": "- 可以统计实时日志投递次数信息。统计实时日志投递失败次数和实时日志投递成功次数。\n- 支持UID维度查询。\n- 收费次数包含投递成功和失败的全部次数。\n\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Queries statistics on real-time log delivery attempts, including the number of successful and failed log delivery attempts.\n- Supports queries by UID dimension.\n- The billable count includes both successful and failed log delivery attempts.\n\n\n## QPS limit\nThe single-user QPS limit for this API is 100 calls per second. If this limit is exceeded, the API calls are throttled, which may affect your business. Invoke this API appropriately."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-realtime-delivery-acc --biz-region-id cn-hangzhou --start-time 2015-12-10T20:00:00Z --end-time 2015-12-10T21:05:00Z --interval 3600 --project project_example --log-store logstore_example --domain-name example.com --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveRealtimeDeliveryAcc --region cn-hangzhou --Project project_example --EndTime '2015-12-10T21:05:00Z' --LogStore logstore_example --DomainName 'example.com' --StartTime '2015-12-10T20:00:00Z' --RegionId 'cn-hangzhou' --Interval 3600"

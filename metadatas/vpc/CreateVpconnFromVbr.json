@@ -1,5 +1,6 @@
 {
   "name": "CreateVpconnFromVbr",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- **true**：发送检查请求，不会转换共享专线形式。检查项包括是否填写了必需参数、请求格式、实例状态。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。\n- **false**（默认值）：发送正常请求，通过检查后直接转换共享专线形式。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and instance status. If the request fails the dry run, an error message is returned. If the request passes the dry run, the system returns the ID of the request.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "OrderMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享专线的付费方式。取值：\n\n- **PayByPhysicalConnectionOwner**：表示共享专线关联的物理专线的拥有者付费。\n- **PayByVirtualPhysicalConnectionOwner**：表示共享专线的拥有者付费。",
+        "en": "The payer for the shared Express Connect circuit. Valid values:\n\n*   **PayByPhysicalConnectionOwner**: the owner of the shared Express Connect circuit\n*   **PayByVirtualPhysicalConnectionOwner**: the owner of the hosted connection"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "共享专线所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the hosted connection.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "Token",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token用于保证请求的幂等性。\n\n要保证Client Token在不同请求间唯一，最大值不超过64个ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must ensure that it is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "VbrId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "跨账号的VBR实例ID。",
+        "en": "The ID of the associated VBR."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "转换共享专线推送方式",
+    "en": "CreateVpconnFromVbr"
+  },
+  "descriptions": {
+    "zh": "通过CreateVpconnFromVbr接口，合作伙伴可以将租户使用的共享专线从推送跨账号VBR的方式转换为推送跨账号共享端口的方式。转换过程不会影响租户的业务。\n\n在执行转换操作前：\n\n合作伙伴需提前知会租户关于服务升级的相关事项，并确保租户已开通出方向流量费。关于如何开通出方向流量费，请参见[开通出方向流量费](~~274385~~)。\n\n在转换操作完成后：\n\n1. 租户的账号下会新增一个共享端口，租户需调用[ConfirmPhysicalConnection](~~324198~~)接口确认接收共享端口。\n2. 在租户确认接收共享端口后，合作伙伴需调用[AttachVbrToVpconn](~~324191~~)接口将VBR实例绑定至租户的共享专线实例。",
+    "en": "If an Express Connect partner has created a virtual border router (VBR) for a tenant before, the Express Connect partner can push the Express Connect circuit that is associated with the VBR to the tenant account by adding a shared port for the tenant account. The service of the tenant is not interrupted in this process.\n\nPreparations:\n\nBefore the Express Connect partner performs the operation, the Express Connect partner must notify the tenant and request the tenant to enable outbound data transfer billing. For more information, see [Enable outbound data transfer billing](~~274385~~).\n\nWhat to do next:\n\n1.  After the Express Connect partner performs the operation, a shared port is added for the tenant account. The tenant must call the [ConfirmPhysicalConnection](~~324198~~) operation to accept the shared port.\n2.  Then, the Express Connect partner must call the [AttachVbrToVpconn](~~324191~~) operation to associate the VBR with the newly added shared port that belongs to the tenant account."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-vpconn-from-vbr --order-mode PayByVirtualPhysicalConnectionOwner --vbr-id vbr-bp136flp1mf8mlq6r0000 --token CBCE910E-D396-4944-80000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateVpconnFromVbr --region cn-hangzhou --OrderMode PayByVirtualPhysicalConnectionOwner --DryRun false --Token 'CBCE910E-D396-4944-80000' --VbrId 'vbr-bp136flp1mf8mlq6r0000' --RegionId 'cn-hangzhou'"

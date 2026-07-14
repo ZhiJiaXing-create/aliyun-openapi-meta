@@ -1,5 +1,6 @@
 {
   "name": "ReplaceBandwidthPackage",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待替换带宽包的全球加速实例ID。",
+        "en": "The GA instance ID."
+      }
     },
     {
       "name": "BandwidthPackageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要替换的新的带宽包ID。指定带宽包时，请注意：\n\n- 仅支持指定未绑定任何全球加速实例的带宽包。\n\n- 如果要替换的带宽包为基础带宽包，请确保要替换的新的基础带宽包的带宽必须大于或等于加速区域中已分配的带宽总额。",
+        "en": "The ID of the required bandwidth plan. When you specify a replacement bandwidth plan, take note of the following items:\n\n*   Only a bandwidth plan that is not associated with a GA instance can be specified.\n*   If you want to replace a basic bandwidth plan, make sure that the bandwidth provided by the replacement bandwidth plan is not less than the total bandwidth allocated to the acceleration area."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the GA instance. Set the value to **cn-hangzhou**."
+      }
     },
     {
       "name": "TargetBandwidthPackageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要被替换的旧的带宽包ID。",
+        "en": "The ID of the bandwidth plan that you want to replace."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "替换带宽包",
+    "en": "ReplaceBandwidthPackage"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请注意以下事项：\n\n- 替换带宽包不会中断全球加速的转发流量。\n- **ReplaceBandwidthPackage**接口属于异步接口，即系统会先返回一个请求ID，但带宽包并未替换完成，系统后台的替换任务仍在进行。您可以调用[DescribeAccelerator](~~153235~~)或[ListAccelerators](~~153236~~)查询全球加速实例的状态：\n    - 当全球加速实例处于**configuring**状态时，表示带宽包正在替换中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当全球加速实例处于**active**状态时，表示带宽包替换完成。\n- **ReplaceBandwidthPackage**接口不支持并发替换同一个全球加速实例的带宽包。",
+    "en": "When you call this operation, take note of the following items:\n\n*   The GA instance continues to forward network traffic.\n\n*   **ReplaceBandwidthPackage** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeAccelerator](~~153235~~) or [ListAccelerators](~~153236~~) operation to query the status of the GA instance.\n\n    *   If the GA instance is in the **configuring** state, it indicates that the associated bandwidth plan is being replaced. In this case, you can perform only query operations.\n    *   If the GA instance is in the **active** state, it indicates that the associated bandwidth plan is replaced.\n\n*   The **ReplaceBandwidthPackage** operation holds an exclusive lock on the GA instance. While the operation is in progress, you cannot call the same operation in the same Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun ga replace-bandwidth-package --biz-region-id cn-hangzhou --bandwidth-package-id gbwp-bp176neb61yhcymow0000 --target-bandwidth-package-id gbwp-o978hgeb61yhcymow0000 --accelerator-id ga-bp17frjjh0udz4qz0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga ReplaceBandwidthPackage --region cn-hangzhou --BandwidthPackageId 'gbwp-bp176neb61yhcymow0000' --RegionId 'cn-hangzhou' --TargetBandwidthPackageId 'gbwp-o978hgeb61yhcymow0000' --AcceleratorId 'ga-bp17frjjh0udz4qz0000'"

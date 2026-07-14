@@ -1,5 +1,6 @@
 {
   "name": "UpdateThingModel",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "FunctionBlockId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "物模型自定义模块标识符，在产品中具有唯一性。\n\n此参数和**FunctionBlockName**均不传入时，更新默认模块中功能。",
+        "en": "The identifier of the custom TSL module. Each identifier is unique in a product.\n\nIf you do not specify this parameter or the **FunctionBlockName** parameter, the system updates the features of the default module."
+      }
     },
     {
       "name": "FunctionBlockName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "物模型的自定义模块名称。支持中文、英文字母、日文、数字和下划线（_），长度限制为4～30个字符，一个中文、一个日文算1个字符。\n\n-  此参数和**FunctionBlockId**均不传入时，更新默认模块中功能。\n\n-  如果传入此参数，必须与**FunctionBlockId**结合使用，可修改**FunctionBlockId**对应的自定义模块名称。\n\n> 不支持修改默认模块名称。",
+        "en": "The name of the custom module. The name must be 4 to 30 characters in length, and can contain letters, digits, and underscores (\\_).\n\n*   If you do not specify this parameter or the **FunctionBlockId** parameter, the system updates the features of the default module.\n*   If you specify this parameter, the parameter must be used in combination with the **FunctionBlockId** parameter. You can modify the name of the specified custom module. The name corresponds to the value of the **FunctionBlockId** parameter.\n\n>  You cannot modify the name of the default module."
+      }
     },
     {
       "name": "Identifier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "功能原有的标识符。\n\n您可调用[GetThingModelTsl](~~150319~~)，从返回参数**TslStr**中查看具体功能的**identifier**。",
+        "en": "The identifier of the feature.\n\nYou can call the [GetThingModelTsl](~~150319~~) operation and view the identifier in the **TslStr** response parameter."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "产品的**ProductKey**。\n\n可以在物联网平台控制台产品页查看，或调用[QueryProductList](~~69271~~)查看ProductKey的取值。",
+        "en": "The **ProductKey** of the product.\n\nYou can view the ProductKey on the Product Details page of the IoT Platform console. You can also obtain the ProductKey by calling the [QueryProductList](~~69271~~) operation."
+      }
     },
     {
       "name": "ThingModelJson",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新的功能定义详情。\n\n- **Identifier**不为空时，表示更新功能的标识符，最多能包含1个功能的标识符定义信息。\n- **Identifier**为空时，表示更新一个服务或事件下，输入或输出参数的定义，可包含多个参数的定义信息，最多不超过50个。\n\nThingModelJson的编写指导，请参见[ThingModelJson数据说明](~~150457~~)。",
+        "en": "The updated details of the feature.\n\n*   If you specify the **Identifier** parameter, you can define only the identifier of the feature.\n*   If you do not specify the **Identifier** parameter, you can define a maximum of 50 input and output parameters for a service or event.\n\nFor more information about how to specify this parameter, see [Data structure of ThingModelJson](~~150457~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新产品物模型功能",
+    "en": "UpdateThingModel"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n- 如果指定产品已发布，需先调用接口[CancelReleaseProduct](~~213875~~)取消该产品发布，才能调用本接口更新物模型功能。\n\n- 如需更新功能定义信息，您可通过[json-schema](https://github.com/everit-org/json-schema?spm=a2c4g.11186623.2.23.575832d9zD7fZb)对**ThingModelJson**中的入参进行预校验，请参见[ThingModelJson数据说明](~~150457~~)中的“校验”。\n\n\n- 单次调用最多可更新1个功能，即更新1个属性、服务或事件的定义信息。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为5。\n> RAM用户共享阿里云账号配额。",
+    "en": "## Limits\n\n*   If a product is published, you must call the [CancelReleaseProduct](~~213875~~) operation to unpublish the product before you call this operation.\n\n*   When you call this operation, you can use the [json-schema](https://github.com/everit-org/json-schema?spm=a2c4g.11186623.2.23.575832d9zD7fZb) library to verify the input parameters in **ThingModelJson**. For more information, see [Data structure of ThingModelJson](~~150457~~).\n\n*   You can call this operation to update only one feature. TSL features include properties, services, and events.\n\n*   Each Alibaba Cloud account can run a maximum of 5 queries per second (QPS).\n\n> RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot update-thing-model --iot-instance-id iot-cn-0pp1n8t0000 --product-key a1BwAGV0000 --identifier Temperature --thing-model-json 'properties_:_identifier_:_SimCardType_,_extendConfig_:_..._,_dataSpecs_:_max_:_1_,_dataType_:_INT_,_unit_:_mmHg_,_min_:_0_,_step_:_1_,_std_:_false,_custom_:_true,_dataType_:_INT_,_rwFlag_:_READ_ONLY_,_productKey_:_a1Jw4i0000_,_required_:_false,_customFlag_:_true,_name_:_sim卡类型＂' --function-block-id BatteryModule --function-block-name '电池模块' --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot UpdateThingModel --region cn-hangzhou --Identifier Temperature --IotInstanceId 'iot-cn-0pp1n8t0000' --ThingModelJson 'properties_:_identifier_:_SimCardType_,_extendConfig_:_..._,_dataSpecs_:_max_:_1_,_dataType_:_INT_,_unit_:_mmHg_,_min_:_0_,_step_:_1_,_std_:_false,_custom_:_true,_dataType_:_INT_,_rwFlag_:_READ_ONLY_,_productKey_:_a1Jw4i0000_,_required_:_false,_customFlag_:_true,_name_:_sim卡类型＂' --FunctionBlockId BatteryModule --FunctionBlockName '电池模块' --ProductKey a1BwAGV0000"

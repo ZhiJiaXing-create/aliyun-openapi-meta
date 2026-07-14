@@ -1,5 +1,6 @@
 {
   "name": "UpdateEndpointGroups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a value for this parameter on your client. Make sure that the value is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会批量修改某个监听下的终端节点组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回HTTP 2xx状态码。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, a 2xx HTTP status code is returned.\n\n- **false** (default): sends the request. If the request passes the check, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointGroupConfigurations",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点组配置信息。",
+        "en": "The configurations of the endpoint group."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听实例ID。",
+        "en": "The ID of the listener."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the GA instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量修改某个监听下的终端节点组",
+    "en": "UpdateEndpointGroups"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n- **UpdateEndpointGroups**接口属于异步接口，即系统会先返回一个请求ID，但终端节点组配置信息并未修改完成，系统后台的修改任务仍在进行。您可以调用[DescribeEndpointGroup](~~153260~~)或[ListEndpointGroups](~~153261~~)查询终端节点组的状态：\n    - 当终端节点组处于**updating**状态时，表示终端节点组配置信息正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示终端节点组配置信息修改完成。\n- **UpdateEndpointGroups**接口不支持在同一个全球加速实例内并发修改终端节点组配置信息。",
+    "en": "### Usage notes\n\n- **UpdateEndpointGroups** is an asynchronous operation. After you send a request, the system returns a request ID, but the operation continues to run in the background. You can call the or [](t2323644.xdita#)operation to query the state of an endpoint group.\n\n  - If an endpoint group is in the **updating** state, its configuration is being modified. In this state, you can only perform query operations.\n\n  - If an endpoint group is in the **active** state, its configuration has been modified.\n\n- You cannot concurrently call the **UpdateEndpointGroups** operation to modify the configurations of endpoint groups that belong to the same Global Accelerator (GA) instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-endpoint-groups --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run true --endpoint-group-configurations '[{\"HealthCheckIntervalSeconds\":3,\"EndpointGroupName\":\"group1\",\"TrafficPercentage\":20,\"EndpointGroupId\":\"ep-bp1d2utp8qqe2a44t0000\",\"HealthCheckPath\":\"/healthcheck\",\"HealthCheckHost\":\"example-string\",\"ThresholdCount\":3,\"HealthCheckEnabled\":true,\"EndpointRequestProtocol\":\"HTTP\",\"EndpointProtocolVersion\":\"HTTP1.1\",\"PortOverrides\":[{\"ListenerPort\":443,\"EndpointPort\":80}],\"EndpointGroupDescription\":\"group1\",\"EnableClientIPPreservationToa\":false,\"HealthCheckProtocol\":\"tcp\",\"HealthCheckPort\":20,\"EndpointConfigurations\":[{\"EnableProxyProtocol\":true,\"ApiKeys\":[\"sk-0000000\"],\"Type\":\"Ip\",\"Endpoint\":\"47.0.XX.XX\",\"EnableClientIPPreservation\":true,\"VpcId\":\"vpc-uf66oesmrqge1t2gs0000\",\"VSwitchIds\":[\"vsw-uf6r0due94mypz1i90000\"],\"SubAddress\":\"172.168.XX.XX\",\"Weight\":20,\"Provider\":\"BAILIAN\"}],\"EndpointIpVersion\":\"example-string\",\"EnableClientIPPreservationProxyProtocol\":false}]' --listener-id lsr-bp1bpn0kn908w4nbw0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateEndpointGroups --region cn-hangzhou --EndpointGroupConfigurations.1.EndpointGroupName group1 --EndpointGroupConfigurations.1.EnableClientIPPreservationToa false --EndpointGroupConfigurations.1.EndpointConfigurations.1.EnableClientIPPreservation true --EndpointGroupConfigurations.1.EndpointGroupDescription group1 --EndpointGroupConfigurations.1.EndpointConfigurations.1.Weight 20 --DryRun true --EndpointGroupConfigurations.1.HealthCheckPath '/healthcheck' --EndpointGroupConfigurations.1.HealthCheckHost 'example-string' --EndpointGroupConfigurations.1.ThresholdCount 3 --EndpointGroupConfigurations.1.HealthCheckEnabled true --EndpointGroupConfigurations.1.EndpointConfigurations.1.Type Ip --EndpointGroupConfigurations.1.PortOverrides.1.ListenerPort 443 --EndpointGroupConfigurations.1.TrafficPercentage 20 --EndpointGroupConfigurations.1.EndpointConfigurations.1.VpcId 'vpc-uf66oesmrqge1t2gs0000' --EndpointGroupConfigurations.1.EndpointConfigurations.1.SubAddress '172.168.XX.XX' --EndpointGroupConfigurations.1.EndpointIpVersion 'example-string' --EndpointGroupConfigurations.1.EndpointConfigurations.1.Endpoint '47.0.XX.XX' --EndpointGroupConfigurations.1.EndpointProtocolVersion 'HTTP1.1' --EndpointGroupConfigurations.1.HealthCheckPort 20 --EndpointGroupConfigurations.1.EndpointConfigurations.1.EnableProxyProtocol true --EndpointGroupConfigurations.1.EnableClientIPPreservationProxyProtocol false --EndpointGroupConfigurations.1.EndpointConfigurations.1.Provider BAILIAN --EndpointGroupConfigurations.1.HealthCheckIntervalSeconds 3 --EndpointGroupConfigurations.1.EndpointGroupId 'ep-bp1d2utp8qqe2a44t0000' --EndpointGroupConfigurations.1.HealthCheckProtocol tcp --EndpointGroupConfigurations.1.EndpointConfigurations.1.VSwitchIds.1 'vsw-uf6r0due94mypz1i90000' --EndpointGroupConfigurations.1.EndpointConfigurations.1.ApiKeys.1 'sk-0000000' --EndpointGroupConfigurations.1.PortOverrides.1.EndpointPort 80 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --EndpointGroupConfigurations.1.EndpointRequestProtocol HTTP --ListenerId 'lsr-bp1bpn0kn908w4nbw0000' --method POST --force"

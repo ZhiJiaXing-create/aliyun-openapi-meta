@@ -1,5 +1,6 @@
 {
   "name": "CreateLiveDelayConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "App",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "直播流所属应用名称。支持通配符*，代表该域名下所有的AppName。",
+        "en": "The AppName of the live stream. You can specify an asterisk (\\*) to match all AppNames under the domain name."
+      }
     },
     {
       "name": "DelayTime",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "直播流延迟播放的时长，仅支持整数。取值：16~3600。单位：秒。",
+        "en": "The duration for which the playback is delayed. The value must be an integer. Valid values: 16 to 3600. Unit: seconds."
+      }
     },
     {
       "name": "Domain",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The main streaming domain."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Stream",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "直播流流名称。支持通配符*，代表该AppName下所有的StreamName。",
+        "en": "The name of the live stream. You can use the wildcard (\\*) to specify all StreamNames under the AppName."
+      }
     },
     {
       "name": "TaskTriggerMode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务触发模式，取值：\n\n- **PUBLISH_ONLY** ：仅支持带延播推流参数触发。\n\n- **CONFIG_ONLY** ：仅支持配置触发，推流参数无效。\n\n- **PUBLISH_CONFIG** ：同时支持推流和配置，并且推流参数高优于配置。",
+        "en": "The trigger mode. Valid values:\n\n- **PUBLISH\\_ONLY**: Stream delay is triggered only by relevant parameters in the ingest URL.\n\n- **CONFIG\\_ONLY**: Stream delay is triggered only by the configuration. Parameters in the ingest URL are ignored.\n\n- **PUBLISH\\_CONFIG**: Stream delay is triggered by both the configuration and parameters in the ingest URL. Parameters in the ingest URL have a higher priority than the configuration."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置直播延播配置",
+    "en": "CreateLiveDelayConfig"
+  },
+  "descriptions": {
+    "zh": "延播配置区别于协议本身造成的延迟，指直播流开始后经过云端处理，在播放端进行延时播放。\n\n## QPS限制\n本接口的单用户QPS限制为60次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "Stream delay differs from latency caused by streaming protocols. Stream delay is a feature that lets you delay the playback of a live stream processed in the cloud.\n\n## QPS limits\n\nThe queries per second (QPS) limit for this operation is 60 for each user. If you exceed the limit, API calls are throttled, which may affect your business. Call this operation within the specified limit."
+  },
   "example": {
     "unifiedCli": "aliyun live create-live-delay-config --biz-region-id cn-hangzhou --domain example.com --app liveApp0000 --stream liveStream0000 --delay-time 60 --task-trigger-mode PUBLISH_ONLY --region cn-hangzhou",
     "legacyCli": "aliyun live CreateLiveDelayConfig --region cn-hangzhou --App liveApp0000 --TaskTriggerMode PUBLISH_ONLY --Stream liveStream0000 --RegionId 'cn-hangzhou' --Domain 'example.com' --DelayTime 60"

@@ -1,5 +1,6 @@
 {
   "name": "MaskOssImage",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,10 +9,24 @@
       "name": "BucketName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS Bucket名称。",
+        "en": "The name of the OSS bucket."
+      }
     },
     {
       "name": "IsAlwaysUpload",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否总是上传处理后的图片。\n\n若为fasle，只有在命中脱敏规则后才上传。\n\n若为true，则总会上传处理后的图片。",
+        "en": "Specifies whether to always upload the processed image.\n\nIf you set this to false, the image is uploaded only if it matches a masking rule.\n\nIf you set this to true, the processed image is always uploaded."
+      }
+    },
+    {
+      "name": "IsCoverObject",
       "position": "Query",
       "type": "Boolean",
       "required": false
@@ -20,27 +35,63 @@
       "name": "IsSupportRestore",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "图片是否支持复原。",
+        "en": "Specifies whether you can restore the original image from the masked version."
+      }
+    },
+    {
+      "name": "Lang",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "接口返回语言类型"
+      }
     },
     {
       "name": "MaskRuleIdList",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "脱敏规则ID列表，用,分隔符进行连接。\n\n规则ID映射关系如下\n\n3000 包含身份证信息的图片（中国内地）\n\n3009 包含车牌信息的图片（中国内地）\n\n3002 包含人脸信息的图片\n\n1002 姓名（简体中文）\n\n1003 地址（中国内地）\n\n4003 统一社会信用代码\n\n63009 包含人脸眼部信息的图片",
+        "en": "A comma-separated list of masking rule IDs.\n\nThe following rule IDs correspond to the listed sensitive data types:\n\n3000: Images that contain ID card information (Chinese mainland)\n\n3009: Images that contain license plate information (Chinese mainland)\n\n3002: Images that contain faces\n\n1002: Names (Simplified Chinese)\n\n1003: Addresses (Chinese mainland)\n\n4003: Unified Social Credit Code\n\n63009: Images that contain eyes"
+      }
     },
     {
       "name": "ObjectKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件在OSS上存储的完整文件名。",
+        "en": "The full key of the object stored in OSS."
+      }
     },
     {
       "name": "ServiceRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Bucket所在的地域。",
+        "en": "The region where the bucket is located."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "对图片进行动态脱敏",
+    "en": "MaskOssImage"
+  },
+  "descriptions": {
+    "zh": "**前置条件**\n\n需要购买图片脱敏额度才可以使用接口，每调用一次接口，会扣减一次对应的脱敏额度。\n\n**QPS 限制**\n\n本接口的单用户 QPS 限制为 10 次/秒。超过限制，API 调用将会被限流，这可能影响您的业务，请合理调用。\n\n**使用说明**\n\n脱敏完成后，图片会存储到图片所属Bucket下的aliyun_dsc_desensitization文件夹中。\n\n例如，Bucket中的图片exampledir/test.png，脱敏后会存储为aliyun_dsc_desensitization/exampledir/test.png。\n\n详情可见https://help.aliyun.com/zh/dsc/data-security-center/user-guide/picture-desensitization",
+    "en": "**Prerequisites**\n\nTo use this operation, you must have an image masking quota. Each call deducts one unit from your quota.\n\n**QPS limit**\n\nThe QPS limit for a single user is 10. If you exceed this limit, API calls are throttled, which can affect your business. To prevent service disruptions, operate within this limit.\n\n**Usage notes**\n\nAfter masking is complete, the system stores the masked image in the aliyun\\_dsc\\_desensitization folder within the source bucket.\n\nFor example, an image at exampledir/test.png in a bucket is saved as aliyun\\_dsc\\_desensitization/exampledir/test.png after masking.\n\nFor more information, see https\\://help.aliyun.com/zh/dsc/data-security-center/user-guide/picture-desensitization"
+  },
   "example": {
     "unifiedCli": "aliyun sddp mask-oss-image --bucket-name sddp-api-demo-bucket --object-key dir1/test.png --service-region-id cn-hangzhou --mask-rule-id-list 3000,3002 --is-support-restore true --is-always-upload true --is-cover-object true --lang zh --region cn-hangzhou",
     "legacyCli": "aliyun sddp MaskOssImage --region cn-hangzhou --BucketName 'sddp-api-demo-bucket' --ServiceRegionId 'cn-hangzhou' --MaskRuleIdList '3000,3002' --IsCoverObject true --ObjectKey 'dir1/test.png' --Lang zh --IsAlwaysUpload true --IsSupportRestore true"

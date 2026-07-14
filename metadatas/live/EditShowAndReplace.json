@@ -1,5 +1,6 @@
 {
   "name": "EditShowAndReplace",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "CasterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "导播台ID。\n\n- 如果您通过[CreateCaster接口](~~2848009~~)创建导播台，请查看CreateCaster接口调用返回的参数CasterId值。\n\n- 如果您通过直播控制台创建导播台，请通过**直播控制台** > **导播台** > **云导播台**页面查看。\n\n> 直播控制台云导播台页面导播台列表中的导播台名称即导播台ID。",
+        "en": "The ID of the production studio.\n\n- If you create a production studio by calling the [CreateCaster](~~2848009~~) operation, use the CasterId value that is returned in the response.\n\n- If you create a production studio in the ApsaraVideo Live console, go to the **Production Studio** > **Cloud Production Studio** page to view the ID.\n\n> The name of a production studio in the list on the Cloud Production Studio page is its ID."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "剪辑结束时间，单位：秒。\n\n> - 剪辑时间取值范围为0到节目总时长。\n> - 默认取值为点播文件结束时长，取值不可超出节目的总时长。\n> - 如果您想要剪辑一个点播文件，从第2秒到第5秒，那么StartTime取值为2.0，EndTime取值为5.0。",
+        "en": "The end time of the clip. Unit: seconds.\n\n> - The value must be between 0 and the total duration of the show.\n>\n> - By default, the clip ends at the end of the VOD file. The value cannot exceed the total duration of the show.\n>\n> - For example, to clip a VOD file from the 2-second mark to the 5-second mark, set StartTime to 2.0 and EndTime to 5.0."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ShowId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要剪辑的节目ID。\n>通过查看[AddShowIntoShowList](~~2848051~~)接口的返回参数获取ShowId值。",
+        "en": "The ID of the show that you want to edit.\n\n> Obtain the ShowId value from the response parameters of the [AddShowIntoShowList](~~2848051~~) operation."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "剪辑开始时间，单位：秒。\n\n> - 剪辑时间取值范围为0到节目总时长。- 默认从点播文件开头开始剪辑，取值：0.0。\n> - 如果您想要剪辑一个点播文件，从第2秒到第5秒，那么StartTime取值为2.0，EndTime取值为5.0。",
+        "en": "The start time of the clip. Unit: seconds.\n\n> - The value must be between 0 and the total duration of the show. The default value is 0.0. This means the clip starts from the beginning of the VOD file.\n>\n> - For example, to clip a VOD file from the 2-second mark to the 5-second mark, set StartTime to 2.0 and EndTime to 5.0."
+      }
     },
     {
       "name": "StorageInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "存储信息。描述：\n\n- **StorageLocation**：用户点播存储地址。\n- **FileName**：用户自定义文件名。\n\n>剪辑存储地址必须是用户同一账户下的点播存储地址，获取点播存储地址请参见[存储管理](~~86097~~)。",
+        "en": "The storage information. Description:\n\n- **StorageLocation**: The storage address for the video-on-demand (VOD) file.\n\n- **FileName**: The custom file name.\n\n> The storage address for the edited video must be a VOD storage address that is under the same account. To obtain a VOD storage address, see [Storage management](~~86097~~)."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户信息。",
+        "en": "The user information."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加剪辑任务",
+    "en": "EditShowAndReplace"
+  },
+  "descriptions": {
+    "zh": "本接口支持指定CasterId和ShowId添加剪辑任务。\n添加剪辑任务成功不会自动通知，您可调用[GetEditingJobInfo](~~2848059~~)接口查询任务状态信息。\n## QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "This operation adds a video editing job. You must specify a CasterId and a ShowId. You will not be notified when the video editing job is successfully added. To query the job status, call the [GetEditingJobInfo](~~2848059~~) operation.\n\n## QPS limit\n\nThe queries per second (QPS) limit for a single user is 10 calls per second. If you exceed this limit, API calls are throttled, which can affect your business. We recommend that you call this operation at a reasonable rate."
+  },
   "example": {
     "unifiedCli": "aliyun live edit-show-and-replace --biz-region-id cn-hangzhou --caster-id 53200b81-b761-4c10-842a-a0726d970000 --show-id 42200b81-b761-4c10-842a-a0726d970000 --user-data 900a2b2r8-13c2-0000-88f2-75e4a07c1ed9 --storage-info StorageLocation_:_000bucket000_,_FileName_:_EditFile0000.mp4 --start-time 2.0 --end-time 5.0 --region cn-hangzhou",
     "legacyCli": "aliyun live EditShowAndReplace --region cn-hangzhou --EndTime '5.0' --UserData '900a2b2r8-13c2-0000-88f2-75e4a07c1ed9' --ShowId '42200b81-b761-4c10-842a-a0726d970000' --StorageInfo 'StorageLocation_:_000bucket000_,_FileName_:_EditFile0000.mp4' --StartTime '2.0' --RegionId 'cn-hangzhou' --CasterId '53200b81-b761-4c10-842a-a0726d970000'"

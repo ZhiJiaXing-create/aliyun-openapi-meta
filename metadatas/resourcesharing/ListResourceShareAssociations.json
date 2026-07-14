@@ -1,5 +1,6 @@
 {
   "name": "ListResourceShareAssociations",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AssociationStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "关联状态。取值：\n\n- Associating：关联中。\n- Associated：已关联。\n- Failed：关联失败。\n- Disassociating：分离中。\n- Disassociated：已分离。\n\n> `Failed`和`Disassociated`状态的记录，会在48~96小时内被系统自动删除。",
+        "en": "The status of the association. Valid values:\n\n- `Associating`: The association is in progress.\n\n- `Associated`: The association is established.\n\n- `Failed`: The association failed.\n\n- `Disassociating`: Disassociation is in progress.\n\n- `Disassociated`: The association is removed.\n\n> The system automatically deletes records in the `Failed` or `Disassociated` state within 48 to 96 hours."
+      }
     },
     {
       "name": "AssociationType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "关联类型：取值：\n\n- Resource：查询关联共享资源的记录。\n- Target：查询关联资源使用者的记录。",
+        "en": "The type of the association. Valid values:\n\n- `Resource`: Returns associations with shared resources.\n\n- `Target`: Returns associations with principals."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单次请求返回结果的最大条数。\n\n取值范围：1~100。默认值：20。",
+        "en": "The maximum number of entries to return per page.\n\nValid values: 1 to 100. Default value: 20."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当请求的返回结果被截断时，您可以使用`NextToken`再次发起请求，获取从当前截断位置之后的内容。",
+        "en": "The token for the next page of results. If the previous response was truncated, include this `token` to retrieve the remaining results."
+      }
     },
     {
       "name": "ResourceArn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ARN。\n> 当`AssociationType`为`Target`时，该参数不可用。",
+        "en": "The Alibaba Cloud Resource Name (ARN) of the resource.\n\n> This parameter is not available when `AssociationType` is set to `Target`."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID。\n>当`AssociationType`为`Target`时，该参数不可用。",
+        "en": "The ID of the resource.\n\n> This parameter is not available when `AssociationType` is set to `Target`."
+      }
     },
     {
       "name": "ResourceShareIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享单元ID。\n\nN的取值范围：1~5，即每次最多指定5个共享单元。",
+        "en": "The IDs of the resource shares.\n\nYou can specify up to 5 resource share IDs."
+      }
     },
     {
       "name": "Target",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源使用者ID。\n\n>当`AssociationType`为`Resource`时，该参数不可用。",
+        "en": "The ID of the principal.\n\n> This parameter is not available when `AssociationType` is set to `Resource`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询关联资源或资源使用者",
+    "en": "ListResourceShareAssociations"
+  },
+  "descriptions": {
+    "zh": "本文将提供一个示例，在`cn-hangzhou`地域，查询当前账号创建的共享单元中关联的共享资源的记录。返回结果显示，当前账号关联过以下2个资源：\n\n- 在共享单元`rs-6GRmdD3X****`中，添加过`VSwitch`类型的共享资源`vsw-bp1upw03qyz8n7us9****`，该资源处于关联中`Associated`状态，即该资源正常共享中。\n- 在共享单元`rs-6GRmdD3X****`中，移除过`VSwitch`类型的共享资源`vsw-bp183p93qs667muql****`，该资源处于已分离`Disassociated`状态，即该资源已停止共享。",
+    "en": "This example shows how to query for association records of Shared Resources within Resource Shares created by the current account in the `China (Hangzhou)` Region. The response shows records for the following two Shared Resources:\n\n- A `VSwitch` Shared Resource, `vsw-bp1upw03qyz8n7us9****`, was associated with the Resource Share `rs-6GRmdD3X****`. The resource is in the `Associated` state, meaning it is actively shared.\n\n- A `VSwitch` Shared Resource, `vsw-bp183p93qs667muql****`, was disassociated from the Resource Share `rs-6GRmdD3X****`. The resource is in the `Disassociated` state, meaning it is no longer shared."
+  },
   "example": {
     "unifiedCli": "aliyun resourcesharing list-resource-share-associations --resource-id vsw-bp183p93qs667muql0000 --resource-arn acs:vpc:cn-shanghai:1037554691870000:vswitch/vsw-uf62b11ue4m8oz2di0000 --target 1720505253000000 --association-type Resource --association-status Associated --max-results 20 --next-token TGlzdFJlc291cm0000 --resource-share-ids rs-6GRmdD3X0000 --region cn-hangzhou",
     "legacyCli": "aliyun resourcesharing ListResourceShareAssociations --region cn-hangzhou --ResourceArn 'acs:vpc:cn-shanghai:1037554691870000:vswitch/vsw-uf62b11ue4m8oz2di0000' --Target 1720505253000000 --AssociationType Resource --NextToken TGlzdFJlc291cm0000 --ResourceShareIds.1 'rs-6GRmdD3X0000' --ResourceId 'vsw-bp183p93qs667muql0000' --MaxResults 20 --AssociationStatus Associated"

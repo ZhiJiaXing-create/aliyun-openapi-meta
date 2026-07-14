@@ -1,5 +1,6 @@
 {
   "name": "GetTemplateParameterConstraints",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求的幂等性。\n该值由客户端生成，并且必须是全局唯一的。长度不超过64个字符，可包含英文字母、数字、短划线（-）和下划线（_）。\n更多信息，请参见[如何保证幂等性](~~134212~~)。",
+        "en": "A client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can be up to 64 characters in length, and can contain letters, digits, hyphens (-), and underscores (\\_). For more information, refer to [How to ensure idempotence](~~134212~~)."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "模板中已定义的参数。",
+        "en": "The parameters that are defined in the template."
+      },
       "sub_parameters": [
         {
           "name": "ParameterKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "模板中已定义的参数的名称。\n\n> Parameters为可选参数。若指定了Parameters，则ParameterKey为必选参数。",
+            "en": "The name of the parameter that is defined in the template.\n\n> The Parameters parameter is optional. If you specify Parameters, you must specify ParameterKey."
+          }
         },
         {
           "name": "ParameterValue",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "模板中已定义的参数的取值。\n\n> Parameters为可选参数。若指定了Parameters，则ParameterValue为必选参数。",
+            "en": "The value of the parameter that is defined in the template.\n\n> The Parameters parameter is optional. If you specify Parameters, you must specify ParameterValue."
+          }
         }
       ]
     },
@@ -34,51 +51,94 @@
       "name": "ParametersKeyFilter",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的参数列表。",
+        "en": "The list of parameters to be queried."
+      }
     },
     {
       "name": "ParametersOrder",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "参数依赖关系。",
+        "en": "The dependency of the parameters."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。  \n您可以调用[DescribeRegions](~~131035~~)接口查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call the [DescribeRegions](~~131035~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "StackId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈ID。\n\n当填写此参数时，表示查询变配场景的参数约束。",
+        "en": "The ID of the stack.\n\nIf you specify this parameter, the parameter constraints for an upgrade or downgrade scenario are queried."
+      }
     },
     {
       "name": "TemplateBody",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板主体的结构。长度为1~524,288个字节。如果长度较长，则建议通过HTTP POST+Body Param的方式，将参数放在请求体中进行传递，避免因URL过长而导致请求失败。\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The structure of the template body. The template body must be 1 to 524,288 bytes in length. If the length of the template body exceeds the upper limit, we recommended to use the HTTP POST + Body Param method to pass the parameter in the request body to avoid request failures caused by an excessively long URL.\n\n> You can specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板ID。支持共享模板和私有模板。  \n> 您必须且仅能指定TemplateBody、TemplateURL和TemplateId其中一个参数。",
+        "en": "The ID of the template. This parameter applies to shared templates and private templates.\n\n> You can specify only one of the TemplateBody, TemplateURL, and TemplateId parameters."
+      }
     },
     {
       "name": "TemplateURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含模板主体的文件的位置。URL必须指向位于Web服务器（HTTP或HTTPS）或阿里云OSS存储空间（例如：oss://ros/template/demo或oss://ros/template/demo?RegionId=cn-hangzhou）中的模板，模板的最大长度为524,288个字节。如未指定OSS地域，默认与接口参数RegionId相同。\n> 您必须且仅能指定TemplateBody、TemplateURL和TemplateId其中一个参数。",
+        "en": "The URL of the file that contains the template body. The URL must point to a template that is located on an HTTP or HTTPS web server or in an Alibaba Cloud OSS bucket, such as oss\\://ros/template/demo or oss\\://ros/template/demo?RegionId=cn-hangzhou. The template must be 1 to 524,288 bytes in length. If the OSS region is not specified, the default is the same as the RegionId parameter.\n\n> You can specify only one of the TemplateBody, TemplateURL, and TemplateId parameters."
+      }
     },
     {
       "name": "TemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板版本。如果不指定，默认取最新版本。  \n\n> TemplateVersion仅在指定TemplateId时生效。",
+        "en": "The version of the template. If you do not specify this parameter, the latest version is used.\n\n> TemplateVersion is valid only when TemplateId is specified."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取模版参数约束",
+    "en": "GetTemplateParameterConstraints"
+  },
+  "descriptions": {
+    "zh": "### 使用说明  \n\n本文将提供一个示例，查询杭州地域模板`{\n  \"ROSTemplateFormatVersion\": \"2015-09-01\",\n  \"Parameters\": {\n    \"ZoneInfo\": {\n      \"Type\": \"String\"\n    },\n    \"InstanceType\": {\n      \"Type\": \"String\"\n    }\n  },\n  \"Resources\": {\n    \"ECS\": {\n      \"Type\": \"ALIYUN::ECS::Instance\",\n      \"Properties\": {\n        \"ZoneId\": {\n          \"Ref\": \"ZoneInfo\"\n        },\n        \"InstanceType\": {\n          \"Ref\": \"InstanceType\"\n        }\n      }\n    }\n  }\n}`中参数`ZoneInfo`的取值。\n\n关于本接口支持查询的参数和模板内容，请参见[参数约束查询](~~432820~~)。",
+    "en": "### Description\n\nThis topic provides an example of how to query the valid values for the `ZoneInfo` parameter in a template specific to the China (Hangzhou) region. The template is `{ \"ROSTemplateFormatVersion\": \"2015-09-01\", \"Parameters\": { \"ZoneInfo\": { \"Type\": \"String\" }, \"InstanceType\": { \"Type\": \"String\" } }, \"Resources\": { \"ECS\": { \"Type\": \"ALIYUN::ECS::Instance\", \"Properties\": { \"ZoneId\": { \"Ref\": \"ZoneInfo\" }, \"InstanceType\": { \"Ref\": \"InstanceType\" } } } } }`.\n\nFor more information about the queryable parameters and template content, refer to [Query parameter constraints](~~432820~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ros get-template-parameter-constraints --template-body ROSTemplateFormatVersion_:_2015-09-01_,_Parameters_:_ZoneInfo_:_Type_:_String_,_InstanceType_:_Type_:_String_,_Resources_:_ECS_:_Type_:_ALIYUN::ECS::Instance_,_Properties_:_ZoneId_:_Ref_:_ZoneInfo_,_InstanceType_:_Ref_:_InstanceType --biz-region-id cn-hangzhou --template-url oss://ros-template/demo --template-id 5ecd1e10-b0e9-4389-a565-e4c15efc0000 --template-version v1 --parameters ParameterValue=cn-hangzhou-h ParameterKey=ZoneInfo --parameters-key-filter ZoneInfo --client-token 123e4567-e89b-12d3-a456-426655440000 --parameters-order ZoneId --stack-id c754d2a4-28f1-46df-b557-9586173a0000 --region cn-hangzhou",
     "legacyCli": "aliyun ros GetTemplateParameterConstraints --region cn-hangzhou --TemplateURL 'oss://ros-template/demo' --ParametersKeyFilter '[\"ZoneInfo\"]' --Parameters.1.ParameterKey ZoneInfo --TemplateVersion v1 --TemplateBody 'ROSTemplateFormatVersion_:_2015-09-01_,_Parameters_:_ZoneInfo_:_Type_:_String_,_InstanceType_:_Type_:_String_,_Resources_:_ECS_:_Type_:_ALIYUN::ECS::Instance_,_Properties_:_ZoneId_:_Ref_:_ZoneInfo_,_InstanceType_:_Ref_:_InstanceType' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ParametersOrder '[\"ZoneId\"]' --Parameters.1.ParameterValue 'cn-hangzhou-h' --TemplateId '5ecd1e10-b0e9-4389-a565-e4c15efc0000' --StackId 'c754d2a4-28f1-46df-b557-9586173a0000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateRegistrationPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,69 +9,120 @@
       "name": "CompanyLimitCount",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "公司设备注册限制数量。",
+        "en": "The restriction count for company devices."
+      }
     },
     {
       "name": "CompanyLimitType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "公司设备注册限制类型。取值：\n- **Unlimited**：不限制。\n- **LimitAll**：按照总数限制。\n- **LimitDiff**：按照终端分类限制。",
+        "en": "The restriction type for company devices. Valid values:\n\n- **Unlimited**: No restrictions.\n\n- **LimitAll**: Limit by total count.\n\n- **LimitDiff**: Limit by device category."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备注册策略描述。长度为1~128个字符，支持中文和大小写英文字母，可包含数字、半角句号（.）、下划线（_）、短划线（-）和空格。",
+        "en": "A description of the device registration policy. The description must be 1 to 128 characters in length. It can contain letters, digits, periods (.), underscores (\\_), hyphens (-), and spaces."
+      }
     },
     {
       "name": "MatchMode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略匹配目标类型。取值：\n- **UserGroupAll**：关联全体用户。\n- **UserGroupNormal**：关联部分用户组。",
+        "en": "The target type for policy matching. Valid values:\n\n- **UserGroupAll**: Apply to all users.\n\n- **UserGroupNormal**: Apply to selected user groups."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设备注册策略名称。长度为1~128个字符，支持中文和大小写英文字母，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The name of the device registration policy. The name must be 1 to 128 characters in length. It can contain letters, digits, periods (.), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "PersonalLimitCount",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "个人设备注册限制数量。",
+        "en": "The restriction count for personal devices."
+      }
     },
     {
       "name": "PersonalLimitType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "个人设备注册限制类型。取值：\n- **Unlimited**：不限制。\n- **LimitAll**：按照总数限制。\n- **LimitDiff**：按照终端分类限制。",
+        "en": "The restriction type for personal devices. Valid values:\n\n- **Unlimited**: No restrictions.\n\n- **LimitAll**: Limit by total count.\n\n- **LimitDiff**: Limit by device category."
+      }
     },
     {
       "name": "Priority",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备注册策略优先级。数字0表示优先级最高，数字99表示优先级最低。",
+        "en": "The priority of the device registration policy. A value of 0 indicates the highest priority. A value of 99 indicates the lowest priority."
+      }
     },
     {
       "name": "Status",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设备注册策略状态。取值：\n- **Enabled**：开启。\n- **Disabled**：关闭。",
+        "en": "The status of the device registration policy. Valid values:\n\n- **Enabled**: Enabled.\n\n- **Disabled**: Disabled."
+      }
     },
     {
       "name": "UserGroupIds",
       "position": "Body",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备注册策略的用户组ID集合，当策略匹配目标类型为**UserGroupNormal**时必填。单个策略的用户组最大支持100个。",
+        "en": "The IDs of user groups to which the device registration policy applies. Required if MatchMode is set to **UserGroupNormal**. A maximum of 100 user groups can be specified per policy."
+      }
     },
     {
       "name": "Whitelist",
       "position": "Body",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备注册策略白名单用户列表。最多可输入1000个用户名。",
+        "en": "The list of usernames in the whitelist for the device registration policy. You can specify up to 1,000 usernames."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建设备注册策略",
+    "en": "Create Device Registration Policy"
+  },
   "example": {
     "unifiedCli": "aliyun csas create-registration-policy --name registration_policy_name --description '这是一条设备注册策略' --status Enabled --whitelist 王先生 --priority 99 --company-limit-type LimitAll --company-limit-count All=1 PC=0 Mobile=0 --personal-limit-type LimitDiff --personal-limit-count All=0 PC=2 Mobile=3 --match-mode UserGroupAll --user-group-ids usergroup-086bcf2d650b0000 --region cn-hangzhou",
     "legacyCli": "aliyun csas CreateRegistrationPolicy --region cn-hangzhou --Status Enabled --MatchMode UserGroupAll --Description '这是一条设备注册策略' --PersonalLimitCount '{\"All\":0,\"PC\":2,\"Mobile\":3}' --UserGroupIds.1 'usergroup-086bcf2d650b0000' --Priority 99 --PersonalLimitType LimitDiff --Whitelist.1 '王先生' --CompanyLimitCount '{\"All\":1,\"PC\":0,\"Mobile\":0}' --Name registration_policy_name --CompanyLimitType LimitAll --method POST --force"

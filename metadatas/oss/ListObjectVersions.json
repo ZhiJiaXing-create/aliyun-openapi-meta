@@ -1,0 +1,90 @@
+{
+  "name": "ListObjectVersions",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET",
+  "pathPattern": "/?versions",
+  "parameters": [
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "delimiter",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "对Object名字进行分组的字符。所有Object名字包含指定的前缀（prefix），第一次出现delimiter字符之间的Object作为一组元素（即CommonPrefixes）。\n如果将prefix设为文件夹名称后，再把delimiter设置为正斜线（/），则只返回该文件夹下的文件，该文件夹下的子文件名在CommonPrefixes中返回，子文件夹下递归的文件和文件夹不显示。\n\n默认值：无",
+        "en": "The character used to group object names. All objects whose names contain the specified prefix and appear before the first occurrence of the delimiter character are grouped as a single element (CommonPrefixes).\nIf you set prefix to a folder name and set delimiter to a forward slash (/), only the objects in the folder are returned. The names of the subfolders in the folder are returned in CommonPrefixes. Objects and folders in the subfolders are not displayed recursively.\n\nDefault value: null."
+      }
+    },
+    {
+      "name": "encoding-type",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "对返回的内容进行编码并指定编码类型。\n默认值：无\n可选值：URL\n>delimiter、marker、prefix、NextMarker以及Key使用UTF-8字符。如果delimiter、marker、prefix、NextMarker以及Key中包含XML\n                                    1.0标准不支持的控制字符，您可以通过指定encoding-type对返回结果中的Delimiter、Marker、Prefix、NextMarker以及Key进行编码。",
+        "en": "The encoding type of the returned content.\nDefault value: null\nValid values: URL\n>The delimiter, marker, prefix, NextMarker, and Key values use UTF-8 characters. If these values contain control characters that are not supported by XML 1.0, you can specify encoding-type to encode the Delimiter, Marker, Prefix, NextMarker, and Key values in the response."
+      }
+    },
+    {
+      "name": "key-marker",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "设定结果从key-marker之后按字母序开始返回，与version-id-marker组合使用。\n参数的长度必须小于1024字节。\n\n默认值：无\n\n>如果version-id-marker不为空，则key-marker不能为空",
+        "en": "Specifies that results are returned in alphabetical order starting after the value of key-marker. This parameter is used together with version-id-marker.\nThe value of this parameter must be less than 1,024 bytes in length.\n\nDefault value: null\n\n>If version-id-marker is not empty, key-marker cannot be empty."
+      }
+    },
+    {
+      "name": "max-keys",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "限定此次返回Object的最大个数。\n如果因为max-keys的设定无法一次完成列举，返回结果会附加`NextKeyMarker`和`NextVersionIdMarker`作为下一次列举的marker。列举结果中包含`NextKeyMarker`和`NextVersionIdMarker`的值。\n取值：大于0小于1000\n默认值：100",
+        "en": "The maximum number of objects to return in this request.\nIf not all results can be returned in a single request due to the max-keys setting, the response includes NextKeyMarker and NextVersionIdMarker as markers for the next request. The values of NextKeyMarker and NextVersionIdMarker are included in the response.\nValid values: greater than 0 and less than 1000.\nDefault value: 100."
+      }
+    },
+    {
+      "name": "prefix",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "限定返回的Object Key必须以prefix作为前缀。\n\n- prefix的长度必须小于1024字节。\n- 使用prefix查询时，返回结果的Key仍会包含prefix。\n\n如果将prefix设为某个文件夹名，则列举以此prefix开头的文件，即该文件夹下递归的所有的文件和子文件夹。\n\n默认值：无",
+        "en": "Specifies that only objects whose keys start with the prefix are returned.\n\n- The value of prefix must be less than 1,024 bytes in length.\n- If you use prefix for a query, the keys in the returned results still include the prefix.\n\nIf you set prefix to a folder name, all objects whose keys start with this prefix are listed, including all objects and subfolders in the folder recursively.\n\nDefault value: null."
+      }
+    },
+    {
+      "name": "version-id-marker",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "设定结果从key-marker对象的version-id-marker之后按新旧版本排序开始返回。如果version-id-marker未设定，则默认从key-marker按字母序排序的下一个Key的第一个版本开始返回。\n\n默认值：无\n\n有效值：版本ID",
+        "en": "Specifies that results are returned starting after the version specified by version-id-marker for the object specified by key-marker, sorted from the newest to the oldest version. If version-id-marker is not specified, results start from the first version of the next key after key-marker in alphabetical order.\n\nDefault value: null\n\nValid values: version ID."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取文件的版本信息",
+    "en": "List object versions"
+  },
+  "descriptions": {
+    "zh": "- GetBucket(ListObjects)接口仅返回Object的当前版本，且当前版本不能为删除标记。\n- GetBucketVersions(ListObjectVersions)接口返回Bucket中所有Object的所有版本。\n\n不同Object之间按字母排序返回，同一个Object的不同版本则按从新到旧排序，与版本ID的字母序无关。",
+    "en": "- The GetBucket (ListObjects) operation returns only the current version of each object, and the current version cannot be a delete marker.\n- The GetBucketVersions (ListObjectVersions) operation returns all versions of all objects in a bucket.\n\nObjects are returned in alphabetical order. Versions of the same object are sorted from the newest to the oldest, regardless of the alphabetical order of version IDs."
+  }
+}

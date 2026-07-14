@@ -1,5 +1,6 @@
 {
   "name": "ScanImage",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "Scene",
       "position": "Body",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "1",
+        "en": "1."
+      }
     },
     {
       "name": "Task",
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "1",
+        "en": "1."
+      },
       "sub_parameters": [
         {
           "name": "DataId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据ID。需要保证在一次请求中所有的ID不重复。",
+            "en": "The data ID. All IDs must be unique within a single request."
+          }
         },
         {
           "name": "ImageTimeMillisecond",
           "position": "FormData",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "图片创建或编辑时间，单位为毫秒。",
+            "en": "The creation or editing time of the image, in milliseconds."
+          }
         },
         {
           "name": "ImageURL",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "待检测图像的URL地址。支持HTTP和HTTPS协议。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n\n> 如果使用上海地域的OSS链接，系统会自动将OSS链接地址转成内网地址然后再下载文件，所以调用该接口并不会产生OSS流量计费。",
+            "en": "The URL of the image to be detected. HTTP and HTTPS protocols are supported. We recommend that you use an OSS link in the China (Shanghai) region. If the file is stored locally or in an OSS link outside the China (Shanghai) region, see [File URL processing](~~155645~~).\n\n> If you use an OSS link in the China (Shanghai) region, the system automatically converts the OSS link to an internal network address before downloading the file, so calling this operation does not incur OSS traffic charges."
+          }
         },
         {
           "name": "Interval",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "截帧频率，GIF图或者长图检测专用。GIF图可理解为图片数组，每**interval**张图片抽取一张进行检测。只有该值存在时，才会对GIF进行截帧。长图同时支持长竖图和长横图。\n\n- 长竖图（高大于400像素，高宽比大于2.5），会按照`高/宽`取整来计算总图数，并进行切割。\n\n- 长横图（宽大于400像素，宽高比大于2.5），会按照`宽/高`取整来计算总图数，并进行切割。\n\n> 默认只会检测GIF图或长图的第一帧，interval参数用于指示后台在检测时可按照该间隔跳着检测，以节省检测成本。需要与maxFrames参数组合使用。例如，设置interval为2，maxFrames为100，检测长图或GIF图时，将每间隔1帧检测一次，最多检测100帧，计费则按照实际检测的数量计算。",
+            "en": "The frame capture interval, used specifically for GIF or long image detection. A GIF image can be understood as an array of images, and one image is extracted for detection every **interval** images. Frames are captured from a GIF only when this parameter is specified. Long images support both long vertical images and long horizontal images.\n\n- Long vertical images (height greater than 400 pixels, height-to-width ratio greater than 2.5): the total number of images is calculated by rounding down `height/width`, and the image is split accordingly.\n\n- Long horizontal images (width greater than 400 pixels, width-to-height ratio greater than 2.5): the total number of images is calculated by rounding down `width/height`, and the image is split accordingly.\n\n> By default, only the first frame of a GIF or long image is detected. The interval parameter instructs the backend to skip frames at the specified interval during detection to reduce detection costs. Use this parameter together with the maxFrames parameter. For example, if you set interval to 2 and maxFrames to 100, every other frame is detected when detecting a long image or GIF, up to a maximum of 100 frames. Billing is based on the actual number of frames detected."
+          }
         },
         {
           "name": "MaxFrames",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "最大截帧数量，GIF图或长图检测专用，默认值为1。\n当interval*maxFrames小于该图片所包含的图片数量时，截帧间隔会自动修改为`该图片所包含的图片数/maxFrames`，以提高整体检测效果。",
+            "en": "The maximum number of frames to capture, used specifically for GIF or long image detection. Default value: 1.\nWhen interval × maxFrames is less than the total number of images contained in the image, the frame capture interval is automatically adjusted to `total number of images / maxFrames` to improve overall detection accuracy."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "图片内容安全",
+    "en": "Image content safety"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n图片内容安全结合行为、内容，采用多维度、多模型、多检测手段，识别图片中的敏感信息，规避图片中存在敏感人物照片、敏感事件等内容风险。\n支持检测的场景包括：图片智能鉴黄、图片敏感内容识别、图片风险人物识别、图片垃圾广告识别、图片不良场景识别、图片Logo识别。\n在提交检测任务时，您需要指定scenes参数，并且支持组合使用，即可对同一张图片的多种风险进行检测。\n\n> - 在同时检测多个scene的情况下，将按照每个场景的检测图片数量×每个场景的单价进行累加计费。而在检测返回结果中，则包含了您指定的scenes对应的label。您可以根据参数的返回值判断风险的具体类型。然后对图片进行处理。\n- 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n\n在图片审核中，scene与label的对应关系如下： \n| scene     | 描述                                                                                               | label                                                                                                                                                                                                                                                                                      |\n| --------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| porn      | 图片智能鉴黄：适用于图片涉及色情、低俗内容检测。                             | normal（正常图片）、sexy（性感图片）、porn（色情图片）                                                                                                                                                                                                                 |\n| terrorism | 图片敏感内容识别：适用于图片涉及敏感事件、暴力、武器、恐怖、血腥、爆炸等内容识别。<br>图片风险人物识别：适用于图片涉及敏感人物、明星的识别。 | normal（正常图片）、bloody（血腥）、explosion（爆炸烟光）、outfit（特殊装束）、logo（特殊标识）、weapon（武器）、politics（敏感内容）、violence（打斗）、crowd（聚众）、parade（游行）、carcrash（车祸现场）、flag（旗帜）、location（地标）、drug（涉毒）、gamble（赌博）、others（其他） |\n| ad        | 图片垃圾广告识别：适用于图片中含有广告信息的识别，特別是针对于类似牛皮癣的文字广告有较好的识别效果。 | normal（正常图片）、politics（文字含敏感内容）、porn（文字含涉黄内容）、abuse（文字含辱骂内容）、terrorism（文字含涉恐内容）、contraband（文字含违禁内容）、spam（文字含其他垃圾内容）、npx（牛皮癣广告）、qrcode（包含二维码）、programCode（包含小程序码）、ad（其他广告） |\n| live      | 图片不良场景识别：适用于图片中涉及毒品、赌博、画中画等内容的识别。  | normal（正常图片）、meaningless（无意义图片）、PIP（画中画）、smoking（吸烟）、drivelive（车内直播）、drug（涉毒）、gamble（赌博）                                                                                                               |\n| logo      | 图片Logo识别：适用于图片中含有台标、水印、商标等内容的检测。             | normal（正常图片）、TV（带有管控logo的图片）、trademark（商标）                                                                                                                                                                                                       |\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[内容审核服务](https://vision.aliyun.com/imageaudit)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_imageaudit_public_cn#/open)。\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/imageaudit/2019-12-30/ScanImage?lang=JAVA)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为内容审核（imageaudit）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 示例代码：该能力常用语言的示例代码，请参见[图片内容安全示例代码](~~478892~~)。\n\n7. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n\n- 图像格式：PNG、JPG、JPEG、BMP、GIF、WEBP。\n- 图像大小：不超过9 MB。\n- 图像分辨率：建议大于256×256像素，像素过低可能会影响识别效果。超长图的分辨率长或宽不能超过30000像素。GIF图总像素（长x宽）不超过4194304像素，超过该总像素值会报InvalidFile.Download（文件无法下载）错误。\n- URL地址中不能包含中文字符。\n\n## 检测说明\n\n- 最长检测时间是6秒，如果在该时间范围内没有完成检测，系统会返回超时错误码。\n\n- 图片下载时间限制为3秒，如果下载时间超过3秒，则会返回下载超时。\n\n- 图片检测接口响应时间依赖图片的下载时间。请确保被检测图片所在的存储服务稳定可靠，建议您使用阿里云OSS存储或者CDN缓存。\n\n## 计费说明\n关于图片内容安全的计费方式及报价，请参见[计费介绍](~~202478~~)。\n\n> 下方调试接口为付费接口，如需免费体验调试请前往体验中心，对应体验入口如下表所示。\n\n\n| 能力             | 体验中心                                                     |\n| ---------------- | ------------------------------------------------------------ |\n| 图片智能鉴黄     | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyPorn) |\n| 图片敏感内容识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyTerrorism) |\n| 图片Logo识别     | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyLogo) |\n| 图片垃圾广告识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyAdvertisement) |\n| 图片不良场景识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyUnhealthyScene) |\n| 图片风险人物识别 | [免费调试入口](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifySensitiveFace) |",
+    "en": "## Feature description\nImage content safety combines behavioral and content analysis, using multi-dimensional models and detection methods to identify sensitive information in images and mitigate content risks such as sensitive individuals and sensitive events in images.\nSupported detection scenarios include: image pornography detection, image sensitive content recognition, image risky person recognition, image spam advertisement recognition, image inappropriate scene recognition, and image logo recognition.\nWhen you submit a detection task, specify the scenes parameter. You can combine multiple scenes to detect various risks in the same image.\n\n> - When you detect multiple scenes simultaneously, you are charged based on the number of images detected per scene multiplied by the unit price of each scene. The detection results contain the labels corresponding to the scenes you specified. You can determine the specific risk type based on the returned parameter values and then process the image accordingly.\n- You can visit [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for online assistance.\n- For questions about API integration, usage, or consultation regarding Alibaba Cloud Vision Intelligence Open Platform visual AI capabilities, join the DingTalk group (23109592) to contact us.\n\n\nIn image moderation, the mapping between scene and label is as follows: \n| scene     | Description                                                                                               | label                                                                                                                                                                                                                                                                                      |\n| --------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| porn      | Image pornography detection: detects pornographic and vulgar content in images.                             | normal (normal image), sexy (sexy image), porn (pornographic image)                                                                                                                                                                                                                 |\n| terrorism | Image sensitive content recognition: detects sensitive events, violence, weapons, terrorism, gore, explosions, and other content in images.<br>Image risky person recognition: detects sensitive individuals and celebrities in images. | normal (normal image), bloody (gore), explosion (explosion and smoke), outfit (special attire), logo (special logo), weapon (weapon), politics (sensitive content), violence (fighting), crowd (crowd gathering), parade (parade), carcrash (car crash scene), flag (flag), location (landmark), drug (drug-related), gamble (gambling), others (other) |\n| ad        | Image spam advertisement recognition: detects advertisement information in images, with particularly effective recognition of text-based advertisements similar to psoriasis ads. | normal (normal image), politics (text containing sensitive content), porn (text containing pornographic content), abuse (text containing abusive content), terrorism (text containing terrorism-related content), contraband (text containing prohibited content), spam (text containing other spam content), npx (psoriasis advertisement), qrcode (contains QR code), programCode (contains mini program code), ad (other advertisement) |\n| live      | Image inappropriate scene recognition: detects drug-related, gambling, picture-in-picture, and other content in images.  | normal (normal image), meaningless (meaningless image), PIP (picture-in-picture), smoking (smoking), drivelive (in-car live streaming), drug (drug-related), gamble (gambling)                                                                                                               |\n| logo      | Image logo recognition: detects channel logos, watermarks, trademarks, and other content in images.             | normal (normal image), TV (image with regulated logo), trademark (trademark)                                                                                                                                                                                                       |.\n\n## Integration guide\n1. Register an Alibaba Cloud account: Go to the [Alibaba Cloud website](https://www.aliyun.com), click **Sign Up** in the upper-right corner, and follow the instructions to complete account registration.\n2. Activate the service: Make sure you have activated the [Content Moderation service](https://vision.aliyun.com/imageaudit). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_imageaudit_public_cn#/open).\n3. Create an AccessKey: Make sure you have [created an AccessKey](~~175144~~). If you are using a RAM user AccessKey, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/imageaudit/2019-12-30/ScanImage?lang=JAVA) to debug the operation online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development integration steps:\n- Select the SDK language you want to use from the [SDK overview](~~145033~~).\n- Find the SDK package for the Content Moderation (imageaudit) AI category in the corresponding SDK documentation and install it.\n- Modify the sample code provided in the References as needed and invoke the operation.\n\n6. Sample code: For sample code in commonly used languages, see [Image content safety sample code](~~478892~~).\n\n7. Direct client calls: Common client call methods for this operation include the following.\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~).\n\n## Input limits\n\n- Image format: PNG, JPG, JPEG, BMP, GIF, and WEBP.\n- Image size: up to 9 MB.\n- Image resolution: We recommend a resolution greater than 256 × 256 pixels. Low resolution may affect recognition accuracy. For extra-long images, neither the width nor the height can exceed 30,000 pixels. The total pixel count (width × height) of a GIF image cannot exceed 4,194,304 pixels. Exceeding this value returns an InvalidFile.Download (file cannot be downloaded) error.\n- The URL cannot contain Chinese characters.\n\n## Detection notes\n\n- The maximum detection time is 6 seconds. If detection is not completed within this time, the system returns a timeout error code.\n\n- The image download time limit is 3 seconds. If the download time exceeds 3 seconds, a download timeout is returned.\n\n- The response time of the image detection operation depends on the image download time. Make sure the storage service hosting the images is stable and reliable. We recommend that you use Alibaba Cloud OSS or CDN caching.\n\n## Billing description\nFor the billable methods and pricing of image content safety, see [Billing overview](~~202478~~).\n\n> The debugging operation below is a paid operation. To try it for free, go to the experience center. The corresponding experience entries are listed in the following table.\n\n\n| Capability             | Experience center                                                     |\n| ---------------- | ------------------------------------------------------------ |\n| Image pornography detection     | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyPorn) |\n| Image sensitive content recognition | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyTerrorism) |\n| Image logo recognition     | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyLogo) |\n| Image spam advertisement recognition | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyAdvertisement) |\n| Image inappropriate scene recognition | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifyUnhealthyScene) |\n| Image risky person recognition | [Free debugging entry](https://vision.aliyun.com/experience/detail?&tagName=imageaudit&children=IdentifySensitiveFace) |."
+  },
   "example": {
     "unifiedCli": "aliyun imageaudit scan-image --task MaxFrames=1 DataId=uuid-xxxx-xxxx-1234 ImageURL=http://xxx.xxx.com/xxx.jpg ImageTimeMillisecond=1 Interval=1 --scene porn --region cn-hangzhou",
     "legacyCli": "aliyun imageaudit ScanImage --region cn-hangzhou --Task.1.MaxFrames 1 --Task.1.ImageTimeMillisecond 1 --Scene.1 porn --Task.1.Interval 1 --Task.1.DataId 'uuid-xxxx-xxxx-1234' --Task.1.ImageURL 'http://xxx.xxx.com/xxx.jpg'"

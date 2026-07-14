@@ -1,5 +1,6 @@
 {
   "name": "GetHistograms",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/logstores/[logstore]/index?type=histogram",
@@ -8,39 +9,74 @@
       "name": "from",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "子时间区间的开始时间点。UNIX时间戳格式，表示从1970-1-1 00:00:00 UTC计算起的秒数。",
+        "en": "The start time of the subinterval. This value is a UNIX timestamp representing the number of seconds that have elapsed since January 1, 1970, 00:00:00 UTC."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Logstore名称。",
+        "en": "The Logstore name."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "project 名称。",
+        "en": "The project name."
+      }
     },
     {
       "name": "query",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询语句。仅支持查询语句，不支持分析语句。关于查询语句的详细语法，请参见[查询语法](~~43772~~)。",
+        "en": "The query statement. Only query statements are supported. Analytic statements are not supported. For more information about the query syntax, see [Query syntax](~~43772~~)."
+      }
     },
     {
       "name": "to",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "子时间区间的结束时间点。UNIX时间戳格式，表示从1970-1-1 00:00:00 UTC计算起的秒数。",
+        "en": "The end time of the subinterval. This value is a UNIX timestamp representing the number of seconds that have elapsed since January 1, 1970, 00:00:00 UTC."
+      }
     },
     {
       "name": "topic",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "日志主题。",
+        "en": "The topic of the logs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询日志分布情况",
+    "en": "Query log distribution"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n\n- 请求语法中Host由Project名称和日志服务Endpoint构成，您需要在Host中指定Project。\n- 该接口的响应中子区间划分方式是一直稳定的。如果您在请求查询的时间区间不变，则响应中子区间划分结果也不会改变。\n- 当查询涉及的日志数量变化非常大时，日志服务API无法预测需要调用多少次该接口来获取完整结果。所以需要您查看每次请求返回结果中的progress成员状态值，根据成员状态值来确定是否需要重复调用该接口来获取最终完整结果。每次重复调用该接口都会重新消耗相同数量的查询CU。\n- 从日志写入日志库到查询接口（GetHistograms和GetLogs）查到该日志，延时时长因写入日志类型不同而异。日志服务按日志时间戳把日志分为如下两类：\n    - 实时数据：日志中时间点为服务器当前时间点（-180秒，900秒]。例如，日志时间为UTC 2014-09-25 12:03:00，服务器收到时为UTC 2014-09-25 12:05:00，则该日志被视作实时数据处理。实时数据从写入到在日志查询界面查询到该数据的延迟为3秒。\n    - 历史数据：日志中时间点为服务器当前时间点\\[-7x86400秒，-180秒）。例如，日志时间为UTC 2014-09-25 12:00:00，服务器收到时为UTC 2014-09-25 12:05:00，则该日志被作为历史数据处理，一般出现在补数据场景下。\n   其中，实时数据写入至可查询的最大延时为3秒，99.9%情况下1秒内即可查询完毕。\n\n> 日志服务将日志时间（字段名称为\\_\\_time\\_\\_）和服务器收到时间（字段名称为\\_\\_tag\\_\\_:\\_\\_receive\\_time\\__）做差，若其差值位于\\(-180秒，900秒]范围，则为实时数据，若其差位于\\[-7x86400秒，-180秒），则为历史数据。\n\n- 日志服务提供Java SDK的GetHistograms查询使用示例。更多信息，请参见[使用GetHistograms查询日志分布数量](~~462234~~)。",
+    "en": "### Operation description\n\n- The Host in the request syntax consists of the project name and the Simple Log Service endpoint. Specify the project in the Host.\n- The subinterval division in the response is always stable. If the time range in your query request remains unchanged, the subinterval division in the response also remains unchanged.\n- When the number of logs involved in a query changes significantly, the Simple Log Service API cannot predict how many times this operation needs to be invoked to obtain complete results. Check the progress status value in the response of each request to determine whether to invoke this operation again to obtain the final complete results. Each repeated invocation consumes the same number of query CUs.\n- The latency between writing a log to a Logstore and querying the log by using LogSearch operations (GetHistograms and GetLogs) varies depending on the log type. Simple Log Service classifies logs into the following two types based on log UNIX timestamps:\n    - Real-time data: The time point in the log is within the range of (-180 seconds, 900 seconds] relative to the current server time. For example, if the log time is UTC 2014-09-25 12:03:00 and the server receives the log at UTC 2014-09-25 12:05:00, the log is processed as real-time data. The latency from writing real-time data to querying the data in the LogSearch interface is 3 seconds.\n    - Historical data: The time point in the log is within the range of [-7x86400 seconds, -180 seconds) relative to the current server time. For example, if the log time is UTC 2014-09-25 12:00:00 and the server receives the log at UTC 2014-09-25 12:05:00, the log is processed as historical data. This typically occurs in data backfill scenarios.\n   The maximum latency from writing real-time data to querying the data is 3 seconds. In 99.9% of cases, the query is completed within 1 second.\n\n> Simple Log Service calculates the difference between the log time (field name: \\_\\_time\\_\\_) and the server receive time (field name: \\_\\_tag\\_\\_:\\_\\_receive\\_time\\__). If the difference is within the range of \\(-180 seconds, 900 seconds], the log is real-time data. If the difference is within the range of \\[-7x86400 seconds, -180 seconds), the log is historical data.\n\n- Simple Log Service provides a usage example of GetHistograms queries in the Java SDK. For more information, see [Use GetHistograms to query log distribution](~~462234~~)."
+  },
   "example": {
     "unifiedCli": "aliyun sls get-histograms --project ali-test-project --logstore test-logstore --from 1409529600 --to 1409569200 --topic topic --query with_pack_meta --region cn-hangzhou",
     "legacyCli": "aliyun sls GET /logstores/test-logstore/index?type=histogram --project ali-test-project --region cn-hangzhou --query with_pack_meta --topic topic --from 1409529600 --to 1409569200 --header \"Content-Type=application/json\""

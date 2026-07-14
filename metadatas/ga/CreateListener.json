@@ -1,5 +1,6 @@
 {
   "name": "CreateListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,19 +9,31 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The ID of the Global Accelerator instance."
+      }
     },
     {
       "name": "Certificates",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "SSL证书列表。",
+        "en": "The SSL certificates for an HTTPS listener."
+      },
       "sub_parameters": [
         {
           "name": "Id",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "SSL证书ID。\n\n>仅HTTPS协议的监听需要配置该参数。",
+            "en": "The ID of the SSL certificate.\n\n> This parameter is required only for HTTPS listeners."
+          }
         }
       ]
     },
@@ -28,67 +41,111 @@
       "name": "ClientAffinity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端亲和性。\n\n- 不传入值时，不保持客户端亲和性，即不能确保来自同一客户端的连接请求始终定向到同一终端节点。\n\n- 取值为**SOURCE_IP**时，保持客户端亲和性。即客户端访问有状态的应用程序时，可以将来自同一客户端的所有请求都定向到同一终端节点，而不考虑源端口和协议。",
+        "en": "The client affinity for the listener.\n\n- By default, client affinity is disabled, and requests from the same client may be routed to different endpoints.\n\n- Set to **SOURCE\\_IP** to enable client affinity. This setting directs all requests from the same client to the same endpoint, regardless of the source port or protocol."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "A client token that ensures the idempotence of the request.\n\nGenerate a unique token on your client for each request. The token must contain only ASCII characters.\n\n> If you omit this parameter, the system uses the request's **RequestId** as the **ClientToken**."
+      }
     },
     {
       "name": "CustomRoutingEndpointGroupConfigurations",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义路由类型监听的终端节点组配置信息。\n\n您最多可以配置5个该类型终端节点组。\n\n> 仅当**Type**（监听路由类型）值为**CustomRouting**（自定义路由类型）时，支持配置自定义路由类型监听的终端节点组和终端节点信息。",
+        "en": "The configurations of the endpoint groups for a custom routing listener.\n\nYou can specify up to five endpoint groups.\n\n> This parameter applies only when the listener's routing type (**Type**) is **CustomRouting**."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监听的描述信息。\n\n描述长度最大为200个字符，不能以`http://`和`https://`开头。",
+        "en": "The description of the listener.\n\nThe description can be up to 200 characters long and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "EndpointGroupConfigurations",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "智能路由类型监听的终端节点组的配置信息。\n\n您最多可以配置10个该类型终端节点组。\n\n> 仅当**Type**（监听路由类型）值为**Standard**（智能路由类型）时，支持配置智能路由类型监听的终端节点组和终端节点信息。",
+        "en": "The configurations of the endpoint groups for a standard listener.\n\nYou can specify up to 10 endpoint groups.\n\n> This parameter applies only when the listener's routing type (**Type**) is **Standard**."
+      }
     },
     {
       "name": "HttpVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HTTP协议的最大版本，取值：\n- **http3**：HTTP/3。\n- **http2**（默认值）：HTTP/2。\n- **http1.1**：HTTP/1.1。\n> 仅HTTPS监听支持此参数。",
+        "en": "The maximum HTTP version. Valid values:\n\n- **http3**: HTTP/3\n\n- **http2** (default): HTTP/2\n\n- **http1.1**: HTTP/1.1\n\n> This parameter applies only to HTTPS listeners."
+      }
     },
     {
       "name": "IdleTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接空闲超时时间。单位：秒。\n\n- TCP：10-900s，默认900s\n- UDP：10-20s ，默认20s \n- HTTP/HTTPS：1-60秒，默认15s",
+        "en": "The connection idle timeout, in seconds.\n\n- TCP: 10–900 seconds. Default: 900 seconds.\n\n- UDP: 10–20 seconds. Default: 20 seconds.\n\n- HTTP/HTTPS: 1–60 seconds. Default: 15 seconds."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监听的名称。\n\n名称长度为1~128个字符，以大小写字母或中文开头，可包含数字、半角句号（.）下划线（_）和短划线（-）。",
+        "en": "The name of the listener.\n\nThe name must be 1 to 128 characters long, start with a letter or a Chinese character, and can contain digits, periods (.), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "PortRanges",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "监听端口信息。\n可配置的监听端口范围为**1**~**65499**。\n最多可配置端口数量与监听路由类型和监听协议类型相关，更多信息，请参见[监听端口](~~153216~~)。",
+        "en": "The listener port range. The port numbers must be within the range of **1** to **65499**. The maximum number of allowed ports depends on the listener's routing type and protocol. For more information, see [Listener ports](~~153216~~)."
+      },
       "sub_parameters": [
         {
           "name": "FromPort",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "用来接收请求并向终端节点进行转发的起始监听端口。\n\n可配置的监听端口范围为**1**~**65499**，且需满足**FromPort**≤**ToPort**。\n\n最多可配置端口数量与监听路由类型和监听协议类型相关，更多信息，请参见[监听端口](~~153216~~)。\n>对于HTTP或HTTPS协议的监听，只支持配置一个监听端口，即起始监听端口和结束监听端口需相同。",
+            "en": "The first port in the listener range used to receive and forward requests to endpoints.\n\nThe port number must be in the range of **1** to **65499**, and the value of **FromPort** must be less than or equal to the value of **ToPort**.\n\n> For HTTP or HTTPS listeners, you can specify only one listener port. In this case, the value of **FromPort** must be the same as the value of **ToPort**."
+          }
         },
         {
           "name": "ToPort",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "用来接收请求并向终端节点进行转发的结束监听端口。\n\n可配置的监听端口范围为**1**~**65499**，且需满足**FromPort**≤**ToPort**。\n\n最多可配置端口数量与监听路由类型和监听协议类型相关，更多信息，请参见[监听端口](~~153216~~)。\n\n>对于HTTP或HTTPS协议的监听，只支持配置一个监听端口，即起始监听端口和结束监听端口需相同。",
+            "en": "The last port in the listener range used to receive and forward requests to endpoints.\n\nThe port number must be in the range of **1** to **65499**, and the value of **FromPort** must be less than or equal to the value of **ToPort**.\n\n> For HTTP or HTTPS listeners, you can specify only one listener port. In this case, the value of **FromPort** must be the same as the value of **ToPort**."
+          }
         }
       ]
     },
@@ -96,39 +153,74 @@
       "name": "Protocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监听的网络传输协议类型，取值：\n\n- **tcp**：TCP协议。\n\n- **udp**：UDP协议。\n\n- **http**：HTTP协议。\n\n- **https**：HTTPS协议。",
+        "en": "The listener's network protocol. Valid values:\n\n- **tcp**: TCP.\n\n- **udp**: UDP.\n\n- **http**: HTTP.\n\n- **https**: HTTPS."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator instance. Set the value to **cn-hangzhou**."
+      }
     },
     {
       "name": "RequestTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HTTP/HTTPS的连接请求超时时间。单位：秒。\n\n可选：1-180秒，默认60s。\n\n>仅对Protocol（网络传输协议类型）为HTTP或HTTPS的监听有效。如果在超时时间内后端服务器一直没有响应，全球加速将放弃等待，并给客户端返回HTTP 504错误码。",
+        "en": "The request timeout for HTTP/HTTPS connections, in seconds.\n\nValid values: 1–180 seconds. Default: 60 seconds.\n\n> This parameter applies only to HTTP or HTTPS listeners. If the backend server does not respond within the timeout period, Global Accelerator returns an HTTP 504 error to the client."
+      }
     },
     {
       "name": "SecurityPolicyId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全策略实例ID。取值：\n\n- **tls_cipher_policy_1_0**\n\n    - 支持的TLS版本：TLSv1.0、TLSv1.1和TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、AES128-GCM-SHA256、AES256-GCM-SHA384、AES128-SHA256、AES256-SHA256、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA、AES128-SHA、AES256-SHA和DES-CBC3-SHA。\n\n- **tls_cipher_policy_1_1**\n\n    - 支持的TLS版本： TLSv1.1和TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、AES128-GCM-SHA256、AES256-GCM-SHA384、AES128-SHA256、AES256-SHA256、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA、AES128-SHA、AES256-SHA和DES-CBC3-SHA。\n\n- **tls_cipher_policy_1_2**\n\n    - 支持的TLS版本：TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、AES128-GCM-SHA256、AES256-GCM-SHA384、AES128-SHA256、AES256-SHA256、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA、AES128-SHA、AES256-SHA和DES-CBC3-SHA。\n\n- **tls_cipher_policy_1_2_strict**\n\n    - 支持的TLS版本：TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、ECDHE-RSA-AES128-SHA和ECDHE-RSA-AES256-SHA。\n\n- **tls_cipher_policy_1_2_strict_with_1_3**\n\n    - 支持的TLS版本：TLSv1.2及TLSv1.3。\n\n    - 支持的加密算法套件：TLS_AES_128_GCM_SHA256、TLS_AES_256_GCM_SHA384、TLS_CHACHA20_POLY1305_SHA256、TLS_AES_128_CCM_SHA256、TLS_AES_128_CCM_8_SHA256、ECDHE-ECDSA-AES128-GCM-SHA256、ECDHE-ECDSA-AES256-GCM-SHA384、ECDHE-ECDSA-AES128-SHA256、ECDHE-ECDSA-AES256-SHA384、ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、ECDHE-ECDSA-AES128-SHA、ECDHE-ECDSA-AES256-SHA、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA。\n\n> 仅HTTPS监听支持此参数。",
+        "en": "The ID of the security policy. Valid values:\n\n- **tls\\_cipher\\_policy\\_1\\_0**\n\n  - Supported TLS versions: TLS 1.0, TLS 1.1, and TLS 1.2.\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, AES128-GCM-SHA256, AES256-GCM-SHA384, AES128-SHA256, AES256-SHA256, ECDHE-RSA-AES128-SHA, ECDHE-RSA-AES256-SHA, AES128-SHA, AES256-SHA, and DES-CBC3-SHA.\n\n- **tls\\_cipher\\_policy\\_1\\_1**\n\n  - Supported TLS versions: TLS 1.1 and TLS 1.2.\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, AES128-GCM-SHA256, AES256-GCM-SHA384, AES128-SHA256, AES256-SHA256, ECDHE-RSA-AES128-SHA, ECDHE-RSA-AES256-SHA, AES128-SHA, AES256-SHA, and DES-CBC3-SHA.\n\n- **tls\\_cipher\\_policy\\_1\\_2**\n\n  - Supported TLS version: TLS 1.2.\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, AES128-GCM-SHA256, AES256-GCM-SHA384, AES128-SHA256, AES256-SHA256, ECDHE-RSA-AES128-SHA, ECDHE-RSA-AES256-SHA, AES128-SHA, AES256-SHA, and DES-CBC3-SHA.\n\n- **tls\\_cipher\\_policy\\_1\\_2\\_strict**\n\n  - Supported TLS version: TLS 1.2.\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, ECDHE-RSA-AES128-SHA, and ECDHE-RSA-AES256-SHA.\n\n- **tls\\_cipher\\_policy\\_1\\_2\\_strict\\_with\\_1\\_3**\n\n  - Supported TLS versions: TLS 1.2 and TLS 1.3.\n\n  - Supported cipher suites: TLS\\_AES\\_128\\_GCM\\_SHA256, TLS\\_AES\\_256\\_GCM\\_SHA384, TLS\\_CHACHA20\\_POLY1305\\_SHA256, TLS\\_AES\\_128\\_CCM\\_SHA256, TLS\\_AES\\_128\\_CCM\\_8\\_SHA256, ECDHE-ECDSA-AES128-GCM-SHA256, ECDHE-ECDSA-AES256-GCM-SHA384, ECDHE-ECDSA-AES128-SHA256, ECDHE-ECDSA-AES256-SHA384, ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, ECDHE-ECDSA-AES128-SHA, ECDHE-ECDSA-AES256-SHA, ECDHE-RSA-AES128-SHA, and ECDHE-RSA-AES256-SHA.\n\n> This parameter applies only to HTTPS listeners."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监听的路由类型。取值：\n\n- **Standard**（默认值）：智能路由类型。\n- **CustomRouting**：自定义路由类型。\n\n> - 监听支持自定义路由类型的功能邀测中，如需使用，请联系阿里云客户经理。\n> - 同一个标准型全球加速实例，不支持同时配置两种路由类型的监听，且路由类型配置完成后不支持变更。更多信息，请参见[监听概述](~~153216~~)。",
+        "en": "The routing type of the listener. Valid values:\n\n- **Standard** (default): standard routing.\n\n- **CustomRouting**: custom routing.\n\n> * Custom routing is in invitation-only preview. To use this feature, contact your Alibaba Cloud account manager.\n>\n> * A standard Global Accelerator instance supports only one routing type for all of its listeners. The routing type cannot be changed after the listener is created. For more information, see [Listener overview](~~153216~~)."
+      }
     },
     {
       "name": "XForwardedForConfig",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "`XForward`字段配置信息。",
+        "en": "Settings for `X-Forwarded-For` related headers."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建监听",
+    "en": "CreateListener"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请注意以下事项：\n\n- **CreateListener**接口属于异步接口，即系统会先返回一个监听ID，但监听并未创建完成，系统后台的创建任务仍在进行。您可以调用[DescribeListener](~~153254~~)查询监听的状态：\n    - 当监听处于**init**状态时，表示监听正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当监听处于**active**状态时，表示监听创建完成。\n- **CreateListener**接口不支持在同一个全球加速实例内并发创建监听。",
+    "en": "Note the following when you call this operation:\n\n- **CreateListener** is an asynchronous operation. After you send a request, the system returns a listener ID but the listener is still being created in the background. You can call [DescribeListener](~~153254~~) to check the listener's status:\n\n  - An **init** status indicates that the listener is being created. In this state, you can only perform query operations.\n\n  - An **active** status indicates that the listener is ready.\n\n- You cannot concurrently create multiple listeners for the same Global Accelerator instance by using the **CreateListener** operation."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-listener --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp1odcab8tmno0hdq0000 --name Listener --description Listener --client-affinity SOURCE_IP --protocol tcp --port-ranges FromPort=20 ToPort=20 --certificates Id=4490000-cn-hangzhou --xforwarded-for-config XForwardedForGaApEnabled=false XForwardedForProtoEnabled=false XForwardedForPortEnabled=false XRealIpEnabled=false XForwardedForGaIdEnabled=false --security-policy-id tls_cipher_policy_1_0 --type Standard --endpoint-group-configurations '[{\"HealthCheckIntervalSeconds\":3,\"EndpointGroupName\":\"test\",\"TrafficPercentage\":100,\"HealthCheckPath\":\"/healthcheck\",\"HealthCheckHost\":\"www.taobao.com\",\"ThresholdCount\":3,\"HealthCheckEnabled\":false,\"EndpointRequestProtocol\":\"HTTP\",\"EndpointProtocolVersion\":\"HTTP1.1\",\"PortOverrides\":[{\"ListenerPort\":443,\"EndpointPort\":80}],\"EndpointGroupRegion\":\"cn-hangzhou\",\"EndpointGroupDescription\":\"test\",\"HealthCheckProtocol\":\"tcp\",\"HealthCheckPort\":20,\"EndpointConfigurations\":[{\"EnableProxyProtocol\":true,\"ApiKeys\":[\"sk-000000\"],\"Type\":\"Ip\",\"Endpoint\":\"47.0.XX.XX\",\"EnableClientIPPreservation\":true,\"VpcId\":\"vpc-bp13r1kpr2lel0000\",\"VSwitchIds\":[\"vsw-0jlhcznhw5m7pz2fa0000\"],\"SubAddress\":\"172.168.XX.XX\",\"Weight\":20,\"Provider\":\"BAILIAN\"}],\"EndpointIpVersion\":\"IPv4\",\"EndpointGroupType\":\"default\"}]' --custom-routing-endpoint-group-configurations '[{\"EndpointGroupRegion\":\"cn-hangzhou\",\"Description\":\"test\",\"DestinationConfigurations\":[{\"Protocols\":[\"TCP\"],\"FromPort\":80,\"ToPort\":80}],\"EndpointConfigurations\":[{\"Type\":\"PrivateSubNet\",\"Endpoint\":\"vsw-test01\",\"PolicyConfigurations\":[{\"Address\":\"10.0.XX.XX\",\"PortRanges\":[{\"FromPort\":80,\"ToPort\":80}]}],\"TrafficToEndpointPolicy\":\"DenyAll\"}],\"Name\":\"test\"}]' --idle-timeout 900 --request-timeout 15 --http-version http2 --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateListener --region cn-hangzhou --EndpointGroupConfigurations.1.EndpointGroupName test --EndpointGroupConfigurations.1.EndpointConfigurations.1.EnableClientIPPreservation true --EndpointGroupConfigurations.1.EndpointConfigurations.1.Weight 20 --EndpointGroupConfigurations.1.HealthCheckPath '/healthcheck' --Name Listener --EndpointGroupConfigurations.1.HealthCheckHost 'www.taobao.com' --CustomRoutingEndpointGroupConfigurations.1.EndpointConfigurations.1.TrafficToEndpointPolicy DenyAll --SecurityPolicyId tls_cipher_policy_1_0 --EndpointGroupConfigurations.1.HealthCheckEnabled false --EndpointGroupConfigurations.1.EndpointConfigurations.1.Type Ip --CustomRoutingEndpointGroupConfigurations.1.EndpointConfigurations.1.PolicyConfigurations.1.PortRanges.1.ToPort 80 --XForwardedForConfig.XForwardedForProtoEnabled false --EndpointGroupConfigurations.1.EndpointConfigurations.1.VpcId 'vpc-bp13r1kpr2lel0000' --RequestTimeout 15 --XForwardedForConfig.XRealIpEnabled false --EndpointGroupConfigurations.1.EndpointConfigurations.1.SubAddress '172.168.XX.XX' --CustomRoutingEndpointGroupConfigurations.1.Name test --XForwardedForConfig.XForwardedForGaIdEnabled false --EndpointGroupConfigurations.1.EndpointConfigurations.1.Endpoint '47.0.XX.XX' --EndpointGroupConfigurations.1.HealthCheckPort 20 --XForwardedForConfig.XForwardedForGaApEnabled false --CustomRoutingEndpointGroupConfigurations.1.EndpointGroupRegion 'cn-hangzhou' --EndpointGroupConfigurations.1.EndpointConfigurations.1.ApiKeys.1 'sk-000000' --PortRanges.1.ToPort 20 --CustomRoutingEndpointGroupConfigurations.1.EndpointConfigurations.1.Type PrivateSubNet --ClientToken '123e4567-e89b-12d3-a456-426655440000' --PortRanges.1.FromPort 20 --EndpointGroupConfigurations.1.EndpointGroupDescription test --Description Listener --CustomRoutingEndpointGroupConfigurations.1.EndpointConfigurations.1.Endpoint 'vsw-test01' --IdleTimeout 900 --CustomRoutingEndpointGroupConfigurations.1.DestinationConfigurations.1.FromPort 80 --EndpointGroupConfigurations.1.ThresholdCount 3 --CustomRoutingEndpointGroupConfigurations.1.DestinationConfigurations.1.Protocols.1 TCP --EndpointGroupConfigurations.1.EndpointGroupType default --CustomRoutingEndpointGroupConfigurations.1.EndpointConfigurations.1.PolicyConfigurations.1.PortRanges.1.FromPort 80 --CustomRoutingEndpointGroupConfigurations.1.Description test --EndpointGroupConfigurations.1.PortOverrides.1.ListenerPort 443 --Protocol tcp --EndpointGroupConfigurations.1.TrafficPercentage 100 --HttpVersion http2 --ClientAffinity SOURCE_IP --CustomRoutingEndpointGroupConfigurations.1.DestinationConfigurations.1.ToPort 80 --XForwardedForConfig.XForwardedForPortEnabled false --EndpointGroupConfigurations.1.EndpointIpVersion IPv4 --EndpointGroupConfigurations.1.EndpointProtocolVersion 'HTTP1.1' --EndpointGroupConfigurations.1.EndpointConfigurations.1.EnableProxyProtocol true --EndpointGroupConfigurations.1.EndpointConfigurations.1.Provider BAILIAN --CustomRoutingEndpointGroupConfigurations.1.EndpointConfigurations.1.PolicyConfigurations.1.Address '10.0.XX.XX' --EndpointGroupConfigurations.1.HealthCheckIntervalSeconds 3 --Certificates.1.Id '4490000-cn-hangzhou' --Type Standard --EndpointGroupConfigurations.1.HealthCheckProtocol tcp --EndpointGroupConfigurations.1.EndpointConfigurations.1.VSwitchIds.1 'vsw-0jlhcznhw5m7pz2fa0000' --EndpointGroupConfigurations.1.PortOverrides.1.EndpointPort 80 --RegionId 'cn-hangzhou' --EndpointGroupConfigurations.1.EndpointGroupRegion 'cn-hangzhou' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --EndpointGroupConfigurations.1.EndpointRequestProtocol HTTP --method POST --force"

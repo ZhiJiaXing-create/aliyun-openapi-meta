@@ -1,5 +1,6 @@
 {
   "name": "SendLiveMessageUser",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "发送消息的互动消息应用ID。",
+        "en": "The ID of the interactive messaging application in which the message is sent."
+      }
     },
     {
       "name": "Body",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息体，长度不超过15KB。",
+        "en": "The message body. It can be up to 15 KB in length."
+      }
     },
     {
       "name": "DataCenter",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据中心，需要与[CreateLiveMessageApp](~~2848162~~)中的数据中心一致，当前支持上海（取值为cn-shanghai)、新加坡（取值为ap-southeast-1）。",
+        "en": "The data center. It must be the same as the data center that was specified when you called the [CreateLiveMessageApp](~~2848162~~) operation to create the interactive messaging application. Valid values: cn-shanghai and ap-southeast-1 (Singapore)."
+      }
     },
     {
       "name": "HighReliability",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置该条消息是否为高可靠消息。高可靠消息确保接收方已收到该条消息并响应才会返回成功，如果接收方在3s内未响应会返回发送失败。\n- true：表示高可靠消息。\n- false（默认）：表示非高可靠消息。\n\n> 客户端SDK v1.5.1 及以上版本才支持此参数，发消息给老版本客户端时不等待ACK直接返回成功。",
+        "en": "Specifies whether to set the message as a highly reliable message. A highly reliable message ensures that success is returned only after the receiver has received the message and responded. If the receiver does not respond within 3 seconds, failure is returned.\n\n*   true: sets the message as a highly reliable message.\n*   false (default): does not set the message as a highly reliable message.\n\n>  This parameter is supported only by the client SDK V1.5.1 and later. When you send a message to a client with an earlier SDK version, the message can be successfully sent without waiting for an acknowledgement (ACK) response."
+      }
     },
     {
       "name": "MsgTid",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息唯一标识，可作为删除消息的依据。由大小写字母、数字组成，长度不超过64字节。",
+        "en": "The ID of the message, which is a unique identifier that can be used to delete the message. The ID can be up to 64 bytes in length and can contain letters and digits."
+      }
     },
     {
       "name": "MsgType",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息类型。",
+        "en": "The message type."
+      }
     },
     {
       "name": "ReceiverId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "接收消息的用户ID，由大小写字母、数字组成，长度不超过64字节。\n\n> 请确保接收消息的用户的状态为在线！可以通过调用CheckLiveMessageUsersOnline来查询该用户状态。",
+        "en": "The ID of the user who receives the message. The ID can be up to 64 bytes in length and can contain letters and digits.\n\n>  Make sure that the user who receives the message is online. You can call the CheckLiveMessageUsersOnline operation to query whether the user is online."
+      }
     },
     {
       "name": "SenderId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "发送消息的用户ID，由大小写字母、数字组成，长度不超过64字节。",
+        "en": "The ID of the user who sends the message. The ID can be up to 64 bytes in length and can contain letters and digits."
+      }
     },
     {
       "name": "SenderInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "发送消息用户的扩展信息，长度不超过512字节。",
+        "en": "The additional information about the user who sends the message. It can be up to 512 bytes in length."
+      }
     },
     {
       "name": "Storage",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置存储该消息。\n- true：表示存储该消息。\n- false（默认），表示不需要存储。",
+        "en": "Specifies whether to store the message.\n\n*   true: stores the message.\n*   false (default): does not store the message."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "发送消息给指定用户",
+    "en": "SendLiveMessageUser"
+  },
+  "descriptions": {
+    "zh": "本接口的单用户QPS限制为50次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "You can call this operation up to 50 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun live send-live-message-user --app-id demo --receiver-id uid2 --sender-id uid1 --sender-info uid1meta1 --biz-body hello,_user --msg-type 2 --msg-tid 1698300000 --data-center cn-shanghai --high-reliability false --storage false --region cn-hangzhou",
     "legacyCli": "aliyun live SendLiveMessageUser --region cn-hangzhou --ReceiverId uid2 --SenderInfo uid1meta1 --DataCenter 'cn-shanghai' --Storage false --AppId demo --MsgTid 1698300000 --MsgType 2 --SenderId uid1 --Body 'hello,_user' --HighReliability false"

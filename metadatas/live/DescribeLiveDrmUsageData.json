@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveDrmUsageData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "直播域名。\n- 支持单个或批量域名查询。批量查询时多个域名用英文逗号（,）分隔。\n- 若参数为空，默认返回所有直播域名合并后的数据。",
+        "en": "The live streaming domain name.\n- You can specify a single domain name or multiple domain names. Separate multiple domain names with commas (,).\n- If this parameter is left empty, the merged data of all live streaming domain names is returned by default."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "结束时间需大于起始时间，获日期格式按照ISO8601表示法，并使用UTC时间。格式为：YYYY-MM-DDThh:mm:ssZ",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the ISO 8601 standard in the YYYY-MM-DDThh:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询数据的时间粒度。单位：秒。取值：\n- 300\n- 3600\n- 86400\n\n不传或传值不支持时，使用默认值3600秒。",
+        "en": "The time granularity of the queried data. Unit: seconds. Valid values:\n- 300\n- 3600\n- 86400\n\nIf you do not set this parameter or set it to an unsupported value, the default value 3600 is used."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "SplitBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分组键。默认为domain,region,drm_type。可选值为domain、region、drm_type 中的一个或多个，多个使用逗号（半角）分隔。置为空或null即不区分上述键。",
+        "en": "The grouping key. Default value: domain,region,drm_type. You can specify one or more of the following values: domain, region, and drm_type. Separate multiple values with commas (,). Set this parameter to an empty string or null to disable grouping by these keys."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据起始时间点，日期格式按照ISO8601表示法，并使用UTC时间。格式为：YYYY-MM-DDThh:mm:ssZ。最小数据粒度为5分钟",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the YYYY-MM-DDThh:mm:ssZ format. The time must be in UTC. The minimum data granularity is 5 minutes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取直播DRM用量数据",
+    "en": "Query live DRM usage data"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n- 最多可获取最近90天的数据。\n- 最大允许时间跨度31天。\n### QPS限制\n本接口的单用户QPS限制为20次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~343507~~)。",
+    "en": "### Operation description\n- You can query data from the last 90 days.\n- The maximum time span is 31 days.\n### QPS limit\nEach user can make up to 20 queries per second (QPS). If the limit is exceeded, API calls are throttled, which may affect your business. Call this operation properly. For more information, see [QPS limit](~~343507~~)."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-drm-usage-data --biz-region-id cn-hangzhou --domain-name example.com --start-time 2021-05-01T16:00:00Z --end-time 2021-05-02T16:00:00Z --interval 3600 --split-by domain,region,drm_type --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveDrmUsageData --region cn-hangzhou --EndTime '2021-05-02T16:00:00Z' --DomainName 'example.com' --SplitBy 'domain,region,drm_type' --StartTime '2021-05-01T16:00:00Z' --RegionId 'cn-hangzhou' --Interval 3600"

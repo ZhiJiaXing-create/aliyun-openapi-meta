@@ -1,5 +1,6 @@
 {
   "name": "ModifyExpressConnectRouterAssociationAllowedPrefix",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "AllowedPrefixes",
       "position": "Body",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "允许的路由前缀列表。",
+        "en": "The list of allowed route prefixes."
+      }
     },
     {
       "name": "AllowedPrefixesMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "前缀路由模式，取值：\n- MatchMode: 匹配模式, 仅发布配置的路由网段到IDC，对原有发布的明细路由进行回撤。\n- IncrementalMode: 增量模式, 发布配置的路由网段到IDC的同时对原有发布落在配置的路由网段内的明细路由进行回撤，未落在配置的网段内的明细路由保持发布。",
+        "en": "The prefix routing pattern. Valid values:\n\n- MatchMode: Publishes only the configured route prefixes to your data center. Existing specific routes are withdrawn.\n- IncrementalMode: Publishes the configured route prefixes to your data center. Withdraw previously published more specific routes that are covered by the configured prefixes. More specific routes that are not covered by the configured prefixes remain published."
+      }
     },
     {
       "name": "AssociationId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专线网关与VPC或TR的关联ID。",
+        "en": "The ID of the association between the ECR and the VPC or TR."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "A client token used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client to make sure that the value is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** of each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会修改服务资源。\n- **false**（默认值）：发送正常请求。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run.\n- **false** (default): Sends a normal request."
+      }
     },
     {
       "name": "EcrId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专线网关实例ID。",
+        "en": "The ID of ECR."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改专线网关（ECR）的前缀路由",
+    "en": "ModifyExpressConnectRouterAssociationAllowedPrefix"
+  },
   "example": {
     "unifiedCli": "aliyun expressconnectrouter modify-express-connect-router-association-allowed-prefix --ecr-id ecr-mezk2idmsd0vx20000 --association-id ecr-assoc-9p2qxx5phpca2m0000 --allowed-prefixes 192.0.20.0/24 --dry-run false --client-token 02fb3da4-130e-11e9-8e44-000000 --allowed-prefixes-mode MatchMode --region cn-hangzhou",
     "legacyCli": "aliyun expressconnectrouter ModifyExpressConnectRouterAssociationAllowedPrefix --region cn-hangzhou --EcrId 'ecr-mezk2idmsd0vx20000' --DryRun false --AllowedPrefixes.1 '192.0.20.0/24' --ClientToken '02fb3da4-130e-11e9-8e44-000000' --AllowedPrefixesMode MatchMode --AssociationId 'ecr-assoc-9p2qxx5phpca2m0000'"

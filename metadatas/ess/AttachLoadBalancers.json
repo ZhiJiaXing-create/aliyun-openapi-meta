@@ -1,5 +1,6 @@
 {
   "name": "AttachLoadBalancers",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "Async",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "添加负载均衡CLB（原SLB）实例时，是否采用异步调用的方式。异步调用能保证操作的事务性，即所有操作都执行成功或者某个操作失败时所有操作的执行结果都不生效，建议您采用异步调用。\n\n取值范围：\n\n- true：异步调用。请求将返回伸缩活动的ID。\n\n- false：同步调用。\n\n\n默认值：false。",
+        "en": "Specifies whether to use asynchronous invocation when adding load balancing CLB (formerly SLB) instances. Asynchronous invocation ensures the transactional nature of the operation, which means that either all operations execute successfully or none of the operations take effect if one is failed. Use asynchronous invocation.\n\nValid values:\n\n- true: Asynchronous invocation. The request returns the ID of the scaling activity.\n\n- false: Synchronous call.\n\nDefault value: false."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "ForceAttach",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否把当前伸缩组内的实例全部添加为负载均衡CLB（原SLB）实例的后端服务器。取值范围：\n         \n- true：添加 。如果该参数值为`true`，则将负载均衡实例添加到伸缩组时，系统会将当前伸缩组中已有的实例全部添加为负载均衡实例的后端服务器。\n    >如果负载均衡实例已添加至伸缩组，而您需要将伸缩组中全部实例添加为该负载均衡实例的后端服务器，则您可以再次将该负载均衡实例添加到伸缩组，并选择`ForceAttach`为`true`状态。\n\n- false：不添加 。如果该参数值为`false`，则将负载均衡实例添加到伸缩组时，系统不会将当前伸缩组中已有的实例添加为负载均衡实例的后端服务器。\n\n默认值：false。",
+        "en": "Specifies whether to add all existing instances in the scaling group as backend servers of the load balancing CLB (formerly SLB) instances. Valid values:\n         \n- true: All existing instances in the scaling group are added as backend servers of the load balancing instances when the load balancing instances are added to the scaling group.\n    > If a load balancing instance has already been added to the scaling group and you want to add all instances in the scaling group as backend servers of the load balancing instance, you can add the load balancing instance to the scaling group again with the `ForceAttach` parameter set to `true`.\n\n- false: Existing instances in the scaling group are not added as backend servers of the load balancing instances when the load balancing instances are added to the scaling group.\n\nDefault value: false."
+      }
     },
     {
       "name": "LoadBalancer",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要添加的负载均衡CLB（原SLB）实例的ID列表，N的取值范围：1~5。",
+        "en": "The IDs of the load balancing CLB (formerly SLB) instances to be added. Valid values of N: 1 to 5."
+      }
     },
     {
       "name": "LoadBalancerConfig",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "负载均衡CLB（原SLB）配置列表。",
+        "en": "The load balancing CLB (formerly SLB) configuration list."
+      },
       "sub_parameters": [
         {
           "name": "LoadBalancerId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "负载均衡CLB（原SLB）实例的ID。",
+            "en": "The ID of the load balancing CLB (formerly SLB) instance."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性伸缩将ECS实例或ECI实例添加到CLB（原SLB）服务器组后，ECS实例或ECI实例作为后端服务器的权重。权重越高，ECS实例或ECI实例将被分配到越多的访问请求。如果权重为0，则ECS实例或ECI实例不会收到访问请求。\n\n取值范围：0~100。",
+            "en": "The weight of an ECS instance or elastic container instance as a backend server after Auto Scaling adds the instance to the CLB server group. A higher weight indicates that the instance receives more requests. If the weight is 0, the instance does not receive any requests.\n\nValid values: 0 to 100."
+          }
         }
       ]
     },
@@ -52,9 +81,24 @@
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加一个或多个负载均衡实例",
+    "en": "Add one or more load balancing instances"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n向伸缩组添加负载均衡实例时需要满足以下条件： \n\n- 负载均衡实例与伸缩组必须属于同一账号和同一个地域。\n\n- 负载均衡实例必须处于`运行中`状态。 \n\n- 负载均衡实例至少配置有一个监听且必须开启健康检查。\n\n- 如果负载均衡实例与伸缩组的网络类型均为VPC，必须处于同一VPC。\n\n- 当伸缩组的网络类型为VPC，负载均衡实例的网络类型为经典网络时，如果负载均衡实例后端服务器中包含VPC实例，该实例必须与伸缩组处于同一VPC。\n\n- 不超过伸缩组关联负载均衡实例的限额，具体限额，请参见[使用限制](~~25863~~)。",
+    "en": "## Operation description\n\nWhen you add load balancing instances to a scaling group, the following conditions must be met: \n\n- The load balancing instances and the scaling group must belong to the same Alibaba Cloud account and the same region.\n\n- The load balancing instances must be in the `Running` state. \n\n- The load balancing instances must have at least one listener configured and health checks must be enabled.\n\n- If both the load balancing instances and the scaling group are of the VPC network type, they must be in the same VPC.\n\n- If the scaling group is of the VPC network type and the load balancing instances are of the classic network type, and the backend servers of the load balancing instances include VPC-connected instances, those instances must be in the same VPC as the scaling group.\n\n- The number of load balancing instances associated with the scaling group cannot exceed the quota limit. For more information, see [Limits](~~25863~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ess attach-load-balancers --scaling-group-id asg-bp1avr6ensitts3w0000 --force-attach false --client-token 123e4567-e89b-12d3-a456-426655440000 --async false --load-balancer lb-2zeur05gfs0000 --load-balancer-config LoadBalancerId=147b46d767c-cn-qingdao-cm50000 Weight=10 --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess AttachLoadBalancers --region cn-hangzhou --LoadBalancer.1 'lb-2zeur05gfs0000' --ScalingGroupId 'asg-bp1avr6ensitts3w0000' --Async false --ForceAttach false --LoadBalancerConfig.1.Weight 10 --ClientToken '123e4567-e89b-12d3-a456-426655440000' --LoadBalancerConfig.1.LoadBalancerId '147b46d767c-cn-qingdao-cm50000'"

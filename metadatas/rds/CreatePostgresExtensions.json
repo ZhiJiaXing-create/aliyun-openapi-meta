@@ -1,5 +1,6 @@
 {
   "name": "CreatePostgresExtensions",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AccountName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "插件所属的用户，仅支持高权限账号。",
+        "en": "The account of the user who owns the extension. Only privileged accounts are supported."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the generated token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "DBNames",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例数据库名。可调用DescribeDatabases获取。",
+        "en": "The database name. You can call the DescribeDatabases operation to query the database name."
+      }
     },
     {
       "name": "Extensions",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要安装的插件，多个插件间使用英文逗号（,）分隔。\n如果不填写请求参数**SourceDatabase**，该参数必须填写。",
+        "en": "The extension that you want to install. If you want to install multiple extensions, separate them with commas (,). If you do not specify the **SourceDatabase** parameter, you must specify this parameter."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "RiskConfirmed",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过低小版本实例安装某些特定插件存在安全风险，确认风险即可安装。\n取值范围：\n- true\n- false\n> 相关风险说明，请参见[RDS PostgreSQL限制创建插件说明](~~2587815~~)。",
+        "en": "The risk description that you need to confirm. If your instance runs an outdated minor engine version, installing specific extensions on the instance poses security risks. Proceed with the installation only after you acknowledge these risks. Valid values:\n\n*   true\n*   false\n\n>  For more information about the risks, see [Limits on extension creation for ApsaraDB RDS for PostgreSQL instances](~~2587815~~)."
+      }
     },
     {
       "name": "SourceDatabase",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要同步插件至目标数据库的源端数据库。如果不填写请求参数**Extensions**，该参数必须填写。",
+        "en": "The source database from which you want to synchronize the extension to the destination database. If you do not specify the **Extensions** parameter, you must specify this parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在目标数据库下安装指定插件",
+    "en": "CreatePostgresExtensions"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">您可以加入RDS PostgreSQL插件交流钉钉群（103525002795），进行咨询、交流和反馈，获取更多关于插件的信息。</props>\n\n### 适用引擎\nRDS PostgreSQL\n\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n[管理插件](~~2402409~~)\n\n### 注意事项\n只能安装实例大版本支持的插件，否则会安装失败。\n- 插件支持情况请参见[支持插件列表](~~142340~~)。\n- 您可以调用[DescribeDBInstanceAttribute](~~610394~~)查询实例大版本。",
+    "en": "### [](#)Supported database engines\n\nPostgreSQL\n\n### [](#)References\n\n>  Before you call this operation, read the following topics and make sure that you fully understand the prerequisites and impacts of this operation.\n\n[Manage extensions](~~2402409~~)\n\n### [](#)Usage notes\n\nInstall only the extensions that are supported by the major engine version of the instance. Otherwise, the installation fails.\n\n*   For more information, see [Supported extensions](~~142340~~).\n*   You can call an API operation to query the major engine version of the instance. For more information, see [DescribeDBInstanceAttribute](~~610394~~)."
+  },
   "example": {
     "unifiedCli": "aliyun rds create-postgres-extensions --client-token ETnLKlblzczshOTUbOCz0000 --db-instance-id pgm-gc7f10000 --extensions citext,pg_profile --db-names test_db --account-name test_user --source-database source_db --resource-group-id rg-acfmy0000 --risk-confirmed true --region cn-hangzhou",
     "legacyCli": "aliyun rds CreatePostgresExtensions --region cn-hangzhou --ResourceGroupId 'rg-acfmy0000' --DBInstanceId 'pgm-gc7f10000' --RiskConfirmed true --DBNames test_db --ClientToken ETnLKlblzczshOTUbOCz0000 --Extensions 'citext,pg_profile' --SourceDatabase source_db --AccountName test_user"

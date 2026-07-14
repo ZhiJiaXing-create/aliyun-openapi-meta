@@ -1,5 +1,6 @@
 {
   "name": "GetCheckPoint",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/logstores/[logstore]/consumergroups/[consumerGroup]",
@@ -8,27 +9,54 @@
       "name": "consumerGroup",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "消费组名称。",
+        "en": "The name of the consumer group."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Logstore名称。",
+        "en": "The name of the Logstore."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Project 名称。",
+        "en": "The name of the project."
+      }
     },
     {
       "name": "shard",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Shard ID。\n\n- 如果指定的Shard不存在，则返回空列表。\n- 如果不指定Shard，则返回所有Shard的Checkpoint。",
+        "en": "The shard ID.\n\n- If the specified shard does not exist, an empty list is returned.\n\n- If no shard ID is specified, the checkpoints of all shards are returned."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取指定消费组的消费点",
+    "en": "GetCheckPoint"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n\n- 请求语法中Host由Project名称和日志服务Endpoint构成，您需要在Host中指定Project。\n- 已创建并获取AccessKey。更多信息，请参见[访问密钥](~~29009~~)。\n\n 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维。RAM用户需具备操作日志服务资源的权限。具体操作，请参见[创建RAM用户及授权](~~47664~~)。\n- 已明确您查询日志所属的Project名称、所属地域、Logstore名称等。如何查询，请参见[管理Project](~~48984~~)和[管理Logstore](~~48990~~)。\n- 已获取消费组名称。更多信息，请参见[ListConsumerGroup](~~74964~~)。\n### 鉴权资源\n下表列出了API对应的授权信息。您可以在RAM权限策略语句的Action元素中添加该信息，用于为RAM用户或RAM角色授予调用此API的权限。\n|动作（Action）  | 授权策略中的资源描述方式（Resource）  |\n| :------------ | :------------ |\n| `log:GetConsumerGroupCheckPoint`  | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#logstoreName}/consumergroup/{#ConsumerGroup}`  |",
+    "en": "Host consists of a project name and a Simple Log Service endpoint. You must specify a project in Host."
+  },
   "example": {
     "unifiedCli": "aliyun sls get-check-point --project ali-test-project --logstore test-logstore --consumer-group consumer-group-1 --shard 1 --region cn-hangzhou",
     "legacyCli": "aliyun sls GET /logstores/test-logstore/consumergroups/consumer-group-1 --project ali-test-project --region cn-hangzhou --shard 1 --header \"Content-Type=application/json\""

@@ -1,5 +1,6 @@
 {
   "name": "DeletePolarFsQuota",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,35 +9,66 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群ID。\n>您可以通过[DescribeDBClusters](~~98094~~)接口查看账号下所有集群的详细信息，包括集群ID。",
+        "en": "The cluster ID.\n\n> You can call the [DescribeDBClusters](~~98094~~) operation to view the details of all clusters under your account, including the cluster ID."
+      }
     },
     {
       "name": "PolarFsInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Polarlakebase实例ID",
+        "en": "The ID of the Polarlakebase instance."
+      }
     },
     {
       "name": "Quotas",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "配额规则详情。",
+        "en": "The details of the quota rules."
+      },
       "sub_parameters": [
         {
           "name": "Id",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "配额的ID。",
+            "en": "The ID of the quota."
+          }
         },
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "配额名称。",
+            "en": "The name of the quota."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除Polarlakebase Quota规则",
+    "en": "DeletePolarFsQuota"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- `PolarFsInstanceId` 是必需的，标识了要操作的Polarlakebase实例。\n- `Quotas` 参数是一个列表，其中每个元素代表一条待删除的Quota规则，通过`Name`和`Id`来唯一确定。请注意，一次请求中最多可以指定21条规则。\n- 每个Quota规则必须同时提供`Name`（规则名称）和`Id`（规则ID），且这些信息需与系统中现存的规则相匹配。",
+    "en": "## Request description\n\n- You must specify the `PolarFsInstanceId` parameter to identify the Polarlakebase instance.\n\n- The `Quotas` parameter is a list of quota rules to delete. Each rule is uniquely identified by its `Name` and `Id`. You can delete up to 21 rules in a single request.\n\n- For each quota rule, provide both the `Name` and `Id`. This information must match an existing rule."
+  },
   "example": {
     "unifiedCli": "aliyun polardb delete-polar-fs-quota --polar-fs-instance-id pfs-2ze0i74ka60700000 --quotas Id=73 Name=sftest --db-cluster-id pc-000000000000 --region cn-hangzhou",
     "legacyCli": "aliyun polardb DeletePolarFsQuota --region cn-hangzhou --Quotas.1.Id 73 --PolarFsInstanceId 'pfs-2ze0i74ka60700000' --DBClusterId 'pc-000000000000' --Quotas.1.Name sftest"

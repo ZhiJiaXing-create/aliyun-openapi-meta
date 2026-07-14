@@ -1,5 +1,6 @@
 {
   "name": "GetResourceCounts",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "过滤条件。",
+        "en": "The filter conditions."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件键。取值见下方`支持的过滤参数`。",
+            "en": "The key of the filter condition. For information about valid values, see the \"`Supported filter parameters`\" section below."
+          }
         },
         {
           "name": "MatchType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "匹配方式。\n\n取值为Equals，表示相等匹配。",
+            "en": "The matching method.\n\nSet this parameter to `Equals`, which means an equal match."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件值。",
+            "en": "The values of the filter condition."
+          }
         }
       ]
     },
@@ -34,21 +51,44 @@
       "name": "GroupByKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源数量统计的分组维度。取值：\n- ResourceType：资源类型。\n- RegionId：地域。\n- ResourceGroupId：资源组ID。",
+        "en": "The dimension by which the queried resources are grouped. Valid values:\n\n- ResourceType: The resource type.\n\n- RegionId: The region.\n\n- ResourceGroupId: The resource group ID."
+      }
     },
     {
       "name": "IncludeDeletedResources",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否包含已删除资源。",
+        "en": "Specifies whether to include deleted resources. Valid values:\n\n- true\n\n- false"
+      }
     },
     {
       "name": "SearchExpression",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索关键词。资源中心会根据相关性对搜索结果进行过滤。",
+        "en": "The search keyword. Resource Center filters the search results based on relevance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询当前账号下的资源数量",
+    "en": "GetResourceCounts"
+  },
+  "descriptions": {
+    "zh": "- 仅能搜索当前账号下有权限访问的资源数量。\n- 仅能搜索[支持资源中心的云服务及资源类型](~~477798~~)。",
+    "en": "- You can query the number of resources in your account that you have permission to access.\n\n- You can query only the [Alibaba Cloud services and resource types that are supported by Resource Center](~~477798~~)."
+  },
   "example": {
     "unifiedCli": "aliyun resourcecenter get-resource-counts --group-by-key ResourceType --filter '[{\"MatchType\":\"Equals\",\"Value\":[\"cn-shanghai\"],\"Key\":\"RegionId\"}]' --search-expression keywords --include-deleted-resources true --region cn-hangzhou",
     "legacyCli": "aliyun resourcecenter GetResourceCounts --region cn-hangzhou --Filter.1.MatchType Equals --GroupByKey ResourceType --Filter.1.Value.1 'cn-shanghai' --IncludeDeletedResources true --SearchExpression keywords --Filter.1.Key RegionId"

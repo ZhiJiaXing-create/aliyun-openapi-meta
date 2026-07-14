@@ -1,0 +1,90 @@
+{
+  "name": "GetUAIDApplyTokenSign",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AuthCode",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "授权码。\n\n> 在**号码分析服务**->[**标签广场**](https://dytns.console.aliyun.com/analysis/square)选择标签，提交使用申请，申请通过后，会获得该授权码。",
+        "en": "The authorization code.\n\n> To obtain this authorization code, navigate to **Tag Plaza** in the [**Phone Number Verification Service**](https://dytns.console.aliyun.com/analysis/square) console, select a tag, and submit an application. You receive the code after your application is approved."
+      }
+    },
+    {
+      "name": "Carrier",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "用户所处的运营商。取值：\n- **CM**：中国移动。\n- **CU**：中国联通。\n- **CT**：中国电信。",
+        "en": "The mobile carrier. Valid values:\n\n- **CM**: China Mobile\n\n- **CU**: China Unicom\n\n- **CT**: China Telecom"
+      }
+    },
+    {
+      "name": "ClientType",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "客户端类型。\n- Android：30100\n- IOS：30300\n- H5：20200\n- WEB：10010",
+        "en": "The client type. Valid values:\n\n- `30100`: Android\n\n- `30300`: iOS\n\n- `20200`: H5\n\n- `10010`: Web"
+      }
+    },
+    {
+      "name": "OutId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "外部流水号。\n> 对应移动（CM）运营商中的traceId、msgId，三者保持一致即可",
+        "en": "The external ID.\n\n> For China Mobile (CM), this parameter corresponds to `traceId` and `msgId`. The values of `OutId`, `traceId`, and `msgId` must be the same."
+      }
+    },
+    {
+      "name": "ParamKey",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "运营商为电信（CT）时必传，具体参考电信运营商文档。",
+        "en": "This parameter is required if the carrier is China Telecom (CT). For details, see the China Telecom documentation."
+      }
+    },
+    {
+      "name": "ParamStr",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "运营商为电信（CT）时必传，具体参考电信运营商文档。",
+        "en": "This parameter is required if the carrier is China Telecom (CT). For details, see the China Telecom documentation."
+      }
+    },
+    {
+      "name": "Time",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "事件发生的时间戳，精确到毫秒。  \n格式：yyyyMMddHHmmssSSS。",
+        "en": "The event timestamp, accurate to the millisecond.<br>\nFormat: `yyyyMMddHHmmssSSS`.<br>"
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取UAID授权Token的签名值",
+    "en": "Obtain the signature value for the UAID authorization token"
+  },
+  "descriptions": {
+    "zh": "该API仅提供三网运营商获取UAID能力中，**获取授权Token环节的签名功能**。\n - 获取授权Token的其他必要参数，请参考对应运营商文档自行生成\n - 获取授权Token的请求，请参考对应运营商文档，注意需要从用户移动终端的蜂窝移动网络环境下请求\n - 获取授权Token请求后，请参考[UAIDVerification](~~UAIDVerification~~) 接口进行最终的UAID获取。\n\n### 如何通过客户端/H5方式请求授权Token\n\n<notice>发起请求授权Token时，客户端或H5页面必须切换到蜂窝移动网络。</notice>\n\n#### 移动（CM）\n通信协议：HTTPS + application/Json  \n方法：POST  \n地址：https://msg.cmpassport.com/h5/getMobile  \n\n##### 请求参数\n参数示例：  \n\n`{\n  \"traceId\": \"mfawsxtcmyplwzpayzzvdvbsowxmkynr\",\n  \"appId\": \"300011580392\",\n  \"sign\": \"2c61b3c58ffbeed97461e31be4fd931a\",\n  \"msgId\": \"redbyxsdetddwaaffajcwwapspykftzx\",\n  \"expandParams\": \"\",\n  \"businessType\": \"3\",\n  \"version\": \"1.0\",\n  \"timestamp\": \"20201125101540980\"\n}`  \n  \n参数描述：  \n- version：使用`1.0`\n- timestamp：请求消息发送的系统时间，精确到毫秒，对应该API下方入参`Time`的内容及其格式，两者需要保持一致\n- appId：使用`300012406312`\n- businessType：使用`3`\n- traceId：外部流水号，对应该API下方入参`OutId`的内容，两者需要保持一致\n- sign：调用该API获取\n- msgId：外部流水号，对应该API下方入参`OutId`的内容，两者需要保持一致\n\n##### 响应参数\n响应示例：  \n`{\n  \"header\": {\n    \"appId\": \"300011580392\",\n    \"msgId\": \"redbyxsdetddwaaffajcwwapspykftzx\",\n    \"timestamp\": \"20201125101607932\"\n  },\n  \"body\": {\n    \"resultCode\": \"103000\",\n    \"expandParams\": \"\",\n    \"resultDesc\": \"成功\",\n    \"token\": \"H5HTTPS4187AE9743AFCB14F8D99B9D65ED9E01\"\n  }\n}`\n\n直接获取`body`中的`token`即可。\n\n#### 联通（CU）\n分两步获取token\n##### 第一步：获取authurl\n通过第一步请求，获取门户服务器获取鉴权服务器地址`authurl`  \n\n通信协议：HTTPS + application/Json  \n方法：GRT  \n地址：https://nisportal.10010.com:9001/api  \n###### 请求参数\n参数示例：  \njson方式请求：`?appid=1554778161153`  \njsonp方式请求：`?appid=1554778161153&callback=callbackFunction`  \n\n参数描述：\n- appid：使用1554778161153\n- callback：jsonp回调函数名。仅当使用jsonp格式时需要传此参数\n###### 响应参数\n响应示例：  \njson方式请求：\n`{\"authurl\": \"https://enrichgw.10010.com/d93222629f52ec79\"}`  \njsonp方式请求：\n`callbackFunction({\"authurl\":\"https://enrichgw.10010.com/d93222629f52ec79\"})`  \n\n获取返回结果中的`authurl`。\n\n##### 第二步：获取token\n通信协议：HTTPS + application/Json  \n方法：GRT  \n地址：${authurl}+\"/api\"  \n\n请求地址示例：`https://enrichgw.10010.com/d93222629f52ec79/api`\n###### 请求参数\n参数示例：  \njson方式请求：`?appid=1554778161153`  \njsonp方式请求：`?appid=1554778161153&callback=callbackFunction`  \n\n参数描述：\n- appid：使用1554778161153\n- callback：jsonp回调函数名。仅当使用jsonp格式时需要传此参数\n###### 响应参数\n响应示例：  \njson方式请求：\n`{\n    \"province\": \"1\",\n    \"code\": \"7nHS1nggx2WP613750206700RN6oiRN1\"\n}`  \njsonp方式请求：\n`callbackFunction({\"province\":\"1\",\"code\":\"7nHS3Dnkd1BS701851092400RN6oiRN1\"})`\n\n获取返回结果中的`code`即可。\n\n\n\n#### 电信（CT）\n通信协议：HTTPS + application/x-www-form-urlencoded;charset=UTF  \n方法：GET  \n地址：https://id6.me/gw/preuniq.do\n\n##### 请求参数\n参数示例：  \n`?clientType=30100&appId=9390188202&format=json&sign=D63C166FA19E1996EF********09C6A5397C10B4&paramKey=1D7C25EB8B0B8B4CB3CF8DC60628F6549********786B0AF1FEF93FA1335057A35BF5F0B39A3867EAA9BE14B3898********8B01DE34965060445B6E1F66401D714650E4AB161CD6DCF4A72********3B856F22A192B8B0C39D7A55B961062E68C89C928894F119B25********7C548355FE9DB82852EB93C939F2200B48CD17&paramStr=140********95AF8E138B94754CB4CF83BA6FB********52B258BFDFD38BF233&version=1.1`  \n\n参数描述：  \n- appId：使用`9390188202`\n- clientType：客户端类型，对应该API下方入参`ClientType`的内容，两者需要保持一致\n- format：使用`json`或`jsonp`\n- version：使用`1.1`\n- sign：调用该API获取\n- paramKey：密钥A的密文；密钥A为接入端随机生成字符串，长度为16位；`paramKey = RSA1024(\"${密钥A}\", \"${天翼账号平台公钥}\")`；填充模式为`RSA/ECB/PKCS1Padding`；下载[电信RSA公钥](https://id.189.cn/source/files/API.pem)\n- paramStr：不公开请求参数密文； timeStamp为时间戳，精确到毫秒，对应该API下方入参`Time`的值，但格式不同（参考值`1697791988302`）；callback为使用jsonp格式时的回调方法，仅当format取值为jsonp时需要填写。`paramStr = AES(\"timeStamp=${timeStamp}&callback=${callback}\", \"${密钥A}\")`；填充模式为`AES/CBC/PKCS5Padding`，初始向量为`0000000000000000`\n\n##### 响应参数\n响应示例：  \n`callback?result=10000&msg=success&data=a35336711c70456cb883f4f224e9a259`  \n\n`data`为加密的业务结果数据，`data = AES(业务结果, 密钥A)`，使用密钥A进行AES解密（AES/CBC/PKCS5Padding）。  \n  \n解密后业务结果示例：  \n`{\"accessCode\": \"H5HTTPS4187AE9743AFCB14F8D99B9D65ED9E01\"}`\n  \n此时获取`accessCode`即可。",
+    "en": "This API provides only the **signing function for obtaining an authorization token** as part of the UAID retrieval process for China's three major operators.\n\n- To generate the other parameters required to obtain the authorization token, refer to the respective operator's documentation.\n\n- To request the authorization token, refer to the respective operator's documentation. Note that the request must be sent from the user's mobile device over a cellular network.\n\n- After obtaining the authorization token, call the [UAIDVerification](~~UAIDVerification~~) API to complete the UAID retrieval.\n\n### How to request an authorization token\n\n><notice>\n\nWhen you request an authorization token, the client or H5 page must be connected to a cellular network.\n\n></notice>\n\n#### China Mobile (CM)\n\nProtocol: HTTPS + application/json<br>\nMethod: POST<br>\nURL: https\\://msg.cmpassport.com/h5/getMobile<br><br>\n\n##### Request parameters\n\nRequest example:\n\n`{ \"traceId\": \"mfawsxtcmyplwzpayzzvdvbsowxmkynr\", \"appId\": \"300011580392\", \"sign\": \"2c61b3c58ffbeed97461e31be4fd931a\", \"msgId\": \"redbyxsdetddwaaffajcwwapspykftzx\", \"expandParams\": \"\", \"businessType\": \"3\", \"version\": \"1.0\", \"timestamp\": \"20201125101540980\" }`\n\nParameter description:\n\n- `version`: Use `1.0`.\n\n- `timestamp`: The request timestamp, with millisecond precision. This value and its format must match the `Time` input parameter for this API.\n\n- `appId`: Use `300011580392`.\n\n- `businessType`: Use `3`.\n\n- `traceId`: The trace ID. This value must match this API's `OutId` input parameter.\n\n- `sign`: Obtained by calling this API.\n\n- `msgId`: A unique message identifier.\n\n##### Response parameters\n\nResponse example:<br>\n`{ \"header\": { \"appId\": \"300011580392\", \"msgId\": \"redbyxsdetddwaaffajcwwapspykftzx\", \"timestamp\": \"20201125101607932\" }, \"body\": { \"resultCode\": \"103000\", \"expandParams\": \"\", \"resultDesc\": \"成功\", \"token\": \"H5HTTPS4187AE9743AFCB14F8D99B9D65ED9E01\" } }`<br>\n\nRetrieve the `token` from the response `body`.\n\n#### China Unicom (CU)\n\nObtain the token in two steps.\n\n##### Step 1: Obtain the authurl\n\nSend a request to the portal server to get the authentication server address (`authurl`).\n\nProtocol: HTTPS + application/json<br>\nMethod: GET<br>\nURL: https\\://nisportal.10010.com:9001/api<br><br>\n\n###### Request parameters\n\nRequest examples:<br>\nJSON request: `?appid=1554778161153`<br>\nJSONP request: `?appid=1554778161153&callback=callbackFunction`<br><br>\n\nParameter description:\n\n- `appid`: Use 1554778161153.\n\n- `callback`: The name of the JSONP callback function. This parameter is required only for JSONP requests.\n\n###### Response parameters\n\nResponse examples:<br>\nJSON response:\n`{\"authurl\": \"https://enrichgw.10010.com/d93222629f52ec79\"}`<br>\nJSONP response:\n`callbackFunction({\"authurl\":\"https://enrichgw.10010.com/d93222629f52ec79\"})`<br><br>\n\nRetrieve the `authurl` from the response.\n\n##### Step 2: Obtain the token\n\nProtocol: HTTPS + application/json<br>\nMethod: GET<br>\nURL: The authurl from Step 1, with /api appended.<br><br>\n\nRequest URL example: `https://enrichgw.10010.com/d93222629f52ec79/api`\n\n###### Request parameters\n\nRequest examples:<br>\nJSON request: `?appid=1554778161153`<br>\nJSONP request: `?appid=1554778161153&callback=callbackFunction`<br><br>\n\nParameter description:\n\n- `appid`: Use 1554778161153.\n\n- `callback`: The name of the JSONP callback function. This parameter is required only for JSONP requests.\n\n###### Response parameters\n\nResponse examples:<br>\nJSON response:\n`{ \"province\": \"1\", \"code\": \"7nHS1nggx2WP613750206700RN6oiRN1\" }`<br>\nJSONP response:\n`callbackFunction({\"province\":\"1\",\"code\":\"7nHS3Dnkd1BS701851092400RN6oiRN1\"})`<br><br>\n\nRetrieve the `code` from the response.\n\n#### China Telecom (CT)\n\nProtocol: HTTPS + application/x-www-form-urlencoded;charset=UTF-8<br>\nMethod: GET<br>\nURL: https\\://id6.me/gw/preuniq.do<br><br>\n\n##### Request parameters\n\nRequest example:<br>\n`?clientType=30100&appId=9390188202&format=json&sign=D63C166FA19E1996EF********09C6A5397C10B4&paramKey=1D7C25EB8B0B8B4CB3CF8DC60628F6549********786B0AF1FEF93FA1335057A35BF5F0B39A3867EAA9BE14B3898********8B01DE34965060445B6E1F66401D714650E4AB161CD6DCF4A72********3B856F22A192B8B0C39D7A55B961062E68C89C928894F119B25********7C548355FE9DB82852EB93C939F2200B48CD17&paramStr=140********95AF8E138B94754CB4CF83BA6FB********52B258BFDFD38BF233&version=1.1`<br>\n\nParameter description:\n\n- `appId`: Use `9390188202`.\n\n- `clientType`: The client type. This value must match the `ClientType` input parameter for this API.\n\n- `format`: Use `json` or `jsonp`.\n\n- `version`: Use `1.1`.\n\n- `sign`: Obtained by calling this API.\n\n- `paramKey`: The ciphertext of key A. Key A is a 16-character random string generated by the client. To generate paramKey, encrypt key A using the RSA algorithm and the China Telecom public key. The padding mode is `RSA/ECB/PKCS1Padding`. Download the [China Telecom RSA public key](https://id.189.cn/source/files/API.pem).\n\n- `paramStr`: The ciphertext of a parameter string. This string contains `timeStamp` (a Unix timestamp with millisecond precision, for example `1697791988302`, that corresponds to the value of the `Time` parameter of this API) and `callback` (the name of the JSONP callback function, required only when `format` is set to `jsonp`). To generate `paramStr`, encrypt the string using AES with key A. The padding mode is `AES/CBC/PKCS5Padding`, and the initialization vector is `0000000000000000`.\n\n##### Response parameters\n\nResponse example:<br>\n`callback?result=10000&msg=success&data=a35336711c70456cb883f4f224e9a259`<br>\n\nThe `data` parameter contains the ciphertext of the business result. To get the result, decrypt the data value using key A, the `AES/CBC/PKCS5Padding` mode, and an initialization vector of `0000000000000000`.\n\nDecrypted business result example:<br>\n`{\"accessCode\": \"H5HTTPS4187AE9743AFCB14F8D99B9D65ED9E01\"}`<br>\n\nRetrieve the `accessCode` from the decrypted result."
+  }
+}

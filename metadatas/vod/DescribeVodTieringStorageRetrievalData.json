@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodTieringStorageRetrievalData",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用ID。",
+        "en": "The application ID."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据结束时间点，需晚于起始时间，不能相差超过31天。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end time for data retrieval, which must be later than the start time and cannot exceed 31 days. Format: *yyyy-MM-dd*T*HH:mm:ss*Z (UTC time)."
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "存储地域。默认返回所有地域。支持批量查询，多个区域用半角逗号（,）分隔。",
+        "en": "The storage region. By default, all regions are returned. You can query multiple regions at a time by separating them with commas (,)."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点。日期格式按照ISO8601表示法，使用UTC时间。格式为：YYYY-MM-DDThh:mmZ。最小数据粒度为5分钟，若为空，则默认读取最近24小时的数据。",
+        "en": "The start time for data retrieval. The date format follows the ISO8601 notation and uses UTC time. Format: YYYY-MM-DDThh:mmZ. The minimum data granularity is 5 minutes. If this parameter is empty, data from the last 24 hours is read by default."
+      }
     },
     {
       "name": "StorageClass",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "存储类型。取值：\n- **IA**：低频\n- **Archive**：归档\n- **ColdArchive**：冷归档",
+        "en": "The storage class. Valid values:\n\n- **IA**: Infrequent Access\n- **Archive**: Archive\n- **ColdArchive**: Cold Archive"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询分级存储取回数据",
+    "en": "DescribeVodTieringStorageRetrievalData"
+  },
+  "descriptions": {
+    "zh": "> - 目前服务地址仅支持：**华东2（上海）**。\n> - 当查询时间的间隔在7天以内时，返回小时粒度的数据。当查询时间的间隔大于7天时，返回天粒度的数据，最大间隔为31天。",
+    "en": "> - Currently, only the following endpoint is supported: **China East 2 (Shanghai)**.\n> - When the query time interval is within 7 days, data with hourly granularity is returned. When the query time interval exceeds 7 days, data with daily granularity is returned. The maximum interval is 31 days."
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-tiering-storage-retrieval-data --start-time 2023-06-02T10:20:00Z --end-time 2023-06-02T11:20:00Z --biz-region cn-beijing --storage-class IA --app-id app-1000000 --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodTieringStorageRetrievalData --region cn-hangzhou --EndTime '2023-06-02T11:20:00Z' --AppId 'app-1000000' --StorageClass IA --StartTime '2023-06-02T10:20:00Z' --Region 'cn-beijing'"

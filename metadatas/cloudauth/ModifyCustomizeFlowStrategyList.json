@@ -1,5 +1,6 @@
 {
   "name": "ModifyCustomizeFlowStrategyList",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,71 +9,126 @@
       "name": "ProductType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品类型，目前仅支持**ANT_CLOUD_AUTH**（金融级实人），其他均退市。",
+        "en": "The product type. Currently, only **ANT_CLOUD_AUTH** (financial-grade ID Verification) is supported. All other types have been discontinued."
+      }
     },
     {
       "name": "StrategyObject",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "策略列表。",
+        "en": "The policy list."
+      },
       "sub_parameters": [
         {
           "name": "AccumulateKey",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "AccumulateKey",
+            "en": "AccumulateKey"
+          }
         },
         {
           "name": "AccumulateWindow",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "流控统计窗口大小，单位分钟。",
+            "en": "The size of the rate limiting statistical window, in minutes."
+          }
         },
         {
           "name": "ApiName",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "API名称，同**ProductCode**。",
+            "en": "The API name, which is the same as **ProductCode**."
+          }
         },
         {
           "name": "FlowType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "流程类型：\n- **ACCUMULATE**： 身份证重复出现\n- **PASSED_RATE**： 通过率小于\n- **SUB_CODE_205**：认证不通过且活体攻击205比例大于\n- **SUB_CODE_206**：认证不通过且活体攻击206比例大于",
+            "en": "The flow type. Valid values:\n- **ACCUMULATE**: repeated occurrence of an ID card.\n- **PASSED_RATE**: pass rate is less than.\n- **SUB_CODE_205**: authentication failed and the proportion of liveness attack 205 is greater than.\n- **SUB_CODE_206**: authentication failed and the proportion of liveness attack 206 is greater than."
+          }
         },
         {
           "name": "Id",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则id。",
+            "en": "The rule ID."
+          }
         },
         {
           "name": "Operation",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "操作。",
+            "en": "The operation."
+          }
         },
         {
           "name": "Status",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "状态：\n- **disabled**：禁用\n- **normal**：启用",
+            "en": "The status. Valid values:\n- **disabled**: disabled.\n- **normal**: enabled."
+          }
         },
         {
           "name": "Threshold",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "流控阈值。",
+            "en": "The rate limiting threshold."
+          }
         },
         {
           "name": "UserId",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "用户id。",
+            "en": "The user ID."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "调整自定义流控策略列表",
+    "en": "Adjust custom rate limiting policy list"
+  },
+  "descriptions": {
+    "zh": "- 请求方法：支持以HTTPS POST和GET方法发送请求。\n- 服务地址：cloudauth.aliyuncs.com。",
+    "en": "- Request method: HTTPS POST and GET methods are supported.\n- Endpoint: cloudauth.aliyuncs.com."
+  },
   "example": {
     "unifiedCli": "aliyun cloudauth modify-customize-flow-strategy-list --strategy-object Status=disabled AccumulateKey=- ApiName=ID_PRO UserId=126005125163 AccumulateWindow=60 FlowType=ACCUMULATE Id=38 Operation=- Threshold=10 --product-type ANT_CLOUD_AUTH --api-version 2019-03-07 --region cn-hangzhou",
     "legacyCli": "aliyun cloudauth ModifyCustomizeFlowStrategyList --region cn-hangzhou --StrategyObject '[{\"Status\":\"disabled\",\"AccumulateKey\":\"-\",\"ApiName\":\"ID_PRO\",\"UserId\":126005125163,\"AccumulateWindow\":60,\"FlowType\":\"ACCUMULATE\",\"Id\":38,\"Operation\":\"-\",\"Threshold\":10}]' --ProductType ANT_CLOUD_AUTH"

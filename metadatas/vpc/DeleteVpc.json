@@ -1,5 +1,6 @@
 {
   "name": "DeleteVpc",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除专有网络VPC。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行删除。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: performs a dry run without actually deleting the VPC. The system checks whether the required parameters are set, the request format is valid, and business restrictions are met. If the check fails, the corresponding error is returned. If the check succeeds, the error code `DryRunOperation` is returned.\n- **false** (default): performs a dry run and sends the request. If the check succeeds, an HTTP 2xx status code is returned, and the VPC is directly deleted."
+      }
     },
     {
       "name": "ForceDelete",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制删除VPC。取值：\n\n- **true**：强制删除。\n- **false**（默认值）：不强制删除。\n\n当VPC下仅存在以下资源时可强制删除VPC：\n- 该VPC下仅存在IPv4网关及指向IPv4网关的路由。\n- 该VPC下仅存在IPv6网关及指向IPv6网关的路由。",
+        "en": "Specifies whether to forcefully delete the VPC. Valid values:\n\n- **true**: forcefully deletes the VPC.\n- **false** (default): does not forcefully delete the VPC.\n\nThe VPC can be forcefully deleted only when the following resources exist in the VPC:\n- The VPC contains only an IPv4 gateway and routes pointing to the IPv4 gateway.\n- The VPC contains only an IPv6 gateway and routes pointing to the IPv6 gateway."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要删除的VPC所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPC to be deleted.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query region IDs."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的VPC ID。",
+        "en": "The ID of the VPC to be deleted."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除一个VPC",
+    "en": "Delete a VPC"
+  },
+  "descriptions": {
+    "zh": "调用该接口删除VPC时，请注意： \n\n- 删除VPC之前，需要先释放或转移VPC内的所有资源，包括交换机、云产品实例、高可用虚拟IP等。\n  \n- 只有处于**Available**状态的VPC才可以被删除。  \n\n- **DeleteVpc**接口属于异步接口，即系统会返回一个请求ID，但该VPC尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeVpcAttribute](~~94565~~)查询VPC的删除状态：\n    - 当VPC处于**Deleting**状态时，表示VPC正在删除中。\n    - 当查询不到指定的VPC时，表示VPC删除成功。\n- **DeleteVpc**接口不支持并发删除同一个VPC。",
+    "en": "When calling this operation to delete a VPC, note the following:\n\n- Before deleting a VPC, you must release or migrate all resources in the VPC, including vSwitches, cloud product instances, and high-availability virtual IP addresses (HAVIPs).\n  \n- Only VPCs in the **Available** state can be deleted.\n\n- The **DeleteVpc** operation is asynchronous. After a request is sent, a request ID is returned, but the VPC is not immediately deleted. The deletion task continues in the background. You can call the [DescribeVpcAttribute](~~94565~~) operation to query the deletion status of the VPC:\n    - When the VPC is in the **Deleting** state, the VPC is being deleted.\n    - When the specified VPC cannot be found, the VPC is deleted.\n- The **DeleteVpc** operation does not support concurrent deletion of the same VPC."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-vpc --vpc-id vpc-bp1m7v25emi1h5mtc0000 --biz-region-id cn-hangzhou --force-delete false --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteVpc --region cn-hangzhou --VpcId 'vpc-bp1m7v25emi1h5mtc0000' --DryRun false --ForceDelete false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

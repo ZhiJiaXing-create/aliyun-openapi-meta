@@ -1,5 +1,6 @@
 {
   "name": "DescribeSlowLogRecords",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The name of the database."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，必须晚于查询开始时间，且起止时间的范围不能超过1天（推荐范围为1小时），格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. The end time must be later than the start time. The time range cannot exceed one day. We recommend that you specify 1 hour. Specify the time in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例中的节点ID。传入本参数可查询指定节点的慢日志信息。\n> 当实例的架构为读写分离或集群架构时，本参数才可用。",
+        "en": "The ID of the node in the instance. You can set this parameter to query the slow query logs of a specified node.\n\n>  This parameter is available only for read/write splitting and cluster instances."
+      }
     },
     {
       "name": "OrderBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果的排序依据，取值：\n* **execution_time**：默认值，按照请求的执行开始时间排序。\n* **latency**：按照请求的执行耗时排序。",
+        "en": "The dimension by which to sort the results. Default value: execution_time. Valid values:\n\n*   **execution_time**: sorts the results by query start time.\n*   **latency**: sorts the results by query latency."
+      }
     },
     {
       "name": "OrderType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果的排序方式，取值：\n* **ASC**：升序。\n* **DESC**：默认值，降序。",
+        "en": "The sorting order of the results to return. Default value: DESC. Valid values:\n\n*   **ASC**: ascending order\n*   **DESC**: descending order"
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，取值为大于**0**且不超过Integer数据类型的最大值，默认值为**1**。",
+        "en": "The number of the page to return. The value must be an integer that is greater than **0**. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页可展示的最大记录数，取值：**30**、**50**、**100**，默认值为**30**。",
+        "en": "The number of entries to return on each page. Valid values: **30**, **50**, and **100**. Default value: **30**."
+      }
     },
     {
       "name": "QueryKeyword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可设置一个字符串类型的值，使用该值作为关键词对返回结果进行搜索。",
+        "en": "The keyword based on which slow logs are queried. You can set this parameter to a value of the string type."
+      }
     },
     {
       "name": "SlowLogRecordType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "慢日志类型，取值：\n* **proxy**：代理节点中的慢日志。\n* **db**：默认值，数据节点中的慢日志。",
+        "en": "The type of the slow logs. Default value: db. Valid values:\n\n*   **proxy**: slow logs of proxy nodes\n*   **db**: slow logs of data nodes"
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查看慢日志明细",
+    "en": "DescribeSlowLogRecords"
+  },
+  "descriptions": {
+    "zh": "该API对应的控制台操作请参见[查询慢日志](~~95874~~)。\nDescribeSlowLogRecords的调用频率上限为100次/分钟。",
+    "en": "You can also query slow logs in the Tair (Redis OSS-compatible) console. For more information, see [Query slow logs of an instance](~~95874~~). This operation can be called up to 100 times per minute."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore describe-slow-log-records --instance-id r-bp1zxszhcgatnx0000 --node-id r-bp1zxszhcgatnx0000-db-0 --start-time 2019-03-10T14:00Z --end-time 2019-03-10T15:00Z --db-name 0 --page-size 30 --page-number 1 --slow-log-record-type proxy --query-keyword keyword1 --order-type ASC --order-by execution_time --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore DescribeSlowLogRecords --region cn-hangzhou --OrderBy execution_time --OrderType ASC --EndTime '2019-03-10T15:00Z' --PageSize 30 --InstanceId 'r-bp1zxszhcgatnx0000' --PageNumber 1 --SlowLogRecordType proxy --NodeId 'r-bp1zxszhcgatnx0000-db-0' --StartTime '2019-03-10T14:00Z' --DBName 0 --QueryKeyword keyword1"

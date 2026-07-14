@@ -1,5 +1,6 @@
 {
   "name": "CompareFaces",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "SourceImageType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "图片1的类型，取值：\n\n- **FacePic**： 用户人脸照\n- **IDPic**： 用户二代身份证芯片中的头像照（通常由二代身份证阅读仪设备读取并解码获得）",
+        "en": "The type of image 1. Valid values:\n\n- **FacePic**: A face photo of the user.\n- **IDPic**: A headshot photo from the chip of the user's second-generation ID card (typically read and decoded by a second-generation ID card reader device)."
+      }
     },
     {
       "name": "SourceImageValue",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "图片1的地址。具体请参见关于上传图片地址的说明。",
+        "en": "The URL of image 1. For more information, see the description of image URL upload."
+      }
     },
     {
       "name": "TargetImageType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "图片2的类型，取值：\n\n- **FacePic**： 用户人脸照\n- **IDPic**： 用户二代身份证芯片中的头像照（通常由二代身份证阅读仪设备读取并解码获得）",
+        "en": "The type of image 2. Valid values:\n\n- **FacePic**: A face photo of the user.\n- **IDPic**: A headshot photo from the chip of the user's second-generation ID card (typically read and decoded by a second-generation ID card reader device)."
+      }
     },
     {
       "name": "TargetImageValue",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "图片2的地址。具体请参见关于上传图片地址的说明。",
+        "en": "The URL of image 2. For more information, see the description of image URL upload."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "人脸比对纯服务端API",
+    "en": "Face comparison server-side API"
+  },
+  "descriptions": {
+    "zh": "请求方法：仅支持以HTTPS POST方法发送请求。\n\n接口描述：指定两张人脸图片进行比对，输出两张图片中人脸的相似度分值作为结果。\n\n- 指定的比对图片中至少应含有一个图片类型是人脸照（FacePic）。\n- 一张图片中含有多个人脸时，算法会自动选取图片中占幅最大的人脸。\n- 两张比对的图片中，如果其中一张检测不到人脸，系统会返回“未检测到人脸”的错误提示。\n\n在传入图片时，您需要上传图片对应的HTTP地址或base64编码。\n\n- HTTP地址：可访问的公网HTTP地址。例如，`http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`。\n- base64编码：通过base64编码的图片，格式为`base64://<图片 base64 字符串>`。\n\n图片限制\n\n- 不支持本地图片的相对路径或绝对路径。\n- 单张图片大小请控制在2M内，避免算法拉取超时。\n- 单个请求的Body有8M的大小限制，请计算好请求中所有图片和其他信息的大小，不要超限。\n- 使用base64传递图片时，接口的请求方法需要改成 POST；图片base64字符串需要去掉头部描述，如`data:image/png;base64`,。",
+    "en": "Request method: Only HTTPS POST requests are supported.\n\nOperation description: Specifies two face images for comparison and returns a similarity score between the faces in the two images.\n\n- At least one of the specified comparison images must be of the face photo type (FacePic).\n- If an image contains multiple faces, the algorithm automatically selects the face that occupies the largest area in the image.\n- If no face is detected in one of the two comparison images, the system returns a \"No face detected\" error.\n\nWhen you submit images, you must provide the corresponding HTTP URL or Base64 encoding of each image.\n\n- HTTP URL: A publicly accessible HTTP URL. For example, `http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`.\n- Base64 encoding: A Base64-encoded image in the format `base64://<Base64-encoded image string>`.\n\nImage limits.\n\n- Relative paths or absolute paths of local images are not supported.\n- Keep the size of each image within 2 MB to avoid algorithm retrieval timeout.\n- The body of a single request has a size limit of 8 MB. Make sure that the total size of all images and other information in the request does not exceed this limit.\n- When you use Base64 to transmit images, set the request method to POST. Remove the header description from the Base64 character string, such as `data:image/png;base64,`."
+  },
   "example": {
     "unifiedCli": "aliyun cloudauth compare-faces --target-image-type FacePic --source-image-type FacePic --source-image-value http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg --target-image-value http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg --api-version 2019-03-07 --region cn-hangzhou",
     "legacyCli": "aliyun cloudauth CompareFaces --region cn-hangzhou --TargetImageType FacePic --TargetImageValue 'http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg' --SourceImageType FacePic --SourceImageValue 'http%3A%2F%2Fjiangsu.china.com.cn%2Fuploadfile%2F2015%2F0114%2F1421221304095989.jpg'"

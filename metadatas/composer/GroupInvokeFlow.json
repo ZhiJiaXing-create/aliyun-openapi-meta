@@ -1,0 +1,80 @@
+{
+  "name": "GroupInvokeFlow",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ClientToken",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must ensure that it is unique among different requests. The token can only contain ASCII characters and cannot exceed 64 characters in length."
+      }
+    },
+    {
+      "name": "Data",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "该分组执行所需的数据，为JSON字符串，格式为：`{\"Items\": []}`。Items数组每一项为单次执行的参数。单次执行参数的编写方式和InvokeFlow的Data参数一致",
+        "en": "The information required by the group execution. Set this parameter to a JSON array of strings in the following format:`{\"Items\": []}`. Each string provides the information required by one time of execution. The string must use the format of the Data parameter in the InvokeFlow operation."
+      }
+    },
+    {
+      "name": "FlowId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "需要运行的工作流ID",
+        "en": "The ID of the workflow that you want to execute."
+      }
+    },
+    {
+      "name": "GroupKey",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "本次批量执行的分组名，不同执行分组之间不能重复",
+        "en": "The name of the group. The name must be unique among the groups."
+      }
+    },
+    {
+      "name": "Tags",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "为该分组下的每次执行打标签，格式为JSON数组，数组内为对应执行的标签对象。数组包含的标签对象个数需与TotalCount一致",
+        "en": "The tag that is attached to each time of execution. The value is a JSON array. The number of tags in the array is the same as the value of the TotalCount parameter."
+      }
+    },
+    {
+      "name": "TotalCount",
+      "position": "Body",
+      "type": "Integer",
+      "required": true,
+      "description": {
+        "zh": "该组执行包含的执行数，需要和Data.Items数组中的个数一致",
+        "en": "The number of times of execution. The value must be the same as the number of strings in the value of the Data parameter."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量运行工作流",
+    "en": "GroupInvokeFlow"
+  },
+  "descriptions": {
+    "zh": "- 该API适用于大批量执行工作流，如果执行频率不超过100次/秒，建议使用InvokeFlow触发工作流执行。\n- 调用成功后，并不代表所有请求并发执行，逻辑编排会自动根据请求情况确定单次执行的开始执行时间。\n- 该API每次调用认为是一次执行分组（Group），假设共需要执行工作流1000次，每100次为一个分组，那么就需要调用10次该API，同时每次调用均需要传递一个唯一的GroupKey作为该组标识。一个分组内包含多个执行数据（Data为JSON数组），每个执行数据对应一次执行（与调用一次InvokeFlow一致）。",
+    "en": "*   You can call this operation to trigger a workflow to be executed more than 100 times per second. If the desired execution frequency does not exceed 100 times per second, we recommend that you call the InvokeFlow operation.\n*   However, you may need to call the GroupInvokeFlow operation multiple times. For example, assume that you want a workflow to be executed 1,000 times per second and the 1,000 times of execution are divided into ten groups. You need to call the operation ten times for the ten groups and specify a group key for each group.\n*   Each call corresponds to a group execution. Logic Composer automatically determines when a group execution starts. You must set the Data parameter to a JSON array of strings to specify the information required by the execution. Each string provides the information required by one time of execution. The string must use the format of the Data parameter in the InvokeFlow operation."
+  }
+}

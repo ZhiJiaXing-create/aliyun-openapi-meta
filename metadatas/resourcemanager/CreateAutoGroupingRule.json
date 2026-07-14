@@ -1,5 +1,6 @@
 {
   "name": "CreateAutoGroupingRule",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "ExcludeRegionIdsScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID排除范围，多个地域ID用半角逗号（,）分隔。",
+        "en": "The IDs of regions to be excluded. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "ExcludeResourceGroupIdsScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID排除范围，多个资源组ID用半角逗号（,）分隔。",
+        "en": "The IDs of resource groups to be excluded. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "ExcludeResourceIdsScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID排除范围，多个资源ID用半角逗号（,）分隔。",
+        "en": "The IDs of resources to be excluded. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "ExcludeResourceTypesScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源类型排除范围，多个资源类型用半角逗号（,）分隔。",
+        "en": "The resource types to be excluded. Separate multiple resource types with commas (,)."
+      }
     },
     {
       "name": "RegionIdsScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID范围，多个地域ID用半角逗号（,）分隔。",
+        "en": "The IDs of regions. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "ResourceGroupIdsScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID范围，多个资源组ID用半角逗号（,）分隔。",
+        "en": "The IDs of resource groups. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "ResourceIdsScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID范围，多个资源ID用半角逗号（,）分隔。",
+        "en": "The IDs of resources. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "ResourceTypesScope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源类型范围，多个资源类型用半角逗号（,）分隔。",
+        "en": "The resource types. Separate multiple resource types with commas (,)."
+      }
     },
     {
       "name": "RuleContents",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "规则内容列表。",
+        "en": "The content records of the rule."
+      },
       "sub_parameters": [
         {
           "name": "AutoGroupingScopeCondition",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "自动转组范围条件，用于指定需要自动转组的资源范围。",
+            "en": "The condition for the range of resources to be automatically transferred."
+          }
         },
         {
           "name": "TargetResourceGroupCondition",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "目标资源组条件，用于指定自动分组的目标资源组。",
+            "en": "The condition for the destination resource group."
+          }
         }
       ]
     },
@@ -76,21 +121,44 @@
       "name": "RuleDesc",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则描述。",
+        "en": "The description of the rule."
+      }
     },
     {
       "name": "RuleName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则名称。",
+        "en": "The name of the rule."
+      }
     },
     {
       "name": "RuleType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则类型。取值：\n- custom_condition：自定义转组规则。\n- associated_transfer：关联资源跟随转组规则。",
+        "en": "The type of the rule. Valid values:\n\n*   custom_condition: custom transfer rule\n*   associated_transfer: transfer rule for associated resources"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自动转组规则",
+    "en": "CreateAutoGroupingRule"
+  },
+  "descriptions": {
+    "zh": "自定义转组规则最多创建10个，每个自定义转组规则支持最多10条规则内容。",
+    "en": "You can create up to 10 custom transfer rules. Each custom transfer rule can contain up to 10 content records."
+  },
   "example": {
     "unifiedCli": "aliyun resourcemanager create-auto-grouping-rule --rule-name 'A项目线上资源自动转组规则' --rule-desc '带有标签_env_:_online_和_project_:_A_的资源转移到资源组_rg-aek200000000qcy' --rule-type custom_condition --rule-contents AutoGroupingScopeCondition=children_:_desired_:_env_:_online_,_project_:_A_,_featurePath_:_.tags_,_featureSource_:_RESOURCE_,_operator_:_TagMatchAll_,_operator_:_and TargetResourceGroupCondition=children_:_desired_:_rg-aek200000000qcy_,_featurePath_:_.resourceGroupId_,_featureSource_:_RESOURCE_,_operator_:_StringEquals_,_operator_:_and --resource-group-ids-scope rg-aekz0000004b5ea,rg-aek2000000fxykq --exclude-resource-group-ids-scope rg-aekz000000zj2oi,rg-aekz000000r62ua --region-ids-scope cn-hangzhou,cn-shanghai --exclude-region-ids-scope cn-beijing,cn-guangzhou --resource-ids-scope i-2zee000000ym49kfmwis,vpc-5ts6000000fnw493g849a --exclude-resource-ids-scope pc-uf6p0000004h784y,rmq-cn-000000ny0y --resource-types-scope rds.dbinstance,oss.bucket --exclude-resource-types-scope mse.cluster,slb.loadbalancer --api-version 2020-03-31 --region cn-hangzhou",
     "legacyCli": "aliyun resourcemanager CreateAutoGroupingRule --region cn-hangzhou --ExcludeResourceGroupIdsScope 'rg-aekz000000zj2oi,rg-aekz000000r62ua' --ExcludeResourceIdsScope 'pc-uf6p0000004h784y,rmq-cn-000000ny0y' --ResourceIdsScope 'i-2zee000000ym49kfmwis,vpc-5ts6000000fnw493g849a' --ExcludeResourceTypesScope 'mse.cluster,slb.loadbalancer' --RuleType custom_condition --ExcludeRegionIdsScope 'cn-beijing,cn-guangzhou' --RegionIdsScope 'cn-hangzhou,cn-shanghai' --RuleDesc '带有标签_env_:_online_和_project_:_A_的资源转移到资源组_rg-aek200000000qcy' --ResourceGroupIdsScope 'rg-aekz0000004b5ea,rg-aek2000000fxykq' --RuleContents.1.AutoGroupingScopeCondition 'children_:_desired_:_env_:_online_,_project_:_A_,_featurePath_:_.tags_,_featureSource_:_RESOURCE_,_operator_:_TagMatchAll_,_operator_:_and' --ResourceTypesScope 'rds.dbinstance,oss.bucket' --RuleContents.1.TargetResourceGroupCondition 'children_:_desired_:_rg-aek200000000qcy_,_featurePath_:_.resourceGroupId_,_featureSource_:_RESOURCE_,_operator_:_StringEquals_,_operator_:_and' --RuleName 'A项目线上资源自动转组规则'"

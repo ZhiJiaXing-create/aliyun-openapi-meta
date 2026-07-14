@@ -1,5 +1,6 @@
 {
   "name": "InitDtsRdsInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DtsInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步任务实例ID。",
+        "en": "The instance ID of the synchronization node."
+      }
     },
     {
       "name": "EndpointCenId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "如单元节点为云企业网CEN接入的自建MySQL，则您需要传入云企业网CEN的实例ID。\n> 本参数与RDS MySQL相关参数（**EndpointRegion**、**EndpointInstanceId**），两组参数必须传入其中一组。",
+        "en": "The instance ID of the CEN instance. This parameter is required if the unit node is a self-managed MySQL database connected through CEN.\n> You must specify either this parameter or the ApsaraDB RDS for MySQL-related parameters (**EndpointRegion** and **EndpointInstanceId**)."
+      }
     },
     {
       "name": "EndpointInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "如单元节点为RDS MySQL实例，则您需要传入RDS MySQL实例ID。\n> - 您还需要传入参数**EndpointRegion**。\n- 本参数与**EndpointCenId**，两者必须传入其一。",
+        "en": "The instance ID of the ApsaraDB RDS for MySQL instance. This parameter is required if the unit node is an ApsaraDB RDS for MySQL instance.\n> - You must also specify the **EndpointRegion** parameter.\n- You must specify either this parameter or **EndpointCenId**."
+      }
     },
     {
       "name": "EndpointInstanceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单元节点的实例类型，取值：\n\n- **RDS**：RDS MySQL实例。\n- **CEN**：通过云企业网CEN接入的自建MySQL数据库。",
+        "en": "The instance type of the unit node. Valid values:\n\n- **RDS**: ApsaraDB RDS for MySQL instance.\n- **CEN**: self-managed MySQL database connected through CEN."
+      }
     },
     {
       "name": "EndpointRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "如单元节点为RDS MySQL实例，则您需要传入RDS MySQL实例所属地域。\n\n> - 您还需要传入参数**EndpointInstanceId**。\n- 本参数与**EndpointCenId**，两者必须传入其一。",
+        "en": "The region in which the ApsaraDB RDS for MySQL instance resides. This parameter is required if the unit node is an ApsaraDB RDS for MySQL instance.\n\n> - You must also specify the **EndpointInstanceId** parameter.\n- You must specify either this parameter or **EndpointCenId**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全球数据多活集群所属的地域。",
+        "en": "The region in which the active geo-redundancy database cluster resides."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID，全局参数，当前API无需传入。",
+        "en": "The ID of the resource group. This is a global parameter and does not need to be specified for this operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "初始化单元节点中DTS使用的内置账号",
+    "en": "Initialize the built-in account used by DTS in a unit node"
+  },
+  "descriptions": {
+    "zh": "- 单元节点需为RDS MySQL或云企业网CEN接入的自建MySQL。\n- 该接口用于在全球多活数据库集群的单元节点中，初始化一个内置账号rdsdt_dtsacct，DTS使用该账号连接节点并进行同步任务。",
+    "en": "- The unit node must be an ApsaraDB RDS for MySQL instance or a self-managed MySQL database connected through Cloud Enterprise Network (CEN).\n- This operation initializes a built-in account named rdsdt_dtsacct in a unit node of an active geo-redundancy database cluster. DTS uses this account to connect to the node and perform synchronization tasks."
+  },
   "example": {
     "unifiedCli": "aliyun dts init-dts-rds-instance --biz-region-id cn-hangzhou --endpoint-instance-type RDS --endpoint-region cn-hangzhou --endpoint-instance-id rm-bp1162kryivb80000 --endpoint-cen-id cen-9kqshqum0000000 --dts-instance-id dtszvxa4qmot6p0000 --resource-group-id '资源组ID，全局参数，当前API无需传入。' --api-version 2020-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun dts InitDtsRdsInstance --region cn-hangzhou --EndpointCenId 'cen-9kqshqum0000000' --ResourceGroupId '资源组ID，全局参数，当前API无需传入。' --EndpointRegion 'cn-hangzhou' --EndpointInstanceId 'rm-bp1162kryivb80000' --RegionId 'cn-hangzhou' --EndpointInstanceType RDS --DtsInstanceId dtszvxa4qmot6p0000"

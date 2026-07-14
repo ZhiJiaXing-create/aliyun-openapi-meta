@@ -1,5 +1,6 @@
 {
   "name": "CreateEndpointGroups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The ID of the accelerator."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure request idempotence.\n\nYou can generate the token on your client. Ensure that it is unique across different requests. The value of `ClientToken` can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** is unique for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会创建资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回 HTTP 2xx 状态码。\n\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run but does not create the resource. The system checks the required parameters, request format, and service limits. If the request fails the dry run, the system returns an error message. If the request passes the dry run, the system returns a 2xx HTTP status code.\n\n- **false** (default): sends a normal request and creates the resource if the request passes."
+      }
     },
     {
       "name": "EndpointGroupConfigurations",
       "position": "Body",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点组信息。\n\n您最多可以输入10个终端节点组信息。",
+        "en": "The configurations of the endpoint groups.\n\nYou can configure up to 10 endpoint groups."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听ID。\n\n> 当该监听协议为**HTTP**或**HTTPS**时，调用**CreateEndpointGroups**接口每次仅支持创建一个终端节点组。",
+        "en": "The ID of the listener.\n\n> If the listener protocol is **HTTP** or **HTTPS**, you can create only one endpoint group in each **CreateEndpointGroups** call."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所属地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the accelerator is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建终端节点组列表",
+    "en": "CreateEndpointGroups"
+  },
+  "descriptions": {
+    "zh": "- 本接口用于批量创建终端节点组，但不支持同时创建默认终端节点组与虚拟终端节点组。\n- 本接口不支持为四层协议监听创建虚拟终端节点组。如需为四层协议监听创建虚拟终端节点组，请使用[CreateEndpointGroup](~~2302394~~)。\n- **CreateEndpointGroups**接口属于异步接口，即系统会先返回一个请求ID，但终端节点组并未批量创建完成，系统后台的创建任务仍在进行。您可以调用[DescribeEndpointGroup](~~153260~~)或[ListEndpointGroups](~~153261~~)查询终端节点组的状态：\n\n    - 当存在终端节点组处于**init**状态时，表示终端节点组正在批量创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当所有终端节点组处于**active**状态时，表示终端节点组批量创建完成。\n\n- **CreateEndpointGroups**接口不支持在同一个全球加速实例内并发创建终端节点组。",
+    "en": "- Creates endpoint groups in batches. Default and virtual endpoint groups cannot be created in a single call.\n\n- This API does not support creating virtual endpoint groups for Layer-4 listeners. To create a virtual endpoint group for a Layer-4 listener, call [CreateEndpointGroup](~~2302394~~).\n\n- **CreateEndpointGroups** is an asynchronous API. It returns a request ID and creates the endpoint groups in the background. You can call [DescribeEndpointGroup](~~153260~~) or [ListEndpointGroups](~~153261~~) to query the status of an endpoint group:\n\n  - If an endpoint group is in the **init** state, it is initializing. You can only query the endpoint group in this state.\n\n  - The batch creation is complete when all endpoint groups are in the **active** state.\n\n- You cannot make concurrent calls to **CreateEndpointGroups** for the same Global Accelerator instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-endpoint-groups --biz-region-id cn-hangzhou --client-token 1F4B6A4A-C89E-489E-BAF1-52777EE148EF --dry-run true --accelerator-id ga-bp1odcab8tmno0hdq0000 --listener-id lsr-bp1bpn0kn908w4nbw0000 --endpoint-group-configurations '[{\"HealthCheckIntervalSeconds\":5,\"EndpointGroupName\":\"group1\",\"TrafficPercentage\":100,\"HealthCheckPath\":\"/healthcheck\",\"HealthCheckHost\":\"www.taobao.com\",\"ThresholdCount\":3,\"HealthCheckEnabled\":false,\"EndpointRequestProtocol\":\"HTTPS\",\"EndpointProtocolVersion\":\"HTTP1.1\",\"PortOverrides\":[{\"ListenerPort\":80,\"EndpointPort\":443}],\"EndpointGroupRegion\":\"cn-hongkong\",\"SystemTag\":[{\"Scope\":\"-\",\"Value\":\"-\",\"Key\":\"-\"}],\"EndpointGroupDescription\":\"EndpointGroup\",\"HealthCheckProtocol\":\"HTTPS\",\"HealthCheckPort\":443,\"Tag\":[{\"Value\":\"tag-value\",\"Key\":\"tag-key\"}],\"EndpointConfigurations\":[{\"EnableProxyProtocol\":false,\"ApiKeys\":[\"sk-000000\"],\"Type\":\"Domain\",\"Endpoint\":\"1.1.1.1\",\"EnableClientIPPreservation\":false,\"VpcId\":\"vpc-2zekzii824szm3hps0000\",\"VSwitchIds\":[\"vsw-bp1b2qx7y2qqnbkan0000\"],\"SubAddress\":\"172.168.XX.XX\",\"Weight\":255,\"Provider\":\"BAILIAN\"}],\"EndpointIpVersion\":\"IPv4\",\"EndpointGroupType\":\"default\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateEndpointGroups --region cn-hangzhou --EndpointGroupConfigurations.1.EndpointGroupName group1 --EndpointGroupConfigurations.1.EndpointConfigurations.1.EnableClientIPPreservation false --EndpointGroupConfigurations.1.EndpointGroupDescription EndpointGroup --EndpointGroupConfigurations.1.SystemTag.1.Scope '-' --EndpointGroupConfigurations.1.EndpointConfigurations.1.Weight 255 --DryRun true --EndpointGroupConfigurations.1.HealthCheckPath '/healthcheck' --EndpointGroupConfigurations.1.HealthCheckHost 'www.taobao.com' --EndpointGroupConfigurations.1.ThresholdCount 3 --EndpointGroupConfigurations.1.HealthCheckEnabled false --EndpointGroupConfigurations.1.EndpointConfigurations.1.Type Domain --EndpointGroupConfigurations.1.EndpointGroupType default --EndpointGroupConfigurations.1.SystemTag.1.Value '-' --EndpointGroupConfigurations.1.PortOverrides.1.ListenerPort 80 --EndpointGroupConfigurations.1.Tag.1.Key 'tag-key' --EndpointGroupConfigurations.1.TrafficPercentage 100 --EndpointGroupConfigurations.1.EndpointConfigurations.1.VpcId 'vpc-2zekzii824szm3hps0000' --EndpointGroupConfigurations.1.EndpointConfigurations.1.SubAddress '172.168.XX.XX' --EndpointGroupConfigurations.1.EndpointIpVersion IPv4 --EndpointGroupConfigurations.1.EndpointConfigurations.1.Endpoint '1.1.1.1' --EndpointGroupConfigurations.1.EndpointProtocolVersion 'HTTP1.1' --EndpointGroupConfigurations.1.SystemTag.1.Key '-' --EndpointGroupConfigurations.1.HealthCheckPort 443 --EndpointGroupConfigurations.1.EndpointConfigurations.1.EnableProxyProtocol false --EndpointGroupConfigurations.1.EndpointConfigurations.1.Provider BAILIAN --EndpointGroupConfigurations.1.HealthCheckIntervalSeconds 5 --EndpointGroupConfigurations.1.Tag.1.Value 'tag-value' --EndpointGroupConfigurations.1.HealthCheckProtocol HTTPS --EndpointGroupConfigurations.1.EndpointConfigurations.1.VSwitchIds.1 'vsw-bp1b2qx7y2qqnbkan0000' --EndpointGroupConfigurations.1.EndpointConfigurations.1.ApiKeys.1 'sk-000000' --EndpointGroupConfigurations.1.PortOverrides.1.EndpointPort 443 --RegionId 'cn-hangzhou' --ClientToken '1F4B6A4A-C89E-489E-BAF1-52777EE148EF' --EndpointGroupConfigurations.1.EndpointGroupRegion 'cn-hongkong' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --EndpointGroupConfigurations.1.EndpointRequestProtocol HTTPS --ListenerId 'lsr-bp1bpn0kn908w4nbw0000' --method POST --force"

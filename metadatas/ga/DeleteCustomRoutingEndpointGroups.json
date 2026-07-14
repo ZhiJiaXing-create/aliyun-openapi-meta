@@ -1,5 +1,6 @@
 {
   "name": "DeleteCustomRoutingEndpointGroups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The ID of the GA instance that you want to query."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除自定义路由类型监听的终端节点组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接删除自定义路由类型监听的终端节点组。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true:** performs a dry run. The system checks the required parameters, request syntax, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false:** performs a dry run and sends the request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointGroupIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除的终端节点组ID列表。\n\n您最多可输入10个终端节点组ID。",
+        "en": "The IDs of the endpoint groups that you want to delete.\n\nYou can specify up to 10 endpoint group IDs."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量删除自定义路由类型监听关联的终端节点组",
+    "en": "DeleteCustomRoutingEndpointGroups"
+  },
+  "descriptions": {
+    "zh": "- **DeleteCustomRoutingEndpointGroups**接口属于异步接口，即系统会先返回一个请求ID，但自定义路由类型监听的终端节点组并未删除完成，系统后台的删除任务仍在进行。您可以调用[DescribeCustomRoutingEndpointGroup](~~449373~~)查询自定义路由类型监听的终端节点组的状态：\n    - 当终端节点组处于**deleting**状态时，表示终端节点组正在批量删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当查询不到要删除的终端节点组时，表示终端节点组批量删除完成。\n\n- **DeleteCustomRoutingEndpointGroups**接口不支持在同一个全球加速实例内并发删除自定义路由类型监听的终端节点组。",
+    "en": "*   **DeleteCustomRoutingEndpointGroups** is an asynchronous operation. After you send a request, the system returns a request ID, but the operation is still being performed in the system background. You can call the [DescribeCustomRoutingEndpointGroup](~~449373~~) operation to query the state of the endpoint groups associated with a custom routing listener that you attempt to delete.\n\n    *   If the endpoint groups are in the **deleting** state, the endpoint groups are being deleted. In this case, you can perform only query operations.\n    *   If the endpoint groups cannot be queried, the endpoint groups are deleted.\n\n*   You cannot use the **DeleteCustomRoutingEndpointGroups** operation on the same Global Accelerator (GA) instance before the previous operation is complete."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-custom-routing-endpoint-groups --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --accelerator-id ga-bp1odcab8tmno0hdq0000 --endpoint-group-ids epg-bp1dmlohjjz4kqaua0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteCustomRoutingEndpointGroups --region cn-hangzhou --DryRun false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --EndpointGroupIds.1 'epg-bp1dmlohjjz4kqaua0000' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000'"

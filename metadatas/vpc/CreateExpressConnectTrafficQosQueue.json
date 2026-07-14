@@ -1,5 +1,6 @@
 {
   "name": "CreateExpressConnectTrafficQosQueue",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "BandwidthPercent",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "QoS队列带宽百分比。\n\n* 当QoS队列类型为**Medium**的时候，此字段必须输入，取值范围为：1~100。\n* 当QoS队列类型为**Default**的时候，此字段为\"-\"。",
+        "en": "The bandwidth percentage of the QoS queue.\n\n* When the QoS queue type is **Medium**, this parameter is required. Valid values: 1 to 100.\n* When the QoS queue type is **Default**, this parameter is set to \"-\"."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "QosId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "QoS策略ID。",
+        "en": "The ID of the QoS policy."
+      }
     },
     {
       "name": "QueueDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "QoS队列的描述信息。\n\n长度为0～256个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the QoS queue.\n\nThe description must be 0 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "QueueName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "QoS队列的名称。\n\n长度为0～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the QoS queue.\n\nThe name must be 0 to 128 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "QueueType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "QoS队列类型，取值：\n\n- **High**：高优先级队列。\n\n- **Medium**：普通优先级队列。\n\n- **Default**：默认优先级队列。\n\n> 默认优先级队列无法创建。",
+        "en": "The type of the QoS queue. Valid values:\n\n- **High**: high-priority queue.\n\n- **Medium**: lower-priority queue.\n\n- **Default**: default priority queue.\n\n> The default priority queue cannot be created."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "QoS策略所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the QoS policy.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建高速通道QoS队列",
+    "en": "Create an express connect qoS queue"
+  },
+  "descriptions": {
+    "zh": "- 默认队列不支持创建。\n\n- 高优先级队列数量有上限，如果需要提升配额，请联系商务经理。\n\n- 普通优先级队列数量有上限，如果需要提升配额，请联系商务经理。\n\n- 所有普通优先级队列的带宽百分比之和有上限。",
+    "en": "- The default queue cannot be created.\n\n- The number of high-priority queues has an upper limit. To increase the quota, contact your account manager.\n\n- The number of lower-priority queues has an upper limit. To increase the quota, contact your account manager.\n\n- The total bandwidth percentage of all lower-priority queues has an upper limit."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-express-connect-traffic-qos-queue --biz-region-id cn-hangzhou --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --queue-name qos-queue-test --queue-description qos-queue-test --qos-id qos-2giu0a6vd5x0mv0000 --queue-type High --bandwidth-percent 100 --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateExpressConnectTrafficQosQueue --region cn-hangzhou --QosId 'qos-2giu0a6vd5x0mv0000' --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --BandwidthPercent 100 --QueueName 'qos-queue-test' --QueueDescription 'qos-queue-test' --QueueType High"

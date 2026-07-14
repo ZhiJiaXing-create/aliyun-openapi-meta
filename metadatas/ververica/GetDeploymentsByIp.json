@@ -1,5 +1,6 @@
 {
   "name": "GetDeploymentsByIp",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/api/v2/namespaces/[namespace]/deployments/getDeployments/byIp",
@@ -8,51 +9,94 @@
       "name": "dstIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标 IP 地址，用于匹配作业的目标写入地址",
+        "en": "The destination IP address. This parameter is used to match the destination sink address of a job."
+      }
     },
     {
       "name": "dstPort",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标端口，配合 dstIp 使用",
+        "en": "The destination port. Use this parameter with dstIp."
+      }
     },
     {
       "name": "ignoreJobSummary",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否忽略返回结果中的作业摘要信息，仅返回Deployment部署作业信息，用于提升性能",
+        "en": "Specifies whether to exclude the job summary from the response. If you exclude the summary, only deployment information is returned. This improves performance."
+      }
     },
     {
       "name": "ignoreResourceSetting",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否忽略资源配置信息，减少返回数据体积",
+        "en": "Specifies whether to exclude resource configuration information. This reduces the size of the returned data."
+      }
     },
     {
       "name": "namespace",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "项目空间名称。",
+        "en": "The name of the namespace."
+      }
     },
     {
       "name": "srcIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源 IP 地址，用于匹配作业的输入源地址",
+        "en": "The source IP address. This parameter is used to match the input source address of a job."
+      }
     },
     {
       "name": "srcPort",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端口，配合 srcIp 使用，精确匹配连接",
+        "en": "The source port. Use this parameter with srcIp for an exact match of the connection."
+      }
     },
     {
       "name": "workspace",
       "position": "Header",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作空间ID。",
+        "en": "The ID of the workspace."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通过IP搜索已部署作业",
+    "en": "GetDeploymentsByIp"
+  },
+  "descriptions": {
+    "zh": "本接口用于通过网络连接中的 源 IP 与端口或 目标 IP 与端口 查询关联的 Flink 已部署作业。",
+    "en": "Use this operation to query for associated Flink deployments based on the source or destination IP address and port of a network connection."
+  },
   "example": {
     "unifiedCli": "aliyun ververica get-deployments-by-ip --workspace a14bd5d90a0000 --namespace default-namespace --src-ip 192.168.1.100 --src-port 54321 --dst-ip 10.100.2.200 --dst-port 9092 --ignore-job-summary false --ignore-resource-setting false --api-version 2022-07-18 --region cn-hangzhou",
     "legacyCli": "aliyun ververica GET /api/v2/namespaces/default-namespace/deployments/getDeployments/byIp --region cn-hangzhou --srcIp '192.168.1.100' --dstPort 9092 --srcPort 54321 --dstIp '10.100.2.200' --ignoreJobSummary false --ignoreResourceSetting false --header \"workspace=a14bd5d90a0000\" --header \"Content-Type=application/json\""

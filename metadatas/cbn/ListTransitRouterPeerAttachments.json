@@ -1,5 +1,6 @@
 {
   "name": "ListTransitRouterPeerAttachments",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "云企业网实例ID。",
-        "en": "The ID of the Cloud Enterprise Network (CEN) instance."
+        "en": "The ID of the CEN instance."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "分批次查询时每次显示的条目数。默认值为**20**，最大值为**100**。",
-        "en": "The number of entries returned per page. Default value: **20**. Maximum value: **100**."
+        "en": "The number of entries to return on each page. Default value: **20**. Maximum value: **100**."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "是否拥有下一次查询的令牌（Token）。取值：\n\n- 第一次查询和没有下一次查询时，均无需填写。\n- 如果有下一次查询，取值为上一次API调用返回的**NextToken**值。",
-        "en": "The pagination token that is used in the next request to retrieve a new page of results. Valid values:\n\n*   You do not need to specify this parameter for the first request.\n*   You must specify the token that is obtained from the previous query as the value of **NextToken**."
+        "en": "The token for the next query. Valid values:\n\n- If this is your first query or no next query is to be sent, do not specify this parameter.\n\n- If a next query is to be sent, set the value to the **NextToken** value returned from the last API call."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "企业版转发路由器实例所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
-        "en": "The ID of the region where the Enterprise Edition transit router is deployed.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+        "en": "The ID of the region where the Enterprise Edition transit router is deployed.\n\nFor more information, see [DescribeRegions](~~36063~~)."
       }
     },
     {
@@ -49,24 +50,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
+        "en": "The tags.\n\nYou can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key cannot be an empty string. The tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The tag value.\n\nThe tag value can be an empty string or a string of up to 128 characters. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`.\n\nEach tag key must have a unique tag value. You can specify up to 20 tag values."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
-        "en": "The information about the tag.\n\nYou can specify at most 20 tags in each call."
-      }
+      ]
     },
     {
       "name": "TransitRouterAttachmentId",
@@ -89,6 +98,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询企业版转发路由器下的跨地域连接信息",
+    "en": "ListTransitRouterPeerAttachments"
+  },
+  "descriptions": {
+    "zh": "您可以通过以下两种方式查询企业版转发路由器下跨地域连接的信息：\n\n- 通过企业版转发路由器实例ID查询该实例下所有跨地域连接的信息。\n- 通过云企业网实例ID和企业版转发路由器实例所属地域ID查询该企业版转发路由器实例下所有跨地域连接的信息。",
+    "en": "You can query information about the inter-region connections of an Enterprise Edition transit router in one of the following ways:\n\n- Query by the ID of the Enterprise Edition transit router instance.\n\n- Query by the ID of the Cloud Enterprise Network (CEN) instance and the region ID of the transit router instance."
+  },
   "example": {
     "unifiedCli": "aliyun cbn list-transit-router-peer-attachments --cen-id cen-j3jzhw1zpau2km0000 --biz-region-id cn-hangzhou --transit-router-attachment-id tr-attach-5u4qbayfv2io5v0000 --transit-router-id tr-bp1su1ytdxtataupl0000 --max-results 20 --next-token 1 --tag Value=tagtest Key=tagtest --region cn-hangzhou",
     "legacyCli": "aliyun cbn ListTransitRouterPeerAttachments --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-5u4qbayfv2io5v0000' --Tag.1.Key tagtest --NextToken 1 --MaxResults 20 --Tag.1.Value tagtest --CenId 'cen-j3jzhw1zpau2km0000' --RegionId 'cn-hangzhou' --TransitRouterId 'tr-bp1su1ytdxtataupl0000'"

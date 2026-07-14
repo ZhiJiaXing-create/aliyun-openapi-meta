@@ -1,5 +1,6 @@
 {
   "name": "DescribeDcdnDomainIpaBpsData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速域名。\n\n多个域名用英文逗号（,）分隔，默认查询所有加速域名。",
+        "en": "The accelerated domain name.\n\nYou can specify multiple domain names and separate them with commas (,). If you leave this parameter empty, data for all accelerated domain names is queried."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间点。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "FixTimeGap",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否补零。取值：\n- **true**：补零。\n- **false**：不补零。",
+        "en": "Specifies whether to pad data with zeros. Valid values:\n\n- **true**: Pads data with zeros.\n\n- **false**: Does not pad data with zeros."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询数据的时间粒度，单位为秒。\n\n根据您指定**StartTime**和**EndTime**两者的时间跨度，该参数取值如下：\n\n- 3天以内（不包含3天整）：支持**300**、**3600**、 **86400**，如果不传该参数，默认值为**300**。\n\n- 3~31天（不包含31天整）：支持**3600**和**86400**，如果不传该参数，默认值为**3600**。\n\n- 31天及以上：支持**86400**，如果不传该参数，默认值为**86400**。",
+        "en": "The time granularity of the data to query, in seconds.\n\nThe valid values for this parameter depend on the time span between **StartTime** and **EndTime**:\n\n- If the time span is less than 3 days: **300**, **3600**, and **86400** are supported. The default value is **300**.\n\n- If the time span is from 3 to 31 days (exclusive): **3600** and **86400** are supported. The default value is **3600**.\n\n- If the time span is 31 days or more: **86400** is supported. The default value is **86400**."
+      }
     },
     {
       "name": "IspNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商英文名。\n\n您可以调用[DescribeDcdnRegionAndIsp](~~207199~~)接口获取，默认查询所有运营商。",
+        "en": "The English name of the carrier. You can call the [DescribeDcdnRegionAndIsp](~~207199~~) operation to query the English name. If you do not specify this parameter, data for all carriers is queried.\n\nYou can call the [DescribeDcdnRegionAndIsp](~~207199~~) operation, which queries all carriers by default."
+      }
     },
     {
       "name": "LocationNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域商英文名。\n\n您可以调用[DescribeDcdnRegionAndIsp](~~207199~~)接口获取，默认查询所有地域。",
+        "en": "The English name of the region. You can call the [DescribeDcdnRegionAndIsp](~~207199~~) operation to query the English name. If you do not specify this parameter, data for all regions is queried.\n\nYou can call the [DescribeDcdnRegionAndIsp](~~207199~~) operation. By default, all regions are queried."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的起始时间点。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "TimeMerge",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自适应计算**Interval**值，如果**timeMerge**=**1**，会根据**startTime**和**endTime**计算出合适的**inteval**值，和**Interval**参数任选。",
+        "en": "Specifies whether to automatically adjust the time granularity. If you set this parameter to **1**, an appropriate value for the **Interval** parameter is used based on the specified **StartTime** and **EndTime**. You can specify either this parameter or the **Interval** parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取四层加速的带宽数据",
+    "en": "DescribeDcdnDomainIpaBpsData"
+  },
+  "descriptions": {
+    "zh": "> \n> -  该接口获取数据的单位为：bit/second。\n> -  不指定**StartTime**和**EndTime**，默认返回过去24小时的数据；指定**StartTime**和**EndTime**，返回指定起止时间的数据。\n> -  单用户调用频率：100次/秒。",
+    "en": "> - The data is measured in bit/second.\n>\n> - If you do not specify **StartTime** and **EndTime**, data from the last 24 hours is returned. If you specify **StartTime** and **EndTime**, data in the specified time range is returned.\n>\n> - The call frequency for a single user is limited to 100 calls per second."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn describe-dcdn-domain-ipa-bps-data --domain-name example.com --start-time 2017-12-10T20:00:00Z --end-time 2017-12-10T21:00:00Z --time-merge 1 --interval 300 --fix-time-gap false --isp-name-en Unicom --location-name-en beijing --region cn-hangzhou",
     "legacyCli": "aliyun dcdn DescribeDcdnDomainIpaBpsData --region cn-hangzhou --IspNameEn Unicom --EndTime '2017-12-10T21:00:00Z' --DomainName 'example.com' --TimeMerge 1 --LocationNameEn beijing --StartTime '2017-12-10T20:00:00Z' --FixTimeGap false --Interval 300"

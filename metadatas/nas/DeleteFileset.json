@@ -1,5 +1,6 @@
 {
   "name": "DeleteFileset",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，从您的客户端生成一个参数值，确保不同的请求间该参数值唯一。\n\nClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。\n\n> 若用户未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~).\n\n> If you do not specify this parameter, the system automatically uses the RequestId of the API request as the ClientToken. The RequestId may differ for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次删除请求执行预检。\n\n预检操作会帮助您检查参数有效性、校验库存等，并不会实际删除实例。\n\n取值：\n\n- true：发送检查请求，不会删除实例。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回200 HttpCode。\n\n- false（默认）：发送正常请求，通过检查后直接删除实例。",
+        "en": "Specifies whether to perform a dry run for this deletion request.\n\nA dry run checks parameter validity and resource availability without actually deleting the instance.\n\nValid values:\n\n- true: Sends a check request without deleting the instance. The check items include whether required parameters are specified, the request format, and business limitations. If the check fails, the corresponding error is returned. If the check passes, HTTP status code 200 is returned.\n\n- false (default): Sends a normal request. After the check passes, the instance is directly deleted."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。\n\n- CPFS：必须以`cpfs-`开头，例如cpfs-099394bd928c****。\n\n- CPFS智算版：必须以`bmcpfs-`开头，例如bmcpfs-290w65p03ok64ya****。",
+        "en": "The file system ID.\n\n- CPFS: The ID must start with `cpfs-`, such as cpfs-099394bd928c****.\n\n- CPFS for Lingjun: The ID must start with `bmcpfs-`, such as bmcpfs-290w65p03ok64ya****."
+      }
     },
     {
       "name": "FsetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Fileset ID。",
+        "en": "The fileset ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除文件集",
+    "en": "Delete a fileset"
+  },
+  "descriptions": {
+    "zh": "- 仅支持CPFS 2.2.0和CPFS智算版2.7.0及以上版本删除Fileset。删除后，目录中的数据也会被全部删除且无法恢复，请谨慎删除。\n- 如果开启了删除保护功能，需要先关闭删除保护，才能进行删除操作。\n- 目标文件系统上所有 Fileset 必须处于 CREATED 终态，才能进行删除操作。\n- 删除CPFS通用版Fileset会立即释放磁盘空间。删除CPFS智算版Fileset会逐渐释放磁盘空间。数据被删除后无法恢复，请谨慎删除。",
+    "en": "- Only CPFS 2.2.0 and later and CPFS for Lingjun 2.7.0 and later support fileset deletion. After a fileset is deleted, all data in the directory is permanently deleted and cannot be recovered. Proceed with caution.\n- If deletion protection is enabled, disable it before you delete the fileset.\n- All filesets on the target file system must be in the CREATED desired state before you can perform the deletion.\n- Deleting a CPFS general-purpose fileset immediately releases disk space. Deleting a CPFS for Lingjun fileset gradually releases disk space. Deleted data cannot be recovered. Proceed with caution."
+  },
   "example": {
     "unifiedCli": "aliyun nas delete-fileset --file-system-id bmcpfs-290w65p03ok64ya0000 --fset-id fset-1902718ea0ae0000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun nas DeleteFileset --region cn-hangzhou --FsetId 'fset-1902718ea0ae0000' --DryRun false --FileSystemId 'bmcpfs-290w65p03ok64ya0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

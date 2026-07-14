@@ -1,5 +1,6 @@
 {
   "name": "DescribeSiteLogs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取日志结束时间点。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 说明 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nThe time follows the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time is displayed in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "取得第几页，取值范围为大于1的任意整数。",
+        "en": "The page number. Pages start from page 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，默认300，最大1000，取值：1~1000之前的任意整数。",
+        "en": "The number of entries per page. Default value: 300. Valid values: 1 to 1000."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可以通过调用ListSites获取。",
+        "en": "The ID of the website. You can call the ListSites operation to obtain."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取日志起始时间点。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nThe time follows the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time is displayed in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询站点离线日志下载地址",
+    "en": "DescribeSiteLogs"
+  },
+  "descriptions": {
+    "zh": "- 当您不指定StartTime和EndTime时，默认读取过去24小时的日志数据；当指定StartTime和EndTime时，按指定的起止时间查询日志。\n- 查询数据的时间粒度为一小时。\n- 单用户调用频率：50次/秒。\n- 仅支持查询最近一个月的日志记录（开始时间和当前时间跨度不大于31天）。",
+    "en": "- If you do not specify StartTime and EndTime, log data from the last 24 hours is returned by default. If you specify StartTime and EndTime, log data for the specified time range is returned.\n\n- The time granularity for data queries is one hour.\n\n- The maximum number of calls per user: 50 calls per second.\n\n- Only log records from the last month can be queried (the time span between the start time and the current time cannot exceed 31 days)."
+  },
   "example": {
     "unifiedCli": "aliyun esa describe-site-logs --site-id 123456000 --page-size 10 --page-number 1 --start-time 2022-11-06T16:00:00Z --end-time 2022-11-06T17:00:00Z --region cn-hangzhou",
     "legacyCli": "aliyun esa DescribeSiteLogs --region cn-hangzhou --SiteId 123456000 --PageSize 10 --EndTime '2022-11-06T17:00:00Z' --PageNumber 1 --StartTime '2022-11-06T16:00:00Z'"

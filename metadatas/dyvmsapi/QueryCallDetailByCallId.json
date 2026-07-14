@@ -1,0 +1,50 @@
+{
+  "name": "QueryCallDetailByCallId",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "CallId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "通话的唯一识别ID。调用外呼接口发起通话后，返回参数中会携带CallId。\n - 获取的CallId与**QueryDate**必须是同一天。示例：CallId的时间是2022.11.21，**QueryDate**必须也是2022.11.21内的时间。\n - 获取的CallId与**ProdId**参数值必须匹配。示例：CallId是在发送语音通知后获取的，那**ProdId**参数需要填写语音通知产品ID即**11000000300006**。",
+        "en": "The unique ID of the call.\n\n> \n\n*   The CallId parameter is included in the response parameters of the outbound call operation that you call to initiate a call.\n\n*   The date when the call specified by CallId is started must be the same as the date specified by QueryDate.\n\n*   The value of CallId must match the value of ProdId."
+      }
+    },
+    {
+      "name": "ProdId",
+      "position": "Query",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "产品ID。取值：\n- **11000000300006**：语音通知。\n- **11010000138001**：语音验证码。\n- **11000000300005**：语音IVR，向指定号码发起交互式语音通话。\n- **11000000300009**：语音SIP。\n- **11030000180001**：智能外呼。\n\n> 获取的CallId与**ProdId**参数值必须匹配，不匹配或传入错误的产品ID将无法返回**Data**。",
+        "en": "The service ID. Valid values:\n\n*   **11000000300006**: voice notification. You can call the [SingleCallByVoice](https://help.aliyun.com/document_detail/393517.html) operation to send a voice notification of the voice notification file type to the specified number.\n*   **11010000138001**: voice verification code. You can call the [SingleCallByTts](https://help.aliyun.com/document_detail/393519.html) operation to send a voice verification code or a text-to-speech (TTS) voice notification to the specified number.\n*   **11000000300005**: IVR. You can call the [IvrCall](https://help.aliyun.com/document_detail/393521.html) operation to initiate an interactive voice call to the specified number.\n*   **11000000300009**: Session Initiation Protocol (SIP) call.\n*   **11030000180001**: intelligent outbound call."
+      }
+    },
+    {
+      "name": "QueryDate",
+      "position": "Query",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "通话发生的时间。格式为Unix时间戳，单位：毫秒。\n\n查询指定时间点之后24小时内的通话记录。\n\n例如：您输入2022.11.21 20:00:01（时间戳：1669032001000），系统会查询2022.11.21 20:00:01~2022.11.22 20:00:01时间段内指定CallId的呼叫记录。\n\n> 获取的CallId与**QueryDate**必须是同一天。",
+        "en": "The time at which call details are queried. This value is a UNIX timestamp representing the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 UTC.\n\n> The system queries the call records that are generated within 24 hours after the specified point in time. For example, if you specify the time 20:00:01 on November 21, 2022, the system queries the call records that are generated for the specified call ID from 20:00:01 on November 21, 2022, to 20:00:01 on November 22, 2022."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定通话的呼叫详情",
+    "en": "QueryCallDetailByCallId"
+  },
+  "descriptions": {
+    "zh": "- 此接口只支持查询近6个月的数据。\n- 此接口可查询语音通知、语音验证码、语音IVR、智能语音交互、智能外呼机器人的呼叫详情。\n- 由于接口数据同步需要时间，建议您呼叫结束后等待3到5分钟再尝试调用接口。\n- 调用外呼接口发起通话后，返回参数中会携带CallId，使用获取的CallID查询呼叫详情。例：如果您需要查询语音通知的通话记录，请调用[SingleCallByVoice](~~393517~~)发送语音通知后获取CallId。\n- 请求参数**ProdId**和**QueryDate**必须与**CallID**匹配，否则查询到的呼叫详情可能为空。详细匹配规则请参见请求参数描述。\n- 呼叫详情记录不支持跨账号查询，请确保调用本接口的账号与发送外呼通话的账号一致。\n\n### QPS限制\n单用户调用频率：100次/秒。",
+    "en": "QueryCallDetailByCallId is a common query operation. You can call this operation to query the details of a voice notification, voice verification code, interactive voice response (IVR), intelligent inbound voice call, intelligent outbound voice call, or intelligent robocall.\n\n### QPS limits\n\nYou can call this operation up to 100 times per second per account."
+  }
+}

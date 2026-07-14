@@ -1,5 +1,6 @@
 {
   "name": "AllocateVpcIpv6Cidr",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AddressPoolType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPv6地址池的类型，取值如下：\n- **aliyun**（默认值）：系统分配IPv6地址段。\n- **custom**：用户自定义IPv6地址段。",
+        "en": "The type of the IPv6 address pool. Set the value to **custom**.\n\n>  This parameter is required."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "Ipv6CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要预留的IPv6地址段。",
+        "en": "The IPv6 CIDR block that you want to reserve."
+      }
     },
     {
       "name": "Ipv6Isp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VPC的IPv6地址段类型，取值：\n\n- **BGP**（默认值）：BGP（多线）。\n- **BGP_International**：BGP（多线）_国际。\n- **ChinaMobile**：中国移动（单线）。\n- **ChinaUnicom**：中国联通（单线）。\n- **ChinaTelecom**：中国电信（单线）。\n- **ChinaMobile_L2**：中国移动（单线）_L2。\n- **ChinaUnicom_L2**：中国联通（单线）_L2。\n- **ChinaTelecom_L2**：中国电信（单线）_L2。\n\n> - 如果是开通了对应白名单的用户，该字段可以设置为**ChinaTelecom**（中国电信）、**ChinaUnicom**（中国联通）、**ChinaMobile**（中国移动）、**ChinaTelecom_L2**（中国L2电信）、**ChinaUnicom_L2**（中国L2联通）、**ChinaMobile_L2**（中国L2移动）和**BGP_International**（BGP多线国际）。\n> - 每种类型的IPv6地址段只能预留一个，只有在分配给VPC后，才可以预留下一个。",
+        "en": "The type of IPv6 CIDR block. Valid values:\n\n*   **BGP** (default)\n*   **ChinaMobile**\n*   **ChinaUnicom**\n*   **ChinaTelecom**\n\n> \n\n*   If your Alibaba Cloud account is allowed to use single-ISP bandwidth, valid values are: **ChinaTelecom**, **ChinaUnicom**, and **ChinaMobile**.\n\n*   You can reserve only one IPv6 CIDR block of each type. After a reserved IPv6 CIDR block of a type is allocated to a VPC, you can reserve another IPv6 CIDR of the type."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPC所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPC.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "预留指定的IPv6地址段",
+    "en": "AllocateVpcIpv6Cidr"
+  },
+  "descriptions": {
+    "zh": "为VPC分配指定IPv6地址段的流程如下：\n1. 调用本接口预留指定的IPv6地址段。\n2. 为存量VPC分配指定的IPv6地址段时，请调用[AssociateVpcCidrBlock](~~146745~~)接口，设置**RegionId**、**VpcId**、**IPv6CidrBlock**为指定的IPv6地址段，**IpVersion**为**ipv6**；为新建VPC分配指定的IPv6地址段时，请调用[CreateVpc](~~35737~~)接口，设置**RegionId**、**Ipv6CidrBlock**为指定的IPv6地址段、**EnableIpv6**为**true**。",
+    "en": "# [](#)\n\nThe following section describes how to allocate an IPv6 CIDR block to a virtual private cloud (VPC):\n\n1.  Call the AllocateVpcIpv6Cidr operation to reserve the IPv6 CIDR block.\n2.  To allocate an IPv6 CIDR block to an existing VPC, call the [AssociateVpcCidrBlock](~~146745~~) operation. Set **RegionId**, **VpcId**, and **IPv6CidrBlock** to the IPv6 CIDR bock, and set **IpVersion** to **ipv6**. To allocate an IPv6 CIDR block when you create a VPC, call the [CreateVpc](~~35737~~) operation. Set **RegionId** and **Ipv6CidrBlock** to the IPv6 CIDR block, and set **EnableIpv6** to **true**."
+  },
   "example": {
     "unifiedCli": "aliyun vpc allocate-vpc-ipv6-cidr --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --ipv6-isp BGP --address-pool-type custom --ipv6-cidr-block 2408:XXXX:0:a600::/56 --region cn-hangzhou",
     "legacyCli": "aliyun vpc AllocateVpcIpv6Cidr --region cn-hangzhou --Ipv6Isp BGP --AddressPoolType custom --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Ipv6CidrBlock '2408:XXXX:0:a600::/56'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "监听配置的CA证书列表。目前仅支持添加1个CA证书。",
-        "en": "The certificate authority (CA) certificates. You can specify only one CA certificate."
+        "en": "A list of CA certificates for the listener. Only one CA certificate is supported."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否开启双向认证。取值：\n\n- **true**：开启。\n- **false**（默认值）：不开启。",
-        "en": "Specifies whether to enable mutual authentication. Valid values:\n\n*   **true**: enables mutual authentication.\n*   **false** (default): disables mutual authentication."
+        "en": "Specifies whether to enable mutual authentication. Valid values:\n\n- **true**: Enables mutual authentication.\n\n- **false** (default): Disables mutual authentication."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "证书列表信息。",
-        "en": "The details about each certificate."
+        "en": "A list of server certificates."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among all requests. The token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system automatically uses the value of **RequestId** as the value of **ClientToken**. **RequestId** may be different for each API request."
+        "en": "A client-generated token that is used to ensure the idempotency of the request. The token must be unique across different requests and can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** is unique for each API request."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "规则动作列表。",
-        "en": "The actions of the forwarding rule."
+        "en": "The default actions for the listener."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会创建监听。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
-        "en": "Specifies whether to perform only a precheck. Valid values:\n\n*   **true**: prechecks the request without creating a listener. The system checks the required parameters, request syntax, and limits. If the request fails the precheck, an error code is returned based on the cause of the failure. If the request passes the precheck, the `DryRunOperation` error code is returned.\n*   **false** (default): sends the API request. If the request passes the precheck, a 2xx HTTP status code is returned and the system proceeds to create a listener."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run to check the request for potential issues, including required parameters, request format, and service limits. The listener is not created. If the request fails the check, the system returns an error. If the request passes the check, the system returns the `DryRunOperation` error code.\n\n- **false** (default): Sends the request. If the request passes the check, the system performs the operation and returns an HTTP 2xx status code."
       }
     },
     {
@@ -71,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "是否开启`Gzip`压缩，对特定文件类型进行压缩。取值：\n\n- **true**（默认值）：是。\n- **false**：否。",
-        "en": "Specifies whether to enable `Gzip` compression to compress specific types of files. Valid values:\n\n*   **true** (default): enables Gzip compression.\n*   **false**: disables Gzip compression."
+        "en": "Specifies whether to enable `Gzip` compression to compress specific types of files. Valid values:\n\n- **true** (default): Enables Gzip compression.\n\n- **false**: Disables Gzip compression."
       }
     },
     {
@@ -81,7 +82,7 @@
       "required": false,
       "description": {
         "zh": "是否开启`HTTP/2`特性。取值：\n- **true**（默认值）：是。\n- **false**：否。\n\n> 仅HTTPS监听支持此参数。",
-        "en": "Specifies whether to enable `HTTP/2`. Valid values:\n\n*   **true** (default): enables HTTP/2.\n*   **false**: disables HTTP/2.\n\n>  Only HTTPS listeners support this parameter."
+        "en": "Specifies whether to enable `HTTP/2`. Valid values:\n\n- **true** (default): Enables HTTP/2.\n\n- **false**: Disables HTTP/2.\n\n> This parameter is available only for HTTPS listeners."
       }
     },
     {
@@ -90,8 +91,8 @@
       "type": "Integer",
       "required": false,
       "description": {
-        "zh": "指定连接空闲超时时间。单位：秒。\n\n取值范围：**1~60**。\n\n默认值：**15**。\n\n如果在超时时间内一直没有访问请求，负载均衡会暂时中断当前连接，直到一下次请求来临时重新建立新的连接。",
-        "en": "The timeout period of an idle connection. Unit: seconds.\n\nValid values: **1 to 60**.\n\nDefault value: **15**.\n\nIf no requests are received within the specified timeout period, ALB closes the current connection. When a new request is received, ALB establishes a new connection."
+        "zh": "指定连接空闲超时时间。单位：秒。\n\n取值范围：**1~600**。\n\n默认值：**15**。\n\n如果在超时时间内一直没有访问请求，负载均衡会暂时中断当前连接，直到一下次请求来临时重新建立新的连接。\n\n> 用户可以申请提升配额将连接空闲超时时间提升至最大3600秒。",
+        "en": "The idle timeout in seconds.\n\nValid values: **1** to **600**.\n\nDefault value: **15**.\n\nIf no requests are received on a connection within the idle timeout, the load balancer closes the connection. A new connection is established for the next request.\n\n> You can request a quota increase to a maximum of 3,600 seconds."
       }
     },
     {
@@ -101,7 +102,7 @@
       "required": false,
       "description": {
         "zh": "自定义监听名称。\n\n长度为2~256个字符，必须是中文和无害字符串中的字符，可包含中文、字母、数字、短划线（-）、正斜线（/）、半角句号（.）、下划线（_）。",
-        "en": "The name of the listener.\n\nThe description must be 2 to 256 characters in length, and can contain letters, digits, hyphens (-), forward slashes (/), periods (.), and underscores (\\_). Regular expressions are supported."
+        "en": "A custom name for the listener.\n\nThe name must be 2 to 256 characters long and can contain letters, digits, hyphens (-), forward slashes (/), periods (.), underscores (\\_), and Chinese characters."
       }
     },
     {
@@ -111,7 +112,7 @@
       "required": true,
       "description": {
         "zh": "负载均衡实例前端使用的端口。\n\n取值：**1~65535**。",
-        "en": "The frontend port that is used by the ALB instance.\n\nValid values: **1 to 65535**."
+        "en": "The frontend port used by the listener.\n\nValid values: **1** to **65535**."
       }
     },
     {
@@ -131,7 +132,7 @@
       "required": true,
       "description": {
         "zh": "应用型负载均衡实例ID。",
-        "en": "The ID of the ALB instance."
+        "en": "The ID of the Application Load Balancer (ALB) instance."
       }
     },
     {
@@ -141,7 +142,7 @@
       "required": false,
       "description": {
         "zh": "配置关联的QUIC监听。",
-        "en": "Select a QUIC listener and associate it with the ALB instance."
+        "en": "The configuration of the associated QUIC listener."
       }
     },
     {
@@ -150,8 +151,8 @@
       "type": "Integer",
       "required": false,
       "description": {
-        "zh": "指定请求超时时间。单位：秒。\n\n取值：**1~180**。\n\n默认值：**60**。\n\n如果在超时时间内后端服务器一直没有响应，负载均衡将放弃等待，并给客户端返回` HTTP 504 `错误码。",
-        "en": "The timeout period of a request. Unit: seconds.\n\nValid values: **1 to 180**.\n\nDefault value: **60**.\n\nIf no response is received from the backend server during the request timeout period, ALB sends an `HTTP 504` error code to the client."
+        "zh": "指定请求超时时间。单位：秒。\n\n取值：**1~600**。\n\n默认值：**60**。\n\n如果在超时时间内后端服务器一直没有响应，负载均衡将放弃等待，并给客户端返回` HTTP 504 `错误码。\n\n> 用户可以申请提升配额将请求超时时间提升至最大3600秒。",
+        "en": "The request timeout in seconds.\n\nValid values: **1** to **600**.\n\nDefault value: **60**.\n\nIf a backend server does not respond within the timeout period, the load balancer returns an `HTTP 504` error to the client.\n\n> You can request a quota increase to a maximum of 3,600 seconds."
       }
     },
     {
@@ -161,7 +162,7 @@
       "required": false,
       "description": {
         "zh": "安全策略ID。支持系统安全策略和自定义安全策略。\n\n默认值：**tls\\_cipher\\_policy\\_1_0**（系统安全策略）。\n\n> 仅HTTPS监听支持此参数。",
-        "en": "The ID of the security policy. System security policies and custom security policies are supported.\n\nDefault value: **tls_cipher_policy\\_1\\_0** (system security policy).\n\n>  Only HTTPS listeners support this parameter."
+        "en": "The ID of the security policy. Both system and custom security policies are supported.\n\nDefault value: **tls\\_cipher\\_policy\\_1\\_0** (a system security policy).\n\n> This parameter is available only for HTTPS listeners."
       }
     },
     {
@@ -171,7 +172,7 @@
       "required": false,
       "description": {
         "zh": "标签。",
-        "en": "The tags."
+        "en": "A list of tags to add to the listener."
       }
     },
     {
@@ -181,10 +182,21 @@
       "required": false,
       "description": {
         "zh": "XForward字段配置信息。",
-        "en": "The configuration of the XForward header."
+        "en": "The configuration of `X-Forwarded-*` headers."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建监听",
+    "en": "CreateListener"
+  },
+  "descriptions": {
+    "zh": "**CreateListener**接口属于异步接口，即系统返回一个请求ID，但该HTTP、HTTPS或QUIC监听尚未创建成功，系统后台的创建任务仍在进行。您可以调用[GetListenerAttribute](~~2254865~~)查询HTTP、HTTPS或QUIC监听的创建状态：\n- 当HTTP、HTTPS或QUIC监听处于**Provisioning**状态时，表示HTTP、HTTPS或QUIC监听正在创建中。\n- 当HTTP、HTTPS或QUIC监听处于**Running**状态时，表示HTTP、HTTPS或QUIC监听创建成功。",
+    "en": "The **CreateListener** operation is an asynchronous operation. A successful request returns a request ID, but the listener is created in the background. Call [GetListenerAttribute](~~2254865~~) to query the listener's creation status:\n\n- The **Provisioning** state indicates that the listener is being created.\n\n- The **Running** state indicates that the listener has been created successfully."
+  },
   "example": {
     "unifiedCli": "aliyun alb create-listener --load-balancer-id alb-n5qw04uq8vavfe0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --listener-protocol HTTP --listener-port 80 --listener-description HTTP_80 --request-timeout 60 --idle-timeout 3 --gzip-enabled true --http2-enabled true --security-policy-id tls_cipher_policy_1_0 --ca-enabled false --xforwarded-for-config XForwardedForClientSourceIpsEnabled=false XForwardedForClientCertFingerprintAlias=test_finger-print-alias_123456 XForwardedForClientCertFingerprintEnabled=true XForwardedForHostEnabled=false XForwardedForClientSourceIpsTrusted=10.1.1.0/24 XForwardedForClientCertIssuerDNAlias=test_issue-dn-alias_123456 XForwardedForClientCertClientVerifyAlias=test_client-verify-alias_123456 XForwardedForClientCertSubjectDNEnabled=true XForwardedForSLBIdEnabled=false XForwardedForClientCertSubjectDNAlias=test_subject-dn-alias_123456 XForwardedForProtoEnabled=false XForwardedForClientSrcPortEnabled=true XForwardedForEnabled=true XForwardedForProcessingMode=append XForwardedForSLBPortEnabled=false XForwardedForClientCertIssuerDNEnabled=true XForwardedForClientCertClientVerifyEnabled=true --quic-config QuicListenerId=lsn-o4u54y73wq7b000000 QuicUpgradeEnabled=false --certificates CertificateId=1037050000000 --ca-certificates CertificateId=1231570000000 --default-actions '[{\"Type\":\"ForwardGroup\",\"ForwardGroupConfig\":{\"ServerGroupTuples\":[\"sgp-8ilqs4axp6000000\"]}}]' --tag Value=product Key=env --region cn-hangzhou",
     "legacyCli": "aliyun alb CreateListener --region cn-hangzhou --XForwardedForConfig.XForwardedForClientCertClientVerifyEnabled true --Http2Enabled true --DryRun false --IdleTimeout 3 --LoadBalancerId 'alb-n5qw04uq8vavfe0000' --Certificates.1.CertificateId 1037050000000 --ListenerProtocol HTTP --SecurityPolicyId tls_cipher_policy_1_0 --ListenerDescription HTTP_80 --XForwardedForConfig.XForwardedForClientSourceIpsTrusted '10.1.1.0/24' --XForwardedForConfig.XForwardedForEnabled true --QuicConfig.QuicUpgradeEnabled false --XForwardedForConfig.XForwardedForHostEnabled false --XForwardedForConfig.XForwardedForClientCertIssuerDNAlias 'test_issue-dn-alias_123456' --XForwardedForConfig.XForwardedForClientCertFingerprintEnabled true --DefaultActions.1.Type ForwardGroup --XForwardedForConfig.XForwardedForProtoEnabled false --XForwardedForConfig.XForwardedForClientCertSubjectDNAlias 'test_subject-dn-alias_123456' --CaEnabled false --ListenerPort 80 --RequestTimeout 60 --Tag.1.Key env --XForwardedForConfig.XForwardedForClientCertFingerprintAlias 'test_finger-print-alias_123456' --XForwardedForConfig.XForwardedForClientCertIssuerDNEnabled true --XForwardedForConfig.XForwardedForSLBIdEnabled false --DefaultActions.1.ForwardGroupConfig.ServerGroupTuples.1 'sgp-8ilqs4axp6000000' --GzipEnabled true --XForwardedForConfig.XForwardedForClientSrcPortEnabled true --XForwardedForConfig.XForwardedForSLBPortEnabled false --XForwardedForConfig.XForwardedForClientCertSubjectDNEnabled true --QuicConfig.QuicListenerId 'lsn-o4u54y73wq7b000000' --XForwardedForConfig.XForwardedForProcessingMode append --Tag.1.Value product --XForwardedForConfig.XForwardedForClientSourceIpsEnabled false --ClientToken '123e4567-e89b-12d3-a456-426655440000' --CaCertificates.1.CertificateId 1231570000000 --XForwardedForConfig.XForwardedForClientCertClientVerifyAlias 'test_client-verify-alias_123456' --method POST --force"

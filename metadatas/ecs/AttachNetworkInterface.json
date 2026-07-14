@@ -1,5 +1,6 @@
 {
   "name": "AttachNetworkInterface",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "NetworkCardIndex",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网卡指定的物理网卡索引。\n\n>NetworkCardIndex 取值与实例规格族有关。如果实例规格不支持NetworkCard则不能指定；如果支持，取值请参见[实例规格族](~~25378~~)。",
+        "en": "The index of the network card specified for the ENI.\n\n>Valid values of NetworkCardIndex depend on the instance family. If the instance type does not support network cards, you cannot specify this parameter. If the instance type supports network cards, see [Instance families](~~25378~~) for valid values."
+      }
     },
     {
       "name": "NetworkInterfaceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "弹性网卡ID。",
+        "en": "The network interface controller (NIC) ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在地域的ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the instance. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "TrunkNetworkInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "中继网卡ID。\n>该参数暂未上线，不支持使用。",
+        "en": "The ID of the trunk ENI.\n>This parameter is not yet available."
+      }
     },
     {
       "name": "WaitForNetworkConfigurationReady",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": ">该参数已废弃。",
+        "en": ">This parameter is deprecated."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "附加弹性网卡到专有网络VPC类型实例上",
+    "en": "Attach an ENI to a VPC-connected instance"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，请注意：\n\n- 弹性网卡必须处于**可用**（`Available`）状态，一个弹性网卡只能同时附加到一台相同可用区且相同专有网络的实例上。\n\n- 实例需处于运行中（Running）或者已停止（Stopped）状态，部分实例规格的实例在附加弹性网卡时必须为已停止（Stopped）状态，更多信息，请参见[附加弹性网卡](~~58503~~)中的需要停止实例的ECS实例规格章节。\n\n    > 如果实例最后一次启动时间在2018年4月1日之前（包括但不限于启动新购的实例、重启、重开机），您必须提前调用RebootInstance重启一直保持运行中状态的实例，否则无法附加弹性网卡。\n\n- 一台实例可以同时附加多个弹性网卡，更多信息，请参见[弹性网卡概述](~~58496~~)。\n  \n- 弹性网卡所在的交换机必须与实例所在交换机属于同一可用区且同一专有网络VPC。   \n\n- 该接口为异步接口，调用成功后，您可以通过查询弹性网卡状态或监听网卡操作事件的方式来感知操作结果。 弹性网卡状态机如下图所示：\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221124/esgu/AttachNetworkInterface.jpg)\n    - Attaching说明附加弹性网卡请求发送成功，弹性网卡正在附加到ECS实例中。\n    - InUse说明弹性网卡已附加到ECS实例。\n    - Available说明弹性网卡附加到ECS实例失败。   \n\n**调用示例详情参见**[附加弹性网卡](~~471550~~)。",
+    "en": "When you call this operation, take note of the following items:\n\n- The Elastic Network Interface (ENI) must be in the **active** (`Available`) state. An ENI can be attached to only one instance that resides in the same zone and VPC as the network interface controller (NIC).\n\n- The ECS instance must be in the Running or Stopped state. Some ECS instance types require the ECS instance to be in the Stopped state when you attach an Elastic Network Interface (ENI). For more information, see the section about ECS instance types that require the ECS instance to be stopped in [Attach an ENI](~~58503~~).\n\n    > If the instance was last started before April 1, 2018 (including but not limited to starting a newly purchased instance, restarting, or powering on), you must invoke RebootInstance to restart the instance that has been in the Running state. Otherwise, the network interface controller (NIC) cannot be attached.\n\n- Multiple Elastic Network Interfaces (ENIs) can be attached to a single instance at the same time. For more information, see [ENI overview](~~58496~~).\n  \n- The vSwitch to which the network interface controller (NIC) belongs must be in the same zone and VPC as the instance.\n\n- This is an asynchronous operation. After a successful invocation, you can check the Elastic Network Interface (ENI) status or listen for network interface controller (NIC) operation events to obtain the result. The ENI state machine is shown in the following figure:\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221124/esgu/AttachNetworkInterface.jpg)\n    - Attaching indicates that the request to attach the ENI was sent successfully and the ENI is being attached to the ECS instance.\n    - InUse indicates that the ENI has been attached to the ECS instance.\n    - Available indicates that the ENI failed to be attached to the ECS instance.\n\n**For details, see** [Attach a network interface controller (NIC)](~~471550~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ecs attach-network-interface --biz-region-id cn-hangzhou --network-interface-id eni-bp17pdijfczax1huji0000 --instance-id i-bp16qstyvxj9gpqw0000 --trunk-network-instance-id eni-f8zapqwj1v1j4ia30000 --wait-for-network-configuration-ready false --network-card-index 0 --region cn-hangzhou",
     "legacyCli": "aliyun ecs AttachNetworkInterface --region cn-hangzhou --InstanceId 'i-bp16qstyvxj9gpqw0000' --TrunkNetworkInstanceId 'eni-f8zapqwj1v1j4ia30000' --RegionId 'cn-hangzhou' --NetworkInterfaceId 'eni-bp17pdijfczax1huji0000' --WaitForNetworkConfigurationReady false --NetworkCardIndex 0"

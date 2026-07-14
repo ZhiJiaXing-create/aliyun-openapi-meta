@@ -1,5 +1,6 @@
 {
   "name": "UpdateServerGroupAttribute",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "ConnectionDrainConfig",
       "position": "Body",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接优雅中断相关配置。",
+        "en": "The configurations of connection draining."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会更新服务器组信息。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and sends the request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "HealthCheckConfig",
       "position": "Body",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "健康检查相关配置。",
+        "en": "The configurations of health checks."
+      }
     },
     {
       "name": "Scheduler",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度算法。取值：\n\n- **5TCH**：五元组哈希，基于五元组（源IP、目的IP、源端口、目的端口和协议）的一致性哈希，相同的流会调度到相同的后端服务器。\n\n- **3TCH**：三元组哈希，基于三元组（源IP、目的IP和协议）的一致性哈希，相同的流会调度到相同的后端服务器。\n\n- **2TCH**：二元组哈希，基于二元组（源IP和目的IP）的一致性哈希，相同的流会调度到相同的后端服务器。",
+        "en": "The scheduling algorithm. Valid values:\n\n- **5TCH**: 5-tuple hashing. Packets are distributed to backend servers based on a 5-tuple hash of the source IP address, destination IP address, source port, destination port, and protocol. This ensures that the same stream is always scheduled to the same backend server.\n\n- **3TCH**: 3-tuple hashing. Packets are distributed to backend servers based on a 3-tuple hash of the source IP address, destination IP address, and protocol. This ensures that the same stream is always scheduled to the same backend server.\n\n- **2TCH**: 2-tuple hashing. Packets are distributed to backend servers based on a 2-tuple hash of the source IP address and destination IP address. This ensures that the same stream is always scheduled to the same backend server."
+      }
     },
     {
       "name": "ServerFailoverMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器异常时，存量流量的处理方式。取值：\n\n- **NoRebalance**：不重新平衡现有流量。\n- **Rebalance**：重新平衡现有流量。",
+        "en": "The method that is used to handle existing connections when a backend server is exceptional. Valid values:\n\n- **NoRebalance**: Existing connections are not rebalanced.\n\n- **Rebalance**: Existing connections are rebalanced."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组ID。",
+        "en": "The server group ID."
+      }
     },
     {
       "name": "ServerGroupName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器组名称。\n\n长度为2~128个字符，必须以大小写字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The name of the server group.\n\nThe name must be 2 to 128 characters in length, start with a letter or a Chinese character, and can contain digits, periods (.), underscores (\\_), and hyphens (-)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新服务器组属性",
+    "en": "UpdateServerGroupAttribute"
+  },
+  "descriptions": {
+    "zh": "**UpdateServerGroupAttribute**接口属于异步接口，即系统返回一个请求ID，但该服务器组的配置尚未更新成功，系统后台的更新任务仍在进行。您可以调用 ListServerGroups 查询服务器组的配置的更新状态：\n- 当服务器组的配置处于**Configuring**状态时，表示服务器组的配置正在更新中。\n- 当服务器组的配置处于**Available**状态时，表示服务器组的配置更新成功。",
+    "en": "**UpdateServerGroupAttribute** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. The server group configuration is not updated immediately. You can call the ListServerGroups operation to query the status of the server group.\n\n- If a server group is in the **Configuring** state, its configuration is being updated.\n\n- If a server group is in the **Available** state, its configuration is updated."
+  },
   "example": {
     "unifiedCli": "aliyun gwlb update-server-group-attribute --server-group-id sgp-atstuj3rtoptyui0000 --server-group-name testServerGroupName --scheduler 5TCH --server-failover-mode NoRebalance --connection-drain-config ConnectionDrainEnabled=false ConnectionDrainTimeout=300 --health-check-config '{\"HealthCheckInterval\":10,\"HealthCheckConnectPort\":80,\"HealthCheckReq\":\"example-string\",\"UnhealthyThreshold\":2,\"HealthCheckPath\":\"/test/index.html\",\"HealthyThreshold\":2,\"HealthCheckExp\":\"example-string\",\"HealthCheckConnectTimeout\":5,\"HealthCheckProtocol\":\"TCP\",\"HealthCheckDomain\":\"SERVER_IP\",\"HealthCheckEnabled\":true,\"HealthCheckHttpCode\":[\"http_2xx\"]}' --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun gwlb UpdateServerGroupAttribute --region cn-hangzhou --HealthCheckConfig.HealthCheckConnectTimeout 5 --Scheduler 5TCH --DryRun false --HealthCheckConfig.HealthCheckProtocol TCP --ServerGroupId 'sgp-atstuj3rtoptyui0000' --HealthCheckConfig.HealthCheckReq 'example-string' --HealthCheckConfig.HealthCheckExp 'example-string' --HealthCheckConfig.HealthCheckHttpCode.1 http_2xx --HealthCheckConfig.HealthCheckPath '/test/index.html' --HealthCheckConfig.UnhealthyThreshold 2 --ConnectionDrainConfig.ConnectionDrainEnabled false --ConnectionDrainConfig.ConnectionDrainTimeout 300 --HealthCheckConfig.HealthCheckInterval 10 --HealthCheckConfig.HealthCheckDomain SERVER_IP --HealthCheckConfig.HealthCheckEnabled true --ServerFailoverMode NoRebalance --HealthCheckConfig.HealthCheckConnectPort 80 --ClientToken '123e4567-e89b-12d3-a456-426655440000' --HealthCheckConfig.HealthyThreshold 2 --ServerGroupName testServerGroupName --method POST --force"

@@ -1,5 +1,6 @@
 {
   "name": "ListExplorerRegistryModuleVersions",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/explorerRegistryModule/version",
@@ -8,39 +9,74 @@
       "name": "keyword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索关键字，支持根据 Module 的名称模糊搜索",
+        "en": "The search keyword. Fuzzy match is supported based on the module name."
+      }
     },
     {
       "name": "maxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页的最大数据条数。\n\n取值范围：0~200。\n\n默认值：100",
+        "en": "The maximum number of entries per page.\n\nValid values: 0 to 200.\n\nDefault value: 100."
+      }
     },
     {
       "name": "moduleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Module 的名称",
+        "en": "The name of the module."
+      }
     },
     {
       "name": "moduleVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Module 的版本",
+        "en": "The version of the module."
+      }
     },
     {
       "name": "namespaceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Module 所在的工作空间名称",
+        "en": "The name of the workspace to which the module belongs."
+      }
     },
     {
       "name": "nextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询返回结果下一页的令牌。\n\n当返回结果数据总条数超过maxResults限制，则数据会被截断，您可以使用nextToken查询下一页数据。",
+        "en": "The pagination token for the next page of results.\n\nIf the total number of entries exceeds the maxResults limit, the data is truncated. You can use nextToken to query the next page of data."
+      }
     }
   ],
+  "security": [
+    "Anonymous"
+  ],
+  "title": {
+    "zh": "获取官方RegistryModule版本列表",
+    "en": "List official registry module versions"
+  },
+  "descriptions": {
+    "zh": "本接口支持查询阿里云Terraform官方提供的Module版本信息。\n\n您可以通过指定`maxResults`参数调整最大返回条目数。\n- 如果返回结果中不存在`nextToken`，则表示没有更多数据。否则，则表示还有更多数据。如果想要查询后续页，需要将ListExplorerRegistryModules 接口的`nextToken`参数设置为上一次返回结果中获取到的`nextToken` 。如果未输入`NextToken`参数，查询时默认返回第一页的数据。\n- 通过设置keyword、namespaceName、moduleName、moduleVersion作为过滤条件，可以精确资源的搜索范围。多个过滤条件之间是逻辑与`AND`的关系，只有同时满足所有过滤条件的资源才会被返回。\n  - keyword参数：可选参数，关键词搜索，通过对ModuleName模糊匹配。例如：keyword设置为ecs时，则表示查询module名称包含ecs的module。\n  - namespaceName：可选参数，支持筛选特定工作空间的Module。例如：keyword设置为alibaba时，则表示查询module的工作空间为alibaba的module。当输入moduleName时，namespace也必须填入，可以通过接口ListExplorerRegistryModule接口获取namespaceName信息。\n  - moduleName：可选参数，支持筛选特定名称的Module。例如：keyword设置为ecs时，则表示查询module名称为ecs的module。\n  - moduleVersion：可选参数，支持筛选特定版本的Module。例如：keyword设置为1.0.0时，则表示查询module版本为1.0.0的module。\n\n响应结构包含请求 ID、总条目数、当前页数据及分页信息，便于处理查询结果。",
+    "en": "This operation queries the version information of official Terraform modules provided by Alibaba Cloud.\n\nYou can use the `maxResults` parameter to adjust the maximum number of entries to return.\n- If `nextToken` is not included in the response, no more data is available. Otherwise, more data is available. To query the next page, set the `nextToken` parameter of the ListExplorerRegistryModules operation to the `nextToken` value returned in the previous response. If the `NextToken` parameter is not specified, the first page of data is returned by default.\n- You can use keyword, namespaceName, moduleName, and moduleVersion as conditional filter Settings to narrow the search scope. Multiple filter conditions have a logical `AND` relationship. Only resources that meet all filter conditions are returned.\n  - keyword: optional. Performs a fuzzy match on the module name. For example, if keyword is set to ecs, modules whose names contain ecs are returned.\n  - namespaceName: optional. Filters modules by a specific workspace. For example, if namespaceName is set to alibaba, modules whose workspace is alibaba are returned. When moduleName is specified, namespaceName must also be specified. You can call the ListExplorerRegistryModule operation to obtain the namespaceName information.\n  - moduleName: optional. Filters modules by a specific name. For example, if moduleName is set to ecs, modules whose name is ecs are returned.\n  - moduleVersion: optional. Filters modules by a specific version. For example, if moduleVersion is set to 1.0.0, modules whose version is 1.0.0 are returned.\n\nThe response contains the request ID, total number of entries, data on the current page, and pagination information, which facilitates the processing of query results."
+  },
   "example": {
     "unifiedCli": "aliyun iacservice list-explorer-registry-module-versions --namespace-name alibaba --module-name vpc --module-version 1.11.0 --keyword key --max-results 20 --next-token lJTuhMWkNH89zZWyYM9GjpAbgRb+bPPPwN0Q3pclzKI= --api-version 2021-08-06 --region cn-hangzhou",
     "legacyCli": "aliyun iacservice GET /explorerRegistryModule/version --region cn-hangzhou --moduleVersion '1.11.0' --maxResults 20 --nextToken 'lJTuhMWkNH89zZWyYM9GjpAbgRb+bPPPwN0Q3pclzKI=' --moduleName vpc --keyword key --namespaceName alibaba --header \"Content-Type=application/json\""

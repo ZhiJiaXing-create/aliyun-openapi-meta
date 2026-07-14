@@ -1,5 +1,6 @@
 {
   "name": "DeleteInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "DELETE",
   "pathPattern": "/openapi/instances/[InstanceId]",
@@ -8,21 +9,44 @@
       "name": "InstanceId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "clientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性。由客户端生成该参数值，要保证在不同请求间唯一，最大不超过64个ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must make sure that the value is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "deleteType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "释放类型。可选值：\n\n- immediate：立即删除。删除后，系统会彻底清除所有数据，且实例不再显示在实例列表中。\n- protective：实例会被冻结24小时后，再彻底清除数据，期间实例仍在实例列表中显示，您可以选择[恢复实例](~~202195~~)或[立即释放](~~202195~~)。",
+        "en": "The release type. Valid values:\n\n- immediate: The instance is immediately deleted. After deletion, the system permanently clears all data, and the instance no longer appears in the instance list.\n- protective: The instance is frozen for 24 hours before the data is permanently cleared. During this period, the instance still appears in the instance list, and you can choose to [restore the instance](~~202195~~) or [immediately release it](~~202195~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "释放指定按量付费类型的实例",
+    "en": "Release a specified pay-as-you-go instance"
+  },
+  "descriptions": {
+    "zh": "调用此接口前，需要注意：\n实例释放后数据无法恢复，建议您在释放前先备份数据。具体操作，请参见[快照备份与恢复命令](~~65675~~)。",
+    "en": "Before you invoke this operation, note the following:\nData cannot be recovered after the instance is released. Back up your data before releasing the instance. For more information, see [Snapshot backup and recovery commands](~~65675~~)."
+  },
   "example": {
     "unifiedCli": "aliyun elasticsearch delete-instance --instance-id es-cn-t57p81n7ai89v0000 --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF0000 --delete-type protective --api-version 2017-06-13 --region cn-hangzhou",
     "legacyCli": "aliyun elasticsearch DELETE /openapi/instances/es-cn-t57p81n7ai89v0000 --region cn-hangzhou --clientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF0000' --deleteType protective --header \"Content-Type=application/json\""

@@ -1,5 +1,6 @@
 {
   "name": "DescribeInstanceMonitorData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据的结束时间点。按照[ISO 8601](~~25696~~)标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。如果指定的秒（`ss`）不是`00`，则自动换算为下一分钟。",
+        "en": "The end of the time range to query. Specify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. If the value of seconds (`ss`) is not `00`, the time is rounded up to the next minute."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待查询的实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取监控数据的间隔时间，单位：秒。取值范围： \n\n- 60。\n- 600。\n- 3600。\n\n默认值：60。",
+        "en": "The interval at which to retrieve monitoring data. Unit: seconds. Valid values:\n\n- 60\n\n- 600\n\n- 3600\n\nDefault value: 60."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据的起始时间点。按照[ISO 8601](~~25696~~)标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。如果指定的秒（`ss`）不是`00`，则自动换算为下一分钟。",
+        "en": "The beginning of the time range to query. Specify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. If the value of seconds (`ss`) is not `00`, the time is rounded up to the next minute."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例监控数据",
+    "en": "DescribeInstanceMonitorData"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n调用该接口时，您需要注意：\n\n-  一次最多返回400条数据，需满足`（EndTime–StartTime）/Period`小于等于400的条件限制，即返回参数`TotalCount`不能超过400，否则将返回`InvalidParameter.TooManyDataQueried`的错误提示。  \n\n- 一次最多能查询近30天内的监控信息，即指定的参数`StartTime`距今不能超过30天。\n\n-  当返回信息中缺少部分内容时，可能是系统没有获取到相应的信息。例如，当时实例处于已停止（Stopped）状态。\n\n-  该接口暂无法获取EBM弹性裸金属实例的CPU基础监控信息，您可通过安装云监控插件获取CPU监控信息。具体操作，请参见[安装云监控插件](~~183482~~)。",
+    "en": "## [](#)Usage notes\n\nTake note of the following items:\n\n- Up to 400 monitoring data entries can be returned at a time. Make sure that the `TotalCount` value does not exceed 400. The value is calculated by using the following formula: `TotalCount = (EndTime - StartTime)/Period`. If the TotalCount value is greater than 400, the `InvalidParameter.TooManyDataQueried` error is returned.\n\n- You can query the monitoring data in the last 30 days. If the value of `StartTime` is more than 30 days earlier than the current time, an error is returned.\n\n- In some scenarios, such as when the instance is in the Stopped state, the system cannot obtain the relevant information and specific information may be missing from the returned monitoring data.\n\n- You cannot call this operation to obtain the CPU basic monitoring information of an ECS bare metal instance. To obtain the CPU monitoring information of an ECS bare metal instance, install the CloudMonitor agent on the instance. For more information, see [InstallCloudMonitor](~~183482~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-instance-monitor-data --instance-id i-bp1a36962lrhj4ab0000 --start-time 2014-10-29T23:00:00Z --end-time 2014-10-30T08:00:00Z --period 60 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeInstanceMonitorData --region cn-hangzhou --EndTime '2014-10-30T08:00:00Z' --InstanceId 'i-bp1a36962lrhj4ab0000' --StartTime '2014-10-29T23:00:00Z' --Period 60"

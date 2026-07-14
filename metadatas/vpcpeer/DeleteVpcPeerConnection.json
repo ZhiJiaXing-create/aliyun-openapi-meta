@@ -1,5 +1,6 @@
 {
   "name": "DeleteVpcPeerConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a value for this parameter from your client to make sure that the value is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除VPC对等连接。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run but does not delete the VPC peering connection. The system checks the request for required parameters, format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends the request. If the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "Force",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制删除VPC对等连接。取值：\n\n- **false**（默认值）：不强制删除。删除前，需要将路由表中指向VPC对等连接的路由条目删除。\n\n- **true**：强制删除。系统会将VPC路由表中指向该VPC对等连接的路由条目删除。",
+        "en": "Specifies whether to force delete the VPC peering connection. Valid values:\n\n- **false** (default): does not force delete the VPC peering connection. Delete the routes that point to the VPC peering connection.\n\n- **true**: force deletes the VPC peering connection. The system deletes the routes that point to the VPC peering connection in the route table."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要删除的VPC对等连接的实例ID。",
+        "en": "The ID of the VPC peering connection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除VPC对等连接",
+    "en": "DeleteVpcPeerConnection"
+  },
+  "descriptions": {
+    "zh": "- 您可用删除VPC对等连接实例，删除后，您的业务也会中断，请在不影响业务的情况下执行该操作。\n\n    - 如果选择强制删除，系统会将VPC路由表中指向VPC对等连接实例的路由条目删除。\n\n    - 如果未选择强制删除，系统不会将VPC路由表中指向VPC对等连接实例的路由条目删除，您需要手动删除该路由条目。\n\n\n\n- **DeleteVpcPeerConnection**接口属于异步接口，即系统会先返回一个**RequestId**，但该VPC对等连接实例并未删除完成，系统后台的删除任务仍在进行。您可以调用[GetVpcPeerConnectionAttribute](~~2523294~~)查询VPC对等连接实例的状态。\n\n    - 当VPC对等连接实例处于**Deleting**状态时，表示正在删除中。\n\n    - 当VPC对等连接实例处于**Deleted**状态时，表示删除完成。\n\n- **DeleteVpcPeerConnection**接口不支持并发删除同一个VPC对等连接实例。",
+    "en": "- You can delete a VPC peering connection. After you delete the instance, your services are interrupted. Make sure that this operation does not affect your business.\n\n  - If you force delete the instance, the system also deletes the routes that point to the VPC peering connection from the route table.\n\n  - If you do not force delete the instance, the system does not delete the routes that point to the VPC peering connection from the route table. You must manually delete these routes.\n\n- **DeleteVpcPeerConnection** is an asynchronous operation. After you send a request, the system returns a **request ID**, while running the task in the background. Call the [GetVpcPeerConnectionAttribute](~~2523294~~) operation to query the status of the VPC peering connection.\n\n  - **Deleting** indicates the instance is being deleted.\n\n  - **Deleted** indicates the instance is deleted.\n\n- You cannot send concurrent requests to delete the same VPC peering connection instance."
+  },
   "example": {
     "unifiedCli": "aliyun vpcpeer delete-vpc-peer-connection --instance-id pcc-lnk0m24khwvtkm0000 --biz-force false --dry-run false --client-token 02fb3da4-130e-11e9-8e44-0010000 --region cn-hangzhou",
     "legacyCli": "aliyun vpcpeer DeleteVpcPeerConnection --region cn-hangzhou --InstanceId 'pcc-lnk0m24khwvtkm0000' --Force false --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

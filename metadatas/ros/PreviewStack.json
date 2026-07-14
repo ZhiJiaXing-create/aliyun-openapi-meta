@@ -1,5 +1,6 @@
 {
   "name": "PreviewStack",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求的幂等性。该值由客户端生成，并且必须是全局唯一的。   \n长度不超过64个字符，可包含英文字母、数字、短划线（-）和下划线（_）。   \n更多详情，请参见[如何保证幂等性](~~134212~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\nThe token can be up to 64 characters in length, and can contain letters, digits, underscores (\\_), and hyphens (-).\nFor more information, see [Ensure idempotence](~~134212~~)."
+      }
     },
     {
       "name": "DisableRollback",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当创建资源栈失败时，是否禁用回滚。取值：\n\n- true：禁用回滚，即当创建资源栈失败时不进行回滚。\n- false（默认值）：不禁用回滚，即当创建资源栈失败时进行回滚。",
+        "en": "Specifies whether to disable rollback for the resources when the stack fails to be created. Valid values:\n\n- true\n\n- false (default)"
+      }
     },
     {
       "name": "EnablePreConfig",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否获取合规预检参数。\n\n取值：\n\n- true：获取合规预检参数。\n\n- false（默认值）：不获取合规预检参数。",
+        "en": "Specifies whether to query the parameters that you want to use in compliance precheck.\n\nValid values:\n\n- true\n\n- false (default)"
+      }
     },
     {
       "name": "Parallelism",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源最大并发数。仅对Terraform类型资源栈生效。\n\n默认为空，用户可以输入大于等于零的整数。\n\n>若设置为大于零的整数，则使用该整数；若设置为零或者不设置，则使用Terraform默认值（通常为10）。",
+        "en": "The maximum number of concurrent operations that can be performed on resources. This parameter takes effect only for Terraform stacks.\n\nBy default, this parameter is empty. You can set this parameter to an integer that is greater than or equal to 0.\n\n> If you set this parameter to an integer greater than 0, the integer is used. If you set this parameter to 0 or leave this parameter empty, the default value of Terraform is used. In most cases, the default value of Terraform is 10."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "参数。",
+        "en": "The parameters of the stack."
+      },
       "sub_parameters": [
         {
           "name": "ParameterKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "参数名称。如果未指定参数名称和参数值，ROS将使用模板中指定的默认值。N的最大值为200。  \n\n> 若指定了Parameters，则Parameters.N.ParameterKey为必选参数。",
+            "en": "The name of the parameter N. If you do not specify the name and value of a parameter, Resource Orchestration Service (ROS) uses the default name and value that are specified in the template. Maximum value of N: 200.\n\n> If you specify Parameters, you must specify Parameters.N.ParameterKey."
+          }
         },
         {
           "name": "ParameterValue",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "参数值。N的最大值为200。  \n\n> 若指定了Parameters，则Parameters.N.ParameterValue为必选参数。",
+            "en": "The value of parameter N. Maximum value of N: 200.\n\n> If you specify Parameters, you must specify Parameters.N.ParameterValue."
+          }
         }
       ]
     },
@@ -52,87 +81,154 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈所属的地域ID。您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the stack. You can call the [DescribeRegions](~~131035~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "StackId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈ID。预览更新资源栈。\n\n> - 您必须且仅能指定StackName或StackId其中一个参数。\n> -  预览创建或更新资源栈的场景中不支持预览嵌套资源栈中的资源。",
+        "en": "The stack ID. You can use this parameter to preview a stack that you want to update.\n\n> - You must and can specify only one of StackName and StackId.\n>\n> - In the scenario in which you preview a stack that you want to create or update, you cannot preview the resources in its nested stacks."
+      }
     },
     {
       "name": "StackName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈名称。预览创建资源栈。\n长度不超过255个字符，必须以数字或英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_）。\n> 您必须且仅能指定StackName或StackId其中一个参数。",
+        "en": "The stack name. You can use this parameter to preview the stack that you want to create. The name can be up to 255 characters in length, and can contain digits, letters, hyphens (-), and underscores (\\_). It must start with a digit or letter.\n\n> You must and can specify only one of StackName and StackId."
+      }
     },
     {
       "name": "StackPolicyBody",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含资源栈策略主体的结构，长度为1~16,384个字节。  \n\n> 您仅能指定StackPolicyBody和StackPolicyURL其中一个参数。",
+        "en": "The structure that contains the stack policy body. The stack policy body must be 1 to 16,384 bytes in length.\n\n> You can specify only one of StackPolicyBody and StackPolicyURL."
+      }
     },
     {
       "name": "StackPolicyURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含资源栈策略的文件的位置。URL必须指向位于Web服务器（HTTP或HTTPS）或阿里云OSS存储空间（例如：oss://ros/stack-policy/demo、oss://ros/stack-policy/demo?RegionId=cn-hangzhou）中的策略，策略文件最大长度为16,384个字节。如未指定OSS地域，默认与RegionId取值相同。 \n\n> 您仅能指定StackPolicyBody和StackPolicyURL其中一个参数。  \n  \nURL最大长度为1350个字节。",
+        "en": "The URL of the file that contains the stack policy. The URL must point to a policy that is located on an HTTP or HTTPS web server or in an Object Storage Service (OSS) bucket, such as oss\\://ros/stack-policy/demo or oss\\://ros/stack-policy/demo?RegionId=cn-hangzhou. The policy file can be up to 16,384 bytes in length. If you do not specify the region ID of the OSS bucket, the value of RegionId is used.\n\n> You can specify only one of StackPolicyBody and StackPolicyURL.\n\nThe URL can be up to 1,350 bytes in length."
+      }
     },
     {
       "name": "TaintResources",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标记为脏资源的列表。",
+        "en": "The resources marked as tainted."
+      }
     },
     {
       "name": "TemplateBody",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板主体的结构。长度为1~524,288个字节。如果长度较长，则建议通过HTTP POST+Body Param的方式，将参数放在请求体中进行传递，避免因URL过长而导致请求失败。 \n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The structure that contains the template body. The template body must be 1 to 524,288 bytes in length. If the length of the template body exceeds the upper limit, we recommend that you add parameters to the HTTP POST request body to prevent request failures caused by excessively long URLs.\n\n> You must and can specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板ID。支持共享模板和私有模板。\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The template ID. This parameter applies to shared and private templates.\n\n> You must and can specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     },
     {
       "name": "TemplateScratchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源场景ID。\n\n关于如何获取资源场景ID，请参见[ListTemplateScratches](~~363050~~)。\n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The scenario ID.\n\nFor more information about how to query the scenario ID, see [ListTemplateScratches](~~363050~~).\n\n> You must and can specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     },
     {
       "name": "TemplateScratchRegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源场景所属的地域ID，默认与RegionId取值相同。\n\n您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the scenario. The default value is the same as the value of RegionId.\n\nYou can call the [DescribeRegions](~~131035~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "TemplateURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含模板主体的文件的位置。URL必须指向位于Web服务器（HTTP或HTTPS）或阿里云OSS存储空间（例如：oss://ros/stack-policy/demo、oss://ros/stack-policy/demo?RegionId=cn-hangzhou）中的模板，模板的最大长度为524,288个字节。如未指定OSS地域，默认与RegionId取值相同。 \n\n> 您必须且仅能指定TemplateBody、TemplateURL、TemplateId和TemplateScratchId其中一个参数。",
+        "en": "The URL of the file that contains the template body. The URL must point to a template that is located on an HTTP or HTTPS web server or in an OSS bucket, such as oss\\://ros/template/demo or oss\\://ros/template/demo?RegionId=cn-hangzhou. The template body can be up to 524,288 bytes in length. If you do not specify the region ID of the OSS bucket, the value of RegionId is used.\n\n> You must and can specify only one of the following parameters: TemplateBody, TemplateURL, TemplateId, and TemplateScratchId."
+      }
     },
     {
       "name": "TemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板版本。仅在指定TemplateId时生效。",
+        "en": "The version of the template. This parameter takes effect only when TemplateId is specified."
+      }
     },
     {
       "name": "TimeoutInMinutes",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建资源栈的超时时间。\n\n单位：分钟。\n\n默认值：60。",
+        "en": "The timeout period for creating the stack.\n\nUnit: minutes.\n\nDefault value: 60."
+      }
     },
     {
       "name": "UsePreviousParameters",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "未传递的参数是否使用上次传递的值。\n\n取值：\n\n- true：未传递的参数使用上次传递的值。\n\n- false：未传递的参数不使用上次传递的值。",
+        "en": "Specifies whether to use the values of parameters that were last used.\n\nValid values:\n\n- true: The parameters that were last used are reused.\n\n- false: The parameters that were last used are not reused."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "预览指定模板将要创建或更新的资源栈信息",
+    "en": "PreviewStack"
+  },
+  "descriptions": {
+    "zh": "本文将提供一个示例，在杭州地域创建并预览一个名为`MyStack`的资源栈，该资源栈的模板`TemplateBody`设置为`{\"ROSTemplateFormatVersion\":\"2015-09-01\"}`。",
+    "en": "In this example, a stack named `MyStack` is created in the China (Hangzhou) region and previewed. The `TemplateBody` parameter of the stack is set to `{\"ROSTemplateFormatVersion\":\"2015-09-01\"}`."
+  },
   "example": {
     "unifiedCli": "aliyun ros preview-stack --disable-rollback false --timeout-in-minutes 60 --template-body ROSTemplateFormatVersion_:_2015-09-01 --stack-policy-url oss://ros-stack-policy/demo --biz-region-id cn-hangzhou --stack-policy-body Statement_:_Action_:_Update:0_,_Resource_:_0_,_Effect_:_Allow_,_Principal_:_0 --stack-name MyStack --client-token 123e4567-e89b-12d3-a456-426655440000 --template-url oss://ros-template/demo --template-id 5ecd1e10-b0e9-4389-a565-e4c15efc0000 --template-version v1 --parameters ParameterValue=1512666876910000 ParameterKey=ALIYUN::AccountId --parallelism 1 --template-scratch-id ts-aa9c62feab844a6b0000 --template-scratch-region-id cn-hangzhou --stack-id 4a6c9851-3b0f-4f5f-b4ca-a14bf6910000 --enable-pre-config false --taint-resources my_vpc --use-previous-parameters true --region cn-hangzhou",
     "legacyCli": "aliyun ros PreviewStack --region cn-hangzhou --TaintResources.1 my_vpc --Parameters.1.ParameterKey 'ALIYUN::AccountId' --TemplateVersion v1 --TemplateBody 'ROSTemplateFormatVersion_:_2015-09-01' --StackPolicyBody 'Statement_:_Action_:_Update:0_,_Resource_:_0_,_Effect_:_Allow_,_Principal_:_0' --TemplateScratchId 'ts-aa9c62feab844a6b0000' --EnablePreConfig false --Parameters.1.ParameterValue 1512666876910000 --StackPolicyURL 'oss://ros-stack-policy/demo' --TemplateURL 'oss://ros-template/demo' --TemplateScratchRegionId 'cn-hangzhou' --UsePreviousParameters true --Parallelism 1 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DisableRollback false --StackName MyStack --TemplateId '5ecd1e10-b0e9-4389-a565-e4c15efc0000' --TimeoutInMinutes 60 --StackId '4a6c9851-3b0f-4f5f-b4ca-a14bf6910000'"

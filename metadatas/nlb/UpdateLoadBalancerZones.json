@@ -1,5 +1,6 @@
 {
   "name": "UpdateLoadBalancerZones",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,65 +9,116 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nYou can use the client to generate the token. Ensure that the token is unique among different requests. Only ASCII characters are allowed.\n\n> If you do not set this parameter, the value of **RequestId** is used.\\*\\*\\*\\* The value of **RequestId** is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会修改实例可用区属性。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP_2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: validates the request without performing the operation. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the validation, the corresponding error message is returned. If the request passes the validation, the `DryRunOperation` error code is returned.\n\n- **false** (default): validates the request and performs the request. If the request passes the validation, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络型负载均衡实例ID。",
+        "en": "The ID of the NLB instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The ID of region where the NLB instance is deployed.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ZoneMappings",
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "可用区及交换机映射列表，最多支持添加10个可用区。",
+        "en": "The mappings between the zones and the vSwitches. You can specify up to 10 zones."
+      },
       "sub_parameters": [
         {
           "name": "AllocationId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性公网IP或任播弹性公网IP的实例ID。",
+            "en": "The ID of the elastic IP address (EIP) or Anycast EIP."
+          }
         },
         {
           "name": "EipType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "公网EIP的类型。取值：\n\n- **Common**：弹性公网IP，简称EIP。\n- **Anycast**：任播弹性公网IP，简称Anycast EIP。\n\n> 支持绑定Anycast EIP的地域见[使用限制\n](~~470000~~)，**AddressType**配置为**Internet**时，需要配置该参数。",
+            "en": "The type of the EIP. Valid values:\n\n- **Common**: an EIP\n\n- **Anycast**: an Anycast EIP\n\n> For regions that support Anycast EIPs, see [Limits](~~470000~~).This parameter is required if **AddressType** is set to **Internet**."
+          }
         },
         {
           "name": "PrivateIPv4Address",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "私网IP地址。",
+            "en": "The private IP address."
+          }
         },
         {
           "name": "VSwitchId",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "可用区对应的交换机，每个可用区默认使用一台交换机和一个子网。",
+            "en": "The ID of the vSwitch in the zone. By default, each zone uses one vSwitch and one subnet."
+          }
         },
         {
           "name": "ZoneId",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "可用区ID，您可以通过调用[DescribeZones](~~443890~~)接口获取。",
+            "en": "The zone ID. You can call the [DescribeZones](~~443890~~) operation to query the most recent zone list."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新实例可用区及可用区属性",
+    "en": "UpdateLoadBalancerZones"
+  },
+  "descriptions": {
+    "zh": "每次调用该接口时，请确保您传入该NLB实例的所有可用区参数，包括存量和新增的可用区。如您未传入存量的可用区参数，存量可用区将会被删掉。\n\n前提条件：\n- 您已创建NLB实例，请参见[CreateLoadBalancer](~~445868~~)。\n- 您可以通过[GetLoadBalancerAttribute](~~445873~~)接口查询该NLB实例的可用区及可用区属性。\n-  **UpdateLoadBalancerZones**属于异步接口，即系统返回一个请求ID，但该NLB实例可用区及可用区属性尚未修改成功，系统后台的变更任务仍在进行。您可以调用[GetJobStatus](~~445904~~)查询修改状态：\n    - 当任务状态处于**Succeeded**时，表示实例可用区及可用区属性修改成功。\n    - 当任务状态处于**Processing**时，表示实例可用区及可用区属性正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。",
+    "en": "When you call this operation, make sure that you specify all the zones of the NLB instance, including the existing zones and new zones. If you do not specify the existing zones, the existing zones are removed.\n\nPrerequisites\n\n- An NLB instance is created. For more information, see [CreateLoadBalancer](~~445868~~).\n\n- You can call the [GetLoadBalancerAttribute](~~445873~~) operation to query the zones and zone attributes of an NLB instance.\n\n- **UpdateLoadBalancerZones** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetJobStatus](~~445904~~) operation query to query the status of a task:\n\n  - If the task is in the **Succeeded** state, the zones and zone attributes are modified.\n\n  - If the task is in the **Processing** state, the zones and zone attributes are being modified. In this case, you can perform only query operations."
+  },
   "example": {
     "unifiedCli": "aliyun nlb update-load-balancer-zones --load-balancer-id nlb-83ckzc8d4xlp8o0000 --zone-mappings ZoneId=cn-hangzhou-a VSwitchId=vsw-bp1rmcrwg3erh1fh80000 AllocationId=eip-bp1aedxso6u80u0qf0000 EipType=Common PrivateIPv4Address=192.168.36.16 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun nlb UpdateLoadBalancerZones --region cn-hangzhou --ZoneMappings.1.EipType Common --ZoneMappings.1.ZoneId 'cn-hangzhou-a' --ZoneMappings.1.AllocationId 'eip-bp1aedxso6u80u0qf0000' --DryRun false --LoadBalancerId 'nlb-83ckzc8d4xlp8o0000' --RegionId 'cn-hangzhou' --ZoneMappings.1.VSwitchId 'vsw-bp1rmcrwg3erh1fh80000' --ZoneMappings.1.PrivateIPv4Address '192.168.36.16' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

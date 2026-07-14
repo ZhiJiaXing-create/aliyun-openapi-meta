@@ -1,5 +1,6 @@
 {
   "name": "RetryVpcPrefixListAssociation",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system automatically uses **RequestId** as **ClientToken**. **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会关联前缀列表。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接关联前缀列表。",
+        "en": "Specifies whether to only precheck the request. Valid values:\n\n*   **true**: prechecks the request without associating the prefix list. The system prechecks the required parameters, request syntax, and limits. If the request fails the precheck, an error message is returned. If the request passes the precheck, the `DryRunOperation` error code is returned.\n*   **false**: sends the request. If the request passes the precheck, a 2xx HTTP status code is returned and the prefix list is associated. This is the default value."
+      }
     },
     {
       "name": "PrefixListId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要重新下发的前缀列表的实例ID。",
+        "en": "The ID of the prefix list that you want to re-apply."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要重新下发的前缀列表实例所在地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the prefix list that you want to re-apply.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "关联的资源的实例ID。",
+        "en": "The ID of the associated resource."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "关联前缀列表实例的资源类型。取值：\n\n- **vpcRouteTable**：VPC路由表。\n- **trRouteTable**：转发路由器的路由表。",
+        "en": "The type of the resource with which the prefix list is associated. Valid values:\n\n*   **vpcRouteTable**: VPC route table\n*   **trRouteTable**: route table of a transit router"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重新下发最新的前缀列表",
+    "en": "RetryVpcPrefixListAssociation"
+  },
+  "descriptions": {
+    "zh": "- 当您修改了前缀列表实例的信息后，关联前缀列表实例的路由表中未自动更新成功前缀列表实例的信息时，您可以使用该接口重新向关联的路由表下发最新的前缀列表实例。\n- **RetryVpcPrefixListAssociation**接口属于异步接口，即系统返回一个请求ID，但该最新的前缀列表实例尚未重新下发成功，系统后台的重新下发任务仍在进行。您可以调用[GetVpcPrefixListAssociations](~~445478~~)查询前缀列表实例的最新下发状态：\n    - 当前缀列表实例的下发状态处于**Modifying**时，表示最新的前缀列表实例正在重新下发中。\n    - 当前缀列表实例的下发状态处于**ModifyFailed**时，表示最新的前缀列表实例重新下发失败。\n    - 当前缀列表实例的下发状态处于**Created**时，表示最新的前缀列表实例重新下发成功。\n- **RetryVpcPrefixListAssociation**接口不支持针对同一个前缀列表并发重试下发最新的前缀列表实例。\n## 场景说明\n修改前缀列表实例时，只要CIDR网段合法并且没有冲突的CIRD网段，也没有超过前缀列表实例的最大条目数即可修改成功。然而由于引用方的原因（例如，由于配额的原因或者与已有的路由冲突），可能会导致引用失败。您可以在引用方处将失败的问题解决后，请调用**RetryVpcPrefixListAssociation**接口，重新下发最新的前缀列表实例。",
+    "en": "*   If you modify the information about a prefix list but the modification is not automatically applied to the route table that is associated with the prefix list, you can call this operation to apply the latest prefix list to the associated route table.\n\n*   The **RetryVpcPrefixListAssociation** operation is asynchronous. After you send the request, the system returns a request ID. However, the operation is still being performed in the background. You can call the [GetVpcPrefixListAssociations](~~445478~~) to check whether the prefix list is re-applied.\n\n    *   If the prefix list is in the **Modifying** state, the prefix list is being re-applied.\n    *   If the prefix list is in the **ModifyFailed** state, the prefix list fails to be re-applied.\n    *   If the prefix list is in the **Created** state, the prefix list is re-applied.\n\n*   After you call the **RetryVpcPrefixListAssociation** operation to re-apply a prefix list, you cannot call the operation again until the current task is complete."
+  },
   "example": {
     "unifiedCli": "aliyun vpc retry-vpc-prefix-list-association --prefix-list-id pl-0b7hwu670000 --resource-type vpcRouteTable --resource-id vtb-bp1drpcfz9srr393h0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc RetryVpcPrefixListAssociation --region cn-hangzhou --PrefixListId 'pl-0b7hwu670000' --ResourceId 'vtb-bp1drpcfz9srr393h0000' --DryRun false --ResourceType vpcRouteTable --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

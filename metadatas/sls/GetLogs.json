@@ -1,5 +1,6 @@
 {
   "name": "GetLogs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/logstores/[logstore]?type=log",
@@ -8,63 +9,114 @@
       "name": "from",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间点。该时间是指写入日志数据时指定的日志时间。\n\n- 请求参数**from**和**to**定义的时间区间遵循左闭右开原则，即该时间区间包括区间开始时间点，但不包括区间结束时间点。如果**from**和**to**的值相同，则为无效区间，函数直接返回错误。\n- Unix时间戳格式，表示从1970-1-1 00:00:00 UTC计算起的秒数。\n\n> 如果您要确保不漏查数据，请将查询时间对齐到分钟级别。如果您在分析语句中设置了时间范围，则查询分析时以该时间范围为准。\n\n如果您需要精确到秒，需要在分析语句中指定时间时，使用[from_unixtime函数](~~63451~~)或[to_unixtime函数](~~63451~~)转换下时间格式。例如：\n- `* | SELECT * FROM log WHERE from_unixtime(__time__) > from_unixtime(1664186624) AND from_unixtime(__time__) < now()`\n- `* | SELECT * FROM log WHERE __time__ > to_unixtime(date_parse('2022-10-19 15:46:05', '%Y-%m-%d %H:%i:%s')) AND __time__ < to_unixtime(now())`",
+        "en": "The start of the query time range, based on the log time specified when the log data was written.\n\n- The **from** and **to** parameters define a left-closed, right-open interval \\[from, to). If **from** equals **to**, the interval is invalid and the system returns an error.\n\n- Value: a UNIX timestamp representing the number of seconds elapsed since January 1, 1970, 00:00:00 UTC.\n\n> To avoid missing data, align the query time to the minute level. If a time range is specified in the analytic statement, that time range takes precedence.\n\nTo specify a time in seconds within an analytic statement, use the [from\\_unixtime function](~~63451~~) or the [to\\_unixtime function](~~63451~~) to convert the time format. Examples:\n\n- `* | SELECT * FROM log WHERE from_unixtime(__time__) > from_unixtime(1664186624) AND from_unixtime(__time__) < now()`\n\n- `* | SELECT * FROM log WHERE __time__ > to_unixtime(date_parse('2022-10-19 15:46:05', '%Y-%m-%d %H:%i:%s')) AND __time__ < to_unixtime(now())`"
+      }
     },
     {
       "name": "line",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "仅当query参数为查询语句时，该参数有效，表示请求返回的最大日志条数。最小值为0，最大值为100，默认值为100。分页查询请参见[分页显示查询分析结果](~~89994~~)。",
+        "en": "Valid only when the query parameter is a search statement. Maximum number of logs to return. Valid values: 0 to 100. Default value: 100. See [Page through query and analysis results](~~89994~~)."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询Logstore中的数据。",
+        "en": "The Logstore to query."
+      }
     },
     {
       "name": "offset",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "仅当query参数为查询语句时，该参数有效，表示查询开始行。默认值为0。分页查询请参见[分页显示查询分析结果](~~89994~~)。",
+        "en": "Valid only when the query parameter is a search statement. The starting row for the query. Default value: 0. See [Page through query and analysis results](~~89994~~)."
+      }
     },
     {
       "name": "powerSql",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用SQL独享版。更多信息，请参见[开启SQL独享版](~~223777~~)。\n\n- true：使用SQL独享版。\n- false（默认值）：使用SQL普通版。\n\n除通过powerSql参数配置SQL独享版外，您还可以使用**query**参数。",
+        "en": "Whether to enable the Exclusive SQL feature. See [Enable the Exclusive SQL feature](~~223777~~).\n\n- true: Enable Exclusive SQL.\n\n- false (default): Use standard SQL.\n\nAlternatively, add `set session parallel_sql=true;` to the analytic statement in the **query** parameter to enable Exclusive SQL."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Project名称。",
+        "en": "The project name."
+      }
     },
     {
       "name": "query",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询语句或者分析语句。更多信息，请参见[查询概述](~~43772~~)和[分析概述](~~53608~~)。\n在query参数的分析语句中加上`set session parallel_sql=true;`，表示使用SQL独享版。例如`* | set session parallel_sql=true; select count(*) as pv` 。常见查询与分析问题，请参见[查询与分析日志的常见报错](~~61628~~)。\n\n> 当query参数中有分析语句（SQL语句）时，该接口的line参数和offset参数无效，建议设置该接口的参数为0，需通过SQL语句的LIMIT语法实现翻页。更多信息，请参见[分页显示查询分析结果](~~89994~~)。",
+        "en": "The search statement or analytic statement. See [Query overview](~~43772~~) and [Analysis overview](~~53608~~). To enable the Exclusive SQL feature, add `set session parallel_sql=true;` to the analytic statement. Example: `* | set session parallel_sql=true; select count(*) as pv`. For common query and analysis issues, see [Common errors that occur when you query and analyze logs](~~61628~~).\n\n> When the query parameter contains an analytic statement (SQL statement), the `line` and `offset` parameters are ignored. Set both to 0 and use the LIMIT clause in the SQL statement for pagination. See [Page through query and analysis results](~~89994~~)."
+      }
     },
     {
       "name": "reverse",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于指定返回结果是否按日志时间戳降序返回日志，精确到分钟级别。\n\n- true：按照日志时间戳降序返回日志。\n- false（默认值）：按照日志时间戳升序返回日志。\n\n><notice>\n\n- 当query参数为查询语句时，参数reverse有效，用于指定返回日志排序方式。\n- 当query参数为查询和分析语句时，参数reverse无效，由SQL分析语句中order by语法指定排序方式。如果order by为asc（默认），则为升序；如果order by为desc，则为降序。\n\n></notice>",
+        "en": "Whether to return logs in descending order of timestamp, with minute-level precision.\n\n- true: Descending order (newest first).\n\n- false (default): Ascending order (oldest first).\n\n><notice>\n\n- When the query parameter is a search statement, the reverse parameter controls the sort order.\n\n- When the query parameter includes an analytic statement, the reverse parameter is ignored. Use the ORDER BY clause in the SQL statement instead. ORDER BY defaults to ascending (asc). Specify desc for descending order.\n\n></notice>"
+      }
     },
     {
       "name": "to",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间点。该时间是指写入日志数据时指定的日志时间。\n\n- 请求参数**from**和**to**定义的时间区间遵循左闭右开原则，即该时间区间包括区间开始时间点，但不包括区间结束时间点。如果**from**和**to**的值相同，则为无效区间，函数直接返回错误。\n- Unix时间戳格式，表示从1970-1-1 00:00:00 UTC计算起的秒数。\n\n> 如果您要确保不漏查数据，请将查询时间对齐到分钟级别。如果您在分析语句中设置了时间范围，则查询分析时以该时间范围为准。\n\n如果您需要精确到秒，需要在分析语句中指定时间时，使用[from_unixtime函数](~~63451~~)或[to_unixtime函数](~~63451~~)转换下时间格式。例如：\n- `* | SELECT * FROM log WHERE from_unixtime(__time__) > from_unixtime(1664186624) AND from_unixtime(__time__) < now()`\n- `* | SELECT * FROM log WHERE __time__ > to_unixtime(date_parse('2022-10-19 15:46:05', '%Y-%m-%d %H:%i:%s')) AND __time__ < to_unixtime(now())`",
+        "en": "The end of the query time range, based on the log time specified when the log data was written.\n\n- The **from** and **to** parameters define a left-closed, right-open interval \\[from, to). If **from** equals **to**, the interval is invalid and the system returns an error.\n\n- Value: a UNIX timestamp representing the number of seconds elapsed since January 1, 1970, 00:00:00 UTC.\n\n> To avoid missing data, align the query time to the minute level. If a time range is specified in the analytic statement, that time range takes precedence.\n\nTo specify a time in seconds within an analytic statement, use the [from\\_unixtime function](~~63451~~) or the [to\\_unixtime function](~~63451~~) to convert the time format. Examples:\n\n- `* | SELECT * FROM log WHERE from_unixtime(__time__) > from_unixtime(1664186624) AND from_unixtime(__time__) < now()`\n\n- `* | SELECT * FROM log WHERE __time__ > to_unixtime(date_parse('2022-10-19 15:46:05', '%Y-%m-%d %H:%i:%s')) AND __time__ < to_unixtime(now())`"
+      }
     },
     {
       "name": "topic",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "日志主题。默认值为空字符串。更多信息，请参见[日志主题（Topic）](~~48881~~)。",
+        "en": "The log topic. Default value: an empty string. See [Topic](~~48881~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询日志库日志",
+    "en": "GetLogs"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n> 日志服务支持创建定时SQL任务。具体操作，请参见[创建定时SQL任务](~~286457~~)。\n\n- 请求语法中Host由Project名称和日志服务Endpoint构成，您需要在Host中指定Project。\n- 已创建并获取AccessKey。更多信息，请参见[访问密钥](~~2766629~~)。\n\n 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维。RAM用户需具备操作日志服务资源的权限。具体操作，请参见[创建RAM用户及授权](~~47664~~)。\n- 已明确您查询日志所属的Project名称、所属地域、Logstore名称等。如何查询，请参见[管理Project](~~48984~~)和[管理Logstore](~~48990~~)。\n- 日志服务查询日志时存在使用限制。请设计合理查询与分析语句、设置合理查询区间等。更多信息，请参见[查询日志使用限制](~~43772~~)和[分析日志使用限制](~~53608~~)。\n- 查询日志前，已配置索引。具体操作，请参见[创建索引](~~90732~~)。\n\n- 当查询涉及的日志数量变化非常大时，日志服务API无法预测需要调用多少次该接口来获取完整结果。所以需要您查看每次请求返回结果中的x-log-progress状态值，根据状态值来确定是否需要重复调用该接口来获取最终完整结果。每次重复调用该接口都会重新消耗相同数量的查询CU。\n- 当日志写入到Logstore中，日志服务的查询接口（GetHistograms和GetLogs）能够查到该日志的延时因写入日志类型不同而异。日志服务按日志时间戳把日志分为如下两类：\n\n     - 实时数据：日志中时间点为服务器当前时间点(-180秒，900秒]。例如，日志时间为UTC 2014-09-25 12:03:00，服务器收到时为UTC 2014-09-25 12:05:00，则该日志被作为实时数据处理，一般出现在正常场景下。\n     - 历史数据：日志中时间点为服务器当前时间点\\[-7*86400秒，-180秒）。例如，日志时间为UTC 2014-09-25 12:00:00，服务器收到时为UTC 2014-09-25 12:05:00，则该日志被作为历史数据处理，一般出现在补数据场景下。\n   其中，实时数据写入至可查询的延时为3秒左右。\n\n> 日志服务将日志时间（字段名称为__time__）和服务器收到时间（字段名称为__tag__:__receive_time__）做差，若其差值位于\\(-180秒，900秒]范围，则为实时数据，若其差位于\\[-7x86400秒，-180秒），则为历史数据。\n\n- 日志服务提供Java和Python SDK的GetLogs查询使用示例。更多信息，请参见[Java GetLogs使用示例](~~407683~~)和[Python GetLogs使用示例](~~407684~~)。\n### 鉴权资源\n下表列出了API对应的授权信息。您可以在RAM权限策略语句的Action元素中添加该信息，用于为RAM用户或RAM角色授予调用此API的权限。\n|动作（Action）  | 授权策略中的资源描述方式（Resource）  |\n| :------------ | :------------ |\n| `log:GetLogStoreLogs`  | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}`  |",
+    "en": "###\n\n> Simple Log Service supports scheduled SQL jobs. For details, see [Create a scheduled SQL job](~~286457~~).\n\n- The Host in the request syntax consists of the project name and the Simple Log Service endpoint. Specify the project name in the Host.\n\n- Create and obtain an AccessKey pair. For details, see [AccessKey pair](~~2766629~~).\n\nCreate and use a RAM user to make API calls or perform routine O\\&M. Using an Alibaba Cloud account AccessKey pair grants access to all APIs and poses a high security risk. Ensure the RAM user has the required permissions for Simple Log Service resources. For details, see [Create and authorize a RAM user](~~47664~~).\n\n- Obtain the project name, region, and Logstore name for the logs to query. See [Manage a project](~~48984~~) and [Manage a Logstore](~~48990~~).\n\n- Simple Log Service imposes limits on log queries. Design appropriate query and analytic statements and set a reasonable time range. See [Log query limits](~~43772~~) and [Log analysis limits](~~53608~~).\n\n- Configure indexes before querying logs. See [Create indexes](~~90732~~).\n\n- When the number of matching logs varies significantly, the API cannot predict how many calls are needed to retrieve the complete result. Check the `x-log-progress` header in each response to determine whether to repeat the call. Each repeated call consumes the same number of query capacity units (CUs).\n\n- After a log is written to a Logstore, the latency before it becomes queryable through the GetHistograms and GetLogs operations depends on the log type. Simple Log Service classifies logs into two types based on their timestamps:\n\n  - Real-time data: The log timestamp falls within (-180 seconds, 900 seconds] relative to the current server time. For example, if a log is generated at UTC 2014-09-25 12:03:00 and is received by the server at UTC 2014-09-25 12:05:00, the log is classified as real-time data. This is typical in normal scenarios. Real-time data becomes queryable in about 3 seconds.\n\n  - Historical data: The log timestamp falls within \\[-7 x 86,400 seconds, -180 seconds) relative to the current server time. For example, if a log is generated at UTC 2014-09-25 12:00:00 and is received by the server at UTC 2014-09-25 12:05:00, the log is classified as historical data. This is typical in data backfill scenarios.\n\n> Simple Log Service calculates the difference between the log time (the \\_\\_time\\_\\_ field) and the server receipt time (the \\_\\_tag\\_\\_: **receive\\_time** field). If the difference falls within (-180 seconds, 900 seconds], the log is real-time data. If the difference falls within \\[-7 x 86,400 seconds, -180 seconds), the log is historical data.\n\n- Simple Log Service provides Java and Python SDK examples for the GetLogs operation. See [GetLogs examples for Java](~~407683~~) and [GetLogs examples for Python](~~407684~~).\n\n### Authorization\n\nThe following table describes the authorization information required for this operation. Add this information to the Action element of a RAM access policy statement to grant RAM users or RAM roles the permission to call this operation.\n\n| Action                | Resource                                                                           |\n| :-------------------- | :--------------------------------------------------------------------------------- |\n| `log:GetLogStoreLogs` | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}` |"
+  },
   "example": {
     "unifiedCli": "aliyun sls get-logs --project ali-test-project --logstore example-logstore --from 1627268185 --to 1627269085 --query status:_401_SELECT_remote_addr,COUNT_0_as_pv_GROUP_by_remote_addr_ORDER_by_pv_desc_limit_5 --topic topic --line 100 --offset 0 --reverse false --power-sql false --region cn-hangzhou",
     "legacyCli": "aliyun sls GET /logstores/example-logstore?type=log --project ali-test-project --region cn-hangzhou --offset 0 --powerSql false --line 100 --query 'status:_401_SELECT_remote_addr,COUNT_0_as_pv_GROUP_by_remote_addr_ORDER_by_pv_desc_limit_5' --topic topic --from 1627268185 --to 1627269085 --reverse false --header \"Content-Type=application/json\""

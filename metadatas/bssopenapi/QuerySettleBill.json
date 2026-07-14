@@ -1,5 +1,6 @@
 {
   "name": "QuerySettleBill",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -10,7 +11,8 @@
       "type": "Long",
       "required": false,
       "description": {
-        "zh": "资源归属账号的ID，资源归属账号是实际使用资源的账号。"
+        "zh": "资源归属账号的ID，资源归属账号是实际使用资源的账号。",
+        "en": "The ID of the account that owns the resource. The resource owner is the account that uses the resource."
       }
     },
     {
@@ -19,7 +21,8 @@
       "type": "String",
       "required": true,
       "description": {
-        "zh": "账期，YYYY-MM。"
+        "zh": "账期，YYYY-MM。",
+        "en": "The billing cycle, in YYYY-MM format."
       }
     },
     {
@@ -28,7 +31,8 @@
       "type": "Boolean",
       "required": false,
       "description": {
-        "zh": "根据原价（PretaxGrossAmount）是否为0做过滤，默认为否（兼容现有逻辑）。\n- true：是。\n- false：否。"
+        "zh": "根据原价（PretaxGrossAmount）是否为0做过滤，默认为否（兼容现有逻辑）。\n- true：是。\n- false：否。",
+        "en": "Specifies whether to filter out bills with a pretax gross amount of 0. The default value is false to ensure backward compatibility.\n\n- true: Yes.\n\n- false: No."
       }
     },
     {
@@ -37,7 +41,8 @@
       "type": "Integer",
       "required": false,
       "description": {
-        "zh": "本次读取的最大数据记录数量。默认值：20，最大值：300。"
+        "zh": "本次读取的最大数据记录数量。默认值：20，最大值：300。",
+        "en": "The maximum number of records to return. Default value: 20. Maximum value: 300."
       }
     },
     {
@@ -46,7 +51,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "用来标记当前开始读取的位置，置空表示从头开始。"
+        "zh": "用来标记当前开始读取的位置，置空表示从头开始。",
+        "en": "The token that specifies the position from which the query starts. If you leave this parameter empty, the query starts from the beginning."
       }
     },
     {
@@ -55,7 +61,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "产品代码。"
+        "zh": "产品代码。",
+        "en": "The product code."
       }
     },
     {
@@ -64,7 +71,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "产品类型。"
+        "zh": "产品类型。",
+        "en": "The product type."
       }
     },
     {
@@ -73,7 +81,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "订单号、账单号。"
+        "zh": "订单号、账单号。",
+        "en": "The order number or bill number."
       }
     },
     {
@@ -82,7 +91,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "订阅类型。取值：\n- Subscription 预付费\n- PayAsYouGo 后付费\n>  必须和ProductCode参数一起使用。"
+        "zh": "订阅类型。取值：\n- Subscription 预付费\n- PayAsYouGo 后付费\n>  必须和ProductCode参数一起使用。",
+        "en": "The subscription type. Valid values:\n\n- Subscription: subscription\n\n- PayAsYouGo: pay-as-you-go\n\n> This parameter must be used with the ProductCode parameter."
       }
     },
     {
@@ -91,10 +101,22 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "类型。取值：\n- SubscriptionOrder 预付费订单\n- PayAsYouGoBill 后付费账单\n- Refund 退款账单\n- Adjustment 调账账单"
+        "zh": "类型。取值：\n- SubscriptionOrder 预付费订单\n- PayAsYouGoBill 后付费账单\n- Refund 退款账单\n- Adjustment 调账账单",
+        "en": "The type. Valid values:\n\n- SubscriptionOrder: subscription order\n\n- PayAsYouGoBill: pay-as-you-go bill\n\n- Refund: refund bill\n\n- Adjustment: adjustment bill"
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "结算账单查询服务",
+    "en": "QuerySettleBill"
+  },
+  "descriptions": {
+    "zh": "- 当月数据查询结果仅供参考，不作为对账依据；当月最终账单在次月2日12点后支持查看/导出（月中会发生包括但不限于以下少数场景：延迟出账，退款，调账，欠费核销等）。\n- 账单数据相对于实际费用消耗延迟5小时更新。\n- 账单数据中对于历史账期“未结清”状态的账单，还款后延迟5个小时更新为已结清；对于当月“未结清”状态的账单，还款后于次月2日12点出账时更新为已结清。\n- 当前API支持优雅退避，请求速率为600/60(s)。\n-   单用户限流10笔/秒，如遇超时，请重试。",
+    "en": "- Data queried for the current month is for reference only and cannot be used for reconciliation. This is because events such as delayed billing, refunds, bill adjustments, and write-offs for overdue payments may occur during the month. The final bill for the current month is available for viewing and export after 12:00 on the second day of the next month.\n\n- Bill data is updated about 5 hours after the actual resource consumption.\n\n- The status of an unpaid bill from a previous billing cycle is updated to \"Paid\" 5 hours after payment. The status of an unpaid bill from the current month is updated to \"Paid\" when the final bill is generated at 12:00 on the second day of the next month.\n\n- This API supports graceful backoff. The request rate is 600 requests per 60 seconds.\n\n- Each user is limited to 10 requests per second. If a timeout occurs, retry the request."
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi query-settle-bill --billing-cycle 2018-07 --type SubscriptionOrder --product-code rds --product-type rds --subscription-type Subscription --is-hide-zero-charge true --next-token CAESEgoQCg4KCmdtdF9jcmVhdGUEARgBIkgKCQBwhGmPcAEAAAo7AzYAAAAxTDgwMDcxMjg3ZDJhNmM3ZDguTDgwMDAwMDAwMDAwMzE1MTIuTDgwMDcyZDMyZTJkYzg3N2U --max-results 20 --bill-owner-id 123 --record-id 12233 --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi QuerySettleBill --region cn-hangzhou --SubscriptionType Subscription --BillingCycle '2018-07' --Type SubscriptionOrder --NextToken CAESEgoQCg4KCmdtdF9jcmVhdGUEARgBIkgKCQBwhGmPcAEAAAo7AzYAAAAxTDgwMDcxMjg3ZDJhNmM3ZDguTDgwMDAwMDAwMDAwMzE1MTIuTDgwMDcyZDMyZTJkYzg3N2U --ProductCode rds --IsHideZeroCharge true --MaxResults 20 --ProductType rds --BillOwnerId 123 --RecordID 12233"

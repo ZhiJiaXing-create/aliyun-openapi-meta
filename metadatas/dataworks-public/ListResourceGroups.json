@@ -1,5 +1,6 @@
 {
   "name": "ListResourceGroups",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "AliyunResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云资源组ID",
+        "en": "The Alibaba Cloud resource group ID."
+      }
     },
     {
       "name": "AliyunResourceTags",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "阿里云标签列表",
+        "en": "The list of Alibaba Cloud tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签Key",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签Value",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -34,51 +51,94 @@
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组名称，用于模糊查询",
+        "en": "The name of the resource group. Fuzzy search is supported."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页页码",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小",
+        "en": "The page size."
+      }
     },
     {
       "name": "PaymentType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组的付费类型。\n- PrePaid：包年包月。\n- PostPaid：按量付费 。",
+        "en": "The billing method of the resource group. Valid values include:\n\n- `PrePaid`: subscription.\n\n- `PostPaid`: pay-as-you-go."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "所属工作空间ID",
+        "en": "The ID of the workspace."
+      }
     },
     {
       "name": "ResourceGroupTypes",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询的资源组类型列表，**为空默认查询通用资源组**",
+        "en": "The types of the resource groups to query. **If this parameter is not specified, general-purpose resource groups are queried by default.**"
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段列表，支持定时时间、开始时间等字段。格式为\"排序字段+排序方式(Desc/Asc)\"（Asc可以缺省）。排序字段的枚举值如下：\n\n- Id  (Desc/Asc)：资源组ID\n- Name  (Desc/Asc)：资源组名称\n- Remark  (Desc/Asc)：资源组备注\n- Type  (Desc/Asc)：资源组类型\n- Status  (Desc/Asc)：资源组资源状态\n- Spec  (Desc/Asc)：资源组规格\n- CreateUser  (Desc/Asc)：创建人\n- CreateTime  (Desc/Asc)：创建时间\n\n默认值为CreateTime Asc",
+        "en": "The sorting criterion for the results. The format is `FieldName SortOrder`. `SortOrder` can be `Asc` (ascending) or `Desc` (descending). If you do not specify `SortOrder`, the default is `Asc`. The following fields are supported:\n\n- `Id`: Resource group ID\n\n- `Name`: Resource group name\n\n- `Remark`: Resource group remarks\n\n- `Type`: Resource group type\n\n- `Status`: Resource group status\n\n- `Spec`: Resource group specifications\n\n- `CreateUser`: The user who created the resource group\n\n- `CreateTime`: The time when the resource group was created\n\nDefault value: `CreateTime Asc`"
+      }
     },
     {
       "name": "Statuses",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询的资源组状态列表",
+        "en": "The statuses of the resource groups to query."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取资源组列表",
+    "en": "ListResourceGroups"
+  },
+  "descriptions": {
+    "zh": "1. 需要购买DataWorks基础版及以上版本才能使用。\n2. **请确保在使用该接口前，已创建服务关联角色 AliyunServiceRoleForDataWorks。**",
+    "en": "1. This operation requires DataWorks Basic Edition or higher.\n\n2. **Before you call this operation, make sure that you have created the service-linked role AliyunServiceRoleForDataWorks.**"
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public list-resource-groups --name Resource --project-id 1000 --statuses Normal --resource-group-types CommonV2 --payment-type PrePaid --aliyun-resource-group-id rg-aek2kqofrgXXXXX --aliyun-resource-tags Value=value Key=key --page-size 100 --page-number 1 --sort-by CreateTime_Asc --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public ListResourceGroups --region cn-hangzhou --AliyunResourceTags '[{\"Value\":\"value\",\"Key\":\"key\"}]' --AliyunResourceGroupId 'rg-aek2kqofrgXXXXX' --Statuses '[\"Normal\"]' --PageSize 100 --PageNumber 1 --SortBy CreateTime_Asc --ProjectId 1000 --PaymentType PrePaid --ResourceGroupTypes '[\"CommonV2\"]' --Name Resource"

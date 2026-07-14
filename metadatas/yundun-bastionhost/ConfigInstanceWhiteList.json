@@ -1,5 +1,6 @@
 {
   "name": "ConfigInstanceWhiteList",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要配置公网IP地址白名单的堡垒机的实例ID。\n> 可通过调用[DescribeInstances](~~153281~~)接口获取堡垒机实例ID。",
+        "en": "The ID of the Bastionhost instance to configure.\n\n> To obtain the instance ID, call the [DescribeInstances](~~153281~~) operation."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "堡垒机实例的地域ID。",
+        "en": "The region ID of the Bastionhost instance."
+      }
     },
     {
       "name": "WhiteList",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要配置的IP地址白名单。",
+        "en": "The list of IP addresses to add to the whitelist."
+      }
     },
     {
       "name": "WhiteListPolicies",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "需要配置的 IP 地址白名单。",
+        "en": "The policies for the public IP address whitelist."
+      },
       "sub_parameters": [
         {
           "name": "Description",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "对该条白名单规则的备注或描述。",
+            "en": "The description of this whitelist rule."
+          }
         },
         {
           "name": "Entry",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "需要配置的 IP 地址白名单。最多支持配置 50 个 IP 地址。如果要将多个 IP 地址加入白名单，多个 IP 之间使用半角逗号（,）隔开。",
+            "en": "The IP addresses to add to the whitelist. You can specify up to 50 IP addresses, separated by a comma."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为堡垒机实例配置公网IP地址白名单",
+    "en": "ConfigInstanceWhiteList"
+  },
+  "descriptions": {
+    "zh": "本接口用于为堡垒机实例配置公网IP地址白名单。一般情况下是默认放开所有公网IP访问堡垒机，在需要限制公网IP访问堡垒机时，使用本接口将指定公网IP地址加入白名单，对公网流量访问堡垒机实例进行限制。\n\n本接口的单用户QPS限制为30次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "This operation configures a public IP address whitelist for a Bastionhost instance. By default, instances accept traffic from all public IP addresses. To restrict access, add IP addresses to the whitelist. This ensures only traffic from whitelisted IP addresses can reach the instance.\n\nEach user is limited to 30 queries per second (QPS) for this operation. The system throttles API calls that exceed this limit. This may affect your services, so plan your calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun yundun-bastionhost config-instance-white-list --instance-id bastionhost-cn-78v1gh0000 --biz-region-id cn-hangzhou --white-list 10.162.XX.XX,192.168.XX.XX --white-list-policies Entry=10.162.XX.XX,192.168.XX.XX Description=example-string --region cn-hangzhou",
     "legacyCli": "aliyun yundun-bastionhost ConfigInstanceWhiteList --region cn-hangzhou --WhiteList.1 '10.162.XX.XX,192.168.XX.XX' --WhiteListPolicies.1.Description 'example-string' --InstanceId 'bastionhost-cn-78v1gh0000' --WhiteListPolicies.1.Entry '10.162.XX.XX,192.168.XX.XX' --RegionId 'cn-hangzhou'"

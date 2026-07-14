@@ -1,5 +1,6 @@
 {
   "name": "FixNodePoolVuls",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/clusters/[cluster_id]/nodepools/[nodepool_id]/vuls/fix",
@@ -8,21 +9,44 @@
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求体参数。",
+        "en": "The request body parameters."
+      }
     },
     {
       "name": "cluster_id",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "nodepool_id",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点池ID。",
+        "en": "The node pool ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修复节点池漏洞",
+    "en": "Fix node pool vulnerabilities"
+  },
+  "descriptions": {
+    "zh": "- CVE的兼容性由云安全中心保证，请确保已开通云安全中心旗舰版或[已购买漏洞修复（按量付费）](~~42308~~)。\n- 部分CVE修复需要重启节点，容器服务会在节点重启前执行本节点的排水工作，请确保集群有足够的节点空余资源用于排水，例如提前扩容节点池。\n- 请关注应用与CVE的兼容性。CVE修复分批次进行。CVE修复过程中，任务支持暂停或者取消。暂停或取消后，已经下发了修复任务的批次会继续执行直到完成，未下发的批次会被暂停任务下发或取消任务下发。",
+    "en": "- CVE compatibility is ensured by Security Center. Make sure that you have activated the Ultimate edition of Security Center or [purchased vulnerability fixing (pay-as-you-go)](~~42308~~).\n- Some CVE fixes require node restarts. Container Service drains the node before restarting it. Ensure that the cluster has sufficient spare node resources for draining. For example, scale out the node pool in advance.\n- Pay attention to the compatibility between your applications and CVEs. CVE fixes are performed in batches. During the CVE fix process, you can pause or cancel the task. After you pause or cancel the task, batches that have already been dispatched continue to run until completion. Batches that have not been dispatched are paused or canceled."
+  },
   "example": {
     "unifiedCli": "aliyun cs fix-node-pool-vuls --cluster-id cf62854ac2130470897be7a27ed1f0000 --nodepool-id np31da1b38983f4511b490fc62108a0000 --vuls oval:com.redhat.rhsa:def:20170574 --nodes cn-beijing.10.0.xx.xx --rollout-policy max_parallelism=1 --auto-restart true --region cn-hangzhou",
     "legacyCli": "aliyun cs POST /clusters/cf62854ac2130470897be7a27ed1f0000/nodepools/np31da1b38983f4511b490fc62108a0000/vuls/fix --region cn-hangzhou --header \"Content-Type=application/json\" --body {\"vuls\":[\"oval:com.redhat.rhsa:def:20170574\"],\"nodes\":[\"cn-beijing.10.0.xx.xx\"],\"rollout_policy\":{\"max_parallelism\":1},\"auto_restart\":true}"

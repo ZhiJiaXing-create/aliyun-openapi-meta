@@ -1,5 +1,6 @@
 {
   "name": "DescribeSlowLogHistogramAsync",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "EndTime",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，格式为Unix时间戳，单位为毫秒。\n> 查询结束时间需晚于任务开始时间。",
+        "en": "The end of the time range to query. Specify the time as a UNIX timestamp in milliseconds.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "Filters",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "查询筛选条件列表。",
+        "en": "A list of query filter conditions."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数。",
+            "en": "The filter key."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数的值。",
+            "en": "The value of the filter parameter."
+          }
         }
       ]
     },
@@ -34,21 +51,44 @@
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库实例ID。",
+        "en": "The ID of the database instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n> 对于PolarDB MySQL版实例，需要提供节点ID。",
+        "en": "The node ID.\n\n> For PolarDB for MySQL instances, you must specify the node ID."
+      }
     },
     {
       "name": "StartTime",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询任务开始时间，格式为Unix时间戳，单位为毫秒。",
+        "en": "The beginning of the time range to query. Specify the time as a UNIX timestamp in milliseconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "异步获取实例慢日志趋势数据",
+    "en": "DescribeSlowLogHistogramAsync"
+  },
+  "descriptions": {
+    "zh": "**请确保在使用该接口前，已充分了解DAS产品的[收费方式和价格](~~156195~~)。**\n\n使用该接口需满足以下前提条件：\n\n- 请求实例已开通**DAS企业版**，或者智能运维服务（暂未上线）。\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n\n该接口异步调用后不会立即返回完整结果，当返回数据中 isFinish 取值为 false 时，请等待 1s 后重新发起调用，直到 isFinish 取值为 true 时，返回完整结果。",
+    "en": "**Before you call this operation, make sure that you understand the [billing methods and pricing](~~156195~~) of DAS.**\n\nThe following prerequisites must be met:\n\n- You must enable **DAS Enterprise Edition** or the smart operations and maintenance (O\\&M) service for the instance. The smart O\\&M service is not yet published.\n\n- Use the latest version of the Alibaba Cloud SDK or the DAS SDK.\n\n- When you use an SDK to call the DAS service, set the region to cn-shanghai.\n\nThis is an asynchronous operation. A complete result is not returned immediately. If the isFinish parameter in the response is false, wait 1 second and call the operation again. Repeat the call until the isFinish parameter is true. Then, the complete result is returned."
+  },
   "example": {
     "unifiedCli": "aliyun das describe-slow-log-histogram-async --instance-id rm-2ze8g2am976240000 --node-id r-0000-db-0 --start-time 1596177993000 --end-time 1662518540764 --filters Value=None Key=None --region cn-hangzhou",
     "legacyCli": "aliyun das DescribeSlowLogHistogramAsync --region cn-hangzhou --Filters.1.Key None --EndTime 1662518540764 --InstanceId 'rm-2ze8g2am976240000' --Filters.1.Value None --NodeId 'r-0000-db-0' --StartTime 1596177993000"

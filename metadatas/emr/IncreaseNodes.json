@@ -1,5 +1,6 @@
 {
   "name": "IncreaseNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "ApplicationConfigs",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用配置。数组元素个数N的取值范围：1~1000。",
+        "en": "The application configurations. The number of array elements can range from 1 to 1,000."
+      }
     },
     {
       "name": "AutoPayOrder",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动支付本次扩容操作涉及的订单。节点组付费类型PaymentType取值Subscription时该参数生效。取值范围：\n- true：自动支付本次操作涉及的订单。\n- false：不自动支付本次操作涉及的订单。\n\n默认值：false。",
+        "en": "Specifies whether to automatically pay for the order. This parameter is effective only when the PaymentType of the node group is Subscription. Valid values:\n\n- true: Automatically pays for the order.\n\n- false: Does not automatically pay for the order.\n\nDefault value: false."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本次扩容的节点是否开启自动续费，默认值为false。取值范围：\n- true：开启自动续费。\n- false：不开启自动续费。",
+        "en": "Specifies whether to enable auto-renewal for the added nodes. The default value is false. Valid values:\n\n- true: Enables auto-renewal.\n\n- false: Disables auto-renewal."
+      }
     },
     {
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "IncreaseNodeCount",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点数量。本次扩容的增量节点数量。取值范围：1~500。",
+        "en": "The number of nodes to add. Valid values: 1 to 500."
+      }
     },
     {
       "name": "MinIncreaseNodeCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本次扩容接受的最小节点数量。取值范围为 1 到 500。\n\n- 若设置了该值，当ECS库存数量小于IncreaseNodeCount 时，扩容流程将尽力创建 `MinIncreaseNodeCount` 个节点，扩容流程状态将显示为部分成功 `PARTIAL_COMPLETED`。\n- 如果不设置该值，当ECS库存数量小于IncreaseNodeCount 时，扩容流程失败，状态为失败 `FAILED`。",
+        "en": "The minimum number of nodes to add in this scale-out operation. The value must be between 1 and 500.\n\n- If you set this parameter and the available ECS inventory is less than IncreaseNodeCount, the system attempts to create at least the number of nodes specified by MinIncreaseNodeCount. The scale-out flow is then marked as `PARTIAL_COMPLETED`.\n\n- If you do not set this parameter and the available ECS inventory is less than IncreaseNodeCount, the scale-out flow fails and is marked as `FAILED`."
+      }
     },
     {
       "name": "NodeGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点组ID。扩容的目标节点组。",
+        "en": "The ID of the node group to scale out."
+      }
     },
     {
       "name": "PaymentDuration",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "付费时长。当PaymentDurationUnit取值为Month时，取值：1、2、3、4、5、6、7、8、9、12、24、36、48、60。",
+        "en": "The subscription duration. If PaymentDurationUnit is set to Month, valid values are 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 24, 36, 48, and 60."
+      }
     },
     {
       "name": "PaymentDurationUnit",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "付费时长单位。取值范围：\n- Month：月。",
+        "en": "The unit of the subscription duration. Valid values:\n\n- Month: The unit is month."
+      }
     },
     {
       "name": "Promotions",
@@ -68,9 +105,20 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "区域ID。",
+        "en": "The region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "扩容",
+    "en": "IncreaseNodes"
+  },
   "example": {
     "unifiedCli": "aliyun emr increase-nodes --biz-region-id cn-hangzhou --cluster-id c-b933c5aac8fe0000 --node-group-id ng-869471354ecd0000 --increase-node-count 3 --auto-pay-order false --auto-renew false --payment-duration 12 --payment-duration-unit Month --application-configs example-string --min-increase-node-count 1 --promotions example-string --region cn-hangzhou",
     "legacyCli": "aliyun emr IncreaseNodes --region cn-hangzhou --IncreaseNodeCount 3 --AutoPayOrder false --MinIncreaseNodeCount 1 --ClusterId 'c-b933c5aac8fe0000' --NodeGroupId 'ng-869471354ecd0000' --AutoRenew false --PaymentDurationUnit Month --Promotions.1 'example-string' --RegionId 'cn-hangzhou' --PaymentDuration 12 --ApplicationConfigs.1 'example-string' --method POST --force"

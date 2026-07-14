@@ -1,5 +1,6 @@
 {
   "name": "DeleteRCSnapshot",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制删除已经被用于创建云盘的快照。取值说明：\n- **true**：强制删除。强制删除后该磁盘无法重新初始化。\n- **false**（默认值）：不强制删除。",
+        "en": "Specifies whether to forcefully delete the snapshot that is used to create cloud disks. Valid values:\n\n*   **true**: forcefully deletes the snapshot After the snapshot is forcefully deleted, the cloud disks created from the snapshot cannot be re-initialized.\n*   **false**(default): does not forcefully delete the snapshot."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "SnapshotId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "快照ID。",
+        "en": "The snapshot ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除指定快照",
+    "en": "DeleteRCSnapshot"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，您需要注意：\n- 如果指定的快照ID不存在，请求将被忽略。\n- 如果快照已经被用于创建自定义镜像，将不能执行删除操作。您需要先删除已创建的自定义镜像，才能继续删除快照。\n- 如果快照已经被用于创建云盘，且未设置`Force`参数或`Force=false`时，不能直接删除快照。如果您确定要删除快照，请设置`Force=true`进行强制删除，快照被强制删除后对应的云盘将不能执行重新初始化。",
+    "en": "Before you call this operation, take note of the following items:\n\n*   If the specified snapshot ID does not exist, the request will be ignored.\n*   If the snapshot is used to create custom images, the snapshot cannot be deleted. You must delete the created custom images before you can delete the snapshot.\n*   If the snapshot is used to create cloud disks and `Force` is not specified or is set to `false`, the snapshot cannot be directly deleted. If you want to delete the snapshot, set `Force` to true to forcefully delete the snapshot. The cloud disks created from the snapshot cannot be re-initialized after the snapshot is forcefully deleted."
+  },
   "example": {
     "unifiedCli": "aliyun rds delete-rc-snapshot --snapshot-id rcds-7mbefjzkqccvdev0000 --biz-region-id cn-hangzhou --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun rds DeleteRCSnapshot --region cn-hangzhou --SnapshotId 'rcds-7mbefjzkqccvdev0000' --Force false --RegionId 'cn-hangzhou'"

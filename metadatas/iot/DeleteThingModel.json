@@ -1,5 +1,6 @@
 {
   "name": "DeleteThingModel",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "EventIdentifier",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要删除的事件标识符列表。最多传入10个事件标识符。",
+        "en": "A list of event identifiers to delete. You can pass up to 10 event identifiers."
+      }
     },
     {
       "name": "FunctionBlockId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "物模型自定义模块标识符，在产品中具有唯一性。\n\n- **PropertyIdentifier.N**、**ServiceIdentifier.N**或**EventIdentifier.N**不为空时，传入此参数，删除自定义模块下指定功能；不传入此参数，删除默认模块下指定功能。\n\n- **PropertyIdentifier.N**、**ServiceIdentifier.N**和**EventIdentifier.N**都为空时，传入此参数，删除该模块及其下所有功能定义。",
+        "en": "The identifier of the custom TSL module. Each identifier is unique in a product.\n\n*   If you configure the BatteryModule parameter when a value is specified for the **PropertyIdentifier.N**, **ServiceIdentifier.N**, or **EventIdentifier.N** parameter, the operation removes one or more specified features from the specified custom TSL module. If you do not configure the BatteryModule parameter, the operation removes one or more specified features from the default TSL module.\n*   If you configure the BatteryModule parameter when the **PropertyIdentifier.N**, **ServiceIdentifier.N**, and **EventIdentifier.N** parameters are empty, the operation removes all features from the specified custom TSL module."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n>*   If no **Overview** page or ID is generated for your instance, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品的ProductKey。",
+        "en": "The ProductKey of the product."
+      }
     },
     {
       "name": "PropertyIdentifier",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要删除的属性标识符列表。最多传入10个属性标识符。",
+        "en": "A list of property identifiers to delete. You can specify up to 10 property identifiers."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group.\n\n>  You cannot configure this parameter."
+      }
     },
     {
       "name": "ServiceIdentifier",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要删除的服务标识符列表。最多传入10个服务标识符。",
+        "en": "A list of service identifiers to delete. You can specify up to 10 service identifiers."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除指定产品下物模型中的指定功能",
+    "en": "Delete a specified feature from the Thing Specification Language model of a specified product"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n- 如果指定产品已发布，需先调用接口[CancelReleaseProduct](~~213875~~)取消该产品发布，才能调用本接口删除物模型中功能。\n- 如果产品下有未发布的新增物模型功能定义或物模型自定义模块，也可调用该接口进行删除。\n- 调用该接口时，必须传入请求参数**ProductKey**和指定的物模型（**FunctionBlockId**、**PropertyIdentifier.N**、**ServiceIdentifier.N**或**EventIdentifier.N**）。删除指定产品下物模型功能定义逻辑如下：\n    - 仅传入**ProductKey**和**FunctionBlockId**：删除指定产品下指定的物模型自定义模块。\n    - 传入**ProductKey**，及指定的**PropertyIdentifier.N**、**ServiceIdentifier.N**或**EventIdentifier.N**：删除指定产品下物模型默认模块中指定的功能定义。此时，仅删除已传入且存在的指定功能定义。若传入的**PropertyIdentifier.N**、**ServiceIdentifier.N**和**EventIdentifier.N**在默认模块中都不存在，调用本接口会报错，提示功能定义不存在的错误码信息。\n    - 传入**ProductKey**和**FunctionBlockId**，及指定的**PropertyIdentifier.N**、**ServiceIdentifier.N**或**EventIdentifier.N**：删除指定产品下物模型自定义模块中指定的功能定义。此时，仅删除已传入且存在的指定功能定义。若传入的**PropertyIdentifier.N**、**ServiceIdentifier.N**和**EventIdentifier.N**在自定义模块中都不存在，调用本接口会报错，提示功能定义不存在的错误码信息。\n    > 请求参数**PropertyIdentifier.N**、**ServiceIdentifier.N**和**EventIdentifier.N**，最多各传入10个标识符。\n     \n- 调用该接口删除物模型功能后，必须调用[PublishThingModel](~~150311~~)接口重新发布对应产品的物模型，删除物模型功能的操作才能生效。\n\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为5。\n> RAM用户共享该阿里云账号配额。",
+    "en": "## How-To\n- If the specified product has been published, you must first call the [CancelReleaseProduct](~~213875~~) API to cancel the product's publication before invoking this API to delete features from its Thing Specification Language model.\n- You can also use this API to delete unpublished newly added feature definitions or custom modules in the Thing Specification Language model of the product.\n- When calling this API, you must provide the **ProductKey** parameter and specify one of the following identifiers for the Thing Specification Language model: **FunctionBlockId**, **PropertyIdentifier.N**, **ServiceIdentifier.N**, or **EventIdentifier.N**. The logic for deleting feature definitions from the Thing Specification Language model of the specified product is as follows:\n    - If only **ProductKey** and **FunctionBlockId** are provided, the specified custom module in the Thing Specification Language model of the product is deleted.\n    - If **ProductKey** and any of **PropertyIdentifier.N**, **ServiceIdentifier.N**, or **EventIdentifier.N** are provided (without **FunctionBlockId**), the specified feature definitions within the default module of the product’s Thing Specification Language model are deleted. In this case, only the specified feature definitions that exist and have been passed in the request will be deleted. If none of the provided **PropertyIdentifier.N**, **ServiceIdentifier.N**, or **EventIdentifier.N** values exist in the default module, the API call fails and returns an error code indicating that the feature definition does not exist.\n    - If **ProductKey**, **FunctionBlockId**, and any of **PropertyIdentifier.N**, **ServiceIdentifier.N**, or **EventIdentifier.N** are provided, the specified feature definitions within the custom module (identified by **FunctionBlockId**) of the product’s Thing Specification Language model are deleted. Only the specified feature definitions that exist and have been passed in the request will be deleted. If none of the provided **PropertyIdentifier.N**, **ServiceIdentifier.N**, or **EventIdentifier.N** values exist in the custom module, the API call fails and returns an error code indicating that the feature definition does not exist.\n    > You can pass up to 10 identifiers each for **PropertyIdentifier.N**, **ServiceIdentifier.N**, and **EventIdentifier.N**.\n\n- After successfully deleting a feature from the Thing Specification Language model using this API, you must call the [PublishThingModel](~~150311~~) API to republish the product’s Thing Specification Language model. Otherwise, the deletion operation will not take effect.\n\n\n## QPS Limit\nThe maximum queries per second (QPS) limit for this API is 5 per Alibaba Cloud account.  \n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot delete-thing-model --iot-instance-id iot-cn-0pp1n8t0000 --resource-group-id rg-acfm4l5tcwd0000 --product-key a1BwAGV0000 --function-block-id BatteryModule --property-identifier Temperature --service-identifier Set --event-identifier OfflineAlert --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot DeleteThingModel --region cn-hangzhou --IotInstanceId 'iot-cn-0pp1n8t0000' --ResourceGroupId 'rg-acfm4l5tcwd0000' --EventIdentifier.1 OfflineAlert --FunctionBlockId BatteryModule --ServiceIdentifier.1 Set --PropertyIdentifier.1 Temperature --ProductKey a1BwAGV0000"

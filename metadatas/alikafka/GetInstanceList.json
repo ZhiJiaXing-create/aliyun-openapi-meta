@@ -1,5 +1,6 @@
 {
   "name": "GetInstanceList",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "实例ID列表。",
-        "en": "The IDs of instances."
+        "en": "A list of instance IDs."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "订单ID。您可以在阿里云费用与成本的<props=\"china\">[订购订单](https://usercenter2.aliyun.com/order/list?pageIndex=1&pageSize=20)中获取。</props>\n<props=\"intl\">[订单管理](https://usercenter2-intl.aliyun.com/order/list?pageIndex=1&pageSize=20&spm=5176.12818093.top-nav.ditem-ord.36f016d0OQFmJa)中获取。</props>\n><notice>Serverless实例暂不支持通过订单 ID 查询。></notice>",
-        "en": "The ID of the order. You can obtain the order ID on the [Orders](https://usercenter2-intl.aliyun.com/order/list?pageIndex=1\\&pageSize=20\\&spm=5176.12818093.top-nav.ditem-ord.36f016d0OQFmJa) page in Alibaba Cloud User Center."
+        "en": "The order ID. You can find the order ID on the <props=\"china\">[Orders](https://usercenter2.aliyun.com/order/list?pageIndex=1\\&pageSize=20) page in the Billing Management console.</props>\n<props=\"intl\">[Orders](https://usercenter2-intl.aliyun.com/order/list?pageIndex=1\\&pageSize=20\\&spm=5176.12818093.top-nav.ditem-ord.36f016d0OQFmJa) page in the Billing Management console.</props>\n><notice>You cannot use an order ID to query Serverless instances.></notice>"
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "实例的地域ID。",
-        "en": "The ID of the region where the instance resides."
+        "en": "The ID of the region where the instance is located."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "资源组ID，可通过资源组控制台查询。",
-        "en": "The ID of the resource group. You can obtain this ID on the Resource Group page in the Resource Management console."
+        "en": "The ID of the resource group. You can view the resource group ID in the Resource Group console."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "实例系列标识，可根据系列号来过滤不同系列的实例。取值如下：\n- v2\n- v3\n- confluent",
-        "en": "The instance version. You can use instance versions to filter different versions of instances. Valid values:\n\n*   v2\n*   v3\n*   confluent"
+        "en": "The instance series. You can use this parameter to filter instances. Valid values:\n\n- v2\n\n- v3\n\n- confluent"
       }
     },
     {
@@ -59,26 +60,41 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "A list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n\n- 如果为空，则匹配所有标签键。\n\n- 最多支持128个字符，不能以aliyun和acs:开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key.\n\n- If you do not specify this parameter, all tag keys are matched.\n\n- The tag key can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n- 标签键为空时，必须为空。如果为空，匹配所有标签值。\n\n- 最多支持128个字符，不能以aliyun和acs:开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value.\n\n- If you do not specify the `Key` parameter, you do not need to specify this parameter. If you leave this parameter empty, all tag values are matched.\n\n- The tag value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签列表。",
-        "en": "The tags."
-      }
+      ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定地域的实例信息",
+    "en": "GetInstanceList"
+  },
   "example": {
     "unifiedCli": "aliyun alikafka get-instance-list --biz-region-id cn-hangzhou --order-id 60726730000 --instance-id alikafka_post-cn-mp91gnw00000 --tag Value=test Key=test --resource-group-id rg-ac000000000007q --series v3 --api-version 2019-09-16 --region cn-hangzhou",
     "legacyCli": "aliyun alikafka GetInstanceList --region cn-hangzhou --Series v3 --Tag.1.Key test --ResourceGroupId 'rg-ac000000000007q' --Tag.1.Value test --RegionId 'cn-hangzhou' --OrderId 60726730000 --InstanceId.1 'alikafka_post-cn-mp91gnw00000'"

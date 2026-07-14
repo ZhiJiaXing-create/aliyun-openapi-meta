@@ -1,5 +1,6 @@
 {
   "name": "SearchMultiAccountResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "过滤条件。",
+        "en": "The filter conditions."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件键。取值见下方`支持的过滤参数`。",
+            "en": "The key of the filter condition. For more information, see the \"`Supported filter parameters`\" section below."
+          }
         },
         {
           "name": "MatchType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "匹配方式。\n\n取值为Equals，表示相等匹配。",
+            "en": "The matching method.\n\nSet this parameter to `Equals`, which means an exact match."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件值。",
+            "en": "The values of the filter condition."
+          }
         }
       ]
     },
@@ -34,27 +51,54 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页的最大数据条数。\n\n取值范围：1~100。\n\n默认值：20。",
+        "en": "The maximum number of entries to return on each page.\n\nValid values: 1 to 100.\n\nDefault value: 20."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询返回结果下一页的令牌。\n\n当返回结果数据总条数超过`MaxResults`限制，则数据会被截断，您可以使用`NextToken`查询下一页数据。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results. You do not need to specify this parameter for the first request. You must specify the token that is obtained from the previous query as the value of `NextToken`."
+      }
     },
     {
       "name": "Scope",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "搜索的账号范围。取值： \n- 资源目录ID，表示搜索管理账号和所有成员中的资源。更多信息，请参见[GetResourceDirectory](~~159995~~)。\n- Root资源夹ID，表示搜索Root资源夹及子资源夹下的所有成员中的资源。更多信息，请参见[ListFoldersForParent](~~159997~~)。\n- 资源夹ID，表示搜索指定资源夹下所有成员中的资源。更多信息，请参见[ListFoldersForParent](~~159997~~)。\n- 成员ID，表示搜索指定成员中的资源。更多信息，请参见[ListAccounts](~~160016~~)。",
+        "en": "The scope of the accounts in which you want to search for resources. Valid values:\n\n- The ID of a resource directory: Searches for resources in the management account and all its member accounts. For more information, see [GetResourceDirectory](~~159995~~).\n\n- The ID of the Root folder: Searches for resources in all member accounts under the Root folder and its subfolders. For more information, see [ListFoldersForParent](~~159997~~).\n\n- The ID of a folder: Searches for resources in all member accounts under the folder. For more information, see [ListFoldersForParent](~~159997~~).\n\n- The ID of a member account: Searches for resources in the member account. For more information, see [ListAccounts](~~160016~~)."
+      }
     },
     {
       "name": "SortCriterion",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序参数。",
+        "en": "The sorting parameters."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "搜索多账号的资源",
+    "en": "SearchMultiAccountResources"
+  },
+  "descriptions": {
+    "zh": "- 仅能搜索[支持资源中心的云服务及资源类型](~~477798~~)。\n- 如果您使用的是RAM用户账号或者RAM角色，需要被授予SearchMultiAccountResources接口的权限才能执行跨账号资源搜索操作。更多信息，请参见[RAM用户使用资源中心](~~600556~~)。\n- SearchMultiAccountResources接口默认最多返回20条数据，您可以通过指定`MaxResults`参数调整最大返回条目数。\n- 如果返回结果中不存在`NextToken`，则表示没有更多数据。否则，则表示还有更多数据。如果想要查询后续页，需要将 SearchMultiAccountResources 接口的`NextToken`参数设置为上一次返回结果中获取到的`NextToken` 。如果未输入`NextToken`参数，查询时默认返回第一页的数据。\n- 通过设置一个或多个过滤条件，可以精确资源的搜索范围。支持的过滤参数以及匹配方式见下文。多个过滤条件之间是逻辑与`AND`的关系，只有同时满足所有过滤条件的资源才会被返回。每个过滤条件内部是逻辑或`OR`的关系，只要满足任意一个过滤条件值的资源都会被返回。\n- 您可以在<props=\"china\">[示例中心](https://api.aliyun.com/api-tools/demo/ResourceCenter)</props>\n<props=\"intl\">[示例中心](https://api.alibabacloud.com/api-tools/demo/ResourceCenter)</props>获取更多查询示例。",
+    "en": "- You can search only for [Services that work with Resource Center](~~477798~~).\n\n- To search for resources across accounts as a RAM user or RAM role, you must have been attached the `resourcecenter:SearchMultiAccountResources` policy. For more information, see [Grant a RAM user the permissions to use Resource Center](~~600556~~).\n\n- By default, this operation returns a maximum of 20 entries. To change the maximum number of entries that can be returned, specify the `MaxResults` parameter.\n\n- If the response does not include `NextToken`, no more data is available. To query the next page of results, set the `NextToken` parameter to the value that was returned from the previous call. If you do not specify the `NextToken` parameter, the first page of data is returned by default.\n\n- You can set one or more filter conditions to narrow the search scope. For information about supported filter parameters and matching methods, see the information below. Multiple filter conditions are joined by a logical `AND`. Only resources that meet all filter conditions are returned. The values within a single filter condition are joined by a logical `OR`. Resources that meet any value for a filter condition are returned.\n\n- For more query examples, visit <props=\"china\">[OpenAPI Portal](https://api.aliyun.com/api-tools/demo/ResourceCenter)</props> <props=\"intl\">[OpenAPI Portal](https://api.alibabacloud.com/api-tools/demo/ResourceCenter)</props>."
+  },
   "example": {
     "unifiedCli": "aliyun resourcecenter search-multi-account-resources --scope rd-r40000 --next-token eyJzZWFyY2hBZnRlcnMiOlsiMTAwMTU2Nzk4MTU1OSJd0000 --max-results 10 --filter '[{\"MatchType\":\"Equals\",\"Value\":[\"rg-aekzmrjn4ns0000\"],\"Key\":\"ResourceGroupId\"}]' --sort-criterion Order=ASC Key=CreateTime --region cn-hangzhou",
     "legacyCli": "aliyun resourcecenter SearchMultiAccountResources --region cn-hangzhou --Filter.1.MatchType Equals --Scope 'rd-r40000' --NextToken eyJzZWFyY2hBZnRlcnMiOlsiMTAwMTU2Nzk4MTU1OSJd0000 --SortCriterion.Order ASC --Filter.1.Value.1 'rg-aekzmrjn4ns0000' --MaxResults 10 --SortCriterion.Key CreateTime --Filter.1.Key ResourceGroupId --method POST --force"

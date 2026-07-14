@@ -1,5 +1,6 @@
 {
   "name": "CreateTransitRouterVpnAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "是否允许转发路由器实例自动向IPsec连接发布路由条目。取值：\n\n- **true**（默认值）：允许。\n- **false**：不允许。",
-        "en": "Specifies whether to allow the transit router to automatically advertise routes to the IPsec-VPN attachment. Valid values:\n\n*   **true** (default): yes\n*   **false**: no"
+        "en": "Specifies whether to enable the transit router to automatically publish routes to the IPsec-VPN connection. Valid values:\n\n- **true** (default): enabled.\n\n- **false**: disabled."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "计费方式。\n\n仅取值：**POSTPAY**（默认值），表示按使用量付费。",
-        "en": "The billing method.\n\nSet the value to **POSTPAY**, which is the default value and specifies the pay-as-you-go billing method."
+        "en": "The billing method.\n\nThe value is set to **POSTPAY** (default), which specifies the pay-as-you-go billing method."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among all requests. The token can contain only ASCII characters.\n\n>  If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** for each API request may be different."
+        "en": "A client token that is used to ensure the idempotence of the request.\n\nGenerate a unique token on your client. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** as the **ClientToken**. The **RequestId** of each API request may be different."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建VPN连接。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接创建VPN连接。",
-        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: performs a dry run. The system checks the required parameters, request syntax, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and sends the request."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run but does not create the VPN connection. The system checks the request for required parameters, format, and service limits. If the request fails the check, an error message is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and creates the VPN connection if the request passes the check."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "转发路由器实例所属的地域ID。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
-        "en": "The ID of the region where the transit router is deployed.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query the most recent region list."
+        "en": "The ID of the region where the transit router instance is deployed.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query the most recent region list."
       }
     },
     {
@@ -69,24 +70,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息列表。\n\n一次最多支持输入20个标签信息。",
+        "en": "The tags.\n\nYou can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key cannot be an empty string. It can be up to 64 characters in length. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The tag value.\n\nThe tag value can be an empty string or a string of up to 128 characters. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`.\n\nYou can specify up to 20 tag values."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签信息列表。\n\n一次最多支持输入20个标签信息。",
-        "en": "The tags.\n\nYou can specify at most 20 tags in each call."
-      }
+      ]
     },
     {
       "name": "TransitRouterAttachmentDescription",
@@ -95,7 +104,7 @@
       "required": false,
       "description": {
         "zh": "VPN连接的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
-        "en": "The description of the VPN attachment.\n\nThe description must be 2 to 256 characters in length. The description must start with a letter but cannot start with `http://` or `https://`."
+        "en": "The description of the VPN connection.\n\nThe description can be empty or 1 to 256 characters in length, and cannot start with \\`http\\://\\` or \\`https\\://\\`."
       }
     },
     {
@@ -105,7 +114,7 @@
       "required": false,
       "description": {
         "zh": "VPN连接的名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
-        "en": "The name of the VPN attachment.\n\nThe name must be 2 to 128 characters in length, and can contain letters, digits, underscores (\\_), and hyphens (-). It must start with a letter."
+        "en": "The name of the VPN connection.\n\nThe name can be empty or 1 to 128 characters in length, and cannot start with \\`http\\://\\` or \\`https\\://\\`."
       }
     },
     {
@@ -115,7 +124,7 @@
       "required": false,
       "description": {
         "zh": "转发路由器实例ID。",
-        "en": "The ID of the transit router."
+        "en": "The ID of the transit router instance."
       }
     },
     {
@@ -125,7 +134,7 @@
       "required": true,
       "description": {
         "zh": "IPsec连接ID。",
-        "en": "The ID of the IPsec-VPN attachment."
+        "en": "The ID of the IPsec-VPN connection."
       }
     },
     {
@@ -135,7 +144,7 @@
       "required": false,
       "description": {
         "zh": "IPsec连接所属的阿里云账号（主账号）ID。\n\n- 如果不输入本参数，默认使用当前登录的阿里云账号ID。\n- 如果您要连接跨账号的IPsec连接时，本参数必填。",
-        "en": "The ID of the Alibaba Cloud account to which the IPsec-VPN connection belongs.\n\n*   If you do not set this parameter, the ID of the current Alibaba Cloud account is used.\n*   You must set VpnOwnerId if you want to connect the transit router to an IPsec-VPN connection that belongs to another Alibaba Cloud account."
+        "en": "The ID of the Alibaba Cloud account to which the IPsec-VPN connection belongs.\n\n- If you do not specify this parameter, the ID of the current Alibaba Cloud account is used.\n\n- This parameter is required if you want to connect to a cross-account IPsec-VPN connection."
       }
     },
     {
@@ -143,20 +152,35 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "当前地域下的可用区ID。\n\n系统将在您指定的可用区下创建资源。\n\n> 如果绑定的IPsec连接是双隧道模式，此字段不填值。",
+        "en": "The ID of the zone in the current region.\n\nThe system creates resources in the specified zone.\n\n> Do not specify this parameter if the attached IPsec-VPN connection is in dual-tunnel mode."
+      },
       "sub_parameters": [
         {
           "name": "ZoneId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "可用区ID。\n\n您可以通过调用[ListTransitRouterAvailableResource](~~261356~~)接口获取地域ID。",
+            "en": "The zone ID.\n\nYou can call the [ListTransitRouterAvailableResource](~~261356~~) operation to query available zones."
+          }
         }
-      ],
-      "description": {
-        "zh": "当前地域下的可用区ID。\n\n系统将在您指定的可用区下创建资源。\n\n> 如果绑定的IPsec连接是双隧道模式，此字段不填值。",
-        "en": "The ID of the zone in the current region.\n\nResources are deployed in the specified zone."
-      }
+      ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建VPN连接",
+    "en": "CreateTransitRouterVpnAttachment"
+  },
+  "descriptions": {
+    "zh": "- 创建VPN连接后，VPN连接默认不与任何转发路由器路由表建立路由学习关系和关联转发关系。\n- 在调用`CreateTransitRouterVpnAttachment`接口的过程中，如果您指定了**CenId**、**RegionId**参数的值，则无需指定**TransitRouterId**参数的值；如果您指定了**TransitRouterId**、**RegionId**参数的值，则无需指定**CenId**参数的值。\n\n### 前提条件\n\n- 在创建VPN连接前，请确保您已经在转发路由器实例所在的地域创建了一个IPsec连接，且IPsec连接未绑定任何资源。具体操作，请参见[CreateVpnAttachment](~~442455~~)。\n- 如果转发路由器实例需要连接跨账号的IPsec连接，则需确保IPsec连接已对转发路由器实例授权。具体操作，请参见[GrantInstanceToTransitRouter](~~417520~~)。\n- 在创建VPN连接之前，请确保您已设置转发路由器的TR地址段。具体操作，请参见[CreateTransitRouterCidr](~~468230~~)。",
+    "en": "- After you create a VPN connection, the connection does not learn routes from or associate with any route table of the transit router by default.\n\n- When you call the `CreateTransitRouterVpnAttachment` operation, you do not need to specify **TransitRouterId** if you specify **CenId** and **RegionId**. You do not need to specify **CenId** if you specify **TransitRouterId** and **RegionId**.\n\n### Prerequisites\n\n- Before you create a VPN connection, make sure that you have created an IPsec-VPN connection in the same region as the transit router instance and that the IPsec-VPN connection is not attached to any resource. For more information, see [CreateVpnAttachment](~~442455~~).\n\n- If the transit router instance needs to connect to a cross-account IPsec-VPN connection, make sure that the transit router instance is granted the required permissions on the IPsec-VPN connection. For more information, see [GrantInstanceToTransitRouter](~~417520~~).\n\n- Before you create a VPN connection, make sure that you have configured a CIDR block for the transit router. For more information, see [CreateTransitRouterCidr](~~468230~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn create-transit-router-vpn-attachment --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --cen-id cen-rsgxs8ng2awen20000 --transit-router-id tr-p0wm740vjnbaprv0m0000 --biz-region-id cn-hangzhou --transit-router-attachment-name nametest --transit-router-attachment-description desctest --vpn-id vco-p0w042cqwvlhl4zyw0000 --vpn-owner-id 1210123456123456 --auto-publish-route-enabled true --charge-type POSTPAY --zone ZoneId=cn-hangzhou-h --tag Value=TagValue Key=TagKey --region cn-hangzhou",
     "legacyCli": "aliyun cbn CreateTransitRouterVpnAttachment --region cn-hangzhou --Tag.1.Key TagKey --VpnOwnerId 1210123456123456 --DryRun false --TransitRouterAttachmentName nametest --AutoPublishRouteEnabled true --ChargeType POSTPAY --Tag.1.Value TagValue --CenId 'cen-rsgxs8ng2awen20000' --Zone.1.ZoneId 'cn-hangzhou-h' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --TransitRouterAttachmentDescription desctest --TransitRouterId 'tr-p0wm740vjnbaprv0m0000' --VpnId 'vco-p0w042cqwvlhl4zyw0000'"

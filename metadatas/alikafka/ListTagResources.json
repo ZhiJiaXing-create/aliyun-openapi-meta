@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "下一个查询开始的Token。",
-        "en": "The token that determines the start point of the next query."
+        "en": "The token for the next query."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "资源的地域ID。",
-        "en": "The ID of the region in which the resource is deployed."
+        "en": "The region ID of the resource."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "打标的资源ID 。资源ID规则：\n\n- 实例：instanceId\n\n- Topic ：Kafka_alikafka_instanceId_topic\n\n- Group：Kafka_alikafka_instanceId_consumerGroup\n\n例如：实例ID为alikafka_post-cn-v0h1fgs2xxxx、Topic名称为test-topic、Group名称为test-consumer-group，则各资源ID分别为alikafka_post-cn-v0h1fgs2xxxx、Kafka_alikafka_post-cn-v0h1fgs2xxxx_test-topic、Kafka_alikafka_post-cn-v0h1fgs2xxxx_test-consumer-group。  \n\n> **ResourceId**与**Tag**参数必须配置其中任意一个，才能查询资源绑定的标签列表。否则，API调用失败。",
-        "en": "The ID of the resource whose tags you want to query. The resource ID follows the following rules:\n\n*   Instance ID: instanceId\n*   Topic ID: Kafka_alikafka_instanceId_topic\n*   Group ID: Kafka_alikafka_instanceId_consumerGroup\n\nFor example, if the instance ID is alikafka_post-cn-v0h1fgs2xxxx, the topic name is test-topic, and the group name is test-consumer-group, the resource IDs are alikafka_post-cn-v0h1fgs2xxxx, Kafka_alikafka_post-cn-v0h1fgs2xxxx_test-topic, and Kafka_alikafka_post-cn-v0h1fgs2xxxx_test-consumer-group, respectively.\n\n>  You must configure one of **ResourceId** and **Tag** to query the tags that are bound to a resource. Otherwise, the request fails."
+        "en": "The ID of the resource to be tagged. Resource ID rules:\n\n- Instance: instanceId\n\n- Topic: Kafka\\_alikafka\\_instanceId\\_topic\n\n- Group: Kafka\\_alikafka\\_instanceId\\_consumerGroup\n\nFor example: If the instance ID is alikafka\\_post-cn-v0h1fgs2xxxx, the Topic name is test-topic, and the Group name is test-consumer-group, the resource IDs are alikafka\\_post-cn-v0h1fgs2xxxx, Kafka\\_alikafka\\_post-cn-v0h1fgs2xxxx\\_test-topic, and Kafka\\_alikafka\\_post-cn-v0h1fgs2xxxx\\_test-consumer-group respectively.\n\n> Either the **ResourceId** or **Tag** parameter must be configured to query the tag list bound to resources. Otherwise, the API call fails."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": true,
       "description": {
         "zh": "资源类型。枚举类型。取值：\n\n- **INSTANCE**：实例。\n\n- **TOPIC**：主题。\n\n- **CONSUMERGROUP**：消费组。",
-        "en": "The type of the resource whose tags you want to query. The value is an enumerated value. Valid values:\n\n*   **INSTANCE**\n*   **TOPIC**\n*   **CONSUMERGROUP**"
+        "en": "The resource type. Enumeration type. Valid values:\n\n- **INSTANCE**: instance.\n\n- **TOPIC**: topic.\n\n- **CONSUMERGROUP**: consumer group."
       }
     },
     {
@@ -49,26 +50,41 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tag list."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n\n- 如果为空，则匹配所有标签键。\n\n- 最多支持128个字符，不能以aliyun和acs:开头，不能包含http://或者https://。",
+            "en": "The tag key of the resource.\n\n- If this parameter is empty, all tag keys are matched.\n\n- The tag key can be up to 128 characters in length and cannot start with aliyun or acs:. It cannot contain http\\:// or https\\://."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n\n- 如果标签键为空，则必须为空。为空时，匹配所有标签值。\n\n- 最多支持128个字符，不能以aliyun和acs:开头，不能包含http://或者https://。",
+            "en": "The tag value of the resource.\n\n- If the tag key is empty, this parameter must be empty. If this parameter is empty, all tag values are matched.\n\n- The tag value can be up to 128 characters in length and cannot start with aliyun or acs:. It cannot contain http\\:// or https\\://."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签列表。",
-        "en": "The tags."
-      }
+      ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源绑定的标签列表",
+    "en": "ListTagResources"
+  },
   "example": {
     "unifiedCli": "aliyun alikafka list-tag-resources --biz-region-id cn-hangzhou --resource-type INSTANCE --next-token caeba0bbb2be03f84eb48b699f0a4883 --resource-id alikafka_post-cn-v0h1fgs20000 --tag Value=FinanceJoshua Key=FinanceDept --api-version 2019-09-16 --region cn-hangzhou",
     "legacyCli": "aliyun alikafka ListTagResources --region cn-hangzhou --ResourceId.1 'alikafka_post-cn-v0h1fgs20000' --Tag.1.Key FinanceDept --NextToken caeba0bbb2be03f84eb48b699f0a4883 --Tag.1.Value FinanceJoshua --ResourceType INSTANCE --RegionId 'cn-hangzhou'"

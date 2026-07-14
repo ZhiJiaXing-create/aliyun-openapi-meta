@@ -1,5 +1,6 @@
 {
   "name": "QueryInstanceBill",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "资源归属账号ID，资源归属账号是实际使用资源的账号。",
-        "en": "The ID of the member. If you specify a value for this parameter, you can query the bills of the specified member. If you leave this parameter empty, the bills of the current account are queried by default."
+        "en": "The ID of the account that owns the resources. This account is the actual user of the resources."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "账期YYYY－MM。仅支持最近18个月账期。",
-        "en": "The billing cycle. Format: YYYY-MM."
+        "en": "The billing cycle in YYYY-MM format. Data from the last 18 months is supported."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "账单日期，仅当**Granularity**为DAILY时必填，格式为YYYY-MM-DD。",
-        "en": "The billing date. This parameter is required only if the **Granularity** parameter is set to DAILY. Format: YYYY-MM-DD."
+        "en": "The billing date. This parameter is required only when the **Granularity** parameter is set to DAILY. The value must be in the YYYY-MM-DD format."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "查询账单的颗粒度。取值：\n- MONTHLY：月。与“费用中心-费用账单-账单明细-账期”账单一致。\n- DAILY：日。与“费用中心-费用账单-账单明细-按天”账单一致。\n\n选择DAILY需指定**BillingDate**。",
-        "en": "The granularity at which bills are queried. Valid values:\n\n*   MONTHLY: queries bills by month. The data queried is consistent with the data that is displayed for the specified billing cycle on the Billing Details tab of the Bill Details page in User Center.\n*   DAILY: queries bills by day. The data queried is consistent with the data that is displayed for the specified day on the Billing Details tab of the Bill Details page in User Center.\n\nYou must set the **BillingDate** parameter before you can set the Granularity parameter to DAILY."
+        "en": "The granularity at which to query bills. Valid values:\n\n- MONTHLY: queries bills by month. The data is consistent with the bill details on the Billing Cycle tab of the Bills page in the User Center.\n\n- DAILY: queries bills by day. The data is consistent with the bill details on the By Day tab of the Bills page in the User Center.\n\nIf you set this parameter to DAILY, you must also specify the **BillingDate** parameter."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "是否按照计费项维度拉取数据。\n- false。与“费用中心-费用账单-账单明细-实例”账单一致。\n- true。与“费用中心-费用账单-账单明细-计费项”账单一致。\n\n默认 false。",
-        "en": "Specifies whether to query data by billable item. Valid values:\n\n*   false: does not query data by billable item. The data queried is consistent with the data that is displayed for the specified instance on the Billing Details tab of the Bill Details page in User Center.\n*   true: queries data by billable item. The data queried is consistent with the data that is displayed for the specified billable item on the Billing Details tab of the Bill Details page in User Center.\n\nDefault value: false."
+        "en": "Specifies whether to query data by billable item.\n\n- false: The data is consistent with the bill details on the Instance tab of the Bills page in the User Center.\n\n- true: The data is consistent with the bill details on the Billable Item tab of the Bills page in the User Center.\n\nDefault value: false."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "根据原价（**PretaxGrossAmount**）和应付（**PretaxAmount**）是否都为0做过滤。取值：\n- false。\n- true。",
-        "en": "Specifies whether to filter out a bill whose pretax gross amount and pretax amount are 0. Default value: false.******** Valid values:\n\n*   false: does not filter the bill.\n*   true: filters the bill."
+        "en": "Specifies whether to filter out bills for which the pretax gross amount (**PretaxGrossAmount**) and pretax amount (**PretaxAmount**) are both 0. Valid values:\n\n- false.\n\n- true."
       }
     },
     {
@@ -71,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "页码，默认值为1。",
-        "en": "The number of the page to return. Default value: 1."
+        "en": "The page number. Default value: 1."
       }
     },
     {
@@ -81,7 +82,7 @@
       "required": false,
       "description": {
         "zh": "每页数量，默认值：20，最大值：300。",
-        "en": "The number of entries to return on each page. Default value: 20. Maximum value: 300."
+        "en": "The number of entries per page. Default value: 20. Maximum value: 300."
       }
     },
     {
@@ -91,7 +92,7 @@
       "required": false,
       "description": {
         "zh": "产品代码。",
-        "en": "The code of the service."
+        "en": "The code of the product."
       }
     },
     {
@@ -101,7 +102,7 @@
       "required": false,
       "description": {
         "zh": "产品类型。当ProductCode为云市场产品code时，此参数必填。",
-        "en": "The type of the service. This parameter is required if the ProductCode parameter is set to the service code of Alibaba Cloud Marketplace."
+        "en": "The type of the product. Required when the ProductCode parameter is set to the code of an Alibaba Cloud Marketplace product."
       }
     },
     {
@@ -111,10 +112,21 @@
       "required": false,
       "description": {
         "zh": "订阅类型。取值：\n- Subscription：预付费。\n- PayAsYouGo：后付费。\n\n>必须和**ProductCode**参数一起使用。",
-        "en": "The billing method. Valid values:\n\n*   Subscription: the subscription billing method\n*   PayAsYouGo: the pay-as-you-go billing method\n\n**\n\n****This parameter must be used together with the **ProductCode** parameter."
+        "en": "The subscription type. Valid values:\n\n- Subscription: subscription.\n\n- PayAsYouGo: pay-as-you-go.\n\n> This parameter must be used with the **ProductCode** parameter."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "实例账单查询服务",
+    "en": "QueryInstanceBill"
+  },
+  "descriptions": {
+    "zh": "## API描述\n\n在调用本接口时，请注意：\n- 实例账单API已升级，请使用新版API：[DescribeInstanceBill](~~209402~~)。此API不再提供50000行以后数据的查询。\n- 实例账单是根据账单数据拆分生成，一般会有一天延迟。\n- 实例信息在账期内会变化，月汇总的实例Config和Spec对应记录生成时间信息，如需详情可参考对应明细账单。\n- 云通信产品可查询从2020年6月以后的数据; 万网产品可查询从2020年11月以后的数据。\n<props=\"intl\">\n- 国际站服务地址请选择新加坡。</props>",
+    "en": "## API description\n\nNote the following when you call this operation:\n\n- The API for instance bills has been upgraded. We recommend that you use the new operation [DescribeInstanceBill](~~209402~~). This operation no longer supports querying data beyond the 50,000th row.\n\n- Instance bills are generated based on split billing data. A delay of about one day may occur.\n\n- Instance information may change within a billing cycle. The instance Config and Spec in the monthly summary reflect the information at the time the record was generated. For more information, see the corresponding detailed bill.\n\n- Data for Alibaba Cloud Communications products is available from June 2020. Data for HiChina products is available from November 2020.\n\n<props=\"intl\">\n\n- For the international site (alibabacloud.com), select Singapore as the endpoint.\n\n</props>"
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi query-instance-bill --billing-cycle 2020-03 --product-code rds --product-type rds --subscription-type PayAsYouGo --is-billing-item false --page-num 1 --page-size 20 --is-hide-zero-charge false --billing-date 2020-03-03 --granularity MONTHLY --bill-owner-id 122 --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi QueryInstanceBill --region cn-hangzhou --SubscriptionType PayAsYouGo --BillingCycle '2020-03' --PageNum 1 --PageSize 20 --ProductCode rds --IsHideZeroCharge false --ProductType rds --BillOwnerId 122 --IsBillingItem false --BillingDate '2020-03-03' --Granularity MONTHLY"

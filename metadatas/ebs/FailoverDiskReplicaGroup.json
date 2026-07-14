@@ -1,5 +1,6 @@
 {
   "name": "FailoverDiskReplicaGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一致性复制组中容灾站点所属的地域ID。",
+        "en": "The region ID of the secondary site of the replication pair-consistent group."
+      }
     },
     {
       "name": "ReplicaGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一致性复制组ID。",
+        "en": "The ID of the replication pair-consistent group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "启用异步复制组故障切换",
+    "en": "FailoverDiskReplicaGroup"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 一致性复制组功能支持的地域请参见[云盘异步复制概述](~~314563~~)。\n\n- 一致性复制组必须处于**单次同步中**（`manual_syncing`）、**同步中**（`syncing`）、**正常**（`normal`）、**停止中**（`stopping`）、**停止失败**（`stop_failed`）、**已停止**（`stopped`）、**故障切换中**（`failovering`）、**故障切换失败**（`failover_failed`）或者**故障切换完成**（`failovered`）状态。\n\n- 故障切换完成后，一致性复制组处于**故障切换完成**（`failovered`）状态。\n\n- 要进行故障切换，请确保生产站点到灾备站点之间已完成首次数据同步。",
+    "en": "## [](#)Usage notes\n\n*   For information about the regions in which the replication pair-consistent group feature is available, see [Overview](~~314563~~).\n*   The replication pair-consistent group must be in the **One-time Syncing** (`manual_syncing`), **Syncing** (`syncing`), **Normal** (`normal`), **Stopping** (`stopping`), **Stop Failed** (`stop_failed`), **Stopped** (`stopped`), **In Failover** (`failovering`), **Failover Failed** (`failover_failed`), or **Failovered** (`failovered`) state.\n*   After a failover is performed, the replication pair-consistent group enters the **Failovered** (`failovered`) state.\n*   Before you perform a failover, make sure that the first full data synchronization is completed between the primary site and secondary site."
+  },
   "example": {
     "unifiedCli": "aliyun ebs failover-disk-replica-group --biz-region-id cn-hangzhou --replica-group-id group-myreplica0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ebs FailoverDiskReplicaGroup --region cn-hangzhou --RegionId 'cn-hangzhou' --ReplicaGroupId 'group-myreplica0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

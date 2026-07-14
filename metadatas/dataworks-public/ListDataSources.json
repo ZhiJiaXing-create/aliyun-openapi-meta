@@ -1,5 +1,6 @@
 {
   "name": "ListDataSources",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "EnvType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源环境类型，枚举值：\n- Dev：开发环境\n- Prod：生产环境",
+        "en": "The environment in which the data sources are used. Valid values:\n\n- Dev: development environment\n\n- Prod: production environment"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源名称，基于此名称做模糊查询。",
+        "en": "The name of the data source. Fuzzy match by data source name is supported."
+      }
     },
     {
       "name": "Order",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源列表排序方向，枚举值：\n- Desc：倒序\n- Asc：正序\n\n默认值：Desc",
+        "en": "The order in which you want to sort the data sources. Valid values:\n\n- Desc: descending order\n\n- Asc: ascending order\n\nDefault value: Desc"
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询第几页，默认值为1表示第一页。",
+        "en": "The page number. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，默认值为10，最大值100。",
+        "en": "The number of entries per page. Default value: 10. Maximum value: 100."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DataWorks工作空间的ID。您可以登录[DataWorks控制台](https://workbench.data.aliyun.com/console)，进入工作空间配置页面获取工作空间ID。\n\n该参数用来确定本次API调用操作使用的DataWorks工作空间。",
+        "en": "The DataWorks workspace ID. You can log on to the [DataWorks console](https://workbench.data.aliyun.com/console) and go to the Workspace page to query the ID.\n\nYou must configure this parameter to specify the DataWorks workspace to which the API operation is applied."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源列表排序字段，支持名称、创建时间、数据源ID排序\n- CreateTime：创建时间\n- Id：数据源ID\n- Name：数据源名称\n\n默认值：CreateTime",
+        "en": "The field that you want to use to sort the data sources. Valid values:\n\n- CreateTime\n\n- Id\n\n- Name\n\nDefault value: CreateTime"
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源可以打标签，基于标签做数据源查询过滤：\n- 多个值之间是“且”的关系，比如`[\"tag1\", \"tag2\", \"tag3\"]`底层查询同时有这3个标签打标的数据源列表。\n- 不传递，或者传递为空表示不作tag过滤，查询最多支持10个标签。",
+        "en": "The tag of the data source. This parameter specifies a filter condition.\n\n- You can specify multiple tags, which are in the logical AND relation. For example, you can query the data sources that contain the following tags: `[\"tag1\", \"tag2\", \"tag3\"]`.\n\n- If you do not configure this parameter, tag-based filtering is not performed. You can specify up to 10 tags."
+      }
     },
     {
       "name": "Types",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源类型查询过滤，可以配置多个类型查询过滤。",
+        "en": "The data source types. This parameter specifies a filter condition. You can specify multiple data source types."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取数据源列表",
+    "en": "ListDataSources"
+  },
+  "descriptions": {
+    "zh": "1. 需要购买DataWorks基础版及以上版本才能使用。\n2. 需要在DataWorks项目空间中具有如下至少一种角色：\n- 租户所有者、空间管理员、部署、开发、访客、项目所有者、运维、模型设计师、安全管理员、数据分析师、开发平台管理员、数据治理管理员",
+    "en": "1. This operation is available for all DataWorks editions.\n\n2. To call this operation, you must have one of the following roles in DataWorks:\n\n- Tenant Owner, Workspace Administrator, Deploy, Develop, Visitor, Workspace Owner, O\\&M, Model Designer, Security Administrator, Data Analyst, OpenPlatform Administrator, and Data Governance Administrator"
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public list-data-sources --project-id 17820 --name test --types mysql --env-type Prod --page-number 1 --page-size 10 --sort-by CreateTime --order Desc --tags tag1_,_tag2_,_tag3 --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public ListDataSources --region cn-hangzhou --Order Desc --Types mysql --PageSize 10 --PageNumber 1 --SortBy CreateTime --ProjectId 17820 --EnvType Prod --Tags 'tag1_,_tag2_,_tag3' --Name test"

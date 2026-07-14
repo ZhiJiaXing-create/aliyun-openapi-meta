@@ -1,5 +1,6 @@
 {
   "name": "GenerateDataKeyWithoutPlaintext",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启DryRun模式。\n\n- true：开启\n- false（默认值）：关闭\n\nDryRun模式用于测试API调用，验证您是否具有相应资源的权限，以及请求参数是否配置正确。DryRun模式开启后，KMS会始终返回失败并提示失败原因。失败原因包含如下：\n\n- DryRunOperationError：不配置DryRun参数时，请求会成功。\n- ValidationError：请求中指定的参数有误。\n- AccessDeniedError：您无权在KMS资源上执行该操作。",
+        "en": "Specifies whether to enable the DryRun mode.\n\n- true: enables the DryRun mode.\n\n- false (default): disables the DryRun mode.\n\nThe DryRun mode is used to test API calls, verify your permissions on the required resources, and check if the request parameters are valid. If you enable the DryRun mode, KMS returns a failure response with a reason. The failure reasons include the following:\n\n- DryRunOperationError: The request would have succeeded if the DryRun parameter was not specified.\n\n- ValidationError: The request parameters are invalid.\n\n- AccessDeniedError: You are not authorized to perform this operation on the KMS resource."
+      }
     },
     {
       "name": "EncryptionContext",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "key/value对的JSON字符串，如果指定了该参数，则在调用Decrypt 时需要提供同样的参数，详情请参见[EncryptionContext说明](~~42975~~)。",
+        "en": "A JSON string of key-value pairs. If you specify this parameter, you must provide the same parameter when you call the Decrypt operation. For more information, see [EncryptionContext](~~42975~~)."
+      }
     },
     {
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主密钥（CMK）的全局唯一标识符。该参数也可以被指定为CMK绑定的别名，详情请参见别名使用说明。",
+        "en": "The globally unique identifier of the CMK. You can also specify an alias that is bound to the CMK. For more information about how to use an alias, see Alias overview."
+      }
     },
     {
       "name": "KeySpec",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定生成的数据密钥的长度，取值：  \n\n- AES_256：256位的对称密钥  \n\n- AES_128：128位的对称密钥\n\n> 建议使用KeySpec或者NumberOfBytes来指定数据密钥长度。如果两者都不指定，KMS生成256位的数据密钥；如果两者都被指定，KMS会忽略KeySpec参数。",
+        "en": "The length of the data key to generate. Valid values:\n\n- AES\\_256: a 256-bit symmetric key\n\n- AES\\_128: a 128-bit symmetric key\n\n> Use KeySpec or NumberOfBytes to specify the length of the data key. If you do not specify either parameter, KMS generates a 256-bit data key. If you specify both parameters, KMS ignores the KeySpec parameter."
+      }
     },
     {
       "name": "NumberOfBytes",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定生成的数据密钥的长度。   \n取值：1~1024。   \n单位：字节",
+        "en": "The length of the data key to generate.<br> Valid values: 1 to 1024.<br> Unit: bytes<br><br><br><br><br>"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "生成一个数据密钥，不需返回数据密钥明文内容",
+    "en": "GenerateDataKeyWithoutPlaintext"
+  },
+  "descriptions": {
+    "zh": "### 注意事项\n\n- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 本接口可以通过共享网关或专属网关调用。详细介绍，请参见[阿里云SDK](~~601559~~)。\n\n  - 共享网关：通过公网、VPC域名访问KMS，该方式需要打开公网开关。具体操作，请参见[通过公网访问KMS实例中的密钥](~~2856718~~)。\n  - 专属网关：通过KMS私网地址（`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`）访问KMS。\n\n### QPS限制\n- 通过共享网关调用：本接口的单用户QPS限制为1000次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。\n- 通过专属网关调用：本接口的单用户QPS限制以您KMS实例的计算性能规格为准。详细介绍，请参见[性能数据](~~480120~~)。\n\n### 详细说明\n此API随机生成一个数据密钥，并通过您指定的对称主密钥（Symmetric CMK）加密后，返回数据密钥的密文。此API和[GenerateDataKey](~~28948~~)提供完全相同的功能，唯一的区别是此API不会返回数据密钥的明文。\n\n您在请求中指定的CMK，仅用于数据密钥的加密，不会用于数据密钥的生成。KMS不会记录或存储随机生成的数据密钥。\n\n> \n> - 此API适用于不需要立即使用数据密钥完成数据加密的系统。系统需要加密时，通过调用[Decrypt](~~28950~~)接口解开数据密钥的密文。\n> - 此API也适用于具有不同信任等级的分布式系统。例如：您的系统将数据按照既定划分策略存储到不同的分区中。其中的一个模块会预先创建不同的数据分区，对每一个分区分别产生不同的数据密钥。这一模块完成控制平面的初始化之后，并不参与数据的生产和消费，它是密钥分发者。而数据平面的模块，在产生和消费数据的时候，首先获取分区的数据密钥密文，在解开之后使用数据密钥的明文对数据执行加密或者解密操作，随后清除内存中的数据密钥明文。在这样的系统中，密钥分发者不需要获取到数据密钥的明文，只需要使用相关CMK的GenerateDataKeyWithoutPlaintext的权限；而数据的生产和消费者，不需要产生新的数据密钥，只需要使用相关CMK的Decrypt的权限。",
+    "en": "### Precautions\n\n- For information about the access policy that a RAM user or RAM role needs to use this operation, see [Resource Access Management](~~2767210~~).\n\n- This operation is accessible through a shared gateway or a dedicated gateway. For more information, see [Alibaba Cloud SDK](~~601559~~).\n\n  - Shared gateway: Access KMS over the Internet or through a VPC domain name. This method requires Internet access to be enabled. For more information, see [Access keys in a KMS instance over the Internet](~~2856718~~).\n\n  - Dedicated gateway: Access KMS through a KMS private endpoint (`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`).\n\n### QPS limits\n\n- Calls through a shared gateway: The queries per second (QPS) limit for a single user is 1,000. If you exceed this limit, requests are throttled, which may affect your business. We recommend that you stay within this limit.\n\n- Calls through a dedicated gateway: The QPS limit for a single user depends on the computing performance of your KMS instance. For more information, see [Performance metrics](~~480120~~).\n\n### Details\n\nThis operation generates a random data key, encrypts it with a specified symmetric customer master key (CMK), and returns the ciphertext of the data key. This operation provides the same features as [GenerateDataKey](~~28948~~). The only difference is that this operation does not return the plaintext of the data key.\n\nThe CMK that you specify in the request is used only to encrypt the data key. It is not used to generate the data key. KMS does not record or store the randomly generated data key.\n\n> - This operation is suitable for systems that do not need to immediately use the data key for data encryption. When encryption is required, the system calls the [Decrypt](~~28950~~) API to decrypt the ciphertext of the data key.\n>\n> - This operation is also suitable for distributed systems with different trust levels. For example, your system stores data in different partitions based on a defined policy. A module pre-creates these data partitions and generates a unique data key for each one. After this module initializes the control plane, it acts as a key distributor and does not produce or consume data. When data plane modules produce and consume data, they first retrieve the ciphertext of the data key for a partition. They then decrypt the ciphertext and use the plaintext data key to encrypt or decrypt data. Finally, they purge the plaintext data key from memory. In such a system, the key distributor does not need to access the plaintext of the data key. It only requires the \\`GenerateDataKeyWithoutPlaintext\\` permission for the relevant CMK. Data producers and consumers do not need to generate new data keys. They only require the \\`Decrypt\\` permission for the relevant CMK."
+  },
   "example": {
     "unifiedCli": "aliyun kms generate-data-key-without-plaintext --key-id 599fa825-17de-417e-9554-bb032cc60000 --key-spec AES_256 --number-of-bytes 256 --encryption-context Example=Example --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun kms GenerateDataKeyWithoutPlaintext --region cn-hangzhou --EncryptionContext '{\"Example\":\"Example\"}' --KeySpec AES_256 --DryRun false --KeyId '599fa825-17de-417e-9554-bb032cc60000' --NumberOfBytes 256"

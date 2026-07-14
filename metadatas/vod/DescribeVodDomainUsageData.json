@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodDomainUsageData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "Area",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域代号。默认为CN中国大陆。取值：\n- **CN**：中国大陆。\n- **OverSeas**：海外区域。",
+        "en": "The region in which you want to query data. Valid values:\n\n*   **CN**: Chinese mainland\n*   **OverSeas**: outside the Chinese mainland"
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速域名。若参数为空，默认返回所有加速域名合并后数据。支持批量查询，多个用半角逗号（,）分隔。",
+        "en": "The accelerated domain name. If you leave this parameter empty, the merged data of all your accelerated domain names is returned. Separate multiple accelerated domain names with commas (,)."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据结束时间点，需晚于起始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "Field",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据类型。取值：\n- **bps**：带宽。\n- **traf**：流量。",
+        "en": "The type of the data to return. Valid values:\n\n*   **bps**: bandwidth\n*   **traf**: traffic"
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "强制指定获取指定时间粒度的数据，单位为秒。支持**300**（5分钟）、**3600**（1小时）和**86400**（1天）。\n- **Interval**=**300**：最长可查询最近半年的数据，单次查询的时间跨度最长为3天。\n- **Interval**=**3600**或**86400**：最长可查询最近1年的数据。\n- 不指定**Interval**：单次查询跨度最长为1个月。当查询时间为1~3天时，数据按小时粒度返回；当查询时间为4天及以上时，数据按天粒度返回。",
+        "en": "The time interval between the data entries to return. Unit: seconds. Valid values: **300** (5 minutes), **3600** (1 hour), and **86400** (1 day).\n\n*   If **Interval** is set to **300**, you can query usage data in the last six months. The maximum time range per query that can be specified is three days.\n*   If **Interval** is set to **3600** or **86400**, you can query usage data of the previous year.\n*   If you do not set the **Interval** parameter, the maximum time range that you can query is one month. If you specify a time range of 1 to 3 days, the time interval between the entries that are returned is 1 hour. If you specify a time range of at least 4 days, the time interval between the entries that are returned is 1 day."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据起始时间点。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要获取的用量类型。取值：\n\n - **static**：静态。\n- **dynamic**：动态。\n- **all**：全部。",
+        "en": "The type of content that you want to query. Valid values:\n\n*   **static**: static content\n*   **dynamic**: dynamic requests\n*   **all**: all content"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询流量带宽用量",
+    "en": "DescribeVodDomainUsageData"
+  },
+  "descriptions": {
+    "zh": "- 目前服务地址仅支持：**华东2（上海）**。\n- 支持批量域名查询，多个域名用逗号半角（,）分隔,最多可以一次查询100个域名。如果为空则返回账号下所有域名的数据。\n- 最长可查询近1年的数据，单次查询跨度最长为3个月，查询时间为1-3天时，数据按小时粒度返回，查询时间大于4天，数据按天粒度返回。",
+    "en": "*   This operation is available only in the **China (Shanghai)** region.\n\n*   You can specify up to 100 accelerated domain names in a request. Separate multiple domain names with commas (,). If you do not specify an accelerated domain name, the data of all accelerated domain names within your Alibaba Cloud account is returned.\n\n*   You can query data in the last year. The maximum time range that can be queried is three months. If you specify a time range of one to three days, the system returns data on an hourly basis. If you specify a time range of four days or more, the system returns data on a daily basis."
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-domain-usage-data --domain-name example.com --start-time 2015-12-10T10:20:00Z --end-time 2015-12-10T12:20:00Z --field bps --type static --area CN --interval 300 --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodDomainUsageData --region cn-hangzhou --Field bps --Type static --Area CN --EndTime '2015-12-10T12:20:00Z' --DomainName 'example.com' --StartTime '2015-12-10T10:20:00Z' --Interval 300"

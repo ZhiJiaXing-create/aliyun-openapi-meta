@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,73 @@
       "name": "DeletionProtection",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "en": "Specifies whether to enable deletion protection for the instance. Set this parameter to `true` to enable this feature, or `false` to disable it."
+      }
     },
     {
       "name": "HostName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云服务器的主机名。 长度为2-64个字符，允许使用半角句号（.）分隔字符成多段，每段允许使用大小写字母、数字或连字符（-），但不能连续使用半角句号（.）或短划线（-）。不能以半角句号（.）或短划线（-）开头或结尾。",
+        "en": "The hostname of the instance. The hostname must be 2 to 64 characters in length. You can use periods to separate the name into segments. Each segment can contain letters, digits, and hyphens. The hostname cannot start or end with a period or a hyphen, and it cannot contain consecutive periods or hyphens."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改实例的ID，仅支持修改单个。",
+        "en": "The ID of the instance. You can modify only one instance per request."
+      }
     },
     {
       "name": "InstanceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的名称。\n\n长度为2~128个英文或中文字符。必须以大小字母或中文开头，不能以`http://`和`https://`开头。可以包含数字、冒号（:）、下划线（_）或者连接号（-）。",
+        "en": "The name of the instance.\n\nThe name must be 2 to 128 characters in length. It must start with a letter and cannot start with `http://` or `https://`. The name can contain digits, colons (:), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的密码。",
+        "en": "The password for the instance."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例自定义数据，需要以Base64编码。\n\n编码前，原始数据不能超过16 KB。建议不要明文传入敏感信息，例如密码和私钥等。如果必须传入敏感信息，建议您加密后再以Base64编码传入，在实例内部以同样的方式解密。",
+        "en": "The Base64-encoded user data for the instance.\n\nThe Raw Data cannot exceed 16 KB in size. Do not pass Sensitive Information, such as passwords and private keys, in plaintext. If you must pass sensitive information, encrypt and then Base64-encode it. You can then decode and decrypt this data from within the instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例属性",
+    "en": "ModifyInstanceAttribute"
+  },
+  "descriptions": {
+    "zh": "- 实例状态为启动中（Starting）时，无法重置实例密码。\n\n- 实例状态为运行中（Running）时，无法修改实例密码。\n\n- 重置密码后，您需要在控制台重启实例或者调用RebootInstance接口使更改生效，在实例内部重启将不会生效。",
+    "en": "- You cannot reset the instance password while the instance is in the `Starting` state.\n\n- You cannot modify the instance password while the instance is in the `Running` state.\n\n- After you reset the password, you must reboot the instance from the console or by calling the `RebootInstance` API operation to apply the new password. Rebooting the instance from within its operating system does not apply the new password."
+  },
   "example": {
     "unifiedCli": "aliyun ens modify-instance-attribute --instance-id i-instanc0000 --password yourPassword --instance-name i-instanceidname --host-name testHostName --user-data /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgK0000 --deletion-protection true --region cn-hangzhou",
     "legacyCli": "aliyun ens ModifyInstanceAttribute --region cn-hangzhou --InstanceName 'i-instanceidname' --InstanceId 'i-instanc0000' --UserData '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgK0000' --DeletionProtection true --HostName testHostName --Password yourPassword"

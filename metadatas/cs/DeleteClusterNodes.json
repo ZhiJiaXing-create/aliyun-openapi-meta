@@ -1,5 +1,6 @@
 {
   "name": "DeleteClusterNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "DELETE|POST",
   "pathPattern": "/clusters/[ClusterId]/nodes",
@@ -8,15 +9,34 @@
       "name": "ClusterId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "Cluster ID."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求体参数。",
+        "en": "Request body parameters."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除集群节点",
+    "en": "Delete cluster nodes"
+  },
+  "descriptions": {
+    "zh": "- 移除节点时，请通过本接口或[容器服务控制台](https://cs.console.aliyun.com)执行标准化操作。请勿使用`kubectl delete node`方式手动移除节点。\n\n- 请勿直接在ECS或者ESS控制台（或通过相关API）主动释放节点、移除实例，或因包年包月实例到期而被动释放节点。这些情况下，节点会直接停机，自动从容器服务管理控制台中移除。\n\n- 如果节点池设置了期望节点数，为了将节点个数始终维持在期望节点数，节点池会根据相应配置自动扩容其他实例。\n\n- 移除节点涉及Pod的迁移，可能会影响业务，请在业务低峰期操作。操作过程中可能存在非预期风险，请提前做好相关的数据备份。\n\n- 移除节点时，ACK会执行排水操作，请确保集群其他节点的资源充足，以避免业务Pod无法调度。\n\n- 需检查待移除节点上的Pod的节点亲和性规则和调度策略，确保Pod不会因为节点移除而无法调度到其他节点。",
+    "en": "- When removing nodes, use this API or the [Container Service console](https://cs.console.aliyun.com) to perform standardized operations. Do not manually remove nodes by using the `kubectl delete node` command.\n\n- Do not directly release nodes, remove instances in the ECS or ESS console (or through related APIs), or allow nodes to be passively released due to the expiration of subscription instances. In these cases, the nodes will be directly shut down and automatically removed from the Container Service management console.\n\n- If the node pool has a desired number of nodes configured, the node pool will automatically scale out other instances according to the corresponding configuration to always maintain the node count at the desired number.\n\n- Removing nodes involves Pod migration, which may affect your business. Perform this operation during off-peak hours. Unexpected risks may exist during the operation, so back up relevant data in advance.\n\n- When removing nodes, ACK performs a drain operation. Ensure that the resources on other nodes in the cluster are sufficient to prevent business Pods from being unable to be scheduled.\n\n- Check the node affinity rules and scheduling policies of the Pods on the nodes to be removed to ensure that Pods can still be scheduled to other nodes after node removal."
+  },
   "example": {
     "unifiedCli": "aliyun cs delete-cluster-nodes --cluster-id c850429a2287b4d968e27e87a49210000 --drain-node false --release-node true --nodes cn-hangzhou.192.168.xx.xx --region cn-hangzhou",
     "legacyCli": "aliyun cs POST /clusters/c850429a2287b4d968e27e87a49210000/nodes --region cn-hangzhou --header \"Content-Type=application/json\" --body {\"release_node\":true,\"nodes\":[\"cn-hangzhou.192.168.xx.xx\"],\"drain_node\":false}"

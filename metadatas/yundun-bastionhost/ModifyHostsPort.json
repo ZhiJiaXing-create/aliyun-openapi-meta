@@ -1,5 +1,6 @@
 {
   "name": "ModifyHostsPort",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "HostIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改运维协议和端口的主机ID。该参数为JSON格式的字符串，最多可输入100个主机ID。多个主机ID之间使用半角逗号（,）隔开。\n> 您可以调用[ListHosts](~~200665~~)接口获取该参数。",
+        "en": "The ID of the host for which you want to change the port. The value is a JSON string. You can add up to 100 host IDs. If you specify multiple IDs, separate the IDs with commas (,).\n\n> You can call the [ListHosts](~~200665~~) operation to query the IDs of hosts."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改协议端口的主机所在堡垒机的实例ID。\n> 您可以调用[DescribeInstances](~~153281~~)接口获取该参数。",
+        "en": "The ID of the bastion host for which you want to change the port of the host.\n\n> You can call the [DescribeInstances](~~153281~~) operation to query the ID of the bastion host."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "修改后的端口号。端口号为整数，取值范围：22~65535。",
+        "en": "The new port of the host. The port number must be an integer. Valid values: 22 to 65535."
+      }
     },
     {
       "name": "ProtocolName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改端口的协议名称。取值：\n- **SSH**\n- **RDP**",
+        "en": "The protocol that is used to connect to the host. Valid values:\n\n- **SSH**\n\n- **RDP**"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改端口的主机所在堡垒机的区域ID。\n> 区域ID和区域名称的对应关系，请参见[地域和可用区](~~40654~~)。",
+        "en": "The region ID of the bastion host for which you want to change the port of the host.\n\n> For more information about the mapping between region IDs and region names, see [Regions and zones](~~40654~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量修改主机指定协议的端口",
+    "en": "ModifyHostsPort"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n本接口用于批量修改主机运维协议的端口。如果您认为使用运维协议的标准端口不安全（如SSH运维协议的标准端口为22），容易被攻击者发现并入侵，您可以使用本接口自定义运维协议的端口。\n\n> 0~1024为堡垒机保留端口，自定义端口时请不要修改为保留端口。\n\n### QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "## Usage notes\n\nChanges the port for the O\\&M protocol on one or more hosts. If the standard port for your O\\&M protocol is vulnerable to attacks, specify a custom port instead. For example, the standard SSH port is port 22.\n\n> Ports 0 to 1024 are reserved for Bastionhost. Do not change the port for the O\\&M protocol to a reserved port.\n\n## QPS limit\n\nYou can call this operation up to 10 times per second per account. If the number of the calls per second exceeds the limit, throttling is triggered. As a result, your business may be affected. We recommend that you take note of the limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun yundun-bastionhost modify-hosts-port --instance-id bastionhost-cn-st220aw0000 --biz-region-id cn-hangzhou --host-ids 1_,_2_,_3 --protocol-name SSH --port 22 --region cn-hangzhou",
     "legacyCli": "aliyun yundun-bastionhost ModifyHostsPort --region cn-hangzhou --ProtocolName SSH --HostIds '1_,_2_,_3' --InstanceId 'bastionhost-cn-st220aw0000' --Port 22 --RegionId 'cn-hangzhou'"

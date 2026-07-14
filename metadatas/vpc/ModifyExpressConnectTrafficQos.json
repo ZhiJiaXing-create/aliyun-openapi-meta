@@ -1,5 +1,6 @@
 {
   "name": "ModifyExpressConnectTrafficQos",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "本次更新需要添加的实例列表，如果没有需要添加的实例可以不用传递此参数。",
+        "en": "The list of instances to add in this update. You do not need to specify this parameter if no instances need to be added."
+      },
       "sub_parameters": [
         {
           "name": "InstanceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "需要关联的实例ID。",
+            "en": "The instance ID to associate."
+          }
         },
         {
           "name": "InstanceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "需要关联实例的类型。取值：**PHYSICALCONNECTION**物理专线。",
+            "en": "The type of the instance to associate. Valid values: **PHYSICALCONNECTION**: Express Connect circuit."
+          }
         }
       ]
     },
@@ -28,53 +41,96 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "QosDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "QoS策略的描述信息。\n\n长度为0～256个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the QoS policy.\n\nThe description must be 0 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "QosId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "QoS策略ID。",
+        "en": "The ID of the QoS policy."
+      }
     },
     {
       "name": "QosName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "QoS策略的名称。\n\n长度为0～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the QoS policy.\n\nThe name must be 0 to 128 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "QoS策略所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the QoS policy.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     },
     {
       "name": "RemoveInstanceList",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "本次更新需要移除的实例列表，如果没有需要移除的实例可以不用传递此参数。",
+        "en": "The list of instances to remove in this update. You do not need to specify this parameter if no instances need to be removed."
+      },
       "sub_parameters": [
         {
           "name": "InstanceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "关联的实例ID。",
+            "en": "The instance ID of the associated instance."
+          }
         },
         {
           "name": "InstanceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "关联实例的类型。取值：**PHYSICALCONNECTION**物理专线。",
+            "en": "The type of the associated instance. Valid values: **PHYSICALCONNECTION**: Express Connect circuit."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改高速通道QoS策略",
+    "en": "Modify an express connect qoS policy"
+  },
+  "descriptions": {
+    "zh": "- 当前只支持关联处于正常状态，并且不欠费的独享物理专线，暂不支持共享物理专线端口和VBR实例。\n\n- 关联独享物理专线的时候，只能进行全量操作，如果需要全部取消关联，需要传入空字符串。\n\n- 如果独享物理专线拥有共享物理专线或者跨账号VBR，需要开通白名单才支持进行关联。\n\n- 独享物理专线所在的设备需要支持QoS特性才可以进行关联。\n\n- 单VBR关联多物理专线场景，需要一次性关联该VBR所有的物理专线。",
+    "en": "- Only dedicated Express Connect circuits that are in the Normal state and do not have overdue payments can be associated. Shared Express Connect circuit ports and Virtual Border Router (VBR) instances are not supported.\n\n- When associating dedicated Express Connect circuits, only full operations are supported. To dissociate all circuits, pass an empty string.\n\n- If a dedicated Express Connect circuit has shared Express Connect circuits or cross-account VBRs, you must activate the whitelist feature before association.\n\n- The device on which the dedicated Express Connect circuit resides must support the QoS feature before association.\n\n- In scenarios where a single VBR is associated with multiple Express Connect circuits, you must associate all Express Connect circuits of the VBR at the same time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-express-connect-traffic-qos --biz-region-id cn-hangzhou --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --qos-name qos-test --qos-description qos-test --qos-id qos-2giu0a6vd5x0mv0000 --add-instance-list InstanceId=pc-bp159zj8zujwy3p070000 InstanceType=PHYSICALCONNECTION --remove-instance-list InstanceId=pc-bp1j37am632492qzw0000 InstanceType=PHYSICALCONNECTION --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyExpressConnectTrafficQos --region cn-hangzhou --RemoveInstanceList.1.InstanceId 'pc-bp1j37am632492qzw0000' --AddInstanceList.1.InstanceId 'pc-bp159zj8zujwy3p070000' --RemoveInstanceList.1.InstanceType PHYSICALCONNECTION --QosId 'qos-2giu0a6vd5x0mv0000' --AddInstanceList.1.InstanceType PHYSICALCONNECTION --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --QosName 'qos-test' --QosDescription 'qos-test'"

@@ -1,5 +1,6 @@
 {
   "name": "SubmitAIJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Config",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "AI作业配置，JSON格式。\n- 当`Types`设置为`AIVideoTag`时，`Config`支持配置`AnalyseTypes`，设置智能标签作业分析算法的类型，取值如下：\n  - ASR：语音识别，从视频的⾳频语⾳中识别出标签 。\n  - OCR：图文识别，从视频的图像⽂字中识别出标签 。\n- 当`Types`设置为`AIMediaDNA`时，`Config`支持配置`DNADBId`，设置DNA指纹库ID，用于指定视频DNA作业的指纹库。",
+        "en": "The AI job configurations, as a JSON-formatted string.\n\n- If you set `Types` to `AIVideoTag`, you can configure `AnalyseTypes` in the `Config` parameter to specify the analysis algorithm for the smart tag job. Valid values:\n\n  - ASR (Automatic Speech Recognition): Extracts tags from spoken words in the video's audio.\n\n  - OCR (Optical Character Recognition): Extracts tags from text that appears in the video frames.\n\n- If you set `Types` to `AIMediaDNA`, you can configure `DNADBId` in the `Config` parameter to specify the ID of the DNA fingerprint library for the video DNA job."
+      }
     },
     {
       "name": "MediaId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "视频ID。可通过以下方式获取：\n- 通过控制台上传的视频，可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看视频ID。\n- 通过[获取视频上传地址和凭证](~~55407~~)接口获取上传地址和凭证时，视频ID为返回参数VideoId的值。\n- 视频上传后，可通过[搜索媒体信息](~~86044~~)接口查询视频ID，为请求后返回参数VideoId的值。",
+        "en": "The ID of the video. You can find the video ID in one of the following ways:\n\n- For videos uploaded through the console, log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com) and choose **Media Library** > **Audio/Video** to view the video ID.\n\n- The `VideoId` value returned by the [Get Upload URL and Credential](~~55407~~) operation.\n\n- The `VideoId` value returned by the [Search for Media Information](~~86044~~) operation."
+      }
     },
     {
       "name": "Types",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "AI作业类型。多个作业类型之间用半角逗号（,）分隔。取值：\n\n- **AIMediaDNA**：视频DNA。\n- **AIVideoTag**：智能标签。",
+        "en": "The type of the AI job. Separate multiple job types with a comma (,). Valid values:\n\n- **AIMediaDNA**: video DNA.\n\n- **AIVideoTag**: smart tag."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义设置，为JSON字符串。参数结构详情参考[UserData](~~86952#h2--userdata-div-id-userdata-div-3~~)。",
+        "en": "Custom settings as a JSON-formatted string. For more information about the parameter structure, see [UserData](~~86952#h2--userdata-div-id-userdata-div-3~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交智能标签或视频DNA作业",
+    "en": "SubmitAIJob"
+  },
+  "descriptions": {
+    "zh": "- **请确保在使用该接口前，已充分了解视频点播产品的收费方式和价格。智能标签和视频DNA为付费功能，计费详情，请参见[视频AI计费](~~188310#section-g7l-s3o-9ng~~)。**\n- 视频DNA支持的服务地域：**华北2（北京）**、**华东2（上海）**、**新加坡**；智能标签支持的服务地域：**华北2（北京）**、**华东2（上海）**。\n- 该接口为[异步接口](~~3027551~~)，提交AI作业任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），建议配置[事件通知](~~55627~~)功能并指定回调事件为**视频AI处理完成**以获取最终处理结果，也可通过[获取任务详情](~~2861326~~)主动查询任务状态。\n- 您需要先开通视频DNA或智能标签服务后，才能调用此接口提交AI作业。开通详情，请参见[视频AI](~~101148~~)。\n- 初次使用视频DNA时，您需提供uid及地域信息，提交工单申请免费开通DNA指纹库，否则将影响后续视频DNA的功能使用。关于如何提交工单，请参见[联系我们](~~464625~~)。",
+    "en": "- **Before using this operation, ensure you understand the billing methods and pricing for ApsaraVideo VOD. Both smart tag and video DNA are paid features. For more information, see [Video AI Billing](~~188310#section-g7l-s3o-9ng~~).**\n\n- The video DNA feature is available in the following regions: **China (Beijing)**, **China (Shanghai)**, and **Singapore**. The smart tag feature is available in **China (Beijing)** and **China (Shanghai)**.\n\n- This is an [asynchronous call](~~3027551~~). When you submit an AI job, the system returns a job ID and queues the job for background processing. To get the final results, we recommend you configure an [event notification](~~55627~~) for the **VideoAIComplete** event. Alternatively, you can call the [Get Job Details](~~2861326~~) operation to query the job status.\n\n- To submit an AI job, you must first activate the video DNA or smart tag feature.\n\n- The first time you use the video DNA feature, you must submit a ticket with your account UID and desired region to create a free DNA fingerprint library. Otherwise, the feature may not function correctly. For instructions on submitting a ticket, see [Contact us](~~464625~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vod submit-ai-job --media-id 3D3D12340d9401fab46a0b8470000 --types AIVideoTag --config AIVideoTag_:_AnalyseTypes_:_ASR --user-data Extend_:_localId_:_000_,_test_:_www --region cn-hangzhou",
     "legacyCli": "aliyun vod SubmitAIJob --region cn-hangzhou --Types AIVideoTag --MediaId 3D3D12340d9401fab46a0b8470000 --UserData 'Extend_:_localId_:_000_,_test_:_www' --Config 'AIVideoTag_:_AnalyseTypes_:_ASR'"

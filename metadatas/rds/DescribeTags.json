@@ -1,5 +1,6 @@
 {
   "name": "DescribeTags",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。可通过DescribeDBInstances接口查询获取。\n> 如果传入该参数，则查询该实例下所有标签，其他过滤条件失效。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID.\n\n>  If you specify this parameter, all tags that are added to this instance are queried, and other filter conditions becomes invalid."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID，可以通过接口DescribeRegions查看可用的地域ID。",
+        "en": "The region ID. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源类型。固定取值。",
+        "en": "The type of resource. Set the value to INSTANCE."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的标签，包括TagKey和TagValue。\n参数格式：`{“TagKey”:”TagValue”}`。",
+        "en": "The tag that you want to query. The value of the parameter consists of TagKey and TagValue. Format: `{\"TagKey\":\"TagValue\"}`."
+      }
     },
     {
       "name": "proxyId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "代理模式ID。",
+        "en": "The ID of the proxy mode."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询标签列表",
+    "en": "DescribeTags"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 注意事项\n* 如果传入指定实例ID，则查询该实例下所有标签，其他过滤条件失效；\n* 若查询标签时仅传入标签键（TagKey），未传入标签值（TagValue），则返回所有符合标签键条件的结果。若同时传入标签键和标签值，则返回两个条件都符合的结果。",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   SQL Server\n*   MariaDB\n\n### [Usage notes](#)\n\n*   If an instance ID is specified, all tags that are added to this instance are queried, and other filter conditions are invalid.\n*   If you specify only TagKey, the results that match the specified TagKey are returned. If you specify both TagKey and TagValue, the results that match both the specified TagKey and TagValue are returned."
+  },
   "example": {
     "unifiedCli": "aliyun rds describe-tags --client-token ETnLKlblzczshOTUbOC0000 --proxy-id API --biz-region-id cn-hangzhou --db-instance-id rm-uf6wjk50000 --tags '“key1”:”value1”' --resource-type INSTANCE --region cn-hangzhou",
     "legacyCli": "aliyun rds DescribeTags --region cn-hangzhou --DBInstanceId 'rm-uf6wjk50000' --ResourceType INSTANCE --RegionId 'cn-hangzhou' --ClientToken ETnLKlblzczshOTUbOC0000 --Tags '“key1”:”value1”' --proxyId API"

@@ -1,0 +1,170 @@
+{
+  "name": "RegisterMediaInfo",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BusinessType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "媒资业务类型。取值范围：\n\n- \"subtitles\" 字幕\n\n- \"font\" 字体\n\n- \"watermark\" 水印\n\n- \"opening\" 片头/开场\n\n- \"ending\" 片尾\n\n- \"general\" 通用",
+        "en": "The business type of the media asset. Valid values:\n\n- subtitles\n\n- watermark\n\n- opening\n\n- ending\n\n- general"
+      }
+    },
+    {
+      "name": "CateId",
+      "position": "Query",
+      "type": "Long",
+      "required": false,
+      "description": {
+        "zh": "分类ID。",
+        "en": "The category ID."
+      }
+    },
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "客户端token，32位UUID，保证请求幂等性。",
+        "en": "The client token that is used to ensure the idempotence of the request. The value must be a UUID that contains 32 characters."
+      }
+    },
+    {
+      "name": "CoverURL",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "封面地址。\n\n- 长度不超过128字节。\n\n- UTF8编码。",
+        "en": "The thumbnail URL of the media asset.\n\n- The value can be up to 128 bytes in length.\n\n- The value must be encoded in UTF-8."
+      }
+    },
+    {
+      "name": "Description",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "内容描述。\n\n- 长度不超过1024字节\n\n- UTF8编码。",
+        "en": "The description of the media asset.\n\n- The value can be up to 1,024 bytes in length.\n\n- The value must be encoded in UTF-8."
+      }
+    },
+    {
+      "name": "InputURL",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "待注册的媒资在相应系统中的地址，一经注册不可更改，并与IMS的mediaId绑定。\n\n- OSS地址，支持两种格式。\n \nhttp(s)://example-bucket.oss-cn-shanghai.aliyuncs.com/example.mp4\n\noss://example-bucket/example.mp4\n （此格式默认oss region与服务接入区域一致）\n\n- VOD媒资\n\nvod://\\*\\*\\*20b48fb04483915d4f2cd8ac****",
+        "en": "The URL of the media asset in another service. The URL is associated with the ID of the media asset in IMS. The URL cannot be modified once registered. The following types of URLs are supported:\n\n- OSS URL in one of the following formats:\n\n  - `http(s)://example-bucket.oss-cn-shanghai.aliyuncs.com/example.mp4`\n\n  - `oss://example-bucket/example.mp4`: In this format, it is considered by default that the region of the OSS bucket in which the media asset resides is the same as the region in which IMS is activated.\n\n- URL of an ApsaraVideo VOD media asset\n\n  `vod://***20b48fb04483915d4f2cd8ac****`"
+      }
+    },
+    {
+      "name": "MediaTags",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "标签。\n\n- 最多不超过16个标签。\n\n- 多个用逗号分隔。\n\n- 单个标签不超过32字节。\n\n- UTF8编码。",
+        "en": "The tags of the media asset.\n\n- Up to 16 tags are supported.\n\n- Separate multiple tags with commas (,).\n\n- Each tag can be up to 32 bytes in length.\n\n- The value must be encoded in UTF-8."
+      }
+    },
+    {
+      "name": "MediaType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "媒资媒体类型。取值范围：\n\n- \"image\" 图片\n\n- \"video\" 视频\n\n- \"audio\" 音频\n\n- \"text\" 文字\n\n当取值为\"text\"时，businessType需对应\"subtitles\"或\"font\"。\n\n此字段建议用户按需填写。当InputURL字段是OSS URL时，也支持按照文件后缀自动判断媒资类型（仅限图片、视频、音频文件后缀），对应关系见[文件格式](~~466207~~)。",
+        "en": "The type of the media asset. Valid values:\n\n- image\n\n- video\n\n- audio\n\n- text\n\nWe recommend that you specify this parameter based on your business requirements. If you set InputURL to an OSS URL, the media asset type can be automatically determined based on the file name extension. Refer to [](t2240981.xdita#)for details."
+      }
+    },
+    {
+      "name": "Overwrite",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否覆盖已注册媒资，默认false。\n\n-true，如果inputUrl已注册，删除原有媒资并注册新媒资；\n\n-false, 如果inputUrl已注册则不予注册新媒资，暂不支持重复的inputUrl。",
+        "en": "Specifies whether to overwrite the media asset that has been registered by using the same URL. Default value: false. Valid values:\n\n- true: If a media asset has been registered by using the same URL, the original media asset is deleted and the new media asset is registered.\n\n- false: If a media asset has been registered by using the same URL, the new media asset is not registered. A URL cannot be used to register multiple media assets."
+      }
+    },
+    {
+      "name": "ReferenceId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "自定义ID，仅支持小写字母、大写字母、数字、横线、下划线，长度6-64位。需保证用户维度唯一。",
+        "en": "The custom ID. The ID can be 6 to 64 characters in length and can contain only letters, digits, hyphens (-), and underscores (\\_). Make sure that the ID is unique among users."
+      }
+    },
+    {
+      "name": "RegisterConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "注册配置。\n\n默认为媒资生成雪碧图，如不需要可以手动设置NeedSprite字段为false。\n\n默认生成截图，如不需要可以手动设置NeedSnapshot字段为false。\n\n如需指定封面图时间，需配置CoverConfig，包含字段：\n- StartTime: 封面图位于素材的第几秒，支持四位小数。\n\n媒资注册后，如需导入自定义搜索库，需配置SearchLibName。如何创建并使用自定义搜索库，详见[自建搜索库的使用流程](~~2796619#dd34d8c740yj9~~)。",
+        "en": "The registration configurations.\n\nBy default, a sprite is generated for the media asset. You can set NeedSprite to false to disable automatic sprite generation.\n\nBy default, a snapshot is generated for the media asset. You can set NeedSnapshot to false to disable automatic snapshot generation."
+      }
+    },
+    {
+      "name": "SmartTagTemplateId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "智能标签模板。取值：\n- S00000101-300080：包含NLP内容理解功能的系统模板\n- S00000103-000001：包含NLP内容理解功能和所有[标签能力](~~2804526#93b27f536airj~~)\n- S00000103-000002：包含所有[标签能力](~~2804526#93b27f536airj~~)，不包含NLP内容理解功能\n\n标签能力详见：\n\n配置该字段后，媒资注册完成会自动发起智能标签分析任务，相关计费项请参考 [智能标签标准版计费](~~600262~~)。",
+        "en": "The ID of the smart tagging template. Valid values:\n\n- S00000101-300080: the system template that supports natural language processing (NLP) for content recognition.\n\n- S00000103-000001: the system template that supports NLP for content recognition and all [tagging capabilities](t2729541.xdita#93b27f536airj).\n\n- S00000103-000002: the system template that supports all [tagging capabilities](t2729541.xdita#93b27f536airj) but does not support NLP for content recognition.\n\nAfter you configure this parameter, a smart tag analysis task is automatically initiated after the media asset is registered."
+      }
+    },
+    {
+      "name": "Title",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "标题，若不提供，根据日期自动生成默认title。\n\n- 长度不超过128字节。\n\n- UTF8编码。",
+        "en": "The title. If you do not specify this parameter, a default title is automatically generated based on the date.\n\n- The value can be up to 128 bytes in length.\n\n- The value must be encoded in UTF-8."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用户数据。支持自定义回调地址配置，配置说明可参考[配置剪辑完成时的回调](~~451631~~)\n\n- 长度不超过1024字节。\n\n- UTF8编码。\n\n- Json 格式",
+        "en": "The user data. You can specify a custom callback URL. For more information, see [](t2243473.xdita#).\n\n- The value can be up to 1,024 bytes in length.\n\n- The value must be encoded in UTF-8.\n\n- The value must be in the JSON format."
+      }
+    },
+    {
+      "name": "WorkflowId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "工作流ID",
+        "en": "The workflow ID."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "注册内容库资源",
+    "en": "RegisterMediaInfo"
+  },
+  "descriptions": {
+    "zh": "注册媒资是一个异步任务，一般需要2-3s完成。当注册接口返回mediaId时，可能媒资还没有注册完成，此时调用[GetMediaInfo](~~441155~~)无法获取到媒资的文件信息。",
+    "en": "Registering a media asset is an asynchronous job that takes 2 to 3 seconds. When the operation returns the ID of the media asset, the registration may have not be completed. If you call the [GetMediaInfo](~~441155~~) operation at this time, you may fail to obtain the information about the media asset."
+  }
+}

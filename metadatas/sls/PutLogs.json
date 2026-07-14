@@ -1,5 +1,6 @@
 {
   "name": "PutLogs",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/logstores/[logstore]/shards/lb",
@@ -8,27 +9,54 @@
       "name": "body",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "压缩后的 pb 日志数据",
+        "en": "The compressed log data in protobuf format."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Logstore名称。",
+        "en": "The name of the logstore."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Project名称。",
+        "en": "The name of the project."
+      }
     },
     {
       "name": "x-log-compresstype",
       "position": "Header",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "日志压缩类型，目前支持lz4、gzip两种类型。",
+        "en": "The compression type of the logs. Valid values: lz4 and gzip."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "写入日志",
+    "en": "PutLogs"
+  },
+  "descriptions": {
+    "zh": "> - 目前OpenAPI SDK不支持此接口，请使用[日志服务SDK](~~29063~~)。\n* 服务端会对每次PutLogs写入的日志数据做格式检查，只要日志数据中有任何一条日志不符合规范，则整个请求失败且无任何日志数据成功写入。\n* 目前仅支持写入[PB格式](~~29055~~)的日志数据，日志数据以LogGroup的形式展示。\n* 日志数据写入时有两种模式：\n  * **负载均衡模式（LoadBalance）**：自动根据Logstore下所有可写的Shard进行负载均衡写入。该方法写入可用性较高，适合不保证顺序的数据消费场景。请求语法：\n    ```plaintext\n    POST /logstores/logstoreName/shards/lb HTTP/1.1\n    Authorization: LOG yourAccessKeyId:yourSignature\n    Content-Type: application/x-protobuf\n    Content-Length: Content Length\n    Content-MD5: Content MD5\n    Date: GMT Date\n    Host: ProjectName.Endpoint\n    x-log-apiversion: 0.6.0\n    x-log-bodyrawsize: BodyRawSize\n    x-log-compresstype: lz4\n    x-log-signaturemethod: hmac-sha1\n    <PB 格式日志压缩数据>\n    ```  \n  * **Key路由Shard模式（KeyHash）**：在URL参数中增加Key字段，用来判断数据写入哪个Shard中。该参数为可选参数，不设置时自动切换为负载均衡写入模式。例如，可以将某个生产者（例如instance）根据名称Hash固定到Shard上，这样就能保证写入与消费在该Shard上的数据是严格有序的（在合并、分裂过程中能够严格保证对于Key在一个时间点只会出现在一个Shard上）。请求语法：\n    ```plaintext\n    POST /logstores/logstoreName/shards/route?key=14d2f850ad6ea48e46e4547edbbb27e0\n    Authorization: LOG yourAccessKeyId:yourSignature\n    Content-Type: application/x-protobuf\n    Content-Length: Content Length\n    Content-MD5: Content MD5\n    Date: GMT Date\n    Host: ProjectName.Endpoint\n    x-log-apiversion: 0.6.0\n    x-log-bodyrawsize: BodyRawSize\n    x-log-compresstype: lz4\n    x-log-signaturemethod: hmac-sha1\n    <PB 格式日志压缩数据>\n* PutLogs接口每次可以写入的原始日志大小上限为10 MB，日志组中每条日志下的Value部分建议不超过1 MB。历史版本的SDK可能存在不同限制，建议升级到最新的版本解决。\n* 在SDK参考中，日志服务提供Java和Python SDK等PutLogs的使用示例。\n\n  \n\n\n\n\nPB数据 \n-------------------------\nPB格式日志压缩数据字段描述如下。详情请参见[数据模型](~~29054~~)和[数据编码方式](~~29055~~)。\n\n+ Log\n\n| **参数名称** | **数据类型** | **是否必填** | **描述** |\n| --- | --- | --- | --- |\n| Time | Integer | 是 | 日志时间。Unix时间戳格式，表示从1970-1-1 00:00:00 UTC计算起的秒数。 |\n| Contents | List | 是 | 日志字段列表，至少包含一个元素，每个元素类型请参见下方Content表格。 |\n\n\n+ Content\n\n| **参数名称** | **数据类型** | **是否必填** | **描述** |\n| --- | --- | --- | --- |\n| Key | String | 是 | 自定义Key名称。 |\n| Value | String | 是 | 自定义Key对应的值。 |\n\n\n+ LogTag\n\n| **参数名称** | **数据类型** | **是否必填** | **描述** |\n| --- | --- | --- | --- |\n| Key | String | 是 | 自定义Key名称。 |\n| Value | String | 是 | 自定义Key对应的值。 |\n\n\n+ LogGroup\n\n| **参数名称** | **数据类型** | **是否必填** | **描述** |\n| --- | --- | --- | --- |\n| Logs | List | 是 | 日志列表，每个元素请参见Log字段表格。 |\n| Topic | String | 否 | 日志主题，用户自定义字段，用于区分不同特征的日志数据。 |\n| Source | String | 否 | 日志的来源。例如产生该日志的机器的IP地址。 |\n| LogTags | List | 是 | 日志的标签列表，每个元素请参见LogTag。 |",
+    "en": "> - The OpenAPI SDK does not support this operation. Use the [Simple Log Service (SLS) SDK](~~29063~~) instead.\n\n- The service checks the format of log data for each PutLogs request. If any log entry is invalid, the entire request fails and no logs are written.\n\n- This operation supports only log data in [protobuf format](~~29055~~). The log data is structured as a LogGroup.\n\n- Logs can be written in two modes:\n\n  - LoadBalance mode: Data is automatically written to all writable shards in a logstore. This method provides high availability and is suitable for data consumption scenarios that do not require a specific order. Request syntax:\n\n    ```plaintext\n    POST /logstores/logstoreName/shards/lb HTTP/1.1\n    Authorization: LOG yourAccessKeyId:yourSignature\n    Content-Type: application/x-protobuf\n    Content-Length: Content Length\n    Content-MD5: Content MD5\n    Date: GMT Date\n    Host: ProjectName.Endpoint\n    x-log-apiversion: 0.6.0\n    x-log-bodyrawsize: BodyRawSize\n    x-log-compresstype: lz4\n    x-log-signaturemethod: hmac-sha1\n    <Compressed log data in protobuf format>\n    ```\n\n  - KeyHash mode: Add a key parameter to the URL to determine which shard receives the data. This parameter is optional. If you do not set this parameter, the system automatically switches to the load balancing mode. For example, pin a producer, such as an instance, to a specific shard based on its name hash. This ensures that data written to and consumed from the shard is strictly ordered. During merge and split operations, a key is associated with only one shard at any given time. Request syntax:\n\n    ```plaintext\n    POST /logstores/logstoreName/shards/route?key=14d2f850ad6ea48e46e4547edbbb27e0\n    Authorization: LOG yourAccessKeyId:yourSignature\n    Content-Type: application/x-protobuf\n    Content-Length: Content Length\n    Content-MD5: Content MD5\n    Date: GMT Date\n    Host: ProjectName.Endpoint\n    x-log-apiversion: 0.6.0\n    x-log-bodyrawsize: BodyRawSize\n    x-log-compresstype: lz4\n    x-log-signaturemethod: hmac-sha1\n    <Compressed log data in protobuf format>\n    ```\n\n- The maximum size of raw logs for each PutLogs request is 10 MB. The Value of each log in a log group must not exceed 1 MB. Older SDK versions may have different limits. Upgrade to the latest SDK version.\n\n- SLS provides examples of how to use PutLogs with the Java and Python SDKs.\n\n## Protobuf data\n\nThis section describes the fields for compressed log data in protobuf format. For more information, see [Data model](~~29054~~) and [Data encoding](~~29055~~).\n\n- Log\n\n| **Parameter** | **Data type** | **Required** | **Description**                                                                                                                         |\n| ------------- | ------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |\n| Time          | Integer       | Yes          | The time of the log. The value is a UNIX timestamp that represents the number of seconds that have elapsed since 1970-1-1 00:00:00 UTC. |\n| Contents      | List          | Yes          | A list of log fields. The list must contain at least one element. For the element type, see the Content table below.                    |\n\n- Content\n\n| **Parameter** | **Data type** | **Required** | **Description**                               |\n| ------------- | ------------- | ------------ | --------------------------------------------- |\n| Key           | String        | Yes          | The custom key name.                          |\n| Value         | String        | Yes          | The value that corresponds to the custom key. |\n\n- LogTag\n\n| **Parameter** | **Data type** | **Required** | **Description**                               |\n| ------------- | ------------- | ------------ | --------------------------------------------- |\n| Key           | String        | Yes          | The custom key name.                          |\n| Value         | String        | Yes          | The value that corresponds to the custom key. |\n\n- LogGroup\n\n| **Parameter** | **Data type** | **Required** | **Description**                                                                               |\n| ------------- | ------------- | ------------ | --------------------------------------------------------------------------------------------- |\n| Logs          | List          | Yes          | A list of logs. For each element, see the Log table.                                          |\n| Topic         | String        | No           | The topic of the logs. Use this custom field to distinguish log data with different features. |\n| Source        | String        | No           | The source of the logs, such as the IP address of the machine that generated the logs.        |\n| LogTags       | List          | Yes          | A list of log tags. For each element, see the LogTag table.                                   |"
+  },
   "example": {
     "unifiedCli": "aliyun sls put-logs --project ali-test-project --logstore ali-test-logstore --x-log-compresstype lz4 --region cn-hangzhou",
     "legacyCli": "aliyun sls POST /logstores/ali-test-logstore/shards/lb --project ali-test-project --region cn-hangzhou --header \"x-log-compresstype=lz4\" --header \"Content-Type=application/json\" --body \"example-string\""

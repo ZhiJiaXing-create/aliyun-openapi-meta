@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,82 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用来返回更多结果。第一次查询不需要提供这个参数，如果第一次查询没有返回全部结果，则可在后续查询中传入前一次返回的token继续查询。",
+        "en": "A token to retrieve the next page of results. You do not need to specify this parameter for the first request. If the first request does not return all results, the response returns a token. You can use this token in the next request to continue the query."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID，您可以通过接口[DescribeRegions](~~98041~~)查看可用的地域ID。",
+        "en": "The region ID. You can call the [DescribeRegions](~~98041~~) operation to view the available region IDs."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标集群ID。若您需要查询多个集群的标签情况，请单击**添加**来添加目标集群ID。\n\n> * `ResourceId.N`参数和`Tag.N.Key`参数至少传入一个。\n> * 若选择传入`ResourceId.N`参数，则每次最多添加50个集群ID。",
+        "en": "The ID of a cluster. You can specify multiple cluster IDs to query the tags of multiple clusters.\n\n> - You must specify either the `ResourceId.N` parameter or the `Tag.N.Key` parameter.\n>\n> - If you specify the `ResourceId.N` parameter, you can add up to 50 cluster IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义，取值固定为**cluster**。",
+        "en": "The resource type. Set the value to **cluster**."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。若您需要查询多个标签下的所有目标集群详情，请单击**添加**来添加标签。\n\n>*  `ResourceId.N`参数和`Tag.N.Key`参数至少传入一个。\n>* 若选择传入`Tag.N.Key`参数，则每次最多添加20对标签。",
+            "en": "The key of a tag. You can specify multiple tags to query for resources that have all of the specified tags.\n\n> - You must specify either the `ResourceId.N` parameter or the `Tag.N.Key` parameter.\n>\n> - If you specify the `Tag.N.Key` parameter, you can add up to 20 tag pairs."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键对应的标签值，允许传入空字符串。",
+            "en": "The tag value that corresponds to the tag key. An empty string is allowed."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询一个或多个PolarDB集群已绑定的标签列表",
+    "en": "ListTagResources"
+  },
   "example": {
     "unifiedCli": "aliyun polardb list-tag-resources --biz-region-id cn-hangzhou --resource-type cluster --next-token 212db86sca4384811e0b5e87070000000 --resource-id pc-0000000000000000 --tag Value=test Key=type --region cn-hangzhou",
     "legacyCli": "aliyun polardb ListTagResources --region cn-hangzhou --ResourceId.1 'pc-0000000000000000' --Tag.1.Key type --NextToken 212db86sca4384811e0b5e87070000000 --Tag.1.Value test --ResourceType cluster --RegionId 'cn-hangzhou'"

@@ -1,5 +1,6 @@
 {
   "name": "DeleteKeyPairs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "KeyPairId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SSH密钥对的ID。",
+        "en": "The ID of the SSH key pair."
+      }
     },
     {
       "name": "KeyPairName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "密钥对名称。命名规则如下所示：\n\n- 长度为2~128个英文或中文字符。\n- 必须以大小字母或中文开头，不能以`http://`和`https://`开头。\n- 可以包含数字、半角冒号（:）、下划线（_）、或者连字符（-）。\n\n在进行删除密钥对前，您可以调用DescribeKeyPairs查询已有密钥对。",
+        "en": "The name of the key pair. The name must conform to the following naming conventions:\n\n- The name must be 2 to 128 characters in length.\n\n- The name must start with a letter and cannot start with `http://` or `https://`.\n\n- The name can contain letters, digits, colons (:), underscores (\\_), and hyphens (-).\n\nBefore you delete a key pair, you can call the DescribeKeyPairs operation to query existing key pairs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除一对SSH密钥对",
+    "en": "DeleteKeyPairs"
+  },
+  "descriptions": {
+    "zh": "- 如果您成功删除密钥对，将无法通过DescribeKeyPairs查询该密钥对。\n- 如果您的ENS实例已经绑定了密钥对，在删除了该密钥对后，阿里云ENS不再为您保存该SSH密钥对，但是实例可以正常使用该SSH密钥对。调用DescribeInstances查询实例信息时，会显示密钥对名称（**KeyPairName**），但不再显示其他相关信息。",
+    "en": "- After you delete an SSH key pair, you can no longer query the key pair by calling the DescribeKeyPairs operation.\n\n- If you delete an SSH key pair that is bound to an Edge Node Service (ENS) instance, ENS no longer stores the SSH key pair. However, you can still use the key pair to access the instance. When you call the DescribeInstance operation to query instance information, no other information but the name of the key pair (**KeyPairName**) is returned."
+  },
   "example": {
     "unifiedCli": "aliyun ens delete-key-pairs --biz-key-pair-name TestKeyPairName --key-pair-id ssh-5lywanlkih1zo9yl8eg0000 --region cn-hangzhou",
     "legacyCli": "aliyun ens DeleteKeyPairs --region cn-hangzhou --KeyPairName TestKeyPairName --KeyPairId 'ssh-5lywanlkih1zo9yl8eg0000'"

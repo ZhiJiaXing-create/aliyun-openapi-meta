@@ -1,5 +1,6 @@
 {
   "name": "QueryBill",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "资源归属账号的ID，资源归属账号是实际使用资源的账号。",
-        "en": "The ID of the member."
+        "en": "The ID of the account that owns the resource. This is the account that actually uses the resource."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "账期，YYYY-MM。",
-        "en": "The billing cycle, in the YYYY-MM format."
+        "en": "The billing cycle. The format is YYYY-MM."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "根据原价（PretaxGrossAmount）是否为0做过滤，默认为否（兼容现有逻辑）。\n- true：是。\n- false：否。",
-        "en": "Specifies whether to filter out a bill whose pretax gross amount is 0. By default, a bill whose pretax gross amount is 0 is not filtered out. Valid values:\n\n*   true: filters out a bill whose pretax gross amount is 0.\n*   false: does not filter out a bill whose pretax gross amount is 0."
+        "en": "Specifies whether to exclude bills with a pretax gross amount (PretaxGrossAmount) of 0. The default value is false. This ensures backward compatibility.\n\n- true: Yes.\n\n- false: No."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "页码，默认值为1。",
-        "en": "The number of the page to return. Default value: 1."
+        "en": "The page number. The default value is 1."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "每页数量，默认值：20，最大值：300。",
-        "en": "The number of entries to return on each page. Default value: 20. Maximum value: 300."
+        "en": "The number of entries per page. Default value: 20. Maximum value: 300."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "产品代码。",
-        "en": "The code of the service."
+        "en": "The product code."
       }
     },
     {
@@ -71,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "产品类型。",
-        "en": "The type of the service."
+        "en": "The product type."
       }
     },
     {
@@ -81,7 +82,7 @@
       "required": false,
       "description": {
         "zh": "订阅类型。取值：\n- Subscription\n- PayAsYouGo\n\n> 必须和ProductCode参数一起使用。",
-        "en": "The billing method. Valid values:\n\n*   Subscription\n*   PayAsYouGo\n\nThis parameter must be used together with the ProductCode parameter."
+        "en": "The subscription type. Valid values:\n\n- Subscription\n\n- PayAsYouGo\n\n> This parameter must be used with the ProductCode parameter."
       }
     },
     {
@@ -91,10 +92,17 @@
       "required": false,
       "description": {
         "zh": "类型。取值：\n- SubscriptionOrder\n- PayAsYouGoBill\n- Refund\n- Adjustment",
-        "en": "The type of the bill. Valid values:\n\n*   SubscriptionOrder\n*   PayAsYouGoBill\n*   Refund\n*   Adjustment"
+        "en": "The type. Valid values:\n\n- SubscriptionOrder\n\n- PayAsYouGoBill\n\n- Refund\n\n- Adjustment"
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "账单查询服务",
+    "en": "QueryBill"
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi query-bill --billing-cycle 2018-07 --type SubscriptionOrder --product-code rds --product-type rds --subscription-type Subscription --is-hide-zero-charge true --page-num 1 --page-size 20 --bill-owner-id 123 --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi QueryBill --region cn-hangzhou --SubscriptionType Subscription --BillingCycle '2018-07' --Type SubscriptionOrder --PageNum 1 --PageSize 20 --ProductCode rds --IsHideZeroCharge true --ProductType rds --BillOwnerId 123"

@@ -1,5 +1,6 @@
 {
   "name": "CreateCenChildInstanceRouteEntryToAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": true,
       "description": {
         "zh": "云企业网实例ID。",
-        "en": "The CEN instance ID."
+        "en": "The ID of the CEN instance."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** for each API request may be different."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认值）：发送正常请求，通过检查后直接为网络实例添加路由条目。\n- **true**：发送检查请求，只进行校验，不会为网络实例添加路由条目。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n>当前参数暂不生效。",
-        "en": "Specifies whether to perform a dry run to check information such as the permissions and the instance status. Valid values:\n\n*   **false**: performs a dry run and sends the request.\n*   **true**: performs a dry run. The system checks the required parameters and request syntax. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n>  This parameter is not in use."
+        "en": "Specifies whether to perform a dry run, without performing the actual request. The dry run checks permissions and the status of the instance. Valid values:\n\n- **false** (default): sends a normal request and creates a route for the network instance after the request passes the check.\n\n- **true**: sends a dry run request to check the request parameters. If the request passes the check, the system does not create a route for the network instance. The system checks the required parameters and the request format. If the request fails the check, an error message is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n\n> This parameter is not in use."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "网络实例的路由表ID。",
-        "en": "The ID of the route table configured on the network instance."
+        "en": "The ID of the route table of the network instance."
       }
     },
     {
@@ -65,6 +66,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为企业版转发路由器连接的网络实例添加路由条目",
+    "en": "CreateCenChildInstanceRouteEntryToAttachment"
+  },
+  "descriptions": {
+    "zh": "- 仅支持为企业版转发路由器连接的专有网络VPC（Virtual Private Cloud）实例和边界路由器VBR（Virtual Border Router）实例添加路由条目。\n- 路由条目的下一跳默认为**转发路由器连接**（即网络实例连接）且不支持修改。\n- **CreateCenChildInstanceRouteEntryToAttachment**接口属于异步接口，即系统会先返回一个**RequestId**，但该路由条目并未创建完成，系统后台的创建任务仍在进行。您可以调用专有网络的**DescribeRouteEntryList**接口查询路由条目的状态。 \n    - 当路由条目处于**Pending**状态时，表示路由条目正在创建中。在该状态下，您只能对路由条目执行查询操作，不能执行其他操作。\n    - 当路由条目处于**Available**状态时，表示路由条目创建完成。",
+    "en": "- You can create routes only for Virtual Private Cloud (VPC) and virtual border router (VBR) instances that are connected to an Enterprise Edition transit router.\n\n- The next hop of the route is the **transit router connection** (the network instance connection) by default and cannot be modified.\n\n- **CreateCenChildInstanceRouteEntryToAttachment** is an asynchronous operation. After you send a request, the system returns a **RequestId** and creates the route in the background. The route is not created immediately. You can call the **DescribeRouteEntryList** operation for the VPC to query the status of the route.\n\n  - If the route is in the **Pending** state, it is being created. During this time, you can only query the route and cannot perform other operations.\n\n  - If the route is in the **Available** state, the route is created."
+  },
   "example": {
     "unifiedCli": "aliyun cbn create-cen-child-instance-route-entry-to-attachment --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --cen-id cen-bp1n6cbxcszp55vxo0000 --transit-router-attachment-id tr-attach-r1qhupkc19iadz0000 --route-table-id vrt-bp1msipdczo9lejup0000 --destination-cidr-block 10.0.0.0/24 --region cn-hangzhou",
     "legacyCli": "aliyun cbn CreateCenChildInstanceRouteEntryToAttachment --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-r1qhupkc19iadz0000' --RouteTableId 'vrt-bp1msipdczo9lejup0000' --DryRun false --CenId 'cen-bp1n6cbxcszp55vxo0000' --DestinationCidrBlock '10.0.0.0/24' --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

@@ -1,5 +1,6 @@
 {
   "name": "SetPolicyAssetScope",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "Databases",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "控制策略生效的数据库资产范围。\n\n> 当ScopeType为  Database 时必填。最多500 个。",
+        "en": "The databases to which the control policy applies.\n\n> This parameter is required if ScopeType is set to Database. You can specify up to 500 databases."
+      }
     },
     {
       "name": "HostGroups",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "控制策略生效的资产组范围。\n\n> 当ScopeType为  HostGroup 时必填。最多100 个。",
+        "en": "The asset groups to which the control policy applies.\n\n> This parameter is required if ScopeType is set to HostGroup. You can specify up to 100 asset groups."
+      }
     },
     {
       "name": "Hosts",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "控制策略生效的主机范围。\n\n> 当ScopeType为 Host 时必填。最多500 个。",
+        "en": "The hosts to which the control policy applies.\n\n> This parameter is required if ScopeType is set to Host. You can specify up to 500 hosts."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "堡垒机的实例ID。\n> 您可以调用[DescribeInstances](~~153281~~)接口获取该参数。",
+        "en": "The bastion host ID.\n\n> You can call the [DescribeInstances](~~153281~~) operation to query the bastion host ID."
+      }
     },
     {
       "name": "PolicyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定要修改的控制策略的ID。\n> 您可以调用[ListPolicies](~~2758876~~)接口获取该参数。",
+        "en": "The ID of the control policy that you want to modify.\n\n> You can call the [ListPolicies](~~2758876~~) operation to query the control policy ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "堡垒机的区域ID。\n> 区域ID和区域名称的对应关系，请参见[地域和可用区](~~40654~~)。",
+        "en": "The region ID of the bastion host.\n\n> For more information about the mapping between region IDs and region names, see [Regions and zones](~~40654~~)."
+      }
     },
     {
       "name": "ScopeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "控制策略生效的资产范围。取值：\n- **All**：针对所有资产生效\n- **Host**：针对已选择的主机生效\n- **Database**：针对已选择的数据库生效\n- **HostGroup**：针对已选择的资产组生效",
+        "en": "The scope of assets to which the control policy applies. Valid values:\n\n- **All**: The control policy applies to all assets.\n\n- **Host**: The control policy applies to specified hosts.\n\n- **Database**: The control policy applies to specified databases.\n\n- **HostGroup**: The control policy applies to specified asset groups."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置指定控制策略的资产生效范围",
+    "en": "SetPolicyAssetScope"
+  },
   "example": {
     "unifiedCli": "aliyun yundun-bastionhost set-policy-asset-scope --instance-id bastionhost-cn-st220aw0000 --biz-region-id cn-hangzhou --policy-id 7 --scope-type All --hosts '[{\"AccountScopeType\":\"All\",\"HostId\":\"1\",\"HostAccountIds\":[\"96\"]}]' --databases '[{\"AccountScopeType\":\"AccountId\",\"DatabaseId\":\"3\",\"DatabaseAccountIds\":[\"3\"]}]' --host-groups '[{\"AccountScopeType\":\"All\",\"HostGroupId\":\"86\",\"AccountNames\":[\"root\"]}]' --region cn-hangzhou",
     "legacyCli": "aliyun yundun-bastionhost SetPolicyAssetScope --region cn-hangzhou --ScopeType All --HostGroups.1.AccountNames.1 root --InstanceId 'bastionhost-cn-st220aw0000' --Databases.1.DatabaseId 3 --Hosts.1.HostAccountIds.1 96 --Hosts.1.HostId 1 --Databases.1.AccountScopeType AccountId --Databases.1.DatabaseAccountIds.1 3 --HostGroups.1.AccountScopeType All --Hosts.1.AccountScopeType All --HostGroups.1.HostGroupId 86 --RegionId 'cn-hangzhou' --PolicyId 7 --method POST --force"

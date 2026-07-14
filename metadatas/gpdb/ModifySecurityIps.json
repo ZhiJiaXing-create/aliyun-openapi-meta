@@ -1,5 +1,6 @@
 {
   "name": "ModifySecurityIps",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DBInstanceIPArrayAttribute",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认为空。用于区分不同的属性值，控制台不显示带有`hidden`属性的分组。",
+        "en": "The attribute of the IP address whitelist. By default, this parameter is empty. A whitelist with the `hidden` attribute does not appear in the console."
+      }
     },
     {
       "name": "DBInstanceIPArrayName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP白名单分组的名称，如果不传默认操作**default**分组。\n> 1个实例最多支持50个白名单分组。",
+        "en": "The name of the whitelist. If you do not enter a name, IP addresses are added to the default whitelist.\n\n>  You can create up to 50 whitelists for an instance."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 您可以调用[DescribeDBInstances](~~86911~~)接口查看目标地域下所有的AnalyticDB PostgreSQL版实例的ID。",
+        "en": "The ID of the instance.\n\n>  You can call the [DescribeDBInstances](~~86911~~) operation to query the instance IDs of all AnalyticDB for PostgreSQL instances in a specific region."
+      }
     },
     {
       "name": "ModifyMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP白名单修改模式，取值如下：\n\n- **0**（默认）：在目标IP白名单分组中覆盖原有IP地址。\n- **1**：在目标IP白名单分组中添加IP地址。\n- **2**：在目标IP白名单分组中删除IP地址。",
+        "en": "The method of modification. Valid values:\n\n*   **Cover**: overwrites the whitelist.\n*   **Append**: appends data to the whitelist.\n*   **Delete**: deletes the whitelist."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该参数已废弃，无需传入该参数。",
+        "en": "The ID of the resource group to which the instance belongs. For more information about how to obtain the ID of a resource group, see [View basic information of a resource group](~~151181~~)."
+      }
     },
     {
       "name": "SecurityIPList",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IP白名单分组下的IP列表，最多1000个，以逗号隔开，格式如下：\n- 10.23.12.24（IP）\n- 10.23.12.24/24（CIDR模式，无类域间路由，`/24`表示地址中前缀的长度，范围为`[1,32]`）",
+        "en": "The IP addresses listed in the whitelist. You can add up to 1,000 IP addresses to the whitelist. Separate multiple IP addresses with commas (,). The IP addresses must use one of the following formats:\n\n*   0.0.0.0/0\n*   10.23.12.24. This is a standard IP address.\n*   10.23.12.24/24. This is a CIDR block. The value `/24` indicates that the prefix of the CIDR block is 24-bit long. You can replace 24 with a value in the range of `1 to 32`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改IP白名单",
+    "en": "ModifySecurityIps"
+  },
+  "descriptions": {
+    "zh": "为保障AnalyticDB PostgreSQL版数据库的安全稳定，系统默认禁止所有外部IP地址访问AnalyticDB PostgreSQL版实例。在开始使用AnalyticDB PostgreSQL版实例前，您需要将客户端的IP地址或IP地址段添加到AnalyticDB PostgreSQL版实例的白名单中。",
+    "en": "To ensure the security and stability of AnalyticDB for PostgreSQL instances, the system denies all external IP addresses to access AnalyticDB for PostgreSQL instances by default. Before you can use an AnalyticDB for PostgreSQL instance, you must add the IP address or CIDR block of your client to the IP address whitelist of the instance.\n\n## Limits\n\nYou can call this operation up to 1,000 times per second per account. If the number of the calls per second exceeds the limit, throttling is triggered. As a result, your business may be affected. We recommend that you take note of the limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun gpdb modify-security-ips --resource-group-id example-string --modify-mode 0 --db-instance-id gp-bp12ga6v69h860000 --security-ip-list 10.10.00.00 --db-instance-ip-array-name default --db-instance-ip-array-attribute hidden --region cn-hangzhou",
     "legacyCli": "aliyun gpdb ModifySecurityIps --region cn-hangzhou --DBInstanceIPArrayAttribute hidden --ResourceGroupId 'example-string' --DBInstanceId 'gp-bp12ga6v69h860000' --SecurityIPList '10.10.00.00' --DBInstanceIPArrayName default --ModifyMode 0"

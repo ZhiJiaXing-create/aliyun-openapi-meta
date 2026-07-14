@@ -1,5 +1,6 @@
 {
   "name": "UpdateLoadBalancerProtection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nYou can use the client to generate this value. Ensure that the value is unique among all requests. Only ASCII characters are allowed.\n\n>  If you do not specify this parameter, the value of **RequestId** is used.**** **RequestId** of each request is different."
+      }
     },
     {
       "name": "DeletionProtectionEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启删除保护。取值：\n\n- **true**：开启。\n- **false**：关闭。",
+        "en": "Specifies whether to enable deletion protection. Valid values:\n\n*   **true**\n*   **false**"
+      }
     },
     {
       "name": "DeletionProtectionReason",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "输入开启删除保护的原因。长度为2~128个英文或中文字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。\n\n> 仅在**DeletionProtectionEnabled**为**true**时该参数有效且合法。",
+        "en": "The reason why deletion protection is enabled. The reason must be 2 to 128 characters in length, can contain letters, digits, periods (.), underscores (\\_), and hyphens (-), and must start with a letter.\n\n>  This parameter takes effect only when **DeletionProtectionEnabled** is set to **true**."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会更新修改保护和删除保护。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without sending the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): sends a request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络型负载均衡实例ID。",
+        "en": "The ID of the NLB instance."
+      }
     },
     {
       "name": "ModificationProtectionReason",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "输入开启修改保护的原因。长度为2~128个英文或中文字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。\n\n> 仅在**Status**为**ConsoleProtection**时该参数有效且合法。",
+        "en": "The reason why the configuration read-only mode is enabled. The reason must be 2 to 128 characters in length, can contain letters, digits, periods (.), underscores (\\_), and hyphens (-), and must start with a letter.\n\n>  This parameter takes effect only when **Status** is set to **ConsoleProtection**."
+      }
     },
     {
       "name": "ModificationProtectionStatus",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡修改保护状态。取值：\n\n- **NonProtection**：不保护，表示不允许传入**ModificationProtectionReason**。如果配置了保护配置的**ModificationProtectionReason**，则清空其配置信息。\n- **ConsoleProtection**：控制台修改保护，此时允许传入**ModificationProtectionReason**。\n\n> 当取值为**ConsoleProtection**，即开启修改保护后，用户不能通过负载均衡控制台修改实例配置，但可以通过调用API修改实例配置。",
+        "en": "Specifies whether to enable the configuration read-only mode. Valid values:\n\n*   **NonProtection**: disables the configuration read-only mode. In this case, you cannot set the **ModificationProtectionReason** parameter. If you specify **ModificationProtectionReason**, the value is cleared.\n*   **ConsoleProtection**: enables the configuration read-only mode. In this case, you can specify **ModificationProtectionReason**.\n\n>  If you set this parameter to **ConsoleProtection**, you cannot use the NLB console to modify configurations of the NLB instance. However, you can call API operations to modify the instance configurations."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The region ID of the NLB instance.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改删除保护",
+    "en": "UpdateLoadBalancerProtection"
+  },
+  "descriptions": {
+    "zh": "> 您可以通过[GetLoadBalancerAttribute](~~445873~~)接口查询删除保护和修改保护详细信息。",
+    "en": "> You can call the [GetLoadBalancerAttribute](~~445873~~) operation to query the details about deletion protection and the configuration read-only mode."
+  },
   "example": {
     "unifiedCli": "aliyun nlb update-load-balancer-protection --deletion-protection-enabled false --deletion-protection-reason '实例使用中' --modification-protection-status ConsoleProtection --modification-protection-reason '托管实例' --load-balancer-id nlb-83ckzc8d4xlp8o0000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun nlb UpdateLoadBalancerProtection --region cn-hangzhou --DeletionProtectionReason '实例使用中' --DryRun false --ModificationProtectionReason '托管实例' --LoadBalancerId 'nlb-83ckzc8d4xlp8o0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DeletionProtectionEnabled false --ModificationProtectionStatus ConsoleProtection"

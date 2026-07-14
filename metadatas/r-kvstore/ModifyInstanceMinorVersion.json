@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceMinorVersion",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "升级执行时间，取值：\n* **Immediately**：立即执行，默认值。\n* **MaintainTime**：在可维护时间段执行。\n\n> 您可以调用[ModifyInstanceMaintainTime](~~473775~~)修改实例的可维护时间段。",
+        "en": "The time when you want to update the minor version. Valid values:\n\n*   **Immediately** (default): immediately updates the minor version.\n*   **MaintainTime**: updates the minor version during the maintenance window.\n\n>  You can call the [ModifyInstanceMaintainTime](~~473775~~) operation to modify the maintenance window of an instance."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "Minorversion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要升级到的小版本，默认值：**latest_version**，即最新版本。",
+        "en": "The minor version to which you want to update. Default value: **latest_version**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "升级小版本",
+    "en": "ModifyInstanceMinorVersion"
+  },
+  "descriptions": {
+    "zh": "不同的架构在升级时所采取的流程有所区别，详细介绍，请参见[小版本升级原理](~~56450~~)。\n\n> * 调用本接口前，您可以调用[DescribeEngineVersion](~~473781~~)查询实例当前的小版本。\n> * 在实例切换或主备切换阶段，实例将存在60秒以内的只读状态（等待数据完全同步），同时会发生秒级的连接闪断，请在业务低峰期进行升级，并确保应用程序具备重连机制。",
+    "en": "The procedure to update the minor version of an instance varies based on types of Tair (Redis OSS-compatible) instances. For more information, see [Upgrade the minor version](~~56450~~).\n\n> \n\n*   Before you call this operation, you can call the [DescribeEngineVersion](~~473781~~) operation to query the minor version of the current instance.\n*   When you switch your workloads over from the original instance to a new instance or from the master node to the replica node in the original instance, you may experience disconnections that last a few seconds. The original instance stays in the read-only state within 60 seconds until all data is synchronized. We recommend that you upgrade the original instance during off-peak hours and make sure that your application is configured to automatically reconnect to the original instance."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore modify-instance-minor-version --instance-id r-bp1zxszhcgatnx0000 --minorversion latest_version --effective-time Immediately --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore ModifyInstanceMinorVersion --region cn-hangzhou --Minorversion latest_version --InstanceId 'r-bp1zxszhcgatnx0000' --EffectiveTime Immediately"

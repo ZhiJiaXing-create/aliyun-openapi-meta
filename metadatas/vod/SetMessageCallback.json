@@ -1,5 +1,6 @@
 {
   "name": "SetMessageCallback",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用ID。不传时为系统默认应用的ID，取固定值：**app-1000000**。",
+        "en": "The ID of the application. If you do not set this parameter, the ID of the default application is used, which is **app-1000000**."
+      }
     },
     {
       "name": "AuthKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "鉴权Key，最长32位，必须同时包含大小写字母和数字。回调方式为**HTTP**时，可设置此参数。",
+        "en": "The authentication key. It can be up to 32 characters in length and must contain uppercase letters, lowercase letters, and digits. You can set this parameter when CallbackType is set to **HTTP**."
+      }
     },
     {
       "name": "AuthSwitch",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HTTP回调的鉴权开关，回调方式设置为**HTTP**时，此参数有效。取值：\n- **on**（启用）\n- **off**（不启用）",
+        "en": "The authentication switch for HTTP callbacks. This parameter is valid only when CallbackType is set to **HTTP**. Valid values:\n\n- **on**: enabled\n- **off**: disabled"
+      }
     },
     {
       "name": "CallbackType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "回调方式，取值：\n- **HTTP**\n- **轻量消息队列（原MNS）**",
+        "en": "The callback method. Valid values:\n\n- **HTTP**\n- **Simple Message Queue (formerly MNS)**"
+      }
     },
     {
       "name": "CallbackURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "回调地址。回调方式为**HTTP**时，需设置此参数。\n回调地址URL的长度不能超过256个字节，不支持设置多个回调地址。",
+        "en": "The webhook address. This parameter is required if you set CallbackType to **HTTP**. The webhook address can be a maximum of 256 bytes in length. You cannot specify multiple webhook addresses."
+      }
     },
     {
       "name": "EventTypeList",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "回调事件类型，取值为空时关闭所有消息通知，取值为**ALL**时开启全部消息通知。也可指定开启某些消息通知，多个事件类型之间使用半角逗号（,）分隔。可设置的事件类型取值范围请参见：[事件类型](~~55627~~)。\n\n<props=\"china\">\n> 所有AI相关事件即AIMediaAuditComplete、AIMediaDNAComplete等取值都为**AIComplete**。</props>",
+        "en": "The type of the callback event. If you leave this parameter empty, all event notifications are disabled. If you set this parameter to **ALL**, all event notifications are enabled. You can also specify event types to enable notifications. Separate multiple event types with commas (,). For information about the valid values, see [Event types](~~55627~~).\n\n<props=\"china\">\n\n> The value of all AI-related events, such as AIMediaAuditComplete and AIMediaDNAComplete, is **AIComplete**.\n\n</props>"
+      }
     },
     {
       "name": "MnsEndpoint",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息队列公网Endpoint，回调方式为**轻量消息队列（原MNS）**时，需设置此参数。可登录[消息服务控制台](https://account.aliyun.com/login/login.html)，单击右上角的**获取Endpoint**按钮获取。更多信息，请参见[Endpoint](~~27480~~)。",
+        "en": "The public endpoint of the MNS queue. This parameter is required if you set **CallbackType** to **Simple Message Queue (formerly MNS)**. You can log on to the [Message Service console](https://account.aliyun.com/login/login.html) and click Get Endpoint in the upper-right corner to obtain the endpoint. For more information, see [Endpoint](~~27480~~)."
+      }
     },
     {
       "name": "MnsQueueName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息队列名称，可登录[消息服务控制台](https://account.aliyun.com/login/login.html)，在**队列列表**中查看。回调方式为**轻量消息队列（原MNS）**时，需设置此参数。",
+        "en": "The name of the MNS queue. You can log on to the [Message Service console](https://account.aliyun.com/login/login.html) and view the queue name in the Queue List. This parameter is required if you set CallbackType to **Simple Message Queue (formerly MNS)**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置事件通知配置",
+    "en": "SetMessageCallback"
+  },
+  "descriptions": {
+    "zh": "支持HTTP回调和MNS回调。详细使用说明，请参见[事件通知](~~55627~~)。\n### QPS限制\n本接口的单用户QPS限制为15次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342790~~)。",
+    "en": "HTTP and MNS callbacks are supported. For more information, see [Event notifications](~~55627~~).\n\n### QPS limit\n\nThe queries per second (QPS) limit for a single user on this operation is 15. If this limit is exceeded, API calls are throttled, which may affect your business. We recommend that you call this operation at a reasonable rate. For more information, see [QPS limits](~~342790~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vod set-message-callback --callback-type HTTP --callback-url http://developer.aliyundoc.com --event-type-list FileUploadComplete --auth-switch on --auth-key Dsf346dvet --mns-endpoint http://0000.mns.cn-shanghai.aliyuncs.com/ --mns-queue-name quene_name --app-id app-1000000 --region cn-hangzhou",
     "legacyCli": "aliyun vod SetMessageCallback --region cn-hangzhou --CallbackURL 'http://developer.aliyundoc.com' --MnsEndpoint 'http://0000.mns.cn-shanghai.aliyuncs.com/' --AuthSwitch on --CallbackType HTTP --AppId 'app-1000000' --EventTypeList FileUploadComplete --AuthKey Dsf346dvet --MnsQueueName quene_name"

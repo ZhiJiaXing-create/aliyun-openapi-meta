@@ -1,5 +1,6 @@
 {
   "name": "DeleteUsers",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,29 +9,56 @@
       "name": "Async",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "采用异步消息链路删除用户。\n\n默认值：false。",
+        "en": "Specifies whether to enable the asynchronous mode for this request.\n\nDefault value: false."
+      }
     },
     {
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。\n\n您可以通过调用[ListClusters](~~87116~~)获取集群ID。",
+        "en": "The cluster ID.\n\nYou can call the [ListClusters](~~87116~~) operation to obtain the cluster ID."
+      }
     },
     {
       "name": "User",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "用户信息。",
+        "en": "The information about the user."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第N个要删除的用户名。N的取值范围：1~100\n\n您可以通过调用[ListUsers](~~188572~~)获取该集群中的用户名。",
+            "en": "The name of the user N that you want to delete. Valid values of N: 1 to 100.\n\nYou can call the [ListUsers](~~188572~~) operation to query the users of the cluster."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量删除用户账号",
+    "en": "DeleteUsers"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n删除用户时仅删除用户信息，不删除存储在用户home目录下的文件。例如删除一个名为user1的用户，集群目录`/home/user1/`下的文件不会被删除。但被删除的用户不可恢复，即使再次创建同名用户也不会复用保留的数据。",
+    "en": "If you delete a user, only its information is deleted. The files stored in the /home directory for the user are retained. For example, if you delete a user named user1, the files in the `/home/user1/` directory of the cluster are not deleted. However, a deleted user cannot be recovered. Even if you create another user that has the same name, the data retained for the deleted user is not reused."
+  },
   "example": {
     "unifiedCli": "aliyun ehpc delete-users --cluster-id ehpc-hz-FYUr320000 --user Name=user1 --async false --api-version 2018-04-12 --region cn-hangzhou",
     "legacyCli": "aliyun ehpc DeleteUsers --region cn-hangzhou --ClusterId 'ehpc-hz-FYUr320000' --Async false --User.1.Name user1"

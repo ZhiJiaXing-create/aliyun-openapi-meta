@@ -1,5 +1,6 @@
 {
   "name": "ListTransitRouterMulticastDomainAssociations",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among all requests. The token can only contain ASCII characters."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token from your client to ensure that it is unique among different requests. The ClientToken parameter can contain only ASCII characters."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "是否拥有下一次查询的令牌（Token）。取值：\n\n- 第一次查询和没有下一次查询时，均无需填写。\n- 如果有下一次查询，取值为上一次API调用返回的NextToken值。",
-        "en": "The token that determines the start point of the query. Valid values:\n\n*   If this is your first query and no next queries are to be sent, ignore this parameter.\n*   If a subsequent query is to be sent, set the parameter to the value of NextToken that is returned from the last call."
+        "en": "The token that determines the start point of the next query. Valid values:\n\n- If this is your first query and no next query is to be sent, ignore this parameter.\n\n- If a next query is to be sent, set the value to the NextToken value returned from the last API call."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "组播域关联的资源类型。\n\n仅取值：**VPC**。",
-        "en": "The type of resource associated with the multicast domain.\n\nValid value: **VPC**."
+        "en": "The type of resource associated with the multicast domain.\n\nThe value is **VPC**."
       }
     },
     {
@@ -81,10 +82,21 @@
       "required": false,
       "description": {
         "zh": "交换机ID列表。",
-        "en": "The IDs of vSwitches."
+        "en": "The list of vSwitch IDs."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询组播域的关联信息",
+    "en": "ListTransitRouterMulticastDomainAssociations"
+  },
+  "descriptions": {
+    "zh": "- 调用接口时请求参数**TransitRouterMulticastDomainId** 和 **TransitRouterAttachmentId**必须输入一个。输入**TransitRouterAttachmentId**表示查询VPC实例下已绑定组播域的交换机的信息。输入**TransitRouterMulticastDomainId**表示查询组播域下已绑定的交换机的信息。\n\n- 在调用**ListTransitRouterMulticastDomainAssociations**接口过程时请确保输入的参数值无误。如果您输入的参数有误调用接口后仍然会返回**RequestId**，但不会显示组播域和交换机的关联关系。",
+    "en": "- When you call this operation, you must specify either the **TransitRouterMulticastDomainId** or **TransitRouterAttachmentId** request parameter. If you specify **TransitRouterAttachmentId**, the system queries the vSwitches that are associated with the multicast domain in the VPC. If you specify **TransitRouterMulticastDomainId**, the system queries the vSwitches that are associated with the specified multicast domain.\n\n- When you call the **ListTransitRouterMulticastDomainAssociations** operation, you must provide valid parameter values. If you provide an invalid parameter, the system returns a **RequestId** but does not return the association between the multicast domain and the vSwitch."
+  },
   "example": {
     "unifiedCli": "aliyun cbn list-transit-router-multicast-domain-associations --client-token 123e4567-e89b-12d3-a456-42660000 --transit-router-multicast-domain-id tr-mcast-domain-91wpg6wbhchjeq0000 --transit-router-attachment-id tr-attach-p90y3ymbbwuvy50000 --vswitchids vsw-p0w9s2ig1jnwgrbzl0000 --resource-type VPC --resource-id vpc-p0w9alkte4w2htrqe0000 --max-results 20 --next-token FFmyTO70tTpLG6I3FmYAXGKPd0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn ListTransitRouterMulticastDomainAssociations --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-p90y3ymbbwuvy50000' --NextToken FFmyTO70tTpLG6I3FmYAXGKPd0000 --VSwitchIds.1 'vsw-p0w9s2ig1jnwgrbzl0000' --ResourceId 'vpc-p0w9alkte4w2htrqe0000' --TransitRouterMulticastDomainId 'tr-mcast-domain-91wpg6wbhchjeq0000' --MaxResults 20 --ResourceType VPC --ClientToken '123e4567-e89b-12d3-a456-42660000'"

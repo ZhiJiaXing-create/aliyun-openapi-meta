@@ -1,5 +1,6 @@
 {
   "name": "DescribeKubernetesVersionMetadata",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/metadata/versions",
@@ -8,45 +9,80 @@
       "name": "ClusterType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群类型，取值：\n\n- `Kubernetes`: ACK专有版集群。\n- `ManagedKubernetes`：ACK托管版集群，包括ACK Pro版集群、ACK基础版集群、ACK Serverless Pro版集群、ACK Serverless基础版集群、ACK Edge Pro版集群、ACK Edge基础版。",
+        "en": "The cluster type. Valid values:\n\n- `Kubernetes`: ACK dedicated cluster.\n- `ManagedKubernetes`: ACK managed cluster, including ACK Pro cluster, ACK Basic cluster, ACK Serverless Pro cluster, ACK Serverless Basic cluster, ACK Edge Pro cluster, and ACK Edge Basic cluster."
+      }
     },
     {
       "name": "KubernetesVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群版本，与Kubernetes社区基线版本保持一致。建议选择最新版本，若不指定，默认使用最新版本。\n\nACK支持的Kubernetes版本，请参见[Kubernetes版本发布概览](~~185269~~)。",
+        "en": "The cluster version, which is consistent with the Kubernetes community baseline version. We recommend that you select the latest version. If you do not specify this parameter, the latest version is used by default.\n\nFor more information about the Kubernetes versions supported by ACK, see [Kubernetes version release overview](~~185269~~)."
+      }
     },
     {
       "name": "Mode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询模式，取值：\n- `supported`：查询受支持版本。\n- `creatable`：查询可创建版本。\n\n若指定`KubernetesVersion`，将忽略查询模式。\n\n若不指定查询模式，默认返回可创建版本。",
+        "en": "The query mode. Valid values:\n- `supported`: queries supported versions.\n- `creatable`: queries creatable versions.\n\nIf you specify `KubernetesVersion`, the query mode is ignored.\n\nIf you do not specify the query mode, creatable versions are returned by default."
+      }
     },
     {
       "name": "Profile",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "面向场景时的集群类型，取值：\n\n- `Default`：非边缘场景集群。\n- `Edge`：边缘场景集群。\n- `Serverless`：ASK集群。\n\n默认值：`Default`。",
+        "en": "The cluster type for specific scenarios. Valid values:\n\n- `Default`: non-edge scenario cluster.\n- `Edge`: edge scenario cluster.\n- `Serverless`: ACK Serverless cluster.\n\nDefault value: `Default`."
+      }
     },
     {
       "name": "QueryUpgradableVersion",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否查询该集群版本的可升级版本，仅在指定KubernetesVersion参数时生效。\n\n- true：查询可升级版本。\n\n- false：不查询可升级版本。",
+        "en": "Specifies whether to query upgradable versions for the specified cluster version. This parameter takes effect only when the KubernetesVersion parameter is specified.\n\n- true: queries upgradable versions.\n\n- false: does not query upgradable versions."
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群所在地域ID。",
+        "en": "The ID of the region where the cluster is deployed."
+      }
     },
     {
       "name": "runtime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运行时类型，可以通过指定运行时类型，过滤出运行时所支持的系统镜像，取值：\n\n- `docker`：docker运行时。\n- `containerd`：containerd运行时。\n- `Sandboxed-Container.runv`：安全沙箱。\n\n若指定运行时类型，将返回指定运行时支持的镜像版本。\n\n若不指定运行时类型，默认返回全部镜像。",
+        "en": "The runtime type. You can specify the runtime type to filter the system images that are supported by the runtime. Valid values:\n\n- `docker`: Docker runtime.\n- `containerd`: containerd runtime.\n- `Sandboxed-Container.runv`: sandboxed container.\n\nIf you specify the runtime type, the image versions supported by the specified runtime are returned.\n\nIf you do not specify the runtime type, all images are returned by default."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询Kubernetes版本的详细详情",
+    "en": "Query detailed information about Kubernetes versions"
+  },
   "example": {
     "unifiedCli": "aliyun cs describe-kubernetes-version-metadata --biz-region cn-beijing --cluster-type Kubernetes --kubernetes-version 1.32.1-aliyun.1 --biz-profile Default --runtime containerd --biz-mode supported --query-upgradable-version false --region cn-hangzhou",
     "legacyCli": "aliyun cs GET /api/v1/metadata/versions --region cn-hangzhou --KubernetesVersion '1.32.1-aliyun.1' --Mode supported --QueryUpgradableVersion false --Region 'cn-beijing' --runtime containerd --ClusterType Kubernetes --Profile Default --header \"Content-Type=application/json\""

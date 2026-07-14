@@ -1,5 +1,6 @@
 {
   "name": "AddZoneToVpcEndpoint",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会添加可用区。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加可用区的终端节点的ID。",
+        "en": "The ID of the endpoint to which you want to add the zone."
+      }
     },
     {
       "name": "Ipv6Address",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要添加的可用区中的终端节点网卡的IPv6地址。",
+        "en": "The IPv6 address of the endpoint ENI in the zone that you want to add."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加可用区的终端节点所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The region ID of the endpoint.\n\nYou can call the [DescribeRegions](~~120468~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加的可用区中的交换机，系统会自动在该交换机下创建一个终端节点网卡。",
+        "en": "The ID of the vSwitch in the zone that you want to add. The system automatically creates an endpoint ENI in the vSwitch."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加的可用区ID。",
+        "en": "The ID of the zone that you want to add."
+      }
     },
     {
       "name": "ip",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要添加的可用区中的终端节点网卡的IP。",
+        "en": "The IP address of the endpoint elastic network interface (ENI) in the zone that you want to add."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为终端节点添加可用区",
+    "en": "AddZoneToVpcEndpoint"
+  },
+  "descriptions": {
+    "zh": "- **AddZoneToVpcEndpoint**接口属于异步接口，即系统会返回一个请求ID，但终端节点可用区尚未添加完成，系统后台添加任务仍在进行中。您可以调用[ListVpcEndpointZones](~~183560~~)查询终端节点可用区的状态：\n\n    - 当终端节点可用区处于**Creating**状态时，表示终端节点可用区正在添加中。\n    - 当在终端节点中可以查询到该可用区时，表示终端节点可用区添加完成。\n\n- **AddZoneToVpcEndpoint**接口不支持给同一个终端节点实例并发添加可用区。",
+    "en": "- **AddZoneToVpcEndpoint** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. You can call the [ListVpcEndpointZones](~~183560~~) operation to query the state of the zone.\n\n  - If the zone is in the **Creating** state, the zone is being added.\n\n  - If the zone is in the Wait state, the zone is added.\n\n- You cannot repeatedly call the **AddZoneToVpcEndpoint** operation to add a zone to an endpoint within a specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink add-zone-to-vpc-endpoint --biz-region-id cn-hangzhou --zone-id cn-hangzhou-b --vswitch-id vsw-hjkshjvdkdvd0000 --ip 192.XX.XX.32 --endpoint-id ep-hp33b2e43fays7s80000 --dry-run false --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --ipv6-address 2408:4005:3b6:0000:6955:c3cb:34c:0000 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink AddZoneToVpcEndpoint --region cn-hangzhou --ZoneId 'cn-hangzhou-b' --VSwitchId 'vsw-hjkshjvdkdvd0000' --ip '192.XX.XX.32' --EndpointId 'ep-hp33b2e43fays7s80000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --Ipv6Address '2408:4005:3b6:0000:6955:c3cb:34c:0000'"

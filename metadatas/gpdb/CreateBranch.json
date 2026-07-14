@@ -1,0 +1,166 @@
+{
+  "name": "CreateBranch",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BranchName",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "分支名称。",
+        "en": "The branch name."
+      }
+    },
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "客户端幂等令牌，用于保证重试请求的幂等性。",
+        "en": "The client idempotency token. This token ensures the idempotence of retry requests."
+      }
+    },
+    {
+      "name": "Description",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "分支描述信息。",
+        "en": "The description of the branch."
+      }
+    },
+    {
+      "name": "ExpiresAt",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "分支过期自动删除时间，格式为 ISO 8601 UTC 时间。",
+        "en": "The time when the branch automatically expires and is deleted. The value is in the ISO 8601 UTC format."
+      }
+    },
+    {
+      "name": "InitSource",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "分支初始化来源。\n\n取值：\n- ParentData：复制父分支的 Schema 和数据，默认值。\n- SchemaOnly：仅复制 Schema 结构。",
+        "en": "The initialization source of the branch.\n\nValid values:\n- ParentData: copies the schema and data from the parent branch. This is the default value.\n- SchemaOnly: copies only the schema structure."
+      }
+    },
+    {
+      "name": "ParentBranchId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "父分支 ID，用于指定新分支或查询条件的上级分支。",
+        "en": "The ID of the parent branch. This parameter specifies the parent branch for the new branch or query condition."
+      }
+    },
+    {
+      "name": "ParentLsn",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "从父分支创建分支时选择的 LSN。",
+        "en": "The log sequence number (LSN) selected when creating a branch from the parent branch."
+      }
+    },
+    {
+      "name": "ParentTimestamp",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "从父分支创建分支时选择的数据同步时间点，格式为 ISO 8601 UTC 时间。\n\n默认值：当前时间。",
+        "en": "The point in time for data synchronization when creating a branch from the parent branch. The value is in the ISO 8601 UTC format.\n\nDefault value: the current time."
+      }
+    },
+    {
+      "name": "ProjectId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "主分支对应的 Supabase 项目 ID。",
+        "en": "The ID of the Supabase project that corresponds to the primary branch."
+      }
+    },
+    {
+      "name": "Protected",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否开启分支保护。\n\n取值：\n- true：开启分支保护。\n- false：关闭分支保护，默认值。",
+        "en": "Specifies whether to enable branch protection.\n\nValid values:\n- true: Enables branch protection.\n- false: Disables branch protection. This is the default value."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "地域 ID。创建主分支时必须指定，创建子分支时默认继承主分支所在地域。",
+        "en": "The region ID. This parameter is required when you create a primary branch. When you create a child branch, the region is inherited from the primary branch by default."
+      }
+    },
+    {
+      "name": "Tag",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "分支标签列表。",
+        "en": "The list of branch tags."
+      },
+      "sub_parameters": [
+        {
+          "name": "Key",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
+        },
+        {
+          "name": "Value",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建分支",
+    "en": "Create a branch"
+  },
+  "descriptions": {
+    "zh": "该接口用于基于指定父分支创建一个新的 Supabase 分支。创建子分支时默认继承主分支的地域、网络、存储等资源配置。",
+    "en": "Creates a new Supabase branch based on a specified parent branch. By default, a child branch inherits the region, network, storage, and other resource configurations from the primary branch."
+  },
+  "example": {
+    "unifiedCli": "aliyun gpdb create-branch --biz-region-id cn-hangzhou --project-id spb-xxxx --parent-branch-id br-main --branch-name dev --description test_branch --tag Value=dev Key=env --init-source ParentData --parent-timestamp 2026-04-08T09:11:12Z --parent-lsn 0/3522648 --protected false --expires-at 2026-10-08T09:11:12Z --client-token 123e4567-e89b-12d3-a456-426614174000 --region cn-hangzhou",
+    "legacyCli": "aliyun gpdb CreateBranch --region cn-hangzhou --Tag.1.Key env --Protected false --Description test_branch --ParentLsn '0/3522648' --ProjectId 'spb-xxxx' --ParentBranchId 'br-main' --InitSource ParentData --Tag.1.Value dev --RegionId 'cn-hangzhou' --BranchName dev --ExpiresAt '2026-10-08T09:11:12Z' --ClientToken '123e4567-e89b-12d3-a456-426614174000' --ParentTimestamp '2026-04-08T09:11:12Z'"
+  }
+}

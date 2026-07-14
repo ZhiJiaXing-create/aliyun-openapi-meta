@@ -1,5 +1,6 @@
 {
   "name": "DescribeDetachedBackups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份ID。",
+        "en": "The ID of the backup set."
+      }
     },
     {
       "name": "BackupMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份模式，取值范围如下： \n* **Automated**：系统自动备份\n* **Manual**：手动备份",
+        "en": "The backup mode. Valid values:\n\n*   **Automated**\n*   **Manual**"
+      }
     },
     {
       "name": "BackupRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域备份的目的地域。\n\n> 当前仅PolarDB MySQL版支持该参数。",
+        "en": "The region where the cross-region data backup file of the instance is stored.\n\n> This parameter is valid only for PolarDB for MySQL clusters."
+      }
     },
     {
       "name": "BackupStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份状态，取值范围如下：\n* **Success**：备份完成\n* **Failed**：备份失败",
+        "en": "The status of the backup set. Valid values:\n\n*   **Success**\n*   **Failed**"
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The ID of the cluster."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，查询结束时间需晚于开始时间，格式为`YYYY-MM-DDThh:mmZ`（UTC时间）。",
+        "en": "The end of the time range to query. Specify the time in the `YYYY-MM-DDThh:mmZ` format. The time must be in UTC. The end time must be later than the start time."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，取值范围为大于0但不超过Integer最大值的整数，默认值为**1**。",
+        "en": "The page number. The value must be a positive integer that does not exceed the maximum value of the INTEGER data type. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值范围如下： \n* **30**\n* **50**\n* **100**\n\n默认值为**30**。",
+        "en": "The number of entries per page. Valid values:\n\n*   **30**\n*   **50**\n*   **100**\n\nDefault value: **30**."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间，格式为`YYYY-MM-DDThh:mmZ`（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the `yyyy-MM-ddTHH:mmZ` format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询已被释放集群中备份集详情",
+    "en": "DescribeDetachedBackups"
+  },
+  "descriptions": {
+    "zh": "调用本接口时，PolarDB集群需处于**已释放**状态，且集群释放时选择**长期保留全部备份**或**长期保留最后一个备份（删除前自动备份）**。若集群释放后所保留的备份集全部被主动删除，则此接口也无法再查询到该集群。\n> 您可以调用[DescribeDBClusterAttribute](~~98181~~)接口查询集群状态。",
+    "en": "Before you call this operation, make sure that the PolarDB cluster is in the **Released** state. You must also confirm that the **Retain All Backups Permanently** or **Retain Last Automatic Backup Permanently** backup retention policy takes effect after you release the cluster. If you delete all backup sets after the cluster is released, you cannot use this API operation to query the cluster.\n\n>  You can call the [DescribeDBClusterAttribute](~~98181~~) operation to query the cluster status."
+  },
   "example": {
     "unifiedCli": "aliyun polardb describe-detached-backups --db-cluster-id pc-0000000000000000 --backup-id 111111111 --backup-status Success --backup-mode Manual --backup-region cn-hangzhou --start-time 2020-05-01T00:00Z --end-time 2020-05-14T00:00Z --page-size 30 --page-number 1 --region cn-hangzhou",
     "legacyCli": "aliyun polardb DescribeDetachedBackups --region cn-hangzhou --BackupRegion 'cn-hangzhou' --EndTime '2020-05-14T00:00Z' --PageSize 30 --PageNumber 1 --BackupMode Manual --DBClusterId 'pc-0000000000000000' --StartTime '2020-05-01T00:00Z' --BackupId 111111111 --BackupStatus Success"

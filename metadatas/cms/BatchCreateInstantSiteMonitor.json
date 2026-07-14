@@ -1,5 +1,6 @@
 {
   "name": "BatchCreateInstantSiteMonitor",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,40 +10,75 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "站点监控任务列表。\n\n> 至少需要创建一条站点监控任务，且`Address`、`TaskName`和`TaskType`必须设置。",
+        "en": "The list of site monitoring tasks.\n\n> You must create at least one site monitoring task. The `Address`, `TaskName`, and `TaskType` parameters are required."
+      },
       "sub_parameters": [
         {
           "name": "Address",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "站点监控任务的URL或IP地址。\n\n> 至少需要创建一条站点监控任务，且`Address`、`TaskName`和`TaskType`必须设置。",
+            "en": "The URL or IP address of the site monitoring task.\n\n> You must create at least one site monitoring task. The `Address`, `TaskName`, and `TaskType` parameters are required."
+          }
         },
         {
           "name": "IspCities",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "探测点信息。如果该参数取值为空，则系统随机选择3个探测点。\n\n格式为`JSONArray`，例如：`[{\"city\":\"546\",\"isp\":\"465\"},{\"city\":\"572\",\"isp\":\"465\"},{\"city\":\"738\",\"isp\":\"465\"}]`，分别对应北京、杭州、青岛。\n\n关于如何获取探测点信息，请参见[DescribeSiteMonitorISPCityList](~~115045~~)。",
+            "en": "The information about the detection points. If you leave this parameter empty, the system randomly selects three detection points.\n\nThe value must be a `JSONArray`. For example, `[{\"city\":\"546\",\"isp\":\"465\"},{\"city\":\"572\",\"isp\":\"465\"},{\"city\":\"738\",\"isp\":\"465\"}]` corresponds to Beijing, Hangzhou, and Qingdao.\n\nFor more information about how to obtain detection point information, see [DescribeSiteMonitorISPCityList](~~115045~~)."
+          }
         },
         {
           "name": "OptionsJson",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "站点监控任务对应协议类型的高级扩展选项。不同探测任务的协议类型对应不同的扩展选项。",
+            "en": "The advanced extension options for the protocol type of the site monitoring task. Different protocol types correspond to different extension options."
+          }
         },
         {
           "name": "TaskName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "站点监控任务的名称。\n\n<props=\"china\">长度4~100个字符，取值可包含英文字母、数字、短划线（_）和汉字。</props>\n\n\n<props=\"intl\">长度4~100个字符，取值可包含英文字母、数字和短划线（_）。</props>\n\n<props=\"partner\">长度4~100个字符，取值可包含英文字母、数字和短划线（_）。</props>\n\n> 至少需要创建一条站点监控任务，且`Address`、`TaskName`和`TaskType`必须设置。",
+            "en": "The name of the site monitoring task.\n\n<props=\"china\">\n\nThe value must be 4 to 100 characters in length and can contain English letters, numbers, underscores (\\_), and Chinese characters.\n\n</props>\n\n<props=\"intl\">\n\nThe name of the site monitoring task.\n\n</props>\n\n<props=\"partner\">\n\nThe name must be 4 to 100 characters in length and can contain letters, digits, and underscores (\\_).\n\n</props>\n\n> You must create at least one site monitoring task. The `Address`, `TaskName`, and `TaskType` parameters are required."
+          }
         },
         {
           "name": "TaskType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控任务的监控类型。\n\n目前站点监控任务的类型包括：HTTP、PING、TCP、UDP、DNS、SMTP、POP3、FTP。\n\n> 至少需要创建一条站点监控任务，且`Address`、`TaskName`和`TaskType`必须设置。",
+            "en": "The protocol type of the monitoring task.\n\nValid values: HTTP, PING, TCP, UDP, DNS, SMTP, POP3, and FTP.\n\n> You must create at least one site monitoring task. The `Address`, `TaskName`, and `TaskType` parameters are required."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量创建站点监控任务",
+    "en": "BatchCreateInstantSiteMonitor"
+  },
+  "descriptions": {
+    "zh": "本文将提供一个示例，创建一个站点监控任务`HangZhou_ECS1`，该任务的监控地址为`https://www.aliyun.com`，监控类型为`HTTP`。返回结果显示，创建站点监控任务成功，该站点监控任务的名称为`HangZhou_ECS1`，ID为`679fbe4f-b80b-4706-91b2-5427b43e****`。",
+    "en": "This topic provides an example of how to create a site monitoring task named `HangZhou_ECS1`. The task uses the `HTTP` protocol to monitor `https://www.aliyun.com`. The response shows that the task is successfully created with the name `HangZhou_ECS1` and the ID `679fbe4f-b80b-4706-91b2-5427b43e****`."
+  },
   "example": {
     "unifiedCli": "aliyun cms batch-create-instant-site-monitor --task-list Address=https://www.aliyun.com OptionsJson=time_out_:5000 TaskName=HangZhou_ECS1 TaskType=HTTP IspCities=city_:_546_,_isp_:_465_,_city_:_572_,_isp_:_465_,_city_:_738_,_isp_:_465 --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun cms BatchCreateInstantSiteMonitor --region cn-hangzhou --TaskList.1.Address 'https://www.aliyun.com' --TaskList.1.TaskType HTTP --TaskList.1.OptionsJson 'time_out_:5000' --TaskList.1.TaskName HangZhou_ECS1 --TaskList.1.IspCities 'city_:_546_,_isp_:_465_,_city_:_572_,_isp_:_465_,_city_:_738_,_isp_:_465'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateIpamPoolAllocation",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "Cidr",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过输入地址段的方式从IPAM地址池创建自定义预留网段。\n\n>参数**Cidr**或**CidrMask**至少输入一个。",
+        "en": "The CIDR block to allocate from the IPAM pool.\n\n> You must specify either the **Cidr** or **CidrMask** parameter."
+      }
     },
     {
       "name": "CidrMask",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过输入掩码的方式从IPAM地址池创建自定义预留网段。\n\n>参数**Cidr**或**CidrMask**至少输入一个。",
+        "en": "The mask of the CIDR block to allocate from the IPAM pool.\n\n> You must specify either the **Cidr** or **CidrMask** parameter."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. Generate a value on your client to make sure that the value is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the RequestId of the request as the ClientToken. The RequestId may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会创建自定义预留网段。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接创建。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Sends a check request. The custom reserved CIDR block is not created. The system checks for required parameters, request format, and service limits. If the check fails, an error is returned. If the check passes, the DryRunOperation error code is returned.\n\n- **false** (default): Sends a normal request. After the request passes the check, a 2xx HTTP status code is returned and the custom reserved CIDR block is created."
+      }
     },
     {
       "name": "IpamPoolAllocationDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义预留网段的描述信息。\n\n长度为1～256个字符，必须以大小写英文字母或中文字符开头，但不能以`http://`或`https://`开头。不填则为空，默认值为空。",
+        "en": "The description of the custom reserved CIDR block.\n\nThe description must be 1 to 256 characters in length. It must start with a letter or a Chinese character and cannot start with `http://` or `https://`. The default value is an empty string."
+      }
     },
     {
       "name": "IpamPoolAllocationName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义预留网段的名称。\n\n长度为1～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the custom reserved CIDR block.\n\nThe name must be 1 to 128 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "IpamPoolId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPAM地址池的实例ID。",
+        "en": "The ID of the IPAM pool."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要创建的自定义预留网段所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where you want to create the custom reserved CIDR block.\n\nYou can call [DescribeRegions](~~36063~~) to obtain the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "从IPAM地址池创建自定义预留网段",
+    "en": "CreateIpamPoolAllocation"
+  },
+  "descriptions": {
+    "zh": "- 创建自定义预留网段前，请确保您已经创建了IPAM地址池并为该地址池添加了CIDR。您可以通过调用**CreateIpamPool**和**AddIpamPoolCidr**分别创建IPAM地址池并为地址池添加CIDR。\n- 指定参数Cidr或CidrMask创建自定义预留网段时，对应的掩码需要在IPAM地址池规定的范围内。\n- 当IPAM地址池具备地域属性时，创建自定义预留网段的请求需要从地址池所在的地域发起。\n- 需要创建的自定义预留网段不能和IPAM地址池已创建的CIDR分配冲突。",
+    "en": "- Before you create a custom reserved CIDR block, ensure that you have created an IPAM pool and added a CIDR block to it. You can call the **CreateIpamPool** operation to create an IPAM pool and the **AddIpamPoolCidr** operation to add a CIDR block to the pool.\n\n- When you specify the Cidr or CidrMask parameter to create a custom reserved CIDR block, the mask must be within the range specified for the IPAM pool.\n\n- If an IPAM pool has a region attribute, the request to create a custom reserved CIDR block must be initiated from the region where the pool is located.\n\n- The custom reserved CIDR block must not conflict with existing CIDR block allocations in the IPAM pool."
+  },
   "example": {
     "unifiedCli": "aliyun vpcipam create-ipam-pool-allocation --biz-region-id cn-hangzhou --ipam-pool-id ipam-pool-6rcq3tobayc20t0000 --cidr 192.168.1.0/24 --cidr-mask 24 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --ipam-pool-allocation-description test_description --ipam-pool-allocation-name test_name --region cn-hangzhou",
     "legacyCli": "aliyun vpcipam CreateIpamPoolAllocation --region cn-hangzhou --Cidr '192.168.1.0/24' --IpamPoolAllocationDescription test_description --IpamPoolId 'ipam-pool-6rcq3tobayc20t0000' --DryRun false --RegionId 'cn-hangzhou' --CidrMask 24 --ClientToken '123e4567-e89b-12d3-a456-426655440000' --IpamPoolAllocationName test_name"

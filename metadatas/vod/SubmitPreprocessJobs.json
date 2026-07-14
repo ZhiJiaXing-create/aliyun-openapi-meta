@@ -1,5 +1,6 @@
 {
   "name": "SubmitPreprocessJobs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "PreprocessType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预处理类型。取固定值：**LivePreprocess**（导播台视频预处理）。",
+        "en": "The preprocessing type. Valid value: **LivePreprocess** (video preprocessing for Caster)."
+      }
     },
     {
       "name": "VideoId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "视频ID。可通过以下方式获取：\n- 通过控制台上传的视频，可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看视频ID。\n- 通过[CreateUploadVideo](~~55407~~)接口上传视频时，视频ID为返回参数VideoId的值。\n- 视频上传后，可通过[SearchMedia](~~86044~~)接口查询视频ID，为请求后返回参数VideoId的值。",
+        "en": "The video ID. You can get the video ID in one of the following ways:\n\n- Log on to the [VOD Console](https://vod.console.aliyun.com) and navigate to **Media Library** > **Audio/Video** to find the video ID.\n\n- After you upload a video by calling the [CreateUploadVideo](~~55407~~) operation, the video ID is returned in the `VideoId` parameter of the response.\n\n- After you upload a video, you can call the [SearchMedia](~~86044~~) operation to find its ID. The ID is returned in the `VideoId` field of the response."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "导播台视频预处理",
+    "en": "SubmitPreprocessJobs"
+  },
+  "descriptions": {
+    "zh": "- 该接口为[异步接口](~~3027551~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[获取任务详情](~~2861326~~)主动查询任务状态。\n- 视频预处理实际是转码过程，生成符合导播台播放要求的视频，所以会有**计量计费**信息产生，计费详情请参见[云导播费用](~~64531~~)。\n- 为满足导播台对于素材的质量要求，MP4格式且短边是360的视频必须满足以下至少一项才能发起预处理：分辨率超过1920/比特率超过6000 kbps/帧数超过25。\n- 接收[转码完成](~~55638~~)的回调消息，来获取处理结果。当回调消息**Preprocess=true**时，表示预处理完成回调。",
+    "en": "- This is an [asynchronous API](~~3027551~~). After you submit a job, the operation returns a job ID. The job is then queued for asynchronous processing. You can get the result from a callback or by calling the [GetMediaProducingJob](~~2861326~~) operation to query the job status.\n\n- Video preprocessing is a transcoding process that prepares videos for playback in Caster. This process incurs **charges**. For more information about pricing, see [Alibaba Cloud Caster pricing](~~64531~~).\n\n- To be preprocessed for Caster, an MP4 video with a shorter side of 360 pixels must meet at least one of the following conditions: a horizontal resolution greater than 1920 pixels, a bitrate greater than 6,000 kbps, or a frame rate greater than 25 fps.\n\n- You can get the processing result from the [TranscodeComplete](~~55638~~) callback message. Video preprocessing is complete when the callback message contains **Preprocess=true**."
+  },
   "example": {
     "unifiedCli": "aliyun vod submit-preprocess-jobs --video-id d3e680e618708efbf2cae7cc93120000 --preprocess-type LivePreprocess --region cn-hangzhou",
     "legacyCli": "aliyun vod SubmitPreprocessJobs --region cn-hangzhou --VideoId d3e680e618708efbf2cae7cc93120000 --PreprocessType LivePreprocess"

@@ -1,5 +1,6 @@
 {
   "name": "CreateDeviceDistributeJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "DeviceName",
       "position": "Body",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待分发的设备名称列表。最多包含1000个设备名称。",
+        "en": "The names of the devices to be distributed. You can specify a maximum of 10,000 device names."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设备所属产品的**ProductKey**。",
+        "en": "The **ProductKey** of the product to which the device belongs."
+      }
     },
     {
       "name": "SourceInstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设备所属的源实例ID。\n\n- 各地域公共实例ID：\n\n    - 华东2（上海）：iotx-oxssharez200。\n    - 日本：iotx-oxssharez300。\n    - 新加坡：iotx-oxssharez400。\n    - 美国（硅谷）：iotx-oxssharez500。\n    - 美国（弗吉尼亚）：iotx-oxssharez600。\n    - 德国（法兰克福）：iotx-oxssharez700。\n\n- 企业版实例ID：\n    \n    1. 登录物联网平台控制台，从顶部导航栏左上方的下拉菜单选择地域。\n    \n    2. 在**实例概览**页面，单击实例名称，在**实例详情**页面的**实例基本信息**中查看**实例ID**。",
+        "en": "The ID of the source instance to which the device belongs.\n\n*   The IDs of public instances in different regions:\n\n    *   China (Shanghai): iotx-oxssharez200.\n    *   Japan (Tokyo): iotx-oxssharez300.\n    *   Singapore (Singapore): iotx-oxssharez400.\n    *   US (Silicon Valley): iotx-oxssharez500.\n    *   US (Virginia): iotx-oxssharez600.\n    *   Germany (Frankfurt): iotx-oxssharez700.\n\n*   The IDs of Enterprise Edition instances:\n\n    1\\. Log on to the IoT Platform console. Select a region from the drop-down list in the upper-left corner of the top navigation bar.\n\n    2\\. On the **Overview** page, click the instance name. On the **Instance Details** page, view the instance ID in the **Basic Information** section."
+      }
     },
     {
       "name": "Strategy",
       "position": "Body",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "分发策略。默认值为0。\n\n- **0**：指定地域，将设备分发到指定地域的一个实例中。\n- **1**：就近接入，配置多个地域的实例ID，设备将根据设备的IP位置动态接入其中距离最近的地域。",
+        "en": "The distribution policy. Default value: 0.\n\n*   **0**: distributes devices to instances in a specified region.\n*   **1**: configures instance IDs in multiple regions and distributes devices to the nearest regions based on the IP addresses of the devices."
+      }
     },
     {
       "name": "TargetAliyunId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备所属的阿里云账号。可登录物联网平台控制台，单击账号头像，跳转至**安全设置**页面查看。\n\n**TargetUid**与**TargetAliyunId**参数至少传入一个。",
+        "en": "The Alibaba Cloud account to which the device belongs. You can log on to the IoT Platform console, click the profile picture, and then view the account ID on the **Security Settings** page.\n\nThe **TargetUid** and **TargetAliyunId** parameters cannot be left empty at the same time."
+      }
     },
     {
       "name": "TargetInstanceConfig",
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "目标实例配置列表。",
+        "en": "List of target instance configurations."
+      },
       "sub_parameters": [
         {
           "name": "TargetInstanceId",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "设备分发的目标实例配置。实例ID详情，请参见参数**SourceInstanceId**描述。\n\n- 当参数**Strategy**为**1**时，此处可传入多个实例ID。\n- 当参数**Strategy**为**0**时，此处传入一个实例ID。",
+            "en": "The configurations of the destination instance to which the device is distributed. For more information about instance IDs, see the description of the **SourceInstanceId** parameter.\n\n*   If the value of the **Strategy** parameter is **1**, you can specify multiple instance IDs.\n*   If the value of the **Strategy** parameter is **0**, you can specify only one instance ID."
+          }
         }
       ]
     },
@@ -52,9 +81,24 @@
       "name": "TargetUid",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备所属的阿里云账号ID。可登录物联网平台控制台，单击账号头像，跳转至**安全设置**页面查看。\n\n**TargetUid**与**TargetAliyunId**参数至少传入一个。",
+        "en": "The ID of the Alibaba Cloud account to which the device belongs. You can log on to the IoT Platform console, click the profile picture, and then view the account ID on the **Security Settings** page.\n\nThe **TargetUid** and **TargetAliyunId** parameters cannot be left empty at the same time."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "CreateDeviceDistributeJob",
+    "en": "CreateDeviceDistributeJob"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n您可参考以下步骤，完成设备分发。\n\n1. 调用本接口发起设备分发任务（异步调用），获取返回参数**JobId**。\n\n2. 将上一步的返回参数**JobId**作为请求参数，重复调用接口[QueryDeviceDistributeJob](~~199536~~)，查看返回参数**Status**。\n   \n    > 您需根据接口的QPS限制，控制重复调用接口的频率。\n    \n    **Status**值如下，表示分发任务已处于最终态：\n    - **2**：设备分发任务正常执行完成。此时，不代表所有设备分发成功，每个设备的具体分发结果，请执行下一步获取。\n    - **3**：分发异常中断。处理异常流后，可重新发起设备分发任务。\n\n\n3. 将第一步的返回参数**JobId**作为请求参数，调用接口[QueryDeviceDistributeDetail](~~199533~~)，获取返回参数**File**，即分发结果的文件URL。\n\n    > 文件URL的有效期为10分钟。\n\n4. 通过文件URL获取分发结果详情，其中每个设备对应一个分发结果**Code**，当**Code**为200时，表示该设备分发成功。\n    \n    如果设备分发失败，您可按照以上操作，重新进行设备分发。\n\n\n\n## 限制说明\n\n- 调用云服务的接入地址**Endpoint**仅支持华东2（上海），即`iot.cn-shanghai.aliyuncs.com`。\n\n- 不支持调用本接口创建跨账号的分发任务。\n\n- 单个阿里云账号下，产品分发和设备分发的任务总数不超过10个。创建产品分发任务，请参见[CreateProductDistributeJob](~~199383~~)。\n\n- 单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为2。\n\n    > RAM用户共享阿里云账号配额。",
+    "en": "## How-To\n\nFollow these steps to complete device distribution.\n\n1. Invoke this API to initiate an asynchronous device distribution job and obtain the **JobId** from the response.\n\n2. Use the **JobId** obtained in the previous step as a request parameter and repeatedly invoke the [QueryDeviceDistributeJob](~~199536~~) API to check the **Status** in the response.\n\n    > You must control the frequency of repeated API calls according to the queries per second (QPS) limit of the API.\n\n    The following **Status** values indicate that the distribution job has reached its desired state:\n    - **2**: The device distribution job completed successfully. However, this does not guarantee that all devices were distributed successfully. To obtain the specific result for each device, proceed to the next step.\n    - **3**: The distribution job was abnormally interrupted. After handling the abnormal flow, you can re-initiate the device distribution job.\n\n3. Use the **JobId** from step 1 as a request parameter and invoke the [QueryDeviceDistributeDetail](~~199533~~) API to retrieve the **File** parameter, which contains the URL to the distribution result file.\n\n    > The URL to the file is valid for 10 minutes.\n\n4. Access the distribution result details via the file URL. Each device has a corresponding **Code** indicating its distribution result. If **Code** is 200, the device was distributed successfully.\n\n    If a device fails to be distributed, you can repeat the above steps to redistribute it.\n\n## Limitations\n\n- The **Endpoint** for accessing Alibaba Cloud services supports only China (Shanghai), i.e., `iot.cn-shanghai.aliyuncs.com`.\n\n- This API does not support creating cross-account distribution jobs.\n\n- A single Alibaba Cloud account can have no more than 10 combined product and device distribution jobs. For information about creating a product distribution job, see [CreateProductDistributeJob](~~199383~~).\n\n- The maximum queries per second (QPS) for invoking this API under a single Alibaba Cloud account is 2.\n\n    > Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot create-device-distribute-job --device-name example-string --target-instance-config TargetInstanceId=iot-cn-6ja000 --source-instance-id iot-060000 --product-key a1BwAGV0000 --target-uid 198000 --target-aliyun-id io0000@example.com --strategy 0 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot CreateDeviceDistributeJob --region cn-hangzhou --TargetAliyunId 'io0000@example.com' --DeviceName.1 'example-string' --TargetInstanceConfig.1.TargetInstanceId 'iot-cn-6ja000' --Strategy 0 --TargetUid 198000 --SourceInstanceId 'iot-060000' --ProductKey a1BwAGV0000"

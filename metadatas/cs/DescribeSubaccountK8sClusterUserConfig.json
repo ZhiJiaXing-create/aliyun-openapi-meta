@@ -1,5 +1,6 @@
 {
   "name": "DescribeSubaccountK8sClusterUserConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/k8s/[ClusterId]/users/[Uid]/user_config",
@@ -8,27 +9,54 @@
       "name": "ClusterId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否获取内网连接配置。取值：\n- `true`：仅获取内网连接的KubeConfig凭证。\n- `false`：仅获取公网连接的KubeConfig凭证。\n\n默认值：`false`。",
+        "en": "Specifies whether to obtain the internal network connection configuration. Valid values:\n\n- `true`: Obtains only the KubeConfig credentials for internal network connections.\n- `false`: Obtains only the KubeConfig credentials for public network connections.\n\nDefault value: `false`."
+      }
     },
     {
       "name": "TemporaryDurationMinutes",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "临时KubeConfig有效期，单位：分钟。\n\n取值范围：[15, 4320]，即最长3天。\n> 当不设置该参数时，将由系统自动确定一个更长的有效期，具体过期时间通过返回的expiration字段的值确定。",
+        "en": "The validity period of the temporary KubeConfig. Unit: minutes.\n\nValid values: [15, 4320], which is up to 3 days.\n> If this parameter is not set, the system automatically determines a longer validity period. The specific expiration time is indicated by the value of the expiration field in the response."
+      }
     },
     {
       "name": "Uid",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "阿里云账号内指定的RAM用户或RAM角色ID。",
+        "en": "The ID of the specified Resource Access Management (RAM) user or RAM role within the Alibaba Cloud account."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "使用阿里云账号获取指定RAM用户或角色的集群KubeConfig",
+    "en": "Obtain the cluster kubeConfig of a specified RAM user or role by using an Alibaba Cloud account"
+  },
+  "descriptions": {
+    "zh": "该接口只允许被阿里云账号（主账号）调用。",
+    "en": "This operation can be called only by an Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun cs describe-subaccount-k8s-cluster-user-config --cluster-id c5b5e80b0b64a4bf6939d2d8f0000 --uid 265624438516500000 --private-ip-address false --temporary-duration-minutes 15 --region cn-hangzhou",
     "legacyCli": "aliyun cs GET /k8s/c5b5e80b0b64a4bf6939d2d8f0000/users/265624438516500000/user_config --region cn-hangzhou --PrivateIpAddress false --TemporaryDurationMinutes 15 --header \"Content-Type=application/json\""

@@ -1,0 +1,76 @@
+{
+  "name": "RebuildDesktops",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AfterStatus",
+      "position": "Query",
+      "type": "String",
+      "required": false
+    },
+    {
+      "name": "DesktopId",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": true,
+      "description": {
+        "zh": "云电脑ID。可设置1\\~20个。",
+        "en": "The IDs of the cloud computers to rebuild. You can specify 1 to 20 IDs."
+      }
+    },
+    {
+      "name": "ImageId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "变更后要使用的新镜像ID。",
+        "en": "The ID of the new image."
+      }
+    },
+    {
+      "name": "Language",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "操作系统语言。目前只支持系统镜像，并且Linux电脑仅支持选择英文。",
+        "en": "The operating system language. This parameter applies only to system images. For Linux cloud computers, only English is supported."
+      }
+    },
+    {
+      "name": "OperateType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "操作数据盘类型。\n\n> 不论云电脑是否有数据盘，调用此接口默认都是不传入任何字段值。\n\n- 若云电脑无数据盘：  \n        传入任何字段都不会进行数据盘操作。\n- 若云电脑包含数据盘：\n    1. 当云电脑操作系统和目标镜像操作系统相同时：\n        -  传入字段为`replace`时，替换云电脑的数据盘。\n        -  不传入任何字段时，保留云电脑原来的数据盘。\n    2. 当云电脑操作系统和目标镜像操作系统不同时：\n        - 传入字段为`replace`时，替换云电脑的数据盘。\n        - 不传入任何字段时，清空云电脑数据盘。",
+        "en": "Specifies how to handle the data disk.\n\n> This parameter is optional.\n\n- If a cloud computer does not have a data disk, this parameter is ignored.<br>\n\n- If a cloud computer has a data disk:\n\n  1. If the new image has the same operating system as the original one:\n\n     - If you set this parameter to `replace`, the data disk is replaced.\n\n     - If you do not specify this parameter, the data disk is retained.\n\n  2. If the new image has a different operating system:\n\n     - If you set this parameter to `replace`, the data disk is replaced.\n\n     - If you do not specify this parameter, the data disk is erased."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "地域ID。可以调用[DescribeRegions](~~DescribeRegions~~)获取无影云电脑支持的地域列表。",
+        "en": "The region ID. You can call the [DescribeRegions](~~DescribeRegions~~) operation to find the regions where Elastic Desktop Service is available."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为云电脑变更镜像",
+    "en": "RebuildDesktops"
+  },
+  "descriptions": {
+    "zh": "变更镜像操作有以下限制：\n\n- 中国香港和海外地域的云电脑不支持变更为另一种操作系统的镜像（例如从Windows镜像变更为Linux镜像）。\n- GPU镜像和非GPU镜像之间不支持互相变更，即图形型云电脑只能使用GPU镜像，非图形型云电脑只能使用非GPU镜像。\n\n变更镜像后，系统将使用新的镜像来初始化云电脑的系统盘，相关影响如下：\n\n- 原云电脑系统盘中的数据将被清除。基于原云电脑系统盘创建的快照将无法使用，系统将自动删除相关快照。\n- 如果变更了镜像的操作系统，则原云电脑数据盘中的数据将被清除，基于原云电脑数据盘创建的快照将无法使用，系统将自动删除相关快照；如果没有变更镜像的操作系统，则保留原云电脑数据盘中的数据，且相关快照仍可使用。",
+    "en": "This operation is subject to the following limitations:\n\n- For cloud computers in the China (Hong Kong) region and regions outside the Chinese mainland, you cannot switch to an image with a different operating system. For example, you cannot switch from a Windows image to a Linux image.\n\n- You cannot switch between GPU images and non-GPU images. Graphics-optimized cloud computers must use GPU images, and non-graphics cloud computers can only use non-GPU images.\n\nChanging the image re-initializes the cloud computer's system disk with the new image. This action has the following effects:\n\n- All data on the original system disk is erased. Any snapshots created from the original system disk become invalid, and the system automatically deletes them.\n\n- If the new image has a different operating system, all data on the data disk is erased. Snapshots created from the data disk become invalid, and the system automatically deletes them. If the new image has the same operating system, data on the data disk is retained and its snapshots remain usable."
+  }
+}

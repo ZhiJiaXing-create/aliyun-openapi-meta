@@ -1,5 +1,6 @@
 {
   "name": "CreateKillInstanceSessionTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DbUser",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "具有结束会话权限的数据库账号。",
+        "en": "The database account that has the permissions to terminate sessions."
+      }
     },
     {
       "name": "DbUserPassword",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库账号密码。",
+        "en": "The password of the database account."
+      }
     },
     {
       "name": "IgnoredUsers",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "忽略账号列表，该列表中账号的会话不会被结束。\n\n> 数据格式为JSONArray字符串，例如\\['数据库账号1','数据库账号2'\\]，数据库账号间用英文逗号（,）分隔。",
+        "en": "The account whose sessions do not need to be terminated.\n\n> Set this parameter to a JSON array. Separate database accounts with commas (,). Example: \\['Database account 1','Database account 2']."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "KillAllSessions",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否结束全部会话。\n\n- **true**：是。\n\n- **false**：否。\n\n> 该参数取值为**true**时，请求参数**IgnoredUsers**中账号的会话、阿里云内部运维账号的会话和**Binlog Dump**会话都不会被结束。",
+        "en": "Specifies whether to terminate all sessions.\n\n- **true**\n\n- **false**\n\n> If you set this parameter to **true**, sessions of the accounts that are specified by **IgnoredUsers**, sessions of internal O\\&M accounts of Alibaba Cloud, and **Binlog Dump** sessions are not terminated."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n> 对于PolarDB MySQL版实例，需要提供节点ID。如果没有提供节点ID，并且请求参数**KillAllSessions**配置为**true**（即结束全部会话），将会遍历PolarDB MySQL版实例所有节点，并结束每个节点上正在进行的会话。",
+        "en": "The node ID.\n\n> This parameter must be specified if the database instance is a PolarDB for MySQL cluster. If you do not specify a node ID and set **KillAllSessions** to **true**, the system traverses all nodes in the PolarDB for MySQL cluster and terminates the active sessions on each node."
+      }
     },
     {
       "name": "SessionIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要被结束的会话ID列表。\n\n> 数据格式为JSONArray，例如\\[会话ID1,会话ID2\\]，会话ID间用英文逗号（,）分隔。如果请求参数**KillAllSessions**取值为**true**（即结束全部会话），该列表会被忽略。",
+        "en": "The IDs of sessions that need to be terminated.\n\n> Set this parameter to a JSON array. Separate session IDs with commas (,). Example: \\['Session ID1','Session ID2']. If **KillAllSessions** is set to **true**, this parameter does not take effect."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建结束会话的任务",
+    "en": "CreateKillInstanceSessionTask"
+  },
+  "descriptions": {
+    "zh": "- 本接口只适用于RDS MySQL和PolarDB MySQL版实例。\n\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。",
+    "en": "- This operation is applicable only to ApsaraDB RDS for MySQL instances and PolarDB for MySQL clusters.\n\n- If you use an Alibaba Cloud SDK or a Database Autonomy Service (DAS) SDK to call this operation, we recommend that you use the latest version of the SDK.\n\n- If you use an SDK to call operations of DAS, you must set the region ID to cn-shanghai."
+  },
   "example": {
     "unifiedCli": "aliyun das create-kill-instance-session-task --instance-id rm-2ze8g2am976240000 --node-id pi-bp1v203xzzh0a0000 --db-user testUser --db-user-password testPassword --ignored-users db_user1_,_db_user2 --kill-all-sessions true --session-ids 10805639,10805623,10805645,10805553,10805566,10805616 --region cn-hangzhou",
     "legacyCli": "aliyun das CreateKillInstanceSessionTask --region cn-hangzhou --InstanceId 'rm-2ze8g2am976240000' --DbUserPassword testPassword --NodeId 'pi-bp1v203xzzh0a0000' --IgnoredUsers 'db_user1_,_db_user2' --SessionIds '10805639,10805623,10805645,10805553,10805566,10805616' --KillAllSessions true --DbUser testUser"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateRulesAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nMake sure that the client token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** of each API request is different."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会批量更新转发规则属性。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回`HTTP 2xx`状态码并直接进行操作。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a `2xx HTTP` status code is returned and the operation is performed."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned. In this case, the properties of the forwarding rules are not updated.\n\n- **false** (default): sends a normal request. After the request passes the check, the system returns an `HTTP 2xx` status code and starts the update."
       }
     },
     {
@@ -31,10 +32,21 @@
       "required": true,
       "description": {
         "zh": "转发规则列表",
-        "en": "The forwarding rules."
+        "en": "The list of forwarding rules."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量更新转发规则属性",
+    "en": "UpdateRulesAttribute"
+  },
+  "descriptions": {
+    "zh": "**UpdateRulesAttribute**接口属于异步接口，即系统返回一个请求ID，但该转发规则属性尚未批量更新成功，系统后台的更新任务仍在进行。您可以调用[ListRules](~~214379~~)查询转发规则属性的更新状态：\n- 当多条转发规则属性处于**Configuring**状态时，表示转发规则属性正在批量更新中。\n- 当多条转发规则属性处于**Available**状态时，表示转发规则属性批量更新成功。\n\n-  一条转发规则最多支持添加的条件数（**RuleConditions**）和动作数（**RuleActions**）如下：\n    - 条件数：基础版5条，标准版10条，WAF增强版10条。\n    - 动作数：基础版3条，标准版5条，WAF增强版5条。",
+    "en": "**UpdateRulesAttribute** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. The properties of the forwarding rules are not updated immediately. You can call the [](t2324530.xdita#)operation to query the update status of the forwarding rules:\n\n- If multiple forwarding rules are in the **Configuring** state, their properties are being updated in a batch.\n\n- If multiple forwarding rules are in the **Available** state, their properties are updated.\n\n- A forwarding rule supports the following maximum number of conditions (**RuleConditions**) and actions (**RuleActions**):\n\n  - Conditions: 5 for a Basic Edition instance, 10 for a Standard Edition instance, and 10 for a WAF-enabled instance.\n\n  - Actions: 3 for a Basic Edition instance, 5 for a Standard Edition instance, and 5 for a WAF-enabled instance."
+  },
   "example": {
     "unifiedCli": "aliyun alb update-rules-attribute --client-token 123e4567-e89b-12d3-a456-42665544000 --rules '[{\"RuleActions\":[{\"Order\":1,\"FixedResponseConfig\":{\"HttpCode\":\"200\",\"ContentType\":\"text/plain\",\"Content\":\"dssacav\"},\"Type\":\"ForwardGroup\",\"RedirectConfig\":{\"Path\":\"/\",\"HttpCode\":\"301\",\"Query\":\"query\",\"Port\":\"443\",\"Host\":\"test.alb.com\",\"Protocol\":\"HTTPS\"},\"CorsConfig\":{\"AllowCredentials\":\"off\",\"ExposeHeaders\":[\"test\"],\"AllowOrigin\":[\"0\"],\"AllowHeaders\":[\"test\"],\"MaxAge\":60,\"AllowMethods\":[\"GET\"]},\"ForwardGroupConfig\":{\"ServerGroupStickySession\":{\"Timeout\":100,\"Enabled\":true},\"ServerGroupTuples\":[{\"ServerGroupId\":\"sgp-3kbj35ay7cvi000000\",\"Weight\":100}]},\"RemoveHeaderConfig\":{\"Key\":\"key\"},\"InsertHeaderConfig\":{\"CoverEnabled\":false,\"ValueType\":\"SystemDefined\",\"Value\":\"value\",\"Key\":\"key\"},\"RewriteConfig\":{\"Path\":\"/\",\"Query\":\"query\",\"Host\":\"host\"},\"TrafficLimitConfig\":{\"PerIpQps\":100,\"QPS\":1000},\"TrafficMirrorConfig\":{\"MirrorGroupConfig\":{\"ServerGroupTuples\":[\"sgp-vlnjo1rhw0vc000000\"]},\"TargetType\":\"ForwardGroupMirror\"}}],\"Priority\":80,\"RuleId\":\"rule-n4hfecmmtmfl000000\",\"RuleConditions\":[{\"MethodConfig\":{\"Values\":[\"PUT\"]},\"PathConfig\":{\"Values\":[\"/test\"]},\"Type\":\"Header\",\"ResponseHeaderConfig\":{\"Values\":[\"value\"],\"Key\":\"test\"},\"HostConfig\":{\"Values\":[\"www.example.com\"]},\"QueryStringConfig\":{\"Values\":[{\"Value\":\"on\",\"Key\":\"account\"}]},\"CookieConfig\":{\"Values\":[{\"Value\":\"value\",\"Key\":\"key\"}]},\"ResponseStatusCodeConfig\":{\"Values\":[\"200\"]},\"HeaderConfig\":{\"Values\":[\"value\"],\"Key\":\"key\"},\"SourceIpConfig\":{\"Values\":[\"192.168.1.1\"]}}],\"RuleName\":\"rule_111\"}]' --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun alb UpdateRulesAttribute --region cn-hangzhou --Rules.1.RuleActions.1.InsertHeaderConfig.Key key --Rules.1.RuleId 'rule-n4hfecmmtmfl000000' --Rules.1.RuleConditions.1.QueryStringConfig.Values.1.Value on --Rules.1.RuleActions.1.RedirectConfig.Path '/' --Rules.1.RuleConditions.1.CookieConfig.Values.1.Value value --Rules.1.RuleName rule_111 --DryRun false --Rules.1.RuleActions.1.RedirectConfig.Host 'test.alb.com' --Rules.1.RuleActions.1.InsertHeaderConfig.ValueType SystemDefined --Rules.1.RuleActions.1.CorsConfig.ExposeHeaders.1 test --Rules.1.RuleActions.1.CorsConfig.AllowCredentials off --Rules.1.RuleActions.1.CorsConfig.AllowMethods.1 GET --Rules.1.RuleActions.1.CorsConfig.MaxAge 60 --Rules.1.RuleActions.1.TrafficLimitConfig.QPS 1000 --Rules.1.RuleConditions.1.Type Header --Rules.1.RuleActions.1.ForwardGroupConfig.ServerGroupStickySession.Enabled true --Rules.1.RuleConditions.1.PathConfig.Values.1 '/test' --Rules.1.RuleConditions.1.ResponseHeaderConfig.Key test --Rules.1.RuleActions.1.TrafficLimitConfig.PerIpQps 100 --Rules.1.RuleActions.1.RemoveHeaderConfig.Key key --Rules.1.RuleActions.1.Type ForwardGroup --ClientToken '123e4567-e89b-12d3-a456-42665544000' --Rules.1.Priority 80 --Rules.1.RuleConditions.1.MethodConfig.Values.1 PUT --Rules.1.RuleConditions.1.HeaderConfig.Values.1 value --Rules.1.RuleActions.1.InsertHeaderConfig.Value value --Rules.1.RuleActions.1.RewriteConfig.Query query --Rules.1.RuleConditions.1.CookieConfig.Values.1.Key key --Rules.1.RuleActions.1.FixedResponseConfig.HttpCode 200 --Rules.1.RuleActions.1.RedirectConfig.Query query --Rules.1.RuleActions.1.ForwardGroupConfig.ServerGroupTuples.1.Weight 100 --Rules.1.RuleActions.1.CorsConfig.AllowOrigin.1 0 --Rules.1.RuleConditions.1.SourceIpConfig.Values.1 '192.168.1.1' --Rules.1.RuleConditions.1.QueryStringConfig.Values.1.Key account --Rules.1.RuleConditions.1.ResponseHeaderConfig.Values.1 value --Rules.1.RuleActions.1.RewriteConfig.Host host --Rules.1.RuleActions.1.FixedResponseConfig.Content dssacav --Rules.1.RuleActions.1.Order 1 --Rules.1.RuleActions.1.RewriteConfig.Path '/' --Rules.1.RuleConditions.1.HostConfig.Values.1 'www.example.com' --Rules.1.RuleActions.1.RedirectConfig.Port 443 --Rules.1.RuleActions.1.TrafficMirrorConfig.TargetType ForwardGroupMirror --Rules.1.RuleActions.1.CorsConfig.AllowHeaders.1 test --Rules.1.RuleConditions.1.ResponseStatusCodeConfig.Values.1 200 --Rules.1.RuleActions.1.ForwardGroupConfig.ServerGroupStickySession.Timeout 100 --Rules.1.RuleConditions.1.HeaderConfig.Key key --Rules.1.RuleActions.1.TrafficMirrorConfig.MirrorGroupConfig.ServerGroupTuples.1 'sgp-vlnjo1rhw0vc000000' --Rules.1.RuleActions.1.RedirectConfig.HttpCode 301 --Rules.1.RuleActions.1.RedirectConfig.Protocol HTTPS --Rules.1.RuleActions.1.ForwardGroupConfig.ServerGroupTuples.1.ServerGroupId 'sgp-3kbj35ay7cvi000000' --Rules.1.RuleActions.1.InsertHeaderConfig.CoverEnabled false --Rules.1.RuleActions.1.FixedResponseConfig.ContentType 'text/plain' --method POST --force"

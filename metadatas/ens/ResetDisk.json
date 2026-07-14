@@ -1,5 +1,6 @@
 {
   "name": "ResetDisk",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "DiskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待回滚数据的云盘ID。",
+        "en": "The ID of the disk that you want to roll back."
+      }
     },
     {
       "name": "SnapshotId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要恢复到某一云盘阶段的历史快照ID。",
+        "en": "The ID of the snapshot that you want to use to roll back the disk."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "回滚快照",
+    "en": "ResetDisk"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，您需要注意：\n- 云盘的状态必须为使用中（In_Use）或空闲（Available）的状态。\n- 云盘挂载的实例的状态必须为已停止（Stopped）。您可以调用[StopInstance](~~StopInstance~~)停止实例。\n- 指定的参数SnapshotId必须是由DiskId创建的历史快照。\n- 通过[DescribeInstances](~~DescribeInstances~~)查询ENS实例信息时，如果返回数据中包含`{\"OperationLocks\": {\"LockReason\" : \"security\"}}`，则禁止一切操作。",
+    "en": "When you call this operation, take note of the following items:\n\n- The disk must be in the In Use (In\\_Use) or Unattached (Available) state.\n\n- The instance to which the disk is attached must be in the Stopped (Stopped) state. You can call the [StopInstance](~~StopInstance~~) operation to stop an instance.\n\n- The specified snapshot must be created from the disk specified by the DiskId parameter.\n\n- If the response contains `{\"OperationLocks\": {\"LockReason\" : \"security\"}}` when you query information about an ENS instance by calling the [DescribeInstances](~~DescribeInstances~~) operation, the instance is locked for security reasons and no operations are allowed on the instance."
+  },
   "example": {
     "unifiedCli": "aliyun ens reset-disk --disk-id d-bp199lyny9b30000 --snapshot-id sp-bp199lyny9b30000 --region cn-hangzhou",
     "legacyCli": "aliyun ens ResetDisk --region cn-hangzhou --SnapshotId 'sp-bp199lyny9b30000' --DiskId 'd-bp199lyny9b30000'"

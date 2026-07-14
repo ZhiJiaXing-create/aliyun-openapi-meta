@@ -1,5 +1,6 @@
 {
   "name": "AttachInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "Entrusted",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "将已经存在的实例手动添加到伸缩组时，是否将该实例的生命周期托管给伸缩组。取值范围：\n\n- true：托管。该实例的生命周期由弹性伸缩管理，与伸缩组自动创建的实例一致。实例被移出伸缩组（不包括通过调用`DetachInstances`参数移出的实例）时会自动释放。\n- false：不托管。该实例在被移出伸缩组时不会被释放。\n\n> 包年包月实例、托管实例和伸缩组中节省停机实例均不支持设置该参数项。\n\n默认值：false。",
+        "en": "Specifies whether to entrust the lifecycle of the instance to the scaling group when you manually add an existing instance to the scaling group. Valid values:\n\n- true: The lifecycle of the instance is managed by Auto Scaling, consistent with instances that are created through automatic creation by the scaling group. The instance is subject to automatic release when it is removed from the scaling group, except when it is removed by invoking the `DetachInstances` operation.\n- false: The lifecycle of the instance is not managed by the scaling group. The instance is not released when it is removed from the scaling group.\n\n> Settings for this parameter are not supported for subscription instances, managed instances, or instances in the economy mode (stopped) state within the scaling group.\n\nDefault value: false."
+      }
     },
     {
       "name": "IgnoreInvalidInstance",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "向伸缩组添加一批实例时，是否忽略其中无效的实例。取值范围：\n\n- true：从伸缩组中添加一批实例时，会忽略其中无效的实例。如果存在无效的实例，并且有效的实例被成功添加时，伸缩活动执行状态也会显示为警告状态，可以从伸缩活动详情查看无效的实例。\n\n- false：从伸缩组中添加一批实例时，不会忽略无效的实例。如果一批实例中存在无效的实例，请求会报错。\n\n默认值：false。",
+        "en": "Specifies whether to ignore invalid instances when adding a batch of instances to the scaling group. Valid values:\n\n- true: Invalid instances are ignored when a batch of instances is added to the scaling group. If invalid instances exist and valid instances are successfully added, the scaling activity status is displayed as Warning. You can view the invalid instances in the scaling activity details.\n\n- false: Invalid instances are not ignored when a batch of instances is added to the scaling group. If any invalid instance exists in the batch, the request returns an error.\n\nDefault value: false."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "InstanceId.N为待添加ECS实例、ECI实例、托管实例或者伸缩组中处于节省停机状态实例的ID。N的取值范围：1～20。\n\n举例如下所示：\n\n- 待添加的ECS实例ID为`i-28wt4****`。\n- 待添加的ECI实例ID为`eci-bp17gw49eu09yiwm****`。\n- 待添加的托管实例ID为`mi-2cx*****`。\n- 待重新启动的伸缩组中节省停机状态实例ID为`i-2cd2f****`。\n\n>一次调用请求中仅支持处理一种类型的实例。",
+        "en": "Instance ID of the ECS instance, ECI instance, managed instance, or instance in the economy mode (stopped) state within the scaling group that you want to add. Valid values of N: 1 to 20.\n\nExamples:\n\n- Instance ID of the ECS instance to add: `i-28wt4****`.\n- Instance ID of the ECI instance to add: `eci-bp17gw49eu09yiwm****`.\n- Instance ID of the managed instance to add: `mi-2cx*****`.\n- Instance ID of the instance in the economy mode (stopped) state within the scaling group to restart: `i-2cd2f****`.\n\n> Only one type of instance can be processed in a single request."
+      }
     },
     {
       "name": "LifecycleHook",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组添加实例时，是否触发扩容生命周期挂钩。取值范围：\n- true：触发。\n- false：不触发。\n\n>托管实例和伸缩组中节省停机实例均不支持设置该参数项。\n\n默认值：false。",
+        "en": "Specifies whether to trigger a scale-out lifecycle hook when instances are added to the scaling group. Valid values:\n- true: triggers the lifecycle hook.\n- false: does not trigger the lifecycle hook.\n\n> This parameter is not supported for managed instances or instances in the economy mode (stopped) state within the scaling group.\n\nDefault value: false."
+      }
     },
     {
       "name": "LoadBalancerWeight",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ECS实例或ECI实例作为负载均衡后端服务器时的权重。\n> 托管实例和伸缩组中节省停机实例均不支持设置该参数项。",
+        "en": "The weight of the ECS instance or ECI instance as a backend server of the load balancing instance.\n> Settings for this parameter are not supported for managed instances or instances in the economy mode (stopped) state within the scaling group."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为伸缩组手动添加ECS实例",
+    "en": "Manually add ECS instances to a scaling group"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 调用该接口前，请确保满足以下条件：\n    - 伸缩组处于Active状态。\n    - 伸缩组内没有执行中的伸缩活动。\n\n- 加入伸缩组的ECS实例或ECI实例的限制条件包括：\n      - 必须与伸缩组在同一个地域。\n      - 必须处于Running状态。\n      - 不能已加入到其他伸缩组中。\n      - 付费方式为包年包月、按量付费或抢占式实例。\n      - 如果伸缩组指定VswitchID，则不支持Classic类型的ECS实例或ECI实例加入伸缩组，也不支持其他VPC的ECS实例或ECI实例加入伸缩组。\n      - 如果伸缩组没有指定VswitchID，则不支持VPC类型的ECS实例或ECI实例加入伸缩组。\n\n- 加入伸缩组的托管实例的限制条件包括：\n    - 必须与伸缩组在同一个地域。\n    - 只能将未加入伸缩组的托管实例加入到ECS类型伸缩组中。\n    - 托管实例不支持配置生命周期挂钩、关联到负载均衡和健康检查功能。\n    - 托管实例加入ECS类型伸缩组后，该伸缩组不会管理托管实例的生命周期。\n    - 托管实例仅支持手动添加到伸缩组或手动从伸缩组移出，移出后托管实例并不会被释放。\n\n- 使用该接口需注意以下事项：\n    - 当伸缩组没有伸缩活动正在执行时，该接口可以绕过冷却时间（Cooldown）直接执行。\n    - 调用该接口返回成功，只是表示弹性伸缩服务接受了该接口调用的请求，伸缩活动可以执行，但不代表伸缩活动能够执行成功。您需要通过返回的ScalingActivityId查看该伸缩活动的执行状态。\n    - 如果该接口指定的实例数加上当前伸缩组的实例数（Total Capacity）大于最大值（MaxSize），则接口调用失败。\n    - 通过该接口手动添加的ECS实例、ECI实例或托管实例不与伸缩组生效的伸缩配置进行关联。",
+    "en": "## Operation description\n\n- Before you invoke this operation, make sure that the following conditions are met:\n    - The scaling group is in the Active state.\n    - No scaling activity is in progress in the scaling group.\n\n- The following limits apply to ECS instances or Elastic Container Instance (ECI) instances that you want to add to a scaling group:\n      - The instances must be in the same region as the scaling group.\n      - The instances must be in the Running state.\n      - The instances cannot already belong to another scaling group.\n      - The payer of the instances must be subscription, pay-as-you-go, or spot instance.\n      - If the scaling group has a specified VswitchID, ECS instances or ECI instances of the Classic network type cannot be added to the scaling group. ECS instances or ECI instances in a different VPC cannot be added to the scaling group either.\n      - If the scaling group does not have a specified VswitchID, ECS instances or ECI instances of the VPC network type cannot be added to the scaling group.\n\n- The following limits apply to managed instances that you want to add to a scaling group:\n    - The managed instances must be in the same region as the scaling group.\n    - Only managed instances that do not belong to a scaling group can be added to an ECS-type scaling group.\n    - Managed instances do not support lifecycle hooks, load balancing association, or health check features.\n    - After managed instances are added to an ECS-type scaling group, the scaling group does not manage the lifecycle of the managed instances.\n    - Managed instances can only be manually added to or removed from a scaling group. Managed instances are not released after they are removed.\n\n- Take note of the following items when you invoke this operation:\n    - When no scaling activity is in progress in the scaling group, this operation can bypass the cooldown time (Cooldown) and be executed immediately.\n    - A successful invocation only indicates that Auto Scaling has accepted the request. The scaling activity can be executed, but a successful invocation does not guarantee that the scaling activity will succeed. You can check the execution status of the scaling activity based on the returned ScalingActivityId.\n    - If the number of instances specified in this operation plus the current number of instances in the scaling group (Total Capacity) exceeds the maximum size (MaxSize), the invocation is failed.\n    - ECS instances, ECI instances, or managed instances that are manually added by invoking this operation are not associated with the active scaling configuration of the scaling group."
+  },
   "example": {
     "unifiedCli": "aliyun ess attach-instances --scaling-group-id asg-bp18p2yfxow2dloq0000 --entrusted false --instance-id i-28wt40000 --load-balancer-weight 50 --lifecycle-hook false --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --ignore-invalid-instance false --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess AttachInstances --region cn-hangzhou --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --LoadBalancerWeight.1 50 --IgnoreInvalidInstance false --Entrusted false --LifecycleHook false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-28wt40000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateMultiAccountDeliveryChannel",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DeliveryChannelDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "投递渠道描述。",
+        "en": "The description of the delivery channel."
+      }
     },
     {
       "name": "DeliveryChannelFilter",
       "position": "Query",
       "type": "Struct",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "投递渠道生效范围。",
+        "en": "The filter conditions for the delivery channel."
+      }
     },
     {
       "name": "DeliveryChannelName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "投递渠道名称。",
+        "en": "The name of the delivery channel."
+      }
     },
     {
       "name": "ResourceChangeDelivery",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源配置变更投递。",
+        "en": "The configurations for resource configuration change delivery."
+      }
     },
     {
       "name": "ResourceSnapshotDelivery",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源快照定时投递。",
+        "en": "The configurations for scheduled resource snapshot delivery."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建跨账号资源投递渠道",
+    "en": "CreateMultiAccountDeliveryChannel"
+  },
+  "descriptions": {
+    "zh": "资源目录管理账号或资源中心委派管理员账号可以在资源中心创建跨账号资源投递，将资源目录成员的资源定时快照和资源配置变更事件投递到对象存储（OSS）或日志服务（SLS），然后从OSS或SLS消费标准化的资源信息。\n\n对于资源快照定时投递目前支持两种投递场景：\n\n* 标准资源快照定时投递：当`ResourceSnapshotDelivery.CustomExpression`参数为空时，为标准资源快照定时投递。\n\n* 自定义资源快照定时投递：当`ResourceSnapshotDelivery.CustomExpression`参数不为空时，为自定义资源快照定时投递。",
+    "en": "In Resource Center, you can create multi-account delivery channels by using the management account of your resource directory or the delegated administrator account of Resource Center to deliver resource configuration change events and scheduled resource snapshots within the members in your resource directory to Object Storage Service (OSS) or Simple Log Service (SLS). Then, other Alibaba Cloud services consume standardized resource information from OSS or Simple Log Service.\n\nScheduled resource snapshots support the following delivery scenarios:\n\n- Standard delivery: Leave the `ResourceSnapshotDelivery.CustomExpression` parameter empty.\n\n- Custom delivery: Set the `ResourceSnapshotDelivery.CustomExpression` parameter to an appropriate value."
+  },
   "example": {
     "unifiedCli": "aliyun resourcecenter create-multi-account-delivery-channel --delivery-channel-name test-multi-account-delivery --delivery-channel-description This_is_a_description. --resource-snapshot-delivery '{\"DeliveryTime\":\"09:00Z\",\"CustomExpression\":\"select_0_from_resources_limit_100\",\"SlsProperties\":{\"OversizedDataOssTargetArn\":\"acs:oss:cn-hangzhou:1911422487776000:resourcecenter-oss\"},\"TargetArn\":\"acs:oss:cn-hangzhou:1911422487776000:resourcecenter-oss\",\"TargetType\":\"OSS\"}' --resource-change-delivery '{\"SlsProperties\":{\"OversizedDataOssTargetArn\":\"acs:oss:cn-hangzhou:1911422487776000:resourcecenter-oss\"},\"TargetArn\":\"acs:log:cn-hangzhou:_1911422487776000:project/delivery/logstore/resourcecenter-sls\",\"TargetType\":\"SLS\"}' --delivery-channel-filter '{\"ResourceTypes\":[\"ACS::VPC::VPC\"],\"AccountScopes\":[\"rd-r40000\"]}' --region cn-hangzhou",
     "legacyCli": "aliyun resourcecenter CreateMultiAccountDeliveryChannel --region cn-hangzhou --DeliveryChannelFilter.AccountScopes.1 'rd-r40000' --ResourceChangeDelivery.SlsProperties.OversizedDataOssTargetArn 'acs:oss:cn-hangzhou:1911422487776000:resourcecenter-oss' --DeliveryChannelName 'test-multi-account-delivery' --ResourceSnapshotDelivery.CustomExpression select_0_from_resources_limit_100 --ResourceSnapshotDelivery.TargetArn 'acs:oss:cn-hangzhou:1911422487776000:resourcecenter-oss' --DeliveryChannelDescription 'This_is_a_description.' --ResourceSnapshotDelivery.TargetType OSS --ResourceChangeDelivery.TargetArn 'acs:log:cn-hangzhou:_1911422487776000:project/delivery/logstore/resourcecenter-sls' --ResourceChangeDelivery.TargetType SLS --ResourceSnapshotDelivery.DeliveryTime '09:00Z' --DeliveryChannelFilter.ResourceTypes.1 'ACS::VPC::VPC' --ResourceSnapshotDelivery.SlsProperties.OversizedDataOssTargetArn 'acs:oss:cn-hangzhou:1911422487776000:resourcecenter-oss' --method POST --force"

@@ -1,5 +1,6 @@
 {
   "name": "DeleteBandwidthPackage",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "BandwidthPackageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要删除的带宽包的ID。",
+        "en": "The bandwidth plan ID."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the GA instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除指定带宽包",
+    "en": "DeleteBandwidthPackage"
+  },
+  "descriptions": {
+    "zh": "- 预付费（包年包月）带宽包默认不支持删除。您可以前往<props=\"china\">[退订管理](https://usercenter2.aliyun.com/refund/refund)</props><props=\"intl\">[退订管理](https://usercenter2-intl.aliyun.com/refund/refund)</props>页面进行退订。退订前，请确保带宽包已与全球加速实例解绑，解绑操作，请参见[BandwidthPackageRemoveAccelerator](~~153240~~)。\n- 当带宽包已绑定全球加速实例时，不支持删除。如需删除，请先将带宽包与全球加速实例解绑，解绑操作，请参见[BandwidthPackageRemoveAccelerator](~~153240~~)。\n- **DeleteBandwidthPackage**接口属于异步接口，即系统会先返回一个请求ID，但带宽包并未删除完成，系统后台的删除任务仍在进行。您可以调用[DescribeBandwidthPackage](~~153241~~)查询带宽包的状态：\n    - 当带宽包处于**deleting**状态时，表示带宽包正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到该带宽包时，表示带宽包删除完成。\n- **DeleteBandwidthPackage**接口不支持并发删除同一个带宽包。",
+    "en": "*   By default, subscription bandwidth plans cannot be deleted. If you want to unsubscribe from subscription bandwidth plans, go to the [Unsubscribe](https://usercenter2-intl.aliyun.com/refund/refund) page. Before you can unsubscribe from a subscription bandwidth plan that is associated with a Global Accelerator (GA) instance, you must disassociate the bandwidth plan from the GA instance. For information about how to disassociate a bandwidth plan from a GA instance, see [BandwidthPackageRemoveAccelerator](~~153240~~).\n\n*   Bandwidth plans that are associated with GA instances cannot be deleted. Before you can delete a bandwidth plan that is associated with a GA instance, you must disassociate the bandwidth plan from the GA instance. For information about how to disassociate a bandwidth plan from a GA instance, see [BandwidthPackageRemoveAccelerator](~~153240~~).\n\n*   **DeleteBandwidthPackage** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeBandwidthPackage](~~153241~~) operation to query the status of the task.\n\n    *   If the bandwidth plan is in the **deleting** state, the bandwidth plan is being deleted. In this case, you can perform only query operations.\n    *   If the bandwidth plan cannot be found, the bandwidth plan is deleted.\n\n*   The **DeleteBandwidthPackage** operation cannot be repeatedly called for the same bandwidth plan within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-bandwidth-package --biz-region-id cn-hangzhou --bandwidth-package-id gbwp-bp1sgzldyj6b4q7cx0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteBandwidthPackage --region cn-hangzhou --BandwidthPackageId 'gbwp-bp1sgzldyj6b4q7cx0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

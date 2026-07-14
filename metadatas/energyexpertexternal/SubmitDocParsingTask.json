@@ -1,5 +1,6 @@
 {
   "name": "SubmitDocParsingTask",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/api/v2/aidoc/document/submitDocParsingTask",
@@ -8,27 +9,50 @@
       "name": "fileName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件名需带文件类型后缀",
+        "en": "The file name must include the file extension."
+      }
     },
     {
       "name": "fileUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "fileUrl/fileUrlObject二选一：\n\n- fileUrl：以文档URL方式使用，单个文档（支持3000页以内、500MB以内的文档）\n\n- fileUrlObject：以本地文件上传方式调用接口时使用，单个文档（支持3000页以内、500MB以内的文档）\n\n> 文件解析方式与支持上传的文档类型的关系\n> - 长文本RAG：支持pdf、doc/docx，支持3000页\n> - 图片处理：支持pdf、jpg、jpeg、png、bmp\n> - 长文本理解：支持pdf、doc/docx、xls/xlsx",
+        "en": "Specify either \\`fileUrl\\` or \\`fileUrlObject\\`.\n\n- \\`fileUrl\\`: The URL of the document. The document can be up to 3000 pages and 500 MB in size.\n\n- \\`fileUrlObject\\`: Use this parameter when you call the operation to upload a local file. The document can be up to 3000 pages and 500 MB in size.\n\n> Parsing methods and supported document types\n>\n> - Long-text retrieval-augmented generation (RAG): Supports PDF, DOC, and DOCX files up to 3000 pages.\n>\n> - Image processing: Supports PDF, JPG, JPEG, PNG, and BMP files.\n>\n> - Long-text understanding: Supports PDF, DOC, DOCX, XLS, and XLSX files."
+      }
     },
     {
       "name": "folderId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "- 唯一的知识库文件夹ID，当需要对文档进行分类管理、控制在线问答查询的文档范围时使用。\n- 文件夹ID需要登录文档智能控制台获取。",
+        "en": "- The unique ID of the knowledge base folder. Use this ID to manage document classification and control the scope of documents for online Q\\&A queries.\n\n- To get the folder ID, log on to the Document Mind console."
+      }
     },
     {
       "name": "needAnalyzeImg",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否解析文档中的图片内容。",
+        "en": "Specifies whether to parse the image content in the document."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "异步提交文档解析任务",
+    "en": "Asynchronously Submit Document Parsing Task"
+  },
   "example": {
     "unifiedCli": "aliyun energyexpertexternal submit-doc-parsing-task --file-url FileUrl:_https://example.com/example.pdf_fileUrlObject:_FileInputStream_generated_from_a_local_file --file-name example.pdf --folder-id xxxxx --need-analyze-img false --region cn-hangzhou",
     "legacyCli": "aliyun energyexpertexternal POST /api/v2/aidoc/document/submitDocParsingTask --region cn-hangzhou --fileName 'example.pdf' --needAnalyzeImg false --fileUrl 'FileUrl:_https://example.com/example.pdf_fileUrlObject:_FileInputStream_generated_from_a_local_file' --folderId xxxxx --header \"Content-Type=application/json\""

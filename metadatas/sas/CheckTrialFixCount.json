@@ -1,5 +1,6 @@
 {
   "name": "CheckTrialFixCount",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Info",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要处理的漏洞的信息。该参数为JSON格式，包含以下字段：\n\n- **name**：漏洞的名称\n- **uuid**：存在漏洞的服务器的UUID\n- **tag**：漏洞的标签。取值：\n    - **oval**：Linux软件漏洞\n    - **system**：Windows系统漏洞\n    - **cms**：Web-CMS漏洞\n\n> 通过Info传参或通过VulNames和Uuids组合传参。",
+        "en": "The information about the vulnerability. The value of this parameter is in the JSON format and contains the following fields:\n\n*   **name**: the name of the vulnerability.\n\n*   **uuid**: the UUID of the server on which the vulnerability is detected.\n\n*   **tag**: the tag that is added to the vulnerability. Valid values:\n\n    *   **oval**: Linux software vulnerability.\n    *   **system**: Windows system vulnerability.\n    *   **cms**: Web-CMS vulnerability.\n\n>  You must specify a value for Info or values for VulNames and Uuids to identify a vulnerability."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修复的漏洞类型。取值：\n\n- **cve**：Linux漏洞\n- **sys**：Windows漏洞\n- **cms**：WebCMS漏洞",
+        "en": "The type of the vulnerability that you want to fix. Valid values:\n\n*   **cve**: Linux software vulnerability.\n*   **sys**: Windows system vulnerability.\n*   **cms**: Web-CMS vulnerability."
+      }
     },
     {
       "name": "Uuids",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器的UUID列表。",
+        "en": "The UUIDs of the servers."
+      }
     },
     {
       "name": "VulNames",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "漏洞名称集合。",
+        "en": "The names of the vulnerabilities."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "校验试用用户的剩余免费修复次数是否支持修复",
+    "en": "CheckTrialFixCount"
+  },
+  "descriptions": {
+    "zh": "适用于试用版用户校验剩余免费修复次数，不会真正触发漏洞修复。",
+    "en": "You can call this operation to check whether the remaining quota of the vulnerability fixing feature is sufficient in free trial scenarios. This operation does not trigger vulnerability fixing."
+  },
   "example": {
     "unifiedCli": "aliyun sas check-trial-fix-count --type cve --info name_:_oval:com.redhat.rhsa:def:20192143_,_uuid_:_80ee3226-1f96-4da0-a3ed-55c104e20000_,_tag_:_oval --vul-names oval:com.redhat.rhsa:def:20192143 --uuids 95e8b759-44d7-4eb1-bb95-2b2d3b370000 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas CheckTrialFixCount --region cn-hangzhou --Type cve --VulNames.1 'oval:com.redhat.rhsa:def:20192143' --Uuids.1 '95e8b759-44d7-4eb1-bb95-2b2d3b370000' --Info 'name_:_oval:com.redhat.rhsa:def:20192143_,_uuid_:_80ee3226-1f96-4da0-a3ed-55c104e20000_,_tag_:_oval'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateBasicAccelerateIpEndpointRelations",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AccelerateIpEndpointRelations",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的加速IP和终端节点绑定关系列表。",
+        "en": "The list of attachments between accelerated IP addresses and endpoints for the basic Global Accelerator instance."
+      }
     },
     {
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例ID。",
+        "en": "The ID of the basic Global Accelerator instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为基础型全球加速实例批量创建加速IP与终端节点的绑定关系",
+    "en": "Batch attach accelerated IP addresses to endpoints for a basic Global Accelerator instance"
+  },
+  "descriptions": {
+    "zh": "- **CreateBasicAccelerateIpEndpointRelations**接口属于异步接口，即系统会先返回一个请求ID，但批量创建加速IP与终端节点的绑定关系的任务未完成，系统后台的批量创建任务仍在进行。您可以通过调用[GetBasicAccelerateIp](~~466794~~)或[ListBasicEndpoints](~~466831~~)分别查询加速IP和终端节点的状态，来确认加速IP与终端节点的绑定关系是否创建成功：  \n    - 当存在加速IP与终端节点状态为**binding**时，表示加速IP与终端节点的绑定关系正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当所有加速IP与终端节点状态都为**bound**时，且通过[ListBasicAccelerateIpEndpointRelations](~~466803~~)查询加速IP和终端节点绑定状态为**active**时，表示批量创建加速IP与终端节点绑定关系的任务已完成。\n- **CreateBasicAccelerateIpEndpointRelations**接口不支持在同一个基础型全球加速实例内并发批量创建加速IP与终端节点的绑定关系。",
+    "en": "- **CreateBasicAccelerateIpEndpointRelations** is an asynchronous operation. After you send a request, the system returns a request ID, but the task of batch attaching accelerated IP addresses to endpoints is still in progress. You can call [GetBasicAccelerateIp](~~466794~~) or [ListBasicEndpoints](~~466831~~) to query the status of accelerated IP addresses and endpoints respectively to confirm whether the attachments are created:  \n    - If an accelerated IP address or endpoint is in the **binding** state, the attachment is being created. In this state, you can only perform query operations.\n    - If all accelerated IP addresses and endpoints are in the **bound** state, and the attachment status returned by [ListBasicAccelerateIpEndpointRelations](~~466803~~) is **active**, the batch task of attaching accelerated IP addresses to endpoints is complete.\n- **CreateBasicAccelerateIpEndpointRelations** does not support concurrent batch attaching of accelerated IP addresses to endpoints within the same basic Global Accelerator instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-basic-accelerate-ip-endpoint-relations --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp17frjjh0udz4qz0000 --accelerate-ip-endpoint-relations AccelerateIpId=gaip-bp10000 EndpointId=ep-bp14sz7ftcwwjgrdm0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateBasicAccelerateIpEndpointRelations --region cn-hangzhou --AccelerateIpEndpointRelations.1.EndpointId 'ep-bp14sz7ftcwwjgrdm0000' --AccelerateIpEndpointRelations.1.AccelerateIpId 'gaip-bp10000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp17frjjh0udz4qz0000' --method POST --force"

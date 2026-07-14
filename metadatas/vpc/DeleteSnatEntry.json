@@ -1,5 +1,6 @@
 {
   "name": "DeleteSnatEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system automatically uses **RequestId** as **ClientToken**. **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "NAT网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the NAT gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "SnatEntryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的SNAT条目的ID。",
+        "en": "The ID of the SNAT entry that you want to delete."
+      }
     },
     {
       "name": "SnatTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SNAT条目所属的SNAT表的ID。",
+        "en": "The ID of the SNAT table to which the SNAT entry belongs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除指定的SNAT条目",
+    "en": "DeleteSnatEntry"
+  },
+  "descriptions": {
+    "zh": "**DeleteSnatEntry**接口属于异步接口，即系统会先返回一个请求ID，但SNAT条目并未删除完成，系统后台的删除任务仍在进行。您可以调用[DescribeSnatTableEntries](~~42677~~)查询SNAT条目的状态：\n\n- 当SNAT条目处于**Deleting**状态时，表示SNAT条目正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n- 当返回的SNAT条目列表为空时，表示SNAT条目删除完成。\n\n如果SNAT表中有SNAT条目的状态为**Pending**时，无法删除该SNAT表中的SNAT条目。",
+    "en": "DeleteSnatEntry is an asynchronous operation. After you make a request, the ID of the request is returned but the specified SNAT entry is not deleted. The system deletes the SNAT entry in the background. You can call the [DescribeSnatTableEntries](~~42677~~) operation to query the status of SNAT entries.\n\n*   If the SNAT entries are in the **Deleting** state, the system is deleting the SNAT entries. In this case, you can only query the status of the SNAT entries, and cannot perform other operations.\n*   If no SNAT entry is returned in the response, the SNAT entry is deleted.\n\nIf some SNAT entries are in the **Pending** state, you cannot delete these SNAT entries."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-snat-entry --biz-region-id cn-hangzhou --snat-table-id stb-bp190wu8io1vgev800000 --snat-entry-id snat-bp1vcgcf8tm0plqcg0000 --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteSnatEntry --region cn-hangzhou --SnatEntryId 'snat-bp1vcgcf8tm0plqcg0000' --RegionId 'cn-hangzhou' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --SnatTableId 'stb-bp190wu8io1vgev800000'"

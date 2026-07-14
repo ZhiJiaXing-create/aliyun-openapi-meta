@@ -1,5 +1,6 @@
 {
   "name": "CreateQueryOptimizeTag",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "Comments",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备注。\n\n长度为1~300个字符。",
+        "en": "The remarks.\n\nThe remarks can be 1 to 300 characters in length."
+      }
     },
     {
       "name": "Engine",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库引擎，取值：\n\n- **MySQL**：RDS MySQL\n- **PolarDBMySQL**：PolarDB MySQL版\n- **PostgreSQL**：RDS PostgreSQL",
+        "en": "The database engine. Valid values:\n\n- **MySQL**: ApsaraDB RDS for MySQL\n\n- **PolarDBMySQL**: PolarDB for MySQL\n\n- **PostgreSQL**: ApsaraDB RDS for PostgreSQL"
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "SqlIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SQL模板ID，您可以调用[GetQueryOptimizeDataStats](~~405261~~)接口查询SQL模板ID。支持英文逗号（,）分隔传入多个模板ID，进行批量打标。",
+        "en": "The SQL template IDs. You can call the [GetQueryOptimizeExecErrorStats](~~405261~~) operation to obtain the SQL template ID. Separate multiple SQL template IDs with commas (,)."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设置请求参数**Tags**的状态：\n\n- **0**：清空请求参数**SqlIds**对应的全部标签，忽略请求参数**Tags**设置。\n- **1**：设置请求参数**SqlIds**对应的标签为请求参数**Tags**的值。",
+        "en": "The status of **Tags**. Valid values:\n\n- **0**: removes all tags added to the SQL templates that are specified by **SqlIds** and leaves **Tags** empty.\n\n- **1**: adds the tags specified by **Tags** to the SQL templates that are specified by **SqlIds**."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SQL标签。支持英文逗号（,）分隔传入多个值。\n\n- **DAS\\_IMPORTANT**：重要SQL。\n- **DAS\\_NOT\\_IMPORTANT**：不重要SQL。\n- **USER\\_IGNORE**：无需优化。\n- **DAS\\_IN\\_PLAN**：排期优化。",
+        "en": "The SQL tags. Separate multiple SQL tags with commas (,). Valid values:\n\n- **DAS\\_IMPORTANT**: The SQL template is important.\n\n- **DAS\\_NOT\\_IMPORTANT**: The SQL template is unimportant.\n\n- **USER\\_IGNORE**: The scheduling of the SQL template does not need to be optimized.\n\n- **DAS\\_IN\\_PLAN**: The scheduling of the SQL template needs to be optimized."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "对目标SQL进行打标",
+    "en": "CreateQueryOptimizeTag"
+  },
+  "descriptions": {
+    "zh": "- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n- 本接口适用的数据库引擎为：\n    - RDS MySQL\n    - PolarDB MySQL版\n    - RDS PostgreSQL",
+    "en": "- If you use Alibaba Cloud SDK or Database Autonomy Service (DAS) SDK to call this operation, we recommend that you use the latest version of the SDK.\n\n- If you use an SDK to call operations of DAS, you must set the region ID to cn-shanghai.\n\n- This operation supports the following database engines:\n\n  - ApsaraDB RDS for MySQL\n\n  - PolarDB for MySQL\n\n  - ApsaraDB RDS for PostgreSQL"
+  },
   "example": {
     "unifiedCli": "aliyun das create-query-optimize-tag --engine MySQL --sql-ids 6068ce044e3dc9b903979672fb0b69df,d12515c015fc9f41a0778a9e1de00000 --tags DAS_IN_PLAN,DAS_NOT_IMPORTANT --status 1 --comments Slow_SQL_from_offline_synchronization._No_optimization_needed. --instance-id rm-2ze1jdv45i7l60000 --region cn-hangzhou",
     "legacyCli": "aliyun das CreateQueryOptimizeTag --region cn-hangzhou --Status 1 --InstanceId 'rm-2ze1jdv45i7l60000' --SqlIds '6068ce044e3dc9b903979672fb0b69df,d12515c015fc9f41a0778a9e1de00000' --Comments 'Slow_SQL_from_offline_synchronization._No_optimization_needed.' --Engine MySQL --Tags 'DAS_IN_PLAN,DAS_NOT_IMPORTANT'"

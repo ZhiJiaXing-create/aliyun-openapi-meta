@@ -1,5 +1,6 @@
 {
   "name": "DescribeNetworkFlowTopNMetric",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "Filter",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询过滤条件，多个过滤条件之间是逻辑与的关系。",
+        "en": "The filter conditions for the query. If you specify multiple filter conditions, all conditions must be met (logical AND)."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF实例ID。\n\n> 您可以通过调用[DescribeInstance](~~433756~~)接口查看当前WAF实例ID。",
+        "en": "The ID of the WAF instance.\n\n> You can call the [DescribeInstance](~~433756~~) operation to query the ID of the WAF instance."
+      }
     },
     {
       "name": "Limit",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "控制统计数据按照降序排序后返回数据条数，最大值为10。",
+        "en": "The maximum number of entries to return. Results are sorted in descending order. Maximum value: 10."
+      }
     },
     {
       "name": "Metric",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用于区分返回的数据内容，不同的Metric对应不同的数据内容，该接口支持的Metric如下：\n\n- real_client_ip，当前用户所有经过waf的请求，按照请求源IP聚合统计并降序排序后，返回前N条数据。\n- http_user_agent，当前用户所有经过waf的请求，按照请求的user-agent聚合统计并降序排序后，返回前N条数据。\n- request_path，当前用户所有经过waf的请求，按照请求的URL聚合统计并降序排序后，返回前N条数据。\n- matched_host_by_total_requests，返回当前用户请求数最大的N个防护对象以及对应的请求数。\n- matched_host_by_qps，返回当前用户QPS最大的N个防护对象以及对应的QPS数据\n- matched_host_by_status，使用该Metric时需要在Filter的Conditions字段指定status，waf返回的HTTP响应码等于Conditions中指定的status的数据按照防护对象聚合统计并排序后，返回前N条数据。指定status的格式如下：<br>\n{\"Key\":\"status\",\"OpValue\":\"eq\",\"Values\":\"200\"}\n- matched_host_by_upstream_status，使用该Metric时需要在Filter的Conditions字段指定upstream_status，源站返回的HTTP响应码等于Conditions中指定的upstream_status的数据按照防护对象聚合统计并排序后，返回前N条数据。指定upstream_status的格式如下：<br>\n{\"Key\":\"upstream_status\",\"OpValue\":\"eq\",\"Values\":\"200\"}",
+        "en": "The metric by which to query and rank data. Valid values:\n\n- real\\_client\\_ip: Returns the top N source IP addresses of requests that are sent to WAF. The data is aggregated by source IP address and sorted in descending order.\n\n- http\\_user\\_agent: Returns the top N user agents of requests that are sent to WAF. The data is aggregated by user agent and sorted in descending order.\n\n- request\\_path: Returns the top N request URLs. The data is aggregated by URL and sorted in descending order.\n\n- matched\\_host\\_by\\_total\\_requests: Returns the top N protected objects by total number of requests received.\n\n- matched\\_host\\_by\\_qps: Returns the top N protected objects by queries per second (QPS).\n\n- matched\\_host\\_by\\_status: Returns the top N protected objects based on a specific WAF-returned HTTP status code. The data is aggregated by protected object and sorted in descending order. If you set Metric to this value, you must specify the status field in the Conditions parameter of Filter. The format is as follows:<br> {\"Key\":\"status\",\"OpValue\":\"eq\",\"Values\":\"200\"}<br>\n\n- matched\\_host\\_by\\_upstream\\_status: Returns the top N protected objects based on a specific origin server-returned HTTP status code. The data is aggregated by protected object and sorted in descending order. If you set Metric to this value, you must specify the upstream\\_status field in the Conditions parameter of Filter. The format is as follows:<br> {\"Key\":\"upstream\\_status\",\"OpValue\":\"eq\",\"Values\":\"200\"}<br>"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF实例所属地域。取值：\n\n- **cn-hangzhou**：表示中国内地。\n- **ap-southeast-1**：表示非中国内地。",
+        "en": "The region in which the WAF instance resides. Valid values:\n\n- **cn-hangzhou**: the Chinese mainland.\n\n- **ap-southeast-1**: outside the Chinese mainland."
+      }
     },
     {
       "name": "ResourceManagerResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云资源组ID。",
+        "en": "The ID of the Alibaba Cloud resource group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询网络流量top统计数据",
+    "en": "DescribeNetworkFlowTopNMetric"
+  },
   "example": {
     "unifiedCli": "aliyun waf-openapi describe-network-flow-topn-metric --instance-id waf_cdnsdf30000 --filter '{\"DateRange\":{\"StartDate\":1713888000,\"EndDate\":1713888600},\"Conditions\":[{\"OpValue\":\"eq\",\"Values\":\"test.waf-top\",\"Key\":\"matched_host\"}]}' --limit 10 --metric matched_host_by_upstream_status --biz-region-id cn-hangzhou --resource-manager-resource-group-id rg-acfm000q --api-version 2021-10-01 --region cn-hangzhou",
     "legacyCli": "aliyun waf-openapi DescribeNetworkFlowTopNMetric --region cn-hangzhou --ResourceManagerResourceGroupId 'rg-acfm000q' --InstanceId waf_cdnsdf30000 --Filter '{\"DateRange\":{\"StartDate\":1713888000,\"EndDate\":1713888600},\"Conditions\":[{\"OpValue\":\"eq\",\"Values\":\"test.waf-top\",\"Key\":\"matched_host\"}]}' --Metric matched_host_by_upstream_status --Limit 10 --RegionId 'cn-hangzhou'"

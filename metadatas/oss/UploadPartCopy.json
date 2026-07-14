@@ -1,0 +1,120 @@
+{
+  "name": "UploadPartCopy",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "PUT",
+  "pathPattern": "/[key]",
+  "parameters": [
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "partNumber",
+      "position": "Query",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "每一个上传的Part都有一个标识它的号码（partNumber）。\n\n取值：1~10000\n\n单个Part的大小限制为100 KB~5 GB。\n> MultipartUpload事件中除最后一个Part以外，其他Part的大小都要大于或等于100 KB。因不确定是否为最后一个Part，UploadPart接口并不会立即校验上传Part的大小，只有当CompleteMultipartUpload时才会校验。",
+        "en": "The number that identifies the uploaded part (partNumber).\n\nValid values: 1 to 10000.\n\nThe size of a single part ranges from 100 KB to 5 GB.\n> In a multipart upload event, all parts except the last part must be greater than or equal to 100 KB. Because it is uncertain whether a part is the last part, the UploadPart operation does not immediately verify the size of the uploaded part. The size is verified only when CompleteMultipartUpload is called."
+      }
+    },
+    {
+      "name": "uploadId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "uploadId用于唯一标识上传的Part属于哪个Object。",
+        "en": "The upload ID that uniquely identifies the object to which the uploaded part belongs."
+      }
+    },
+    {
+      "name": "x-oss-copy-source",
+      "position": "Header",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "拷贝源地址（必须有可读权限）。",
+        "en": "The address of the copy source. You must have read permissions on the source object."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-match",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果源Object的ETAG值和用户提供的ETAG相等，则执行拷贝操作；否则返回412 HTTP错误码（预处理失败）。\n默认值：无",
+        "en": "If the ETag value of the source object matches the ETag value provided by the user, the copy operation is performed. Otherwise, HTTP error code 412 (Precondition Failed) is returned.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-modified-since",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果指定的时间早于实际修改时间，则正常传送文件，并返回200 OK；否则返回304 not modified。\n默认值：无\n时间格式：GMT时间，例如Fri, 13 Nov 2015 14:47:53 GMT",
+        "en": "If the specified time is earlier than the actual modification time, the file is transferred normally and 200 OK is returned. Otherwise, 304 Not Modified is returned.\nDefault value: null.\nTime format: GMT. Example: Fri, 13 Nov 2015 14:47:53 GMT."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-none-match",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果传入的ETag值和Object的ETag不匹配，则正常传输文件，并返回200 OK；否则返回304 Not Modified。\n默认值：无",
+        "en": "If the ETag value provided does not match the ETag of the object, the file is transferred normally and 200 OK is returned. Otherwise, 304 Not Modified is returned.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-unmodified-since",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果传入参数中的时间等于或者晚于文件实际修改时间，则正常传输文件，并返回200 OK；否则返回412 precondition failed错误。\n默认值：无",
+        "en": "If the time specified in the parameter is equal to or later than the actual modification time of the file, the file is transferred normally and 200 OK is returned. Otherwise, 412 Precondition Failed is returned.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-range",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "源Object的拷贝范围。例如设置bytes=0~9，表示拷贝0到9这10个字符。\n默认值：无\n  - 不指定该请求头时，表示拷贝整个源Object。\n  - 当指定该请求头时，则返回消息中会包含整个文件的长度和此次拷贝的范围，例如：Content-Range: bytes 0~9/44，表示整个文件长度为44，此次拷贝的范围为0~9。\n  - 当指定的范围不符合规范时，则拷贝整个源Object，并且不在结果中提及Content-Range。",
+        "en": "The byte range of the source object to copy. For example, if you set this parameter to bytes=0~9, the first 10 bytes (byte 0 through byte 9) are copied.\nDefault value: null.\n  - If you do not specify this request header, the entire source object is copied.\n  - If you specify this request header, the response message includes the total length of the file and the copy range. Example: Content-Range: bytes 0~9/44, which indicates that the total file length is 44 and the copy range is byte 0 through byte 9.\n  - If the specified range does not conform to the specification, the entire source object is copied and Content-Range is not included in the response."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "拷贝数据上传一个数据块",
+    "en": "Copy data to upload a part"
+  },
+  "descriptions": {
+    "zh": "该接口为通过在UploadPart请求的基础上增加一个请求头x-oss-copy-source来调用UploadPartCopy接口，实现从一个已存在的Object中拷贝数据来上传一个Part。\n\n**注意事项**\n<br>当拷贝一个大于1 GB的文件时，必须使用UploadPartCopy的方式进行拷贝。如果想通过单个操作拷贝小于1 GB的文件，请参见[CopyObject](https://help.aliyun.com/document_detail/31979.htm?spm=a2c4g.11186623.0.0.49aa29d6oRCP8o#t4696.html)。\n<br>使用UploadPartCopy接口时，有如下注意事项：\n\n- 不允许拷贝以AppendObject方式上传的Object。\n\n- 执行UploadPartCopy的源Bucket地址和目标Bucket地址必须是同一个Region。\n\n- 调用该接口上传Part数据前，必须先调用InitiateMultipartUpload接口来获取一个OSS服务器颁发的Upload ID。\n\n- 若调用InitiateMultipartUpload接口时，指定了x-oss-server-side-encryption请求头，则会对上传的Part进行加密编码，并在UploadPart响应头中返回x-oss-server-side-encryption头，其值表明该Part的服务器端加密算法，详情请参见[InitiateMultipartUpload](~~31992~~)。\n\n- MultipartUpload要求除最后一个Part以外，其他的Part大小都要大于100 KB。因不确定是否为最后一个Part，UploadPart接口并不会立即校验上传Part的大小，只有当CompleteMultipartUpload的时候才会校验。\n\n**版本控制**\n\nUploadPartCopy默认从一个已存在的Object的当前版本中拷贝数据来上传一个Part。允许通过在请求头x-oss-copy-source中附带versionId的子条件，实现从Object的指定版本进行拷贝，例如x-oss-copy-source : /SourceBucketName/SourceObjectName?versionId=111111。\n>SourceObjectName要进行URL编码。响应中将会返回被拷贝Object的versionId：x-oss-copy-source-version-id。\n\n如果未指定versionId且拷贝Object的当前版本为删除标记（Delete Marker），OSS将返回404 Not Found。通过指定versionId来拷贝删除标记时，OSS将返回400 Bad Request。",
+    "en": "This operation calls the UploadPartCopy API by adding the x-oss-copy-source request header to an UploadPart request. This copies data from an existing object to upload a part.\n\n**Usage notes**\n<br>To copy an object larger than 1 GB, you must use UploadPartCopy. To copy an object smaller than 1 GB in a single operation, see [CopyObject](https://help.aliyun.com/document_detail/31979.htm?spm=a2c4g.11186623.0.0.49aa29d6oRCP8o#t4696.html).\n<br>When you use the UploadPartCopy operation, take note of the following items:\n\n- You cannot copy objects uploaded by using AppendObject.\n\n- The source bucket and destination bucket of the UploadPartCopy operation must be in the same region.\n\n- Before you call this operation to upload part data, you must call the InitiateMultipartUpload operation to obtain an upload ID issued by the OSS server.\n\n- If you specify the x-oss-server-side-encryption request header when you call the InitiateMultipartUpload operation, the uploaded part is encrypted. The UploadPart response header returns x-oss-server-side-encryption, whose value indicates the server-side encryption algorithm of the part. For more information, see [InitiateMultipartUpload](~~31992~~).\n\n- A multipart upload requires that all parts except the last part are larger than 100 KB. Because it is uncertain whether a part is the last part, the UploadPart operation does not immediately verify the size of the uploaded part. The size is verified only when CompleteMultipartUpload is called.\n\n**Versioning**.\n\nBy default, UploadPartCopy copies data from the current version of an existing object to upload a part. You can add the versionId subcondition to the x-oss-copy-source request header to copy data from a specific version of the object. Example: x-oss-copy-source : /SourceBucketName/SourceObjectName?versionId=111111.\n>SourceObjectName must be URL-encoded. The response returns the versionId of the copied object: x-oss-copy-source-version-id.\n\nIf versionId is not specified and the current version of the object is a delete marker, OSS returns 404 Not Found. If you specify a versionId to copy a delete marker, OSS returns 400 Bad Request."
+  }
+}

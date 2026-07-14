@@ -1,5 +1,6 @@
 {
   "name": "DissociateVpnGatewayWithCertificate",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "CertificateId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "证书ID。\n\n> 证书ID是指SSL证书与VPN网关绑定后产生的证书ID，并非SSL证书本身的证书ID。\n<props=\"china\">您可以调用[ListVpnCertificateAssociations](~~2521961~~)接口查询证书ID。</props>",
+        "en": "The ID of the certificate.\n\n>  The certificate ID refers to the ID generated after the SSL certificate is associated with the VPN gateway. It is not the ID of the SSL certificate."
+      }
     },
     {
       "name": "CertificateType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "证书类型。取值：\n\n- **Encryption**：加密证书。\n\n- **Signature**：签名证书。",
+        "en": "The certificate type. Valid values:\n\n*   **Encryption**\n*   **Signature**"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：表示只预检此次请求合法性，不会进行解绑操作。检查项包括是否填写了必需参数、请求格式、实例状态等。如果检查不通过，则返回对应错误；如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：表示发送正常请求，通过检查后直接对VPN网关和SSL证书进行解绑。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request passes the dry run, the `DryRunOperation` error code is returned. Otherwise, an error message is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPN gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VpnGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例ID。",
+        "en": "The ID of the VPN gateway."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "分离VPN网关与证书",
+    "en": "DissociateVpnGatewayWithCertificate"
+  },
+  "descriptions": {
+    "zh": "- **DissociateVpnGatewayWithCertificate**接口属于异步接口，即系统先返回一个请求ID，但该VPN网关尚未解除与SSL证书的绑定，系统后台的解绑任务仍在进行。您可以调用[DescribeVpnGateway](~~73720~~)接口查询VPN网关实例的状态，来确认SSL证书的解绑状态：\n    - 当VPN网关处于**updating**状态时，表示SSL证书正在解绑中。\n    - 当VPN网关处于**active**状态时，表示SSL证书解绑成功。\n- **DissociateVpnGatewayWithCertificate**接口不支持为同一个VPN网关并发解绑SSL证书。",
+    "en": "*   **DissociateVpnGatewayWithCertificate** is an asynchronous operation. After a request is sent, the system returns a request and runs the task in the background. You can call the [DescribeVpnGateway](~~73720~~) operation to query the status the task.\n\n    *   If the VPN gateway is in the **updating** state, the SSL certificate is being disassociated from the VPN gateway.\n    *   If the VPN gateway is in the **active** state, the SSL certificate is disassociated from the VPN gateway.\n\n*   You cannot repeatedly call **DissociateVpnGatewayWithCertificate** within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc dissociate-vpn-gateway-with-certificate --biz-region-id cn-hangzhou --vpn-gateway-id vpn-bp1q8bgx4xnkm2ogj0000 --certificate-type Encryption --certificate-id 6bfe4218-ea1d0000 --client-token 02fb3da4-130e0000000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc DissociateVpnGatewayWithCertificate --region cn-hangzhou --CertificateType Encryption --VpnGatewayId 'vpn-bp1q8bgx4xnkm2ogj0000' --CertificateId '6bfe4218-ea1d0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e0000000'"

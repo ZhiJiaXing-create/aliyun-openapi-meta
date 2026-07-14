@@ -1,5 +1,6 @@
 {
   "name": "CreateEnhancedVpnGateway",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "A client token used to ensure request idempotence.\n\nYou can generate this token from your client. Make sure that the token is unique for each request. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. Each request may have a different **RequestId**."
+      }
     },
     {
       "name": "DisasterRecoveryVSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定增强型 VPN 网关实例关联的第二个交换机实例。\n\n- 本参数必填。\n- 您需要从增强型 VPN 网关实例关联的VPC实例下指定两个分布在不同可用区的交换机实例，以实现IPsec-VPN连接可用区级别的容灾。\n- 对于仅支持一个可用区的地域 ，不支持可用区级别的容灾，建议您在该可用区下指定两个不同的交换机实例以实现IPsec-VPN连接的高可用，支持指定相同的交换机实例。",
+        "en": "The ID of the second vSwitch to associate with the enhanced VPN gateway for high availability.\n\n-\n\n- For zone-level disaster recovery, the two vSwitches must be in different availability zones within the same VPC.\n\n- In regions with only one availability zone, zone-level disaster recovery is not supported. To ensure high availability, specify two different vSwitches from that zone. You can also specify the same vSwitch for both the **VSwitchId** and **DisasterRecoveryVSwitchId** parameters."
+      }
     },
     {
       "name": "GatewayType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "增强型 VPN 网关类型，取值：\n- **Enhanced.SiteToSite**，增强型站点入云VPN，只覆盖IPsec功能",
+        "en": "The type of the enhanced VPN gateway. Valid value:\n\n- **Enhanced.SiteToSite**: an enhanced site-to-site VPN gateway that supports only the IPsec feature."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增强型 VPN 网关的名称，默认值为增强型 VPN 网关的 ID。\n\n长度为 2～100 个字符，不能以http://或https://开头，需要以大写或小写字母开头，后面可包含大小写字母、数字、下划线（_）、短划线（-）和半角句号（.），不支持其他特殊字符。",
+        "en": "The name of the enhanced VPN gateway. If you do not specify this parameter, the gateway ID is used as the name.\n\nThe name must be 2 to 100 characters long, start with a letter, and not start with http\\:// or https\\://. It can contain only letters, digits, underscores (\\_), hyphens (-), and periods (.)."
+      }
     },
     {
       "name": "NetworkType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VPN网关的网络类型。取值：\n\n- **public**（默认值）：公网VPN网关。",
+        "en": "The network type of the VPN gateway. Valid value:\n\n- **public** (default): a public VPN gateway."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "增强型VPN网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where you want to create the enhanced VPN gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to get the region ID."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增强型 VPN 网关所属的资源组ID。\n\n- 您可以调用[ListResourceGroups](~~158855~~)接口查询资源组ID。\n- 如果您未指定资源组 ID，增强型 VPN 网关创建完成后将归属于默认资源组。\n- 增强型 VPN 网关创建完成后，如果您在增强型 VPN 网关下创建 IPsec 连接（指 IPsec 连接绑定增强型 VPN 网关的场景），则这些资源将直接归属在增强型 VPN 网关所属的资源组下，且不支持修改。如果您修改了增强型 VPN 网关所属的资源组，则上述资源所属的资源组也将一并被修改。",
+        "en": "The ID of the resource group to which you want to assign the enhanced VPN gateway.\n\n- You can call the [ListResourceGroups](~~158855~~) operation to query resource group IDs.\n\n- If you do not specify this parameter, the enhanced VPN gateway is added to the Default Resource Group.\n\n- Associated IPsec connections are automatically added to the same resource group as the enhanced VPN gateway. You cannot directly change the resource group of an IPsec connection. If you change the resource group of the gateway, the resource group of its associated IPsec connections is also updated."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定增强型 VPN 网关实例关联的交换机实例。\n\n- 您必须指定一个交换机实例，同时您还要指定 **DisasterRecoveryVSwitchId** 参数的值。",
+        "en": "The ID of the vSwitch to associate with the enhanced VPN gateway.\n\n-"
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "增强型VPN 网关所属的 VPC 实例 ID。",
+        "en": "The ID of the VPC where you want to create the enhanced VPN gateway."
+      }
     },
     {
       "name": "VpnType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增强型 VPN 网关类型。取值：\n- **Normal**（默认值）：普通型。",
+        "en": "The type of the enhanced VPN gateway. Valid value:\n\n- **Normal** (default): standard type."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建增强型VPN网关",
+    "en": "Create an enhanced VPN Gateway"
+  },
+  "descriptions": {
+    "zh": "- 在您创建增强型 VPN 网关前，建议您先了解 VPN 网关的使用限制。更多信息，请参见 [VPN 网关使用限制](https://help.aliyun.com/zh/vpn/sub-product-ipsec-vpn/user-guide/vpn-gateway-instance/?spm=a2c4g.11186623.0.0.6c6919591peeAe)。\n\n- 增强型VPN 网关实例仅支持创建双隧道模式 IPsec-VPN 连接，您在调用`CreateEnhancedVpnGateway`接口创建 VPN 网关实例时，除了需要输入必填参数外，还需要输入 **VSwitchId** 和 **DisasterRecoveryVSwitchId** 参数的值。\n\n- **CreateEnhancedVpnGateway** 接口属于异步接口，即系统先返回一个实例 ID，但该增强型 VPN 网关尚未创建成功，系统后台的创建任务仍在进行。您可以调用 [DescribeVpnGateway](https://help.aliyun.com/zh/vpn/sub-product-ipsec-vpn/developer-reference/api-vpc-2016-04-28-describevpngateway-vpns?spm=a2c4g.11186623.0.0.6c6919591peeAe) 查询增强型 VPN 网关的创建状态：\n  - 当增强型 VPN 网关处于 **provisioning** 状态时，表示增强型 VPN 网关正在创建中。\n  - 当增强型 VPN 网关处于 **active** 状态时，表示增强型 VPN 网关创建成功。",
+    "en": "- Before you create an enhanced VPN gateway, we recommend that you review the [VPN Gateway Usage Limits](https://help.aliyun.com/zh/vpn/sub-product-ipsec-vpn/user-guide/vpn-gateway-instance/?spm=a2c4g.11186623.0.0.6c6919591peeAe).\n\n- An enhanced VPN gateway supports only dual-tunnel mode IPsec-VPN connections. When you call the `CreateEnhancedVpnGateway` operation to create a VPN Gateway instance, you must specify the **VSwitchId** and **DisasterRecoveryVSwitchId** parameters in addition to other required parameters.\n\n- **CreateEnhancedVpnGateway** is an asynchronous operation. After you send a request, the system returns an instance ID and starts creating the enhanced VPN gateway in the background. You can call [DescribeVpnGateway](https://help.aliyun.com/zh/vpn/sub-product-ipsec-vpn/developer-reference/api-vpc-2016-04-28-describevpngateway-vpns?spm=a2c4g.11186623.0.0.6c6919591peeAe) to query the creation status of the enhanced VPN gateway:\n\n  - The **provisioning** state indicates that the gateway is being created.\n\n  - The **active** state indicates that the gateway has been created."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-enhanced-vpn-gateway --biz-region-id cn-hangzhou --name MYVPN --vpc-id vpc-bp1ub1yt9cvakoelj0000 --vswitch-id vsw-bp1j5miw2bae9s2vt0000 --vpn-type Normal --client-token 02fb3da40000 --network-type public --disaster-recovery-vswitch-id vsw-p0wiz7obm0tbimu4r0000 --resource-group-id rg-acfmzs372yg0000 --gateway-type Enhanced.SiteToSite --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateEnhancedVpnGateway --region cn-hangzhou --VpnType Normal --DisasterRecoveryVSwitchId 'vsw-p0wiz7obm0tbimu4r0000' --VpcId 'vpc-bp1ub1yt9cvakoelj0000' --ResourceGroupId 'rg-acfmzs372yg0000' --NetworkType public --VSwitchId 'vsw-bp1j5miw2bae9s2vt0000' --GatewayType 'Enhanced.SiteToSite' --RegionId 'cn-hangzhou' --ClientToken 02fb3da40000 --Name MYVPN"

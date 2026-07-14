@@ -1,5 +1,6 @@
 {
   "name": "UpdateProjectConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "CommonTransferConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "高级配置",
+        "en": "Advanced settings."
+      }
     },
     {
       "name": "FullTransferConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全量传输配置。",
+        "en": "The settings for full data transfer."
+      }
     },
     {
       "name": "Id",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据迁移或数据同步项目的 ID。",
+        "en": "The ID of the data migration or data synchronization project."
+      }
     },
     {
       "name": "IncrTransferConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增量传输配置。",
+        "en": "The settings for incremental data transfer."
+      }
     },
     {
       "name": "ReverseIncrTransferConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "反向增量传输配置。",
+        "en": "The settings for reverse incremental data transfer."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新任务配置",
+    "en": "Update Job Configuration"
+  },
+  "descriptions": {
+    "zh": "本接口使用全量替换式更新：\n- 全部覆盖：当您调用本接口时，需要传入一整套完整的配置信息。 \n- 未传即删：在新的配置集中未包含的任何旧配置项，都将被删除。\n- 差异更新：只有与系统当前记录不一致的配置项会被更新至您传入的新值。",
+    "en": "This interface uses a full replacement update:\n\n- **Overwrite all:** When you call this interface, you must provide a complete configuration set.\n\n- **Omitted items are deleted:** The system deletes any existing configuration item not included in the new configuration set.\n\n- **Existing items updated:** The system replaces the values of existing configuration items with the new values you provide."
+  },
   "example": {
     "unifiedCli": "aliyun oceanbasepro update-project-config --id np_fe0000 --common-transfer-config SinkStoreFormat=example-string SourceStoreFormat=example-string --full-transfer-config MaxConcurrentIndexDDLs=1 ThrottleIOPS=1 ReadWorkerNum=64 ThrottleRps=1 WriteWorkerNum=64 IndexDDLConcurrencyLimit=1 --incr-transfer-config '{\"SupportDDLTypes\":[\"CREATE_TABLE\"],\"ThrottleIOPS\":1,\"ThrottleRps\":1,\"RecordTypeWhiteList\":[\"INSERT\"],\"IncrSyncThreadCount\":64}' --reverse-incr-transfer-config '{\"SupportDDLTypes\":[\"CREATE_TABLE\"],\"ThrottleIOPS\":1,\"ThrottleRps\":1,\"RecordTypeWhiteList\":[\"INSERT\"],\"IncrSyncThreadCount\":64}' --region cn-hangzhou",
     "legacyCli": "aliyun oceanbasepro UpdateProjectConfig --region cn-hangzhou --CommonTransferConfig '{\"SinkStoreFormat\":\"example-string\",\"SourceStoreFormat\":\"example-string\"}' --ReverseIncrTransferConfig '{\"SupportDDLTypes\":[\"CREATE_TABLE\"],\"ThrottleIOPS\":1,\"ThrottleRps\":1,\"RecordTypeWhiteList\":[\"INSERT\"],\"IncrSyncThreadCount\":64}' --Id np_fe0000 --FullTransferConfig '{\"MaxConcurrentIndexDDLs\":1,\"ThrottleIOPS\":1,\"ReadWorkerNum\":64,\"ThrottleRps\":1,\"WriteWorkerNum\":64,\"IndexDDLConcurrencyLimit\":1}' --IncrTransferConfig '{\"SupportDDLTypes\":[\"CREATE_TABLE\"],\"ThrottleIOPS\":1,\"ThrottleRps\":1,\"RecordTypeWhiteList\":[\"INSERT\"],\"IncrSyncThreadCount\":64}'"

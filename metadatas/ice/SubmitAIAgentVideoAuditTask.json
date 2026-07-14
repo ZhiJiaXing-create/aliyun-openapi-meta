@@ -1,0 +1,122 @@
+{
+  "name": "SubmitAIAgentVideoAuditTask",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AIAgentId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "智能体Id。",
+        "en": "The ID of the AI agent."
+      }
+    },
+    {
+      "name": "AuditInterval",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "送审节奏（毫秒）：范围为0-5000ms，默认值为3000ms。 当入参为0时，则将CapturePolicies中的所有截帧后的数据一次性请求对应Agent中的大模型。 如果值为非0，例如3000ms，则代表着将所有截帧后的数据按3000ms为间隔有序请求大模型。",
+        "en": "The interval, in milliseconds, at which to submit captured frames to the AI agent. Valid values: 0 to 5000. Default value: 3000. If it is set to 0, all captured frames are sent to the model in a single batch request. Otherwise, frames are sent sequentially with the specified interval between each request."
+      }
+    },
+    {
+      "name": "CallbackConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "回调配置",
+        "en": "Callback configurations."
+      }
+    },
+    {
+      "name": "CapturePolicies",
+      "position": "Query",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "送审策略数组。每个策略会得到一个模型结果。",
+        "en": "An array of frame-capturing policies. Each policy defines a set of frames to be analyzed and will generate a separate result from the model."
+      },
+      "sub_parameters": [
+        {
+          "name": "Duration",
+          "position": "Query",
+          "type": "Integer",
+          "required": false,
+          "description": {
+            "zh": "单次截帧时长（秒）",
+            "en": "The duration over which to capture the specified number of frames. Unit: seconds."
+          }
+        },
+        {
+          "name": "FrameCount",
+          "position": "Query",
+          "type": "Integer",
+          "required": false,
+          "description": {
+            "zh": "需要截取的帧数。",
+            "en": "The number of frames to capture."
+          }
+        },
+        {
+          "name": "Prompt",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "请求多模态大模型时的文本参数。",
+            "en": "The text prompt to send to the MLLM along with the captured frames."
+          }
+        },
+        {
+          "name": "StartTime",
+          "position": "Query",
+          "type": "Integer",
+          "required": false,
+          "description": {
+            "zh": "触发截帧的时刻（秒）",
+            "en": "The timestamp in the video at which to start capturing frames. Unit: seconds."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Input",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输入文件。",
+        "en": "The details of the input file."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用户自定义消息。",
+        "en": "The user-defined data."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交视频送审任务",
+    "en": "SubmitAIAgentVideoAuditTask"
+  },
+  "descriptions": {
+    "zh": "通过SubmitAIAgentVideoAuditTask接口，用户可以提交包含视频地址、截帧策略、审核间隔等配置的审核任务，系统会返回一个唯一的JobId用于任务追踪,当任务完成后，系统会将审核结果（包括审核状态、AI评估内容等）推送到用户配置的回调地址。仅支持 OSS 视频链接，mllm只支持非流式openai协议，非流式OpenAI协议返回可以参考：[自研模型标准API说明](~~2839094~~)",
+    "en": "Call SubmitAIAgentVideoAuditTask to submit a video moderation task with configurations such as a video URL, frame-capturing policies, and review interval. The system returns a unique JobId for tracking. When the task is complete, the service will push the results, including the moderation status and AI-generated analysis, to the configured callback URL. Only OSS URLs are supported as input. The underlying multi-modal large language model (MLLM) only supports interaction via the non-streaming OpenAI protocol."
+  }
+}

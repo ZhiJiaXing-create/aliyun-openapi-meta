@@ -1,5 +1,6 @@
 {
   "name": "InitAuthVerify",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,63 +9,110 @@
       "name": "CallbackToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全Token，由您自行生成，用于防重复、防篡改校验。\n如果设置了此值，将会在CallbackUrl回调时携带CallbackToken字段。",
+        "en": "A security token that you generate to prevent replay attacks and data tampering.\nIf this value is set, the CallbackToken field is included in the callback to CallbackUrl."
+      }
     },
     {
       "name": "CallbackUrl",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OCR结果的回调通知地址，回调请求方式默认为GET，回调地址必须以https开头，完成OCR识别后会回调该地址，并自动添加certifyId和subcode字段。\n警告\n- 此值的传入会在调用接口前做可访问校验，如果传入的地址不能在公网访问，会返回400。\n- 回调会在OCR识别调用完成后立即执行，但可能会因为网络等原因延迟，建议您优先接收客户端侧的请求完成通知，再请求查询接口获取结果详情。",
+        "en": "The callback URL for OCR results. The callback request method is GET by default. The callback URL must start with https. After OCR is completed, a callback is sent to this URL with the certifyId and subcode fields automatically appended.\n> Warning\n- The URL is validated for public network access before the API is invoked. If the URL is not publicly accessible, a 400 error is returned.\n- The callback is executed immediately after the OCR invocation is completed, but may be delayed due to network issues. Accept the request completion notification from the client side first, and then invoke the query API to obtain the result details."
+      }
     },
     {
       "name": "CardPageNumber",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SDK采集卡证页数：\n- “1”：采集正面\n- “2”：采集正反两面",
+        "en": "The number of card pages collected by the SDK. Valid values:\n- \"1\": front side only\n- \"2\": both front and back sides."
+      }
     },
     {
       "name": "CardType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "证件类型，取值：IDENTITY_CARD。",
+        "en": "The document type. Set the value to IDENTITY_CARD."
+      }
     },
     {
       "name": "DocScanMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OCR证件扫描模式：\n- shoot（默认）：拍照\n- scan：扫描\n- auto：拍照/扫描自动切换",
+        "en": "The OCR document scan pattern. Valid values:\n- shoot (default): photo capture\n- scan: scan\n- auto: automatic switchover between photo capture and scan."
+      }
     },
     {
       "name": "IdSpoof",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启证件防伪检测功能：\n- Y：开启\n- N：关闭（默认）",
+        "en": "Specifies whether to enable the document anti-forgery detection feature. Valid values:\n- Y: Enabled.\n- N: Disabled. This is the default value."
+      }
     },
     {
       "name": "MetaInfo",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "MetaInfo环境参数，需要通过客户端SDK获取。",
+        "en": "The MetaInfo environment parameter, which must be obtained from the client SDK."
+      }
     },
     {
       "name": "OuterOrderNo",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "您自定义的业务唯一标识，用于后续定位排查问题使用。\n\n支持使用英文字母（包含大小写）、数字，最长不超过32个字符。",
+        "en": "A custom business unique identifier that you specify for subsequent troubleshooting.\n\nThe value can contain letters (both uppercase and lowercase) and digits, with a maximum length of 32 characters."
+      }
     },
     {
       "name": "ProductCode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要接入的产品方案。取值：ID_OCR。",
+        "en": "The product solution to use. Set the value to ID_OCR."
+      }
     },
     {
       "name": "SceneId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "认证场景ID。",
+        "en": "The China Chinese authentication scenario ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "发起OCR请求",
+    "en": "Initiate an OCR request"
+  },
   "example": {
     "unifiedCli": "aliyun cloudauth init-auth-verify --scene-id 1000002996 --outer-order-no e0c34a77f5ac40a5aa5e6ed20c000000 --product-code ID_OCR --meta-info zimVer_:_3.0.0_,_appVersion_:_1_,_bioMetaInfo_:_4.1.0:11500000,0_,_appName_:_com.aliyun.antcloudauth_,_deviceType_:_ios_,_osVersion_:_iOS_10.3.2_,_apdidToken_:_,_deviceModel_:_iPhone9,1 --card-type IDENTITY_CARD --id-spoof Y --callback-url https://www.aliyun.com0callbackToken=1000000000_certifyId=shaxxxx_subCode=200 --callback-token NMjvQanQgplBSaEI0sL86WnQplB --card-page-number 1 --doc-scan-mode shoot --api-version 2019-03-07 --region cn-hangzhou",
     "legacyCli": "aliyun cloudauth InitAuthVerify --region cn-hangzhou --SceneId 1000002996 --CallbackUrl 'https://www.aliyun.com0callbackToken=1000000000_certifyId=shaxxxx_subCode=200' --ProductCode ID_OCR --CardType IDENTITY_CARD --MetaInfo 'zimVer_:_3.0.0_,_appVersion_:_1_,_bioMetaInfo_:_4.1.0:11500000,0_,_appName_:_com.aliyun.antcloudauth_,_deviceType_:_ios_,_osVersion_:_iOS_10.3.2_,_apdidToken_:_,_deviceModel_:_iPhone9,1' --CardPageNumber 1 --DocScanMode shoot --CallbackToken NMjvQanQgplBSaEI0sL86WnQplB --OuterOrderNo e0c34a77f5ac40a5aa5e6ed20c000000 --IdSpoof Y"

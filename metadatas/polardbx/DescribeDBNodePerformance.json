@@ -1,5 +1,6 @@
 {
   "name": "DescribeDBNodePerformance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "CharacterType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点类型。目前包含polarx\\_cn、polarx\\_dn、polarx\\_cdc、polarx\\_gms、polarx\\_columnar。",
+        "en": "The node type. Valid values: polarx\\_cn, polarx\\_dn, polarx\\_cdc, polarx\\_gms, and polarx\\_columnar."
+      }
     },
     {
       "name": "DBInstanceName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "PolarDB-X实例名称。",
+        "en": "The name of the PolarDB-X instance."
+      }
     },
     {
       "name": "DBNodeIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点名称，多个用英文逗号分隔，CDC节点和计算节点一次最多支持10个节点，数据节点一次最多支持1个节点。",
+        "en": "The node names. Separate multiple node names with commas (,). You can specify up to 10 CDC nodes and compute nodes, or up to 1 data node at a time."
+      }
     },
     {
       "name": "DBNodeRole",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点类型，取值：\n- master：主节点\n- slave：备节点。  针对 DN 和 GMS节点。\n- standby： 备节点。针对 CN 节点。",
+        "en": "The node role. Valid values:\n- master: primary node.\n- slave: secondary node. This value applies to DN and GMS nodes.\n- standby: secondary node. This value applies to CN nodes."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间, 格式： YYYY-MM-ddTHH:mmZ（UTC时间）。",
+        "en": "The end of the time range to query. Specify the time in the YYYY-MM-ddTHH:mmZ format (UTC)."
+      }
     },
     {
       "name": "Key",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指标名称，多个用英文逗号分隔，最多6个。详细内容请参见[性能参数表](~~332726~~)章节。",
+        "en": "The metric names. Separate multiple metric names with commas (,). You can specify up to 6 metrics. For more information, see [Performance metrics](~~332726~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间, 格式： YYYY-MM-ddTHH:mmZ（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the YYYY-MM-ddTHH:mmZ format (UTC)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例性能数据",
+    "en": "Query instance performance data"
+  },
+  "descriptions": {
+    "zh": "注意： \n- **endpoint**和其他接口有区别，国内和新加坡需使用**polardbx.aliyuncs.com**， 其他地域使用**polardbx.{region id}.aliyunc.com**。\n- 调试此API接口的时候，如果报服务不可用的错，请确认下**endpoint**是否正确，可通过切换**服务地址**到**迪拜**或者**印度**，将**endpoint**切换到**polardbx.aliyuncs.com**。",
+    "en": "Note: \n- The **endpoint** differs from other API operations. Use **polardbx.aliyuncs.com** for Chinese regions and Singapore. For other regions, use **polardbx.{region id}.aliyunc.com**.\n- When debugging this API operation, if a service not active error is returned, confirm that the **endpoint** is correct. You can switch the **service address** to **Dubai** or **India** and change the **endpoint** to **polardbx.aliyuncs.com**."
+  },
   "example": {
     "unifiedCli": "aliyun polardbx describe-db-node-performance --key Cpu_Usage,Mem_Usage --start-time 2012-06-08T15:00Z --db-instance-name pxc-0000000 --db-node-ids pxc-i-000000,pxc-i-0000000 --character-type polarx_cn --db-node-role master --biz-region-id cn-hangzhou --end-time 2012-06-18T15:00Z --region cn-hangzhou",
     "legacyCli": "aliyun polardbx DescribeDBNodePerformance --region cn-hangzhou --DBNodeIds 'pxc-i-000000,pxc-i-0000000' --EndTime '2012-06-18T15:00Z' --DBNodeRole master --StartTime '2012-06-08T15:00Z' --RegionId 'cn-hangzhou' --CharacterType polarx_cn --Key 'Cpu_Usage,Mem_Usage' --DBInstanceName 'pxc-0000000'"

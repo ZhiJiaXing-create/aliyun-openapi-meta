@@ -1,5 +1,6 @@
 {
   "name": "GetAutoIncrementUsageStatistic",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DbNames",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名。传入此参数时，查询指定数据库中表自增ID使用情况，不传入时查询实例上所有数据库的表自增ID使用情况。\n>数据格式为JSONArray，例如['db1','db2']，数据库名间用英文逗号（,）分隔。",
+        "en": "The database name. If you specify a database, the operation queries the usage of auto-increment table IDs in the specified database. Otherwise, the operation queries the usage of auto-increment table IDs in all databases on the instance.\n\n> Specify the parameter value as a JSON array, such as \\['db1','db2']. Separate multiple database names with commas (,)."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "RatioFilter",
       "position": "Query",
       "type": "Double",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自增ID使用比例过滤值，只返回超过该比例的自增ID使用数据。取值为0~1的小数。",
+        "en": "The usage threshold of auto-increment IDs. Only usage that exceeds the threshold can be returned. Valid values are decimals that range from 0 to 1."
+      }
     },
     {
       "name": "RealTime",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否获取实时数据：\n\n- **true**：实时查询实例上数据并计算。最小查询时间粒度为10分钟，即有10分钟内的数据时，即使传递**true**也不进行实时查询。\n- **false**：当有近两小时的数据时，返回该数据，否则查询实例上最新数据。",
+        "en": "Specifies whether to query real-time data. Valid values:\n\n- **true**: queries data in real time except for data generated in the last 10 minutes.\\*\\*\\*\\*\n\n- **false**: queries data generated in the last 2 hours. If no such data exists, queries the latest data."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取表自增ID使用数据",
+    "en": "GetAutoIncrementUsageStatistic"
+  },
+  "descriptions": {
+    "zh": "- 本接口只适用于RDS MySQL和PolarDB MySQL版实例。\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。",
+    "en": "- This operation is applicable only to ApsaraDB RDS for MySQL instances and PolarDB for MySQL clusters.\n\n- If you use an Alibaba Cloud SDK or Database Autonomy Service (DAS) SDK to call this operation, we recommend that you use the latest version of the SDK.\n\n- If you use an SDK to call DAS, you must set the region to cn-shanghai."
+  },
   "example": {
     "unifiedCli": "aliyun das get-auto-increment-usage-statistic --instance-id rm-2ze8g2am976240000 --db-names db1_,_db2 --ratio-filter 0.9 --real-time false --region cn-hangzhou",
     "legacyCli": "aliyun das GetAutoIncrementUsageStatistic --region cn-hangzhou --DbNames 'db1_,_db2' --InstanceId 'rm-2ze8g2am976240000' --RatioFilter '0.9' --RealTime false"

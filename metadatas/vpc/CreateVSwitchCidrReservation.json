@@ -1,5 +1,6 @@
 {
   "name": "CreateVSwitchCidrReservation",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建交换机预留网段。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行创建。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run, without performing the actual request. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "IpVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机预留网段的IP版本。取值：\n\n- **IPv4** （默认值）\n- **IPv6**\n\n> 创建 IPv4 预留网段时可以不填写，创建 IPv6 预留网段时必填。",
+        "en": "The IP version of the reserved CIDR block. Valid values:\n\n*   **IPv4** (default)\n*   **IPv6**"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "交换机所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the vSwitch is deployed.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源标签",
+        "en": "Resource tags"
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。如需传入该值，则不能输入空字符串。\n\n一个标签键最多支持128个字符，不能以aliyun和acs:开头，不能包含`http://`或`https://`。",
+            "en": "The key of tag N to add to the resource. You can specify at most 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length. It cannot start with aliyun or acs:, and cannot contain http:// or https://."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。如需传入该值，可以输入空字符串。\n\n最多支持128个字符，不能以aliyun和acs:开头，不能包含`http://`或`https://`。",
+            "en": "The value of tag N to add to the resource. You can specify at most 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot start with acs: or aliyun. It cannot contain http:// or https://."
+          }
         }
       ]
     },
@@ -52,39 +81,74 @@
       "name": "VSwitchCidrReservationCidr",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机预留网段。\n\n- 当**IpVersion**取值为**IPv4**时，交换机预留网段必须是其所属交换机IPv4网段的真子集且网段的掩码长度不超过28。\n- 当**IpVersion**取值为**IPv6**时，交换机预留网段必须是其所属交换机IPv6网段的真子集且网段的掩码长度不超过80。\n\n> - **VSwitchCidrReservationMask**参数和**VSwitchCidrReservationCidr**参数必须输入一个。\n> - 预留网段不能包含所属交换机的系统保留地址。",
+        "en": "The reserved CIDR block of the vSwitch.\n\n*   When **IpVersion** is set to **IPv4**, the reserved CIDR block must be a proper subset of the IPv4 CIDR block of the vSwitch and the subnet mask length of the reserved CIDR block cannot be greater than 28.\n*   When **IpVersion** is set to **IPv6**, the reserved CIDR block must be a proper subset of the IPv6 CIDR block of the vSwitch and the subnet mask length of the reserved CIDR block cannot be greater than 80.\n\n>  You must specify one of **VSwitchCidrReservationMask** and **VSwitchCidrReservationCidr**."
+      }
     },
     {
       "name": "VSwitchCidrReservationDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机预留网段的描述信息。不填则为空，默认值为空。\n\n描述长度为1~256个字符，以英文字母或中文开头，不能以`http://`和`https://`开头。",
+        "en": "The description of the reserved CIDR block. This parameter is empty by default.\n\nThe description must be 2 to 256 characters in length. It must start with a letter and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "VSwitchCidrReservationMask",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机预留网段的掩码。\n\n- 当**IpVersion**取值为**IPv4**时，交换机预留网段的掩码长度必须比所属交换机的IPv4网段掩码大2且最大不超过28。\n- 当**IpVersion**取值为**IPv6**时，交换机预留网段的掩码长度必须要大于所属交换机的IPv6网段掩码长度且最大不超过80。\n\n> - **VSwitchCidrReservationMask**参数和**VSwitchCidrReservationCidr**参数必须输入一个。\n> - 预留网段不能包含所属交换机的系统保留地址。",
+        "en": "The subnet mask of the reserved CIDR block.\n\n*   When **IpVersion** is set to **IPv4**, the subnet mask length of the CIDR block must be greater than the IPv4 subnet mask length of the vSwitch and cannot be greater than 28.\n*   When **IpVersion** is set to **IPv6**, the subnet mask length of the CIDR block must be greater than the IPv6 subnet mask length of the vSwitch and cannot be greater than 80.\n\n>  You must specify one of **VSwitchCidrReservationMask** and **VSwitchCidrReservationCidr**."
+      }
     },
     {
       "name": "VSwitchCidrReservationName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机预留网段的名称。\n\n名称长度为1~128个字符，以英文字母或中文开头，可包含数字、下划线（_）和短划线（-）。不能以`http://`和`https://`开头。",
+        "en": "The name of the reserved CIDR block.\n\nThe name must be 2 to 128 characters in length and can contain digits, underscores (\\_), and hyphens (-). It must start with a letter."
+      }
     },
     {
       "name": "VSwitchCidrReservationType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机预留网段的类型。取值：**prefix**，表示按段分配地址。\n\n> 用户及云服务自动为弹性网卡ENI（Elastic Network Interface）分配网段时，必须从预留地址段分配。如果预留地址段的地址已经分配完，则系统会报错。",
+        "en": "The type of reserved CIDR block. Set the value to **prefix**.\n\n>  When a user or a cloud service allocates a CIDR block to an elastic network interface (ENI), the CIDR block must be allocated from the reserved CIDR block. If the reserved CIDR block is exhausted, an error is returned."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要创建的交换机预留网段所属的交换机ID。",
+        "en": "The ID of the vSwitch to which the reserved CIDR block belongs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建交换机预留网段",
+    "en": "CreateVSwitchCidrReservation"
+  },
+  "descriptions": {
+    "zh": "调用该接口创建交换机预留网段时，请注意以下事项：\n- VPC中 IPv4、IPv6最大预留网段数目均为100个。\n- 预留网段不能包含所属交换机的系统保留地址。\n    - IPv4 网段：交换机的第1个和最后3个IP地址为系统保留地址\n    - IPv6 网段：交换机的第1个和最后9个IP地址为系统保留地址。\n- **CreateVSwitchCidrReservation**接口属于异步接口，即系统会返回一个实例ID，但该交换机预留网段尚未创建完成，系统后台任务仍在进行中。您可以调用\n[ListVSwitchCidrReservations](~~610155~~)查询交换机预留网段的创建状态：\n    - 当交换机预留网段处于**Assigning**状态时，表示交换机预留网段正在分配中。\n    - 当交换机预留网段处于**Assigned**状态时，表示交换机预留网段已分配。",
+    "en": "## [](#)Description\n\nTake note of the following items:\n\n*   You can create at most 10 reserved IPv4 CIDR blocks and 10 reserved IPv6 CIDR blocks for each vSwitch in a virtual private cloud (VPC).\n\n*   After you create a reserved CIDR block for a vSwitch, the CIDR block cannot contain the IP address of the subnet gateway of the VPC to which the vSwitch belongs.\n\n*   **CreateVSwitchCidrReservation** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call [ListVSwitchCidrReservations](~~610155~~) to query the status of the task:\n\n    *   If the vSwitch is in the **Assigning** state, the reserved CIDR block is being created.\n    *   If the vSwitch is in the **Assigned** state, the reserved CIDR block is created.\n\n*   When you create a reserved IPv4 CIDR block for a vSwitch, the first IP address and the last three IP addresses of the vSwitch are reserved by the system. The four IP addresses will not be allocated.\n\n*   When you create a reserved IPv6 CIDR block for a vSwitch, the first IP address and the last nine IP addresses of the vSwitch are reserved by the system. The 10 IP addresses will not be allocated. For example, if you create a reserved IPv4 CIDR block for a vSwitch whose CIDR block is 192.168.1.0/24, the reserved CIDR block cannot contain the following IP addresses: 192.168.1.0, 192.168.1.253, 192.168.1.254, and 192.168.1.255."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-vswitch-cidr-reservation --tag Value=FinanceJoshua Key=FinanceDept --vswitch-id vsw-25navfgbue4g0000 --vswitch-cidr-reservation-name ReservationName --vswitch-cidr-reservation-description ReservationDescription --ip-version IPv4 --vswitch-cidr-reservation-mask 28 --vswitch-cidr-reservation-cidr 192.168.1.64/28 --vswitch-cidr-reservation-type prefix --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateVSwitchCidrReservation --region cn-hangzhou --VSwitchCidrReservationType prefix --Tag.1.Key FinanceDept --VSwitchCidrReservationCidr '192.168.1.64/28' --VSwitchCidrReservationDescription ReservationDescription --IpVersion IPv4 --VSwitchId 'vsw-25navfgbue4g0000' --Tag.1.Value FinanceJoshua --DryRun false --RegionId 'cn-hangzhou' --VSwitchCidrReservationName ReservationName --ClientToken '123e4567-e89b-12d3-a456-426655440000' --VSwitchCidrReservationMask 28"

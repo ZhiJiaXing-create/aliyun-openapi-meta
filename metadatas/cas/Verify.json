@@ -1,5 +1,6 @@
 {
   "name": "Verify",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "证书唯一识别码。该参数可通过调用[ListCert](~~455806~~)获取。\n- SSL证书识别码一般为{证书ID}-cn-hangzhou。\n- PCA证书为对应私有证书的Identifier字段。",
-        "en": "The unique identifier of the certificate. You can call the [ListCert](~~455806~~) operation to obtain the unique identifier of a certificate.\n\n*   If the certificate is an SSL certificate, the value of this parameter must be in the {Certificate ID}-cn-hangzhou format.\n*   If the certificate is a private certificate, the value of this parameter must be the value of the Identifier field for the private certificate."
+        "en": "The unique identifier of the certificate. To get this parameter, call the [ListCert](~~455806~~) operation.\n\n- The identifier for an SSL certificate is typically in the format \\`{Certificate ID}-cn-hangzhou\\`.\n\n- For a PCA certificate, this is the value of the \\`Identifier\\` field."
       }
     },
     {
@@ -20,7 +21,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "用户自定义标识，唯一键。"
+        "zh": "用户自定义标识，唯一键。",
+        "en": "The custom identifier. This key must be unique."
       }
     },
     {
@@ -30,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "待验证数据，使用Base64编码。   \n例如：待签名数据的十六进制内容为[0x31, 0x32, 0x33, 0x34]，则对应的Base64编码为MTIzNA==。\n当MessageType取值为RAW时，数据内容需小于4KB。\n如果待签名数据内容大于4KB，您可以将MessageType指定为DIGEST，将Message指定为本地计算的消息摘要（又称哈希值）。证书仓库将使用您自己的证书应用系统计算消息摘要，使用的消息摘要算法须与指定签名算法需要的消息摘要算法保持一致。具体如下：\n\n- SHA256withRSA、SHA256withRSA/PSS、SHA256withECDSA对应的消息摘要算法为SHA-256。\n- SM3withSM2对应的消息摘要算法为SM3。",
-        "en": "The data for which you want to verify the signature. The value must be encoded in Base64.\\\nFor example, if the hexadecimal data that you want to verify is \\[0x31, 0x32, 0x33, 0x34], set the parameter to the Base64-encoded value MTIzNA==. If you set MessageType to RAW, the size of the data must be less than 4 KB. If the size of the data is greater than 4 KB, you can set MessageType to DIGEST and set Message to the digest of the data. The digest is also called hash value. You can compute the digest of the data on an on-premises machine. The certificate repository uses your certificate application system to compute the message digest. The message digest algorithm that is used must meet the requirements of the specified signature algorithm. The following signature algorithms require different message digest algorithms:\n\n*   If the signature algorithm is SHA256withRSA, SHA256withRSA/PSS, or SHA256withECDSA, the message digest algorithm must be SHA-256.\n*   If the signature algorithm is SM3withSM2, the message digest algorithm must be SM3."
+        "en": "The data to verify. The data must be Base64-encoded. For example, if the hexadecimal content of the data to sign is \\`\\[0x31, 0x32, 0x33, 0x34]\\`, the Base64-encoded value is \\`MTIzNA==\\`. If you set \\`MessageType\\` to \\`RAW\\`, the data size must be less than 4 KB. If the data to sign is larger than 4 KB, set \\`MessageType\\` to \\`DIGEST\\`. Then, set \\`Message\\` to the message digest, or hash, that you calculate locally. The hashing algorithm for the digest must be compatible with the signature algorithm:<br>\n\n- The hashing algorithm for \\`SHA256withRSA\\`, \\`SHA256withRSA/PSS\\`, and \\`SHA256withECDSA\\` is SHA-256.\n\n- The hashing algorithm for \\`SM3withSM2\\` is SM3."
       }
     },
     {
@@ -40,7 +42,7 @@
       "required": true,
       "description": {
         "zh": "消息类型。取值：\n\n- **RAW**（默认值）：原始数据。\n- **DIGEST**：原始数据的消息摘要（哈希值）。",
-        "en": "The value type of the Message parameter. Valid values:\n\n*   **RAW**: the raw data. This is the default value.\n*   **DIGEST**: the message digest of the raw data."
+        "en": "The message type. Valid values:\n\n- **RAW** (default): The raw data.\n\n- **DIGEST**: The message digest of the raw data."
       }
     },
     {
@@ -50,7 +52,7 @@
       "required": true,
       "description": {
         "zh": "签名值。使用Base64编码。",
-        "en": "The signature value. The value must be encoded in Base64."
+        "en": "The signature value. The value must be Base64-encoded."
       }
     },
     {
@@ -60,7 +62,7 @@
       "required": true,
       "description": {
         "zh": "签名算法。取值：\n\n- **SHA256withRSA**\n- **SHA256withRSA/PSS**\n- **SHA256withECDSA**\n- **SM3withSM2**",
-        "en": "The signature algorithm. Valid values:\n\n*   **SHA256withRSA**\n*   **SHA256withRSA/PSS**\n*   **SHA256withECDSA**\n*   **SM3withSM2**"
+        "en": "The signature algorithm. Valid values:\n\n- **SHA256withRSA**\n\n- **SHA256withRSA/PSS**\n\n- **SHA256withECDSA**\n\n- **SM3withSM2**"
       }
     },
     {
@@ -69,10 +71,22 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "仓库ID。可通过[ListCertWarehouse](~~453246~~)接口查询。"
+        "zh": "仓库ID。可通过[ListCertWarehouse](~~453246~~)接口查询。",
+        "en": "The ID of the repository. To get this parameter, call the [ListCertWarehouse](~~453246~~) operation."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "证书仓库签名验签",
+    "en": "Verify"
+  },
+  "descriptions": {
+    "zh": "本接口一般用于证书仓库中PCA证书、SSL证书的签名校验。\n\n### QPS限制\n本接口的单用户QPS限制最多为1000次/秒。每个用户具体参考证书仓库对应的QPS，超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。",
+    "en": "This API verifies the signatures of PCA certificates and SSL certificates in the certificate repository.\n\n### QPS limits\n\nThe queries per second (QPS) limit for this API is 1,000 for a single user. For your specific QPS limit, refer to the certificate repository. If you exceed this limit, API calls are throttled, which may affect your business. Plan your API calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun cas verify --message MTIzNA== --cert-identifier 1ef1da5f-38ed-69b3-0000-037781890265 --signing-algorithm SHA256withRSA --message-type RAW --signature-value eyaC0w3ROK5b3QcHmUtAhMY/sQjKu2t3uBfnf6J/gn7JfZtyxwcCUjzXbw5jmqJQRbj1te670Bshg9kUdanKhtHFhJjU5jX+ZMMBr6pH0gqQDJxR0K0yHXRc0Q5OQoUZ6BfpbI4Wt4jJvJSdCstz1vSg12CfEHS8Kd5qfhItK7Y= --custom-identifier 00006bb538d538c70c01f81jh20000 --warehouse-id 1 --api-version 2020-04-07 --region cn-hangzhou",
     "legacyCli": "aliyun cas Verify --region cn-hangzhou --Message 'MTIzNA==' --SignatureValue 'eyaC0w3ROK5b3QcHmUtAhMY/sQjKu2t3uBfnf6J/gn7JfZtyxwcCUjzXbw5jmqJQRbj1te670Bshg9kUdanKhtHFhJjU5jX+ZMMBr6pH0gqQDJxR0K0yHXRc0Q5OQoUZ6BfpbI4Wt4jJvJSdCstz1vSg12CfEHS8Kd5qfhItK7Y=' --CertIdentifier '1ef1da5f-38ed-69b3-0000-037781890265' --SigningAlgorithm SHA256withRSA --WarehouseId 1 --CustomIdentifier 00006bb538d538c70c01f81jh20000 --MessageType RAW"

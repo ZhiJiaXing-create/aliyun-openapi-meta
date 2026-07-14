@@ -1,5 +1,6 @@
 {
   "name": "GetLogsV2",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/logstores/[logstore]/logs",
@@ -8,27 +9,54 @@
       "name": "Accept-Encoding",
       "position": "Header",
       "type": "String",
-      "required": true
+      "required": false,
+      "description": {
+        "zh": "返回内容的压缩方式。sdk 用户无需指定，由 sdk 自动处理压缩与解压。\n\n- Java、Python、Go目前支持lz4 、gzip 解压缩\n\n- php、Js、C#目前仅支持gzip解压缩",
+        "en": "The compression method for the response content. SDK users do not need to specify this parameter because the SDK automatically handles compression and decompression.\n\n- Java, Python, and Go currently support lz4 and gzip decompression.\n\n- php, JavaScript, and C# currently support only gzip decompression."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求结构体。",
+        "en": "The request struct."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "logstore 名称。",
+        "en": "The Logstore name."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "project 名称。",
+        "en": "The project name."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询Logstore中的日志数据",
+    "en": "Query log data in a logstore"
+  },
+  "descriptions": {
+    "zh": "- 使用过程中注意指定压缩方法，不同语言实现的压缩算法不同，详情参考入参Accept-Encoding。\n\n- 更多相关说明请参见[GetLogs](~~2771313~~)。\n### 鉴权资源\n下表列出了API对应的授权信息。您可以在RAM权限策略语句的Action元素中添加该信息，用于为RAM用户或RAM角色授予调用此API的权限。\n|动作（Action）  | 授权策略中的资源描述方式（Resource）  |\n| :------------ | :------------ |\n| `log:GetLogStoreLogs`  | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}`  |",
+    "en": "- Specify the compression method during use. Different programming languages implement different compression algorithms. For details, see the Accept-Encoding request parameter.\n\n- For more information, see [GetLogs](~~2771313~~).\n### Authentication\nThe following table describes the authorization information required by this API. You can add this information to the Action element in a RAM access policy statement to grant a Resource Access Management (RAM) user or RAM role the permission to invoke this API.\n| Action | Resource |\n| :------------ | :------------ |\n| `log:GetLogStoreLogs`  | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}`  |\n\nThe following procedure describes how to use this API:"
+  },
   "example": {
     "unifiedCli": "aliyun sls get-logs-v2 --project ali-test-project --logstore test-logstore --accept-encoding lz4 --from 1627268185 --to 1627268185 --line 100 --offset 0 --reverse false --power-sql false --session mode=scan --topic example-string --query status:_401_SELECT_remote_addr,COUNT_0_as_pv_GROUP_by_remote_addr_ORDER_by_pv_desc_limit_5 --forward false --highlight false --is-accurate true --region cn-hangzhou",
     "legacyCli": "aliyun sls POST /logstores/test-logstore/logs --project ali-test-project --region cn-hangzhou --header \"Accept-Encoding=lz4\" --header \"Content-Type=application/json\" --body {\"highlight\":false,\"offset\":0,\"powerSql\":false,\"line\":100,\"session\":\"mode=scan\",\"forward\":false,\"isAccurate\":true,\"query\":\"status:_401_SELECT_remote_addr,COUNT_0_as_pv_GROUP_by_remote_addr_ORDER_by_pv_desc_limit_5\",\"topic\":\"example-string\",\"from\":1627268185,\"to\":1627268185,\"reverse\":false}"

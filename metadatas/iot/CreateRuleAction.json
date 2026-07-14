@@ -1,5 +1,6 @@
 {
   "name": "CreateRuleAction",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Configuration",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "该规则动作的配置信息，传入格式为JSON String。不同规则动作类型所需内容不同，具体要求和示例见下文请求参数补充说明。",
+        "en": "The configurations of the rule action. You must specify a JSON string. The configurations vary based on the types of rule actions. For more information about required syntax and examples, see the following tables."
+      }
     },
     {
       "name": "ErrorActionFlag",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该规则动作是否为转发错误操作数据的转发动作，即转发流转到其他云产品失败且重试失败的数据。 可选值：\n\n- **true**：该规则动作转发错误操作数据。\n- **false**：该规则动作不转发错误操作数据，而是正常转发操作。\n\n默认值为**false**。",
+        "en": "Specifies whether the rule action forwards error operation data. Error operation data is generated when the rules engine failed to forward data from the IoT Platform topic to the destination cloud service. A data forwarding failure indicates that forwarding retries also fail. Valid values:\n\n*   **true**: forwards error operation data.\n*   **false**: forwards normal data instead of error operation data.\n\nDefault value: **false**."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "RuleId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要为其创建动作的规则ID。可在物联网平台控制台<props=\"china\"><ph>对应实例下</ph></props>，**规则引擎**>**云产品流转**页查看规则ID，或调用[ListRule](~~69486~~)从返回结果中查看。",
+        "en": "The ID of the rule for which you want to create an action. You can log on to the IoT Platform console, and choose **Rules** > **Data Forwarding** to view the rule ID. You can also call the [ListRule](~~69486~~) operation and view the rule ID in the response."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则动作类型，取值：\n\n- **REPUBLISH**：将根据规则处理后的Topic数据转发至另一个物联网平台 Topic。\n- **AMQP**：数据流转到AMQP消费组。\n<props=\"china\">- **DATAHUB**：将根据规则处理后的Topic数据转发至阿里云DataHub，进行流式数据处理。</props>\n<props=\"china\">- **ONS**：将根据规则处理后的Topic数据转发至阿里云消息队列RocketMQ，进行消息分发。</props>\n- **MNS**：将根据规则处理后的Topic数据发送至阿里云消息服务中，进行消息传输。\n- **FC**：将根据规则处理后的Topic数据发送至阿里云函数计算服务，进行事件计算。\n- **OTS**：将根据规则处理后的Topic数据发送至阿里云表格存储（Tablestore），进行NoSQL数据存储。\n\n> 数据格式为二进制的规则（即规则的**DataType**参数是**BINARY**）不支持转发数据至OTS（表格存储）。",
+        "en": "The type of the rule action. Valid values:\n\n*   **REPUBLISH**: forwards topic data that is processed by the rules engine to another IoT Platform topic.\n*   **AMQP**: forwards data to an AMQP consumer group.\n*   **MNS**: forwards data that is processed by the rules engine to Message Service (MNS).\n*   **FC**: forwards topic data that is processed by the rules engine to Function Compute for event computing.\n*   **OTS**: forwards data that is processed by the rules engine to OTS for NoSQL data storage.\n\n>  If you set the **DataType** parameter to **BINARY**, rules are created in the binary format. These rules cannot be used to forward data to Tablestore."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "CreateRuleAction",
+    "en": "CreateRuleAction"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n- 服务地域不同，所支持的目标云产品有所不同。规则引擎支持的地域及目标云产品，请参见[地域与可用区](~~85669~~)。\n- 一个规则下面最多可创建10个规则动作。\n- 您可以通过调用该API创建规则动作，定义将数据转发至物联网平台其他Topic、AMQP消费组和其他阿里云产品（<props=\"china\"><ph>DataHub、消息队列RocketMQ、</ph></props>消息服务、函数计算和表格存储）。\n如果您想将数据转发至<props=\"china\"><ph>实例内的时序数据存储、时序数据库（TSDB）和</ph></props>云数据库RDS版，请在[物联网平台控制台](https://iot.console.aliyun.com)进行操作。\n\n\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n> RAM用户共享该阿里云账号配额。",
+    "en": "## Limits\n\n*   Destination Alibaba Cloud services that are supported by the rules engine vary based on regions. For more information about the regions and destination cloud services that are supported by the rules engine, see [Regions and zones](~~85669~~).\n\n*   You can create a maximum of 10 rule actions for each rule.\n\n*   You can call this API operation to define rule actions to forward data to an IoT Platform topic, AMQP consumer group, or Alibaba Cloud service. The supported Alibaba Cloud services include Message Service (MNS), Function Compute, and Tablestore. If you need to forward data to ApsaraDB RDS, you must use the [IoT Platform console](https://iot.console.aliyun.com).\n\n*   Each Alibaba Cloud account can run a maximum of 50 queries per second (QPS).\n\n> RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot create-rule-action --iot-instance-id iot-cn-0pp1n8t0000 --rule-id 100000 --type REPUBLISH --configuration topic_:_/a1POX0c0000/device1/user/get_,_topicType_:1 --error-action-flag false --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot CreateRuleAction --region cn-hangzhou --ErrorActionFlag false --Type REPUBLISH --IotInstanceId 'iot-cn-0pp1n8t0000' --Configuration 'topic_:_/a1POX0c0000/device1/user/get_,_topicType_:1' --RuleId 100000"

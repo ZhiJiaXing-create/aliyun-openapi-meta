@@ -1,5 +1,6 @@
 {
   "name": "CreatePhysicalConnectionOccupancyOrder",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动支付。取值：\n\n- **true**：自动支付。您需要确保账户余额充足，如果账户余额不足会生成异常订单，只能作废订单。\n- **false**（默认值）：只生成订单不扣费。",
+        "en": "Specifies whether to enable automatic payments. Valid values:\n\n*   **true**: yes Make sure that you have a sufficient balance in your account. Otherwise, your order becomes invalid and is automatically canceled.\n*   **false**: disables automatic payment. This is the default value."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开通自动续费。取值：\n\n- **false**（默认值）：不开通。\n- **true**：开通。",
+        "en": "Whether to enable auto-renewal. Valid values:\n\n- **false** (**default**): disable auto-renewal.\n- **true**: enable auto-renewal."
+      }
     },
     {
       "name": "AutoRenewDuration",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自动续费时长。单位：月。取值范围：**0**~**2147483647**。默认值：**1**。",
+        "en": "The auto-renewal duration. Unit: months. Valid values: **0** to **2147483647**. Default Value: **1**."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests."
+      }
     },
     {
       "name": "InstanceChargeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的付费方式。取值：\n\n**PrePaid**：预付费，包年包月。选择该类付费方式时，您必须确认您阿里云账号支持余额支付或信用支付。",
+        "en": "The billing method. Set the value to\n\n**PrePaid**, which specifies the subscription billing method. If you choose this billing method, make sure that your Alibaba Cloud account supports balance payments or credit payments."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买时长。\n\n- 当**PricingCycle**取值**Month**时，**Period**取值范围为**1～9**。\n- 当**PricingCycle**取值**Year**时，**Period**取值范围为**1～5**。",
+        "en": "The subscription duration.\n\n*   If **PricingCycle** is set to **Month**, set **Period** to a value from **1 to 9**.\n*   If **PricingCycle** is set to **Year**, set **Period** to a value from **1 to 5**."
+      }
     },
     {
       "name": "PhysicalConnectionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线的实例ID。",
+        "en": "The ID of the Express Connect circuit."
+      }
     },
     {
       "name": "PricingCycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预付费的计费周期，取值：\n\n- **Month**（默认值）：按月购买。\n- **Year**：按年购买。",
+        "en": "The billing cycle of the subscription. Valid values:\n\n*   **Month** (default)\n*   **Year**"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the Express Connect circuit.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建资源占用费订单",
+    "en": "Create a Resource Occupancy Fee Order"
+  },
+  "descriptions": {
+    "zh": "> 只有物理专线状态为等待用户支付（**Complete**）的实例允许执行此操作。",
+    "en": "> This operation is allowed only for instances whose Express Connect circuit status is **Complete** (waiting for user payment)."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-physical-connection-occupancy-order --biz-region-id cn-hangzhou --physical-connection-id pc-bp1hp0wr072f60000 --period 1 --instance-charge-type PrePaid --auto-pay false --pricing-cycle Month --client-token CBCE910E-D396-4944 --auto-renew false --auto-renew-duration 1 --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreatePhysicalConnectionOccupancyOrder --region cn-hangzhou --InstanceChargeType PrePaid --PricingCycle Month --PhysicalConnectionId 'pc-bp1hp0wr072f60000' --AutoRenew false --Period 1 --RegionId 'cn-hangzhou' --AutoPay false --ClientToken 'CBCE910E-D396-4944' --AutoRenewDuration 1"

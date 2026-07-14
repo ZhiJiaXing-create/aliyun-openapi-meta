@@ -1,5 +1,6 @@
 {
   "name": "CreateLoadBalancer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "BillingCycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ELB实例计费周期。",
+        "en": "The billing cycle of the ELB instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，避免多次重试带来重复操作的问题。\n- 从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII 字符，且不能超过 64 个字符 。\n\n- 当您使用了一个已经使用过的ClientToken，其他请求参数无变化，那么重复提交该请求后，客户端将收到与首次提交相同的结果，对您的服务端状态没有影响。\n\n- 在接口超时或者错误码为PROCESSING的时候可以发起重试，幂等有效。返回结果是200 HTTPCode时，重试后客户端可以得到与上次相同的结果，但对您的服务端状态没有影响；返回结果是4xx HTTPCode时，且错误码不是PROCESSING则幂等无效。\n- ClientToken有效期为10分钟。",
+        "en": "The client token that is used to ensure the idempotence of the request. This prevents repeated operations caused by multiple retries.\n\n- You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can only contain ASCII characters and cannot exceed 64 characters in length.\n\n- If you retry an API request with the same client token and request parameters after it has completed successfully, the result of the original request is returned. The server status does not change.\n\n- You can initiate a retry when the operation times out or the error code is PROCESSING. The idempotence is valid. If HTTP status code 200 is returned, the client receives the same result as the last request. However, your server status is not affected. If HTTP status code 4xx is returned and error code is not PROCESSING, the idempotence is invalid.\n\n- A client token is valid for 10 minutes."
+      }
     },
     {
       "name": "EnsRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ENS节点ID。",
+        "en": "The ID of the Edge Node Service (ENS) node."
+      }
     },
     {
       "name": "LoadBalancerName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "负载均衡实例的名称，长度为1~80个英文或中文字符。不指定该参数时，由系统随机分配一个实例名称。\n\n> 不能以`http://`和`https://`开头。",
+        "en": "The name of the ELB instance. The name must be 1 to 80 characters in length. If you leave this parameter empty, the system randomly allocates a name as the value of this parameter.\n\n> The value cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "LoadBalancerSpec",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例的规格。",
+        "en": "The specification of the ELB instance."
+      }
     },
     {
       "name": "LoadBalancerType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "边缘负载均衡实例类型。\n\n- CLB：传统型负载均衡实例\n- InternetDR：公网模式负载均衡实例",
+        "en": "The type of edge load balancing instance.\n\n- CLB: Classic Load Balancer instance\n\n- InternetDR: Internet-facing SLB instance in public mode"
+      }
     },
     {
       "name": "NetworkId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "创建的边缘负载均衡（ELB）实例的网络ID。",
+        "en": "The network ID of the created ELB instance."
+      }
     },
     {
       "name": "PayType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "付费类型。PostPaid（目前只支持此种）：按量付费。",
+        "en": "The billing method of the cluster. Valid value: PostPaid. PostPaid specifies the pay-as-you-go billing method."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专有网络实例的所属的交换机ID。",
+        "en": "The ID of the vSwitch to which the internal-facing ELB instance belongs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建负载均衡实例",
+    "en": "Create an SLB Instance"
+  },
+  "descriptions": {
+    "zh": "- API调用频率：100次/秒。\n- 单用户调用频率：5次/秒。",
+    "en": "- API call frequency: 100 calls/second.\n\n- Per-user call frequency: 5 calls/second."
+  },
   "example": {
     "unifiedCli": "aliyun ens create-load-balancer --ens-region-id cn-chengdu-telecom --load-balancer-spec elb.s2.medium --load-balancer-name gcs-pre-websocket-eslb-telecom --pay-type PostPaid --network-id n-5sax03dh2eyagujgsn7z90000 --vswitch-id vsw-5s78haoys9oylle6ln71m0000 --client-token 26C28756-2586-17AF-B802-0DC50D8FDEBB --billing-cycle Hour --load-balancer-type CLB --region cn-hangzhou",
     "legacyCli": "aliyun ens CreateLoadBalancer --region cn-hangzhou --LoadBalancerName 'gcs-pre-websocket-eslb-telecom' --BillingCycle Hour --VSwitchId 'vsw-5s78haoys9oylle6ln71m0000' --PayType PostPaid --EnsRegionId 'cn-chengdu-telecom' --NetworkId 'n-5sax03dh2eyagujgsn7z90000' --ClientToken '26C28756-2586-17AF-B802-0DC50D8FDEBB' --LoadBalancerSpec 'elb.s2.medium' --LoadBalancerType CLB"

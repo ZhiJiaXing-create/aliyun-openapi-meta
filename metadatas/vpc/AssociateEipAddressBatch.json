@@ -1,5 +1,6 @@
 {
   "name": "AssociateEipAddressBatch",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "BindedInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定EIP的云产品实例ID。\n\n支持输入NAT网关实例ID、辅助弹性网卡实例ID。",
+        "en": "The ID of the cloud service instance to attach the EIPs to.\n\nYou can specify the instance ID of an Internet NAT gateway instance or a secondary network interface controller (NIC) instance."
+      }
     },
     {
       "name": "BindedInstanceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定EIP的实例的类型，取值：\n- **Nat**：NAT网关。\n- **NetworkInterface**：辅助弹性网卡。",
+        "en": "The type of the instance to attach the EIPs to. Valid values:\n- **Nat**: Internet NAT gateway.\n- **NetworkInterface**: secondary network interface controller (NIC)."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要与云产品实例绑定的EIP列表。\n\n需至少输入1个EIP，最多支持输入50个EIP。",
+        "en": "The list of EIPs to associate with the cloud service instance.\n\nYou must specify at least 1 EIP and can specify up to 50 EIPs."
+      }
     },
     {
       "name": "Mode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "绑定模式，仅取值为**MULTI_BINDED**，表示多EIP网卡可见模式。\n\n仅**InstanceType**配置为**NetworkInterface**时，才需要配置该参数。",
+        "en": "The association mode. Set the value to **MULTI_BINDED**, which specifies the multi-EIP-to-ENI mode.\n\nThis parameter is required only when **InstanceType** is set to **NetworkInterface**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定云产品实例的EIP所在的地域ID。\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the EIPs to associate with the cloud service instance.\n\nYou can call [DescribeRegions](~~36063~~) to query the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量绑定EIP到云产品实例",
+    "en": "Associate multiple eIPs with a cloud service instance in a batch"
+  },
+  "descriptions": {
+    "zh": "- **AssociateEipAddressBatch**用于批量绑定EIP到云产品实例，仅支持批量绑定EIP到同地域的NAT网关实例或辅助弹性网卡实例。EIP绑定其他云产品实例，请参见[AssociateEipAddress](~~120195~~)。\n- **AssociateEipAddressBatch**接口属于异步接口，即系统会先返回一个请求ID，但EIP实例与云产品实例并未批量绑定完成，系统后台的绑定任务仍在进行。您可以调用[DescribeEipAddresses](~~120193~~)查询EIP实例的状态：\n    - 当EIP实例处于**Associating**状态时，表示EIP实例正在绑定中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当EIP实例处于**InUse**状态时，表示EIP实例绑定完成。\n- **AssociateEipAddressBatch**接口不支持同一个EIP实例并发绑定云产品实例。",
+    "en": "- **AssociateEipAddressBatch** associates multiple EIPs with a cloud service instance in a batch. This operation supports only batch attachment of EIPs to an Internet NAT gateway instance or a secondary network interface controller (NIC) instance in the same region. To associate an EIP with other cloud service instances, call [AssociateEipAddress](~~120195~~).\n- **AssociateEipAddressBatch** is an asynchronous operation. After you invoke this operation, the system returns a request ID, but the EIP instances are not yet attached to the cloud service instance. The attachment task continues to run in the background. You can invoke [DescribeEipAddresses](~~120193~~) to query the status of an EIP instance:\n    - If the EIP instance is in the **Associating** state, the EIP instance is being attached. In this state, you can only execute query operations.\n    - If the EIP instance is in the **InUse** state, the EIP instance is attached.\n- **AssociateEipAddressBatch** does not support concurrent attachment of the same EIP instance with cloud service instances."
+  },
   "example": {
     "unifiedCli": "aliyun vpc associate-eip-address-batch --biz-region-id cn-hangzhou --binded-instance-id ngw-hp3akk9irtd69jad0000 --binded-instance-type Nat --biz-mode MULTI_BINDED --instance-ids eip-2zeerraiwb7ujsxdc0000 --client-token 02fb3da4-130e-11e9-8e44-0016e04115b --region cn-hangzhou",
     "legacyCli": "aliyun vpc AssociateEipAddressBatch --region cn-hangzhou --BindedInstanceType Nat --Mode MULTI_BINDED --BindedInstanceId 'ngw-hp3akk9irtd69jad0000' --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-11e9-8e44-0016e04115b' --InstanceIds.1 'eip-2zeerraiwb7ujsxdc0000'"

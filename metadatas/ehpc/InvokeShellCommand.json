@@ -1,5 +1,6 @@
 {
   "name": "InvokeShellCommand",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。\n\n您可以通过调用[ListClusters](~~87116~~)获取集群ID。",
+        "en": "The cluster ID.\n\nYou can call the [ListClusters](~~87116~~) operation to query the cluster ID."
+      }
     },
     {
       "name": "Command",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "命令内容。长度为2~2048个字符。",
+        "en": "The content of the command. The content must be 2 to 2,048 characters in length."
+      }
     },
     {
       "name": "Instance",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "执行命令的节点信息列表。",
+        "en": "The information of nodes on which the command is run."
+      },
       "sub_parameters": [
         {
           "name": "Id",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "第N个执行命令的节点实例ID。\n>用于限定执行范围，不指定则默认在集群所有节点上执行。",
+            "en": "The ID of the Nth node instance on which the command is run.\n\n> This parameter specifies the node on which the command is run. If it is not specified, the command will be run on all nodes of the cluster."
+          }
         }
       ]
     },
@@ -34,15 +51,30 @@
       "name": "Timeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "超时时间，超时将终止命令进程。单位：秒\n\n默认值：60",
+        "en": "The timeout period. If a command times out, the command process will be terminated. Unit: seconds.\n\nDefault value: 60."
+      }
     },
     {
       "name": "WorkingDir",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令工作目录。默认值为`/root`。",
+        "en": "The working directory of the command. Default value: `/root`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "执行交互执行命令",
+    "en": "InvokeShellCommand"
+  },
   "example": {
     "unifiedCli": "aliyun ehpc invoke-shell-command --cluster-id ehpc-hz-FYUr320000 --command echo_hello_world --working-dir /home --timeout 3600 --instance Id=i-bp1in9hmw3ur52x00000 --api-version 2018-04-12 --region cn-hangzhou",
     "legacyCli": "aliyun ehpc InvokeShellCommand --region cn-hangzhou --WorkingDir '/home' --ClusterId 'ehpc-hz-FYUr320000' --Command echo_hello_world --Timeout 3600 --Instance.1.Id 'i-bp1in9hmw3ur52x00000'"

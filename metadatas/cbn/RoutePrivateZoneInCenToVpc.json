@@ -1,5 +1,6 @@
 {
   "name": "RoutePrivateZoneInCenToVpc",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": true,
       "description": {
         "zh": "访问PrivateZone服务的地域ID。\n\n访问所在地是指访问PrivateZone服务的地域。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
-        "en": "The ID of the region where PrivateZone is accessed.\n\nThis region refers to the region in which PrivateZone is accessed by clients.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query the most recent region list."
+        "en": "The ID of the region from which the PrivateZone service is accessed.\n\nThe access region is the region from which the PrivateZone service is accessed.\n\nCall the [DescribeChildInstanceRegions](~~132080~~) operation to obtain the region ID."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "PrivateZone服务所在的地域ID。",
-        "en": "The ID of the region where PrivateZone is deployed."
+        "en": "The ID of the region where the PrivateZone service is located."
       }
     },
     {
@@ -41,10 +42,21 @@
       "required": true,
       "description": {
         "zh": "PrivateZone服务关联的VPC实例ID。",
-        "en": "The ID of the VPC that is associated with PrivateZone."
+        "en": "The ID of the VPC instance that is associated with the PrivateZone service."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置PrivateZone",
+    "en": "RoutePrivateZoneInCenToVpc"
+  },
+  "descriptions": {
+    "zh": "PrivateZone是基于阿里云专有网络VPC（Virtual Private Cloud）环境的私有DNS域名解析和管理服务。边界路由器VBR（Virtual Border Router）实例、云连接网CCN（Cloud Connect Network）实例加载到云企业网中后，其关联的本地网络可以通过云企业网访问PrivateZone服务。\n\n\n- VBR实例和CCN实例关联的本地网络只能访问和其同地域的PrivateZone服务。\n\n    例如：PrivateZone服务所在地为华北2（北京），那么只有华北2（北京）地域下的VBR实例和中国内地CCN实例关联的本地网络可以访问PrivateZone服务。\n- **RoutePrivateZoneInCenToVpc**接口属于异步接口，即系统会先返回一个**RequestId**，但PrivateZone服务配置并未添加完成，系统后台的添加任务仍在进行。您可以调用**DescribeCenPrivateZoneRoutes**接口查询PrivateZone服务的状态。 \n\n    - 当PrivateZone服务处于**Creating**状态时，表示PrivateZone服务配置正在添加中，在该状态下，您只能对PrivateZone服务配置执行查询操作，不能执行其他操作。\n    - 当PrivateZone服务处于**Active**状态时，表示PrivateZone服务配置添加完成。\n    - 当PrivateZone服务处于**Failed**状态时，表示PrivateZone服务配置添加失败。\n\n#### 前提条件\n\n在调用**RoutePrivateZoneInCenToVpc**接口前，确保满足以下条件：\n\n- 您已部署好PrivateZone服务。具体操作，请参见[云解析PrivateZone快速入门](~~64627~~)。\n- 确保PrivateZone服务关联的VPC实例、访问所在地的VBR实例或CCN实例已加载至同一个云企业网实例。具体操作，请参见[AttachCenChildInstance](~~65902~~)。\n- 如果您本地网络使用CCN实例接入阿里云，且CCN实例所属账号与VPC实例所属账号、云企业网实例所属账号不同，那么您需要先完成对CCN实例的授权。具体操作，请参见[云连接网授权](~~106674~~)。",
+    "en": "Alibaba Cloud DNS PrivateZone is a private Domain Name System (DNS) resolution and management service that is based on a Virtual Private Cloud (VPC). After a virtual border router (VBR) instance or a Cloud Connect Network (CCN) instance is attached to a Cloud Enterprise Network (CEN) instance, the associated on-premises network can access the PrivateZone service through the CEN instance.\n\n- An on-premises network that is associated with a VBR or CCN instance can access the PrivateZone service only in the same region.\n\n  For example, if the PrivateZone service is in the China (Beijing) region, only on-premises networks that are associated with VBR instances in the China (Beijing) region or with CCN instances in the Chinese mainland can access the PrivateZone service.\n\n- The **RoutePrivateZoneInCenToVpc** operation is asynchronous. After a request is sent, the system returns a **RequestId**. The configuration is then added in the background. You can call the **DescribeCenPrivateZoneRoutes** operation to query the status of the PrivateZone service.\n\n  - If the PrivateZone service is in the **Creating** state, the configuration is being added. In this state, you can only query the configuration and cannot perform other operations.\n\n  - If the PrivateZone service is in the **Active** state, the configuration is complete.\n\n  - If the PrivateZone service is in the **Failed** state, the configuration failed.\n\n#### Prerequisites\n\nBefore you call the **RoutePrivateZoneInCenToVpc** operation, make sure that the following conditions are met:\n\n- The PrivateZone service is deployed. For more information, see [Quick Start for Alibaba Cloud DNS PrivateZone](~~64627~~).\n\n- The VPC instance associated with the PrivateZone service and the VBR or CCN instance in the access region are attached to the same CEN instance. For more information, see [AttachCenChildInstance](~~65902~~).\n\n- If an on-premises network connects to Alibaba Cloud through a CCN instance, and the CCN, VPC, and CEN instances belong to different accounts, the CCN instance must be authorized first. For more information, see [Cloud Connect Network authorization](~~106674~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn route-private-zone-in-cen-to-vpc --cen-id cen-7qthudw0ll6jmc0000 --access-region-id cn-hangzhou --host-region-id cn-hangzhou --host-vpc-id vpc-bp1h8vbrbcgohcju50000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn RoutePrivateZoneInCenToVpc --region cn-hangzhou --HostRegionId 'cn-hangzhou' --CenId 'cen-7qthudw0ll6jmc0000' --AccessRegionId 'cn-hangzhou' --HostVpcId 'vpc-bp1h8vbrbcgohcju50000'"

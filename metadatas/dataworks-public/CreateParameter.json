@@ -1,5 +1,6 @@
 {
   "name": "CreateParameter",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述。",
+        "en": "The description of the parameter."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "参数名称，工作空间下唯一。需要\"workspace.\"开头。后续内容以字母开头，且只能包含字母下划线和数字，Name总长度不超过255。",
+        "en": "The parameter name. It must be unique within the workspace, be prefixed with `workspace.`, and not exceed 255 characters. The part of the name after the prefix must start with a letter and can contain only letters, digits, and underscores (\\_)."
+      }
     },
     {
       "name": "Owner",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "责任人的账号 ID。",
+        "en": "The account ID of the owner."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作空间Id（Scope=Project时必填）。",
+        "en": "The workspace ID. This parameter is required when `Scope` is set to `Project`."
+      }
     },
     {
       "name": "Properties",
       "position": "Body",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "参数值配置，生产环境必填。如果数组中出现了重复的环境配置，则后出现的配置不生效。",
+        "en": "The value configurations for the parameter. A configuration for the production environment is required. If you provide duplicate configurations for an environment, only the first one is used."
+      },
       "sub_parameters": [
         {
           "name": "EnvType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "项目环境。\n- Prod：生产\n- Dev：开发",
+            "en": "The environment.\n\n- `Prod`: production environment\n\n- `Dev`: development environment"
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "参数值。只允许汉字、字母、数字和部分特殊字符，如/、:、.、[、]、,、\\\\、\\'、\"、_、=、?、空格、回车、换行、+、-、*、%、&、@、!、$、#、{、}",
+            "en": "The value of the parameter. The value can contain Chinese characters, letters, digits, and the following special characters: /, :, ., \\[, ], ,, \\, ', \", \\_, =, ?, space, carriage return, line feed, +, -, \\*, %, &, @, !, $, #, {, and }."
+          }
         }
       ]
     },
@@ -52,15 +81,34 @@
       "name": "Scope",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "参数使用范围。默认Project，暂不可选择其他类型。",
+        "en": "The scope of the parameter. The default value is `Project`. No other values are currently supported."
+      }
     },
     {
       "name": "Type",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "类型。\n- PlainConstant 常量（明文）\n- SecretConstant  常量（密文）\n- Variable  变量",
+        "en": "The type of the parameter.\n\n- `PlainConstant`: plaintext constant.\n\n- `SecretConstant`: secret constant.\n\n- `Variable`: variable."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建参数",
+    "en": "CreateParameter"
+  },
+  "descriptions": {
+    "zh": "需要购买 DataWorks 专业版及以上版本才能使用。",
+    "en": "This operation requires DataWorks Professional Edition or a later edition."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public create-parameter --name workspace.para --properties Value=value123 EnvType=Prod --type PlainConstant --project-id 1000 --owner 123456789 --description This_is_a_test_parameter. --scope Project --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public CreateParameter --region cn-hangzhou --Type PlainConstant --Owner 123456789 --Description 'This_is_a_test_parameter.' --Scope Project --ProjectId 1000 --Properties '[{\"Value\":\"value123\",\"EnvType\":\"Prod\"}]' --Name 'workspace.para'"

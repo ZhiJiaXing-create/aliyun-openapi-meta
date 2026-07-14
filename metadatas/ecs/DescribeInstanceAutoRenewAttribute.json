@@ -1,5 +1,6 @@
 {
   "name": "DescribeInstanceAutoRenewAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。支持最多100台包年包月实例批量查询，多个实例ID以半角逗号分隔。\n\n> `InstanceId`与`RenewalStatus`参数至少需要填写一个。",
+        "en": "The instance IDs. You can specify up to 100 subscription instances at a time. Separate multiple instance IDs with commas.\n\n> You must specify either `InstanceId` or `RenewalStatus`."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询接口返回资源信息列表的页码。\n\n起始值：1。\n\n默认值：1。",
+        "en": "The number of the page to return.\n\nMinimum value: 1.\n\nDefault value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页展示响应信息时设置的每页行数，单位：行。\n\n最大值：100。\n\n默认值：10。",
+        "en": "The number of entries per page.\n\nMaximum value: 100.\n\nDefault value: 10."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call [DescribeRegions](~~25609~~) to view the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "RenewalStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的自动续费状态。取值范围：\n\n- AutoRenewal：设置为自动续费。\n\n- Normal：取消自动续费。\n\n- NotRenewal：不再续费，系统不再发送到期提醒，只在到期前第三天发送不续费提醒。不再续费的ECS实例可以通过[ModifyInstanceAutoRenewAttribute](~~52843~~)更改成待续费（`Normal`）后，再自行续费或设置为自动续费。",
+        "en": "The auto-renewal status of the instance. Valid values:\n\n- AutoRenewal: Auto-renewal is enabled.\n\n- Normal: Auto-renewal is disabled.\n\n- NotRenewal: The instance will not be renewed. The system does not send expiration reminders but sends a non-renewal reminder three days before the expiration date. To renew an ECS instance with this status, you must first call [ModifyInstanceAutoRenewAttribute](~~52843~~) to change its status to `Normal`. You can then manually renew the instance or enable auto-renewal."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例自动续费属性",
+    "en": "DescribeInstanceAutoRenewAttribute"
+  },
+  "descriptions": {
+    "zh": "- 仅支持包年包月的实例，按量付费的实例调用该接口会报错。\n- 在设置自动续费或者手动续费前，查询实例续费状态可以帮助您了解实例是否已为自动续费状态。",
+    "en": "- This API supports only subscription instances. Calling this API for a pay-as-you-go instance returns an error.\n\n- Before you configure auto-renewal or manual renewal for an instance, query its renewal status to check if auto-renewal is already enabled."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-instance-auto-renew-attribute --instance-id i-bp18x3z4hc7bixhx0000,i-bp1g6zv0ce8oghu70000 --biz-region-id cn-hangzhou --renewal-status AutoRenewal --page-size 10 --page-number 1 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeInstanceAutoRenewAttribute --region cn-hangzhou --PageSize 10 --InstanceId 'i-bp18x3z4hc7bixhx0000,i-bp1g6zv0ce8oghu70000' --PageNumber 1 --RenewalStatus AutoRenewal --RegionId 'cn-hangzhou'"

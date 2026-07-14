@@ -1,5 +1,6 @@
 {
   "name": "GetDeadLockDetail",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the database instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n> 对于PolarDB MySQL版实例，需要提供节点ID。",
+        "en": "The node ID.\n\n> Required for PolarDB for MySQL cluster instances."
+      }
     },
     {
       "name": "Source",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务来源：\n- **MANUAL**或**不传入**：查询最近死锁分析任务。\n- **AUTO**：查询全量死锁分析任务。",
+        "en": "The source of the analysis task:\n\n- **MANUAL** or **not specified**: queries the recent deadlock analysis task.\n\n- **AUTO**: queries the full deadlock analysis task."
+      }
     },
     {
       "name": "TextId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询死锁历史任务列表GetDeadLockHistory中返回的死锁TextId。",
+        "en": "The ID of the deadlock text. This value is returned from the GetDeadLockHistory operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询单个死锁详情",
+    "en": "GetDeadLockDetail"
+  },
+  "descriptions": {
+    "zh": "本接口用于获取最近死锁分析、全量死锁分析的单个死锁详情。详情请参见[死锁分析](~~2858236~~)。\n\n使用该接口需满足以下前提条件：\n\n- 查询最近死锁分析详情的目标数据库引擎为：RDS MySQL、自建MySQL、PolarDB MySQL版、PolarDB-X 2.0。\n- 查询全量死锁分析详情的目标数据库引擎为：RDS MySQL、PolarDB MySQL版，且已开通[DAS运维服务（原经济版）](~~2666482~~)。\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。",
+    "en": "This API fetches the full details of a specific deadlock, including the transactions involved, the SQL statements, and the locks held and waited for. The deadlock can be from either a recent analysis or a full historical analysis. For more information, see [Deadlock analysis](~~2858236~~).\n\nBefore you call this operation, ensure the following:\n\n- **Supported engines**:\n\n  - For recent deadlock analysis: ApsaraDB RDS for MySQL, self-managed MySQL, PolarDB for MySQL, PolarDB-X 2.0.\n\n  - For full deadlock analysis: ApsaraDB RDS for MySQL or PolarDB for MySQL with [DAS Economy Edition](~~2666482~~) or [DAS Professional Edition](~~190912~~) enabled.\n\n- **SDK version**: Use the latest version of the Alibaba Cloud SDK.\n\n- **Region**: If you call the API via the SDK, set the region ID to `cn-shanghai`."
+  },
   "example": {
     "unifiedCli": "aliyun das get-dead-lock-detail --instance-id pc-bp1u5mas9exx70000 --node-id pi-bp16v3824rt730000 --text-id a0e390cd5aca9ae964448f0401530000 --source AUTO --region cn-hangzhou",
     "legacyCli": "aliyun das GetDeadLockDetail --region cn-hangzhou --InstanceId 'pc-bp1u5mas9exx70000' --TextId a0e390cd5aca9ae964448f0401530000 --NodeId 'pi-bp16v3824rt730000' --Source AUTO"

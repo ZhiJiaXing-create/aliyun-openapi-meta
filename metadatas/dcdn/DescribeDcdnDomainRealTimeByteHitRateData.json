@@ -1,5 +1,6 @@
 {
   "name": "DescribeDcdnDomainRealTimeByteHitRateData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "域名，多个之间用逗号（,）隔开。",
+        "en": "The domain names to query. Separate multiple domain names with commas (,)."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据结束时间点。日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n结束时间需大于起始时间。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\nThe end time must be later than the start time."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点。日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实时字节命中率数据",
+    "en": "DescribeDcdnDomainRealTimeByteHitRateData"
+  },
+  "descriptions": {
+    "zh": "- 单用户调用频率：10次/秒。 \n- 由于存在多域名合并存储的情况，可能会导致命中率数据不准确，具体情况以配置为准。\n- 如果您不指定**StartTime**和**EndTime**，该接口默认返回过去1小时的数据；指定**StartTime**和**EndTime**，该接口返回指定时间段的数据。\n\n**返回数据时间粒度**\n\n根据您指定StartTime和EndTime时间跨度，会返回不同的数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n|时间粒度         |单次查询的最大时间跨度  |可查询历史数据时间范围|数据延迟|\n|------|-----|----|--------|\n|1分钟|1小时|7天|5分钟|\n|5分钟|3天|93天|15分钟|\n|1小时|31天|186天|一般延迟3-4小时|",
+    "en": "- The maximum call frequency for a single user is 10 calls per second.\n\n- The hit rate data may be inaccurate because data for multiple domain names is merged for storage. The actual data depends on your configuration.\n\n- If you do not specify **StartTime** and **EndTime**, the operation returns data for the last hour by default. If you specify **StartTime** and **EndTime**, the operation returns data for the specified time range.\n\n**Data granularity**\n\nThe time granularity of the returned data varies based on the time span between StartTime and EndTime. The following table describes the time granularity, maximum time span for a single query, queryable time range for historical data, and data latency.\n\n| Time granularity | Maximum time span per query | Queryable time range for historical data | Data latency           |\n| ---------------- | --------------------------- | ---------------------------------------- | ---------------------- |\n| 1 minute         | 1 hour                      | 7 days                                   | 5 minutes              |\n| 5 minutes        | 3 days                      | 93 days                                  | 15 minutes             |\n| 1 hour           | 31 days                     | 186 days                                 | Typically 3 to 4 hours |"
+  },
   "example": {
     "unifiedCli": "aliyun dcdn describe-dcdn-domain-real-time-byte-hit-rate-data --domain-name example.com --start-time 2017-12-10T20:00:00Z --end-time 2017-12-10T21:00:00Z --region cn-hangzhou",
     "legacyCli": "aliyun dcdn DescribeDcdnDomainRealTimeByteHitRateData --region cn-hangzhou --EndTime '2017-12-10T21:00:00Z' --DomainName 'example.com' --StartTime '2017-12-10T20:00:00Z'"

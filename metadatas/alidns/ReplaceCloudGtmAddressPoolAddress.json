@@ -1,5 +1,6 @@
 {
   "name": "ReplaceCloudGtmAddressPoolAddress",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "返回的语言。取值：\n\n- **zh-CN**：中文\n\n- **en-US**（默认值）：英文",
-        "en": "The language of the response. Valid values:\n\n*   **zh-CN**: Chinese\n*   **en-US (default)**: English"
+        "en": "The response language. Valid values:\n\n- **zh-CN**: Chinese\n\n- **en-US** (Default): English"
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "需要更新地址的目标地址池ID，地址池的唯一标识码。",
-        "en": "The ID of the address pool for which you want to replace addresses. This ID uniquely identifies the address pool."
+        "en": "The unique ID of the address pool to update."
       }
     },
     {
@@ -29,36 +30,52 @@
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "地址列表。",
+        "en": "The list of addresses."
+      },
       "sub_parameters": [
         {
           "name": "AddressId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "更新后的地址ID，地址的唯一标识码。\n\n- 该参数不为空时，地址池中原有的地址将会被删除，会全部替换为更新后的地址。\n\n- 该参数为空时，地址池中原有的地址均被删除，会将地址池置空。",
+            "en": "The unique ID of the address.\n\n- If you specify this parameter, all existing addresses in the address pool are deleted and replaced with the specified addresses.\n\n- If you leave this parameter empty, all existing addresses in the address pool are deleted."
+          }
         },
         {
           "name": "RequestSource",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "解析请求来源列表。",
+            "en": "The list of DNS request sources."
+          }
         },
         {
           "name": "SerialNumber",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "顺序号，标识地址返回的优先级，越小优先级越高。对更新后的地址配置生效。",
+            "en": "The serial number, which determines the priority of the address. A smaller number indicates a higher priority. This setting applies to the updated addresses."
+          }
         },
         {
           "name": "WeightValue",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "权重值（1-100内的整数，包括1和100），支持对每个地址设置不同的权重值，实现解析查询按照权重比例返回地址。对更新后的地址配置生效。",
+            "en": "The weight of the address. Valid values: 1 to 100. You can set a different weight for each address. DNS queries are then resolved based on the weight ratio. This setting applies to the updated addresses."
+          }
         }
-      ],
-      "description": {
-        "zh": "地址列表。",
-        "en": "The addresses."
-      }
+      ]
     },
     {
       "name": "ClientToken",
@@ -67,10 +84,17 @@
       "required": false,
       "description": {
         "zh": "用户生成的请求token。用于保证请求的幂等性。注意  由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。",
-        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+        "en": "The client token that is used to ensure the idempotence of the request. Ensure the client token is unique for each request. The token can contain a maximum of 64 ASCII characters."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "替换地址池引用的地址",
+    "en": "ReplaceCloudGtmAddressPoolAddress"
+  },
   "example": {
     "unifiedCli": "aliyun alidns replace-cloud-gtm-address-pool-address --accept-language en-US --client-token 1ae05db4-10e7-11ef-b126-00163e240000 --address-pool-id pool-896189211673390000 --addresses '[{\"SerialNumber\":1,\"WeightValue\":1,\"RequestSource\":[\"default\"],\"AddressId\":\"addr-896365169328030000\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun alidns ReplaceCloudGtmAddressPoolAddress --region cn-hangzhou --Addresses '[{\"SerialNumber\":1,\"WeightValue\":1,\"RequestSource\":[\"default\"],\"AddressId\":\"addr-896365169328030000\"}]' --AddressPoolId 'pool-896189211673390000' --AcceptLanguage 'en-US' --ClientToken '1ae05db4-10e7-11ef-b126-00163e240000'"

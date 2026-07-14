@@ -1,5 +1,6 @@
 {
   "name": "BatchRegisterDevice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Count",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要注册的设备数量。\n\n> 单次调用，最多可创建10,000个设备。",
+        "en": "The number of devices to be registered.\n\n>  You can register up to 10,000 devices in a single call."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要批量注册的设备所隶属的产品ProductKey。",
+        "en": "The ProductKey of the product to which the devices belong."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量注册设备",
+    "en": "BatchRegisterDevice"
+  },
+  "descriptions": {
+    "zh": "## 批量注册设备方式说明\n批量注册设备有两种方式：\n\n- 由系统随机生成设备名称：调用本接口。\n建议按照以下流程注册设备和查看结果。\n\n    1. 调用本接口批量注册设备。返回成功结果，表示批量注册的申请已经提交成功。实际的注册是异步执行，会有一个过程。\n\n    2. 调用[QueryBatchRegisterDeviceStatus](~~69483~~)查看设备注册结果。\n\n    3. 调用[QueryPageByApplyId](~~69518~~)查看批量注册的设备信息（DeviceName、DeviceSecret、IotId）。\n\n- 自定义设备名称：请参见[BatchRegisterDeviceWithApplyId](~~69514~~)。\n\n## 使用说明\n单次调用，最多可创建1,0000个设备。\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n> RAM用户共享阿里云账号配额。",
+    "en": "You can use one of the following methods to register multiple devices:\n\n*   If you want to generate random DeviceNames, call the BatchRegisterDevice operation.\n\n    Perform the following steps to register devices and view the result:\n\n    1\\. Call the BatchRegisterDevice operation to register multiple devices. A successful response indicates that the registration request is submitted. The actual registration process is asynchronously implemented and takes some minutes.\n\n    2\\. Call the [QueryBatchRegisterDeviceStatus](~~69483~~) operation to query the device registration result.\n\n    3\\. Call the [QueryPageByApplyId](~~69518~~) operation to view the details of registered devices. The details include the DeviceName, DeviceSecret, and IotId parameters.\n\n*   If you want to specify custom DeviceNames, call the BatchRegisterDeviceWithApplyId operation. For more information, see [BatchRegisterDeviceWithApplyId](~~69514~~).\n\n## Limits\n\n- You can create a maximum of 10,000 devices in a single call.\n- Each Alibaba Cloud account can run a maximum of 10 queries per second (QPS).  >  RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot batch-register-device --iot-instance-id iot_instc_pu0000_c0-v6400000000 --product-key a1BwAGV0000 --count 100 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot BatchRegisterDevice --region cn-hangzhou --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --Count 100 --ProductKey a1BwAGV0000"

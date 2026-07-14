@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodRefreshTasks",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "域名。",
+        "en": "The domain name."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "ObjectPath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按路径查询，准确匹配。",
+        "en": "The path of the object. The path is used as a condition for exact matching."
+      }
     },
     {
       "name": "ObjectType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务类型。取值范围：\n- **file**：文件刷新。\n- **directory**：目录刷新。\n- **preload**：文件预热。\n\n> 当指定DomainName或Status时，ObjectType该项为必填。",
+        "en": "The type of the task. Valid values:\n\n*   **file**: refreshes one or more files.\n*   **directory**: refreshes files in the specified directories.\n*   **preload**: prefetches one or more files.\n\n> If you specify the DomainName or Status parameter, you must also specify the ObjectType parameter."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，每页显示的条目数。默认值：**20**。最大值：**50**。",
+        "en": "The number of entries to return on each page. Default value: **20**. Maximum value: **50**."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n> 仅能查询3天内的数据。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n> You can query data that is collected in the last three days."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务状态。取值：\n\n- **Complete**：完成。\n- **Refreshing**：刷新中。\n- **Failed**：刷新失败。",
+        "en": "The status of the task. Valid values:\n\n*   **Complete**: The task is complete.\n*   **Refreshing**: The task is in progress.\n*   **Failed**: The task failed."
+      }
     },
     {
       "name": "TaskId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按任务ID查询刷新状态。",
+        "en": "The ID of the task that you want to query."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询刷新和预热状态",
+    "en": "DescribeVodRefreshTasks"
+  },
+  "descriptions": {
+    "zh": "- 目前服务地址仅支持：**华东2（上海）**。\n- 若Taskid与Objectpath都不指定，则默认查询3天内，第一页的数据（20条）。Taskid与Objectpath可以同时指定。\n- 当指定DomainName或Status时，ObjectType该项为必填。",
+    "en": "*   This operation is available only in the **China (Shanghai)** region.\n\n*   If you do not specify the TaskId or ObjectPath parameter, the data in the last three days is returned on the first page. By default, one page displays a maximum of 20 entries. You can specify the TaskId and ObjectPath parameters at the same time."
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-refresh-tasks --task-id 704220000 --object-path http://example.com/000.txt --page-number 1 --object-type file --domain-name example.com --status Complete --page-size 20 --start-time 2017-01-01T12:12:20Z --end-time 2017-01-01T12:30:20Z --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodRefreshTasks --region cn-hangzhou --Status Complete --ObjectType file --ObjectPath 'http://example.com/000.txt' --TaskId 704220000 --PageSize 20 --EndTime '2017-01-01T12:30:20Z' --PageNumber 1 --DomainName 'example.com' --StartTime '2017-01-01T12:12:20Z'"

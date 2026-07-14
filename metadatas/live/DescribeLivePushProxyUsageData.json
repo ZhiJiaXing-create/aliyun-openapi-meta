@@ -1,5 +1,6 @@
 {
   "name": "DescribeLivePushProxyUsageData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的主播流域名。\n- 支持单个或批量域名查询。批量查询时多个域名用英文逗号（,）分隔。\n- 若参数为空，默认返回所有直播域名合并后的数据。",
+        "en": "The ingest domain name of the streamer to query.\n- You can specify a single domain name or multiple domain names separated by commas (,).\n- If this parameter is left empty, the aggregated data of all live streaming domain names is returned by default."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间需大于起始时间，日期格式按照ISO8601表示法，并使用UTC时间，格式为：YYYY-MM-DDThh:mm:ssZ。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the ISO 8601 standard in the YYYY-MM-DDThh:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询不同直播中心, 支持批量地区查询，多个地区用逗号（半角）分隔。取值：\n- cn-beijing：北京\n- cn-shanghai：上海\n- cn-shenzhen：深圳\n- cn-qingdao：青岛\n- ap-southeast-1：新加坡\n- eu-central-1：德国\n- ap-northeast-1：东京\n- ap-southeast-5：雅加达\n\n若参数为空，默认返回所有Region合并后数据。",
+        "en": "The live center to query. You can specify multiple regions separated by commas (,). Valid values:\n- cn-beijing: Beijing\n- cn-shanghai: Shanghai\n- cn-shenzhen: Shenzhen\n- cn-qingdao: Qingdao\n- ap-southeast-1: Singapore\n- eu-central-1: Germany\n- ap-northeast-1: Tokyo\n- ap-southeast-5: Jakarta\n\nIf this parameter is left empty, the aggregated data of all regions is returned by default."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "SplitBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分组键，若参数为空，默认为region，按照聚合后数据输出。多个使用逗号（半角）分隔，取值：\n- domain：域名。如果此参数SplitBy（分组键）取值为domain时，返回参数Domain才生效。\n- region（默认值）：直播中心地域。如果此参数SplitBy（分组键）取值为region时，返回参数Region才生效。",
+        "en": "The grouping key. If this parameter is left empty, the default value is region, and the aggregated data is returned. You can specify multiple values separated by commas (,). Valid values:\n- domain: the domain name. If SplitBy is set to domain, the Domain field in the response takes effect.\n- region (default): the live center region. If SplitBy is set to region, the Region field in the response takes effect."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点，日期格式按照ISO8601表示法，并使用UTC时间，格式为：YYYY-MM-DDThh:mm:ssZ，默认返回近七天的数据。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the YYYY-MM-DDThh:mm:ssZ format. The time must be in UTC. By default, data from the last seven days is returned."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询直播中心转推用量数据",
+    "en": "Query live center relay usage data"
+  },
+  "descriptions": {
+    "zh": "- 查询直播中心转推用量数据。\n- 最大查询跨度：31天。\n- 最小查询粒度：1天。\n- 最大查询范围：最近90天的数据\n\n## QPS限制\n本接口的单用户QPS限制为5次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Queries the usage data of live center relay.\n- Maximum query span: 31 days.\n- Minimum query granularity: 1 day.\n- Maximum query range: data from the last 90 days.\n\n## QPS limit\nThe single-user QPS limit for this operation is 5 calls per second. If the limit is exceeded, API calls are throttled, which may affect your business. Call this operation appropriately."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-push-proxy-usage-data --biz-region-id cn-hangzhou --biz-region cn-beijing --domain-name example.com --start-time 2022-10-10T20:00:00Z --end-time 2022-10-10T21:00:00Z --split-by region --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLivePushProxyUsageData --region cn-hangzhou --EndTime '2022-10-10T21:00:00Z' --DomainName 'example.com' --SplitBy region --StartTime '2022-10-10T20:00:00Z' --Region 'cn-beijing' --RegionId 'cn-hangzhou'"

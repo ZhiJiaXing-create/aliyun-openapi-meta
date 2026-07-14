@@ -1,5 +1,6 @@
 {
   "name": "UpdateRecursionZoneEffectiveScope",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -10,7 +11,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "客户端Token，用于保证请求的幂等性。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。"
+        "zh": "客户端Token，用于保证请求的幂等性。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。",
+        "en": "A client-generated token to ensure request idempotence. The token must be unique for each request. It can contain a maximum of 64 ASCII characters."
       }
     },
     {
@@ -18,34 +20,51 @@
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "生效范围列表",
+        "en": "A list of effective scopes."
+      },
       "sub_parameters": [
         {
           "name": "EffectiveType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生效范围类型\n*account: 账户*",
+            "en": "The type of the effective scope. Valid value: *account*."
+          }
         },
         {
           "name": "Scope",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生效范围列表，与生效类型对应 account类型对应递归解析用户的accountid列表",
+            "en": "The values for the scope, which depend on the value of `EffectiveType`. If `EffectiveType` is set to `account`, this parameter is a list of account IDs."
+          }
         }
-      ],
-      "description": {
-        "zh": "生效范围列表"
-      }
+      ]
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": false,
+      "required": true,
       "description": {
-        "zh": "Zone ID，Zone的唯一识别码。"
+        "zh": "Zone ID，Zone的唯一识别码。",
+        "en": "The unique ID of the zone."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改HTTPDNS内置权威域名zone生效范围",
+    "en": "UpdateRecursionZoneEffectiveScope"
+  },
   "example": {
     "unifiedCli": "aliyun alidns update-recursion-zone-effective-scope --client-token 21079fa016944979537637959d09bc --zone-id 173671468000011 --effective-scopes '[{\"EffectiveType\":\"account\",\"Scope\":[\"20003\"]}]' --region cn-hangzhou",
     "legacyCli": "aliyun alidns UpdateRecursionZoneEffectiveScope --region cn-hangzhou --ZoneId 173671468000011 --EffectiveScopes '[{\"EffectiveType\":\"account\",\"Scope\":[\"20003\"]}]' --ClientToken 21079fa016944979537637959d09bc"

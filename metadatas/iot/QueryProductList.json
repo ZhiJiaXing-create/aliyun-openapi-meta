@@ -1,5 +1,6 @@
 {
   "name": "QueryProductList",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AliyunCommodityCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定要查看的产品类型，取值：\n\n- **iothub_senior**：使用物模型版产品。\n\n- **iothub**：不使用物模型版产品。\n\n> 如果不传入该参数，则返回所有产品的列表。",
+        "en": "The type of the product. Valid values:\n\n*   **iothub_senior**: A Thing Specification Language (TSL) model is used for the product.\n*   **iothub**: No TSL model is used for the product.\n\n>  If you do not configure this parameter, all products are returned."
+      }
     },
     {
       "name": "CurrentPage",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定显示返回结果中的第几页。",
+        "en": "The number of the page to return."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n\n> *   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n> *   If no **Overview** page or ID is generated for your instance, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定返回结果中每页显示的产品数量，最大值是200。",
+        "en": "The number of entries to return on each page. Valid values: 1 to 200."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。\n\n><notice>目前，物联网平台仅支持实例维度的资源组管理。请求参数**ResourceGroupId**配置已无效，无需再传入。\n></notice>",
+        "en": "The ID of the resource group to which the product belongs. You can log on to the [Resource Management](https://resourcemanager.console.aliyun.com/resource-groups) console to view the details of the resource group.\n\n> You can specify a value for this parameter only if you have activated Resource Management.\n\nIf you leave this parameter empty, the information about all products in the current account is queried."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查看所有产品列表",
+    "en": "QueryProductList"
+  },
+  "descriptions": {
+    "zh": "## QPS限制\n\n- 单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n    > 单个阿里云账号下的所有RAM用户共享该阿里云账号的配额。\n\n- 当请求参数**CurrentPage**与**PageSize**的值相乘结果大于或等于100000时，会降低调用该接口的QPS。\n    此时，单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为2。",
+    "en": "## QPS limits\n\n*   Each Alibaba Cloud account can run up to 50 queries per second (QPS).\n\n> The RAM users of an Alibaba Cloud account share the quota of the Alibaba Cloud account.\n\n*   If the product of the value of the **CurrentPage** parameter and the value of the **PageSize** parameter is greater than or equal to 100,000, the QPS of this operation decreases.\n\n    In this case, each Alibaba Cloud account can run up to 2 QPS."
+  },
   "example": {
     "unifiedCli": "aliyun iot query-product-list --iot-instance-id iot_instc_pu0000_c0-v6400000000 --page-size 2 --resource-group-id rg-acfmxazb4ph0000 --aliyun-commodity-code iothub_senior --current-page 1 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot QueryProductList --region cn-hangzhou --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --PageSize 2 --ResourceGroupId 'rg-acfmxazb4ph0000' --AliyunCommodityCode iothub_senior --CurrentPage 1"

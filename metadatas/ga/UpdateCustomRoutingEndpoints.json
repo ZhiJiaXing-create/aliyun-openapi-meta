@@ -1,5 +1,6 @@
 {
   "name": "UpdateCustomRoutingEndpoints",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "EndpointConfigurations",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "终端节点信息。\n\n您最多可输入20个终端节点信息。",
+        "en": "The configurations of the endpoint."
+      },
       "sub_parameters": [
         {
           "name": "EndpointId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "终端节点ID。\n\n您最多可输入20个终端节点ID。",
+            "en": "The ID of the endpoint.\n\nYou can specify up to 20 endpoint IDs."
+          }
         },
         {
           "name": "PolicyConfigurations",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "流量通行目标配置。\n\n每个终端节点下，最多可输入20个通行目标。",
+            "en": "The configurations of the policy."
+          }
         },
         {
           "name": "TrafficToEndpointPolicy",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务流量通行策略，取值：\n- **DenyAll**（默认值）：拒绝所有访问流量访问指定后端服务。\n- **AllowAll**：允许所有访问流量访问指定后端服务。\n- **AllowCustom**：指定可以接收访问流量的通行目标。\n您需要指定该通信目标的IP地址和端口范围，端口范围输入为空时，表示支持该通行目标的所有端口。\n\n您最多可输入20个后端服务流量通行策略。",
+            "en": "The access policy of traffic for the specified endpoint. Default value: DenyAll. Valid values:\n\n*   **DenyAll**: denies all traffic to the endpoint.\n\n*   **AllowAll**: allows all traffic to the endpoint.\n\n*   **AllowCustom**: allows traffic only to specified destinations.\n\n    If you set this parameter to AllowCustom, you must specify IP addresses and port ranges of destinations to which to allow traffic. If you specify only IP addresses and do not specify port ranges, GA can forward traffic to all ports and the specified IP addresses in the destinations.\n\nYou can specify up to 20 access policies of traffic for the specified endpoint."
+          }
         }
       ]
     },
@@ -40,15 +61,34 @@
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改终端节点的终端节点组ID。",
+        "en": "The ID of the endpoint group to which the endpoints that you want to modify belong."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改自定义路由类型监听的终端节点",
+    "en": "UpdateCustomRoutingEndpoints"
+  },
+  "descriptions": {
+    "zh": "- **UpdateCustomRoutingEndpoints**接口属于异步接口，即系统会先返回一个请求ID，但自定义路由类型监听的终端节点并未修改完成，系统后台的修改任务仍在进行。您可以通过调用[DescribeCustomRoutingEndpointGroup](~~449373~~)接口查询自定义路由类型监听关联的终端节点组的状态，来确认自定义路由类型监听关联的终端节点组中的终端节点是否修改完成。\n    - 当自定义路由类型监听关联的终端节点组处于**updating**状态时，表示自定义路由类型监听的终端节点正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当自定义路由类型监听关联的终端节点组处于**active**状态时，表示自定义路由类型监听的终端节点修改完成。\n- **UpdateCustomRoutingEndpoints**接口不支持在同一个全球加速实例内并发修改自定义路由类型监听的终端节点。",
+    "en": "## Description\n\n*   **UpdateCustomRoutingEndpoints** is an asynchronous operation. After you send a request, the system returns a request ID, but the operation is still being performed in the system background. You can call the [DescribeCustomRoutingEndpointGroup](~~449373~~) operation to query the state of the endpoint groups associated with a custom routing listener to check whether the endpoints in the endpoint groups are modified.\n\n    *   If an endpoint group is in the **updating** state, the endpoints in the endpoint group are being modified. In this case, you can perform only query operations.\n    *   If an endpoint group is in the **active** state, the endpoints in the endpoint group are modified.\n\n*   The **UpdateCustomRoutingEndpoints** operation cannot be repeatedly called for the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-custom-routing-endpoints --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-group-id epg-bp1bpn0kn908w4nb0000 --endpoint-configurations '[{\"PolicyConfigurations\":[{\"Address\":\"10.0.XX.XX\",\"PortRanges\":[{\"FromPort\":\"80\",\"ToPort\":\"80\"}]}],\"EndpointId\":\"ep-bp1dmlohjjz4kqaun0000\",\"TrafficToEndpointPolicy\":\"DenyAll\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateCustomRoutingEndpoints --region cn-hangzhou --EndpointGroupId 'epg-bp1bpn0kn908w4nb0000' --EndpointConfigurations.1.PolicyConfigurations.1.PortRanges.1.FromPort 80 --EndpointConfigurations.1.PolicyConfigurations.1.PortRanges.1.ToPort 80 --EndpointConfigurations.1.EndpointId 'ep-bp1dmlohjjz4kqaun0000' --EndpointConfigurations.1.TrafficToEndpointPolicy DenyAll --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --EndpointConfigurations.1.PolicyConfigurations.1.Address '10.0.XX.XX'"

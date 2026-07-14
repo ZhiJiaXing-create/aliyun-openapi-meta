@@ -1,5 +1,6 @@
 {
   "name": "BindZoneVpc",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。",
+        "en": "A client-generated token that is used to ensure the idempotence of the request. You can use the client to generate a unique token for the request. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回值语言，取值：\n\n- zh：中文。\n\n- en：英文。\n\n默认值：en",
+        "en": "The language of the response. Valid values:\n\n- `zh`: Chinese.\n\n- `en`: English.\n\nDefault value: `en`."
+      }
     },
     {
       "name": "UserClientIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户Ip。",
+        "en": "The IP address of the client."
+      }
     },
     {
       "name": "Vpcs",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "vpc列表信息。\n>若Vpcs为空，则解绑所有Vpc。",
+        "en": "The VPCs.\n\n> If you leave this parameter empty, all VPCs bound to the zone are unbound."
+      },
       "sub_parameters": [
         {
           "name": "RegionId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Vpc所属地域ID。",
+            "en": "The ID of the region where the VPC is located."
+          }
         },
         {
           "name": "VpcId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Vpc ID。当Zone已经绑定Vpc，此时不传入此参数，表示将Zone和Vpc解绑。",
+            "en": "The ID of the VPC."
+          }
         },
         {
           "name": "VpcType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Vpc类型。取值：\n\n- **STANDARD**：标准Vpc。\n\n- **EDS**：无影工作区Vpc。",
+            "en": "The type of the VPC. Valid values:\n\n- **STANDARD**: a standard VPC.\n\n- **EDS**: an Elastic Desktop Service VPC."
+          }
         }
       ]
     },
@@ -52,9 +81,24 @@
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Zone ID，Zone的唯一识别码。",
+        "en": "The unique ID of the zone."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "zone关联VPC",
+    "en": "BindZoneVpc"
+  },
+  "descriptions": {
+    "zh": "##### 注意事项：\n域名生效范围建议完成所有解析记录配置后再设置，因为创建域名时如果设置了域名生效范围，这意味着在域名创建成功后、未添加解析记录前这段时间，在生效范围内网络对该域名的解析都会失败（开启了子域名递归解析代理的情况除外）。\n><notice>本接口采用全量覆盖机制，调用时会清除所有未包含在本次请求中的原有 VPC 绑定关系。如需新增 VPC，请务必将存量 VPC ID 一并传入。></notice>",
+    "en": "##### Notes\n\nWe recommend binding VPCs to a Zone only after you configure all its DNS records. Otherwise, DNS queries for the domain name in the specified VPCs may fail. This issue does not occur if the subdomain recursive resolution proxy feature is enabled.\n><notice>This API operation performs a full overwrite. The list of VPCs provided in a request replaces all existing associated VPCs. To add a VPC, you must include the IDs of the new VPC and all existing VPCs that you want to retain.></notice>"
+  },
   "example": {
     "unifiedCli": "aliyun pvtz bind-zone-vpc --lang en --zone-id 34d4031b63c527358b710a61346a0000 --user-client-ip 127.0.XX.XX --vpcs VpcType=STANDARD VpcId=vpc-f8zvrvr1payllgz380000 RegionId=cn-hangzhou --client-token 6447728c8578e66aacf062d2df4446dc --region cn-hangzhou",
     "legacyCli": "aliyun pvtz BindZoneVpc --region cn-hangzhou --ZoneId 34d4031b63c527358b710a61346a0000 --Vpcs.1.VpcType STANDARD --Vpcs.1.VpcId 'vpc-f8zvrvr1payllgz380000' --UserClientIp '127.0.XX.XX' --Lang en --ClientToken 6447728c8578e66aacf062d2df4446dc --Vpcs.1.RegionId 'cn-hangzhou'"

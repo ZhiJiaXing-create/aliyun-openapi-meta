@@ -1,5 +1,6 @@
 {
   "name": "ValidateEmail",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,21 +9,50 @@
       "name": "CheckGraylist",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否检查灰名单，默认为否。结果将通过eventbridge异步通知",
+        "en": "Specifies whether to check the graylist. Default value: false. Results will be sent as asynchronous notifications through EventBridge."
+      }
     },
     {
       "name": "Email",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待校验的电子邮件地址",
+        "en": "The email address to validate"
+      }
+    },
+    {
+      "name": "ProbeType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "检测类型：\n\n- FULL：启用全部检测能力，包括 SMTP 探测。由于 SMTP 探测涉及远程连接，整体延迟较高，适用于对响应时间不敏感的场景。单次检测消费1个地址校验额度。\n- BASIC_ONLY：启用除 SMTP 探测外的所有检测能力，延迟低。适用于对响应时间敏感的场景，例如注册环节实时校验邮箱地址是否为一次性邮箱或 MX 转发等异常地址，以防御黑灰产批量注册。单次检测消费1/3个地址校验额度。",
+        "en": "The detection type:\n\n- FULL: Enables all detection capabilities, including SMTP probing. Since SMTP probing involves remote connections, the overall latency is higher. This is suitable for scenarios that are not sensitive to response time. Each detection consumes 1 address validation quota.\n- BASIC_ONLY: Enables all detection capabilities except SMTP probing, with low latency. This is suitable for scenarios sensitive to response time, such as real-time validation during registration to check whether an email address is a disposable email or an abnormal address such as MX forwarding, to defend against mass registration by malicious actors. Each detection consumes 1/3 of an address validation quota."
+      }
     },
     {
       "name": "Timeout",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "超时时间，默认60秒",
+        "en": "Timeout period. Default value: 60 seconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "校验电子邮件",
+    "en": "ValidateEmail"
+  },
   "example": {
     "unifiedCli": "aliyun dm validate-email --email xxx@yyy.com --timeout 20 --check-graylist true --probe-type FULL --api-version 2015-11-23 --region cn-hangzhou",
     "legacyCli": "aliyun dm ValidateEmail --region cn-hangzhou --Email 'xxx@yyy.com' --CheckGraylist true --ProbeType FULL --Timeout 20"

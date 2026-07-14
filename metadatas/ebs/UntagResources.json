@@ -1,5 +1,6 @@
 {
   "name": "UntagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "All",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否解绑资源上全部的标签。当请求中未设置TagKey.N时，该参数才有效。取值范围：\n- true。\n- false。\n\n默认值：false。",
+        "en": "Specifies whether to remove all tags from the resource. This parameter is valid only when the TagKey.N parameter is not specified. Valid values:\n\n*   true: removes all tags from the resource.\n*   false: does not remove all tags from the resource.\n\nDefault value: false."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多详情，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must make sure that it is unique among different requests. The **ClientToken** value can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the resource. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID，最多包含50个子项。",
+        "en": "The ID list of the resource. You can specify up to 50 resource IDs in each call."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义。取值范围：\n\n- dedicatedblockstoragecluster：专属块存储集群。\n- diskreplicapair：异步复制关系。\n- diskreplicagroup：一致性复制组。",
+        "en": "The type of the resource. Valid values:\n\n*   dedicatedblockstoragecluster: dedicated block storage cluster\n*   diskreplicapair: the replication pair.\n*   diskreplicagroup: replication pair-consistent group"
+      }
     },
     {
       "name": "TagKey",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签键。最多包含20个子项。",
+        "en": "The list of tag keys. You can specify up to 20 tag keys in the list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解绑资源标签",
+    "en": "UntagResources"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 每次解绑的标签数量不能超过20个。\n\n- 任一标签在解绑后，如果没有绑定任何实例，则该标签会被删除。",
+    "en": "*   You can remove up to 20 tags at a time.\n*   After a tag is removed from an EBS resource, the tag is automatically deleted if the tag is not added to any instance."
+  },
   "example": {
     "unifiedCli": "aliyun ebs untag-resources --resource-id pair-cn-c4d2t7f0000 --tag-key TestKey --all false --biz-region-id cn-hangzhou --resource-type diskreplicapair --client-token 0c593ea1-3bea-11e9-b96b-88e9fe630000 --region cn-hangzhou",
     "legacyCli": "aliyun ebs UntagResources --region cn-hangzhou --All false --ResourceId.1 'pair-cn-c4d2t7f0000' --TagKey.1 TestKey --ResourceType diskreplicapair --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe630000'"

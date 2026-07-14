@@ -1,5 +1,6 @@
 {
   "name": "UpdateDnsGtmAddressPool",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,42 +10,62 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "地址池列表。",
+        "en": "A list of addresses in the address pool."
+      },
       "sub_parameters": [
         {
           "name": "Addr",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "地址。",
+            "en": "The address."
+          }
         },
         {
           "name": "AttributeInfo",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "地址归属信息，JSON化字符串格式。\n\n- LineCode：归属线路Code（已废弃，以lineCodes数据为准）\n- lineCodes：归属线路Code列表\n- lineCodeRectifyType：归属线路订正类型，默认：自动订正\n    - NO_NEED 不订正\n    - RECTIFIED 已订正\n    - AUTO 自动订正",
+            "en": "The source region of the address. This parameter is a JSON string.\n\n- LineCode: The line code of the source region. This parameter is deprecated. Use lineCodes instead.\n\n- lineCodes: A list of line codes for the source regions.\n\n- lineCodeRectifyType: The type of line code rectification. Default value: AUTO. Valid values:\n\n  - NO\\_NEED: No rectification is required.\n\n  - RECTIFIED: The line code is rectified.\n\n  - AUTO: The line code is automatically rectified."
+          }
         },
         {
           "name": "LbaWeight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "权重。",
+            "en": "The weight."
+          }
         },
         {
           "name": "Mode",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "模式：\n\n- SMART：智能返回\n- ONLINE：永远在线\n- OFFLINE：永远离线",
+            "en": "The mode. Valid values:\n\n- SMART: Smart return\n\n- ONLINE: Always online\n\n- OFFLINE: Always offline"
+          }
         },
         {
           "name": "Remark",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "备注。",
+            "en": "The remarks."
+          }
         }
-      ],
-      "description": {
-        "zh": "地址池列表。",
-        "en": "The address pools."
-      }
+      ]
     },
     {
       "name": "AddrPoolId",
@@ -53,7 +74,7 @@
       "required": true,
       "description": {
         "zh": "地址池id。<props=\"china\">可通过调用[DescribeDnsGtmInstanceAddressPools ](https://help.aliyun.com/zh/dns/api-alidns-2015-01-09-describednsgtminstanceaddresspools?spm=a2c4g.11186623.help-menu-29697.d_0_5_1_3_9_7.1cee430dbd1I3y)获取</props>\n<props=\"intl\">可通过调用[DescribeDnsGtmInstanceAddressPools ](https://www.alibabacloud.com/help/zh/dns/api-alidns-2015-01-09-describednsgtminstanceaddresspools?spm=a2c63.p38356.help-menu-search-29697.d_0)获取</props>",
-        "en": "The ID of the address pool."
+        "en": "The ID of the address pool. For more information, see [DescribeDnsGtmInstanceAddressPools](https://www.alibabacloud.com/help/en/dns/api-alidns-2015-01-09-describednsgtminstanceaddresspools)."
       }
     },
     {
@@ -63,7 +84,7 @@
       "required": false,
       "description": {
         "zh": "部分返回参数语言。默认值：en。取值范围：en、zh、ja。",
-        "en": "The language of the values of specific response parameters. Default value: en. Valid values: en, zh, and ja."
+        "en": "The language of the response. Default value: en. Valid values: en, zh, and ja."
       }
     },
     {
@@ -73,7 +94,7 @@
       "required": true,
       "description": {
         "zh": "负载均衡策略：\n\n- ALL_RR: 返回全部地址\n- RATIO：按权重返回地址",
-        "en": "The load balancing policy of the address pool. Valid values:\n\n*   ALL_RR: returns all addresses.\n*   RATIO: returns addresses by weight."
+        "en": "The load balancing policy. Valid values:\n\n- ALL\\_RR: Returns all addresses.\n\n- RATIO: Returns addresses by weight."
       }
     },
     {
@@ -87,6 +108,13 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改地址池",
+    "en": "UpdateDnsGtmAddressPool"
+  },
   "example": {
     "unifiedCli": "aliyun alidns update-dns-gtm-address-pool --lang en --addr-pool-id testp000000 --name testpoolname --lba-strategy ALL_RR --addr AttributeInfo=Linecode:_default_lineCodes：_default_lineCodeRectifyType:_AUTO LbaWeight=1 Mode=SMART Addr=1.1.XX.XX Remark=test --region cn-hangzhou",
     "legacyCli": "aliyun alidns UpdateDnsGtmAddressPool --region cn-hangzhou --Addr.1.AttributeInfo 'Linecode:_default_lineCodes：_default_lineCodeRectifyType:_AUTO' --LbaStrategy ALL_RR --Addr.1.Mode SMART --AddrPoolId testp000000 --Lang en --Addr.1.LbaWeight 1 --Addr.1.Addr '1.1.XX.XX' --Addr.1.Remark test --Name testpoolname"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "用于保证请求的幂等性，防止请求重复提交。",
-        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must ensure that it is unique among different requests."
+        "en": "The client token that is used to ensure the idempotence of the request."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "变更配置的实例ID。",
-        "en": "The ID of the instance for which you want to modify the configurations."
+        "en": "The ID of the instance whose configuration you want to change."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "变配类型，取值\n- Upgrade：升级。\n- Downgrade：降级。",
-        "en": "The type of configuration modifications. Valid values:\n\n*   Upgrade: upgrades the configurations of the instance.\n*   Downgrade: downgrades the configurations of the instance."
+        "en": "The type of configuration change. Valid values:\n\n- Upgrade\n\n- Downgrade"
       }
     },
     {
@@ -39,24 +40,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "参数列表。",
+        "en": "The list of parameters. You can specify up to 100 parameters."
+      },
       "sub_parameters": [
         {
           "name": "Code",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个模块属性code配置，n的取值范围为（1~100），如有多个模块属性参数，按照n=1,2,3…n的形式拼接多个参数。\n\n> 只设置需要变更配置的模块属性信息，如A,B两个属性中，只有A需要变更配置，则只传A属性相关即可。",
+            "en": "The code of the module property.\n\n> Specify only the module properties that you want to change. For example, if you have two properties, A and B, and you only want to change property A, pass only the information related to property A."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个模块属性value配置，n的取值范围为（1~100）。",
+            "en": "The value of the module property."
+          }
         }
-      ],
-      "description": {
-        "zh": "参数列表。",
-        "en": "The details about the parameters."
-      }
+      ]
     },
     {
       "name": "ProductCode",
@@ -65,7 +74,7 @@
       "required": true,
       "description": {
         "zh": "产品代码。",
-        "en": "The code of the service to which the instance belongs."
+        "en": "The product code."
       }
     },
     {
@@ -75,7 +84,7 @@
       "required": false,
       "description": {
         "zh": "产品类型。",
-        "en": "The type of the service to which the instance belongs."
+        "en": "The product type."
       }
     },
     {
@@ -85,10 +94,17 @@
       "required": true,
       "description": {
         "zh": "付费类型，取值：\n- Subscription：预付费。\n- PayAsYouGo：后付费。",
-        "en": "The billing method. Valid values:\n\n*   Subscription: subscription\n*   PayAsYouGo: pay-as-you-go"
+        "en": "The billing method. Valid values:\n\n- Subscription: subscription.\n\n- PayAsYouGo: pay-as-you-go."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "实例变更服务",
+    "en": "ModifyInstance"
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi modify-instance --product-code rds --product-type rds --subscription-type Subscription --modify-type Upgrade --instance-id rm-akjhkdsjhfskjfhd --client-token JAKSJFHFAKJSF --parameter Value=test Code=test --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi ModifyInstance --region cn-hangzhou --SubscriptionType Subscription --ModifyType Upgrade --Parameter.1.Value test --ProductCode rds --InstanceId 'rm-akjhkdsjhfskjfhd' --ProductType rds --ClientToken JAKSJFHFAKJSF --Parameter.1.Code test"

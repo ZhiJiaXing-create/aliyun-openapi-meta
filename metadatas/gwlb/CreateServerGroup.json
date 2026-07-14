@@ -1,5 +1,6 @@
 {
   "name": "CreateServerGroup",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,75 +9,134 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "ConnectionDrainConfig",
       "position": "Body",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接优雅中断相关配置。",
+        "en": "The configurations of connection draining."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建服务器组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "HealthCheckConfig",
       "position": "Body",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "健康检查相关配置。",
+        "en": "The health check configurations."
+      }
     },
     {
       "name": "Protocol",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "后端转发协议。取值：\n\n- **GENEVE**（默认值）。",
+        "en": "The backend protocol. Valid value:\n\n- **GENEVE** (default)"
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "Scheduler",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度算法。取值：\n\n- **5TCH**（默认值）：五元组哈希，基于五元组（源IP、目的IP、源端口、目的端口和协议）的一致性哈希，相同的流会调度到相同的后端服务器。\n\n- **3TCH**：三元组哈希，基于三元组（源IP、目的IP和协议）的一致性哈希，相同的流会调度到相同的后端服务器。\n\n- **2TCH**：二元组哈希，基于二元组（源IP和目的IP）的一致性哈希，相同的流会调度到相同的后端服务器。",
+        "en": "The scheduling algorithm. Valid values:\n\n- **5TCH** (default): specifies consistent hashing that is based on the following factors: source IP address, destination IP address, source port, protocol, and destination port. Requests that contain the same information based on the preceding factors are forwarded to the same backend server.\n\n- **3TCH**: specifies consistent hashing that is based on the following factors: source IP address, destination IP address, and protocol. Requests that contain the same information based on the preceding factors are forwarded to the same backend server.\n\n- **2TCH**: specifies consistent hashing that is based on the following factors: source IP address and destination IP address. Requests that contain the same information based on the preceding factors are forwarded to the same backend server."
+      }
     },
     {
       "name": "ServerFailoverMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器异常时，存量流量的处理方式。取值：\n\n- **NoRebalance（默认值）**：不重新平衡现有流量。\n- **Rebalance**：重新平衡现有流量。",
+        "en": "Specifies how GWLB processes requests over existing connections when a backend server is not running as expected. Valid values:\n\n- **NoRebalance** (default): GWLB continues to forward requests over existing connections to the unavailable backend server.\n\n- **Rebalance**: GWLB forwards requests over existing connections to the remaining healthy backend servers."
+      }
     },
     {
       "name": "ServerGroupName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器组名称。\n\n长度为2~128个字符，必须以大小写字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The server group name.\n\nThe name must be 2 to 128 characters in length, and can contain digits, periods (.), underscores (\\_), and hyphens (-). It must start with a letter."
+      }
     },
     {
       "name": "ServerGroupType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器组类型。取值：\n\n- **Instance**（默认值）：服务器类型，该类型服务器组支持添加**Ecs**、**Eni**、**Eci**类型实例。\n\n- **Ip**：IP地址类型，该类型服务器组支持直接添加IP地址类型的后端服务器。",
+        "en": "The type of the server group. Valid values:\n\n- **Instance** (default): allows you to specify resources of the **Ecs**, **Eni**, or **Eci** type.\n\n- **Ip**: allows you to add servers by specifying their IP addresses."
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签列表。\n\n一次调用最多支持 20 个标签。",
+        "en": "The tag keys.\n\nYou can specify at most 20 tags in each call."
+      }
     },
     {
       "name": "VpcId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPC实例ID。\n\n> 如果**ServerGroupType**取值为**Instance**时，只有该VPC下的服务器可以加入到该服务器组。",
+        "en": "The VPC ID.\n\n> If **ServerGroupType** is set to **Instance**, only servers in the specified VPC can be added to the server group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建服务器组",
+    "en": "CreateServerGroup"
+  },
+  "descriptions": {
+    "zh": "**CreateServerGroup**接口属于异步接口，即系统返回一个请求ID，但该服务器组尚未创建成功，系统后台的创建任务仍在进行。您可以调用 ListServerGroups 查询服务器组的创建状态：\n- 当服务器组处于**Creating**状态时，表示服务器组正在创建中。\n- 当服务器组处于**Available**状态时，表示服务器组创建成功。",
+    "en": "**CreateServerGroup** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the ListServerGroups operation to query the status of the task.\n\n- If the server group is in the **Creating** state, it indicates that the server group is being created.\n\n- If the server group is in the **Available** state, it indicates that the server group is created."
+  },
   "example": {
     "unifiedCli": "aliyun gwlb create-server-group --server-group-type Instance --server-group-name testServerGroupName --protocol GENEVE --scheduler 5TCH --server-failover-mode NoRebalance --vpc-id vpc-bp15zckdt37pq72zv0000 --resource-group-id rg-atstuj3rtop0000 --connection-drain-config ConnectionDrainEnabled=false ConnectionDrainTimeout=300 --health-check-config '{\"HealthCheckInterval\":10,\"HealthCheckConnectPort\":80,\"HealthCheckReq\":\"example-string\",\"UnhealthyThreshold\":2,\"HealthCheckPath\":\"/test/index.html\",\"HealthyThreshold\":2,\"HealthCheckExp\":\"example-string\",\"HealthCheckConnectTimeout\":5,\"HealthCheckProtocol\":\"TCP\",\"HealthCheckDomain\":\"SERVER_IP\",\"HealthCheckEnabled\":true,\"HealthCheckHttpCode\":[\"http_2xx\"]}' --tag Value=testTagValue Key=testTagKey --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun gwlb CreateServerGroup --region cn-hangzhou --HealthCheckConfig.HealthCheckConnectTimeout 5 --ResourceGroupId 'rg-atstuj3rtop0000' --Scheduler 5TCH --DryRun false --HealthCheckConfig.HealthCheckProtocol TCP --HealthCheckConfig.HealthCheckPath '/test/index.html' --HealthCheckConfig.UnhealthyThreshold 2 --ConnectionDrainConfig.ConnectionDrainEnabled false --ConnectionDrainConfig.ConnectionDrainTimeout 300 --HealthCheckConfig.HealthCheckDomain SERVER_IP --HealthCheckConfig.HealthCheckEnabled true --HealthCheckConfig.HealthCheckConnectPort 80 --Protocol GENEVE --HealthCheckConfig.HealthyThreshold 2 --ServerGroupName testServerGroupName --Tag.1.Key testTagKey --HealthCheckConfig.HealthCheckReq 'example-string' --HealthCheckConfig.HealthCheckExp 'example-string' --HealthCheckConfig.HealthCheckHttpCode.1 http_2xx --ServerGroupType Instance --HealthCheckConfig.HealthCheckInterval 10 --VpcId 'vpc-bp15zckdt37pq72zv0000' --Tag.1.Value testTagValue --ServerFailoverMode NoRebalance --ClientToken '123e4567-e89b-12d3-a456-426655440000' --method POST --force"

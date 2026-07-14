@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBInstanceEndpointAddress",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该参数用于保证请求的幂等性，防止重复提交请求。参数值由客户端生成，保证在不同请求间唯一。\n\n该参数值由ASCII字符组成，最长不超过64个字符，不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "ConnectionString",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改的实例某个连接地址，可以是内网或外网连接地址。",
+        "en": "The endpoint that you want to modify. The endpoint can be a public endpoint or an internal endpoint."
+      }
     },
     {
       "name": "ConnectionStringPrefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标连接地址的前缀。只能修改ConnectionString参数的前缀部分。",
+        "en": "The prefix of the new endpoint. You can modify only the prefix of the endpoint that is specified by the ConnectionString parameter."
+      }
     },
     {
       "name": "DBInstanceEndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例的Endpoint ID。可调用DescribeDBInstanceEndpoints查询。",
+        "en": "The endpoint ID of the instance. You can call the DescribeDBInstanceEndpoints operation to query the endpoint ID of the instance."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances查询。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the ID of the instance."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标连接的端口号。",
+        "en": "The port number of the new endpoint."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "内网IP地址。",
+        "en": "The IP address of the internal endpoint."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "内网连接的交换机ID。",
+        "en": "The vSwitch ID of the internal endpoint."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "内网连接的VPC ID。",
+        "en": "The VPC ID of the internal endpoint."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例的Endpoint连接地址信息",
+    "en": "ModifyDBInstanceEndpointAddress"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n<props=\"china\">\n\n- RDS MySQL\n- RDS PostgreSQL\n\n</props>\n\n<props=\"intl\">RDS MySQL</props>\n\n### 注意事项\n- 修改Endpoint连接地址，包括修改外网和内网的连接串和端口、内网连接的VPC、vSwitch、IP等参数。\n- 修改时，需要将VpcId、VSwitchId看作一组。内网地址的VpcId、VSwitchId、PrivateIpAddress等信息与ConnectionStringPrefix、Port不能同时传入，但至少传入其中一个参数。",
+    "en": "### [](#)Supported database engines\n\nMySQL\n\n### [](#)Precautions\n\n*   You can modify the following information about the endpoint of an instance: the public and internal endpoints, the public and internal ports, and the virtual private cloud (VPC), vSwitch, and IP address of the internal endpoint.\n*   The VPC and vSwitch must be modified at the same time. If you specify the VPC, vSwitch, and IP address of the internal endpoint, you do not need to specify the endpoint and port. If you specify the endpoint and port, you do not need to specify the VPC, vSwitch, and IP address of the internal endpoint."
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-db-instance-endpoint-address --client-token 6000170000591aed949d0f0000 --db-instance-id rm-0000 --db-instance-endpoint-id ep-0000 --connection-string rm-uf6wjk50000.mysql.rds.aliyuncs.com --vpc-id vpc-bp17xdic25d0000 --vswitch-id vsw-bp12u14ecz0000 --private-ip-address 172.16.XX.XX --connection-string-prefix rm-bp181qoj4s34m330000 --port 3306 --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyDBInstanceEndpointAddress --region cn-hangzhou --PrivateIpAddress '172.16.XX.XX' --VpcId 'vpc-bp17xdic25d0000' --DBInstanceId 'rm-0000' --VSwitchId 'vsw-bp12u14ecz0000' --Port 3306 --ClientToken 6000170000591aed949d0f0000 --DBInstanceEndpointId 'ep-0000' --ConnectionString 'rm-uf6wjk50000.mysql.rds.aliyuncs.com' --ConnectionStringPrefix 'rm-bp181qoj4s34m330000'"

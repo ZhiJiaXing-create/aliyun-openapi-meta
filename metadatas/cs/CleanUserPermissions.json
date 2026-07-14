@@ -1,5 +1,6 @@
 {
   "name": "CleanUserPermissions",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "DELETE",
   "pathPattern": "/users/[Uid]/permissions",
@@ -8,21 +9,44 @@
       "name": "ClusterIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群ID列表。如指定了该列表，则仅清除当前用户在列表内集群的KubeConfig和RBAC权限。",
+        "en": "The list of cluster IDs. If this list is specified, only the KubeConfig credentials and RBAC permissions of the current user in the specified clusters are cleaned up."
+      }
     },
     {
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制删除指定的KubeConfig，取值：\n- false（默认值）：删除KubeConfig前校验是否在七天内存在相关的集群访问记录，如果存在或无法查找集群访问记录，则不允许删除。\n- true：强制删除KubeConfig，不检查集群访问记录。",
+        "en": "Specifies whether to force delete the specified KubeConfig. Valid values:\n- false (default): Before deleting the KubeConfig, the system checks whether cluster access records exist within the last seven days. If access records exist or cannot be retrieved, the deletion is not allowed.\n- true: Force deletes the KubeConfig without checking cluster access records."
+      }
     },
     {
       "name": "Uid",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "阿里云账号内指定RAM用户或RAM角色ID。",
+        "en": "The ID of the specified Resource Access Management (RAM) user or RAM role within the Alibaba Cloud account."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "清理指定用户在所有集群已下发KubeConfig凭据和RBAC权限",
+    "en": "Clean up issued kubeConfig credentials and RBAC permissions for a specified user across all clusters"
+  },
+  "descriptions": {
+    "zh": ">- 需要拥有管理容器服务（CS）的权限（AliyunCSFullAccess）\n>- 不支持清除阿里云账号权限\n>- 不支持清除操作用户本身的权限",
+    "en": ">- You must have full access permissions on Container Service for Kubernetes (ACK) (AliyunCSFullAccess).\n>- Cleaning up permissions of an Alibaba Cloud account is not supported.\n>- Cleaning up the permissions of the user who performs this operation is not supported."
+  },
   "example": {
     "unifiedCli": "aliyun cs clean-user-permissions --uid 265624438516500000 --biz-force false --cluster-ids cd53c3a9ee12a494c9a0451e2ffc11c65 --region cn-hangzhou",
     "legacyCli": "aliyun cs DELETE /users/265624438516500000/permissions --region cn-hangzhou --Force false --ClusterIds cd53c3a9ee12a494c9a0451e2ffc11c65 --header \"Content-Type=application/json\""

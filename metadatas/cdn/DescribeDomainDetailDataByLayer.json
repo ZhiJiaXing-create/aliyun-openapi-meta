@@ -1,5 +1,6 @@
 {
   "name": "DescribeDomainDetailDataByLayer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": true,
       "description": {
         "zh": "需要查询的域名。支持批量域名查询，多个域名用半角逗号（,）分隔，一次最多支持30个域名查询。",
-        "en": "The name of the Internet service provider (ISP) for your Alibaba Cloud CDN service. You can call the [DescribeCdnRegionAndIsp](~~91077~~) operation to query ISP names.\n\nIf you do not specify an ISP, data of all ISPs is queried."
+        "en": "The accelerated domain name to query. You can query multiple domain names in a single request. To do so, separate the domain names with commas (,). You can specify up to 30 domain names."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": true,
       "description": {
         "zh": "获取数据结束时间。日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间，且间隔不超过1小时。",
-        "en": "The protocol by which you want to query data. Valid values: **http**, **https**, **quic**, and **all**.\n\nThe default value is **all**."
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard. The format is yyyy-MM-ddTHH:mm:ssZ. The time is in UTC.\n\n> The end time must be later than the start time. The time range cannot exceed 1 hour."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "需要查询的指标。支持多指标查询，多个指标用英文逗号（,）分隔，包含**bps**、**qps**、**traf**、**acc**、**ipv6_traf**、**ipv6_bps**、**ipv6_acc**、**ipv6_qps**、**http_code**。",
-        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n>  The end time must be later than the start time."
+        "en": "The metrics to query. You can query multiple metrics at a time. Separate multiple metrics with commas (,). Valid values: **bps**, **qps**, **traf**, **acc**, **ipv6\\_traf**, **ipv6\\_bps**, **ipv6\\_acc**, **ipv6\\_qps**, and **http\\_code**."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "运营商英文名，通过[DescribeCdnRegionAndIsp](~~91077~~)接口获得。\n\n不传值代表所有运营商。",
-        "en": "The ID of the request."
+        "en": "The name of the carrier. You can call the [DescribeCdnRegionAndIsp](~~91077~~) operation to query carrier names.\n\nIf you do not set this parameter, data for all carriers is returned."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "查询维度，应用层（**http**、**https**、**quic**）或**all**。\n\n默认为**all**。",
-        "en": "The amount of network traffic. Unit: bytes."
+        "en": "The dimension to query. Valid values are **http**, **https**, and **quic** for the application layer, or **all**.\n\nThe default value is **all**."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "区域英文名，通过[DescribeCdnRegionAndIsp](~~91077~~)接口获得。\n\n不传值代表所有区域。",
-        "en": "The detailed data of the accelerated domain names."
+        "en": "The name of the region. You can call the [DescribeCdnRegionAndIsp](~~91077~~) operation to query region names.\n\nIf you do not set this parameter, data for all regions is returned."
       }
     },
     {
@@ -71,10 +72,21 @@
       "required": true,
       "description": {
         "zh": "获取数据起始时间点，日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
-        "en": "The name of the region. You can call the [DescribeCdnRegionAndIsp](~~91077~~) operation to query regions.\n\nIf you do not specify a region, data in all regions is queried."
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard. The format is yyyy-MM-ddTHH:mm:ssZ. The time is in UTC."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "按协议类型获取详细数据",
+    "en": "DescribeDomainDetailDataByLayer"
+  },
+  "descriptions": {
+    "zh": "单用户调用频率：20次/秒。\n\n**支持查询的时间粒度**\n\n根据单次查询的最大时间跨度不同，请求参数Interval支持不同的查询数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n|时间粒度         |单次查询的最大时间跨度  |可查询历史数据时间范围|数据延迟|\n|---------------|--------|---|---|\n|5分钟|1小时|93天|15分钟|",
+    "en": "The maximum call frequency for a single user is 20 calls per second.\n\n**Supported time granularities**\n\nThe supported time granularity for a query depends on the maximum time span specified in the query. The following table describes the time granularity, the time range of historical data that you can query, and the data latency.\n\n| Time granularity | Maximum time span per query | Queryable historical data range | Data latency |\n| ---------------- | --------------------------- | ------------------------------- | ------------ |\n| 5 minutes        | 1 hour                      | 93 days                         | 15 minutes   |"
+  },
   "example": {
     "unifiedCli": "aliyun cdn describe-domain-detail-data-by-layer --field bps,ipv6_traf,traf,http_code,qps --domain-name example.com --start-time 2020-07-05T22:00:00Z --end-time 2020-07-05T22:05:00Z --isp-name-en telecom --location-name-en hangzhou --layer all --region cn-hangzhou",
     "legacyCli": "aliyun cdn DescribeDomainDetailDataByLayer --region cn-hangzhou --Field 'bps,ipv6_traf,traf,http_code,qps' --IspNameEn telecom --EndTime '2020-07-05T22:05:00Z' --DomainName 'example.com' --LocationNameEn hangzhou --StartTime '2020-07-05T22:00:00Z' --Layer all"

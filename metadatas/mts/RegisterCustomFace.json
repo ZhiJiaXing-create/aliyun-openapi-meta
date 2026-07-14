@@ -1,5 +1,6 @@
 {
   "name": "RegisterCustomFace",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,19 +9,31 @@
       "name": "CategoryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "⼈物库ID，⽤于唯⼀标识⼀个⾃定义⼈物库。由调⽤者⽣成，调⽤者⾃⼰保证唯⼀性（请妥善保存此ID便于后续调用其他接口时使用）。\n><notice>不能与系统⼈物库ID相同，如果相同则默认使用系统人物库。最⻓⽀持120字符，不限中英文，不区分⼤⼩写。></notice>",
+        "en": "The unique ID for a custom figure library. The caller generates this ID and must ensure it is unique. Save this ID to use when you call other APIs.\n><notice>This ID cannot be the same as a system figure library ID. If the IDs match, the system figure library is used by default. The ID can be up to 120 characters long, is case-insensitive, and supports characters from any language.></notice>"
+      }
     },
     {
       "name": "ImageUrl",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要注册的⼈脸图⽚公网地址，图⽚中有且仅包含⼀张正脸。",
+        "en": "The public URL of the image containing the face to register. The image must contain exactly one frontal face."
+      }
     },
     {
       "name": "PersonId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "⼈物ID，⽤于唯⼀标识⼀个⾃定义⼈物。由调⽤者⽣成，调⽤者⾃⼰保证唯⼀性（请妥善保存此ID便于后续调用其他接口时使用） 。\n> 最⻓⽀持120字符，不限中英文，不区分⼤⼩写，返回FaceId为String类型。",
+        "en": "The ID of the custom person. This ID uniquely identifies a custom person. You generate this ID and ensure its uniqueness. Store it securely for use with other API calls.\n\n> Supports up to 120 characters, supports Chinese and English characters, is case-insensitive, and returns FaceId as a String."
+      }
     },
     {
       "name": "PersonName",
@@ -29,6 +42,17 @@
       "required": false
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "注册⾃定义⼈脸",
+    "en": "RegisterCustomFace"
+  },
+  "descriptions": {
+    "zh": "- 本接口一次仅能注册一张自定义人脸。\n- 一个自定义人脸最多注册10张图像。\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "- You can register one custom face per API call.\n\n- You can register up to 10 images for a single custom face.\n\n## QPS limit\n\nThe per-user QPS limit for this operation is 100 calls per second. Exceeding this limit triggers rate limiting, which may affect your business. Call this API appropriately. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts register-custom-face --category-id CategoryId001-0000 --person-id PersonId001-0000 --image-url http://example-0000.jpeg --person-name example-string --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts RegisterCustomFace --region cn-hangzhou --CategoryId 'CategoryId001-0000' --PersonName 'example-string' --PersonId 'PersonId001-0000' --ImageUrl 'http://example-0000.jpeg'"

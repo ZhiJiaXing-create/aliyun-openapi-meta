@@ -1,5 +1,6 @@
 {
   "name": "UpdateLiveMPUTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID，仅支持传单个ID。由大小写字母、数字、下划线、短划线（-）组成，最大64字符。",
+        "en": "The application ID. You can specify only one application ID. The ID can be up to 64 characters in length and can contain letters, digits, underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "ChannelId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "频道ID，仅支持传单个ID。由大小写字母、数字、下划线、短划线（-）组成，最大64字符。",
+        "en": "The channel ID. You can specify only one channel ID. The ID can be up to 64 characters in length and can contain letters, digits, underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "MixMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "混流模式。取值：\n- **0**：单路转推，不混流转码，仅转推原始单路流，无需配置混流转码参数。\n- **1（默认值）**：混流转码转推。",
+        "en": "The stream mixing mode. Valid values:\n\n- **0**: the single-stream relay mode. In this mode, the service only relays the original single stream, but does not transcode mixed streams. You do not need to set parameters for mixed-stream transcoding.\n\n- **1** (default): the mixed-stream relay mode."
+      }
     },
     {
       "name": "MultiStreamURL",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "多地址转推参数，可填写多个直播推流地址。",
+        "en": "The multiple ingest URLs to relay. This parameter allows you to specify multiple ingest URLs."
+      },
       "sub_parameters": [
         {
           "name": "IsAliCdn",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否转推到阿里云CDN。\n- false为转推非阿里云CDN。\n- true为转推阿里云CDN。\n> 该参数默认为false。",
+            "en": "Specifies whether to perform stream relay by using Alibaba Cloud CDN. Valid values:\n\n- false: performs stream relay by using a CDN service that is not Alibaba Cloud CDN.\n\n- true: performs stream relay by using Alibaba Cloud CDN.\n\n> The default value of this parameter is false."
+          }
         },
         {
           "name": "URL",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "直播推流地址，仅支持RTMP协议，最大长度不超过2048个字符。生成规则请参见[推流地址和播放地址](~~199339~~)。",
+            "en": "The ingest URL. Only the RTMP format is supported. The URL can be up to 2,048 characters in length. For information about the generation rules of ingest URLs, see [Ingest and streaming URLs](~~199339~~)."
+          }
         }
       ]
     },
@@ -46,33 +71,64 @@
       "name": "SeiParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SEI配置参数。",
+        "en": "The supplemental enhancement information (SEI) parameters."
+      }
     },
     {
       "name": "SingleSubParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单流转推参数，单流转推（MixMode=0）时必填。",
+        "en": "The single-stream relay parameters. These parameters are required if you set MixMode to 0."
+      }
     },
     {
       "name": "StreamURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "直播推流地址，仅支持RTMP协议，仅支持传单个地址，最大长度不超过2048个字符。生成规则请参见[推流地址和播放地址](~~199339~~)。\n>- 对已开防盗链鉴权的域名，需要在推流地址中包含鉴权串。\n- 禁止同一个StreamURL在不同任务中同时使用。\n- 任务停止10S之内，禁止使用同一个StreamURL。",
+        "en": "The ingest URL. You can specify only one ingest URL in the Real-Time Messaging Protocol (RTMP) format. The URL can be up to 2,048 characters in length. For information about the generation rules of ingest URLs, see [Ingest and streaming URLs](~~199339~~).\n\n>\n\n- If the ingest URL is under a domain name for which hotlink protection is enabled, you must include an access token in the URL.\n\n- You cannot use the same ingest URL in different tasks.\n\n- You cannot use the same ingest URL within 10 seconds after a task is stopped."
+      }
     },
     {
       "name": "TaskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务ID，仅支持传单个ID。由大小写字母、数字、下划线、短划线（-）组成，最大55字符。此ID为旁路转推的标识，需保证唯一。",
+        "en": "The task ID. You can specify only one task ID. The ID can be up to 55 characters in length and can contain letters, digits, underscores (\\_), and hyphens (-). The ID must be unique."
+      }
     },
     {
       "name": "TranscodeParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "混流转码转推参数，混流转码转推（MixMode=1）时必填。",
+        "en": "The mixed-stream relay parameters. These parameters are required if you set MixMode to 1."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新混流转推任务（新）",
+    "en": "UpdateLiveMPUTask"
+  },
+  "descriptions": {
+    "zh": "调用本接口前，您必须已经调用[StartLiveMPUTask](~~2848199~~)创建混流转推任务。\n\n## QPS限制\n本接口的单用户QPS限制为500次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "Make sure that a mixed-stream relay task is created before you call this operation. You can call the [StartLiveMPUTask](~~2848199~~) operation to create a mixed-stream relay task.\n\n## [](#qps-)QPS limit\n\nYou can call this operation up to 500 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun live update-live-mpu-task --app-id yourAppId --channel-id yourChannelId --task-id yourTaskId --mix-mode 0 --stream-url rtmp://example.com/live/stream --multi-stream-url IsAliCdn=false URL=rtmp://example.com/live/stream0000 --single-sub-params StreamType=0 UserId=yourSubUserId SourceType=camera --transcode-params '{\"Background\":{\"RenderMode\":\"1\",\"URL\":\"yourImageUrl\"},\"Layout\":{\"UserPanes\":[{\"BackgroundImageUrl\":\"yourImageUrl\",\"RenderMode\":\"1\",\"ZOrder\":\"0\",\"X\":\"0.2456\",\"Y\":\"0.3789\",\"UserInfo\":{\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"},\"Height\":\"0.2632\",\"Width\":\"0.3564\"}]},\"EncodeParams\":{\"AudioSampleRate\":\"44100\",\"AudioBitrate\":\"128\",\"AudioChannels\":\"2\",\"VideoHeight\":\"1000\",\"AudioOnly\":\"false\",\"VideoFramerate\":\"25\",\"VideoWidth\":\"1920\",\"VideoGop\":\"20\",\"EnhancedParam\":\"profile_:_high_,_preset_:_veryfast\",\"VideoCodec\":\"H.264\",\"VideoBitrate\":\"3500\"},\"UserInfos\":[{\"StreamType\":\"0\",\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"}]}' --sei-params '{\"LayoutVolume\":{\"FollowIdr\":\"0\",\"Interval\":\"1000\"},\"PassThrough\":{\"PayloadContentKey\":\"yourPayloadContentKey\",\"PayloadContent\":\"yourPayloadContent\",\"FollowIdr\":\"0\",\"Interval\":\"1000\"}}' --region cn-hangzhou",
     "legacyCli": "aliyun live UpdateLiveMPUTask --region cn-hangzhou --TaskId yourTaskId --MixMode 0 --AppId yourAppId --SeiParams '{\"LayoutVolume\":{\"FollowIdr\":\"0\",\"Interval\":\"1000\"},\"PassThrough\":{\"PayloadContentKey\":\"yourPayloadContentKey\",\"PayloadContent\":\"yourPayloadContent\",\"FollowIdr\":\"0\",\"Interval\":\"1000\"}}' --ChannelId yourChannelId --SingleSubParams '{\"StreamType\":\"0\",\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\"}' --TranscodeParams '{\"Background\":{\"RenderMode\":\"1\",\"URL\":\"yourImageUrl\"},\"Layout\":{\"UserPanes\":[{\"BackgroundImageUrl\":\"yourImageUrl\",\"RenderMode\":\"1\",\"ZOrder\":\"0\",\"X\":\"0.2456\",\"Y\":\"0.3789\",\"UserInfo\":{\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"},\"Height\":\"0.2632\",\"Width\":\"0.3564\"}]},\"EncodeParams\":{\"AudioSampleRate\":\"44100\",\"AudioBitrate\":\"128\",\"AudioChannels\":\"2\",\"VideoHeight\":\"1000\",\"AudioOnly\":\"false\",\"VideoFramerate\":\"25\",\"VideoWidth\":\"1920\",\"VideoGop\":\"20\",\"EnhancedParam\":\"profile_:_high_,_preset_:_veryfast\",\"VideoCodec\":\"H.264\",\"VideoBitrate\":\"3500\"},\"UserInfos\":[{\"StreamType\":\"0\",\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"}]}' --MultiStreamURL '[{\"IsAliCdn\":false,\"URL\":\"rtmp://example.com/live/stream0000\"}]' --StreamURL 'rtmp://example.com/live/stream'"

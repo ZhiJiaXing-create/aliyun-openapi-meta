@@ -1,5 +1,6 @@
 {
   "name": "DiagnoseVpnGateway",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n>若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+      }
     },
     {
       "name": "IPsecExtendInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检查指定地址间的私网连通性。取值：\n\n- **PrivateSourceIp**：源IP地址。源IP地址需为VPC侧的地址。\n- **PrivateDestinationIp**：目的IP地址。目的IP地址需为本地数据中心侧的地址。",
+        "en": "Check the connectivity of the destination address. Valid values:\n\n*   **PrivateSourceIp**: the source IP address. The source IP address must be on the VPC side.\n*   **PrivateDestinationIp**: the destination IP address. The destination IP address must be on the data center side."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPN gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待诊断的资源ID。",
+        "en": "The ID of the resource to be diagnosed."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待诊断的资源类型。\n\n仅取值：**IPsec**，表示IPsec连接。",
+        "en": "The type of the resource.\n\nSet the value to **Ipsec**, which specifies an IPsec-VPN connection."
+      }
     },
     {
       "name": "VpnGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例ID。",
+        "en": "The ID of the VPN gateway."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "一键诊断指定的VPN网关实例",
+    "en": "DiagnoseVpnGateway"
+  },
+  "descriptions": {
+    "zh": "仅部分地域下的VPN网关实例支持一键诊断功能。关于地域的更多信息，请参见[VPN网关功能支持的地域](~~430697~~)。",
+    "en": "仅部分地域下的VPN网关实例支持一键诊断功能。关于地域的更多信息，请参见[VPN网关功能支持的地域](~~430697~~)。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc diagnose-vpn-gateway --biz-region-id cn-hangzhou --resource-id vco-uf66xniofskqtuoz10000 --resource-type IPsec --vpn-gateway-id vpn-m5efhj0k1p47ctuhl0000 --ipsec-extend-info PrivateSourceIp_:_192.168.1.1_,_PrivateDestinationIp_:_192.168.0.1 --client-token 02fb3da4-130e-11e9-8e44-0010000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DiagnoseVpnGateway --region cn-hangzhou --ResourceId 'vco-uf66xniofskqtuoz10000' --VpnGatewayId 'vpn-m5efhj0k1p47ctuhl0000' --ResourceType IPsec --RegionId 'cn-hangzhou' --IPsecExtendInfo 'PrivateSourceIp_:_192.168.1.1_,_PrivateDestinationIp_:_192.168.0.1' --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

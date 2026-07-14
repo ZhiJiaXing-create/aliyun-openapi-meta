@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/tags",
@@ -8,47 +9,86 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始Token",
+        "en": "Pagination token for the next page of results"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域",
+        "en": "Region ID"
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID,最多 50个子项",
+        "en": "Resource IDs. Maximum: 50 items."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型",
+        "en": "Resource type"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "对应新增标签列表，最多包含20个子项",
+        "en": "Tags to filter by. Maximum: 20 items."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键",
+            "en": "Tag key"
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值",
+            "en": "Tag value"
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询标签列表",
+    "en": "Query tag list"
+  },
+  "descriptions": {
+    "zh": "请求中至少指定以下任一参数，以确定查询对象。\n\n- ResourceId.N\n- Tag.N（Tag.N.Key与Tag.N.Value）\n\n同时指定下列参数时，返回结果中仅包含同时满足这两个条件的资源。\n- Tag.N和ResourceId.N",
+    "en": "Specify at least one of the following parameters to query for resources.\n\n- ResourceId.N\n\n- Tag.N (Tag.N.Key and Tag.N.Value)\n\nIf you specify both parameters, the operation returns only resources that match both criteria.\n\n- Tag.N and ResourceId.N"
+  },
   "example": {
     "unifiedCli": "aliyun paistudio list-tag-resources --biz-region-id cn-hangzhou --resource-type ResourceGroup --resource-id rgrk6hhjpvio3wvj --tag Value=TestValue Key=TestKey --next-token ad31d453a1f3f23ce0b5e8707e68181f --api-version 2022-01-12 --region cn-hangzhou",
     "legacyCli": "aliyun paistudio GET /api/v1/tags --region cn-hangzhou --NextToken ad31d453a1f3f23ce0b5e8707e68181f --ResourceId '[\"rgrk6hhjpvio3wvj\"]' --ResourceType ResourceGroup --RegionId 'cn-hangzhou' --Tag '[{\"Value\":\"TestValue\",\"Key\":\"TestKey\"}]' --header \"Content-Type=application/json\""

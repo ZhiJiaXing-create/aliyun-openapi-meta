@@ -1,5 +1,6 @@
 {
   "name": "AllocateDirectConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ConnectionString",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "直连地址的前缀，由小写英文字母或数字组成，以小写字母开头，长度为8~40字符。默认为实例ID+`-direct`，例如实例ID为r-8vbwsicr5d5gse****，则该参数默认为`r-8vbwsicr5d5gse****-direct`。",
+        "en": "The prefix of the private endpoint. The prefix must start with a lowercase letter and can contain lowercase letters and digits. The prefix must be 8 to 40 characters in length."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "端口号，取值范围为**1024**~**65535**，默认值为**6379**。",
+        "en": "The port number of the instance. Valid values: **1024** to **65535**. Default value: **6379**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "申请集群实例的直连地址",
+    "en": "AllocateDirectConnection"
+  },
+  "descriptions": {
+    "zh": "客户端可通过直连地址绕过代理，像连接原生Redis集群一样连接集群实例，从而降低链路开销，进一步提升云数据库 Tair（兼容 Redis）服务的响应速度。\n\n调用本接口的实例需满足下述条件：\n* 实例为集群架构。\n* 部署模式为经典。\n* 实例的网络类型为专有网络。如果当前为经典网络，您可以调用[SwitchNetwork](~~473797~~)接口将其切换为专有网络。\n* 实例未开启SSL加密功能。如果已开启SSL加密功能，您可以调用[ModifyInstanceSSL](~~473838~~)接口将其关闭。",
+    "en": "Clients can bypass proxy nodes and use private endpoints to connect to cluster instances. This is similar to the connection to native Redis clusters. The direct connection mode can reduce communication overheads and the response time of Tair (Redis OSS-compatible).\n\nTo call this operation, make sure that the instance meets the following requirements:\n\n*   The instance is a cluster instance.\n*   The instance is deployed in classic mode.\n*   The instance is deployed in a virtual private cloud (VPC). If the instance is deployed in the classic network, you can call the [SwitchNetwork](~~473797~~) operation to change the network type to VPC.\n*   SSL encryption is disabled for the instance. If SSL encryption is enabled, you can call the [ModifyInstanceSSL](~~473838~~) operation to disable SSL encryption."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore allocate-direct-connection --instance-id r-bp1zxszhcgatnx0000 --connection-string redisdirect123 --port 6379 --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore AllocateDirectConnection --region cn-hangzhou --InstanceId 'r-bp1zxszhcgatnx0000' --Port 6379 --ConnectionString redisdirect123"

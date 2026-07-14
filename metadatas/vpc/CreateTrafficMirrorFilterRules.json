@@ -1,5 +1,6 @@
 {
   "name": "CreateTrafficMirrorFilterRules",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system uses **RequestId** as **ClientToken**. **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会创建入方向或出方向规则。检查项包括是否填写了必需参数、请求格式和限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n\n- **false**（默认值）：发送正常请求，通过检查后直接创建入方向或出方向规则。",
+        "en": "Specifies whether to check the request without performing the operation. Valid values:\n\n*   **true**: checks the request without performing the operation. The system checks the required parameters, request format, and limits. If the request fails the precheck, an error message is returned. If the request passes the precheck, the `DryRunOperation` error code is returned.\n*   **false** (default): sends the request. After the request passes the check, the operation is performed."
+      }
     },
     {
       "name": "EgressRules",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "出方向规则的详细信息。",
+        "en": "The information about the outbound rule."
+      },
       "sub_parameters": [
         {
           "name": "Action",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "出方向规则的采集策略，取值：\n\n- **accept**：采集网络流量。\n- **drop**：不采集网络流量。",
+            "en": "The collection policy of the outbound rule. Valid values:\n\n*   **accept**: accepts network traffic.\n*   **drop**: drops network traffic."
+          }
         },
         {
           "name": "DestinationCidrBlock",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则网络流量的目的地址网段。",
+            "en": "The destination CIDR block of the outbound traffic."
+          }
         },
         {
           "name": "DestinationPortRange",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则网络流量的目的端口范围。端口范围为**1**~**65535**，使用正斜线（/）隔开起始端口和终止端口，格式为**1/200**、**80/80**，其中**-1/-1**不能单独设置，代表不限制端口。\n\n> 当**EgressRules.N.Protocol**取值为**ALL**或**ICMP**时，该参数无需设置，表示不限制端口。",
+            "en": "The destination port range of the outbound traffic. Valid value: **1** to **65535**. Separate the first and last port with a forward slash (/). For example **1/200** and **80/80**. You cannot set this parameter to \\*\\*-1/-1\\*\\*, which indicates all ports.\n\n>  If **EgressRules.N.Protocol** is set to **ALL** or **ICMP**, you do not need to set this parameter. In this case, all ports are available."
+          }
         },
         {
           "name": "IpVersion",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "实例的IP协议版本。取值：\n\n- **IPv4**： IPv4版本。\n- **IPv6**： IPv6版本。",
+            "en": "The IP version of the instance. Valid values:\n\n*   **IPv4**: IPv4\n*   **IPv6**: IPv6"
+          }
         },
         {
           "name": "Priority",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则的优先级。数字越小，优先级越高。其中**N**最大取值为**10**，即一个筛选条件最多可配置10条出方向规则。",
+            "en": "The priority of the outbound rule. A smaller value indicates a higher priority. The maximum value of **N** is **10**. You can configure up to 10 outbound rules for a filter."
+          }
         },
         {
           "name": "Protocol",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "出方向需要镜像的网络流量使用的协议类型，取值：\n\n- **ALL**：所有协议。\n- **ICMP**：网络控制报文协议。\n- **TCP**：传输控制协议。\n- **UDP**：用户数据报协议。",
+            "en": "The protocol that is used by the outbound traffic to be mirrored. Valid values:\n\n*   **ALL**: all protocols\n*   **ICMP**: Internet Control Message Protocol.\n*   **TCP**: Transmission Control Protocol.\n*   **UDP**: User Datagram Protocol."
+          }
         },
         {
           "name": "SourceCidrBlock",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则网络流量的源地址网段。",
+            "en": "The source CIDR block of the outbound traffic."
+          }
         },
         {
           "name": "SourcePortRange",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则网络流量的源端口范围。端口范围为**1**~**65535**，使用正斜线（/）隔开起始端口和终止端口，格式为**1/200**、**80/80**，其中**-1/-1**不能单独设置，代表不限制端口。\n\n> 当**EgressRules.N.Protocol**取值为**ALL**或**ICMP**时，该参数无需设置，表示不限制端口。",
+            "en": "The source port range of the outbound traffic. Valid value: **1** to **65535**. Separate the first and last port with a forward slash (/). For example **1/200** and **80/80**. You cannot set this parameter to \\*\\*-1/-1\\*\\*, which indicates all ports.\n\n>  If **EgressRules.N.Protocol** is set to **ALL** or **ICMP**, you do not need to set this parameter. In this case, all ports are available."
+          }
         }
       ]
     },
@@ -77,54 +122,90 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "入方向规则的详细信息。",
+        "en": "The information about the inbound rules."
+      },
       "sub_parameters": [
         {
           "name": "Action",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则的采集策略，取值：\n\n- **accept**：采集网络流量。\n- **drop**：不采集网络流量。",
+            "en": "The policy of the inbound rule. Valid values:\n\n*   **accept**: collects network traffic.\n*   **drop**: drops network traffic."
+          }
         },
         {
           "name": "DestinationCidrBlock",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则网络流量的目的地址网段。",
+            "en": "The destination CIDR block of the inbound traffic."
+          }
         },
         {
           "name": "DestinationPortRange",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则网络流量的目的端口范围。端口范围为**1**~**65535**，使用正斜线（/）隔开起始端口和终止端口，格式为**1/200**、**80/80**。\n\n> 当**IngressRules.N.Protocol**取值为**ALL**或**ICMP**时，该参数无需设置，表示不限制端口。",
+            "en": "The destination port range of the inbound traffic. Valid value: **1** to **65535**. Separate the first and the last port with a forward slash (/). For example, **1/200** or **80/80**.\n\n>  If the **IngressRules.N.Protocol** parameter is set to **ALL** or **ICMP**, you do not need to set this parameter. In this case, all ports are available."
+          }
         },
         {
           "name": "IpVersion",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "实例的IP协议版本。取值：\n\n- **IPv4**： IPv4版本。\n- **IPv6**： IPv6版本。",
+            "en": "The IP version of the instance. The following value may be returned:\n\n*   **IPv4**: IPv4\n*   **IPv6**: IPv6"
+          }
         },
         {
           "name": "Priority",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则的优先级。数字越小，优先级越高。其中**N**最大取值为**10**，即一个筛选条件最多可配置10条入方向规则。",
+            "en": "The priority of the inbound rule. A smaller value indicates a higher priority. The maximum value of **N** is **10**. You can configure up to 10 inbound rules for a filter."
+          }
         },
         {
           "name": "Protocol",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向需要镜像的网络流量使用的协议类型，取值：\n\n- **ALL**：所有协议。\n- **ICMP**：网络控制报文协议。\n- **TCP**：传输控制协议。\n- **UDP**：用户数据报协议。",
+            "en": "The protocol that is used by the inbound traffic to be mirrored. Valid values:\n\n*   **ALL**: all protocols\n*   **ICMP**: Internet Control Message Protocol.\n*   **TCP**: Transmission Control Protocol.\n*   **UDP**: User Datagram Protocol."
+          }
         },
         {
           "name": "SourceCidrBlock",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则网络流量的源地址网段。",
+            "en": "The source CIDR block of the inbound traffic."
+          }
         },
         {
           "name": "SourcePortRange",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则网络流量的源端口范围。端口范围为**1**~**65535**，使用正斜线（/）隔开起始端口和终止端口，格式为**1/200**、**80/80**，其中**-1/-1**不能单独设置，代表不限制端口。\n\n> 当**IngressRules.N.Protocol**取值为**ALL**或**ICMP**时，该参数无需设置，表示不限制端口。",
+            "en": "The source port range of the inbound traffic. Valid value: **1** to **65535**. Separate the first and last port with a forward slash (/). For example **1/200** and **80/80**. You cannot set this parameter to \\*\\*-1/-1\\*\\*, which indicates all ports.\n\n>  If the **IngressRules.N.Protocol** parameter is set to **ALL** or **ICMP**, you do not need to set this parameter. In this case, all ports are available."
+          }
         }
       ]
     },
@@ -132,15 +213,33 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量镜像的所属地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。关于流量镜像支持的地域，请参见[流量镜像概述](~~207513~~)。",
+        "en": "The ID of the region to which the mirrored traffic belongs.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list. For more information about regions that support traffic mirror, see [Overview of traffic mirror](~~207513~~)."
+      }
     },
     {
       "name": "TrafficMirrorFilterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量镜像筛选条件的实例ID。",
+        "en": "The ID of the filter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建流量镜像入方向或出方向规则",
+    "en": "CreateTrafficMirrorFilterRules"
+  },
+  "descriptions": {
+    "zh": "- **CreateTrafficMirrorFilterRules**接口属于异步接口，即系统返回一个实例ID，但该流量镜像入方向或出方向规则尚未创建成功，系统后台的创建任务仍在进行。您可以调用[ListTrafficMirrorFilters](~~261353~~)查询流量镜像入方向或出方向规则的创建状态：\n    - 当流量镜像入方向或出方向规则处于**Creating**状态时，表示流量镜像入方向或出方向规则正在创建中。\n    - 当流量镜像入方向或出方向规则处于**Created**状态时，表示流量镜像入方向或出方向规则创建完成。\n- **CreateTrafficMirrorFilterRules**接口不支持在同一个流量镜像筛选条件下并发创建流量镜像入方向或出方向规则。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-traffic-mirror-filter-rules --traffic-mirror-filter-id tmf-j6cmls82xnc86vtpe0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --ingress-rules DestinationPortRange=80/120 Action=accept SourcePortRange=80/120 IpVersion=IPv4 Priority=1 SourceCidrBlock=10.0.0.0/24 DestinationCidrBlock=10.0.0.0/24 Protocol=TCP --egress-rules DestinationPortRange=22/40 Action=accept SourcePortRange=22/40 IpVersion=IPv4 Priority=1 SourceCidrBlock=10.0.0.0/24 DestinationCidrBlock=10.0.0.0/24 Protocol=TCP --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateTrafficMirrorFilterRules --region cn-hangzhou --IngressRules.1.Priority 1 --EgressRules.1.DestinationCidrBlock '10.0.0.0/24' --EgressRules.1.DestinationPortRange '22/40' --EgressRules.1.IpVersion IPv4 --DryRun false --IngressRules.1.Action accept --TrafficMirrorFilterId 'tmf-j6cmls82xnc86vtpe0000' --IngressRules.1.DestinationCidrBlock '10.0.0.0/24' --IngressRules.1.Protocol TCP --IngressRules.1.DestinationPortRange '80/120' --EgressRules.1.Priority 1 --EgressRules.1.Action accept --IngressRules.1.SourcePortRange '80/120' --EgressRules.1.SourceCidrBlock '10.0.0.0/24' --EgressRules.1.SourcePortRange '22/40' --RegionId 'cn-hangzhou' --IngressRules.1.IpVersion IPv4 --ClientToken '123e4567-e89b-12d3-a456-426655440000' --EgressRules.1.Protocol TCP --IngressRules.1.SourceCidrBlock '10.0.0.0/24'"

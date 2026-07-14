@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBInstanceCLS",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "EncryptionAlgorithm",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加密使用的算法。可以选择：\n\n- AES_128_CBC\n- AES_128_GCM\n- AES_128_CTR\n- AES_128_ECB\n- AES_256_CBC\n- AES_256_GCM\n- AES_256_CTR\n- AES_256_ECB\n- SM4_128_CBC\n- SM4_128_GCM\n- SM4_128_CTR\n- SM4_128_ECB",
+        "en": "The encryption algorithm. Valid values:\n\n- AES\\_128\\_CBC\n\n- AES\\_128\\_GCM\n\n- AES\\_128\\_CTR\n\n- AES\\_128\\_ECB\n\n- AES\\_256\\_CBC\n\n- AES\\_256\\_GCM\n\n- AES\\_256\\_CTR\n\n- AES\\_256\\_ECB\n\n- SM4\\_128\\_CBC\n\n- SM4\\_128\\_GCM\n\n- SM4\\_128\\_CTR\n\n- SM4\\_128\\_ECB"
+      }
     },
     {
       "name": "EncryptionKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加密密钥ID，使用KMS密钥时必填",
+        "en": "The ID of the customer managed key (CMK) from Key Management Service (KMS). This parameter is required when you set `EncryptionKeyMode` to `kms_key`."
+      }
     },
     {
       "name": "EncryptionKeyMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "列加密密钥模式。可以选择：\n\n- client_key（在客户端侧配置用户自行生成的随机密钥）\n- kms_key（使用阿里云KMS配置自定义密钥）\n\n说明\n一旦实例被设置成使用KMS配置密钥，将无法再使用客户端侧配置随机密钥的方式。",
+        "en": "The source of the encryption key for column encryption. Valid values:\n\n- `client_key`: a randomly generated key that is managed on the client.\n\n- `kms_key`: a CMK that is managed in KMS.\n\n> After you configure an instance to use a key from KMS, you cannot change the key source to `client_key`."
+      }
     },
     {
       "name": "EncryptionStatus",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "列加密状态。可以选择：\n-  1（开启加密）\n-  0（关闭加密）",
+        "en": "Specifies whether to enable column encryption. Valid values:\n\n- `1`: Enabled\n\n- `0`: Disabled"
+      }
     },
     {
       "name": "IsRotate",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否轮转密钥",
+        "en": "Specifies whether to rotate the key."
+      }
     },
     {
       "name": "RoleArn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "角色的全局资源描述符，用来指定具体角色。详情请参见 RAM 角色概览。\n说明\n仅当列加密密钥模式为kms_key生效。如果不传入，使用内部默认值。",
+        "en": "The Alibaba Cloud Resource Name (ARN) of the RAM role. For more information, see RAM role overview.\n> This parameter applies only when you set `EncryptionKeyMode` to `kms_key`. If you do not specify this parameter, a default internal value is used."
+      }
     },
     {
       "name": "WhiteListMode",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否启用白名单模式，true表示仅白名单内的列进行加密，false表示所有列都加密",
+        "en": "Specifies whether to enable the allowlist. If you set this parameter to `true`, only columns in the allowlist are encrypted. If you set this parameter to `false`, all columns are encrypted."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改列加密算法配置",
+    "en": "Modify Column Encryption Algorithm Configuration"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 在使用此接口前，请确保已在 DAS 安全中心 开通列加密服务。\n- 如果在调用接口时收到错误信息，请前往 DAS（数据库自治服务）安全中心 购买并开通列加密服务后再使用。",
+    "en": "## Request\n\n- Before calling this operation, ensure you have enabled the column encryption service in the DAS Security Center.\n\n- If this operation returns an error message, go to the DAS Security Center to purchase and enable the column encryption service, then retry the operation."
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-db-instance-cls --db-instance-id rm-t4n8t18o0000006d5 --encryption-status 1 --encryption-key 749c1df7-0000-0000-0000-0000 --role-arn acs:ram::14069260000:role/aliyunrdsinstanceencryptiondefaultrole --encryption-key-mode kms_key --encryption-algorithm AES_256_GCM --white-list-mode true --is-rotate true --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyDBInstanceCLS --region cn-hangzhou --EncryptionStatus 1 --DBInstanceId 'rm-t4n8t18o0000006d5' --IsRotate true --EncryptionAlgorithm AES_256_GCM --WhiteListMode true --EncryptionKey '749c1df7-0000-0000-0000-0000' --EncryptionKeyMode kms_key --RoleArn 'acs:ram::14069260000:role/aliyunrdsinstanceencryptiondefaultrole'"

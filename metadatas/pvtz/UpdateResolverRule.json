@@ -1,5 +1,6 @@
 {
   "name": "UpdateResolverRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点ID。",
+        "en": "The ID of the endpoint."
+      }
     },
     {
       "name": "ForwardIp",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "外部DNS系统IP地址和端口列表。DNS查询流量被转发的目标服务器的IP地址和端口，最多创建6个，支持私网IP地址和公网IP地址。\n>若您填写的外部DNS服务器为公网IP，且您出站终端节点VPC内ECS无公网IP，请开通NAT网关并配置创建和管理VPC NAT网关的SNAT条目。",
+        "en": "The IP addresses and ports of external DNS servers. DNS queries are forwarded to these servers. You can specify up to six servers. Both private and public IP addresses are supported.\n\n> If you specify a public IP address for an external DNS server, and the Elastic Compute Service (ECS) instances in the virtual private cloud (VPC) for the outbound endpoint do not have public IP addresses, enable a NAT Gateway and configure Source Network Address Translation (SNAT) entries for it."
+      },
       "sub_parameters": [
         {
           "name": "Ip",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "转发目标IP地址。\n\n>以下地址段内的IP地址为系统预留地址，不允许被配置为外部DNS系统的IP地址\n 100.100.2.136-100.100.2.138\n 100.100.2.116-100.100.2.118",
+            "en": "The IP address of the destination server.\n\n> The IP addresses in the following ranges are reserved by the system and cannot be used for external DNS servers:\n> 100.100.2.136-100.100.2.138\n> 100.100.2.116-100.100.2.118"
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "转发目标IP地址的端口号。",
+            "en": "The port number of the destination server."
+          }
         }
       ]
     },
@@ -34,13 +51,21 @@
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回值语言，取值：\n\n- zh：中文。\n\n- en：英文。\n\n默认值：en",
+        "en": "The language of the response. Valid values:\n\n- zh: Chinese.\n\n- en: English.\n\nDefault value: en"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转发规则名称。",
+        "en": "The name of the forwarding rule."
+      }
     },
     {
       "name": "PriorityForwardConfigs",
@@ -84,9 +109,20 @@
       "name": "RuleId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发规则ID。",
+        "en": "The ID of the forwarding rule."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改转发规则",
+    "en": "UpdateResolverRule"
+  },
   "example": {
     "unifiedCli": "aliyun pvtz update-resolver-rule --rule-id hr0000 --name Forwarding_rule-test --forward-ip Ip=172.16.XX.XX Port=8080 --lang en --endpoint-id hr0000 --priority-forward-configs '[{\"EnableStatus\":\"example-string\",\"Priority\":1,\"CustomAddresses\":[\"example-string\"],\"Protocol\":\"example-string\",\"AlidnsServiceAddresses\":[\"example-string\"]}]' --region cn-hangzhou",
     "legacyCli": "aliyun pvtz UpdateResolverRule --region cn-hangzhou --ForwardIp.1.Ip '172.16.XX.XX' --PriorityForwardConfigs.1.Priority 1 --PriorityForwardConfigs.1.AlidnsServiceAddresses.1 'example-string' --PriorityForwardConfigs.1.EnableStatus 'example-string' --RuleId hr0000 --EndpointId hr0000 --ForwardIp.1.Port 8080 --Lang en --PriorityForwardConfigs.1.CustomAddresses.1 'example-string' --PriorityForwardConfigs.1.Protocol 'example-string' --Name 'Forwarding_rule-test'"

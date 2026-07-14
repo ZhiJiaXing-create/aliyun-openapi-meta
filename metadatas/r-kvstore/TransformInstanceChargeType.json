@@ -1,5 +1,6 @@
 {
   "name": "TransformInstanceChargeType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,83 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动付费，取值：\n\n* **true**：自动付费，默认值。\n* **false**：手动付费。您需要在控制台的顶部菜单栏，单击**费用** > **续费管理**，然后单击左侧导航栏的**订单管理** > **我的订单**，找到目标订单进行支付。",
+        "en": "Specifies whether to enable automatic payment. Valid values:\n\n- **true**: Automatic payment. This is the default value.\n\n- **false**: Manual payment. In the console, choose **Billing Management** > **Renewal Management** in the top navigation bar. In the navigation pane on the left, click **Or\\*\\*rs** > **My Or\\*\\*rs** to find and pay for the or\\*er."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启自动续费，取值：\n* **true**：开启。\n* **false**（默认）：不开启。",
+        "en": "Specifies whether to enable auto-renewal for the instance. Valid values:\n\n- **true**: Auto-renewal is enabled.\n\n- **false** (default): Auto-renewal is disabled."
+      }
     },
     {
       "name": "AutoRenewPeriod",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自动续费周期，单位为月，取值：**1**、**2**、**3**、**6**、**12**。\n\n> 当**AutoRenew**取值为**true**时，本参数必须传入。",
+        "en": "The auto-renewal period, in months. Valid values: **1**, **2**, **3**, **6**, and **12**.\n\n> This parameter is required when the **AutoRenew** parameter is set to **true**."
+      }
     },
     {
       "name": "ChargeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要转换到的付费类型，取值：\n* **PrePaid**：包年包月，传入本值时，您还需要传入**Period**参数。\n* **PostPaid**：按量付费。",
+        "en": "The target billing method. Valid values:\n\n- **PrePaid**: subscription. If you set this parameter to this value, you must also specify the **Period** parameter.\n\n- **PostPaid**: pay-as-you-go."
+      }
     },
     {
       "name": "CouponNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "en": "The coupon ID."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，您可以调用[DescribeInstances](~~473778~~)获取。",
+        "en": "The instance ID. You can call the [DescribeInstances](~~473778~~) operation to query instance IDs."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包年包月的付费时长，单位为月，取值：**1**~**9**、**12**、**24**、**36**。\n> 当**ChargeType**参数取值为**PrePaid**时，本参数才可用且必须传入。",
+        "en": "The subscription duration, in months. Valid values: **1** to **9**, **12**, **24**, and **36**.\n\n> This parameter is available and required only when the **ChargeType** parameter is set to **PrePaid**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "转换付费类型",
+    "en": "TransformInstanceChargeType"
+  },
+  "descriptions": {
+    "zh": "请确保在调用本接口前，您已了解相关注意事项和费用说明，更多信息，请参见：\n* [从按量付费转换为包年包月](~~54542~~)。\n* [从包年包月转换为按量付费](~~211549~~)。",
+    "en": "Before you call this operation, ensure you understand the billing implications and usage notes. For more information, see:\n\n- [Change a pay-as-you-go instance to subscription](~~54542~~).\n\n- [Change a subscription instance to pay-as-you-go](~~211549~~)."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore transform-instance-charge-type --instance-id r-bp1zxszhcgatnx0000 --period 1 --auto-pay true --charge-type PrePaid --auto-renew false --auto-renew-period 1 --coupon-no example-string --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore TransformInstanceChargeType --region cn-hangzhou --AutoRenewPeriod 1 --CouponNo 'example-string' --InstanceId 'r-bp1zxszhcgatnx0000' --ChargeType PrePaid --AutoRenew false --Period 1 --AutoPay true"

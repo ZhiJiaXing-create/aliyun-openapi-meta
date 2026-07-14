@@ -1,5 +1,6 @@
 {
   "name": "SubmitAIMediaAuditJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "MediaAuditConfiguration",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "审核任务配置信息。\n- 审核任务其他配置项，当前仅支持ResourceType字段，用于控制媒体文件类型，且可针对该类型调整审核标准和规则。\n- 需要针对ResourceType调整审核标准和规则，请提交工单获取技术支持，关于如何提交工单，请参见[联系我们](~~464625~~)。\n- ResourceType使用说明：只允许英文、数字、下划线。",
+        "en": "Configurations for the review job.\n\n- Additional configurations for the review job. Currently, only the `ResourceType` field is supported. Use this field to specify the media file type to adjust review standards and rules accordingly.\n\n- To adjust the review standards and rules for a specific `ResourceType`, submit a ticket. For information about how to submit a ticket, see [Contact us](~~464625~~).\n\n- The `ResourceType` value can contain only letters, digits, and underscores (\\_)."
+      }
     },
     {
       "name": "MediaId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "音/视频ID。可登录[点播控制台](https://vod.console.aliyun.com)，选择**审核管理** > **视频审核**查看音/视频ID。",
+        "en": "The ID of the audio or video file. To obtain the ID, log in to the [ApsaraVideo VOD console](https://vod.console.aliyun.com) and navigate to **Review Management** > **Video Moderation**."
+      }
     },
     {
       "name": "MediaType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "媒体类型。目前仅支持：**video**。",
+        "en": "The media type. Only **video** is supported."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "AI模板ID。可通过以下方式获取：\n- 调用[添加AI模板](~~102930~~)接口添加AI模板时，AI模板ID为返回参数TemplateId的值。\n- AI模板添加后，可调用[查询AI模板列表](~~102936~~)接口查询AI模板ID，为请求后返回参数TemplateId的值。\n\n> 不指定AI模板ID时，则使用智能审核默认AI模板ID。",
+        "en": "The ID of the AI template. You can obtain the template ID in one of the following ways:\n\n- Call the [AddAITemplate](~~102930~~) operation. The `TemplateId` in the response is the AI template ID.\n\n- Call the [ListAITemplates](~~102936~~) operation to query for existing AI template IDs.\n\n> If you omit this parameter, ApsaraVideo VOD uses the default AI template for intelligent review."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义设置。为JSON字符串，支持消息回调等设置。更多详情，请参见[UserData](~~86952~~)。\n\n> 此参数中消息回调的使用前提是需要在控制台配置HTTP回调地址和勾选对应的回调事件类型才能使用，否则回调设置不生效。控制台配置HTTP回调的操作，请参考[回调设置](~~86071~~)。",
+        "en": "The custom settings. This parameter must be a JSON string. Use this parameter to specify settings, such as a message callback. For more information, see [UserData](~~86952~~).\n\n> To use the message callback feature, you must configure a callback URL and select the corresponding callback event type in the ApsaraVideo VOD console. Otherwise, the callback settings do not take effect. For more information about configuring HTTP callbacks, see [Callback settings](~~86071~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交音视频智能审核作业",
+    "en": "SubmitAIMediaAuditJob"
+  },
+  "descriptions": {
+    "zh": "- **请确保在使用该接口前，已充分了解视频点播产品的收费方式和价格。智能审核为付费功能，计费详情，<props=\"china\">请参见[智能审核计费](~~188310#section-g7l-s3o-9ng~~)。</props><props=\"intl\">请提交工单或联系阿里云商务经理了解。</props>**\n- 本接口目前仅支持**上海**、**北京**、**新加坡地域**。\n- 该接口为[异步接口](~~3027551~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询智能审核作业](~~454959~~)主动查询任务状态。\n- 智能审核提交相关开发指南，请参见[智能审核](~~101148~~)。\n- 智能审核作业完成后，智能审核作业过程中产生的图片资源仅在视频点播分配的点播系统Bucket上免费保留2周，超过2周将自动删除。",
+    "en": "- **Before you call this operation, make sure you understand the billing methods and pricing of ApsaraVideo VOD. The intelligent review feature is a paid service. For more information, <props=\"china\">see [Billing of intelligent review](~~188310#section-g7l-s3o-9ng~~).</props><props=\"intl\">submit a ticket or contact your account manager.</props>**\n\n- This operation is available only in the **China (Shanghai)**, **China (Beijing)**, and **Singapore** regions.\n\n- This is an [asynchronous API](~~3027551~~). After you submit a job, a job ID is returned. The job is then processed asynchronously. The final result is delivered via a [callback](~~3027551~~). You can also call the [GetAIMediaAuditJob](~~454959~~) operation to query the job status.\n\n- For guidelines on submitting intelligent review jobs, see [Intelligent review](~~101148~~).\n\n- After an intelligent review job completes, ApsaraVideo VOD stores the generated image resources in a system bucket for two weeks free of charge. After this period, the resources are automatically deleted."
+  },
   "example": {
     "unifiedCli": "aliyun vod submit-ai-media-audit-job --media-id fe028d09441afffb138cd7ee0000 --template-id a07a7f7d7d10eb9fd999e56ecc0000 --user-data MessageCallback_:_CallbackURL_:_http://test.test.com_,_Extend_:_localId_:_xxx_,_test_:_www --media-type video --media-audit-configuration ResourceType_:_0000_movie --region cn-hangzhou",
     "legacyCli": "aliyun vod SubmitAIMediaAuditJob --region cn-hangzhou --MediaId fe028d09441afffb138cd7ee0000 --UserData 'MessageCallback_:_CallbackURL_:_http://test.test.com_,_Extend_:_localId_:_xxx_,_test_:_www' --MediaType video --MediaAuditConfiguration 'ResourceType_:_0000_movie' --TemplateId a07a7f7d7d10eb9fd999e56ecc0000"

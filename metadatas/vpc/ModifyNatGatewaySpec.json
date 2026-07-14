@@ -1,5 +1,6 @@
 {
   "name": "ModifyNatGatewaySpec",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动付费。\n\n- **true**：开启自动付费，自动支付订单。\n\n- **false**（默认值）：不开启自动付费，生成订单后需要到订单中心完成支付。",
+        "en": "Specifies whether to automatically complete the payment.\n\n*   **true**: enables automatic payment. Payments are automatically completed.\n*   **false** (default): disables automatic payment. If you select this option, you must go to the Order Center to complete the payment after an order is generated."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "NatGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改规格的公网NAT网关的ID。",
+        "en": "The ID of the Internet NAT gateway that you want to upgrade."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "公网NAT网关所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the Internet NAT gateway is deployed.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "Spec",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "公网NAT网关的规格，取值：\n\n- **Small**：小型。\n\n- **Middle**：中型。\n\n- **Large**：大型。",
+        "en": "The size of the Internet NAT gateway. Valid values:\n\n*   **Small**: small\n*   **Middle**: medium\n*   **Large**: large"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "接口修改NAT网关的规格",
+    "en": "ModifyNatGatewaySpec"
+  },
+  "descriptions": {
+    "zh": "- **ModifyNatGatewaySpec**接口不支持预付费公网NAT网关规格降配，请在控制台执行降配操作。\n- **ModifyNatGatewaySpec**接口在执行预付费公网NAT网关规格升配时，会生成升配订单，请在订单中心进行支付，支付完成后，公网NAT网关升配即可成功。\n\n-  **ModifyNatGatewaySpec**接口属于异步接口，即系统会先返回一个请求ID，但该公网NAT网关实例的规格并未变配完成，系统后台的变配任务仍在进行。您可以调用[DescribeNatGateways](~~2522327~~)查询公网NAT网关的状态：\n\n    - 当公网NAT网关处于**Modifying**状态时，表示公网NAT网关正在变配中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当公网NAT网关处于**Available**状态时，表示公网NAT网关变配完成。\n\n- **ModifyNatGatewaySpec**接口不支持并发修改按规格计费NAT网关实例的规格。\n\n公网NAT网关提供不同的规格。公网NAT网关的规格会影响SNAT功能的最大连接数和每秒新建连接数，但不会影响数据吞吐量。公网NAT网关规格与SNAT性能的关系如下表所示。\n\n| 规格   | 最大连接数 | 每秒新建连接数\n| ------------- |------------   | ------------   | \n| 小型      | 1万       |1千 \n| 中型      | 5万     |   5千 \n| 大型 | 20万      |    1万",
+    "en": "- You cannot call this operation to downgrade a subscription Internet NAT gateway. You can downgrade a subscription Internet NAT gateway only in the console.\n- When you call this operation to upgrade a subscription Internet NAT gateway, an order is generated. After you complete the payment in the order center, the Internet NAT gateway is upgraded.\n\n- **ModifyNatGatewaySpec** is an asynchronous operation. After you make a request, the ID of the request is returned but the Internet NAT gateway is not upgraded. The system upgrades the NAT gateway in the background. You can call the [DescribeNatGateways](/help/en/virtual-private-cloud/latest/describenatgateways) operation to query the status of an Internet NAT gateway.    - If an Internet NAT gateway is in the **Modifying** state, the NAT gateway is being upgraded. In this case, you can only query the NAT gateway but cannot perform other operations.\n  - If an Internet NAT gateway is in the **Available** state, the Internet NAT gateway is upgraded.\n- You cannot repeatedly call the **ModifyNatGatewaySpec** operation to resize a pay-by-specification NAT gateway.\n\nInternet NAT gateways are available in different sizes. The size of an Internet NAT gateway determines the SNAT performance, which includes the maximum number of connections and the number of new connections per second. However, the size of a NAT gateway does not affect the data throughput. The following table describes the correlations between different sizes of Internet NAT gateways and SNAT performance metrics.  \n\n| Size | Maximum number of connections | Number of new connections per second |\n| ---- | ----------------------------- | ------------------------------------ |\n| Small | 10,000 | 1,000 |\n| Medium | 50,000 | 5,000 |\n| Large | 200,000 | 10,000 |"
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-nat-gateway-spec --biz-region-id cn-hangzhou --nat-gateway-id ngw-bp1uewa15k4iy57700000 --spec Middle --auto-pay false --client-token 123e4567-e89b-12d3-a456-4266550000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyNatGatewaySpec --region cn-hangzhou --RegionId 'cn-hangzhou' --AutoPay false --Spec Middle --ClientToken '123e4567-e89b-12d3-a456-4266550000' --NatGatewayId 'ngw-bp1uewa15k4iy57700000'"

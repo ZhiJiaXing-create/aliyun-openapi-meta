@@ -1,5 +1,6 @@
 {
   "name": "GenerateDataKey",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启DryRun模式。\n\n- true：开启\n- false（默认值）：关闭\n\nDryRun模式用于测试API调用，验证您是否具有相应资源的权限，以及请求参数是否配置正确。DryRun模式开启后，KMS会始终返回失败并提示失败原因。失败原因包含如下：\n\n- DryRunOperationError：不配置DryRun参数时，请求会成功。\n- ValidationError：请求中指定的参数有误。\n- AccessDeniedError：您无权在KMS资源上执行该操作。",
+        "en": "Specifies whether to enable the DryRun mode.\n\n- true: enables the DryRun mode.\n\n- false (default): disables the DryRun mode.\n\nThe DryRun mode is used to test the API call. It verifies whether you have the permissions to access the specified resources and whether the request parameters are valid. If you enable the DryRun mode, KMS always returns a failure response and a failure reason. The failure reasons include the following:\n\n- DryRunOperationError: The request succeeds if the DryRun parameter is not specified.\n\n- ValidationError: The parameters specified in the request are invalid.\n\n- AccessDeniedError: You are not authorized to perform this operation on the KMS resource."
+      }
     },
     {
       "name": "EncryptionContext",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "key/value对的JSON字符串。\n\n如果指定了该参数，则在调用[Decrypt](~~28950~~)接口时需要提供同样的参数。更多信息，请参见[EncryptionContext](~~42975~~)。",
+        "en": "A JSON string that consists of key-value pairs.\n\nIf you specify this parameter, you must also specify the same parameter when you call the [Decrypt](~~28950~~) operation. For more information, see [EncryptionContext](~~42975~~)."
+      }
     },
     {
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥的ID，也可以指定为密钥别名或密钥资源名称（ARN）。关于别名的详细介绍，请参见[管理密钥别名](~~480655~~)。\n>访问其他阿里云账号下的密钥时，必须输入密钥ARN。密钥ARN的格式为`acs:kms:${region}:${account}:key/${keyid}`。",
+        "en": "The ID of the key. You can also specify the alias or the key resource name (ARN) of the key. For more information about aliases, see [Manage aliases](~~480655~~).\n\n> When you access a key in another Alibaba Cloud account, you must enter the ARN of the key. The key ARN is in the format of `acs:kms:${region}:${account}:key/${keyid}`."
+      }
     },
     {
       "name": "KeySpec",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定生成的数据密钥的长度，取值：\n\n- AES_256：256比特的对称密钥。\n\n- AES_128：128比特的对称密钥。\n\n> 建议使用KeySpec或者NumberOfBytes来指定数据密钥长度。如果两者都不指定，KMS生成256比特的数据密钥；如果两者都被指定，KMS会忽略KeySpec参数。",
+        "en": "The length of the data key to be generated. Valid values:\n\n- AES\\_256: a 256-bit symmetric key.\n\n- AES\\_128: a 128-bit symmetric key.\n\n> We recommend that you use the KeySpec or NumberOfBytes parameter to specify the length of a data key. If you do not specify either of the parameters, KMS generates a 256-bit data key. If you specify both parameters, KMS ignores the KeySpec parameter."
+      }
     },
     {
       "name": "NumberOfBytes",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定生成的数据密钥的长度，单位为字节。\n\n取值：1~1024。\n\n默认值：\n- 当KeySpec取值为AES_256时，NumberOfBytes默认值为32。\n- 当KeySpec取值为AES_128时，NumberOfBytes默认值为16。",
+        "en": "The length of the data key that you want to generate. Unit: bytes.\n\nValid values: 1 to 1024.\n\nDefault values:\n\n- If you set KeySpec to AES\\_256, the default value of NumberOfBytes is 32.\n\n- If you set KeySpec to AES\\_128, the default value of NumberOfBytes is 16."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "生成一个数据密钥",
+    "en": "GenerateDataKey"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n- 本接口可以通过共享网关或专属网关调用。详细介绍，请参见[阿里云SDK](~~601559~~)。\n\n  - 共享网关：通过公网、VPC域名访问KMS，该方式需要打开公网开关。具体操作，请参见[通过公网访问KMS实例中的密钥](~~2856718~~)。\n  - 专属网关：通过KMS私网地址（`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`）访问KMS。\n\n\n### QPS限制\n- 通过共享网关调用：本接口的单用户QPS限制为1000次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。\n- 通过专属网关调用：本接口的单用户QPS限制以您KMS实例的计算性能规格为准。详细介绍，请参见[性能数据](~~480120~~)。\n\n\n### 详细说明\nAPI随机生成的数据密钥通过您指定的主密钥（CMK）加密后，返回数据密钥的密文和明文。您可以使用返回的数据密钥明文，在KMS之外对数据进行本地离线加密。在存储加密后的数据时，也需要存储数据密钥的密文。您可以通过响应中的Plaintext字段获取到数据密钥的明文，通过CiphertextBlob字段获取到数据密钥的密文。\n\n在请求中指定的CMK，仅会被用作数据密钥的加密，和数据密钥的生成无关。KMS不会记录或存储随机生成的数据密钥，您需要负责对数据密钥（密文）进行持久化。\n\n建议您使用以下方式在本地进行数据加密：\n\n1.调用GenerateDataKey接口，获得用于数据加密的密钥。\n\n2.使用数据密钥的明文（通过响应中的Plaintext字段返回），在本地完成离线数据加密，随后清除内存中的数据密钥明文。\n\n3.将数据密钥的密文（通过响应中的CiphertextBlob字段返回），和本地离线加密后的数据一并进行存储。\n\n在本地解密数据：\n\n- 调用[Decrypt](~~28950~~)接口解密本地存储的数据密钥的密文。该操作将返回数据密钥的明文。\n- 使用数据密钥的明文，在本地完成离线数据解密，随后清除内存中的数据密钥明文。\n\n本文将提供一个示例，为ID为`key-hzz630494463ejqjx****`的密钥生成随机的数据密钥。",
+    "en": "- For information about the permissions that are required to call this operation, see [Resource Access Management](~~2767210~~).\n\n- This operation can be called using a shared gateway or a dedicated gateway. For more information, see [Alibaba Cloud SDK](~~601559~~).\n\n  - Shared gateway: You can access KMS over the Internet or a VPC. To access KMS over the Internet, you must enable the public endpoint. For more information, see [Access keys in a KMS instance over the Internet](~~2856718~~).\n\n  - Dedicated gateway: You can access KMS using the private endpoint of KMS (`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`).\n\n### QPS limits\n\n- If you use a shared gateway to call this operation, the queries per second (QPS) limit for a single user is 1,000. If the limit is exceeded, API calls are throttled. This may affect your business. We recommend that you call this operation at a reasonable rate.\n\n- If you use a dedicated gateway to call this operation, the QPS limit for a single user is based on the computing performance of your KMS instance. For more information, see [Performance metrics](~~480120~~).\n\n### Description\n\nThis operation generates a random data key, encrypts the data key using the specified customer master key (CMK), and returns the plaintext and ciphertext of the data key. You can use the plaintext of the data key to encrypt data locally and outside of KMS. When you store the encrypted data, you must also store the ciphertext of the data key. You can obtain the plaintext of the data key from the Plaintext field and the ciphertext of the data key from the CiphertextBlob field in the response.\n\nThe CMK that you specify in the request is used only to encrypt the data key. It is not involved in the generation of the data key. KMS does not record or store the randomly generated data key. You are responsible for the persistence of the ciphertext of the data key.\n\nWe recommend that you perform the following steps to encrypt data locally:\n\n1\\. Call the GenerateDataKey operation to obtain a data key for data encryption.\n\n2\\. Use the plaintext of the data key returned in the Plaintext field of the response to encrypt data locally. Then, clear the plaintext of the data key from memory.\n\n3\\. Store the ciphertext of the data key returned in the CiphertextBlob field of the response together with the encrypted data.\n\nTo decrypt data locally:\n\n- Call the [Decrypt](~~28950~~) operation to decrypt the stored ciphertext of the data key. This operation returns the plaintext of the data key.\n\n- Use the plaintext of the data key to decrypt data locally. Then, clear the plaintext of the data key from memory.\n\nThis topic provides an example of how to generate a random data key for a key with the ID `key-hzz630494463ejqjx****`."
+  },
   "example": {
     "unifiedCli": "aliyun kms generate-data-key --key-id key-hzz630494463ejqjx0000 --key-spec AES_256 --number-of-bytes 256 --encryption-context Example=Example --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun kms GenerateDataKey --region cn-hangzhou --EncryptionContext '{\"Example\":\"Example\"}' --KeySpec AES_256 --DryRun false --KeyId 'key-hzz630494463ejqjx0000' --NumberOfBytes 256"

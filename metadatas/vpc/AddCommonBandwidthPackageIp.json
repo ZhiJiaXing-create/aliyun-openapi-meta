@@ -1,5 +1,6 @@
 {
   "name": "AddCommonBandwidthPackageIp",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "BandwidthPackageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "共享带宽的ID。",
+        "en": "The ID of the Internet Shared Bandwidth instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nGenerate a unique value for this parameter from your client to ensure uniqueness across different requests. ClientToken supports only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** is different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "参数预检，不实际执行",
+        "en": "Performs a dry run without actually executing the operation."
+      }
     },
     {
       "name": "IpInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "EIP实例的ID。 \n\n您可以通过调用[DescribeEipAddresses](~~36018~~)接口查询EIP实例的ID。",
+        "en": "The ID of the EIP instance.\n\nYou can call the [DescribeEipAddresses](~~36018~~) API to query the ID of the EIP instance."
+      }
     },
     {
       "name": "IpType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP类型。取值：**EIP**，表示将EIP添加至共享带宽。",
+        "en": "The IP type. Valid value: **EIP**, which indicates that an EIP is added to the Internet Shared Bandwidth instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "共享带宽所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the Internet Shared Bandwidth instance.\n\nYou can call the [DescribeRegions](~~36063~~) API to obtain the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加EIP到共享带宽中",
+    "en": "AddCommonBandwidthPackageIp"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请了解以下内容：\n- 调用本接口添加EIP到共享带宽中时，EIP需满足以下条件：\n    - EIP的计费方式为按量付费。\n    - EIP的地域与要加入的共享带宽的地域相同。\n    - EIP的线路类型与要加入的共享带宽的线路类型一致。\n- **AddCommonBandwidthPackageIp**接口属于异步接口，即系统会先返回一个请求ID，但EIP并未成功添加到共享带宽，系统后台的添加任务仍在进行。您可以调用[DescribeCommonBandwidthPackages](~~120309~~)查询共享带宽和EIP的关联状态。 \n    - 当共享带宽和EIP的关联状态处于**BINDING**时，表示共享带宽与EIP关联中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当共享带宽和EIP的关联状态处于**BINDED**时，表示共享带宽与EIP关联完成。",
+    "en": "Before invoking this API, note the following:\n- The EIP must meet the following conditions when you add it to an Internet Shared Bandwidth instance by using this API:\n    - The metering method of the EIP is pay-as-you-go.\n    - The Region of the EIP is the same as that of the Internet Shared Bandwidth instance to which you want to add the EIP.\n    - The line type of the EIP matches the line type of the Internet Shared Bandwidth instance.\n- The **AddCommonBandwidthPackageIp** API is asynchronous. After you invoke this API, the system immediately returns a RequestId, but the EIP is not yet successfully added to the Internet Shared Bandwidth instance. The system continues to process the addition task in the background. You can call the [DescribeCommonBandwidthPackages](~~120309~~) API to query the association status between the Internet Shared Bandwidth instance and the EIP.\n    - If the association status is **BINDING**, the Internet Shared Bandwidth instance and the EIP are being associated. In this state, you can only perform query operations and cannot perform other operations.\n\n    - If the association status is **BINDED**, the association between the Internet Shared Bandwidth instance and the EIP is complete."
+  },
   "example": {
     "unifiedCli": "aliyun vpc add-common-bandwidth-package-ip --biz-region-id cn-hangzhou --bandwidth-package-id cbwp-2ze2ic1xd2qeqasdf0000 --ip-instance-id eip-2zeerraiwb7uqwed0000 --ip-type EIP --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc AddCommonBandwidthPackageIp --region cn-hangzhou --IpType EIP --DryRun false --BandwidthPackageId 'cbwp-2ze2ic1xd2qeqasdf0000' --RegionId 'cn-hangzhou' --IpInstanceId 'eip-2zeerraiwb7uqwed0000' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760'"

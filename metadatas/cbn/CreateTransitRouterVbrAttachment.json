@@ -1,5 +1,6 @@
 {
   "name": "CreateTransitRouterVbrAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "是否使企业版转发路由器自动发布路由到VBR实例。\n\n- **false**（默认值）：否。\n- **true**：是。",
-        "en": "Specifies whether to enable the Enterprise Edition transit router to automatically advertise routes to the VBR. Valid values:\n\n*   **false** (default): no\n*   **true**: yes"
+        "en": "Specifies whether to enable the Enterprise Edition transit router to automatically advertise routes to the VBR. Valid values:\n\n- **false** (default)\n- **true**"
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "The unique, one-use client token that is used to ensure the idempotence of the request. It can contain only ASCII characters.\n\n> If you leave this parameter empty, the system automatically uses the **request ID** as the **client token**."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认值）：发送正常请求，通过检查后直接创建VBR连接。\n- **true**：发送检查请求，只进行校验，不会创建VBR连接。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。",
-        "en": "Specifies whether to perform a dry run. Default values:\n\n*   **false** (default): performs a dry run and sends the request.\n*   **true**: performs a dry run. The system checks the required parameters and request syntax. If the request fails the dry run, an error message is returned. If the request passes the dry run, the system returns the ID of the request."
+        "en": "Specifies whether to perform a dry run. Default values:\n\n- **false** (default): executes the request without performing a dry run.\n- **true**: performs a dry run without actually creating the VBR connection. The system checks the required parameters and request syntax. If the request fails the dry run, an error message is returned. If the request passes the dry run, the system returns the ID of the request."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "VBR实例所属地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
-        "en": "The region ID of the VBR.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+        "en": "The region ID of the VBR.\n\nYou can obtain the latest region list by calling the [DescribeRegions](~~36063~~) operation."
       }
     },
     {
@@ -59,24 +60,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
+        "en": "Tag information.\n\nYou can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key cannot be an empty string. The tag key can be up to 64 characters in length and cannot start with `acs:` or `aliyun`. It cannot contain `http://` or `https://`.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The tag value.\n\nThe tag value can be 0 to 128 characters in length, and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nEach tag key must have a unique tag value. You can specify up to 20 tag values."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
-        "en": "The information about the tags.\n\nYou can specify at most 20 tags in each call."
-      }
+      ]
     },
     {
       "name": "TransitRouterAttachmentDescription",
@@ -85,7 +94,7 @@
       "required": false,
       "description": {
         "zh": "VBR连接描述。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
-        "en": "The description of the VBR connection.\n\nThe description must be 1 to 256 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "Description of the VBR connection.\n\nThe description can be empty or 1 to 256 characters in length. It cannot start with http\\:// or https\\://."
       }
     },
     {
@@ -95,7 +104,7 @@
       "required": false,
       "description": {
         "zh": "VBR连接名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
-        "en": "The name of the VBR connection.\n\nThe name must be 1 to 128 characters in length, and cannot start with http:// or https://. You can also leave this parameter empty."
+        "en": "The name of the VBR connection.\n\nThe name can be empty or 1 to 128 characters in length. It cannot start with http\\:// or https\\://."
       }
     },
     {
@@ -125,10 +134,21 @@
       "required": false,
       "description": {
         "zh": "VBR实例所属阿里云账号（主账号）ID。默认值为当前登录的阿里云账号ID。\n\n> 如果您要加载跨账号的网络实例，本参数必填。",
-        "en": "The ID of the Alibaba Cloud account to which the VBR belongs. The default value is the ID of the current Alibaba Cloud account.\n\n> If the network instance and CEN instance belong to different Alibaba Cloud accounts, this parameter is required."
+        "en": "The ID of the Alibaba Cloud account to which the VBR belongs. If you leave this parameter empty, the ID of the account calling this operation is used.\n\n> For a cross-account connection, this parameter is required."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在企业版转发路由器下创建边界路由器VBR连接",
+    "en": "CreateTransitRouterVbrAttachment"
+  },
+  "descriptions": {
+    "zh": "- 企业版转发路由器支持的地域和可用区信息，请参见[什么是云企业网](~~181681~~)。\n- 您可以通过以下两种方式在企业版转发路由器下创建VBR连接：\n\n    - 如果您已经在目标地域创建了企业版转发路由器实例，您可以通过指定**VbrId**、**RegionId**和**TransitRouterId**创建VBR连接。\n    - 如果您在目标地域没有企业版转发路由器实例，您可以通过指定**VbrId**、**CenId**和**RegionId**创建VBR连接。创建VBR连接时系统为您自动创建企业版转发路由器实例。\n\n- **CreateTransitRouterVbrAttachment**接口属于异步接口，即系统会先返回一个VBR连接ID，但该VBR连接并未创建完成，系统后台的创建任务仍在进行。您可以调用**ListTransitRouterVbrAttachments**接口查询VBR连接的状态。 \n\n    - 当VBR连接处于**Attaching**状态时，表示VBR连接正在创建中，在该状态下，您只能对VBR连接执行查询操作，不能执行其他操作。\n    - 当VBR连接处于**Attached**状态时，表示VBR连接创建完成。\n\n- 转发路由器所属的阿里云账号和VBR实例所属的阿里云账号属于同一家企业。\n- 转发路由器支持连接同账号和跨账号的VBR实例。在创建跨账号的VBR连接前，请先获得跨账号VBR实例的授权。具体操作，请参见[跨账号网络实例授权](~~181553~~)。\n- 创建VBR连接后，VBR连接默认不与任何转发路由器路由表建立路由学习关系和关联转发关系。",
+    "en": "- For information about the regions and zones supported by Enterprise Edition transit routers, see [What is CEN?](~~181681~~)\n- You can create a VBR connection with or without an Enterprise Edition transit router:\n\n  - If you already have an Enterprise Edition transit router in the target region, specify the **VbrId**, **RegionId**, and **TransitRouterId** parameters.\n  - If you do not have an Enterprise Edition transit router in the target region, specify the **VbrId**, **CenId**, and **RegionId&#x20;**&#x70;arameters, and the system will automatically create an Enterprise Edition transit router when executing the operation.\n- This operation is executed asynchronously. After receiving a request, the system returns a VBR connection ID before the VBR connection is fully ready, and it continues the creation task in the backend. You can call **ListTransitRouterVbrAttachments** to check whether the connection has been created.\n\n  - If the VBR connection is in the **Attaching** state, it hasn't been created. In this case, you can query information about the connection but cannot perform other operations on it.\n  - If the VBR connection is in the **Attached** state, the creation task has been completed.\n- The transit router and VBR can be in the same or different Alibaba Cloud accounts. In a cross-account scenario, both accounts must belong to the same enterprise, and you need to [grant the required permissions on the VBR to the transit router](~~181553~~).\n- A newly created VBR connection is not in route learning or associated forwarding correlations with any route table on the transit router."
+  },
   "example": {
     "unifiedCli": "aliyun cbn create-transit-router-vbr-attachment --client-token 02fb3da4-130e-11e9-8e44-0010000 --cen-id cen-j3jzhw1zpau2km0000 --transit-router-id tr-bp1su1ytdxtataupl0000 --biz-region-id cn-hangzhou --transit-router-attachment-name testname --transit-router-attachment-description testdesc --vbr-id vbr-bp1svadp4lq38janc0000 --vbr-owner-id 1250123456123456 --auto-publish-route-enabled false --dry-run false --tag Value=TagValue Key=TagKey --region cn-hangzhou",
     "legacyCli": "aliyun cbn CreateTransitRouterVbrAttachment --region cn-hangzhou --AutoPublishRouteEnabled false --Tag.1.Key TagKey --VbrOwnerId 1250123456123456 --Tag.1.Value TagValue --CenId 'cen-j3jzhw1zpau2km0000' --DryRun false --TransitRouterAttachmentName testname --RegionId 'cn-hangzhou' --VbrId 'vbr-bp1svadp4lq38janc0000' --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --TransitRouterAttachmentDescription testdesc --TransitRouterId 'tr-bp1su1ytdxtataupl0000'"

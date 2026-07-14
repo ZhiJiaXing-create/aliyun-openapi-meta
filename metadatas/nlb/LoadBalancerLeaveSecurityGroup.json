@@ -1,5 +1,6 @@
 {
   "name": "LoadBalancerLeaveSecurityGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token. Ensure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system uses the **request ID** as the **client token**. The **request ID** is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会为实例解绑安全组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without sending the actual request. Valid values:\n\n*   **true**: checks the request without performing the operation. The system checks the required parameters, request syntax, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and sends the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络型负载均衡实例ID。",
+        "en": "The NLB instance ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The region ID of the NLB instance.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "SecurityGroupIds",
       "position": "Body",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待解绑的安全组ID。",
+        "en": "The ID of the security group to be disassociated."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解绑安全组",
+    "en": "LoadBalancerLeaveSecurityGroup"
+  },
+  "descriptions": {
+    "zh": "LoadBalancerLeaveSecurityGroup接口属于异步接口，即系统返回一个请求ID，但该网络型负载均衡实例的安全组尚未解绑成功，系统后台的解绑任务仍在进行。您可以调用[GetJobStatus](~~445904~~)查询安全组的解绑状态：\n\n- 当任务状态处于**Succeeded**时，表示安全组解绑成功。\n- 当任务状态处于**Processing**时，表示安全组正在解绑中，在该状态下，您只能执行查询操作，不能执行其他操作。",
+    "en": "LoadBalancerLeaveSecurityGroup is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetJobStatus](~~445904~~) operation to query the status of a task.\n\n*   If the task is in the **Succeeded** state, the security group is disassociated.\n*   If the task is in the **Processing** state, the security group is being disassociated. In this case, you can perform only query operations."
+  },
   "example": {
     "unifiedCli": "aliyun nlb load-balancer-leave-security-group --security-group-ids sg-bp1fg655nh68xyz90000 --load-balancer-id nlb-83ckzc8d4xlp8o0000 --dry-run true --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun nlb LoadBalancerLeaveSecurityGroup --region cn-hangzhou --DryRun true --LoadBalancerId 'nlb-83ckzc8d4xlp8o0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --SecurityGroupIds.1 'sg-bp1fg655nh68xyz90000'"

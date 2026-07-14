@@ -1,0 +1,92 @@
+{
+  "name": "DescribeSiteWafTimeSeriesData",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "EndTime",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC+0.\n\n> The end time must be later than the start time."
+      }
+    },
+    {
+      "name": "Fields",
+      "position": "Query",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "查询指标。",
+        "en": "The query metrics."
+      },
+      "sub_parameters": [
+        {
+          "name": "Dimension",
+          "position": "Query",
+          "type": "RepeatList",
+          "required": false,
+          "description": {
+            "zh": "查询维度。",
+            "en": "The query dimension."
+          }
+        },
+        {
+          "name": "FieldName",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "查询指标值。\n\n>具体维度请参见[数据分析字段说明](~~2878520~~)。",
+            "en": "The metric name.\n\n>For more information about the available dimensions, see [Data analytics field description](~~2878520~~)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Interval",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "查询数据的时间粒度，单位为秒。\n\n根据单次查询的最大时间跨度不同，该参数支持60(一分钟) 、300(5分钟)、3600(1小时)和86400(1天)取值，具体请参见上方的**支持查询的时间粒度**。",
+        "en": "The time granularity of the queried data. Unit: seconds.\n\nBased on the maximum time span of a single query, this parameter supports the values 60 (1 minute), 300 (5 minutes), 3600 (1 hour), and 86400 (1 day). For more information, see the **supported time granularity** section above."
+      }
+    },
+    {
+      "name": "SiteId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "站点ID。通过调用[ListSites](~~ListSites~~)接口获取站点ID。\n\n此参数为空时查询用户维度数据。",
+        "en": "The site ID. You can call the [ListSites](~~ListSites~~) operation to obtain the site ID.\n\nIf this parameter is left empty, user-level data is queried."
+      }
+    },
+    {
+      "name": "StartTime",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "获取数据的起始时间。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC+0."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询站点WAF分析时序数据",
+    "en": "Query site WAF analysis time series data"
+  },
+  "descriptions": {
+    "zh": "- 如果您不指定 StartTime 和 EndTime，该接口返回过去 24 小时的数据；指定 StartTime 和 EndTime，该接口返回指定时间段的数据。\n- 根据 StartTime 和 EndTime 跨度返回不同时间粒度。\n  * 小于等于 3 小时，返回 1 分钟粒度数据。\n  * 跨度大于 3 小时且小于等于 12 小时, 返回 5 分钟粒度数据。\n  * 跨度大于 12 小时且小于等于 1 天, 返回 15 分钟粒度数据。\n  * 跨度大于 1 天且小于等于10 天，返回小时粒度数据。\n  * 跨度大于 10 天且小于等于 31 天返回天粒度数据。\n- 由于查询时间段的访问次数较大，数据分析可能经过采样。",
+    "en": "- If you do not specify StartTime and EndTime, this operation returns data from the past 24 hours. If you specify StartTime and EndTime, this operation returns data for the specified time range.\n- The time granularity of the returned data varies based on the time span between StartTime and EndTime.\n  * Less than or equal to 3 hours: returns data at a 1-minute granularity.\n  * Greater than 3 hours and less than or equal to 12 hours: returns data at a 5-minute granularity.\n  * Greater than 12 hours and less than or equal to 1 day: returns data at a 15-minute granularity.\n  * Greater than 1 day and less than or equal to 10 days: returns data at an hourly granularity.\n  * Greater than 10 days and less than or equal to 31 days: returns data at a daily granularity.\n- Because the number of access requests during the query period may be large, the data analytics results may undergo sampling."
+  }
+}

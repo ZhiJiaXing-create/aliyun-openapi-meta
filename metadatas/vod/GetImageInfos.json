@@ -1,5 +1,6 @@
 {
   "name": "GetImageInfos",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "AuthTimeout",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "图片访问地址的过期时间。单位：秒。\n\n- 当OutputType取值为cdn时：\n    - 只有开启了URL鉴权的图片地址才会过期失效，否则会永久有效。\n    - 最小值：1。\n    - 最大值：无限制。\n    - 默认值：未设置时，取值为URL鉴权中设置的默认有效时长。\n- 当OutputType取值为oss时：\n    - 只有存储权限为私有，播放地址才会过期失效，否则会永久有效。\n    - 最小值：1。\n    - 最大值：为降低源站安全风险，当图片存储在点播系统Bucket上时，最大值为**2592000**（即30天），当图片存储在OSS自有Bucket上时，最大值为**129600**（即36小时）。\n    - 默认值：未设置时，取值为3600。",
+        "en": "The time when the image URL expires. Unit: seconds.\n\n*   If the OutputType parameter is set to cdn:\n\n    *   This parameter takes effect only if URL authentication is enabled. Otherwise, the image URL does not expire.\n    *   Minimum value: 1.\n    *   Maximum value: unlimited.\n    *   Default value: The default validity period that is specified in URL authentication is used.\n\n*   If the OutputType parameter is set to oss:\n\n    *   This parameter takes effect only when the ACL of the Object Storage Service (OSS) bucket is private. Otherwise, the image URL does not expire.\n    *   Minimum value: 1.\n    *   If you store the image in the VOD bucket, the maximum value of this parameter is **2592000** (30 days). If you store the image in an OSS bucket, the maximum value of this parameter is **129600** (36 hours). The maximum value is limited to reduce security risks of the origin.\n    *   Default value: 3600."
+      }
     },
     {
       "name": "ImageIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "图片ID列表，多个ID之间使用半角逗号（,）分隔，最多支持20个ID。可通过以下方式获取：\n- 可登录[点播控制台](https://vod.console.aliyun.com/)，选择**媒资库>图片**，查看ID。\n- 调用[CreateUploadImage](~~CreateUploadImage~~)获取上传地址和凭证时会返回。\n- 调用[SearchMedia](~~SearchMedia~~)查询图片时会返回。",
+        "en": "The image IDs. Separate multiple IDs with commas (,). You can specify up to 20 image IDs. You can use one of the following methods to obtain the ID:\n\n*   Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com/) and choose **Media Files > Images** in the left-side navigation pane.\n*   Obtain the value of ImageId from the response to the CreateUploadImage operation that you call to obtain the upload URL and credential.\n*   Obtain the value of ImageId from the response to the [SearchMedia](~~SearchMedia~~) operation after you upload images."
+      }
     },
     {
       "name": "OutputType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "输出的图片访问地址的类型。取值范围 ：\n\n- oss：回源地址。\n- cdn（默认）：加速地址。",
+        "en": "The type of the output image URL. Valid values:\n\n*   oss: OSS URL\n*   cdn: CDN URL"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量获取图片信息",
+    "en": "GetImageInfos"
+  },
+  "descriptions": {
+    "zh": "- 本接口仅支持查询上传到视频点播中的图片信息；如需查询通过视频截图生成的截图信息，请调用[ListSnapshots](~~ListSnapshots~~)接口查询。\n- 一次最多可查询20个图片的信息。",
+    "en": "*   You can call the [CreateUploadImage](~~CreateUploadImage~~) operation to upload images to ApsaraVideo VOD and call this operation to query the basic information about multiple images at a time.\n*   To query information about video snapshots, call the [ListSnapshots](~~ListSnapshots~~) operation.\n*   You can specify up to 20 image IDs in one call."
+  },
   "example": {
     "unifiedCli": "aliyun vod get-image-infos --image-ids bbc65bba53fed90de118a78490000,594228cdd14b4d069fc17a8c4a0000 --auth-timeout 3600 --output-type cdn --region cn-hangzhou",
     "legacyCli": "aliyun vod GetImageInfos --region cn-hangzhou --ImageIds 'bbc65bba53fed90de118a78490000,594228cdd14b4d069fc17a8c4a0000' --AuthTimeout 3600 --OutputType cdn"

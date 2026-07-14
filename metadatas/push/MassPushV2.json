@@ -1,5 +1,6 @@
 {
   "name": "MassPushV2",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "AppKey",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "AppKey信息",
+        "en": "AppKey value."
+      }
     },
     {
       "name": "IdempotentToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于防止API调用端重试造成服务端重复推送的一个幂等参数。15分钟内使用相同IdempotentToken进行调用时，只会进行一次推送，后续返回第一次成功推送的结果。\n\n> \n> - 参数格式为标准36位UUID(8-4-4-4-12)，每个有效字符是0-9 或 a-f 范围内的一个十六进制的数字，不区分大小写。\n> - 此参数仅用于避免重试造成的重复推送，无法避免并发调用造成的重复推送。",
+        "en": "An idempotency token to prevent duplicate pushes caused by API retries. If you call this API with the same IdempotentToken within 15 minutes, only one push is sent. Subsequent calls return the result of the first successful push.\n\n> - The token must be a standard 36-character UUID in 8-4-4-4-12 format. Valid characters are hexadecimal digits 0–9 and a–f. Case does not matter.\n>\n> - This parameter prevents duplicates only from retries. It does not prevent duplicates from concurrent calls."
+      }
     },
     {
       "name": "PushTasks",
       "position": "Query",
       "type": "Json",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "批量推送任务",
+        "en": "Batch push tasks."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量推送",
+    "en": "Batch Push"
+  },
+  "descriptions": {
+    "zh": "请确保在使用该接口前，已充分了解 EMAS 移动推送产品的[收费方式和价格](https://help.aliyun.com/document_detail/434638.html)。",
+    "en": "Before using this API, review the [pricing and billing details](https://help.aliyun.com/document_detail/434638.html) for EMAS Mobile Push."
+  },
   "example": {
     "unifiedCli": "aliyun push mass-push-v2 --app-key 23267000 --idempotent-token c8016d13-6e76-0000-9bda-769383d11787 --push-tasks '[\"example-string\"]' --region cn-hangzhou",
     "legacyCli": "aliyun push MassPushV2 --region cn-hangzhou --AppKey 23267000 --PushTasks '[\"example-string\"]' --IdempotentToken 'c8016d13-6e76-0000-9bda-769383d11787'"

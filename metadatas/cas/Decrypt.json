@@ -1,5 +1,6 @@
 {
   "name": "Decrypt",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": true,
       "description": {
         "zh": "加密算法，取值：\n\n- **RSAES_OAEP_SHA_1**\n-  **RSAES_OAEP_SHA_256**\n- **SM2PKE**",
-        "en": "The encryption algorithm. Valid values:\n\n*   **RSAES_OAEP_SHA\\_1**\n*   **RSAES_OAEP_SHA\\_256**\n*   **SM2PKE**"
+        "en": "The encryption algorithm. Valid values:\n\n- **RSAES\\_OAEP\\_SHA\\_1**\n\n- **RSAES\\_OAEP\\_SHA\\_256**\n\n- **SM2PKE**"
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "证书唯一识别码。该参数可通过调用[ListCert](~~455806~~)获取。\n- SSL证书识别码一般为{证书ID}-cn-hangzhou。\n- PCA证书为对应私有证书的Identifier字段。",
-        "en": "The unique identifier of the certificate. You can call the [ListCert](~~455806~~) operation to query the identifier.\n\n*   If the certificate is an SSL certificate, the value of this parameter must be in the {Certificate ID}-cn-hangzhou format.\n*   If the certificate is a private certificate, the value of this parameter must be the value of the Identifier field for the private certificate."
+        "en": "The unique identifier of the certificate. Call [ListCert](~~455806~~) to obtain this parameter.\n\n- The identifier of an SSL certificate is typically in the format {Certificate ID}-cn-hangzhou.\n\n- For a private certificate authority (PCA) certificate, this is the value of the Identifier field of the private certificate."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": true,
       "description": {
         "zh": "待解密数据。使用Base64编码。",
-        "en": "The data that you want to decrypt. The value is encoded in Base64."
+        "en": "The Base64-encoded data to decrypt."
       }
     },
     {
@@ -40,7 +41,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "用户自定义标识，唯一键。"
+        "zh": "用户自定义标识，唯一键。",
+        "en": "A custom identifier that serves as a unique key."
       }
     },
     {
@@ -50,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "消息类型。取值：\n\n- RAW：返回结果为UTF-8编码的原文。\n- Base64（默认值）：返回结果为Base64加密之后的结果。",
-        "en": "The value type of the Message parameter. Valid values:\n\n*   RAW: The returned result is raw data encoded in UTF-8.\n*   Base64: The returned result is Base64-encoded data. This is the default value."
+        "en": "The message type. Valid values:\n\n- RAW: The response returns the plaintext in UTF-8 encoding.\n\n- Base64 (default): The response returns the Base64-encoded plaintext."
       }
     },
     {
@@ -59,10 +61,22 @@
       "type": "Long",
       "required": false,
       "description": {
-        "zh": "仓库ID。\n> 此ID可通过调用[ListCertWarehouse ](~~455805~~)获取。"
+        "zh": "仓库ID。\n> 此ID可通过调用[ListCertWarehouse ](~~455805~~)获取。",
+        "en": "The ID of the repository.\n\n> Call [ListCertWarehouse](~~455805~~) to obtain this ID."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "证书仓库中证书解密",
+    "en": "Decrypt"
+  },
+  "descriptions": {
+    "zh": "本接口的单用户QPS限制为10次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。",
+    "en": "The queries per second (QPS) limit for this API operation is 10 per user. If you exceed the limit, API calls are throttled, which may affect your business. Call this operation at a reasonable rate."
+  },
   "example": {
     "unifiedCli": "aliyun cas decrypt --cert-identifier 1ef1da5f-38ed-69b3-0000-037781890265 --algorithm RSAESOAEPSHA_1 --ciphertext-blob ZOyIygCyaOW6Gj0000MlNKiuyjfzw= --message-type Base64 --custom-identifier 00006bb538d538c70c01f81jh20000 --warehouse-id 1 --api-version 2020-04-07 --region cn-hangzhou",
     "legacyCli": "aliyun cas Decrypt --region cn-hangzhou --CiphertextBlob 'ZOyIygCyaOW6Gj0000MlNKiuyjfzw=' --CertIdentifier '1ef1da5f-38ed-69b3-0000-037781890265' --WarehouseId 1 --CustomIdentifier 00006bb538d538c70c01f81jh20000 --Algorithm RSAESOAEPSHA_1 --MessageType Base64"

@@ -1,5 +1,6 @@
 {
   "name": "UninstallBackupClients",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份客户端ID。客户端ID与ECS实例ID的数量之和不能超过20个，否则报错。",
+        "en": "The IDs of Cloud Backup clients. The sum of the number of Cloud Backup client IDs and the number of ECS instance IDs cannot exceed 20. Otherwise, an error occurs."
+      }
     },
     {
       "name": "CrossAccountRoleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于跨账号备份的原账号RAM中创建的角色名。",
+        "en": "The name of the RAM role that is created within the source Alibaba Cloud account and assigned to the current Alibaba Cloud account to authorize the current Alibaba Cloud account to back up and restore data across Alibaba Cloud accounts."
+      }
     },
     {
       "name": "CrossAccountType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨账号备份类型。支持： \n- SELF_ACCOUNT：本账号备份\n- CROSS_ACCOUNT：跨账号备份",
+        "en": "Specifies whether data is backed up and restored within the same Alibaba Cloud account or across Alibaba Cloud accounts. Valid values:\n\n*   SELF_ACCOUNT: Data is backed up and restored within the same Alibaba Cloud account.\n*   CROSS_ACCOUNT: Data is backed up and restored across Alibaba Cloud accounts."
+      }
     },
     {
       "name": "CrossAccountUserId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于跨账号备份功能中的原账号ID。",
+        "en": "The ID of the source Alibaba Cloud account that authorizes the current Alibaba Cloud account to back up and restore data across Alibaba Cloud accounts."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ECS实例ID。最多20个。",
+        "en": "The IDs of Elastic Compute Service (ECS) instances. You can specify a maximum of 20 ECS instances."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "卸载备份客户端",
+    "en": "UninstallBackupClients"
+  },
+  "descriptions": {
+    "zh": "- 该接口将创建一个后台的异步任务，调用云助手在ECS实例中卸载备份客户端。\n- 任务结果可以通过DescribeTask获得。\n- 任务超时时间为15分钟。建议任务创建30秒后，再首次查询，每30秒查询一次结果。",
+    "en": "*   This operation creates an asynchronous job at the backend and calls Cloud Assistant to uninstall a backup client from an ECS instance.\n*   You can call the DescribeTask operation to query the execution result of an asynchronous job.\n*   The timeout period of an asynchronous job is 15 minutes. We recommend that you call the DescribeTask operation to run the first query 30 seconds after you call the UninstallBackupClients operation to uninstall backup clients. Then, run the next queries at an interval of 30 seconds."
+  },
   "example": {
     "unifiedCli": "aliyun hbr uninstall-backup-clients --instance-ids '[i-0xi5wj500000v3j3bh2gj5]' --client-ids '[c-000000000000000000000]' --cross-account-type CROSS_ACCOUNT --cross-account-user-id 129349237 --cross-account-role-name BackupRole --region cn-hangzhou",
     "legacyCli": "aliyun hbr UninstallBackupClients --region cn-hangzhou --CrossAccountUserId 129349237 --CrossAccountRoleName BackupRole --CrossAccountType CROSS_ACCOUNT --InstanceIds '[\"i-0xi5wj500000v3j3bh2gj5\"]' --ClientIds '[\"c-000000000000000000000\"]'"

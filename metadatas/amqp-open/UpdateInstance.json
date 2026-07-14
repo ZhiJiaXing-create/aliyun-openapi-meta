@@ -1,5 +1,6 @@
 {
   "name": "UpdateInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -20,7 +21,8 @@
       "type": "String",
       "required": false,
       "description": {
-        "zh": "Serverless实例部署架构，取值如下：\n\n- shared：共享架构，适用预留+弹性（共享）以及按量付费版本。\n\n- dedicated：独享架构，适用预留+弹性（独享）版本。"
+        "zh": "Serverless实例部署架构，取值如下：\n\n- shared：共享架构，适用预留+弹性（共享）以及按量付费版本。\n\n- dedicated：独享架构，适用预留+弹性（独享）版本。",
+        "en": "The deployment architecture of the Serverless instance. Valid values:\n\n- shared: A shared architecture. This applies to reserved plus elastic (shared) and pay-as-you-go instances.\n\n- dedicated: A dedicated architecture. This applies to reserved plus elastic (dedicated) instances."
       }
     },
     {
@@ -30,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "独享实例专属功能。实例是否开通数据存储加密功能。\n\n- 独享实例EncryptedInstance、KmsKeyId属性不能更改（包括变配成非加密；降级成共享加密；降级成共享非加密）；即独享实例使用UpdateInstance升/降级配置时，不允许携带EncryptedInstance、KmsKeyId参数；\n\n- EncryptedInstance的EncryptedInstance、KmsKeyId参数，运用场景是，共享实例升级成加密独享实例。",
-        "en": "实例是否开通数据存储加密功能"
+        "en": "This feature is for dedicated instances only. Specifies whether to enable data encryption.\n\n- You cannot change the EncryptedInstance and KmsKeyId properties of a dedicated instance. This includes changing its encryption status or downgrading it to a shared instance. Do not include the EncryptedInstance and KmsKeyId parameters when you call UpdateInstance to upgrade or downgrade a dedicated instance.\n\n- The EncryptedInstance and KmsKeyId parameters are used only when you upgrade a shared instance to an encrypted dedicated instance."
       }
     },
     {
@@ -50,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "实例规格类型， 预付费类型的取值如下：\n- professional：专业版\n- enterprise：企业版\n- vip：铂金版\n\n后付费实例：无需填写",
-        "en": "The instance edition. Valid values for subscription instances:\n\n*   professional: Professional Edition\n*   enterprise: Enterprise Edition\n*   vip: Enterprise Platinum Edition.\n\nIf your instance is a pay-as-you-go instance, you do not need to configure this parameter."
+        "en": "The instance type. This parameter is required for subscription instances. Valid values:\n\n- professional: Professional Edition\n\n- enterprise: Enterprise Edition\n\n- vip: Platinum Edition\n\nYou do not need to specify this parameter for pay-as-you-go instances."
       }
     },
     {
@@ -60,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "独享实例专属功能，当EncryptedInstance为true时需要填写此字段。\n数据加密存储使用的KMS密钥ID。\n对密钥有以下要求：\n\n- KMS密钥实例须要与RabbitMQ实例在同一个地域；\n\n- 不能是服务密钥；\n\n- 密钥状态必须是开启的；\n\n- 必须是对称密钥，不能是非对称密钥；\n\n- 密钥用途必须是加解密；\n\n- KMS密钥过期/删除后，数据读写不可用，RabbitMQ实例异常；",
-        "en": "使用同地域下KMS密钥ID"
+        "en": "This feature is for dedicated instances only. This parameter is required if EncryptedInstance is set to true.\nIt specifies the ID of the KMS key used for data encryption.\nThe key must meet the following requirements:\n\n- The KMS key must be in the same region as the ApsaraMQ for RabbitMQ instance.\n\n- The key cannot be a service key.\n\n- The key must be active.\n\n- The key must be a symmetric key.\n\n- The key must be used for encryption and decryption.\n\n- If the KMS key expires or is deleted, data reads and writes will fail, and the ApsaraMQ for RabbitMQ instance will become unavailable."
       }
     },
     {
@@ -70,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "最大连接数",
-        "en": "The maximum number of connections that can be created on the instance."
+        "en": "The maximum number of connections."
       }
     },
     {
@@ -80,7 +82,7 @@
       "required": false,
       "description": {
         "zh": "公网 TPS 流量峰值，单位：次/秒",
-        "en": "The peak TPS for accessing the instance over the Internet."
+        "en": "The peak TPS for public network traffic."
       }
     },
     {
@@ -90,7 +92,7 @@
       "required": false,
       "description": {
         "zh": "私网TPS流量，单位：次/秒",
-        "en": "The peak transactions per second (TPS) for accessing the instance in a virtual private cloud (VPC)."
+        "en": "The peak transactions per second (TPS) for private network traffic."
       }
     },
     {
@@ -100,7 +102,7 @@
       "required": true,
       "description": {
         "zh": "变配类型，取值如下：\n- UPGRADE：升配\n- DOWNGRADE：降配",
-        "en": "The type of the configuration change. Valid values:\n\n*   UPGRADE\n*   DOWNGRADE"
+        "en": "The type of specification change. Valid values:\n\n- UPGRADE: Upgrade\n\n- DOWNGRADE: Downgrade"
       }
     },
     {
@@ -109,7 +111,8 @@
       "type": "Integer",
       "required": false,
       "description": {
-        "zh": "预留+弹性实例的预留TPS容量。"
+        "zh": "预留+弹性实例的预留TPS容量。",
+        "en": "The provisioned TPS capacity for a reserved plus elastic instance."
       }
     },
     {
@@ -119,7 +122,7 @@
       "required": false,
       "description": {
         "zh": "配置Queue的数量上限",
-        "en": "The maximum number of queues that can be created on the instance."
+        "en": "The maximum number of queues."
       }
     },
     {
@@ -129,7 +132,7 @@
       "required": false,
       "description": {
         "zh": "后付费（即 Serverless）实例的计费类型，取值如下：\n- onDemand：按量累计",
-        "en": "The billing method of the serverless instance. Valid values:\n\n*   onDemand: You are charged based on your actual usage."
+        "en": "The billing method of the pay-as-you-go (Serverless) instance. Valid value:\n\n- onDemand: Pay-as-you-go"
       }
     },
     {
@@ -139,7 +142,7 @@
       "required": false,
       "description": {
         "zh": "配置消息存储空间",
-        "en": "The size of the storage space that can be used to store messages."
+        "en": "The message storage capacity. Unit: GB."
       }
     },
     {
@@ -149,7 +152,7 @@
       "required": false,
       "description": {
         "zh": "是否支持公网",
-        "en": "Specifies whether elastic IP addresses (EIPs) are supported."
+        "en": "Specifies whether to enable Internet access."
       }
     },
     {
@@ -169,10 +172,17 @@
       "required": false,
       "description": {
         "zh": "配置消息轨迹的保存时长",
-        "en": "The retention period of message traces.\n\nValid values:\n\n*   3\n*   7\n*   15"
+        "en": "The retention period for message traces. Unit: days."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新实例",
+    "en": "UpdateInstance"
+  },
   "example": {
     "unifiedCli": "aliyun amqp-open update-instance --client-token c2c5d1274axxxxxxxx --instance-id amqp-cn-jtexxxxx --modify-type UPGRADE --instance-type professional --serverless-charge-type onDemand --max-private-tps 1000 --support-eip false --max-eip-tps 128 --queue-capacity 1000 --max-connections 1000 --storage-size 7 --support-tracing false --tracing-storage-time 3 --encrypted-instance false --kms-key-id key-bjj66c2a893vmhawtq5fd --provisioned-capacity 2000 --edition shared --region cn-hangzhou",
     "legacyCli": "aliyun amqp-open UpdateInstance --region cn-hangzhou --MaxEipTps 128 --MaxConnections 1000 --KmsKeyId 'key-bjj66c2a893vmhawtq5fd' --InstanceId 'amqp-cn-jtexxxxx' --SupportEip false --ProvisionedCapacity 2000 --StorageSize 7 --QueueCapacity 1000 --Edition shared --ServerlessChargeType onDemand --TracingStorageTime 3 --ModifyType UPGRADE --MaxPrivateTps 1000 --SupportTracing false --EncryptedInstance false --ClientToken c2c5d1274axxxxxxxx --InstanceType professional"

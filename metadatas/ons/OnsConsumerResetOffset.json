@@ -1,5 +1,6 @@
 {
   "name": "OnsConsumerResetOffset",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需查询的消费端Group ID。",
+        "en": "The ID of the consumer group whose dead-letter message you want to query."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需查询的Group ID所对应的实例ID。",
+        "en": "The ID of the instance to which the consumer group belongs."
+      }
     },
     {
       "name": "ResetTimestamp",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重置位点到指定的时间戳，仅在**Type**为**1**时生效。单位：毫秒。",
+        "en": "The timestamp to which you want to reset the consumer offset. This parameter takes effect only when the **Type** parameter is set to **1**. Unit: milliseconds."
+      }
     },
     {
       "name": "Topic",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需重置位点的Topic。",
+        "en": "The name of the topic for which you want to reset the consumer offset."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "消息清理类型。取值说明如下：\n\n- **0**：清除所有消息。该Group ID在消费该Topic下的消息时会跳过当前堆积（未被消费）的所有消息，从这之后发送的最新消息开始消费。\n \n 对于程序返回\"reconsumeLater\"，即走重试流程的这部分消息来说，清除无效。\n- **1**：清理到指定时间。请指定一个时间点，这个时间点之后发送的消息才会被消费。\n \n 可选时间范围中的起始和终止时间分别是该Topic中储存的最早的和最晚的一条消息的生产时间。不能选择超过可选时间范围的时间点。",
+        "en": "The method that you want to use to clear accumulated messages. Valid values:\n\n*   **0:** All accumulated messages are cleared. Messages that are not consumed are ignored. Consumers in the specified consumer group consume only messages that are published to the topic after the specified point in time.\n\nIf \"reconsumeLater\" is returned, the accumulated messages are not cleared because the system is retrying to resend the messages to consumers.\n\n*   **1:** The messages that were published to the topic before the specified point in time are cleared. You must specify a point in time. Consumers in the specified consumer group consume only the messages that are published to the topic after the specified point in time.\n\nYou can specify a point in time from the earliest point in time when a message was published to the topic to the most recent point in time when a message was published to the topic. Points in time that are not within the allowed time range are invalid."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重置Group ID消费位点",
+    "en": "OnsConsumerResetOffset"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>\n本接口一般用于清理堆积消息，或者回溯消费。有以下两种清理方式：\n\n- 清理所有消息\n\n- 清理消费进度到指定的时间",
+    "en": "> API operations provided by Alibaba Cloud are used to manage and query resources of Alibaba Cloud services. We recommend that you integrate these API operations only in management systems. Do not use these API operations in the core system of messaging services. Otherwise, system risks may occur.\n\nYou can call this operation to clear accumulated messages or reset a consumer offset to a specified timestamp. You can use one of the following methods to clear accumulated messages:\n\n*   Clear all accumulated messages in a specified topic.\n*   Clear the messages that were published to the specified topic before a specified point in time."
+  },
   "example": {
     "unifiedCli": "aliyun ons ons-consumer-reset-offset --group-id GID_test_consumer_id --topic test-mq-topic --type 1 --reset-timestamp 1591153871000 --instance-id MQ_INST_111111111111_DOxxxxxx --region cn-hangzhou",
     "legacyCli": "aliyun ons OnsConsumerResetOffset --region cn-hangzhou --ResetTimestamp 1591153871000 --Type 1 --InstanceId MQ_INST_111111111111_DOxxxxxx --Topic 'test-mq-topic' --GroupId GID_test_consumer_id"

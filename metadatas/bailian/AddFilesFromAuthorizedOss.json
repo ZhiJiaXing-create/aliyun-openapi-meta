@@ -1,0 +1,142 @@
+{
+  "name": "AddFilesFromAuthorizedOss",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "/[WorkspaceId]/datacenter/file/fromoss",
+  "parameters": [
+    {
+      "name": "CategoryId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "用于指定文件导入目标类目。即 AddCategory 接口返回的`CategoryId`。您也可以在<props=\"china\">[应用数据](https://bailian.console.aliyun.com/?tab=app#/data-center)-文件页签</props><props=\"intl\">[应用数据](https://modelstudio.console.alibabacloud.com/?tab=app#/data-center)-文件页签</props>，单击类目名称旁的 ID 图标获取类目 ID。此处允许传入 default，即使用系统创建的“默认类目”。",
+        "en": "The ID of the category to which the files are imported. This is the `CategoryId` returned by the AddCategory operation. You can also obtain the category ID by clicking the ID icon next to the category name on the <props=\"china\">[Application Data](https://bailian.console.aliyun.com/?tab=app#/data-center) - Files tab</props><props=\"intl\">[Application Data](https://modelstudio.console.alibabacloud.com/?tab=app#/data-center) - Files tab</props>. You can pass in `default` to use the system-created default category."
+      }
+    },
+    {
+      "name": "CategoryType",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "类目类型，可选，默认值为UNSTRUCTURED，取值范围：\n- UNSTRUCTURED：类目，用于构建知识库场景。\n\n<props=\"china\">\n\n> 本接口不支持导入用于智能体应用[会话交互](https://help.aliyun.com/zh/model-studio/user-guide/file-interaction)的SESSION_FILE，请使用 **AddFile** 接口从本地上传SESSION_FILE。\n\n</props>",
+        "en": "The category type. Optional. Default value: UNSTRUCTURED. Valid values:\n- UNSTRUCTURED: category for building knowledge base scenarios.\n\n<props=\"china\">\n\n> This operation does not support importing SESSION_FILE for agent application [conversation interaction](https://www.alibabacloud.com/help/en/model-studio/user-guide/file-interaction). Use the **AddFile** operation to upload SESSION_FILE from a local source.\n\n</props>"
+      }
+    },
+    {
+      "name": "FileDetails",
+      "position": "Body",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "导入文件列表。一次最多可上传10个文件。\n> 一次最多可上传10个文件。\n>",
+        "en": "The list of files to import. A maximum of 10 files can be uploaded at a time.\n> A maximum of 10 files can be uploaded at a time.\n>"
+      },
+      "sub_parameters": [
+        {
+          "name": "FileName",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "导入文件的名称，注意后缀需要带上文件格式类型。\n- 支持格式：pdf、docx、doc、txt、md、pptx、ppt、xlsx、xls、html、png、jpg、jpeg、bmp、gif。\n- 文件名称长度限制4-128个字符。\n- 对文件上传要求限制，请参见[知识库配额与限制](~~2880605~~)。\n\n><notice>当导入的文件名称与知识库中已有文件名称重复时，接口仍会返回`Status`为`SUCCESS`，但该文件实际不会被导入知识库，已有的同名文件保持不变。请确保每次导入的文件名称唯一。></notice>\n> 如需新增数据表并上传数据，请使用阿里云百炼控制台，API不支持。",
+            "en": "The name of the file to import. The file name must include the file format extension.\n- Supported formats: pdf, docx, doc, txt, md, pptx, ppt, xlsx, xls, html, png, jpg, jpeg, bmp, and gif.\n- The file name must be 4 to 128 characters in length.\n- For file upload requirements and limits, see [Knowledge base quotas and limits](~~2880605~~).\n\n><notice>If the name of the imported file is the same as an existing file in the knowledge base, the operation still returns a `Status` of `SUCCESS`, but the file is not actually imported. The existing file with the same name remains unchanged. Make sure that each imported file name is unique.></notice>\n> To create a data table and upload data, use the Model Studio console. This is not supported through the API."
+          }
+        },
+        {
+          "name": "OssKey",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "导入文件在OSS Bucket中的键名（Key），详见[对象命名](~~273129~~)。",
+            "en": "The key of the file in the OSS bucket. For more information, see [Object naming conventions](~~273129~~)."
+          }
+        },
+        {
+          "name": "Parser",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "解析器类型。可能取值范围包括：\n\n- DOCMIND（智能文档解析）\n- DOCMIND_DIGITAL（电子文档解析）\n- DOCMIND_LLM_VERSION（大模型文档解析）\n- DASH_QWEN_VL_PARSER（Qwen VL 解析）\n- DOCMIND_LLM_VERSION_MEDIA（音视频解析）\n- AUTO_SELECT（自动选择解析器）\n\n<props=\"intl\">\n<note>会以当前设置的解析器对您上传的文件进行解析，若输入AUTO_SELECT则会使用所属类目配置的解析器。</note>\n</props>\n\n<props=\"china\">\n<note>当CategoryType为UNSTRUCTURED时，解析器会根据当前类目的数据解析设置，对您上传的文件进行解析。</note>\n<note>当CategoryType为SESSION_FILE时，系统将使用默认方式（不支持更改）解析文件内容。</note>\n</props>",
+            "en": "The parser type. Valid values:\n\n- DOCMIND: intelligent document parsing.\n- DOCMIND_DIGITAL: electronic document parsing.\n- DOCMIND_LLM_VERSION: LLM-based document parsing.\n- DASH_QWEN_VL_PARSER: Qwen VL parsing.\n- DOCMIND_LLM_VERSION_MEDIA: audio and video parsing.\n- AUTO_SELECT: automatic parser selection.\n\n<props=\"intl\">\n<note>The uploaded file is parsed by using the specified parser. If you set this parameter to AUTO_SELECT, the parser configured for the category is used.</note>\n</props>\n\n<props=\"china\">\n<note>When CategoryType is UNSTRUCTURED, the parser parses the uploaded file based on the data parsing settings of the current category.</note>\n<note>When CategoryType is SESSION_FILE, the system uses the default method (which cannot be changed) to parse the file content.</note>\n</props>"
+          }
+        },
+        {
+          "name": "ParserConfig",
+          "position": "FormData",
+          "type": "Struct",
+          "required": false,
+          "description": {
+            "zh": "解析器配置，仅当类型被设置为 Qwen VL 解析时才需要传入。",
+            "en": "The parser configuration. This parameter is required only when the parser type is set to Qwen VL parsing."
+          }
+        }
+      ]
+    },
+    {
+      "name": "OssBucketName",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "OSS Bucket名称，详见[存储空间](~~177682~~)。",
+        "en": "The name of the OSS bucket. For more information, see [Buckets](~~177682~~)."
+      }
+    },
+    {
+      "name": "OssRegionId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "OSS Bucket的地域ID。获取方式请参见[OSS地域和访问域名](~~31837~~)。",
+        "en": "The region ID of the OSS bucket. For more information, see [OSS regions and endpoints](~~31837~~)."
+      }
+    },
+    {
+      "name": "OverWriteFileByOssKey",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否按照OssKey覆盖类目中的相同文件，默认值为false，即不覆盖。",
+        "en": "Specifies whether to overwrite files with the same OssKey in the category. Default value: false, which means files are not overwritten."
+      }
+    },
+    {
+      "name": "Tags",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "文件关联的标签列表。默认值为空，即文件不关联任何标签。最多传入 10 个标签。",
+        "en": "The list of tags associated with the file. Default value: empty, which means the file is not associated with any tags. A maximum of 10 tags can be specified."
+      }
+    },
+    {
+      "name": "WorkspaceId",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "业务空间 ID，将文件导入至该业务空间。获取方式请参见[如何使用业务空间](~~2587495~~)。",
+        "en": "The workspace ID. Files are imported into this workspace. For more information about how to obtain the workspace ID, see [How to use a workspace](~~2587495~~)."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "从已授权OSS Bucket中导入文件",
+    "en": "Import files from an authorized OSS bucket"
+  },
+  "descriptions": {
+    "zh": "- 请确保该OSS Bucket与阿里云百炼同属一个阿里云账号（主账号），并已按[从OSS导入数据配置说明](~~2782155~~)完成授权。\n \n     - 支持的Bucket存储类型不包括归档、冷归档或深度冷归档。支持内容加密的Bucket。支持公共读写/公共读/私有的Bucket。\n     -  如需使用开启[Referer防盗链](~~2636937~~)的Bucket，须参考[仅允许受信任的网站访问](~~2636937~~)将域名`*.console.aliyun.com`添加到白名单Referer中。\n\n- RAM用户（子账号）需要首先获取阿里云百炼的[API权限](~~2848578~~)（需要`AliyunBailianDataFullAccess`，已包括sfm:AddFilesFromAuthorizedOss权限点）并[加入一个业务空间](~~2851098~~)方可调用本接口。阿里云账号（主账号）可直接调用无须授权。建议您通过最新版<props=\"china\">[阿里云百炼SDK](https://api.aliyun.com/api-tools/sdk/bailian?version=2023-12-29)</props><props=\"intl\">[阿里云百炼SDK](https://api.alibabacloud.com/api-tools/sdk/bailian?version=2023-12-29)</props>来调用本接口。\n- 本接口不具有幂等性。\n\n**限流说明：**\n本接口频繁调用会被限流，频率请勿超过5次/秒。如遇限流，请稍后重试。",
+    "en": "- Make sure the OSS bucket belongs to the same Alibaba Cloud account as Model Studio and that authorization has been completed as described in [Importing data from OSS configuration instructions](~~2782155~~).\n \n     - Supported bucket storage types do not include Archive, Cold Archive, or Deep Cold Archive. Buckets with content encryption enabled are supported. Buckets with public read/write, public read, or private access are supported.\n     - To use a bucket with [Referer-based hotlink protection](~~2636937~~) enabled, add the domain name `*.console.aliyun.com` to the Referer whitelist as described in [Allow access only from trusted websites](~~2636937~~).\n\n- Resource Access Management (RAM) users must first obtain [API permissions](~~2848578~~) for Model Studio (the `AliyunBailianDataFullAccess` permission is required, which includes the sfm:AddFilesFromAuthorizedOss permission) and [join a workspace](~~2851098~~) before invoking this operation. Alibaba Cloud accounts can invoke this operation directly without authorization. Call this operation by using the latest <props=\"china\">[Model Studio SDK](https://api.aliyun.com/api-tools/sdk/bailian?version=2023-12-29)</props><props=\"intl\">[Model Studio SDK](https://api.alibabacloud.com/api-tools/sdk/bailian?version=2023-12-29)</props>.\n- This operation does not have idempotence.\n\n**Rate limit:**\nThis operation is throttled if called too frequently. Do not exceed 5 calls per second. If throttled, retry later."
+  }
+}

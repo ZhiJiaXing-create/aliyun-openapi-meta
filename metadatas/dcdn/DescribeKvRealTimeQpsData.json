@@ -1,5 +1,6 @@
 {
   "name": "DescribeKvRealTimeQpsData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AccessType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问类型，若参数为空，则默认返回所有类型聚合的结果。可以指定为：\n\n- **get**：GET请求。\n- **put**：PUT请求。\n- **list**：LIST请求。\n- **delete**：DELETE请求。",
+        "en": "The access type. If you leave this parameter empty, the aggregate data of all access types is returned. You can set this parameter to one of the following values:\n\n- **get**: GET requests.\n- **put**: PUT requests.\n- **list**: LIST requests.\n- **delete**: DELETE requests."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据结束时间。日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时间粒度，取值：\n\n- **60**：1分钟粒度数据\n- **300**：5分钟粒度数据\n\n默认60s。",
+        "en": "The time granularity. Valid values:\n\n- **60**: 1-minute granularity\n- **300**: 5-minute granularity\n\nThe default value is 60."
+      }
     },
     {
       "name": "NamespaceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命名空间ID，若参数为空，默认返回所有命名空间聚合的数据。\n\n支持多个命名空间查询，多个命名空间用半角逗号（,）分隔， 最多支持查询30个命名空间。",
+        "en": "The ID of the namespace. If you leave this parameter empty, the aggregate data of all namespaces is returned.\n\nYou can specify multiple namespace IDs separated by commas (,). You can query a maximum of 30 namespaces."
+      }
     },
     {
       "name": "SplitBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分组键，可以指定为**type**、**namespace**。\n\n- **type**：指定后数据将会按时序被分组输出，且仅返回5分钟粒度数据。\n- **namespace**：指定后数据将按照namespace分组输出，不会对数据进行补零。\n- 为空时：所有数据将根据筛选条件聚合输出，不论数据粒度如何，都将对没值的点进行补零。",
+        "en": "The key to group data by. You can set this parameter to **type** or **namespace**.\n\n- **type**: If you set this parameter to type, data is grouped by time and returned at a 5-minute granularity.\n- **namespace**: If you set this parameter to namespace, data is grouped by namespace. Data points with a value of 0 are not returned.\n- If you leave this parameter empty, all data that meets the filter conditions is aggregated. Data points with a value of 0 are returned regardless of the time granularity."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间。日期格式按照ISO8601表示法，并使用UTC+0时间，格式为：yyyy-MM-ddTHH:mm:ssZ。\n\n最小数据粒度为5分钟。不填默认读取过去24小时数据。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\nThe minimum time granularity is 5 minutes. If you do not specify this parameter, data in the last 24 hours is queried by default."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询KV存储实时QPS数据",
+    "en": "DescribeKvRealTimeQpsData"
+  },
+  "descriptions": {
+    "zh": "> 单用户调用频率：10次/秒\n\n**支持查询的时间粒度**：\n\n根据单次查询的最大时间跨度不同，请求参数Interval支持不同的查询数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n\n| 时间粒度          | 单次查询的最大时间跨度            | 可查询历史数据时间范围   | \n| -------------- | -------------- | ------ |\n| 1分钟     | 1天      | 60天  | \n| 5分钟     | 3天      | 60天  |",
+    "en": "> The call frequency for a single user is limited to 10 calls per second.\n\n**Supported time granularities for queries**:\n\nThe Interval parameter supports different time granularities. The selected time granularity determines the maximum time span for a single query and the time range of historical data that you can query.\n\n| Time granularity | Maximum time span for a single query | Queryable historical data time range |\n| ---------------- | ------------------------------------ | ------------------------------------ |\n| 1 minute         | 1 day                                | 60 days                              |\n| 5 minutes        | 3 days                               | 60 days                              |"
+  },
   "example": {
     "unifiedCli": "aliyun dcdn describe-kv-real-time-qps-data --namespace-id 534167033424646000 --start-time 2022-08-10T16:00:00Z --end-time 2022-08-10T15:59:59Z --access-type get --split-by type --interval 60 --region cn-hangzhou",
     "legacyCli": "aliyun dcdn DescribeKvRealTimeQpsData --region cn-hangzhou --EndTime '2022-08-10T15:59:59Z' --SplitBy type --StartTime '2022-08-10T16:00:00Z' --NamespaceId 534167033424646000 --AccessType get --Interval 60"

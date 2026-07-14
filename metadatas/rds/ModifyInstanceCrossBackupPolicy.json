@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceCrossBackupPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "BackupEnabled",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域备份总开关（数据备份+日志备份），取值：\n* **0**：关闭\n* **1**：开启\n\n>开启跨地域备份时，必须传入目的地域ID。",
+        "en": "Specifies whether to enable the cross-region backup feature on the instance. This parameter specifies whether you can back up data and logs. Valid values:\n\n*   **0**: disables the feature.\n*   **1:** enables the feature.\n\n> Before you enable the cross-region backup feature, you must configure the CrossBackupRegion parameter."
+      }
     },
     {
       "name": "CrossBackupRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域备份的目的地域ID。",
+        "en": "The ID of the region in which the cross-region backup files of the instance are stored."
+      }
     },
     {
       "name": "CrossBackupType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域备份保存类型。当前唯一取值：**1**，表示每个备份都保存。",
+        "en": "The policy that is used to save the cross-region backup files of the instance. Set the value to **1**. The value 1 specifies that all cross-region backup files are saved."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "LogBackupEnabled",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域日志备份开关，取值：\n* **0**：关闭\n* **1**：开启\n\n>跨地域备份总开关开启时，才能设置日志开关。",
+        "en": "Specifies whether to enable the cross-region log backup feature on the instance. Valid values:\n\n*   **0**: disables the feature.\n*   **1:** enables the feature.\n\n> You can enable the cross-region log backup feature only when the cross-region backup feature is enabled."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源实例地域ID，可以通过接口DescribeRegions查看地域ID。",
+        "en": "The region ID of the source instance. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "RetentType",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域备份保留方式。当前唯一取值：**1**，表示按时长保留。",
+        "en": "The policy that is used to retain the cross-region backup files of the instance. Set the value to 1. The value **1** specifies that the cross-region backup files of the instance are retained based on the specified retention period."
+      }
     },
     {
       "name": "Retention",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域备份保留天数，取值：**7~1825**。",
+        "en": "The number of days for which the cross-region backup files of the instance are retained. Valid values: **7 to 1825**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改RDS跨地域备份设置",
+    "en": "ModifyInstanceCrossBackupPolicy"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n- [RDS MySQL跨地域备份](~~120824~~)\n- [RDS PostgreSQL跨地域备份](~~206671~~)\n- [RDS SQL Server跨地域备份](~~187923~~)",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   SQL Server\n\n### [](#)References\n\n> Before you call this operation, read the following documentation and make sure that you fully understand the prerequisites and impacts of this operation.\n\n*   [Use the cross-region backup feature of an ApsaraDB RDS for MySQL instance](~~120824~~)\n*   [Use the cross-region backup feature for an ApsaraDB RDS for PostgreSQL instance](~~206671~~)\n*   [Use the cross-region backup feature for an ApsaraDB RDS for SQL Server instance](~~187923~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-instance-cross-backup-policy --db-instance-id rm-uf6wjk50000 --biz-region-id cn-hangzhou --cross-backup-type 1 --log-backup-enabled 1 --backup-enabled 1 --cross-backup-region cn-shanghai --retent-type 1 --retention 7 --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyInstanceCrossBackupPolicy --region cn-hangzhou --LogBackupEnabled 1 --BackupEnabled 1 --CrossBackupType 1 --DBInstanceId 'rm-uf6wjk50000' --CrossBackupRegion 'cn-shanghai' --RetentType 1 --RegionId 'cn-hangzhou' --Retention 7"

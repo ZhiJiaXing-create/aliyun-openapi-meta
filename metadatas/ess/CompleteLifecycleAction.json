@@ -1,5 +1,6 @@
 {
   "name": "CompleteLifecycleAction",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "LifecycleActionResult",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期挂钩等待状态结束后的下一步动作。取值范围：\n\n- CONTINUE：继续响应弹性扩张活动，将ECS实例添加至伸缩组；继续响应弹性收缩活动，将ECS实例从伸缩组移除。\n- ABANDON：终止弹性扩张活动，直接释放创建出来的ECS实例；继续响应弹性收缩活动，将ECS实例从伸缩组移除。\n- ROLLBACK：针对弹性收缩活动，会拒绝释放ECS实例，进行回滚；针对弹性扩张活动，效果同ABANDON一样。\n\n如您不指定该参数，生命周期挂钩等待状态结束后的下一步动作则仍然保持为生命周期挂钩设置的`DefaultResult`值。\n\n伸缩组中存在多个生命周期挂钩时同步触发，最终的下一步动作如下：\n\n- 对于弹性收缩活动，在`ABANDON`或`ROLLBACK`类型生命周期挂钩触发的等待状态结束时，将会提前结束后续生命周期挂钩的等待状态。\n- 在挂起弹性收缩活动的`CONTINUE`类型生命周期挂钩时，或者对于弹性扩张活动，后续生命周期挂钩会继续挂起伸缩活动，直到最后一个生命周期挂钩触发的等待状态结束。最终的下一步动作以最后一个结束等待状态的生命周期挂钩类型为准。",
+        "en": "The next action to take after the lifecycle hook wait state ends. Valid values:\n\n- CONTINUE: continues responding to a scale-out activity and adds ECS instances to the scaling group. Continues responding to a scale-down activity and removes ECS instances from the scaling group.\n- ABANDON: terminates the scale-out activity and releases the created ECS instances. Continues responding to the scale-down activity and removes ECS instances from the scaling group.\n- ROLLBACK: rejects the release of ECS instances during a scale-down activity and performs a rollback. For a scale-out activity, the effect is the same as ABANDON.\n\nIf you do not specify this parameter, the next action after the lifecycle hook wait state ends remains the `DefaultResult` value configured for the lifecycle hook.\n\nWhen multiple lifecycle hooks in a scaling group are triggered simultaneously, the final next action is determined as follows:\n\n- For a scale-down activity, when the wait state triggered by a lifecycle hook of the `ABANDON` or `ROLLBACK` type ends, the wait states of subsequent lifecycle hooks are completed ahead of schedule.\n- For a `CONTINUE` type lifecycle hook that suspends a scale-down activity, or for a scale-out activity, subsequent lifecycle hooks continue to suspend the scaling activity until the wait state triggered by the last lifecycle hook ends. The final next action is determined by the type of the last lifecycle hook whose wait state ends."
+      }
     },
     {
       "name": "LifecycleActionToken",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩活动的等待状态标识符，您可以从生命周期挂钩指定的MNS队列或MNS主题中获取该值。",
+        "en": "The token that indicates the wait state of the scaling activity. You can obtain this value from the MNS queue or MNS topic specified by the lifecycle hook."
+      }
     },
     {
       "name": "LifecycleHookId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "生命周期挂钩的ID。",
+        "en": "The ID of the lifecycle hook."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提前结束伸缩活动的等待状态",
+    "en": "Complete the wait state of a scaling activity ahead of schedule"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n允许设置结束等待状态后的下一步动作是继续响应伸缩活动（CONTINUE），还是弃用此次伸缩活动（ABANDON）或者进行回滚操作（ROLLBACK）。",
+    "en": "## Operation description\n\nYou can set the next action after the wait state ends to continue responding to the scaling activity (CONTINUE), abandon the scaling activity (ABANDON), or perform a rollback (ROLLBACK)."
+  },
   "example": {
     "unifiedCli": "aliyun ess complete-lifecycle-action --lifecycle-hook-id ash-bp14g3ee6bt3sc980000 --lifecycle-action-token aaaa-bbbbb-cccc-ddddd --lifecycle-action-result CONTINUE --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess CompleteLifecycleAction --region cn-hangzhou --RegionId 'cn-hangzhou' --LifecycleActionResult CONTINUE --ClientToken '123e4567-e89b-12d3-a456-426655440000' --LifecycleActionToken 'aaaa-bbbbb-cccc-ddddd' --LifecycleHookId 'ash-bp14g3ee6bt3sc980000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateRouteEntry",
+  "deprecated": true,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,55 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "en": "A unique, case-sensitive identifier to ensure request idempotency. The token must be 1 to 64 ASCII characters in length."
+      }
     },
     {
       "name": "DestinationCidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "en": "The destination CIDR block. The value must be a valid CIDR block. Set the value to `0.0.0.0/0` to create a default route."
+      }
     },
     {
       "name": "NextHopId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "en": "The ID of the next hop.\n\n**Note** Specify either `NextHopId` or `NextHopList`, but not both."
+      }
     },
     {
       "name": "NextHopList",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "en": "The list of next hops for an ECMP route.\n\n**Note** Specify either `NextHopId` or `NextHopList`, but not both."
+      },
       "sub_parameters": [
         {
           "name": "NextHopId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The ID of the next hop in the ECMP route."
+          }
         },
         {
           "name": "NextHopType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The type of the next hop in the ECMP route. Valid values:\n\n- **Instance**: an ECS instance.\n\n- **HaVip**: a high-availability virtual IP address.\n\n- **RouterInterface**: a router interface.\n\n- **NetworkInterface**: an elastic network interface.\n\n- **VpnGateway**: a VPN gateway.\n\n- **Ipv6Gateway**: an IPv6 gateway.\n\n- **NatGateway**: a NAT gateway."
+          }
         }
       ]
     },
@@ -46,21 +65,36 @@
       "name": "NextHopType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "en": "The type of the next hop. Valid values:\n\n- **Instance**: an ECS instance.\n\n- **HaVip**: a high-availability virtual IP address.\n\n- **RouterInterface**: a router interface.\n\n- **NetworkInterface**: an elastic network interface.\n\n- **VpnGateway**: a VPN gateway.\n\n- **Ipv6Gateway**: an IPv6 gateway.\n\n- **NatGateway**: a NAT gateway.\n\n**Note** This parameter is required if you specify `NextHopId`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "en": "The ID of the region. You can call the [DescribeRegions](~~docid:36063~~) operation to get the latest list of regions."
+      }
     },
     {
       "name": "RouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "en": "The ID of the route table."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "en": "CreateRouteEntry"
+  },
   "example": {
     "unifiedCli": "aliyun ecs create-route-entry --biz-region-id cn-hangzhou --route-table-id example-string --destination-cidr-block example-string --next-hop-id example-string --client-token example-string --next-hop-type example-string --next-hop-list NextHopType=example-string NextHopId=example-string --region cn-hangzhou",
     "legacyCli": "aliyun ecs CreateRouteEntry --region cn-hangzhou --NextHopType 'example-string' --RouteTableId 'example-string' --NextHopList.1.NextHopId 'example-string' --NextHopId 'example-string' --NextHopList.1.NextHopType 'example-string' --RegionId 'cn-hangzhou' --DestinationCidrBlock 'example-string' --ClientToken 'example-string'"

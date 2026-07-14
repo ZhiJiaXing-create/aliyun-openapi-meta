@@ -1,5 +1,6 @@
 {
   "name": "DetachInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "DecreaseDesiredCapacity",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否修改期望实例数。取值范围：\n\n- true：ECS实例、ECI实例或托管实例移出伸缩组后，期望实例数也减少相应数量。\n- false：ECS实例、ECI实例或托管移出伸缩组后，期望实例数不会变化。\n\n默认值：true。",
+        "en": "Specifies whether to modify the expected number of instances. Valid values:\n\n- true: After the ECS instances, elastic container instances, or managed instances are removed from the scaling group, the expected number of instances is decreased by the corresponding amount.\n- false: After the ECS instances, elastic container instances, or managed instances are removed from the scaling group, the expected number of instances remains unchanged.\n\nDefault value: true."
+      }
     },
     {
       "name": "DetachOption",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定是否停止使用ECS实例或ECI实例作为负载均衡实例的后端服务器（即将ECS实例或ECI实例移出负载均衡实例的默认服务器组和虚拟服务器组），以及是否将ECS实例或ECI实例移出RDS实例的访问白名单。\n\nboth：将ECS实例或ECI实例移出负载均衡实例的默认服务器组和虚拟服务器组，并将ECS实例或ECI实例移出RDS实例的访问白名单。\n\n> 伸缩组移出托管实例时不支持设置该参数项。",
+        "en": "Specifies whether to stop using ECS instances or elastic container instances as backend servers of the associated load balancing instance (that is, remove the ECS instances or elastic container instances from the default server group and virtual server group of the load balancing instance), and whether to remove the ECS instances or elastic container instances from the access whitelist of the associated ApsaraDB RDS instance.\n\nboth: removes the ECS instances or elastic container instances from the default server group and virtual server group of the load balancing instance, and removes the ECS instances or elastic container instances from the access whitelist of the ApsaraDB RDS instance.\n\n> Settings for this parameter are not supported when managed instances are removed from the scaling group."
+      }
     },
     {
       "name": "IgnoreInvalidInstance",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "从伸缩组移出一批实例时，是否忽略其中无效实例。取值范围：\n\n- true：从伸缩组中移出一批实例时会忽略其中的无效实例。\n\n  如果一批实例中存在无效实例（例如实例状态为`加入中`），并且有效的实例被成功移出时，则伸缩活动执行状态显示为`警告`状态，您可以从伸缩活动详情查看无效的实例。\n- false：从伸缩组中移出一批实例时不会忽略无效实例。\n\n  如果一批实例中存在无效实例（例如实例状态为`加入中`），则返回结果会报错。\n\n默认值：false。",
+        "en": "Specifies whether to ignore invalid instances when removing a batch of instances from the scaling group. Valid values:\n\n- true: Invalid instances are ignored when a batch of instances is removed from the scaling group.\n\n  If a batch of instances contains invalid instances (for example, instances whose instance status is `Pending`) and the valid instances are successfully removed, the scaling activity execute status is displayed as `Warning`. You can view the invalid instances in the scaling activity details.\n- false: Invalid instances are not ignored when a batch of instances is removed from the scaling group.\n\n  If a batch of instances contains invalid instances (for example, instances whose instance status is `Pending`), an error is returned.\n\nDefault value: false."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待移出ECS实例、ECI实例或托管实例的ID。",
+        "en": "The ID of the ECS instance, elastic container instance, or managed instance to be removed."
+      }
     },
     {
       "name": "LifecycleHook",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组移出ECS实例或ECI实例时，是否触发缩容生命周期挂钩。取值范围：\n- true：触发。\n- false：不触发。\n>伸缩组移出托管实例时不支持设置该参数项。\n\n默认值：false。",
+        "en": "Specifies whether to trigger the scale-in lifecycle hook when ECS instances or elastic container instances are removed from the scaling group. Valid values:\n- true: triggers the lifecycle hook.\n- false: does not trigger the lifecycle hook.\n> This parameter is not supported when managed instances are removed from the scaling group.\n\nDefault value: false."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "从一个伸缩组移出一台或多台ECS实例",
+    "en": "Remove one or more ECS instances from a scaling group"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 调用该接口前，请确保满足以下条件：\n    - 目标伸缩组必须处于启用（Enable）状态。\n    - 目标伸缩组没有正在进行的伸缩活动。\n\n       > 目标伸缩组没有正在进行的伸缩活动时，该接口可以绕过冷却时间（Cooldown）直接触发伸缩活动。\n\n- 使用该接口需注意以下事项：\n    - 移出ECS实例、ECI实例或托管实例之后，该实例可以独立于伸缩组而单独存在，您可以调用[AttachInstances](~~25954~~)接口将ECS实例、ECI实例或托管实例再次添加到其他伸缩组。\n    - 调用该接口移出一台ECS实例、ECI实例或托管实例并不会停止或释放该实例。\n    - 接口成功调用后，仅表示弹性伸缩服务接受了该接口调用的请求。可以正常触发伸缩活动，但不能保证伸缩活动执行成功，您需要通过返回的ScalingActivityId查看伸缩活动的状态。\n    - 目标伸缩组的ECS实例、ECI实例或托管实例数量减去当前移出的ECS实例、ECI实例或托管实例数量不能小于伸缩组最小实例数（MinSize），否则会报错。",
+    "en": "## Operation description\n\n- Before you call this operation, make sure that the following conditions are met:\n    - The scaling group is in the **Enabled** state.\n    - No scaling activity is in progress in the scaling group.\n\n       > If no scaling activity is in progress in the scaling group, this operation can bypass the cooldown time and directly trigger a scaling activity.\n\n- Take note of the following items:\n    - After an ECS instance, an elastic container instance, or a managed instance is removed from a scaling group, the instance continues to exist independently. You can call the [AttachInstances](~~25954~~) operation to add the ECS instance, elastic container instance, or managed instance to another scaling group.\n    - Calling this operation to remove an ECS instance, an elastic container instance, or a managed instance does not stop or release the instance.\n    - After the operation is called, it only indicates that Auto Scaling has accepted the request. A scaling activity can be triggered, but the success of the scaling activity is not guaranteed. You must check the status of the scaling activity based on the returned ScalingActivityId.\n    - The number of ECS instances, elastic container instances, or managed instances in the scaling group minus the number of instances being removed cannot be less than the minimum number of instances (MinSize) in the scaling group. Otherwise, an error is returned."
+  },
   "example": {
     "unifiedCli": "aliyun ess detach-instances --scaling-group-id asg-bp1igpak5ft1flyp0000 --decrease-desired-capacity true --ignore-invalid-instance false --detach-option both --instance-id i-bp109k5j3dum1ce60000 --lifecycle-hook false --client-token 123e4567-e89b-12d3-a456-426655440000 --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess DetachInstances --region cn-hangzhou --DetachOption both --ScalingGroupId 'asg-bp1igpak5ft1flyp0000' --IgnoreInvalidInstance false --DecreaseDesiredCapacity true --LifecycleHook false --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-bp109k5j3dum1ce60000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateMetricRuleBlackList",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,49 +9,81 @@
       "name": "Category",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云服务的类型分类。例如：Redis有`kvstore_standard`（标准版）、`kvstore_sharding`（集群版）和`kvstore_splitrw`（读写分离版）等。",
+        "en": "The category of the cloud service. For example, ApsaraDB for Redis includes the following categories: ApsaraDB for Redis (standard architecture), ApsaraDB for Redis (cluster architecture), and ApsaraDB for Redis (read/write splitting architecture). In this case, the valid values of this parameter for ApsaraDB for Redis include `kvstore_standard`, `kvstore_sharding`, and `kvstore_splitrw`."
+      }
     },
     {
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警黑名单策略的生效时间范围。\n\n- 如果您未设置该参数，则报警黑名单策略永久有效。\n\n- 如果您已设置该参数，则黑名单策略仅在指定的时间范围内有效。该参数有以下两种格式示例：\n    - `03:00-04:59`：本地时间凌晨3点到凌5点（不包含05:00）报警黑名单策略有效。\n    - `03:00-04:59 UTC+0700`：东7区时间凌晨3点到凌晨5点（不包含05:00）报警黑名单策略有效。",
+        "en": "The time range within which the blacklist policy is effective.\n\n- If you do not configure this parameter, the blacklist policy is permanently effective.\n\n- If you configure this parameter, the blacklist policy is effective only within the specified time range. Examples:\n\n  - `03:00-04:59`: The blacklist policy is effective from 03:00 to 05:00 local time. 05:00 local time is excluded.\n\n  - `03:00-04:59 UTC+0700`: The blacklist policy is effective from 03:00 to 05:00 (UTC+7). 05:00 (UTC+7) is excluded."
+      }
     },
     {
       "name": "EnableEndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警黑名单策略生效的结束时间戳。\n\n单位：毫秒。",
+        "en": "The timestamp when the blacklist policy expires.\n\nUnit: milliseconds."
+      }
     },
     {
       "name": "EnableStartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警黑名单策略生效的开始时间戳。\n\n单位：毫秒。",
+        "en": "The timestamp when the blacklist policy starts to take effect.\n\nUnit: milliseconds."
+      }
     },
     {
       "name": "Instances",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "报警黑名单策略中指定云服务的实例列表。",
+        "en": "The IDs of the instances that belong to the specified cloud service."
+      }
     },
     {
       "name": "Metrics",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "实例中的监控指标。\n\n- 如果您未设置该参数，则报警黑名单策略应用于指定云服务下的所有监控指标。\n\n- 如果您已设置该参数，则黑名单策略仅应用于当前监控指标。",
+        "en": "The metrics of the instance.\n\n- If you do not configure this parameter, the blacklist policy applies to all metrics of the specified cloud service.\n\n- If you configure this parameter, the blacklist policy applies only to the current metric."
+      },
       "sub_parameters": [
         {
           "name": "MetricName",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "监控指标名称。\n\nN的取值范围：1~10。",
+            "en": "The metric name.\n\nValid values of N: 1 to 10."
+          }
         },
         {
           "name": "Resource",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的扩展维度信息。例如：`{\"device\":\"C:\"}`，表示对云服务器ECS实例下的所有C盘应用黑名单策略。\n\nN的取值范围：1~10。",
+            "en": "The extended dimension of the instance. For example, `{\"device\":\"C:\"}` specifies that the blacklist policy is applied to all C disks of the specified Elastic Compute Service (ECS) instance.\n\nValid values of N: 1 to 10."
+          }
         }
       ]
     },
@@ -58,27 +91,54 @@
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "报警黑名单策略的名称。",
+        "en": "The name of the blacklist policy."
+      }
     },
     {
       "name": "Namespace",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云服务的数据命名空间。\n\n关于云服务的命名空间，请参见[云服务监控项](~~163515~~)。",
+        "en": "The namespace of the cloud service.\n\nFor more information about the namespaces of different cloud services, see [Appendix 1: Metrics](~~163515~~)."
+      }
     },
     {
       "name": "ScopeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警黑名单策略的生效范围。取值：\n\n- USER（默认值）：报警黑名单策略仅在当前阿里云账号中生效。\n\n- GROUP：报警黑名单策略在指定应用分组中生效，您需要选择指定应用分组。\n  关于如何获取应用分组ID，请参见[DescribeMonitorGroups](~~115032~~)。",
+        "en": "The effective scope of the blacklist policy. Valid values:\n\n- USER (default): The blacklist policy takes effect only for the current Alibaba Cloud account.\n\n- GROUP: The blacklist policy takes effect only for the specified application group. For information about how to query the IDs of application groups, see [DescribeMonitorGroups](~~115032~~)."
+      }
     },
     {
       "name": "ScopeValue",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用分组ID列表。格式为JSON Array。\n\n> 仅当`ScopeType`为`GROUP`时，需要设置该参数。",
+        "en": "The ID of the application group. The value of this parameter is a JSON array.\n\n> This parameter must be specified when `ScopeType` is set to `GROUP`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建报警黑名单策略",
+    "en": "CreateMetricRuleBlackList"
+  },
+  "descriptions": {
+    "zh": "### 背景信息\n\n- 报警黑名单是指云监控根据报警黑名单策略对报警通知进行屏蔽。当阈值报警规则中某个云服务的某个实例中的某个指标无需发送报警通知时，您可以为其设置报警黑名单策略，对报警通知进行屏蔽。\n\n- 目前云监控仅支持为阈值指标设置报警黑名单策略，不支持系统事件。关于云监控支持的云服务和阈值指标，请参见[云服务监控项](~~163515~~)。",
+    "en": "### Background information\n\n- CloudMonitor blocks alert notifications based on the blacklist policies that take effect. To block alert notifications when the value of a metric that belongs to a cloud service reaches the threshold that you specified, add the metric to a blacklist policy.\n\n- CloudMonitor allows you to create blacklist policies only based on threshold metrics. You cannot create blacklist policies based on system events. For more information about the cloud services and the thresholds of the metrics that are supported by CloudMonitor, see [Appendix 1: Metrics](~~163515~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cms create-metric-rule-black-list --name Blacklist-01 --namespace acs_ecs_dashboard --category ecs --scope-type USER --scope-value 670000_,_780000 --enable-start-time 1640237400000 --enable-end-time 1640608200000 --effective-time 03:00-04:59 --instances instanceId_:_i-bp1ew0zfkjblsuwx0000 --metrics MetricName=disk_utilization Resource=device_:_C: --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun cms CreateMetricRuleBlackList --region cn-hangzhou --ScopeType USER --Metrics.1.MetricName disk_utilization --Instances.1 'instanceId_:_i-bp1ew0zfkjblsuwx0000' --Category ecs --EffectiveTime '03:00-04:59' --EnableEndTime 1640608200000 --Metrics.1.Resource 'device_:_C:' --ScopeValue '670000_,_780000' --Namespace acs_ecs_dashboard --Name 'Blacklist-01' --EnableStartTime 1640237400000"

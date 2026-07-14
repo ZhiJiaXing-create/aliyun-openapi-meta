@@ -1,0 +1,80 @@
+{
+  "name": "VerifyVATInvoice",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "InvoiceCode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "发票代码。数电发票（发票类型代码为31，32，51，61，83，84）时可为空（发票类型代码见**发票类型代码说明**）。",
+        "en": "Invoice code. Leave blank for digital invoices (invoice type codes 31, 32, 51, 61, 83, or 84). See **Invoice Type Code Reference** for invoice type codes."
+      }
+    },
+    {
+      "name": "InvoiceDate",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "开票日期（日期格式为：YYYYMMDD）。",
+        "en": "Issue date in YYYYMMDD format."
+      }
+    },
+    {
+      "name": "InvoiceKind",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "发票类型。用来区分是否为 **区块链发票**。\n* InvoiceKind=0 或不填，表示 **非区块链发票**。\n* InvoiceKind=1，表示 **区块链发票**。注意，如果核验区块链发票，则 **InvoiceCode**，**InvoiceNumber**，**InvoiceDate**，**InvoiceSum**，**VerifyCode** 这5个入参均为必传参数。",
+        "en": "Invoice type. Used to identify blockchain invoices.\n\n- InvoiceKind=0 or blank means a non-blockchain invoice.\n\n- InvoiceKind=1 means a blockchain invoice. For blockchain invoices, these five input parameters are required: **InvoiceCode**, **InvoiceNumber**, **InvoiceDate**, **InvoiceSum**, and **VerifyCode**."
+      }
+    },
+    {
+      "name": "InvoiceNo",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "发票号码。",
+        "en": "Invoice number."
+      }
+    },
+    {
+      "name": "InvoiceSum",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "发票金额。发票类型代码为 01，03，15，20，31，32 ，51，61，85，83，84时必填：为 01，03，20 ,85时填写发票**不含税金额**；为 15 ,84时填写发票**车价合计**；为 31，32 ，51，61，83时填写**含税金额**；为区块链发票（InvoiceKind=1）时填写 **不含税金额**。\n其它类型可为空（详见**发票类型代码说明**）。",
+        "en": "Invoice amount. Required for invoice type codes 01, 03, 15, 20, 31, 32, 51, 61, 85, 83, or 84. For codes 01, 03, 20, or 85, enter the tax-exclusive amount. For codes 15 or 84, enter the total vehicle price. For codes 31, 32, 51, 61, or 83, enter the tax-inclusive amount. For blockchain invoices (InvoiceKind=1), enter the tax-exclusive amount. Optional for all other invoice types. See **Invoice Type Code Reference**."
+      }
+    },
+    {
+      "name": "VerifyCode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "校验码，取**后6位**。发票类型代码为 04，10，11，14，86 时必填，发票类型代码为 86 时，填写密码区数电票号码后六位，为区块链发票（InvoiceKind=1）时必填，其他发票种类可为空（详见**发票类型代码说明**）。",
+        "en": "Verification code. Use the last six digits. Required for invoice type codes 04, 10, 11, 14, or 86. For code 86, use the last six digits of the digital invoice number in the password field. Required for blockchain invoices (InvoiceKind=1). Optional for all other invoice types. See **Invoice Type Code Reference**."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "发票核验",
+    "en": "Invoice Verification"
+  },
+  "descriptions": {
+    "zh": "#### 如何开通/购买本服务\n\n|步骤|概述|\n|--|---|\n|1|开通 [票证核验](https://common-buy.aliyun.com/?spm=5176.28059030.0.0.68c21287dXK0hR&commodityCode=ocr_cardverification_public_cn) 服务。开通后您可享50次免费额度。|\n|2|购买[发票核验资源包](https://common-buy.aliyun.com/?commodityCode=ocr_cardverification_dp_cn&request=%7B%22ord_time%22:%221:Year%22,%22order_num%22:1,%22pack%22:%22ocr_cardverification_dp_cn_20220830140650_0595%22,%22flowout_spec%22:%221000%22%7D)。您也可以不购买资源包，系统会通过“[按量付费](https://help.aliyun.com/document_detail/295347.htm?spm=a2c4g.11186623.0.0.22878a21R9tkuV)”方式按实际调用量自动扣款。|\n|3|可以参照[调试页面](https://next.api.aliyun.com/api/ocr-api/2021-07-07/VerifyVATInvoice?sdkStyle=dara)提供的代码示例完成API接入开发。接入完成后，调用API获取识别结果。如果使用子账号调用接口，需要阿里云账号（主账号）对RAM账号进行授权。创建RAM用户的具体操作，请参考：[创建RAM用户。](https://help.aliyun.com/document_detail/93720.html)文字识别服务提供一种系统授权策略，即**AliyunOCRFullAccess**。具体授权操作，请参见[在用户页面为RAM用户授权。](https://help.aliyun.com/document_detail/116146.html)|",
+    "en": "#### How to enable or purchase this service\n\n| Step | Overview                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |\n| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 1    | Enable [Document Verification](https://common-buy.aliyun.com/?spm=5176.28059030.0.0.68c21287dXK0hR&commodityCode=ocr_cardverification_public_cn). After enabling, you get 50 free verifications.                                                                                                                                                                                                                                                                                                                                                                                                                                    |\n| 2    | Buy an [invoice verification resource plan](https://common-buy.aliyun.com/?commodityCode=ocr_cardverification_dp_cn&request=%7B%22ord_time%22:%221:Year%22,%22order_num%22:1,%22pack%22:%22ocr_cardverification_dp_cn_20220830140650_0595%22,%22flowout_spec%22:%221000%22%7D). You can also skip buying a resource plan. The system then bills you on a pay-as-you-go basis based on your actual usage.                                                                                                                                                                                                                            |\n| 3    | Use the code examples on the [API test page](https://next.api.aliyun.com/api/ocr-api/2021-07-07/VerifyVATInvoice?sdkStyle=dara) to integrate the API. After integration, call the API to get results. If you use a RAM user to call the API, the Alibaba Cloud account (root account) must grant that RAM user permission. To create a RAM user, see [Create a RAM user](https://help.aliyun.com/document_detail/93720.html). OCR provides a built-in authorization policy named **AliyunOCRFullAccess**. For step-by-step instructions, see [Grant permissions to a RAM user](https://help.aliyun.com/document_detail/116146.html) |"
+  }
+}

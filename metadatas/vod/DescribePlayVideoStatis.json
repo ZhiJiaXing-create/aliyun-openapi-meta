@@ -1,5 +1,6 @@
 {
   "name": "DescribePlayVideoStatis",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定查询的结束时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n> 结束时间需大于起始时间，且与起始时间的最大跨度为180天。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n>  The end time must be later than the start time. The interval between the start time and the end time cannot exceed 180 days."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定查询的起始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "VideoId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的视频的视频ID，仅支持传入一个视频ID。可通过以下方式获取：\n- 可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看。\n- 调用[CreateUploadVideo](~~CreateUploadVideo~~)接口获取上传地址和凭证时会返回。\n- 音视频上传后，调用[SearchMedia ](~~SearchMedia~~)接口查询视频时会返回。",
+        "en": "The ID of the video. You can specify only one ID. You can use one of the following methods to obtain the ID:\n\n*   Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Media Files** > **Audio/Video**. On the page that appears, view the video ID.\n*   Obtain the video ID from the response to the [CreateUploadVideo](~~CreateUploadVideo~~) operation that you call to obtain the upload URL and credential.\n*   Obtain the video ID from the response to the [SearchMedia](~~SearchMedia~~) operation that you call to query the audio or video file."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "单视频播放数据统计",
+    "en": "DescribePlayVideoStatis"
+  },
+  "descriptions": {
+    "zh": "- 目前服务地址仅支持：**华东2（上海）**。\n- 仅支持统计使用了阿里云播放器SDK且单日播放次数排名前1000的视频播放数据。\n- 以北京时间（UTC+8）为基准，每天上午9点生成前一天的播放数据统计。\n - 仅支持最近2年内（730天）的数据查询，且数据查询的起止时间跨度最大为180天。",
+    "en": "*   This operation is available only in the **China (Shanghai)** region.\n*   You can call this operation to query only playback statistics collected on videos that are played by using ApsaraVideo Player SDKs.\n*   Playback statistics for the current day are generated at 09:00 (UTC+8) on the next day.\n*   You can query only data in the last 730 days. The maximum time range to query is 180 days."
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-play-video-statis --start-time 2016-06-29T13:00:00Z --end-time 2016-06-30T13:00:00Z --video-id 2a8d4cb9ecbb4876814730000aba8fda --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribePlayVideoStatis --region cn-hangzhou --VideoId 2a8d4cb9ecbb4876814730000aba8fda --EndTime '2016-06-30T13:00:00Z' --StartTime '2016-06-29T13:00:00Z'"

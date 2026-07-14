@@ -1,5 +1,6 @@
 {
   "name": "ModifyHostAccount",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,110 @@
       "name": "HostAccountId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定要修改的主机账户ID。\n\n> 您可以调用[ListHostAccounts](~~204372~~)接口获取该参数。",
+        "en": "Specifies the ID of the host account to be modified.\n\n> You can call the [ListHostAccounts](~~204372~~) operation to obtain this parameter."
+      }
     },
     {
       "name": "HostAccountName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定修改后的主机账户名称，最多支持128字符。",
+        "en": "Specifies the modified host account name, which can contain up to 128 characters."
+      }
     },
     {
       "name": "HostShareKeyId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "主机共享密钥ID。\n> 此ID可通过调用[ListHostShareKeys](~~462973~~)接口获取。",
+        "en": "The host shared key ID.\n\n> You can obtain this ID by calling the [ListHostShareKeys](~~462973~~) operation."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定要修改的主机账户所在堡垒机的实例ID。\n\n> 可通过调用[DescribeInstances](~~153281~~)接口获取堡垒机实例ID。",
+        "en": "Specifies the ID of the Bastionhost instance where the host account to be modified resides.\n\n> You can call the [DescribeInstances](~~153281~~) operation to query the Bastionhost instance ID."
+      }
     },
     {
       "name": "PassPhrase",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定修改后的主机账户的私钥口令。\n\n> 主机账户协议为SSH时，该参数生效。主机账户协议为RDP时，无需配置该参数。",
+        "en": "Specifies the modified security token of the host account's private key.\n\n> This parameter takes effect when the host account protocol is SSH. This parameter is not required when the host account protocol is RDP."
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定修改后的主机账户密码。",
+        "en": "Specifies the modified password of the host account."
+      }
     },
     {
       "name": "PrivateKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定修改后的主机账户私钥，私钥为使用Base64编码后的字符串。\n\n> 主机账户协议为SSH时，该参数生效。主机账户协议为RDP时，无需配置该参数。您可以调用[GetHostAccount](~~204391~~)接口查询主机账户使用的协议。支持同时为主机账户配置密码和私钥。在连接资产时，堡垒机会优先使用私钥进行连接。",
+        "en": "Specifies the modified private key of the host account, which is a Base64-encoded string.\n\n> This parameter takes effect when the host account protocol is SSH. This parameter is not required when the host account protocol is RDP. You can call the [GetHostAccount](~~204391~~) operation to query the protocol used by the host account. You can configure both a password and a private key for a host account. When connecting to an asset, Bastionhost preferentially uses the private key for connection."
+      }
     },
     {
       "name": "PrivilegeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账户权限类型，取值：\n- **Privileged**：特权账户\n- **Normal**：普通账户\n>仅支持V3.2.47及以上的版本使用。",
+        "en": "Account permission type. Valid values:\n\n- **Privileged**: privileged account\n\n- **Normal**: regular account\n\n> This parameter is supported only in V3.2.47 and later versions."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定要查询的主机账户所在堡垒机的区域ID。\n\n> 地域ID和地域名称的对应关系，请参见[地域和可用区](~~40654~~)。",
+        "en": "Specifies the region ID of the Bastionhost instance where the host account to be queried resides.\n\n> For the mapping between region IDs and region names, see [Regions and zones](~~40654~~)."
+      }
     },
     {
       "name": "RotationMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账户改密模式，取值：\n- **Privileged**：使用特权账户改密\n- **Self**：不使用特权账户改密\n>仅支持V3.2.47及以上的版本使用。",
+        "en": "Account password rotation mode. Valid values:\n\n- **Privileged**: Use a privileged account to change the password\n\n- **Self**: Do not use a privileged account to change the password\n\n> This parameter is supported only in V3.2.47 and later versions."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改主机账户信息",
+    "en": "ModifyHostAccount"
+  },
   "example": {
     "unifiedCli": "aliyun yundun-bastionhost modify-host-account --instance-id bastionhost-cn-st220aw0000 --biz-region-id cn-hangzhou --host-account-id 1 --host-account-name abc --password 123456 --biz-private-key -----BEGIN_RSA_PRIVATE_KEY-----_......_-----END_RSA_PRIVATE_KEY----- --pass-phrase 123456 --host-share-key-id 1 --privilege-type Normal --rotation-mode Self --region cn-hangzhou",
     "legacyCli": "aliyun yundun-bastionhost ModifyHostAccount --region cn-hangzhou --HostAccountName abc --PrivateKey '-----BEGIN_RSA_PRIVATE_KEY-----_......_-----END_RSA_PRIVATE_KEY-----' --InstanceId 'bastionhost-cn-st220aw0000' --RotationMode Self --RegionId 'cn-hangzhou' --PassPhrase 123456 --HostShareKeyId 1 --PrivilegeType Normal --HostAccountId 1 --Password 123456"

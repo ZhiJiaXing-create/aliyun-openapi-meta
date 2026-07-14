@@ -1,5 +1,6 @@
 {
   "name": "ScanOssObjectV1",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "BucketName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS Bucket名称。",
+        "en": "The name of the OSS bucket."
+      }
     },
     {
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求和接收消息的语言类型。取值：\n- **zh**：中文。\n- **en**：英文。",
+        "en": "The language of the request and response. Valid values:\n\n- **zh**: Chinese.\n\n- **en**: English."
+      }
     },
     {
       "name": "ObjectKeyList",
       "position": "Query",
       "type": "Json",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待扫描的OSS Bucket中存储对象列表，一次最多可输入50个ObjectKey。",
+        "en": "A list of objects to scan in the OSS bucket. You can specify up to 50 ObjectKeys."
+      }
     },
     {
       "name": "ServiceRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务地域ID，即OSS Bucket所在的地域ID。",
+        "en": "The ID of the region where the OSS bucket is located."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "行业模版ID。\n\n>可调用**DescribeCategoryTemplateList**获取模版列表，如不填本参数，默认使用主用模板来进行扫描。",
+        "en": "The ID of the industry-specific template.\n\n> Call **DescribeCategoryTemplateList** to get a list of templates. If you do not specify this parameter, the default active template is used for the scan."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建文件扫描任务",
+    "en": "ScanOssObjectV1"
+  },
+  "descriptions": {
+    "zh": "### 前置条件\n对应的Bucket需要授权并连接后才能调用本接口，若Bucket未授权，调用API会返回bucket_not_authorized错误码。\n\n### QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。\n\n### 使用说明\n根据接口返回的任务ID可调用DescribeIdentifyTaskStatus接口来查看任务的运行状态。\n\n任务完成后可根据BucketName、ServiceRegionId和ObjectKey调用DescribeOssObjectDetailV2接口来查看对应存储对象的敏感数据识别结果。",
+    "en": "### Prerequisites\n\nYou must authorize and connect to the specified bucket before you call this operation. If the bucket is not authorized, the API call returns the bucket\\_not\\_authorized error code.\n\n### QPS limits\n\nThe queries per second (QPS) limit for this operation is 10 calls per second for each user. If you exceed the limit, API calls are throttled. This may affect your business. We recommend that you call the operation at a reasonable rate.\n\n### Usage notes\n\nYou can use the returned task ID to call the DescribeIdentifyTaskStatus operation to check the running status of the task.\n\nAfter the task is complete, call the DescribeOssObjectDetailV2 operation and provide the BucketName, ServiceRegionId, and ObjectKey to view the sensitive data detection results for the object."
+  },
   "example": {
     "unifiedCli": "aliyun sddp scan-oss-object-v1 --service-region-id cn-hangzhou --bucket-name sddp-api-demo-bucket --object-key-list dir1/object.txt --template-id 1 --lang zh --region cn-hangzhou",
     "legacyCli": "aliyun sddp ScanOssObjectV1 --region cn-hangzhou --ServiceRegionId 'cn-hangzhou' --BucketName 'sddp-api-demo-bucket' --Lang zh --ObjectKeyList '[\"dir1/object.txt\"]' --TemplateId 1"

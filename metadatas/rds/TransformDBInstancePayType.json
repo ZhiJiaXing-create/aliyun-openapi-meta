@@ -1,5 +1,6 @@
 {
   "name": "TransformDBInstancePayType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启自动续费。取值：\n\n* **true**：开启\n* **false**：关闭\n\n> * 该参数仅在按量付费转包年包月时生效。\n> * 传入的所有非**true**字符串均会被处理为**false**。",
+        "en": "Specifies whether to enable the auto-renewal feature for the instance. Valid values:\n\n*   **true**\n*   **false**\n\n> - This parameter is valid only when you change the billing method from pay-as-you-go to subscription.\n> - All strings except **true** are considered **false**."
+      }
     },
     {
       "name": "AutoUseCoupon",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用代金券抵扣费用，取值：\n\n- **true**：使用\n- **false**：不使用（默认值）",
+        "en": "Specifies whether to use vouchers to offset fees. Valid values:\n\n*   **true**\n*   **false** (default)"
+      }
     },
     {
       "name": "BusinessInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "业务扩展参数。",
+        "en": "The additional business information about the instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the ID of the instance."
+      }
     },
     {
       "name": "PayType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例变更后的付费类型。取值：\n* **Postpaid**：后付费（按量付费）\n* **Prepaid**：预付费（包年包月）",
+        "en": "The new billing method of the instance. Valid values:\n\n*   **Postpaid**: pay-as-you-go\n*   **Prepaid**: subscription"
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定预付费实例为包年或者包月类型。取值：\n* **Year**：包年\n* **Month**：包月\n\n> 若**PayType**=**Prepaid**，需要传入该参数。",
+        "en": "The renewal cycle of the instance. Valid values:\n\n*   **Year**\n*   **Month**\n\n> This parameter must be specified if you set **PayType** to **Prepaid**."
+      }
     },
     {
       "name": "PromotionCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "优惠券code。",
+        "en": "The coupon code."
+      }
     },
     {
       "name": "UsedTime",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定购买时长。取值：\n* 当参数**Period**为**Year**时，UsedTime取值为**1~5**。\n* 当参数**Period**为**Month**时，UsedTime取值为**1~11**。\n\n> 若**PayType**=**Prepaid**，需要传入该参数。",
+        "en": "The subscription duration of the instance. Valid values:\n\n*   If you set **Period** to **Year**, the value of UsedTime ranges from **1 to 5**.\n*   If you set **Period** to **Month**, the value of UsedTime ranges from **1 to 11**.\n\n> This parameter must be specified when **PayType** is set to **Prepaid**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更RDS实例的计费方式",
+    "en": "TransformDBInstancePayType"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 相关功能文档\n><warning>该API操作涉及费用，请仔细阅读相关功能文档后再进行操作。></warning>\n\n- [RDS MySQL按量付费转包年包月](~~96048~~)、[RDS MySQL包年包月转按量付费](~~161875~~)\n- [RDS PostgreSQL按量付费转包年包月](~~96743~~)、[RDS PostgreSQL包年包月转按量付费](~~162756~~)\n- [RDS SQL Server按量付费转包年包月](~~95631~~)、[RDS SQL Server包年包月转按量付费](~~162755~~)\n- [RDS MariaDB按量付费转包年包月](~~97120~~)、[RDS MariaDB包年包月转按量付费](~~169252~~)",
+    "en": "### Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   SQL Server\n*   MariaDB\n\n### References\n\n> Fees are generated if the call is successful. Before you call this operation, you must read the following documentation.\n\n*   [Change the billing method of an ApsaraDB RDS for MySQL instance from pay-as-you-go to subscription](~~96048~~) or [Change the billing method of an ApsaraDB RDS for MySQL instance from subscription to pay-as-you-go](~~161875~~)\n*   [Change the billing method of an ApsaraDB RDS for PostgreSQL instance from pay-as-you-go to subscription](~~96743~~) or [Change the billing method of an ApsaraDB RDS for PostgreSQL instance from subscription to pay-as-you-go](~~162756~~)\n*   [Change the billing method of an ApsaraDB RDS for SQL Server instance from pay-as-you-go to subscription](~~95631~~) or [Change the billing method of an ApsaraDB RDS for SQL Server instance from subscription to pay-as-you-go](~~162755~~)\n*   [Change the billing method of an ApsaraDB RDS for MariaDB instance from pay-as-you-go to subscription](~~97120~~) or [Change the billing method of an ApsaraDB RDS for MariaDB instance from subscription to pay-as-you-go](~~169252~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds transform-db-instance-pay-type --client-token ETnLKlblzczshOTUbOCz0000 --db-instance-id rm-uf6wjk50000 --used-time 1 --pay-type Prepaid --period Month --business-info 123456789 --auto-renew true --auto-use-coupon true --promotion-code 726122650073 --region cn-hangzhou",
     "legacyCli": "aliyun rds TransformDBInstancePayType --region cn-hangzhou --BusinessInfo 123456789 --DBInstanceId 'rm-uf6wjk50000' --AutoUseCoupon true --AutoRenew true --PromotionCode 726122650073 --UsedTime 1 --Period Month --PayType Prepaid --ClientToken ETnLKlblzczshOTUbOCz0000"

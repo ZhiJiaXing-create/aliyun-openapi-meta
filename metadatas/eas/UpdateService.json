@@ -1,5 +1,6 @@
 {
   "name": "UpdateService",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "PUT",
   "pathPattern": "/api/v2/services/[ClusterId]/[ServiceName]",
@@ -8,7 +9,11 @@
       "name": "ClusterId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务所在的地域ID。",
+        "en": "The region ID of the service."
+      }
     },
     {
       "name": "MemberToUpdate",
@@ -20,21 +25,40 @@
       "name": "ServiceName",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务名称。如何查看服务名称，请参见[ListServices ](~~412109~~)。",
+        "en": "The service name. For more information about how to query the service name, see [ListServices](~~412109~~)."
+      }
     },
     {
       "name": "UpdateType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务更新类型，目前支持合并模式和替换模式。不传默认为合并模式。\n\n- merge（合并模式）：若原服务配置JSON为\n`{\"a\":\"b\"}`，更新配置为`{\"c\":\"d\"}` ，则合并模式下最终配置为`{\"a\":\"b\",\"c\":\"d\"}`。\n- replace（替换模式）：若原服务配置JSON为\n`{\"a\":\"b\"}`，更新配置为`{\"c\":\"d\"}` ，则替换模式下最终配置为`{\"c\":\"d\"}`。",
+        "en": "The type of the service update. Valid values: merge and replace. By default, merge is used if you do not specify this parameter.\n\n*   merge: If the JSON string configured for the existing service is `{\"a\":\"b\"}` and the JSON string specified in the body parameter is `{\"c\":\"d\"}`, the JSON string is `{\"a\":\"b\",\"c\":\"d\"}` after the service update.\n*   replace: If the JSON string configured for the existing service is `{\"a\":\"b\"}` and the JSON string specified in the body parameter is `{\"c\":\"d\"}`, the JSON string is `{\"c\":\"d\"}` after the service update."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "更新配置。参数配置说明，请参见[CreateService](~~412086~~)。",
+        "en": "The request body. The body includes the request parameters that you want to update. For more information about the request parameters, see [CreateService](~~412086~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新服务",
+    "en": "UpdateService"
+  },
   "example": {
     "unifiedCli": "aliyun eas update-service --cluster-id cn-shanghai --service-name foo --update-type merge --member-to-update example-string --biz-body name_:_foo_,_model_path_:_http://path/to/model.tar.gz_,_processor_:_tensorflow_cpu_,_metadata_:_instance_:_2,_memory_:_7000,_cpu_:_4 --region cn-hangzhou",
     "legacyCli": "aliyun eas PUT /api/v2/services/cn-shanghai/foo --region cn-hangzhou --MemberToUpdate 'example-string' --UpdateType merge --header \"Content-Type=application/json\" --body \"name_:_foo_,_model_path_:_http://path/to/model.tar.gz_,_processor_:_tensorflow_cpu_,_metadata_:_instance_:_2,_memory_:_7000,_cpu_:_4\""

@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveUserBillPrediction",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间。格式为：yyyy-MM-ddTHH:mm:ssZ（UTC时间）。",
+        "en": "The end time. The time must be in UTC and follow the yyyy-MM-ddTHH:mm:ssZ format."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始时间。格式为：<i>yyyy-mm-dd</i>t<i>hh:mm:ss</i>z（utc时间）。",
+        "en": "The start time. The time must be in UTC and follow the *yyyy-mm-dd*T*hh:mm:ss*Z format."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取直播用户预期账单",
+    "en": "DescribeLiveUserBillPrediction"
+  },
+  "descriptions": {
+    "zh": "用于预测用户当月的用量数据，按用户月初第一天的计费模式计算，只支持月度计费模式的预测，只支持用户粒度。 起始时间为月初1号0点，结束时间为当前时间前两个小时。\n\n- 月95：开始时间至结束时间内，去掉最高5%点后的最高点，为预测值。\n \n- 月均日峰值：每日峰值带宽求和/时间天数，不计算当天的数据。\n\n - 月第四峰：请求时间内，第四高的峰值为预测值，如果请求时间小于4天，返回预测值为0。\n\n - 日95月平均：每日日95峰值求和/时间天数，不计算当天的数据。\n\n - 夜间95：开始时间至结束时间内，去掉最高5%点后的最高点，为预测值。\n## QPS限制\n本接口的单用户QPS限制为1次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~343507~~)。",
+    "en": "This operation predicts your usage data for the current month. The prediction is based on the billing method that is active on the first day of the month. This operation supports predictions for monthly billing methods only and provides data at the user level. The query time range starts at 00:00 on the first day of the month and ends two hours before the current time.\n\n- Monthly 95th percentile: The highest data point after the top 5% of data points are removed from the specified time range.\n\n- Monthly average of daily peak bandwidth: The sum of daily peak bandwidth values divided by the number of days in the time range. The current day's data is not included.\n\n- Monthly 4th peak: The fourth-highest peak bandwidth in the specified time range. If the time range is less than four days, the predicted value is 0.\n\n- Monthly average of daily 95th percentile peak: The sum of daily 95th percentile peak values divided by the number of days in the time range. The current day's data is not included.\n\n- Nightly 95th percentile: The highest data point after the top 5% of data points are removed from the specified time range.\n\n## QPS limit\n\nThe queries per second (QPS) limit for a single user is 1. If you exceed this limit, your API calls are throttled, which may affect your business. Make API calls at a reasonable rate. For more information, see [QPS limits](~~343507~~)."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-user-bill-prediction --biz-region-id cn-hangzhou --start-time 2015-12-01T05:40:00Z --end-time 2015-12-01T05:45:00Z --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveUserBillPrediction --region cn-hangzhou --EndTime '2015-12-01T05:45:00Z' --StartTime '2015-12-01T05:40:00Z' --RegionId 'cn-hangzhou'"

@@ -1,5 +1,6 @@
 {
   "name": "SubmitMediaInfoJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,7 +9,11 @@
       "name": "Async",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否发起异步作业。取值：\n\n- **true**：发起异步作业（推荐）。\n- **false**：不发起异步作业。",
+        "en": "Specify whether to run the job asynchronously. Valid values:\n\n- **true**: Run the job asynchronously. We recommend this option.\n\n- **false**: Run the job synchronously."
+      }
     },
     {
       "name": "Config",
@@ -20,21 +25,44 @@
       "name": "Input",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "作业输入。详细说明请参见[Input详情](~~29253#section-f3p-d24-y2b~~)。\n\n> - 在媒体处理API中，Object必须经过[URL Encoding](~~423796~~)（基于UTF-8编码）后使用。\n- OSS的地域需要与当前MPS所在地域保持一致。",
+        "en": "Job input. For more information, see [Input details](~~29253#section-f3p-d24-y2b~~).\n\n> - In MPS APIs, the Object value must be URL encoded using UTF-8.\n\n- The region of the OSS bucket must match the region where MPS is deployed."
+      }
     },
     {
       "name": "PipelineId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "管道ID。详细信息请参见[基本概念](~~29197~~)。\n- 可选值：可以通过[MPS控制台](https://mps.console.aliyun.com/overview)>**全局设置**>**管道**查询和创建。\n- 如果需要异步通知，请为管道绑定MNS消息，具体请参见<props=\"china\">[接收消息通知](https://help.aliyun.com/document_detail/42618.html)</props><props=\"intl\">[接收消息通知](https://www.alibabacloud.com/help/en/mps/receive-message-notifications/?spm=a2c63.p38356.0.0.b48576d2jxNSca)</props>。",
+        "en": "Pipeline ID. For more information, see [Terms](~~29197~~).\n\n- You can find or create pipelines in the [MPS console](https://mps.console.aliyun.com/overview)>**Settings**>**Pipelines**.\n\n- To receive asynchronous notifications, attach an MNS topic to the pipeline. For more information, see <props=\"china\">[Receive message notifications](https://help.aliyun.com/document_detail/42618.html)</props> and <props=\"intl\">[Receive message notifications](https://www.alibabacloud.com/help/en/mps/receive-message-notifications/?spm=a2c63.p38356.0.0.b48576d2jxNSca)</props>."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据。可以使用中英文、数字、中划线（-）等，不能以特殊符号开头，最大长度1024个字节。",
+        "en": "User-defined data. You can use letters, digits, and hyphens (-). It cannot start with a special character. Maximum length: 1024 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交媒体信息作业",
+    "en": "SubmitMediaInfoJob"
+  },
+  "descriptions": {
+    "zh": "- 请确认文件已成功上传至OSS后再提交媒体信息作业，否则会导致执行失败。您可通过**配置OSS回调消息**确认文件上传状态。\n- 媒体信息作业分为同步和异步模式。\n- 异步模式不保证时效性，在提交媒体信息作业后，任务会添加到管道中排队，被调度执行。所以在接口返回时，不保证作业已经生成。执行完成后需要调用[查询媒体信息作业](~~602828~~)接口轮询执行结果，或通过为管道绑定MNS消息接收执行结果，详细说明请参见<props=\"china\">[接收消息通知](https://help.aliyun.com/document_detail/42618.html)</props><props=\"intl\">[接收消息通知](https://www.alibabacloud.com/help/en/mps/receive-message-notifications/?spm=a2c63.p38356.0.0.b48576d2jxNSca)</props>。\n\n## QPS限制\n本接口的单用户QPS限制为50次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "- Ensure that the file is uploaded to OSS before you submit a media information analysis job. Otherwise, the job fails. You can use **OSS callback messages** to confirm the upload status.\n\n- Media information analysis jobs support synchronous and asynchronous modes.\n\n- The asynchronous mode does not guarantee timeliness. After you submit a job, it enters the MPS queue and waits for scheduling. The job may not be created at the time the API returns a response. To retrieve the result, you can poll the [QueryMediaInfoJob](~~602828~~) operation or configure MNS message notifications for the MPS queue. For more information, see <props=\"china\">[Receive message notifications](https://help.aliyun.com/document_detail/42618.html)</props> and <props=\"intl\">[Receive message notifications](https://www.alibabacloud.com/help/en/mps/receive-message-notifications/?spm=a2c63.p38356.0.0.b48576d2jxNSca)</props>.\n\n## QPS limit\n\nThe maximum queries per second (QPS) for a single user is 50. If you exceed this limit, API calls are rate-limited. This may affect your business. Plan your API calls accordingly. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-media-info-job --input Bucket_:_example-bucket_,_Location_:_example-location_,_Object_:_example%2Fexample.flv --user-data testid-001 --pipeline-id 88c6ca184c0e432bbf5b665e2a150000 --async true --config example-string --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitMediaInfoJob --region cn-hangzhou --Input 'Bucket_:_example-bucket_,_Location_:_example-location_,_Object_:_example%2Fexample.flv' --UserData 'testid-001' --Async true --Config 'example-string' --PipelineId 88c6ca184c0e432bbf5b665e2a150000"

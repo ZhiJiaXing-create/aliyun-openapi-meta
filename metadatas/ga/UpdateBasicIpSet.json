@@ -1,5 +1,6 @@
 {
   "name": "UpdateBasicIpSet",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Bandwidth",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的接入地域带宽。单位：Mbps。、\n\n加速地域支持分配的最小带宽为 2Mbps。",
+        "en": "The bandwidth of the acceleration region. Unit: Mbit/s.\n\nThe minimum bandwidth is 2 Mbit/s."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "IpSetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的接入地域实例ID。",
+        "en": "The ID of the acceleration region of the basic GA instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The ID of the region where the basic GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改基础型全球加速实例的加速地域带宽",
+    "en": "UpdateBasicIpSet"
+  },
+  "descriptions": {
+    "zh": "调用本接口，请注意以下事项：\n- 仅带宽计费方式为**按流量**的基础型全球加速实例支持修改加速地域的带宽。\n- **UpdateBasicIpSet**接口属于异步接口，即系统会先返回一个请求ID，但接入地域带宽未修改完成，系统后台的修改任务仍在进行。您可以调用[GetBasicIpSet](~~362987~~)查询接入地域带宽的修改状态：\n    - 当接入地域处于**updating**状态时，表示接入地域带宽正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当接入地域处于**active**状态时，表示接入地域带宽修改完成。\n- **UpdateBasicIpSet**接口不支持在同一个基础型全球加速实例内并发修改接入地域带宽。",
+    "en": "Before you call this operation, take note of the following limits:\n\n*   You can modify the bandwidth of an acceleration region of a basic GA instance only if the bandwidth metering method of the basic GA instance is **pay-by-data-transfer**.\n\n*   **UpdateBasicIpSet** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetBasicIpSet](~~362987~~) operation to query the status of the task.\n\n    *   If the acceleration region is in the **updating** state, it indicates that the bandwidth of the acceleration region is being modified. In this case, you can perform only query operations.\n    *   If the acceleration region is in the **active** state, it indicates that the bandwidth of the acceleration region is modified.\n\n*   You cannot repeatedly call the **UpdateBasicIpSet** operation for the same basic GA instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-basic-ip-set --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --ip-set-id ips-bp11r5jb8ogp122xl0000 --bandwidth 2 --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateBasicIpSet --region cn-hangzhou --IpSetId 'ips-bp11r5jb8ogp122xl0000' --Bandwidth 2 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

@@ -1,5 +1,6 @@
 {
   "name": "OperateJob",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/tasks/[taskId]/jobs/[jobId]/operation/[operationType]",
@@ -8,33 +9,64 @@
       "name": "comment",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "描述，长度（0-128）",
+        "en": "The description. The length is 0 to 128 characters."
+      }
     },
     {
       "name": "jobId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "作业ID",
+        "en": "The job ID."
+      }
     },
     {
       "name": "operationType",
       "position": "Path",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "操作类型\n- execute：Plan完成后继续执行Apply操作\n- abolish：放弃已完成 Plan 预览的 Job\n- cancel：取消正在执行中或排队中的 Job",
+        "en": "The operation type. Valid values:\n- execute: continues the Apply operation after the Plan is complete.\n- abolish: abandons a job that has completed the Plan preview.\n- cancel: cancels a job that is running or queued."
+      }
     },
     {
       "name": "taskId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务ID",
+        "en": "The task ID."
+      }
     },
     {
       "name": "taskType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务类型\n\nTask：常规任务（默认）\n\nSceneTestingTask：场景化测试任务",
+        "en": "The task type. Valid values:\n\n- Task: regular task (default).\n- SceneTestingTask: scenario-based testing task."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "操作作业",
+    "en": "Operate a job"
+  },
+  "descriptions": {
+    "zh": "单用户调用频率：100 次/秒。",
+    "en": "Per-user call frequency: 100 calls per second."
+  },
   "example": {
     "unifiedCli": "aliyun iacservice operate-job --task-id task-518855d9a058cfffe0e0a92745bbc --job-id job-5fd38c9b92d54fff865d936f22a39 --operation-type execute --comment dasd --task-type Task --api-version 2021-08-06 --region cn-hangzhou",
     "legacyCli": "aliyun iacservice POST /tasks/task-518855d9a058cfffe0e0a92745bbc/jobs/job-5fd38c9b92d54fff865d936f22a39/operation/execute --region cn-hangzhou --taskType Task --comment dasd --header \"Content-Type=application/json\""

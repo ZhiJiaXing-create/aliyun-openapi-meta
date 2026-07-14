@@ -1,5 +1,6 @@
 {
   "name": "UpdateHanaRetentionSetting",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SAP HANA实例ID。",
+        "en": "The ID of the SAP HANA instance."
+      }
     },
     {
       "name": "DatabaseName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The database name."
+      }
     },
     {
       "name": "Disabled",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份是否永久保留。\n\n- true：永久保留\n- false：不永久保留，保留RetentionDays指定的天数。",
+        "en": "Specifies whether to permanently retain the backup. Valid values:\n\n*   true: The backup is permanently retained.\n*   false: The backup is retained for the specified number of days."
+      }
     },
     {
       "name": "RetentionDays",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份保留天数。若Disabled为false，则备份将保留该参数指定的天数。",
+        "en": "The retention period of the backup data. Unit: days. If you set the Disabled parameter to false, the backup is retained for the number of days specified by this parameter."
+      }
     },
     {
       "name": "Schedule",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "更新保留时间策略。可选格式：`I|{startTime}|{interval}`。表示从{startTime}开始每隔{interval}的时间更新一次保留时间。\n\n- startTime：备份起始时间，UNIX时间，单位为秒。\n- interval： ISO8601时间间隔。例如：PT1H表示间隔一小时，P1D表示间隔一天。",
+        "en": "The policy to update the retention period. Format: `I|{startTime}|{interval}`. The retention period is updated at an interval of {interval} starting from {startTime}.\n\n*   startTime: the time at which the system starts to run a backup job. The time follows the UNIX time format. Unit: seconds.\n*   interval: the interval at which the system runs a backup job. The interval follows the ISO 8601 standard. For example, PT1H indicates an interval of 1 hour, and P1D indicates an interval of one day."
+      }
     },
     {
       "name": "VaultId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份仓库ID。",
+        "en": "The ID of the backup vault."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新SAP HANA数据库备份保留时间",
+    "en": "UpdateHanaRetentionSetting"
+  },
+  "descriptions": {
+    "zh": "- 若想更新数据库的备份参数，可以调用UpdateHanaBackupSetting。\n- SAP HANA备份保留时间到期后，备份服务会自动清理过期的BACKINT备份与文件备份相关的catalog记录以及数据，清理后不可恢复。请您根据实际情况谨慎配置备份保留时间。",
+    "en": "*   If you want to update the backup parameters of a database, you can call the UpdateHanaBackupSetting operation.\n*   Cloud Backup deletes the expired catalogs and data that are related to Backint and file backup. The deleted catalogs and data cannot be restored. We recommend that you set the retention period based on your business requirements."
+  },
   "example": {
     "unifiedCli": "aliyun hbr update-hana-retention-setting --vault-id v-000fb0v2ly000000k6 --cluster-id cl-00024vyjj000000srrq --schedule I_0_P1D --retention-days 90 --disabled false --database-name SYSTEMDB --region cn-hangzhou",
     "legacyCli": "aliyun hbr UpdateHanaRetentionSetting --region cn-hangzhou --ClusterId 'cl-00024vyjj000000srrq' --Schedule I_0_P1D --DatabaseName SYSTEMDB --RetentionDays 90 --VaultId 'v-000fb0v2ly000000k6' --Disabled false"

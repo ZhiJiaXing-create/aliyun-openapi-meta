@@ -1,5 +1,6 @@
 {
   "name": "SetLiveStreamDelayConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流域名。",
+        "en": "The streaming domain."
+      }
     },
     {
       "name": "FlvDelay",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "FLV播放延迟时间。单位：秒。\n\n>该参数为空时，按照FlvLevel延迟级别对应的时间设置。",
+        "en": "The FLV playback latency. Unit: seconds.\n\n> If this parameter is left empty, the latency is set based on the value of FlvLevel."
+      }
     },
     {
       "name": "FlvLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "FLV延迟级别。配置了FlvDelay情况下忽略该参数。\n\n取值如下：\n\n- **short**（默认）：表示延迟时间为2秒。\n\n- **medium**：表示延迟时间为4秒。\n\n- **long**：表示延迟时间大于4秒。\n\n>如果FlvDelay和FlvLevel参数都为空，则按照默认值**short**进行配置。",
+        "en": "The FLV latency level. This parameter is ignored if FlvDelay is set.\n\nValid values:\n\n- **short** (default): 2 seconds.\n\n- **medium**: 4 seconds.\n\n- **long**: more than 4 seconds.\n\n> If both FlvDelay and FlvLevel are left empty, the default value **short** is used."
+      }
     },
     {
       "name": "HlsDelay",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HLS播放延迟时间。单位：秒。\n\n>该参数为空时，按照HlsLevel延迟级别对应的时间设置。",
+        "en": "The HLS playback latency. Unit: seconds.\n\n> If this parameter is left empty, the latency is set based on the value of HlsLevel."
+      }
     },
     {
       "name": "HlsLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HLS延迟级别。配置了HlsDelay情况下忽略该参数。\n\n取值如下：\n\n- **short**（默认）：表示延迟时间为3秒。\n\n- **medium**：表示延迟时间为6秒。\n\n- **long**：表示延迟时间为15秒。\n\n>如果HlsDelay和HlsLevel参数都为空，则按照默认值**short**进行配置。",
+        "en": "The HLS latency level. This parameter is ignored if HlsDelay is set.\n\nValid values:\n\n- **short** (default): 3 seconds.\n\n- **medium**: 6 seconds.\n\n- **long**: 15 seconds.\n\n> If both HlsDelay and HlsLevel are left empty, the default value **short** is used."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "RtmpDelay",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "RTMP播放延迟时间。单位：秒。\n\n>该参数为空时，按照RtmpLevel延迟级别对应的时间设置。",
+        "en": "The RTMP playback latency. Unit: seconds.\n\n> If this parameter is left empty, the latency is set based on the value of RtmpLevel."
+      }
     },
     {
       "name": "RtmpLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "RTMP延迟级别。配置了RtmpDelay情况下忽略该参数。\n\n取值如下：\n\n- **short**（默认）：表示延迟时间为2秒。\n\n- **medium**：表示延迟时间为4秒。\n\n- **long**：表示延迟时间大于4秒。\n\n>如果RtmpDelay和RtmpLevel参数都为空，则按照默认值**short**进行配置。",
+        "en": "The RTMP latency level. This parameter is ignored if RtmpDelay is set.\n\nValid values:\n\n- **short** (default): 2 seconds.\n\n- **medium**: 4 seconds.\n\n- **long**: more than 4 seconds.\n\n> If both RtmpDelay and RtmpLevel are left empty, the default value **short** is used."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "配置直播延迟",
+    "en": "SetLiveStreamDelayConfig"
+  },
+  "descriptions": {
+    "zh": "- 本接口支持配置播流域名的延迟配置。\n\n- 因为服务端缓存内是整数个关键帧间隔（GOP），所以延迟不会小于GOP大小，真实的延迟需要按照GOP大小估算。例如RTMP配置RtmpDelay为4秒，GOP大小为2秒，则真实延迟最小为2秒（4秒减去2秒），最大为6秒（4秒加上2秒）。 如果GOP大于RtmpDelay延迟配置，比如GOP=5秒,，RtmpDelay=4秒，则延迟在0～9秒之间波动。\n\n- 纯音频延迟配置无效，默认延迟接近0。\n\n- HLS配置方式为：先计算切片大小=Delay/3，向下取整，最小不能小于1秒。然后计算切片最大个数，当切片大小大于等于3秒时为4个，其余情况为6个。\n\n- HLS实际切片大小不会小于GOP大小。\n\n- HLS延迟计算方式为配置的切片大小*3。\n\n- 不调用该接口配置时，默认延迟时间为：RTMP为2秒；FLV为4秒；HLS一个切片大小为5秒，即延迟时间为15秒，最多6个切片。\n\n## QPS限制\n本接口的单用户QPS限制为1000次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- This operation configures the latency for a streaming domain.\n\n- The server-side cache stores an integer number of Groups of Pictures (GOPs). Therefore, the latency cannot be less than the GOP size. The actual latency is estimated based on the GOP size. For example, if you set RtmpDelay to 4 seconds for an RTMP stream and the GOP size is 2 seconds, the actual latency ranges from 2 seconds (4 - 2) to 6 seconds (4 + 2). If the GOP size is larger than the configured RtmpDelay, for example, GOP = 5 seconds and RtmpDelay = 4 seconds, the latency fluctuates between 0 and 9 seconds.\n\n- Latency configurations do not take effect for audio-only streams. The default latency is close to 0 seconds.\n\n- For an HLS configuration, the segment size is calculated as \\`Delay / 3\\` and rounded down to the nearest integer. The minimum segment size is 1 second. The maximum number of segments is 4 if the segment size is 3 seconds or more. Otherwise, the maximum is 6 segments.\n\n- The actual HLS segment size cannot be smaller than the GOP size.\n\n- The HLS latency is calculated as: Configured Segment Size × 3.\n\n- If you do not call this operation, the system uses the default values. The default latency is 2 seconds for RTMP and 4 seconds for FLV. For HLS, the default segment size is 5 seconds, which results in a latency of 15 seconds with a maximum of 6 segments.\n\n## Queries per second (QPS) limit\n\nThe QPS limit for this operation is 1,000 calls per second per user. If you exceed this limit, API calls are throttled, which may affect your business. Plan your calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun live set-live-stream-delay-config --biz-region-id cn-hangzhou --domain-name example.com --hls-delay 4 --hls-level short --flv-delay 8 --flv-level medium --rtmp-delay 4 --rtmp-level short --region cn-hangzhou",
     "legacyCli": "aliyun live SetLiveStreamDelayConfig --region cn-hangzhou --HlsDelay 4 --HlsLevel short --DomainName 'example.com' --RtmpLevel short --FlvLevel medium --RtmpDelay 4 --RegionId 'cn-hangzhou' --FlvDelay 8"

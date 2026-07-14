@@ -1,5 +1,6 @@
 {
   "name": "DeleteTransitRouterVpcAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认值）：发送正常请求，通过检查后直接删除VPC连接。\n- **true**：发送检查请求，只进行校验，不会删除VPC连接。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。",
-        "en": "Specifies whether to perform a dry run. Default values:\n\n*   **false** (default): performs a dry run and sends the request.\n*   **true**: performs a dry run. The system checks the required parameters and request syntax. If the request fails the dry run, an error message is returned. If the request passes the dry run, the system returns the ID of the request."
+        "en": "Specifies whether to perform a dry run. Default values:\n\n- **false** (default): performs a dry run and sends the request.\n- **true**: performs a dry run. The system checks the required parameters and request syntax. If the request fails the dry run, an error message is returned. If the request passes the dry run, the system returns the ID of the request."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "是否强制删除VPC连接，取值：\n- **false**（默认值）：删除VPC连接前校验是否存在相关资源依赖，如关联转发、路由学习等。如果存在相关依赖，则不允许删除，返回对应错误。\n- **true**：删除VPC连接时，默认删除所有相关依赖。",
-        "en": "Specifies whether to forcefully delete the VPC connection. Valid values:\n\n*   **false** (default): checks resources such as associated forwarding correlations and route learning policies that are related to the VPC connection before it is deleted. If such a resource exists, the VPC connection is not deleted and an error message is returned.\n*   **true**: deletes the VPC connection and all resources that are related to the VPC connection."
+        "en": "Specifies whether to forcefully delete the VPC connection. Valid values:\n\n- **false** (default): checks resources such as associated forwarding correlations and route learning policies that are related to the VPC connection before it is deleted. If such a resource exists, the VPC connection is not deleted and an error message is returned.\n- **true**: deletes the VPC connection and all resources that are related to the VPC connection."
       }
     },
     {
@@ -45,6 +46,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除企业版转发路由器下的专有网络VPC连接",
+    "en": "DeleteTransitRouterVpcAttachment"
+  },
+  "descriptions": {
+    "zh": "**DeleteTransitRouterVpcAttachment**接口属于异步接口，即系统会先返回一个**RequestId**，但该VPC连接并未删除完成，系统后台的删除任务仍在进行。您可以调用**ListTransitRouterVpcAttachments**接口查询VPC连接的状态。 \n\n- 当VPC连接处于**Detaching**状态时，表示VPC连接正在删除中，在该状态下，您只能对VPC连接执行查询操作，不能执行其他操作。\n- 当查询不到指定的VPC连接时，表示VPC连接删除完成。\n\n在调用**DeleteTransitRouterVpcAttachment**接口过程时请确保输入的参数值无误。如果您输入的参数有误调用接口后仍然会返回**RequestId**，但不会删除企业版转发路由器下的专有网络VPC连接。\n\n### 前提条件\n删除VPC连接前，请确保您未使用该VPC实例配置访问PrivateZone的路由。删除访问PrivateZone的路由，请参见[UnroutePrivateZoneInCenToVpc ](~~468375~~)。",
+    "en": "**DeleteTransitRouterVpcAttachment** is an asynchronous operation. After you send a request, the system returns a **request ID** and runs the task in the background. You can call the **ListTransitRouterVpcAttachments** operation to query the status of a VPC connection.\n\n- If a VPC connection is in the **Detaching** state, the VPC connection is being deleted. You can query the VPC connection but cannot perform other operations.\n- If a VPC connection cannot be found, it is deleted.\n\n## Prerequisites\n\nBefore you delete a VPC connection, make sure that the following requirements are met:\n\n- No associated forwarding correlation is established between the VPC connection and the route tables of the Enterprise Edition transit router. For more information about how to delete an associated forwarding correlation, see [DissociateTransitRouterAttachmentFromRouteTable](~~260944~~).\n- No route learning correlation is established between the VPC connection and the route tables of the Enterprise Edition transit router. For more information about how to delete a route learning correlation, see [DisableTransitRouterRouteTablePropagation](~~260945~~).\n- The route table of the VPC does not contain routes that point to the VPC connection. For more information about how to delete routes from a VPC route table, see [DeleteRouteEntry](~~36013~~).\n- The route tables of the Enterprise Edition transit router do not contain a custom route entry whose next hop is the network instance connection. For more information about how to delete custom routes from the route tables of an Enterprise Edition transit router, see [DeleteTransitRouterRouteEntry](~~261240~~).\n- The route tables of the Enterprise Edition transit router do not contain a route that is generated from a prefix list and the next hop is the VPC connection. You can delete such routes by disassociating the route table from the prefix list. For more information, see [DeleteTransitRouterPrefixListAssociation](~~445486~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-transit-router-vpc-attachment --client-token 02fb3da4-130e-11e9-8e44-0010000 --transit-router-attachment-id tr-attach-ia340z7xis7t5s0000 --dry-run false --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteTransitRouterVpcAttachment --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-ia340z7xis7t5s0000' --Force false --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

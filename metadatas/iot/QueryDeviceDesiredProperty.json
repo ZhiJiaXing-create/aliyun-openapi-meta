@@ -1,5 +1,6 @@
 {
   "name": "QueryDeviceDesiredProperty",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的设备名称。\n> 如果传入该参数，需同时传入**ProductKey**。",
+        "en": "The DeviceName of the device.\n\n>  If you specify a value for this parameter, you must configure the **ProductKey** parameter."
+      }
     },
     {
       "name": "FunctionBlockId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "物模型自定义模块标识符，在产品中具有唯一性。\n\n不传入此参数时，查询默认模块的数据。",
+        "en": "The identifier of the custom TSL module. Each identifier is unique in a product.\n\nIf you do not configure this parameter, the system queries the data of the default module."
+      }
     },
     {
       "name": "Identifier",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询期望值的属性的标识符（identifier）列表。\n\n设备的属性identifier，可在控制台中，设备所属产品的功能定义中查看。\n\n- 单次调用，最多能传入10个标识符。\n- 不可输入重复的属性标识符。\n- 若不传入此参数，将返回该设备所有属性的期望值。",
+        "en": "A list of identifiers (identifiers) of the properties whose desired values you want to query.  \n\nYou can view the property identifiers in the console under the feature definition of the product to which the device belongs.  \n\n- A single invocation supports up to 10 identifiers.  \n- Duplicate property identifiers are not allowed.  \n- If this parameter is not specified, the desired values of all properties of the device are returned."
+      }
     },
     {
       "name": "IotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备ID。物联网平台为该设备颁发的ID，设备的唯一标识符。\n> 如果传入该参数，则无需传入**ProductKey**和**DeviceName**。**IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。",
+        "en": "The ID of the device. The ID is a unique identifier that is issued by IoT Platform to the device.\n\n>  If you specify a value for this parameter, you do not need to configure the **ProductKey** or **DeviceName** parameter. The **IotId** parameter specifies a GUID for the device. The value of the IotId parameter is equivalent to a combination of the values of the **ProductKey** and **DeviceName** parameters. If you specify values for the **IotId**, **ProductKey**, and **DeviceName** parameters, the value of the **IotId** parameter takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n>*   If no **Overview** page or ID is generated for your instance, you do not need configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的设备所隶属的产品ProductKey。\n> 如果传入该参数，需同时传入**DeviceName**。",
+        "en": "The ProductKey of the product to which the device belongs.\n\n>  If you specify a value for this parameter, you must configure the **DeviceName** parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定设备的期望属性值",
+    "en": "Query the desired property values of a specified device"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n- 只读属性不支持查询期望属性值。\n\n- 一次调用最多能查询10个属性的期望值。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n> RAM用户共享阿里云账号配额。",
+    "en": "## How-To\n\n- Read-only attributes do not support querying desired property values.\n\n- A single call can query the desired values of up to 10 properties.\n\n## QPS Limit\nThe maximum queries per second (QPS) for this API is 50 per Alibaba Cloud account.  \n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot query-device-desired-property --iot-instance-id iot_instc_pu0000_c0-v6400000000 --product-key a1BwAGV0000 --device-name light --iot-id Q7uOhVRdZRRlDnTLv000000100 --function-block-id BatteryModule --identifier example-string --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot QueryDeviceDesiredProperty --region cn-hangzhou --IotId Q7uOhVRdZRRlDnTLv000000100 --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --Identifier.1 'example-string' --FunctionBlockId BatteryModule --ProductKey a1BwAGV0000 --DeviceName light"

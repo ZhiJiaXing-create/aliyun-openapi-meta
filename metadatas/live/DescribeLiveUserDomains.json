@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveUserDomains",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,71 +9,126 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "域名模糊匹配过滤。\n\n>- 如果LiveDomainType（直播域名业务类型）取值为liveVideo，此参数不传值时，默认查询用户播流域名的相关信息。- 如果LiveDomainType（直播域名业务类型）取值为liveEdge，此参数不传值时，默认查询用户推流域名的相关信息。",
+        "en": "The domain name that is used as a keyword to filter domain names. Fuzzy match is supported.\n\n> \n\n*   If you set LiveDomainType to liveVideo and leave this parameter empty, the streaming domains are queried. - If you set LiveDomainType to liveEdge and leave this parameter empty, the ingest domains are queried."
+      }
     },
     {
       "name": "DomainSearchType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "域名查询类型。取值：\n\n- **fuzzy_match**（默认值）：模糊匹配。\n- **pre_match**：前匹配。\n- **suf_match**：后匹配。\n- **full_match**：完全匹配。",
+        "en": "The search mode. Valid values:\n\n*   **fuzzy_match** (default): fuzzy match\n*   **pre_match**: prefix match\n*   **suf_match**: suffix match\n*   **full_match**: exact match"
+      }
     },
     {
       "name": "DomainStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "域名状态。取值：\n\n- **online**：运行中（表示域名服务状态正常）。\n- **offline**：已停止。\n- **configuring**：配置中。",
+        "en": "The status of the domain name. Valid values:\n\n*   **online**\n*   **offline**\n*   **configuring**"
+      }
     },
     {
       "name": "LiveDomainType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "直播域名业务类型。取值：\n- **liveVideo**：播流域名。\n- **liveEdge**：边缘推流域名。\n\n>如果不设置此参数，则请求参数DomainName默认查询用户所有直播推流和播流域名。",
+        "en": "The type of the domain name. Valid values:\n\n*   **liveVideo**: streaming domain\n*   **liveEdge**: ingest domain\n\n>  If you leave this parameter empty, all ingest domains and streaming domains within your Alibaba Cloud account are queried by default."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前页码。取值范围：**1~100000**。",
+        "en": "The page number. Valid values: **1 to 100000**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小。默认值为**20**，最大值为**50**。",
+        "en": "The number of entries per page. Default value: **20**. Maximum value: **50**."
+      }
     },
     {
       "name": "RegionName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "域名所属地域。",
+        "en": "The ID of the region in which the domain name resides."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签健。",
+            "en": "The key of the tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The value of the tag."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询用户名下所有的直播域名",
+    "en": "DescribeLiveUserDomains"
+  },
+  "descriptions": {
+    "zh": "本接口目前支持的直播域名业务类型为播流域名和边缘推流域名。\n\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "## [](#)Usage notes\n\nYou can call this operation to query all domain names of ApsaraVideo Live within your Alibaba Cloud account. The supported types of domain names are streaming domains and edge ingest domains.\n\n## [](#qps-)QPS limit\n\nYou can call this operation up to 100 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation. For more information, see [QPS limits](~~343507~~)."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-user-domains --live-domain-type liveVideo --page-size 20 --page-number 1 --domain-name 0.aliyundoc.com --region-name cn-beijing --domain-search-type fuzzy_match --domain-status online --tag Value=TestValue Key=TestKey --resource-group-id rg-00kzvyjetyjjm00 --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveUserDomains --region cn-hangzhou --Tag.1.Key TestKey --PageSize 20 --ResourceGroupId 'rg-00kzvyjetyjjm00' --LiveDomainType liveVideo --PageNumber 1 --DomainName '0.aliyundoc.com' --RegionName 'cn-beijing' --DomainSearchType fuzzy_match --Tag.1.Value TestValue --DomainStatus online"

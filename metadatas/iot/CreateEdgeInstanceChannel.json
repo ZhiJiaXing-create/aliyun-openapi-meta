@@ -1,5 +1,6 @@
 {
   "name": "CreateEdgeInstanceChannel",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ChannelName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "驱动通道名称。支持中文、英文大小写字母、数字和下划线（_），长度限制1~30个字符。",
+        "en": "The name of the driver channel. The name can contain Chinese characters, English letters (both uppercase and lowercase), digits, and underscores (_). It must be 1 to 30 characters in length."
+      }
     },
     {
       "name": "Configs",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "配置列表。",
+        "en": "The list of configurations."
+      },
       "sub_parameters": [
         {
           "name": "Content",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "配置内容。\n\n- **Configs.N.Format**参数的值为KV或JSON时，此处请填写配置内容。配置内容格式，请参见[驱动通道配置说明](~~172321~~)。\n\n- **Configs.N.Format**参数的值为FILE时，此处请填写阿里云对象存储OSS地址。OSS地址请调用[CreateOssPreSignedAddress](~~155858~~)接口获取。",
+            "en": "Configuration content.\n\n- When the value of the **Configs.N.Format** parameter is KV or JSON, specify the configuration content here. For the configuration content format, see [Driver Channel Configuration Description](~~172321~~).\n\n- When the value of the **Configs.N.Format** parameter is FILE, specify an Alibaba Cloud Object Storage Service (OSS) address here. To obtain an OSS address, invoke the [CreateOssPreSignedAddress](~~155858~~) API."
+          }
         },
         {
           "name": "Format",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "配置格式。取值有KV（键值对配置）、JSON（JSON格式）、FILE（配置文件）。",
+            "en": "The configuration format. Valid values include KV (key-value pair configuration), JSON (JSON format), and FILE (configuration file)."
+          }
         },
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "配置的关键字。在有多个配置的情况下，用于区分配置。",
+            "en": "The keyword of the configuration. It is used to distinguish between multiple configurations."
+          }
         }
       ]
     },
@@ -40,21 +61,44 @@
       "name": "DriverId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "驱动ID。在[边缘计算控制台](https://iot.console.aliyun.com/le/instance/list)的**驱动管理**页面中，鼠标悬浮在目标驱动名称上获取ID。\n\n您也可以调用[QueryEdgeDriver](~~155776~~)接口获取。",
+        "en": "The driver ID. You can obtain the ID by moving the mouse pointer over the target driver name on the **Driver Management** page in the [Edge Computing console](https://iot.console.aliyun.com/le/instance/list).\n\nYou can also call the [QueryEdgeDriver](~~155776~~) API to obtain the ID."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "边缘实例的ID。在[边缘计算控制台](https://iot.console.aliyun.com/le/instance/list)的**边缘实例**页面中，鼠标悬浮在目标边缘实例名称上获取ID。\n\n您也可以调用[QueryEdgeInstance](~~135214~~)接口获取。",
+        "en": "The ID of the edge instance. You can obtain the ID by moving the mouse pointer over the target edge instance name on the **Edge Instances** page in the [Edge Computing console](https://iot.console.aliyun.com/le/instance/list).\n\nYou can also call the [QueryEdgeInstance](~~135214~~) API to obtain the ID."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。公共实例不传此参数，企业版实例需传入。",
+        "en": "The instance ID. Do not specify this parameter for public instances. Specify this parameter for Enterprise instances."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "CreateEdgeInstanceChannel",
+    "en": "CreateEdgeInstanceChannel"
+  },
+  "descriptions": {
+    "zh": "## 限制条件\n单阿里云账号调用该接口的每秒请求数（QPS）最大限制为20。\n\n> RAM用户共享主账号配额。",
+    "en": "## Condition\nEach Alibaba Cloud account can send a maximum of 20 queries per second (QPS) to call this API.\n\n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot create-edge-instance-channel --iot-instance-id iot_instc_pu0000_c0-v6400000000 --instance-id 6GaTtvTj7vJhiS000000 --driver-id 9c1ae7bd59f1469abbdccc9592000000 --channel-name le_name0 --configs Format=JSON Content=protocol_:_TCP_,_ip_:_1.2.3.4_,_port_:1 Key=key1 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot CreateEdgeInstanceChannel --region cn-hangzhou --Configs.1.Content 'protocol_:_TCP_,_ip_:_1.2.3.4_,_port_:1' --DriverId 9c1ae7bd59f1469abbdccc9592000000 --Configs.1.Key key1 --ChannelName le_name0 --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --InstanceId 6GaTtvTj7vJhiS000000 --Configs.1.Format JSON"

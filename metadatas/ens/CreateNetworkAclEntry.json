@@ -1,5 +1,6 @@
 {
   "name": "CreateNetworkAclEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,110 @@
       "name": "CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地址网段。 \n- 当规则应用于入方向（ingress）时，表示允许的源IP地址网段。\n- 当规则应用于出方向（egress）时，表示允许的目的IP地址网段。",
+        "en": "The source CIDR block."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络ACL的描述信息。 \n\n长度为1～256个字符，不能以http://或https://开头。",
+        "en": "The description of the network ACL.\n\nThe description must be 1 to 256 characters in length and cannot start with http\\:// or https\\://."
+      }
     },
     {
       "name": "DestinationCidrBlock",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标地址的网络。",
+        "en": "The destination network."
+      }
     },
     {
       "name": "Direction",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则方向。取值：\n\n- **ingress**：入方向\n- **egress**：出方向",
+        "en": "The direction in which the rule is applied. Valid values:\n\n- **ingress**\n\n- **egress**"
+      }
     },
     {
       "name": "NetworkAclEntryName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则条目的名称。\n\n长度为1～128个字符，不能以http://或https://开头。",
+        "en": "The name of the rule.\n\nThe name must be 1 to 128 characters in length and cannot start with http\\:// or https\\://."
+      }
     },
     {
       "name": "NetworkAclId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络ACL的ID。",
+        "en": "The ID of the network ACL."
+      }
     },
     {
       "name": "Policy",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "授权策略，取值：\n\n- **accept**：允许\n- **drop**：拒绝",
+        "en": "The action that is performed on network traffic that matches the rule. Valid values:\n\n- **accept**: allows network traffic.\n\n- **drop**: blocks network traffic."
+      }
     },
     {
       "name": "PortRange",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "端口范围。\n\n- 当规则的**Protocol**（协议类型）为**all**或**icmp**时，端口范围为-1/-1，表示不限制端口。\n- 当规则的**Protocol**（协议类型）为**tcp**或**udp**时，端口范围为**1~65535**，格式为**1/200**或**80/80**，表示端口1到端口200或端口80。",
+        "en": "The port range.\n\n- If you set **Protocol** to **all** or **icmp**, set this parameter to -1/-1, which specifies all ports.\n\n- If you set **Protocol** to **tcp** or **udp**, the port can be **1 to 65535**. You can set this parameter to **1/200** or **80/80**, which specifies ports 1 to 200 or port 80."
+      }
     },
     {
       "name": "Priority",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则优先级。取值范围：**1~100**。默认值：**1**。",
+        "en": "The priority of the rule. Valid values: **1 to 100**. Default value: **1**."
+      }
     },
     {
       "name": "Protocol",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "协议类型。取值：\n\n- **icmp**：网络控制报文协议。\n- **tcp**：传输控制协议。\n- **udp**：用户数据报协议。\n- **all**：支持所有协议。",
+        "en": "The type of the protocol. Valid values:\n\n- **icmp**: ICMP\n\n- **tcp**: TCP\n\n- **udp**: UDP\n\n- **all**: all protocols"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建网络ACL规则",
+    "en": "Create a network ACL rule"
+  },
   "example": {
     "unifiedCli": "aliyun ens create-network-acl-entry --network-acl-id nacl-bp1lhl0taikrbgnh0000 --network-acl-entry-name acl-1 --description This_is_my_NetworkAcl. --direction ingress --policy accept --cidr-block 10.0.0.0/24 --protocol all --port-range -1/-1 --priority 1 --destination-cidr-block 10.130.220.0/24 --region cn-hangzhou",
     "legacyCli": "aliyun ens CreateNetworkAclEntry --region cn-hangzhou --Policy accept --PortRange '-1/-1' --Description 'This_is_my_NetworkAcl.' --NetworkAclId 'nacl-bp1lhl0taikrbgnh0000' --Priority 1 --CidrBlock '10.0.0.0/24' --DestinationCidrBlock '10.130.220.0/24' --NetworkAclEntryName 'acl-1' --Protocol all --Direction ingress"

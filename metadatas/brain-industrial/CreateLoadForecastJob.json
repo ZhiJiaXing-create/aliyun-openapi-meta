@@ -1,0 +1,148 @@
+{
+  "name": "CreateLoadForecastJob",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BusinessKey",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "业务键，如场站名称编号等。",
+        "en": "The business key, such as the site name or ID."
+      }
+    },
+    {
+      "name": "DataMode",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "本次调用的数据模式，枚举值：\n- FULL：全量数据（仅使用本次调用中传递的数据）\n- INCREMENTAL：增量数据（自动关联使用历史调用中相同BusinessKey的数据）",
+        "en": "The data mode for this call. Valid values:\n- FULL: full data (uses only the data passed in this call).\n- INCREMENTAL: incremental data (automatically associates data from previous calls with the same BusinessKey)."
+      }
+    },
+    {
+      "name": "DeviceType",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "设备类型，每个systemType支持的设备类型有：\n系统类型：设备类型 \n\n- load:  electricityMeter --市电电表 \n- hvac: gateway-hvac --空调 \n- flexible: electricityMeter --照明电表 \n- charge：gateway-charging --充电桩",
+        "en": "The device type. The device types supported by each systemType are as follows:\nSystem type: Device type \n\n- load: electricityMeter -- mains electricity meter \n- hvac: gateway-hvac -- air conditioner \n- flexible: electricityMeter -- lighting electricity meter \n- charge: gateway-charging -- charging station."
+      }
+    },
+    {
+      "name": "Duration",
+      "position": "Body",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "从运行日(含)开始, 预测时长（单位：天）。\n\n非必填，默认1天。",
+        "en": "The forecast duration in days, starting from the run date (inclusive).\n\nOptional. Default value: 1."
+      }
+    },
+    {
+      "name": "ForecastHorizon",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "预测时间尺度，枚举值：\n- DAY_AHEAD：日前预测\n- INTRADAY：日内预测",
+        "en": "The forecast time horizon. Valid values:\n- DAY_AHEAD: day-ahead forecast\n- INTRADAY: intraday forecast."
+      }
+    },
+    {
+      "name": "Freq",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "默认15min；需要与historyData的数据频率一致；枚举值：\n\n- FIFTEEN_MIN: 15分钟\n- FIVE_MIN: 5分钟\n- ONE_HOUR: 1小时\n- ONE_DAY: 1天",
+        "en": "The data frequency. Default value: FIFTEEN_MIN. The value must be consistent with the data frequency of historyData. Valid values:\n\n- FIFTEEN_MIN: 15 minutes\n- FIVE_MIN: 5 minutes\n- ONE_HOUR: 1 hour\n- ONE_DAY: 1 day."
+      }
+    },
+    {
+      "name": "HistoryData",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "历史负荷，需要90天的历史数据。",
+        "en": "The historical load data. 90 days of historical data is required."
+      },
+      "sub_parameters": [
+        {
+          "name": "RunTime",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "每{freq}分钟，\"yyyy-MM-dd HH:mm:ss\"， 数据频率需与freq字段对齐。",
+            "en": "The timestamp at every {freq} minutes, in the \"yyyy-MM-dd HH:mm:ss\" format. The data frequency must be aligned with the freq field."
+          }
+        },
+        {
+          "name": "Value",
+          "position": "FormData",
+          "type": "Double",
+          "required": false,
+          "description": {
+            "zh": "负荷数据。",
+            "en": "The load data."
+          }
+        }
+      ]
+    },
+    {
+      "name": "ModelVersion",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "模型对应的版本号，默认为latest。",
+        "en": "The version number of the model. Default value: latest."
+      }
+    },
+    {
+      "name": "RunDate",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "运行日，精确到天，“yyyy-MM-dd”格式。",
+        "en": "The run date, accurate to the day, in the \"yyyy-MM-dd\" format."
+      }
+    },
+    {
+      "name": "SystemType",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "系统类型，支持的系统类型有： \n\n- load: 市电 \n- hvac: 空调 \n- flexible：照明 \n- charge：充电桩",
+        "en": "The system type. Valid values: \n\n- load: mains electricity \n- hvac: air conditioner \n- flexible: lighting \n- charge: charging station."
+      }
+    },
+    {
+      "name": "TimeZone",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "时区,默认上海时区：Asia/Shanghai。",
+        "en": "The time zone. Default value: Asia/Shanghai."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建负荷预测任务",
+    "en": "Create a load forecasting task"
+  }
+}

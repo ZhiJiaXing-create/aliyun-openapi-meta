@@ -1,5 +1,6 @@
 {
   "name": "DescribeBackups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,120 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份ID。\n\n当**DBInstanceId**参数传入的是分片集群实例ID时，备份ID个数与Shard节点个数相同，中间用英文逗号（,）间隔。",
+        "en": "The backup ID.\n\nIf you specify the ID of a sharded cluster instance for the **DBInstanceId** parameter, the number of backup IDs must be the same as the number of shard nodes. Separate the backup IDs with commas (,)."
+      }
     },
     {
       "name": "BackupJobId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份任务ID。",
+        "en": "The backup job ID."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n> 当本参数传入的是分片集群实例ID时，还需要传入**NodeId**参数。",
+        "en": "The ID of the instance.\n\n> If the instance is a sharded cluster instance, you must also specify the **NodeId** parameter."
+      }
     },
     {
       "name": "DestRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份所在地域。\n\n\n> 异地备份必填。",
+        "en": "The region where the backup resides.\n\n> This parameter is required for geo-redundancy."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询结束时间，必须晚于查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。\n> 当传入BackupId时，此参数无效。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in UTC.\n\n> This parameter is invalid if you specify the BackupId parameter."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分片集群实例中Shard节点的ID。\n\n> 当**DBInstanceId**参数传入的是分片集群实例ID时，本参数必填。",
+        "en": "The ID of the shard node in the sharded cluster instance.\n\n> This parameter is required if you specify the ID of a sharded cluster instance for the **DBInstanceId** parameter."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，取值为大于0且不超过Integer数据类型的最大值，默认值为**1**。",
+        "en": "The page number. The value must be greater than 0 and not greater than the maximum value of the integer data type. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值：\n\n- **30**（默认值）\n- **50**\n- **100**",
+        "en": "The number of entries to return on each page. Valid values:\n\n- **30** (Default)\n\n- **50**\n\n- **100**"
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "SrcRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所在地域。\n\n> \n> - 已删除实例恢复必填。\n> - 异地备份必填。",
+        "en": "The region where the instance resides.\n\n> - This parameter is required to restore a deleted instance.\n>\n> - This parameter is required for geo-redundancy."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。\n\n\n> 当传入BackupId时，此参数无效。",
+        "en": "The beginning of the time range to query. Specify the time in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in Coordinated Universal Time (UTC).\n\n> This parameter is invalid if you specify the BackupId parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例的备份列表",
+    "en": "DescribeBackups"
+  },
   "example": {
     "unifiedCli": "aliyun dds describe-backups --db-instance-id dds-bp1a7009eb240000 --node-id d-bp128a0034360000 --backup-id 20720000,20720000,20720000 --page-number 1 --page-size 30 --start-time 2022-01-13T13:00Z --end-time 2022-01-14T13:00Z --src-region cn-beijing --dest-region cn-hangzhou --resource-group-id rg-xxxx --backup-job-id 775051 --region cn-hangzhou",
     "legacyCli": "aliyun dds DescribeBackups --region cn-hangzhou --SrcRegion 'cn-beijing' --PageSize 30 --EndTime '2022-01-14T13:00Z' --ResourceGroupId 'rg-xxxx' --DBInstanceId 'dds-bp1a7009eb240000' --PageNumber 1 --NodeId 'd-bp128a0034360000' --StartTime '2022-01-13T13:00Z' --BackupId '20720000,20720000,20720000' --BackupJobId 775051 --DestRegion 'cn-hangzhou'"

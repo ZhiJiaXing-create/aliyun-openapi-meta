@@ -1,0 +1,80 @@
+{
+  "name": "SubmitAvatarVideoJob",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "Description",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务描述，长度不超过128字节",
+        "en": "The description of the job. The description can be up to 128 bytes in length."
+      }
+    },
+    {
+      "name": "EditingConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "虚拟人任务配置信息，支持设置虚拟人id、人声、语速等信息",
+        "en": "The configurations for the avatar job, such as the avatar ID, voice, and speech rate."
+      }
+    },
+    {
+      "name": "InputConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "虚拟人任务输入参数。支持以文本、音频OSS文件、媒资作为输入。音频仅支持mp3或wav格式。\n><notice>Text 的输入内容长度不能少于 5 个字。></notice>",
+        "en": "Input can be text, an audio file from Object Storage Service (OSS), or a [media asset](). Only MP3 and WAV audio formats are supported.><notice> The value of the `Text` parameter must contain at least five characters.></notice>"
+      }
+    },
+    {
+      "name": "OutputConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务输出信息，支持设置输出地址",
+        "en": "Specifies the output configuration, including the destination URL for the rendered video."
+      }
+    },
+    {
+      "name": "Title",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务标题，长度不超过128字节",
+        "en": "The title of the job. The title can be up to 128 bytes in length."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用户自定义设置，可传入客户业务信息，如业务方环境、任务信息，JSON字符串格式。",
+        "en": "A user-defined JSON string for passing custom business information, such as environment details or job metadata."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交数字人渲染任务",
+    "en": "SubmitAvatarVideoJob"
+  },
+  "descriptions": {
+    "zh": "- 该接口为[异步接口](~~3027141~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[获取智能任务结果](~~441172~~)主动查询任务状态。\n- 目前仅支持输入为文本或人声音频作为输入，音频仅支持mp3或wav格式。\n- 支持输出mp4和webm格式。当输出为mp4时，成片为带绿幕背景的视频，同时输出虚拟人的蒙版视频，供后续使用，推荐用这个方案。当输出为webm时，成片为带透明通道的webm，可用于前端展示，由于webm编码问题，合成会慢一些。\n- 输出结果中包含人声的句子时间戳，供后续在剪辑中使用。",
+    "en": "- This is an [asynchronous API](~~3027141~~). After you submit a job, the API returns a job ID and queues the job for background processing. The service delivers the final result through a [callback notification](~~3027141~~). You can also query the job status by calling the [GetSmartJobResult](~~441172~~) operation.\n\n- The input can be text or an audio file in MP3 or WAV format.\n\n- The output supports both MP4 and WebM formats. When the output format is MP4, the job produces a video of the avatar against a green screen and a separate [alpha mask video]() for post-production. We recommend this option. When the output format is WebM, the job produces a single video with a transparent [alpha channel](), which is suitable for front-end display. Rendering in WebM format is slower due to encoding complexity.\n\n- The output includes [sentence-level timestamps]() for the generated speech, useful for subsequent video editing."
+  }
+}

@@ -1,5 +1,6 @@
 {
   "name": "AttachDdosToAccelerator",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定DDoS高防实例的全球加速实例ID。",
+        "en": "The ID of the Global Accelerator (GA) instance with which you want to associate the Anti-DDoS Pro or Anti-DDoS Premium instance."
+      }
     },
     {
       "name": "DdosConfigList",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "与全球加速实例绑定的DDoS高防实例列表。",
+        "en": "The list of Anti-DDoS Pro or Anti-DDoS Premium instances to associate with the Global Accelerator (GA) instance."
+      }
     },
     {
       "name": "DdosId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要绑定到全球加速实例的DDoS高防实例ID。",
+        "en": "The ID of the Anti-DDoS Pro or Anti-DDoS Premium instance to associate with the Global Accelerator (GA) instance."
+      }
     },
     {
       "name": "DdosRegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DDoS高防实例所在的地域，取值：\n\n- **cn-hangzhou**：中国内地。\n\n- **ap-southeast-1**：非中国内地。",
+        "en": "The region of the Anti-DDoS Pro or Anti-DDoS Premium instance. Valid values:\n\n- **cn-hangzhou**: the Chinese mainland.\n\n- **ap-southeast-1**: outside the Chinese mainland."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会进行绑定。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回 HTTP 2xx 状态码。\n\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run without actually associating the instances. The system checks the required parameters, request syntax, and business limits. If the check fails, the corresponding error is returned. If the check passes, an HTTP 2xx status code is returned.\n\n- **false** (default): sends the request. After the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将DDoS高防实例与全球加速实例绑定",
+    "en": "Associate an Anti-DDoS Pro or Anti-DDoS Premium instance with a Global Accelerator instance"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请注意以下事项：\n\n- **AttachDdosToAccelerator**接口属于异步接口，即系统会先返回一个请求ID，但DDoS高防实例与全球加速实例并未绑定完成，系统后台的关联任务仍在进行。您可以调用[DescribeAccelerator](~~153235~~)或[ListAccelerators](~~153236~~)查询全球加速实例的状态：\n    - 当全球加速实例处于**configuring**状态时，表示DDoS高防实例与全球加速实例正在绑定中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当全球加速实例处于**active**状态时，表示DDoS高防实例与全球加速实例绑定完成。\n- **AttachDdosToAccelerator**接口不支持并发为同一个全球加速实例绑定DDoS高防实例。",
+    "en": "Note the following when you call this operation:\n\n- AttachDdosToAccelerator is an asynchronous operation. After you send a request, the system returns a request ID, but the Anti-DDoS Pro or Anti-DDoS Premium instance is not yet associated with the Global Accelerator (GA) instance. The associate task continues to run in the background. You can call [DescribeAccelerator](~~153235~~) or [ListAccelerators](~~153236~~) to query the status of the GA instance:\n    - If the GA instance is in the **configuring** state, the Anti-DDoS Pro or Anti-DDoS Premium instance is being associated with the GA instance. In this state, you can only perform query operations.\n    - If the GA instance is in the **active** state, the Anti-DDoS Pro or Anti-DDoS Premium instance is associated with the GA instance.\n- The AttachDdosToAccelerator operation does not support concurrent requests to associate Anti-DDoS Pro or Anti-DDoS Premium instances with the same GA instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga attach-ddos-to-accelerator --accelerator-id ga-bp1odcab8tmno0hdq0000 --ddos-id ddoscoo-cn-zz11vq7j0000 --ddos-region-id cn-hangzhou --biz-region-id cn-hangzhou --ddos-config-list DdosId=ddoscoo-cn-zz11vq7j0000 DdosRegionId=cn-hangzhou --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun ga AttachDdosToAccelerator --region cn-hangzhou --DdosId 'ddoscoo-cn-zz11vq7j0000' --DdosConfigList.1.DdosId 'ddoscoo-cn-zz11vq7j0000' --DdosRegionId 'cn-hangzhou' --DryRun true --RegionId 'cn-hangzhou' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --DdosConfigList.1.DdosRegionId 'cn-hangzhou' --method POST --force"

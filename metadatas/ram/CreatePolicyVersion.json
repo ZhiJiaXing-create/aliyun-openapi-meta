@@ -1,5 +1,6 @@
 {
   "name": "CreatePolicyVersion",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,50 @@
       "name": "PolicyDocument",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "权限策略内容，最大长度6144字节。",
+        "en": "The document of the policy. The document can be up to 6,144 bytes in length."
+      }
     },
     {
       "name": "PolicyName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "权限策略名称。",
+        "en": "The name of the policy."
+      }
     },
     {
       "name": "RotateStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "权限策略版本自动化轮转机制，可以删除历史权限策略版本。\n\n目前包含：\n\n- `None`：关闭轮转机制。\n- `DeleteOldestNonDefaultVersionWhenLimitExceeded`：当权限策略版本数量超限时，删除最早且非活跃的版本。\n\n默认值：`None`。",
+        "en": "The rotation strategy of the policy. The rotation strategy can be used to delete an early policy version.\n\nValid values:\n\n- `None`: disables the rotation strategy.\n\n- `DeleteOldestNonDefaultVersionWhenLimitExceeded`: deletes the earliest non-active version if the number of versions exceeds the limit.\n\nDefault value: `None`."
+      }
     },
     {
       "name": "SetAsDefault",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否设置为默认权限策略，默认值为`false`。",
+        "en": "Specifies whether to set this policy as the default policy. Default value: `false`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为权限策略创建新的版本",
+    "en": "CreatePolicyVersion"
+  },
   "example": {
     "unifiedCli": "aliyun ram create-policy-version --policy-name OSS-Administrator --policy-document Statement_:_Action_:_oss:0_,_Effect_:_Allow_,_Resource_:_acs:oss:0:0:0_,_Version_:_1 --set-as-default false --rotate-strategy None --region cn-hangzhou",
     "legacyCli": "aliyun ram CreatePolicyVersion --region cn-hangzhou --SetAsDefault false --PolicyName 'OSS-Administrator' --PolicyDocument 'Statement_:_Action_:_oss:0_,_Effect_:_Allow_,_Resource_:_acs:oss:0:0:0_,_Version_:_1' --RotateStrategy None"

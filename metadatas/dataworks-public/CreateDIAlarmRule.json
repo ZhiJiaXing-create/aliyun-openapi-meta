@@ -1,5 +1,6 @@
 {
   "name": "CreateDIAlarmRule",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,83 +9,145 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "幂等参数",
+        "en": "The client token that is used to ensure the idempotence of the request."
+      }
     },
     {
       "name": "DIJobId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务ID，是告警规则关联的任务ID。",
+        "en": "The ID of the synchronization task with which the alert rule is associated."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述。",
+        "en": "The description of the alert rule."
+      }
     },
     {
       "name": "Enabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "告警规则是否启用，默认不开启。",
+        "en": "Specifies whether to enable the alert rule. By default, the alert rule is disabled."
+      }
     },
     {
       "name": "MetricType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "告警指标类型，可选的枚举值：\n- Heartbeat（任务状态报警）\n- FailoverCount（failover次数报警）\n- Delay（任务延迟报警）\n- DdlReport（DDL通知）\n- ResourceUtilization（资源组使用率）",
+        "en": "The metric type in the alert rule. Valid values:\n\n- Heartbeat\n\n- FailoverCount\n\n- Delay\n\n- DdlReport\n\n- ResourceUtilization"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "告警规则名称。",
+        "en": "The name of the alert rule."
+      }
     },
     {
       "name": "NotificationSettings",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "告警通知设置。",
+        "en": "The alert notification settings."
+      }
     },
     {
       "name": "TriggerConditions",
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "告警触发条件列表，支持多条件。",
+        "en": "The conditions that can trigger the alert rule."
+      },
       "sub_parameters": [
         {
           "name": "DdlReportTags",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "该字段已废弃，请使用DdlTypes字段。",
+            "en": "This parameter is deprecated and replaced by the DdlTypes parameter."
+          }
         },
         {
           "name": "DdlTypes",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "在DDL通知的时候才生效，需要生效的DDL列表。",
+            "en": "The types of DDL operations for which the alert rule takes effect."
+          }
         },
         {
           "name": "Duration",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "告警计算时间区间，单位分钟。",
+            "en": "The time interval for alert calculation. Unit: minutes."
+          }
         },
         {
           "name": "Severity",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "严重程度，可选的枚举值：\n- Warning\n- Critical",
+            "en": "The severity level. Valid values:\n\n- Warning\n\n- Critical"
+          }
         },
         {
           "name": "Threshold",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "告警阈值。\n- 任务状态报警：无需填写阈值。\n- failover次数报警：阈值为failover次数。\n- 任务延迟报警：阈值为延迟时长，单位秒。",
+            "en": "The alert threshold.\n\n- If the alert rule is for task status, you do not need to specify a threshold.\n\n- If the alert rule is for failovers, you must specify the number of failovers.\n\n- If the alert rule is for latency, you must specify the latency duration, in seconds."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据集成同步任务告警规则",
+    "en": "CreateDIAlarmRule"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用。"
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public create-di-alarm-rule --description Alert_description --metric-type Heartbeat --enabled true --di-job-id 1 --client-token ABFUOEUOTRTRJKE --name alartRule --trigger-conditions '[{\"DdlReportTags\":[\"AlterAddColumn\"],\"Severity\":\"Warning\",\"Duration\":10,\"Threshold\":10,\"DdlTypes\":[\"AlterAddColumn\"]}]' --notification-settings '{\"NotificationChannels\":[{\"Severity\":\"Warning\",\"Channels\":[\"Ding\"]}],\"InhibitionInterval\":5,\"NotificationReceivers\":[{\"ReceiverType\":\"DingToken\",\"ReceiverValues\":[\"token1\"]}],\"MuteInterval\":5}' --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public CreateDIAlarmRule --region cn-hangzhou --Description Alert_description --DIJobId 1 --MetricType Heartbeat --TriggerConditions '[{\"DdlReportTags\":[\"AlterAddColumn\"],\"Severity\":\"Warning\",\"Duration\":10,\"Threshold\":10,\"DdlTypes\":[\"AlterAddColumn\"]}]' --NotificationSettings '{\"NotificationChannels\":[{\"Severity\":\"Warning\",\"Channels\":[\"Ding\"]}],\"InhibitionInterval\":5,\"NotificationReceivers\":[{\"ReceiverType\":\"DingToken\",\"ReceiverValues\":[\"token1\"]}],\"MuteInterval\":5}' --Enabled true --ClientToken ABFUOEUOTRTRJKE --Name alartRule"

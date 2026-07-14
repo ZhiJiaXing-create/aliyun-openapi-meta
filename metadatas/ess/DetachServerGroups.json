@@ -1,5 +1,6 @@
 {
   "name": "DetachServerGroups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,53 +9,92 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从客户端生成一个参数值，确保不同请求之间，该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "ForceDetach",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否从待移除服务器组中移除当前伸缩组内的ECS实例或ECI实例。 取值范围：\n\n- true：移除。\n\n- false：不移除。\n\n默认值：false。",
+        "en": "Specifies whether to remove ECS instances or elastic container instances in the current scaling group from the server groups to be removed. Valid values:\n\n- true: Removes the instances.\n\n- false: Does not remove the instances.\n\nDefault value: false."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组ID。",
+        "en": "The scaling group ID."
+      }
     },
     {
       "name": "ServerGroup",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "负载均衡服务器组的相关信息集合。",
+        "en": "The information about the load balancing server groups."
+      },
       "sub_parameters": [
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "负载均衡服务器组中ECS实例或ECI实例使用的端口号。\n\n> ALB和NLB类型负载均衡该参数为必填参数，GWLB类型负载均衡不能设置该参数且默认值为6081。",
+            "en": "The port number used by ECS instances or elastic container instances in the load balancing server group.\n\n> This parameter is required for ALB and NLB load balancing server groups. This parameter cannot be configured for GWLB load balancing server groups. Settings default value is 6081."
+          }
         },
         {
           "name": "ServerGroupId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "负载均衡服务器组的ID。",
+            "en": "The ID of the load balancing server group."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "负载均衡服务器组类型。取值范围：\n\n- ALB：应用型负载均衡ALB（Application Load Balancer）。\n- NLB：网络型负载均衡NLB（Network Load Balancer）。\n- GWLB: 网关型负载均衡 GWLB（Gateway Load Balancer）。",
+            "en": "The type of the load balancing server group. Valid values:\n\n- ALB: Application Load Balancer (ALB).\n- NLB: Network Load Balancer (NLB).\n- GWLB: Gateway Load Balancer (GWLB)."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除一个或多个负载均衡服务器组",
+    "en": "Remove one or more load balancing server groups"
+  },
   "example": {
     "unifiedCli": "aliyun ess detach-server-groups --biz-region-id cn-hangzhou --scaling-group-id asg-bp18p2yfxow2dloq0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --force-detach false --server-group Type=ALB Port=22 ServerGroupId=sgp-1gv2uidn2msy0000 --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess DetachServerGroups --region cn-hangzhou --ServerGroup.1.ServerGroupId 'sgp-1gv2uidn2msy0000' --ServerGroup.1.Type ALB --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --ServerGroup.1.Port 22 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ForceDetach false"

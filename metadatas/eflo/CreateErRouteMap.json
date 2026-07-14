@@ -1,5 +1,6 @@
 {
   "name": "CreateErRouteMap",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,75 +9,134 @@
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略描述",
+        "en": "Policy description"
+      }
     },
     {
       "name": "DestinationCidrBlock",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目的网段",
+        "en": "Destination CIDR Block"
+      }
     },
     {
       "name": "ErId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "灵骏HUB ID",
+        "en": "Lingjun HUB ID"
+      }
     },
     {
       "name": "ReceptionInstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的实例ID",
+        "en": "The ID of the destination instance."
+      }
     },
     {
       "name": "ReceptionInstanceOwner",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由接收实例所属租户",
+        "en": "The tenant to which the route receiving instance belongs."
+      }
     },
     {
       "name": "ReceptionInstanceType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的实例类型,可选值：\n\n- **VPD**：灵骏网段。\n- **VCC**：灵骏连接。",
+        "en": "The type of the destination instance. Valid values:\n\n*   **VPD**: Lingjun network segment.\n*   **VCC**: Lingjun Connection."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID",
+        "en": "The region ID."
+      }
     },
     {
       "name": "RouteMapAction",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略行为；可选值：\n- **permit**: 允许\n- **deny**： 拒绝",
+        "en": "Policy behavior; optional values:\n\n*   **permit**: Allow\n*   **deny**: Rejected"
+      }
     },
     {
       "name": "RouteMapNum",
       "position": "Body",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略编号。\n\n序号越小，优先级越低，当进行路由匹配时会优先匹配优先级高的策略。\n\n**取值范围：1001~2000**",
+        "en": "The ID of the policy.\n\nA smaller sequence number indicates a lower priority. When a route is matched, a policy with a higher priority is preferentially matched.\n\n**Valid values: 1001 to 2000**"
+      }
     },
     {
       "name": "TransmissionInstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源实例ID",
+        "en": "The ID of the source instance."
+      }
     },
     {
       "name": "TransmissionInstanceOwner",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由发布实例所属租户",
+        "en": "The tenant to which the route publish instance belongs"
+      }
     },
     {
       "name": "TransmissionInstanceType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源实例类型,可选值：\n- **VPD**：灵骏网段。\n- **VCC**：灵骏连接。",
+        "en": "The type of the source instance. Valid values:\n\n*   **VPD**: Lingjun network segment.\n*   **VCC**: Lingjun Connection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建灵骏HUB路由策略",
+    "en": "CreateErRouteMap"
+  },
+  "descriptions": {
+    "zh": "调用该接口创建路由策略时，请注意：\n\n- 请确保您已创建灵骏HUB实例。\n- 请确保您已创建网络实例连接。\n- 该接口属于异步接口，调用该接口后，系统将返回一个路由策略的ID，此时路由策略实例可能尚未创建完成，系统后台的创建任务仍在进行中。您可以通过ListErRouteMaps或者GetErRouteMap查询路由策略的状态：\n    - 当路由策略状态是Executing时，表示正在创建。\n    - 当路由策略状态是Available时，表示创建成功。",
+    "en": "When you call this operation to create a routing policy, note that:\n\n*   Make sure that you have created a Lingjun HUB instance.\n\n*   Make sure that you have created a network instance connection.\n\n*   This operation is an asynchronous operation. After you call this operation, the system returns the ID of the routing policy. In this case, the routing policy instance may not be created yet, and the system background creation task is still in progress. You can use ListErRouteMaps or GetErRouteMap to query the status of a routing policy.\n\n    *   If the status of the routing policy is Execute, the system is creating the instance.\n    *   If the status of the routing policy is Available, the creation is successful."
+  },
   "example": {
     "unifiedCli": "aliyun eflo create-er-route-map --route-map-num 1001 --description Description --transmission-instance-id vpd-xlsjsdvt --transmission-instance-type VPD --reception-instance-id vpd-xlhsvdvt --reception-instance-type VPD --destination-cidr-block 0.0.0.0/0 --route-map-action permit --transmission-instance-owner 1620939556166277 --reception-instance-owner 1620939556166277 --biz-region-id cn-hangzhou --er-id er-aueyxxsy --region cn-hangzhou",
     "legacyCli": "aliyun eflo CreateErRouteMap --region cn-hangzhou --TransmissionInstanceType VPD --RouteMapAction permit --Description Description --ReceptionInstanceType VPD --ReceptionInstanceId 'vpd-xlhsvdvt' --ErId 'er-aueyxxsy' --TransmissionInstanceOwner 1620939556166277 --DestinationCidrBlock '0.0.0.0/0' --ReceptionInstanceOwner 1620939556166277 --RegionId 'cn-hangzhou' --TransmissionInstanceId 'vpd-xlsjsdvt' --RouteMapNum 1001"

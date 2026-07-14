@@ -1,5 +1,6 @@
 {
   "name": "RestartNode",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。 \n> 如果是分片集群实例，您还需要配置`NodeId`。",
+        "en": "The instance ID.\n\n> If the instance is a sharded cluster instance, also set the `NodeId` parameter."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分片集群实例中Mongos节点ID、Shard节点ID或ConfigServer节点ID。您可以调用[DescribeDBInstanceAttribute](~~62010~~)接口查询Mongos节点、Shard节点或ConfigServer节点的节点ID。\n\n> 当**DBInstanceId**配置的是分片集群实例ID时，需要配置该参数。",
+        "en": "The ID of the Mongos, shard, or Configserver node in the sharded cluster instance. Call the [DescribeDBInstanceAttribute](~~62010~~) operation to query the node ID.\n\n> This parameter is required if **DBInstanceId** is set to the ID of a sharded cluster instance."
+      }
     },
     {
       "name": "RoleId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点的角色ID.\n\n1.  可以调用 [DescribeReplicaSetRole](~~468469~~) 接口查询副本集实例的节点ID。\n2.   可以调用 [DescribeRoleZoneInfo](~~468472~~) 接口查询分片集群实例的节点ID。",
+        "en": "The role ID of the node.\n\n1. Call the [DescribeReplicaSetRole](~~468469~~) operation to query the role ID of a node in a replica set instance.\n\n2. Call the [DescribeRoleZoneInfo](~~468472~~) operation to query the role ID of a node in a sharded cluster instance."
+      }
     },
     {
       "name": "SwitchMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行时间，取值：\n* **0**：立即执行，默认值。\n* **1**：在可维护时间段执行。\n\n> 您可以调用[ModifyInstanceMaintainTime](~~473775~~)修改实例的可维护时间段。",
+        "en": "The time to execute the task. Valid values:\n\n- **0**: The task is executed immediately. This is the default value.\n\n- **1**: The task is executed during the maintenance window.\n\n> Call the [ModifyInstanceMaintainTime](~~473775~~) operation to modify the maintenance window of the instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重启MongoDB实例的单个节点",
+    "en": "RestartNode"
+  },
+  "descriptions": {
+    "zh": "接口使用限制：\n*   实例在运行状态。\n\n*   实例为标准副本集或分片集群。",
+    "en": "Limitations:\n\n- The instance must be in the Running state.\n\n- The instance must be a standard replica set instance or a sharded cluster instance."
+  },
   "example": {
     "unifiedCli": "aliyun dds restart-node --db-instance-id dds-bpxxxxxxxx --node-id d-bp128a0034360000 --role-id 60250000 --switch-mode 1 --region cn-hangzhou",
     "legacyCli": "aliyun dds RestartNode --region cn-hangzhou --DBInstanceId 'dds-bpxxxxxxxx' --NodeId 'd-bp128a0034360000' --SwitchMode 1 --RoleId 60250000"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateWatermark",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改的水印模板名称。\n- 只支持中英文、数字。\n- 长度不超过128个字节。\n- UTF-8编码。",
+        "en": "The name of the watermark template to which you want to change.\n\n*   Only letters and digits are supported.\n*   The name cannot exceed 128 bytes.\n*   The value must be encoded in UTF-8."
+      }
     },
     {
       "name": "WatermarkConfig",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "图文水印的配置信息（JSON字符串），包括水印显示位置、水印效果等配置。图片水印和文字水印的配置参数不同，参数结构详情，请参见[WatermarkConfig](~~98618#section-h01-44s-2lr~~) 。\n>暂不支持跨模板类型修改，您可以调用[GetWatermark](~~GetWatermark~~)接口查询水印模板所属类型后，再进行修改配置。",
+        "en": "The configuration information of the watermark such as the display position and special effects. The value must be a JSON string. The configuration parameters for image and text watermarks are different. For more information about the parameter structure, see [WatermarkConfig](~~98618#section-h01-44s-2lr~~)."
+      }
     },
     {
       "name": "WatermarkId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要修改的图文水印模板ID，仅支持传入单个水印模板ID。可通过如下方式获取：\n- 调用[AddWatermark](~~AddWatermark~~)接口添加图文水印模板后会返回。\n- 调用[ListWatermark](~~ListWatermark~~)接口查询图文水印模板列表后会返回。",
+        "en": "The ID of the watermark template. You can specify only one watermark template ID. You can obtain the ID by using one of the following methods:\n\n*   Obtain the watermark template ID from the response to the [AddWatermark](~~AddWatermark~~) operation that you call to create a watermark template.\n*   Obtain the watermark template ID from the response to the [ListWatermark](~~ListWatermark~~) operation that you call to query all watermark templates within your account."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改图文水印模板",
+    "en": "UpdateWatermark"
+  },
+  "descriptions": {
+    "zh": "- 调用[AddWatermark](~~AddWatermark~~)添加图文水印模板后，可以调用本接口修改图文水印模板的名称和水印配置。\n- 调用本接口暂不支持替换图片水印模板中的图片，也不支持跨模板类型（例如将图片水印模板改为文字水印模板）的修改。",
+    "en": "*   You can modify the name and configurations of the watermark template after you call the [AddWatermark](~~AddWatermark~~) operation to create a watermark template.\n*   You cannot call this operation to change the image in an image watermark template."
+  },
   "example": {
     "unifiedCli": "aliyun vod update-watermark --name test --watermark-id af2afe4761992c00000bd947dae97337 --watermark-config Width_:_55_,_Height_:_55_,_Dx_:_9_,_Dy_:_9_,_ReferPos_:_BottomLeft --region cn-hangzhou",
     "legacyCli": "aliyun vod UpdateWatermark --region cn-hangzhou --WatermarkId af2afe4761992c00000bd947dae97337 --WatermarkConfig 'Width_:_55_,_Height_:_55_,_Dx_:_9_,_Dy_:_9_,_ReferPos_:_BottomLeft' --Name test"

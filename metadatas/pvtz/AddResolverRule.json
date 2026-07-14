@@ -1,5 +1,6 @@
 {
   "name": "AddResolverRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -22,25 +23,41 @@
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "出站终端节点ID。使用该出站终端节点将DNS查询流量转发到目标IP地址列表中指定的IP地址。",
+        "en": "The ID of the outbound endpoint. The outbound endpoint forwards DNS queries to the specified destination IP addresses."
+      }
     },
     {
       "name": "ForwardIp",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "外部DNS系统IP地址和端口。DNS查询流量被转发的目标服务器的IP地址和端口，最多创建**6**个，支持私网IP地址和公网IP地址。\n>若您填写的外部DNS服务器为公网IP，且您出站终端节点VPC内ECS无公网IP，请开通NAT网关并配置创建和管理VPC NAT网关的SNAT条目。",
+        "en": "The IP addresses and ports of the destination servers in the external DNS system to which DNS queries are forwarded. You can specify up to **6** destination servers. Both private and public IP addresses are supported.\n\n> If you specify public IP addresses for the external DNS servers, and the Elastic Compute Service (ECS) instances in the VPC of the outbound endpoint do not have public IP addresses, enable a NAT Gateway and configure SNAT entries."
+      },
       "sub_parameters": [
         {
           "name": "Ip",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "转发目标IP地址。\n>以下地址段内的IP地址为系统预留地址，不允许被配置为外部DNS系统的IP地址：100.100.2.136~100.100.2.138，100.100.2.116~100.100.2.118。",
+            "en": "The IP address of the destination server.\n\n> The IP addresses in the following ranges are reserved by the system and cannot be used as the IP addresses of external DNS systems: 100.100.2.136 to 100.100.2.138 and 100.100.2.116 to 100.100.2.118."
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "转发目标IP地址端口号。",
+            "en": "The port number of the destination server."
+          }
         }
       ]
     },
@@ -48,19 +65,31 @@
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回值语言，取值：\n\n- zh：中文。\n\n- en：英文。\n\n默认值：en",
+        "en": "The language of the response. Valid values:\n\n- zh: Chinese.\n\n- en: English.\n\nDefault value: en."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转发规则名称，根据业务需要及业务含义进行规则命名。",
+        "en": "The name of the forwarding rule. Name the rule as needed."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转发规则类型：OUTBOUND（目前仅支持选择转发至外部IP）。\n>创建转发规则之后，无法更改此值。",
+        "en": "The type of the forwarding rule. The only valid value is OUTBOUND. This value indicates that DNS queries are forwarded to an external IP address.\n\n> You cannot change this value after the forwarding rule is created."
+      }
     },
     {
       "name": "Vpcs",
@@ -98,9 +127,24 @@
       "name": "ZoneName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要转发解析请求的域名（Zone）。\n\n>创建转发规则之后，无法更改此值。",
+        "en": "The domain name (zone) for which you want to forward DNS queries.\n\n> You cannot change this value after the forwarding rule is created."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新增转发规则",
+    "en": "AddResolverRule"
+  },
+  "descriptions": {
+    "zh": "#### **注意事项**\n如果出站VPC和入站VPC是同一个VPC，则出站终端节点关联的转发规则中的外部DNS系统IP地址与入站终端节点服务IP地址不能相同。如果这样做，会导致请求回环造成解析失败。",
+    "en": "If the outbound VPC and the inbound VPC are the same, the IP address of the external DNS system in the forwarding rule for the outbound endpoint cannot be the same as the IP address of the inbound endpoint service. This is because if the IP addresses are the same, a request loopback occurs and DNS resolution fails."
+  },
   "example": {
     "unifiedCli": "aliyun pvtz add-resolver-rule --name test --type OUTBOUND --zone-name example.com --endpoint-id hr0000 --forward-ip Ip=172.16.XX.XX Port=8080 --lang en --vpcs VpcType=example-string VpcId=example-string VpcUserId=1 RegionId=cn-hangzhou --edge-dns-clusters ClusterId=example-string --region cn-hangzhou",
     "legacyCli": "aliyun pvtz AddResolverRule --region cn-hangzhou --Vpcs.1.VpcUserId 1 --ForwardIp.1.Ip '172.16.XX.XX' --ZoneName 'example.com' --Type OUTBOUND --Vpcs.1.VpcType 'example-string' --Vpcs.1.VpcId 'example-string' --EdgeDnsClusters.1.ClusterId 'example-string' --EndpointId hr0000 --ForwardIp.1.Port 8080 --Lang en --Vpcs.1.RegionId 'cn-hangzhou' --Name test"

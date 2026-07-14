@@ -1,5 +1,6 @@
 {
   "name": "EnableSqlConcurrencyControl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ConcurrencyControlTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SQL限流的生效时长，单位为秒。\n>限流规则仅在生效时间内开启。",
+        "en": "The duration within which the SQL throttling rule takes effect. Unit: seconds.\n\n> The throttling rule takes effect only within this duration."
+      }
     },
     {
       "name": "ConsoleContext",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备用参数。",
+        "en": "The reserved parameter."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n>仅支持RDS MySQL和 PolarDB MySQL版实例。",
+        "en": "The instance ID.\n\n> You must specify the instance ID only if your database instance is an ApsaraDB RDS for MySQL instance or a PolarDB for MySQL cluster."
+      }
     },
     {
       "name": "MaxConcurrency",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SQL最大并发数，取值为大于或等于1的整数。\n>当包含关键词的SQL达到最大并发数时会触发限流规则。",
+        "en": "The maximum number of concurrent SQL statements. Set this parameter to a positive integer.\n\n> When the number of concurrent SQL statements that contain the specified keywords reaches this upper limit, the throttling rule is triggered."
+      }
     },
     {
       "name": "SqlKeywords",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要限流的SQL关键词。\n>多个关键词间用波浪线（~）分隔，SQL语句中需要同时包含这些关键词才会触发限流规则。",
+        "en": "The keywords that are used to identify the SQL statements that need to be throttled.\n\n> If you specify multiple SQL keywords, separate them with tildes (\\~). If the number of concurrent SQL statements that contain all the specified SQL keywords reaches the specified upper limit, the throttling rule is triggered."
+      }
     },
     {
       "name": "SqlType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "选择SQL的类型。取值：\n- **SELECT**\n- **UPDATE**\n- **DELETE**",
+        "en": "The type of the SQL statements. Valid values:\n\n- **SELECT**\n\n- **UPDATE**\n\n- **DELETE**"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "启用SQL限流",
+    "en": "EnableSqlConcurrencyControl"
+  },
+  "descriptions": {
+    "zh": "本接口适用的数据库引擎为：\n- RDS MySQL\n- PolarDB MySQL版",
+    "en": "This operation supports the following database engines:\n\n- ApsaraDB RDS for MySQL\n\n- PolarDB for MySQL"
+  },
   "example": {
     "unifiedCli": "aliyun das enable-sql-concurrency-control --console-context None --instance-id rm-2ze1jdv45i7l60000 --sql-type SELECT --max-concurrency 3 --sql-keywords 'call~open~api~test~4~from~POP' --concurrency-control-time 300 --region cn-hangzhou",
     "legacyCli": "aliyun das EnableSqlConcurrencyControl --region cn-hangzhou --SqlKeywords 'call~open~api~test~4~from~POP' --ConsoleContext None --ConcurrencyControlTime 300 --InstanceId 'rm-2ze1jdv45i7l60000' --MaxConcurrency 3 --SqlType SELECT"

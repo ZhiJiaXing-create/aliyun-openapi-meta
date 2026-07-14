@@ -1,5 +1,6 @@
 {
   "name": "DetachKeyPair",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "InstanceIds",
       "position": "Query",
       "type": "Json",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例id。",
+        "en": "An array of instance IDs from which to detach the key pair."
+      }
     },
     {
       "name": "KeyPairId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "秘钥对id-唯一标识。",
+        "en": "The ID of the key pair."
+      }
     },
     {
       "name": "KeyPairName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "秘钥对名称。",
+        "en": "The name of the key pair."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量解绑密钥对",
+    "en": "DetachKeyPair"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n用于给实例解绑密钥对的批量接口，仅能操作关闭的实例。\n- 单次解绑实例数量需不超过30个。\n- 若发现密钥对名不等于keyPairName的实例，则抛出异常。\n- key_pair_name和key_pair_id至少一个不为空。\n- 调用时请传入key_pair_id，key_pair_name即将被舍弃。",
+    "en": "## Usage notes\n\nThis operation detaches a key pair from multiple instances in a batch. The target instances must be in a stopped state.\n\n- You can detach a key pair from a maximum of 30 instances in a single request.\n\n- The operation returns an error if you specify the `KeyPairName` parameter and any of the specified instances are not associated with that key pair name.\n\n- You must specify either the `KeyPairName` or `KeyPairId` parameter.\n\n- We recommend using the `KeyPairId` parameter. The `KeyPairName` parameter will be deprecated in a future release."
+  },
   "example": {
     "unifiedCli": "aliyun ens detach-key-pair --biz-key-pair-name test-kp --key-pair-id ssh-xxx --instance-ids i-xxxu --region cn-hangzhou",
     "legacyCli": "aliyun ens DetachKeyPair --region cn-hangzhou --KeyPairName 'test-kp' --KeyPairId 'ssh-xxx' --InstanceIds '[\"i-xxxu\"]'"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBClusterParameters",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -14,39 +15,74 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。\n> 您可以调用[DescribeDBClusters](~~98094~~)接口查看目标地域下所有的集群信息，包括集群ID。",
+        "en": "The cluster ID.\n\n> Call the [DescribeDBClusters](~~98094~~) operation to view information about all clusters in the destination region, including cluster IDs."
+      }
     },
     {
       "name": "FromTimeService",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "立即执行或定时执行修改参数并重启集群。取值：  \n\n- false（默认值）：定时执行\n \n- true：立即执行",
+        "en": "Specifies whether to immediately modify the parameters and restart the cluster. Valid values:\n\n- false (default): The modification is scheduled.\n\n- true: The modification is performed immediately."
+      }
     },
     {
       "name": "ParameterGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "参数模板ID。\n\n\n> * 您可以通过[DescribeParameterGroups](~~207178~~)接口查看参数模板ID。\n> * 您需在该参数或`Parameters`参数中选择一个传入。\n> * 仅PolarDB MySQL版支持该参数。",
+        "en": "The ID of the parameter template.\n\n> - Call the [DescribeParameterGroups](~~207178~~) operation to view the ID of the parameter template.\n>\n> - You must specify this parameter or the `Parameters` parameter.\n>\n> - This parameter is supported only by PolarDB for MySQL."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "参数及其值的JSON串，参数的值都是字符串类型，例如`{\"wait_timeout\":\"86\",\"innodb_old_blocks_time\":\"10\"}`。\n\n> * 您可以通过接口[DescribeDBClusterParameters](~~98122~~)查看PolarDB集群的参数。\n> * 若目标集群为PolarDB PostgreSQL版或PolarDB PostgreSQL版（兼容Oracle），该参数必填。\n> * 若目标集群为PolarDB MySQL版，您需在该参数或`ParameterGroupId`参数中选择一个传入。",
+        "en": "A JSON string that consists of parameters and their values. The parameter values must be strings. For example: `{\"wait_timeout\":\"86\",\"innodb_old_blocks_time\":\"10\"}`.\n\n> - Call the [DescribeDBClusterParameters](~~98122~~) operation to view the parameters of a PolarDB cluster.\n>\n> - This parameter is required if the destination cluster is a PolarDB for PostgreSQL or PolarDB for PostgreSQL (Oracle compatible) cluster.\n>\n> - If the destination cluster is a PolarDB for MySQL cluster, you must specify this parameter or the `ParameterGroupId` parameter."
+      }
     },
     {
       "name": "PlannedEndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行目标定时任务的最晚时间。格式为`YYYY-MM-DDThh:mm:ssZ`（UTC）。\n> * 最晚时间需晚于开始时间的30分钟或以上。\n> * 若设置了`PlannedStartTime`但未指定该参数，执行目标任务的最晚时间默认为`开始时间+30分钟`。例如当设置`PlannedStartTime`为`2021-01-14T09:00:00Z`且该参数留空时，目标任务最晚将于`2021-01-14T09:30:00Z`开始执行。",
+        "en": "The latest time to start the scheduled task. Specify the time in the `YYYY-MM-DDThh:mm:ssZ` format. The time must be in UTC.\n\n> - The latest start time must be at least 30 minutes later than the earliest start time.\n>\n> - If you specify `PlannedStartTime` but not this parameter, the latest time to start the task is `PlannedStartTime + 30 minutes` by default. For example, if you set `PlannedStartTime` to `2021-01-14T09:00:00Z` and leave this parameter empty, the task starts no later than `2021-01-14T09:30:00Z`."
+      }
     },
     {
       "name": "PlannedStartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行定时（即在目标时间段内执行）任务的最早时间。格式为`YYYY-MM-DDThh:mm:ssZ`（UTC）。\n> * 开始时间的取值范围为未来24小时内的任意时间点。例如当前时间为`2021-01-14T09:00:00Z`，此处允许填入的开始时间范围为`2021-01-14T09:00:00Z`~`2021-01-15T09:00:00Z`。\n> * 若该参数留空，默认立即执行任务。",
+        "en": "The earliest time to start the scheduled task. Specify the time in the `YYYY-MM-DDThh:mm:ssZ` format. The time must be in UTC.\n\n> - The start time can be any point in time within the next 24 hours. For example, if the current time is `2021-01-14T09:00:00Z`, you can set the start time to a value in the range of `2021-01-14T09:00:00Z` to `2021-01-15T09:00:00Z`.\n>\n> - If you leave this parameter empty, the task is executed immediately."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改PolarDB集群的参数",
+    "en": "ModifyDBClusterParameters"
+  },
+  "descriptions": {
+    "zh": "PolarDB新增参数模板功能，您可以使用参数模板功能，对参数进行集中管理，并快速应用至集群。更多详情，请参见[使用参数模板](~~207009~~)。\n\n> 当前仅PolarDB MySQL版支持参数模板功能。",
+    "en": "The parameter template feature in PolarDB lets you centrally manage parameters and apply them to your clusters. For more information, see [Use parameter templates](~~207009~~).\n\n> The parameter template feature is available only for PolarDB for MySQL."
+  },
   "example": {
     "unifiedCli": "aliyun polardb modify-db-cluster-parameters --db-cluster-id pc-00000000000000 --parameters wait_timeout_:_86_,_innodb_old_blocks_time_:_10 --parameter-group-id pcpg-00000000000000 --planned-start-time 2022-04-28T14:00:00Z --planned-end-time 2022-04-28T14:30:00Z --from-time-service false --clear-binlog true --region cn-hangzhou",
     "legacyCli": "aliyun polardb ModifyDBClusterParameters --region cn-hangzhou --Parameters 'wait_timeout_:_86_,_innodb_old_blocks_time_:_10' --ParameterGroupId 'pcpg-00000000000000' --ClearBinlog true --DBClusterId 'pc-00000000000000' --PlannedStartTime '2022-04-28T14:00:00Z' --FromTimeService false --PlannedEndTime '2022-04-28T14:30:00Z'"

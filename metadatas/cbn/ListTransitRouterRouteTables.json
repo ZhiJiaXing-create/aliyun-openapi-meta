@@ -1,5 +1,6 @@
 {
   "name": "ListTransitRouterRouteTables",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "分批次查询时，每次显示的条目数。取值范围：**1**~**100**，默认值：**20**。",
-        "en": "The number of entries per page. Valid values: **1** to **100**. Default value: **20**."
+        "en": "The number of entries to return on each page. Valid values: **1** to **100**. Default value: **20**."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否拥有下一次查询的令牌（Token）。取值：\n- 第一次查询和没有下一次查询时，均无需填写。\n- 如果有下一次查询，取值为上一次API调用返回的**NextToken**值。",
-        "en": "The token that determines the start point of the query. Valid values:\n\n*   If this is your first query or no subsequent query is to be sent, ignore this parameter.\n*   If a subsequent query is to be sent, set the value to the value of **NextToken** that is returned from the last call."
+        "en": "The token that is used for the next query. Valid values:\n\n- If this is your first query or no next query is to be sent, do not specify this parameter.\n\n- If a next query is to be sent, set the value to the **NextToken** value returned from the last API call."
       }
     },
     {
@@ -39,24 +40,32 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
+        "en": "The tag.\n\nYou can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key cannot be an empty string. The tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https:// `.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The tag value.\n\nThe tag value can be an empty string or a string of up to 128 characters. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https:// `.\n\nEach tag key must have a corresponding tag value. You can specify up to 20 tag values."
+          }
         }
-      ],
-      "description": {
-        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
-        "en": "The information about the tags.\n\nYou can specify at most 20 tags in each call."
-      }
+      ]
     },
     {
       "name": "TransitRouterId",
@@ -75,7 +84,7 @@
       "required": false,
       "description": {
         "zh": "路由表的ID。\n\n您可以一次查询多个路由表的信息，**N**的最大值为**20**。",
-        "en": "The ID of the route table.\n\nYou can query multiple route tables in each call. Maximum value of **N**: **20**."
+        "en": "The ID of the route table.\n\nYou can query multiple route tables at a time. The maximum value of **N** is **20**."
       }
     },
     {
@@ -85,7 +94,7 @@
       "required": false,
       "description": {
         "zh": "路由表的名称。\n\n您可以一次查询多个路由表的信息，**N**的最大值为**20**。\n\n> 如果您同时通过**TransitRouterRouteTableNames.N**和**TransitRouterRouteTableIds.N**查询路由表的信息时，路由表的名称和路由表的ID需保持一致。",
-        "en": "The name of the route table.\n\nYou can query multiple route tables in each call. Maximum value of **N**: **20**.\n\n> If you set both **TransitRouterRouteTableNames.N** and **TransitRouterRouteTableIds.N**, make sure that the specified name and ID belong to the same route table."
+        "en": "The name of the route table.\n\nYou can query multiple route tables at a time. The maximum value of **N** is **20**.\n\n> If you query route tables using both **TransitRouterRouteTableNames.N** and **TransitRouterRouteTableIds.N**, make sure that the names and IDs match."
       }
     },
     {
@@ -95,7 +104,7 @@
       "required": false,
       "description": {
         "zh": "路由表的状态。取值：\n\n- **Creating**：创建中。\n- **Deleting**：删除中。\n- **Active**：可用。",
-        "en": "The status of the route table. Valid values:\n\n*   **Creating**: The route table is being created.\n*   **Deleting**: The route table is being deleted.\n*   **Active**: The route table is available."
+        "en": "The status of the route table. Valid values:\n\n- **Creating**: The route table is being created.\n\n- **Deleting**: The route table is being deleted.\n\n- **Active**: The route table is available."
       }
     },
     {
@@ -105,10 +114,17 @@
       "required": false,
       "description": {
         "zh": "路由表的类型。取值：\n\n- **Custom**：自定义路由表。\n- **System**：系统默认路由表。",
-        "en": "The type of the route table. Valid values:\n\n*   **Custom**: a custom route table\n*   **System**: the default route table"
+        "en": "The type of the route table. Valid values:\n\n- **Custom**: a custom route table.\n\n- **System**: the default route table."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询企业版转发路由器的路由表信息",
+    "en": "ListTransitRouterRouteTables"
+  },
   "example": {
     "unifiedCli": "aliyun cbn list-transit-router-route-tables --max-results 20 --next-token dd200000 --transit-router-route-table-type Custom --transit-router-id tr-uf654ttymmljlvh2x0000 --transit-router-route-table-status Active --transit-router-route-table-names testname --transit-router-route-table-ids vtb-bp1dudbh2d5na6b500000 --tag Value=test Key=test --route-table-options MultiRegionECMP=disable --region cn-hangzhou",
     "legacyCli": "aliyun cbn ListTransitRouterRouteTables --region cn-hangzhou --TransitRouterRouteTableStatus Active --Tag.1.Key test --TransitRouterRouteTableType Custom --NextToken dd200000 --MaxResults 20 --Tag.1.Value test --TransitRouterRouteTableIds.1 'vtb-bp1dudbh2d5na6b500000' --RouteTableOptions.MultiRegionECMP disable --TransitRouterRouteTableNames.1 testname --TransitRouterId 'tr-uf654ttymmljlvh2x0000' --method POST --force"

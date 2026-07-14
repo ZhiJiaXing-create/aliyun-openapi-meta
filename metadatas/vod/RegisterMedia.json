@@ -1,34 +1,74 @@
 {
   "name": "RegisterMedia",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
   "parameters": [
     {
+      "name": "EnableFirstFrameCover",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false
+    },
+    {
+      "name": "GenerateThumbnail",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false
+    },
+    {
       "name": "RegisterMetadatas",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "注册媒资元数据。为JSON字符串，一次最多支持设置10个媒资元数据。参数结构的更多信息，请参见下表**RegisterMetadata**。",
+        "en": "The metadata of the media to be registered. This parameter is a JSON string. You can specify metadata for up to 10 media files. For more information about the parameter structure, see the **RegisterMetadata** table below."
+      }
     },
     {
       "name": "TemplateGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码模板组ID。可通过以下方式获取：\n- 登录[点播控制台](https://vod.console.aliyun.com)，选择**配置管理** > **媒体处理配置** > **转码模板组**查看转码模版组ID。\n- 通过[创建转码模板组](~~102665~~)接口创建转码模板组时，转码模板组ID为返回参数TranscodeTemplateGroupId的值。\n- 通过[查询转码配置列表](~~102669~~)接口查询转码模板组时，为请求后返回参数TranscodeTemplateGroupId的值。\n\n> - 如果不需要转码，请指定为VOD\\_NO\\_TRANSCODE（不转码模板组），否则视频状态会为**上传完成**，从而无法使用播放服务播放音视频。如果需要转码，则指定对应转码模板组ID。\n> - 如果同时传递了WorkflowId和TemplateGroupId，以WorkflowId为准。使用说明，请参见[工作流](~~115347~~)。\n> - 该参数任务为[异步任务](~~3027551~~)，提交后任务尚未完成，任务将进入后台排队异步执行。",
+        "en": "The ID of the transcoding template group. You can obtain the ID in one of the following ways:\n\n- Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **configuration management** > **media processing configuration** > **transcoding template groups** to view the transcoding template group ID.\n\n- Call the [AddTranscodeTemplateGroup](~~102665~~) operation to create a transcoding template group. The value of `TranscodeTemplateGroupId` in the response is the ID of the transcoding template group.\n\n- Call the [ListTranscodeTemplateGroup](~~102669~~) operation to query transcoding template groups. The value of `TranscodeTemplateGroupId` in the response is the ID of the transcoding template group.\n\n> * If you do not need to transcode the media, set this parameter to VOD\\_NO\\_TRANSCODE. Otherwise, the video status remains **uploaded**, and the media cannot be played.\n>\n> * If you specify both `WorkflowId` and `TemplateGroupId`, `WorkflowId` takes precedence. For more information, see [Workflows](~~115347~~).\n>\n> * This parameter triggers an [asynchronous task](~~3027551~~). After the request is submitted, the task is queued for background processing and does not complete immediately."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义设置。为JSON字符串，支持消息回调等设置。参数详情，请参见[UserData](~~86952#section_6fg_qll_v3w~~)。\n>本接口不支持回调，即便此参数中设置了消息回调，在媒资注册完成后也不会产生回调消息。当后续对注册完成的媒资发起转码、截图等媒体处理时，若在发起转码、截图时单独设置了UserData中的消息回调，则优先使用那个回调地址；未设置，则使用此处注册媒资时UserData中设置的回调地址。",
+        "en": "Custom settings in a JSON string format, including configurations for message callbacks. For more information, see [UserData](~~86952#section_6fg_qll_v3w~~).\n\n> This operation does not generate a callback upon registration. However, the callback address specified in UserData is used for subsequent transcoding or snapshot tasks on the registered media, unless a different callback is specified for those tasks."
+      }
     },
     {
       "name": "WorkflowId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工作流ID。可登录[点播控制台](https://vod.console.aliyun.com)，选择**配置管理** > **媒体处理配置** > **工作流管理**查看工作流ID。\n\n> - 如果同时传递了WorkflowId和TemplateGroupId，以WorkflowId为准。使用说明，请参见[工作流](~~115347~~)。\n> - 该参数任务为[异步任务](~~3027551~~)，提交后任务尚未完成，任务将进入后台排队异步执行。",
+        "en": "The ID of the workflow. You can log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com) and choose **configuration management** > **media processing configuration** > **workflows** in the left-side navigation pane to view the workflow ID.\n\n> - If you specify both `WorkflowId` and `TemplateGroupId`, `WorkflowId` takes precedence. For more information, see [Workflows](~~115347~~).\n>\n> - This parameter triggers an [asynchronous task](~~3027551~~). After the request is submitted, the task is queued for background processing and does not complete immediately."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "注册媒资信息",
+    "en": "RegisterMedia"
+  },
+  "descriptions": {
+    "zh": "- 针对已接入点播服务的OSS bucket，已存储在OSS bucket上的音视频媒体文件，需要通过注册媒资接口生成点播需要的关联数据后，才能在点播服务中对这些媒体文件通过媒体ID发起转码、截图和AI处理等。\n- 一次最多可注册**10个OSS媒体文件**，且一次提交的媒体文件对应的存储地址需要一致。\n- 在点播中上传的媒体文件，如未指定转码模板组ID，则会按照默认模板组进行转码处理；与之不同的是，注册媒资后，如未指定转码模板组ID，则不会自动触发转码；如指定了转码模板组ID，则会按照指定的模板组进行转码处理。\n- 重复注册的媒体文件，只返回与其**关联的唯一媒体ID**，不做其他处理。\n- 请确保您要注册的媒资文件含有合法的后缀，否则会注册失败。",
+    "en": "- To process audio and video files from an OSS bucket using ApsaraVideo VOD, you must first register them. After registration, you can use the media ID to initiate tasks such as transcoding, snapshotting, and AI processing.\n\n- You can register up to **10** OSS media files in a single API call. All files in the request must share the same storage location.\n\n- Media files uploaded directly to ApsaraVideo VOD are automatically transcoded by using the default template group if no other is specified. Registered media, however, is not automatically transcoded. To trigger transcoding, you must specify a transcoding template group ID during registration.\n\n- Re-registering a file returns its existing **media ID** and performs no other action.\n\n- Ensure that the media files you want to register have valid file extensions. Otherwise, the registration fails."
+  },
   "example": {
     "unifiedCli": "aliyun vod register-media --register-metadatas FileURL_:_https://0000.oss-cn-shanghai.aliyuncs.com/video/test/video123.m3u8_,_Title_:_VideoName --template-group-id ca3a8f6e49c87b658067095860000 --user-data Extend_:_localId_:_0000_,_test_:_www --workflow-id 637adc2b7ba51a83d841606f80000 --enable-first-frame-cover true --generate-thumbnail true --region cn-hangzhou",
     "legacyCli": "aliyun vod RegisterMedia --region cn-hangzhou --EnableFirstFrameCover true --RegisterMetadatas 'FileURL_:_https://0000.oss-cn-shanghai.aliyuncs.com/video/test/video123.m3u8_,_Title_:_VideoName' --GenerateThumbnail true --UserData 'Extend_:_localId_:_0000_,_test_:_www' --WorkflowId 637adc2b7ba51a83d841606f80000 --TemplateGroupId ca3a8f6e49c87b658067095860000"

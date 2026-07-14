@@ -1,5 +1,6 @@
 {
   "name": "ChangeSecurityScoreRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "CalType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "选择修改新版安全分或旧版安全分规则，当取值为**home_security_score**时，修改新版安全分规则，否则默认修改旧版安全分规则。",
+        "en": "The old or new version of the security score rule. If you set this parameter to **home_security_score**, the new version of the security score rule is changed. Otherwise, the old version of the security score rule is changed by default."
+      }
     },
     {
       "name": "ResetSecurityScoreRule",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否重置为系统默认规则。取值：\n- true ：是\n- false ：否",
+        "en": "Specifies whether to reset to the system default rule. Valid values:\n\n*   true: yes\n*   false: no"
+      }
     },
     {
       "name": "SecurityScoreCategoryList",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "新版安全分规则扣分列表。",
+        "en": "The information about the new version of the security score rule."
+      },
       "sub_parameters": [
         {
           "name": "Category",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全分规则类目。取值：\n- **SS_SAS_HANDLE**：安全治理\n- **SS_SAS_RESPOND**：安全响应",
+            "en": "The category of the security score rule. Valid values:\n\n*   **SS_SAS_HANDLE**: security governance.\n*   **SS_SAS_RESPOND**: security response."
+          }
         },
         {
           "name": "ScoreThreshold",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全分规则类目扣分阈值。\n\n\n\n> 可配置范围为0～100分，所有安全分规则类目扣分阈值总和要等于100分。",
+            "en": "The threshold of deduction for the security score rule type.\n\n>  Valid values: 0 to 100. The sum of the deduction thresholds for all deduction modules must be equal to 100."
+          }
         },
         {
           "name": "SecurityRuleList",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全分规则类型扣分列表。",
+            "en": "The deduction items of the security score rule."
+          }
         }
       ]
     },
@@ -47,28 +72,51 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "旧版安全分规则列表。",
+        "en": "The information about the old version of the security score rule."
+      },
       "sub_parameters": [
         {
           "name": "RuleType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全分规则类型。取值：\n- SS_REINFORCE：关键功能配置。\n- SS_ALARM： 待处理告警。\n- SS_VUL：待修复漏洞。\n- SS_HC： 基线问题。\n- SS_CLOUD_HC：云平台配置检测项问题。\n- SS_AK：存在AK泄露风险。",
+            "en": "The type of the security score rule. Valid values:\n\n*   SS_REINFORCE: issue in key feature configuration\n*   SS_ALARM: unhandled alert\n*   SS_VUL: unfixed vulnerability\n*   SS_HC: baseline risk\n*   SS_CLOUD_HC: risk item of configuration assessment\n*   SS_AK: risk of AccessKey pair leaks"
+          }
         },
         {
           "name": "Score",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全分规则扣分值。\n\n> 可配置范围为0～100分，所有安全分规则扣分阈值总和要等于100分。",
+            "en": "The deduction threshold of the deduction module.\n\n>  Valid values: 0 to 100. The sum of the deduction thresholds for all deduction modules must be equal to 100."
+          }
         },
         {
           "name": "SecurityScoreItemList",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全分规则扣分单项列表。",
+            "en": "The deduction items of the deduction module."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改自定义安全评分规则",
+    "en": "ChangeSecurityScoreRule"
+  },
   "example": {
     "unifiedCli": "aliyun sas change-security-score-rule --security-score-rule-list '[{\"Score\":5,\"RuleType\":\"SS_ALARM\",\"SecurityScoreItemList\":[{\"Score\":5,\"SubRuleType\":\"ALARM_SERIOUS\",\"ScoreThreshold\":10}]}]' --security-score-category-list '[{\"Category\":\"SS_SAS_HANDLE\",\"ScoreThreshold\":20,\"SecurityRuleList\":[{\"Score\":10,\"RuleType\":\"SS_REINFORCE\",\"SecurityScoreItemList\":[{\"Score\":2,\"SubRuleType\":\"SSI_KEY_CONFIG\",\"ScoreThreshold\":5}]}]}]' --reset-security-score-rule false --cal-type home_security_score --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas ChangeSecurityScoreRule --region cn-hangzhou --SecurityScoreCategoryList.1.ScoreThreshold 20 --SecurityScoreCategoryList.1.SecurityRuleList.1.SecurityScoreItemList.1.Score 2 --SecurityScoreCategoryList.1.SecurityRuleList.1.Score 10 --CalType home_security_score --SecurityScoreCategoryList.1.Category SS_SAS_HANDLE --SecurityScoreRuleList.1.Score 5 --SecurityScoreRuleList.1.SecurityScoreItemList.1.SubRuleType ALARM_SERIOUS --ResetSecurityScoreRule false --SecurityScoreRuleList.1.RuleType SS_ALARM --SecurityScoreRuleList.1.SecurityScoreItemList.1.ScoreThreshold 10 --SecurityScoreCategoryList.1.SecurityRuleList.1.RuleType SS_REINFORCE --SecurityScoreRuleList.1.SecurityScoreItemList.1.Score 5 --SecurityScoreCategoryList.1.SecurityRuleList.1.SecurityScoreItemList.1.ScoreThreshold 5 --SecurityScoreCategoryList.1.SecurityRuleList.1.SecurityScoreItemList.1.SubRuleType SSI_KEY_CONFIG"

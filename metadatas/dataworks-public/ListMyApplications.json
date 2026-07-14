@@ -1,0 +1,104 @@
+{
+  "name": "ListMyApplications",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "DefSchema",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "根据资源类型筛选。\n\n注意：系统支持申请的资源类型受 [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).name 约束。\n\n附：[ResourceSchema国际站说明文档](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)",
+        "en": "Filters by resource type.\n\nNote: The resource types supported by the system for applications are constrained by [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).name.\n\nSee also: [ResourceSchema documentation for International site](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)"
+      }
+    },
+    {
+      "name": "EndTime",
+      "position": "Body",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "申请时间结束（毫秒时间戳）",
+        "en": "The end time of the application period (millisecond timestamp)."
+      }
+    },
+    {
+      "name": "NextToken",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "游标",
+        "en": "The pagination cursor."
+      }
+    },
+    {
+      "name": "PageSize",
+      "position": "Body",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "每页大小（默认10，最大200）",
+        "en": "The number of entries per page. Default value: 10. Maximum value: 200."
+      }
+    },
+    {
+      "name": "Resource",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "根据资源做精确/泛化筛选，资源的描述受 [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions) 约束。\n\n附：[ResourceSchema国际站说明文档](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)",
+        "en": "Filters by resource with exact or wildcard matching. The resource description is constrained by [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).\n\nSee also: [ResourceSchema documentation for International site](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)"
+      }
+    },
+    {
+      "name": "ResourceType",
+      "position": "Body",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "根据最小权限资源类型筛选。\n\n注意：最小权限资源类型受 [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions). resources[*].isValidLeaf 为true 约束。\n\n附：[ResourceSchema国际站说明文档](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)",
+        "en": "Filters by minimum permission resource type.\n\nNote: The minimum permission resource type is constrained by [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).resources[*].isValidLeaf being true.\n\nSee also: [ResourceSchema documentation for International site](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)"
+      }
+    },
+    {
+      "name": "StartTime",
+      "position": "Body",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "申请时间开始（毫秒时间戳）",
+        "en": "The start time of the application period (millisecond timestamp)."
+      }
+    },
+    {
+      "name": "Statuses",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "审批状态筛选。枚举：\n\n- WaitApproval 待审批\n- Confirmed 待授权\n- RejectApproval 审批拒绝\n- AuthorizeSucceed 授权成功\n- AuthorizeFailed 授权失败\n- Deleted 已删除\n- Canceled 已撤回",
+        "en": "Filters by approval status. Valid values:\n\n- WaitApproval: pending approval.\n- Confirmed: pending authorization.\n- RejectApproval: approval rejected.\n- AuthorizeSucceed: authorization succeeded.\n- AuthorizeFailed: authorization failed.\n- Deleted: deleted.\n- Canceled: withdrawn."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询我发起的权限申请单",
+    "en": "Query Permission Application Orders Initiated by Me"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 该接口支持分页查询，通过`NextToken`和`PageSize`参数控制。\n- `DefSchema`为必填项，指定资源类型。\n- `ResourceType`列表中可以包含多个资源类型，用于更精确地筛选申请单。\n- 可以通过设置`StartTime`和`EndTime`来限制查询的时间范围。\n- `Statuses`允许过滤特定状态下的申请单，如待审批、已授权等。\n- 如果需要根据具体的资源或授权对象进行筛选，可以通过`Resource`和`Grantee`字段提供详细信息。",
+    "en": "## Request description\n- This API supports paginated queries, controlled by the `NextToken` and `PageSize` parameters.\n- `DefSchema` is a required parameter that specifies the resource type.\n- The `ResourceType` list can contain multiple resource types for more precise filtering of application orders.\n- You can set `StartTime` and `EndTime` to limit the time range of the query.\n- `Statuses` allows you to filter application orders by specific statuses, such as pending approval and authorized.\n- If you need to filter by specific resources or authorization targets, you can provide detailed information through the `Resource` and `Grantee` fields."
+  },
+  "example": {
+    "unifiedCli": "aliyun dataworks-public list-my-applications --def-schema MaxCompute --resource-type table --resource '{\"DefSchema\":\"MaxCompute\",\"DefVersion\":\"v1.0.0\",\"MetaData\":{\"key\":\"example-string\"}}' --start-time 1771948800000 --end-time 1779724799999 --statuses WAIT_APPROVAL --next-token eyJpZCI6MTIzfQ== --page-size 20 --api-version 2024-05-18 --region cn-hangzhou",
+    "legacyCli": "aliyun dataworks-public ListMyApplications --region cn-hangzhou --DefSchema MaxCompute --EndTime 1779724799999 --Statuses '[\"WAIT_APPROVAL\"]' --NextToken 'eyJpZCI6MTIzfQ==' --PageSize 20 --Resource '{\"DefSchema\":\"MaxCompute\",\"DefVersion\":\"v1.0.0\",\"MetaData\":{\"key\":\"example-string\"}}' --StartTime 1771948800000 --ResourceType '[\"table\"]'"
+  }
+}

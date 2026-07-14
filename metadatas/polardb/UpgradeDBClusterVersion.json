@@ -1,5 +1,6 @@
 {
   "name": "UpgradeDBClusterVersion",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。\n>您可以通过[DescribeDBClusters](~~98094~~)接口查看账号下所有集群的详细信息（如集群ID）。",
+        "en": "The ID of cluster."
+      }
     },
     {
       "name": "FromTimeService",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "立即执行或定时执行内核版本升级。取值范围如下：\n\n- **false**（默认值）：定时执行\n\n- **true**：立即执行\n\n> 调用该接口时无需使用该参数。",
+        "en": "Specifies whether to immediately run the kernel upgrade task. Valid values:\n\n*   **false** (default)\n*   **true**\n\n>  This parameter is not required when you call the operation."
+      }
     },
     {
       "name": "PlannedEndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行目标定时任务的最晚时间。格式为`YYYY-MM-DDThh:mm:ssZ`（UTC）。\n> * 最晚时间需晚于开始时间的30分钟或以上。\n> * 若设置了`PlannedStartTime`但未指定该参数，执行目标任务的最晚时间默认为`开始时间+30分钟`。例如当设置`PlannedStartTime`为`2021-01-14T09:00:00Z`且该参数留空时，目标任务最晚将于`2021-01-14T09:30:00Z`开始执行。",
+        "en": "The latest start time to run the task that updates the kernel version of the cluster. Specify the time in the `YYYY-MM-DDThh:mm:ssZ` format. The time must be in UTC.\n\n> *   The value of this parameter must be at least 30 minutes later than the value of PlannedStartTime.\n>*   If you specify `PlannedStartTime` but do not specify PlannedEndTime, the latest start time of the task is `PlannedEndTime + 30 minutes`. For example, if you set `PlannedStartTime` to `2021-01-14T09:00:00Z` and do not specify PlannedEndTime, the latest start time of the task is set to `2021-01-14T09:30:00Z`."
+      }
     },
     {
       "name": "PlannedStartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行定时（即在目标时间段内执行）内核版本升级任务的最早时间。格式为`YYYY-MM-DDThh:mm:ssZ`（UTC）。\n> * 开始时间的取值范围为未来72小时内的任意时间点。例如当前时间为`2021-01-14T09:00:00Z`，此处允许填入的开始时间范围为`2021-01-14T09:00:00Z`~`2021-01-17T09:00:00Z`。\n>* 若该参数留空，默认立即执行内核版本升级任务。",
+        "en": "The earliest start time to run the task that updates the kernel version of the cluster. Specify the time in the `YYYY-MM-DDThh:mm:ssZ` format. The time must be in UTC.\n\n> \n\n*   The earliest start time of the task can be a point in time within the next 72 hours. For example, if the current time is `2021-01-14T09:00:00Z`, you can specify a point in time from `2021-01-14T09:00:00Z` to `2021-01-17T09:00:00Z`.\n\n*   If you do not specify this parameter, the kernel update task runs immediately after you submit the request."
+      }
     },
     {
       "name": "TargetDBRevisionVersionCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DB目标版本的VersionCode，参数取值可从[DescribeDBClusterVersion](~~2319145~~)接口获取。",
+        "en": "The code of the db version to which you want to upgrade the cluster. You can call the [DescribeDBClusterVersion](~~2319145~~) operation to query the version code."
+      }
     },
     {
       "name": "TargetProxyRevisionVersionCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Proxy目标版本的VersionCode，参数取值可从[DescribeDBClusterVersion](~~2319145~~)接口获取。",
+        "en": "The code of the proxy version to which you want to upgrade the cluster. You can call the [DescribeDBClusterVersion](~~2319145~~) operation to query the version code."
+      }
     },
     {
       "name": "UpgradeLabel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "内核版本升级标签。取值固定为**INNOVATE**。\n\n>- 该参数仅适用于PolarDB MySQL版8.0.1版本升级至PolarDB MySQL版8.0.2版本。\n>- 当传入该参数时，`UpgradePolicy`必须传入**COLD**。",
+        "en": "The upgrade tag. The value is fixed as **INNOVATE**.\n\n> *   This parameter is applicable only when you upgrade PolarDB for MySQL 8.0.1 to PolarDB for MySQL 8.0.2.\n>*   If you specify this parameter, you must set `UpgradePolicy` to **COLD**."
+      }
     },
     {
       "name": "UpgradePolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "内核版本升级策略。取值范围如下：\n\n- **HOT**：热升级\n\n- **COLD**：冷升级。目前仅PolarDB MySQL版8.0集群版支持该升级方式。",
+        "en": "The engine version upgrade policy. Valid values:\n\n*   **HOT**: hot upgrade.\n*   **COLD**: cold upgrade. Only PolarDB for MySQL 8.0 Cluster Edition supports this upgrade method."
+      }
     },
     {
       "name": "UpgradeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "升级类型。取值范围如下：\n\n- **PROXY**：仅升级数据库代理（Proxy）\n\n- **DB**：仅升级内核引擎\n\n- **ALL**（默认值）：同时升级数据库代理（Proxy）和内核引擎",
+        "en": "The update type. Valid values:\n\n*   **PROXY**: specifies to upgrade PloarProxy.\n*   **DB**: specifies to upgrade the kernel version.\n*   **ALL**: specifies to upgrade both PloarProxy and kernel version."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "升级PolarDB MySQL版集群的内核版本",
+    "en": "UpgradeDBClusterVersion"
+  },
+  "descriptions": {
+    "zh": "> - 当前仅支持升级PolarDB MySQL版集群的修订版本（Revision Version），如从8.0.1.1.3升级至8.0.1.1.4。\n>- 仅允许阿里云主账号执行定时（即在目标时间段内执行）内核版本升级任务，RAM账号不支持定时内核版本升级任务。",
+    "en": "> *  You can update only the revision version of a PolarDB for MySQL cluster, for example, from 8.0.1.1.3 to 8.0.1.1.4.\n>*   You can use only your Alibaba Cloud account to create scheduled tasks that update the kernel version of a PolarDB for MySQL cluster. RAM users are not authorized to update the kernel version of a PolarDB for MySQL cluster."
+  },
   "example": {
     "unifiedCli": "aliyun polardb upgrade-db-cluster-version --db-cluster-id pc-0000000000000000 --upgrade-policy HOT --upgrade-label INNOVATE --planned-start-time 2021-01-14T09:00:00Z --planned-end-time 2021-01-14T09:30:00Z --from-time-service false --upgrade-type PROXY --target-db-revision-version-code 20230707 --target-proxy-revision-version-code 20240702 --region cn-hangzhou",
     "legacyCli": "aliyun polardb UpgradeDBClusterVersion --region cn-hangzhou --UpgradeType PROXY --UpgradePolicy HOT --TargetDBRevisionVersionCode 20230707 --DBClusterId 'pc-0000000000000000' --PlannedStartTime '2021-01-14T09:00:00Z' --FromTimeService false --TargetProxyRevisionVersionCode 20240702 --PlannedEndTime '2021-01-14T09:30:00Z' --UpgradeLabel INNOVATE"

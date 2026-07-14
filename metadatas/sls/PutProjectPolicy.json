@@ -1,5 +1,6 @@
 {
   "name": "PutProjectPolicy",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/policy",
@@ -8,15 +9,34 @@
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求参数，即授权策略。",
+        "en": "The request parameters, which define the authorization policy."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Project名称。",
+        "en": "The project name."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建Project授权策略",
+    "en": "PutProjectPolicy"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n- 请求语法中Host由Project名称和日志服务Endpoint构成，您需要在Host中指定Project。\n- 已创建并获取AccessKey。更多信息，请参见[访问密钥](~~29009~~)。\n\n 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维。RAM用户需具备操作日志服务资源的权限。具体操作，请参见[创建RAM用户及授权](~~47664~~)。\n- 已明确您查询日志所属的Project名称、所属地域、Logstore名称等。如何查询，请参见[管理Project](~~48984~~)和[管理Logstore](~~48990~~)。\n- Project Policy是阿里云SLS推出的Project授权策略，您可以通过Project Policy授权其他用户访问您指定的SLS资源。\n\n    - 通过策略语法的方式配置Project Policy前，您需要先了解SLS Action、Resource以及Condition分类信息。更多信息，请参见[访问控制RAM](~~128139~~)。\n\n    - 配置Project Policy时，如果授权用户选择了匿名账号（\\*），且不包含Condition的情况下，Project Policy对Project Owner以外的所有用户生效。如果授权用户选择了匿名账号（*），且包含Condition的情况下，Project Policy对包含Project Owner在内的所有用户生效。\n\n    - 您可以添加多条Project Policy，但所有Project Policy的大小不允许超过16 KB。",
+    "en": "###\n\n- The Host in the request syntax consists of the project name and the Simple Log Service (SLS) endpoint. You must specify the project in the Host.\n\n- You have created an AccessKey pair. For more information, see [AccessKey pair](~~29009~~).\n\nAn AccessKey pair for an Alibaba Cloud account provides full access to all API operations. This is a high security risk. We recommend that you create and use a Resource Access Management (RAM) user for API access or daily O\\&M. The RAM user must have permissions to manage SLS resources. For more information, see [Create and authorize a RAM user](~~47664~~).\n\n- Obtain the project name, region, and Logstore name. For more information, see [Manage projects](~~48984~~) and [Manage Logstores](~~48990~~).\n\n- A project policy is an authorization policy for projects in SLS. You can use a project policy to grant other users access to your specified SLS resources.\n\n  - Before you configure a project policy using policy syntax, you must understand the classification of SLS actions, resources, and conditions. For more information, see [Resource Access Management](~~128139~~).\n\n  - When you configure a project policy, if you grant permissions to an anonymous account (\\*) and do not specify a condition, the policy applies to all users except the project owner. If you grant permissions to an anonymous account (\\*) and specify a condition, the policy applies to all users, including the project owner.\n\n  - You can add multiple project policies, but their total size cannot exceed 16 KB."
+  },
   "example": {
     "unifiedCli": "aliyun sls put-project-policy --biz-body Version_:_1_,_Statement_:_Action_:_log:PostLogStoreLogs_,_Resource_:_acs:log:0:0:project/exampleproject/0_,_Effect_:_Deny_,_Condition_:_StringNotLike_:_acs:SourceVpc_:_vpc-0 --project ali-test-project --region cn-hangzhou",
     "legacyCli": "aliyun sls POST /policy --project ali-test-project --region cn-hangzhou --header \"Content-Type=application/json\" --body \"Version_:_1_,_Statement_:_Action_:_log:PostLogStoreLogs_,_Resource_:_acs:log:0:0:project/exampleproject/0_,_Effect_:_Deny_,_Condition_:_StringNotLike_:_acs:SourceVpc_:_vpc-0\""

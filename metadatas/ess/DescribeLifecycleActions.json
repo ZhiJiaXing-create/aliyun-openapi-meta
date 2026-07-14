@@ -1,5 +1,6 @@
 {
   "name": "DescribeLifecycleActions",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "LifecycleActionStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期操作的状态。取值范围：\n\n- Pending：挂起中。表示ECS实例仍处于挂起中状态。\n- Timeout：已超时。表示已到达生命周期挂钩的超时时间，自动结束ECS实例的挂起中状态。\n- Completed：已处理。表示您手动提前结束了ECS实例的挂起中状态。",
+        "en": "The status of the lifecycle action. Valid values:\n\n- Pending: The ECS instance is still in the wait state.\n- Timeout: The timeout period of the lifecycle hook has been reached, and the wait state of the ECS instance is automatically ended.\n- Completed: You manually ended the wait state of the ECS instance ahead of schedule."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置单页查询的最大条目数。取值范围：1~50。\n\n默认值：10。",
+        "en": "The maximum number of entries per page. Valid values: 1 to 50.\n\nDefault value: 10."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询凭证，用于指定开始查询的位置。\n\n例如上次查询10条生命周期操作后，本次从第11条生命周期操作开始查询。取值为上次调用本接口返回的NextToken参数值，如果不填写取值则表示从头开始查询。",
+        "en": "The pagination token that is used to specify the position from which to start the query.\n\nFor example, if you queried 10 lifecycle actions in the previous request, you can set this parameter to the value of NextToken returned in the previous response to query lifecycle actions starting from the 11th one. If you do not specify this parameter, the query starts from the beginning."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingActivityId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩活动的ID。",
+        "en": "The ID of the scaling activity."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询 Lifecycle Token",
+    "en": "Query lifecycle tokens"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n如果伸缩组发生了和生命周期挂钩适用类型一致的伸缩活动，每个生命周期挂钩都会触发一次生命周期操作，生命周期操作有三种状态：\n\n- Pending：挂起中。表示ECS实例仍处于挂起中状态。\n- Timeout：已超时。表示已超过生命周期挂钩的超时时间，自动结束了ECS实例的挂起中状态。\n- Completed：已处理。表示您手动提前结束了ECS实例的挂起中状态。\n\n如果在创建生命周期挂钩时没有设置后续动作，例如在结束挂起后触发执行指定的OOS模板。您可以调用本接口获取当前伸缩活动对应生命周期操作的标识符，以便自行定制后续动作。",
+    "en": "## Operation description\n\nIf a scaling activity that matches the type applicable to a lifecycle hook occurs in a scaling group, each lifecycle hook triggers a lifecycle action. A lifecycle action can be in one of the following states:\n\n- Pending: The ECS instance is still in the wait state.\n- Timeout: The timeout period of the lifecycle hook has elapsed, and the wait state of the ECS instance is automatically ended.\n- Completed: You manually ended the wait state of the ECS instance ahead of schedule.\n\nIf you did not configure a subsequent action when you created the lifecycle hook, such as triggering a specific OOS template after the wait state ends, you can call this operation to obtain the identifier of the lifecycle action that corresponds to the current scaling activity. This way, you can customize subsequent actions."
+  },
   "example": {
     "unifiedCli": "aliyun ess describe-lifecycle-actions --scaling-activity-id asa-bp17mug9t0pegagw0000 --lifecycle-action-status Pending --next-token AAAAAcSz4VTb1Nq0000 --max-results 10 --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess DescribeLifecycleActions --region cn-hangzhou --LifecycleActionStatus Pending --NextToken AAAAAcSz4VTb1Nq0000 --ScalingActivityId 'asa-bp17mug9t0pegagw0000' --MaxResults 10 --RegionId 'cn-hangzhou'"

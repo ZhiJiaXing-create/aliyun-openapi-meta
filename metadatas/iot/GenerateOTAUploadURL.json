@@ -1,5 +1,6 @@
 {
   "name": "GenerateOTAUploadURL",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "FileSuffix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "升级包文件扩展名。可选扩展名：\n\n- **bin**（默认）\n- **dav**\n- **apk**\n- **tar**\n- **gz**\n- **tar.gz**\n- **zip**\n- **gzip**",
+        "en": "The file name extension of the update package file. Valid values: bin, dav, apk, tar, gz, tar.gz, zip, and gzip.\n\nDefault value: bin."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n>*   If no **Overview** page or ID is generated for your instance, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "生成升级包文件URL",
+    "en": "GenerateOTAUploadURL"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n该接口与其他接口结合使用完成升级包创建。创建升级包的步骤：\n\n1. 调用本接口生成升级包文件上传到对象存储（OSS）的信息。\n本接口的返回参数包含：\n    - 调用OSS [PostObject](~~31988~~)上传升级包文件的请求参数：**Host**、**Key**、**OSSAccessKeyId**、**Signature**和**Policy**。\n    - 调用[CreateOTAFirmware](~~147311~~)创建升级包的请求参数**FirmwareUrl**。\n\n2. 请在本接口返回结果后的1分钟之内，使用[OSS SDK](~~52834~~)调用[PostObject](~~31988~~)接口上传升级包文件。上传文件的代码示例，请参见下文“返回参数的用途”章节。\n\n    ><notice> 本接口返回的参数信息有效期为1分钟，请在1分钟内上传升级包。上传的升级包文件大小不能超过1,000 MB。\n    ></notice>\n\n\n3. 升级包上传完成后，请在60分钟内，调用物联网平台API [CreateOTAFirmware](~~147311~~)接口创建升级包。\n    如果上传了升级包，但未调用CreateOTAFirmware接口创建升级包，上传的文件将被系统定期自动清理。\n\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n> 单个阿里云账号下的所有RAM用户共享该阿里云账号的配额。",
+    "en": "This operation can be used together with other operations to create an update package. Procedure:\n\n1\\. Call this API operation to generate the details of an update package file that you want to upload to OSS.\n\nThe following section describes the response parameters of this API operation:\n\n*   The following request parameters of the OSS [PostObject](~~31988~~) operation that is used to upload the update package file: **Key**, **OSSAccessKeyId**, **Signature**, and **Policy**.\n*   The following request parameter of the [CreateOTAFirmware](~~147311~~) operation that is used to create the update package: **FirmwareUrl**.\n\n2\\. Use an [OSS SDK](~~52834~~) to call the [PostObject](~~31988~~) operation to upload the update package file. For more information about sample code, see the \"Usage of response parameters\" section.\n\n> The parameter information that is returned by this operation is valid for 1 minute. You must upload the update package file within 1 minute. The maximum size of the uploaded update package file is 1,000 MB.\n\n3\\. After the update package file is uploaded, call the [CreateOTAFirmware](~~147311~~) operation to create an update package within 60 minutes.\n\nIf update package files are uploaded but you do not call the CreateOTAFirmware operation to create update packages for the files, the uploaded files are automatically deleted by the system on a regular basis.\n\n## QPS limits\n\nEach Alibaba Cloud account can run up to 10 queries per second (QPS). \n\n>  The RAM users of an Alibaba Cloud account share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot generate-ota-upload-url --iot-instance-id iot-cn-0pp1n8t0000 --file-suffix apk --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot GenerateOTAUploadURL --region cn-hangzhou --FileSuffix apk --IotInstanceId 'iot-cn-0pp1n8t0000'"

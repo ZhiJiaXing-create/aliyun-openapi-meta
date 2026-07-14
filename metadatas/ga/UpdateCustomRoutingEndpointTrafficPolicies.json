@@ -1,5 +1,6 @@
 {
   "name": "UpdateCustomRoutingEndpointTrafficPolicies",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改流量通行目标的终端节点ID。",
+        "en": "The ID of the endpoint for which you want to modify the traffic policies."
+      }
     },
     {
       "name": "PolicyConfigurations",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "流量通行目标配置。\n\n每个终端节点下，最多可输入500个通行目标。",
+        "en": "The access policies.\n\nYou can specify a maximum of 500 traffic policies for each endpoint."
+      },
       "sub_parameters": [
         {
           "name": "Address",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定可以接受访问流量的通行目标IP地址。\n\n仅当**TrafficToEndpointPolicy**（后端服务流量通行策略）取值为**AllowCustom**（指定可以接收访问流量的通行目标）时，该项生效。您可以通过[DescribeCustomRoutingEndpoint](~~449386~~)查询指定终端节点的后端服务流量通行策略。\n\n每个终端节点下，最多可输入500个通行目标IP地址。\n\n> 该参数为必选参数。",
+            "en": "The IP address of the destination which to allow traffic.\n\nThis parameter takes effect only when you set the **TrafficToEndpointPolicy** parameter to **AllowCustom**. You can call the [DescribeCustomRoutingEndpoint](~~449386~~) operation to query the traffic policy of an endpoint.\n\nYou can specify a maximum of 500 traffic policies for each endpoint.\n\n>  This parameter is required."
+          }
         },
         {
           "name": "PolicyId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "待修改的流量通行目标ID。\n\n> 该参数为必选参数。",
+            "en": "The ID of the traffic policy that you want to modify.\n\n>  This parameter is required."
+          }
         },
         {
           "name": "PortRanges",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定可以接受访问流量的通行目标端口范围。该端口范围必须属于终端节点组后端服务端口范围。\n\n输入为空时，表示支持该通行目标的所有端口。\n\n仅当**TrafficToEndpointPolicy**（后端服务流量通行策略）取值为**AllowCustom**（指定可以接收访问流量的通行目标）时，该项生效。您可以通过[DescribeCustomRoutingEndpoint](~~449386~~)查询指定终端节点的后端服务流量通行策略。\n\n每个终端节点下，最多可输入500个通行目标的端口范围，每个通行目标最多可输入10个端口范围。",
+            "en": "The port range of the destination to which traffic is forwarded. The value of this parameter must fall within the port range of the endpoint group.\n\nIf you do not specify object, traffic is forwarded to all ports.\n\nThis parameter takes effect only when you set the **TrafficToEndpointPolicy** parameter to **AllowCustom**. You can call the [DescribeCustomRoutingEndpoint](~~449386~~) operation to query the traffic policy of an endpoint.\n\nYou can specify a maximum of 500 port ranges for each endpoint and a maximum of 10 port ranges for each traffic policy."
+          }
         }
       ]
     },
@@ -46,9 +71,24 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改终端节点流量通行目标",
+    "en": "UpdateCustomRoutingEndpointTrafficPolicies"
+  },
+  "descriptions": {
+    "zh": "- **UpdateCustomRoutingEndpointTrafficPolicies**接口属于异步接口，即系统会先返回一个请求ID，但终端节点流量通行目标并未修改完成，系统后台的修改任务仍在进行。您可以通过调用[DescribeCustomRoutingEndpointGroup](~~449373~~)接口查询自定义路由类型监听关联的终端节点组的状态，来确认终端节点流量通行目标是否修改完成。\n    - 当自定义路由类型监听关联的终端节点组处于**updating**状态时，表示终端节点流量通行目标正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当自定义路由类型监听关联的终端节点组处于**active**状态时，表示终端节点流量通行目标修改完成。\n- **UpdateCustomRoutingEndpointTrafficPolicies**接口不支持在同一个全球加速实例内并发修改终端节点流量通行目标。",
+    "en": "*   **UpdateCustomRoutingEndpointTrafficPolicies** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. You can call the [DescribeCustomRoutingEndpointGroup](~~449373~~) operation to query the status of the task.\n\n    *   If the endpoint group is in the **updating** state, traffic policies are being modified for endpoints in the endpoint group. In this case, you can perform only query operations.\n    *   If the endpoint group is in the **active** state, traffic policies are modified for endpoints in the endpoint group.\n\n*   The **UpdateCustomRoutingEndpointTrafficPolicies** operation cannot be repeatedly called for the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-custom-routing-endpoint-traffic-policies --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-id ep-2zewuzypq5e6r3pfh0000 --policy-configurations '[{\"Address\":\"10.0.XX.XX\",\"PortRanges\":[{\"FromPort\":80,\"ToPort\":80}],\"PolicyId\":\"ply-bptest20000\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateCustomRoutingEndpointTrafficPolicies --region cn-hangzhou --PolicyConfigurations.1.PortRanges.1.ToPort 80 --PolicyConfigurations.1.PortRanges.1.FromPort 80 --EndpointId 'ep-2zewuzypq5e6r3pfh0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --PolicyConfigurations.1.Address '10.0.XX.XX' --PolicyConfigurations.1.PolicyId 'ply-bptest20000'"

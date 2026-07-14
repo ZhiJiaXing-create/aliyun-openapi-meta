@@ -1,5 +1,6 @@
 {
   "name": "CreateDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,65 +9,112 @@
       "name": "AccessType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF实例的接入类型。取值：\n\n- **share**（默认）：表示CNAME接入。\n\n- **hybrid\\_cloud\\_cname**：表示混合云CNAME接入。",
+        "en": "The access type of the WAF instance. Valid values:\n\n- **share** (default): CNAME access.\n\n- **hybrid\\_cloud\\_cname**: hybrid cloud CNAME access."
+      }
     },
     {
       "name": "Domain",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的域名名称。",
+        "en": "The domain name to query."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF实例的ID。\n> 您可以调用[DescribeInstance](~~433756~~)查询当前WAF实例的ID。",
+        "en": "The ID of the WAF instance.\n> You can call [DescribeInstance](~~433756~~) to query the ID of the current WAF instance."
+      }
     },
     {
       "name": "Listen",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "配置监听信息。",
+        "en": "The listening configuration."
+      }
     },
     {
       "name": "Redirect",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "配置转发信息。",
+        "en": "The forwarding configuration."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF实例所属地域。取值：\n\n- **cn-hangzhou**：表示中国内地。\n\n- **ap-southeast-1**：表示非中国内地。",
+        "en": "The region where the WAF instance is deployed. Valid values:\n\n- **cn-hangzhou**: the Chinese mainland.\n\n- **ap-southeast-1**: outside the Chinese mainland."
+      }
     },
     {
       "name": "ResourceManagerResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云资源组ID。",
+        "en": "The Alibaba Cloud resource group ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表，最多包含20个子项",
+        "en": "The tag list, which contains a maximum of 20 items."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值",
+            "en": "The tag value."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加CNAME接入资源",
+    "en": "Add a CNAME access resource"
+  },
   "example": {
     "unifiedCli": "aliyun waf-openapi create-domain --instance-id waf_cdnsdf30000 --resource-manager-resource-group-id rg-acfm000q --domain www.aliyundoc.com --listen '{\"HttpsPorts\":[443],\"ProtectionResource\":\"share\",\"CustomCiphers\":[\"xxx\"],\"TLSVersion\":\"tlsv1\",\"Http2Enabled\":true,\"CertId\":\"123\",\"CipherSuite\":2,\"EnableTLSv3\":true,\"IPv6Enabled\":true,\"HstsPreload\":false,\"FocusHttps\":true,\"HstsMaxAge\":365000,\"SM2CertId\":\"123-cn-hangzhou\",\"SM2Enabled\":true,\"XffHeaders\":[\"Client-ip\"],\"XffHeaderMode\":1,\"ExclusiveIp\":true,\"SM2AccessOnly\":true,\"HttpPorts\":[80],\"HstsIncludeSubDomain\":true}' --redirect '{\"BackendPorts\":[{\"BackendPort\":80,\"Protocol\":\"http\",\"ListenPort\":80}],\"SniEnabled\":true,\"CnameEnabled\":true,\"BackupBackends\":[\"1.1.XX.XX\"],\"ReadTimeout\":200,\"Http2Origin\":true,\"XClientIp\":true,\"SniHost\":\"www.aliyundoc.com\",\"WebServerType\":true,\"RoutingRules\":\"rs_:_1.1.XX.XX_,_backupRs_:_2.2.XX.XX_,_locationId_:_535,_location_:_test1111\",\"RequestHeaders\":[{\"Value\":\"bbb\",\"Key\":\"aaa\"}],\"MaxBodySize\":2,\"ConnectTimeout\":120,\"ProxyProtocol\":false,\"Keepalive\":true,\"KeepaliveTimeout\":15,\"WLProxyClientIp\":true,\"Backends\":[\"1.1.XX.XX\"],\"FocusHttpBackend\":true,\"WriteTimeout\":200,\"XTrueIp\":true,\"Http2OriginMaxConcurrency\":128,\"Retry\":true,\"KeepaliveRequests\":1000,\"XffProto\":false,\"Loadbalance\":\"roundRobin\"}' --biz-region-id cn-hangzhou --access-type share --tag Value=TagValue1 Key=Tagkey1 --api-version 2021-10-01 --region cn-hangzhou",
     "legacyCli": "aliyun waf-openapi CreateDomain --region cn-hangzhou --ResourceManagerResourceGroupId 'rg-acfm000q' --Tag.1.Key Tagkey1 --InstanceId waf_cdnsdf30000 --Tag.1.Value TagValue1 --Listen '{\"HttpsPorts\":[443],\"ProtectionResource\":\"share\",\"CustomCiphers\":[\"xxx\"],\"TLSVersion\":\"tlsv1\",\"Http2Enabled\":true,\"CertId\":\"123\",\"CipherSuite\":2,\"EnableTLSv3\":true,\"IPv6Enabled\":true,\"HstsPreload\":false,\"FocusHttps\":true,\"HstsMaxAge\":365000,\"SM2CertId\":\"123-cn-hangzhou\",\"SM2Enabled\":true,\"XffHeaders\":[\"Client-ip\"],\"XffHeaderMode\":1,\"ExclusiveIp\":true,\"SM2AccessOnly\":true,\"HttpPorts\":[80],\"HstsIncludeSubDomain\":true}' --Redirect '{\"BackendPorts\":[{\"BackendPort\":80,\"Protocol\":\"http\",\"ListenPort\":80}],\"SniEnabled\":true,\"CnameEnabled\":true,\"BackupBackends\":[\"1.1.XX.XX\"],\"ReadTimeout\":200,\"Http2Origin\":true,\"XClientIp\":true,\"SniHost\":\"www.aliyundoc.com\",\"WebServerType\":true,\"RoutingRules\":\"rs_:_1.1.XX.XX_,_backupRs_:_2.2.XX.XX_,_locationId_:_535,_location_:_test1111\",\"RequestHeaders\":[{\"Value\":\"bbb\",\"Key\":\"aaa\"}],\"MaxBodySize\":2,\"ConnectTimeout\":120,\"ProxyProtocol\":false,\"Keepalive\":true,\"KeepaliveTimeout\":15,\"WLProxyClientIp\":true,\"Backends\":[\"1.1.XX.XX\"],\"FocusHttpBackend\":true,\"WriteTimeout\":200,\"XTrueIp\":true,\"Http2OriginMaxConcurrency\":128,\"Retry\":true,\"KeepaliveRequests\":1000,\"XffProto\":false,\"Loadbalance\":\"roundRobin\"}' --RegionId 'cn-hangzhou' --Domain 'www.aliyundoc.com' --AccessType share"

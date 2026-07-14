@@ -1,5 +1,6 @@
 {
   "name": "GetDeadLockHistory",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，格式为Unix时间戳，单位为毫秒。\n><notice>该字段类型为Long，在序列化/反序列化的过程中可能导致精度丢失，请注意数值不得大于9007199254740991。></notice>",
+        "en": "The end time of the query. This value is a UNIX timestamp. Unit: milliseconds.\n\n><notice>\n\nThis parameter is a Long value. To prevent precision loss during serialization and deserialization, make sure that the value does not exceed 9007199254740991.\n\n></notice>"
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n> 对于PolarDB MySQL版实例，需要提供节点ID。",
+        "en": "The node ID.\n\n> Specify the node ID for a PolarDB for MySQL instance."
+      }
     },
     {
       "name": "PageNo",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页大小，最大值为**100**。",
+        "en": "The number of entries per page. The maximum value is **100**."
+      }
     },
     {
       "name": "Source",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务来源：\n- **MANUAL**或**不传入**：查询最近死锁分析任务。\n- **AUTO**：查询全量死锁分析任务。\n><notice>传入AUTO查询全量死锁分析任务时，查询开始时间最大不能早于结束时间7天。></notice>",
+        "en": "The source of the task:\n\n- **MANUAL** or unspecified: queries tasks for recent deadlock analysis.\n\n- **AUTO**: queries tasks for full deadlock analysis.\n\n><notice>\n\nIf you set this parameter to AUTO to query tasks for full deadlock analysis, the start time can be a maximum of seven days earlier than the end time.\n\n></notice>"
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间，格式为Unix时间戳，单位为毫秒。\n><notice>该字段类型为Long，在序列化/反序列化的过程中可能导致精度丢失，请注意数值不得大于9007199254740991。></notice>",
+        "en": "The start time of the query. This value is a UNIX timestamp. Unit: milliseconds.\n\n><notice>\n\nThis parameter is a Long value. To prevent precision loss during serialization and deserialization, make sure that the value does not exceed 9007199254740991.\n\n></notice>"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取死锁分析的任务列表",
+    "en": "GetDeadLockHistory"
+  },
+  "descriptions": {
+    "zh": "本接口用于获取最近死锁分析、全量死锁分析的历史分析记录。详情请参见[死锁分析](~~2858236~~)。\n\n使用该接口需满足以下前提条件：\n\n- 查询最近死锁分析历史分析记录的目标数据库引擎为：RDS MySQL、自建MySQL、PolarDB MySQL版、PolarDB-X 2.0。\n- 查询全量死锁分析历史分析记录的目标数据库引擎为：RDS MySQL、PolarDB MySQL版，且已开通[DAS运维服务（原经济版）](~~2666482~~)。\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。",
+    "en": "Retrieves the historical analysis records for recent and full deadlock analysis. For more information, see [Deadlock analysis](~~2858236~~).\n\nThe following requirements must be met before you call this operation:\n\n- To query historical analysis records of recent deadlocks, the destination database engine must be RDS MySQL, self-managed MySQL, PolarDB for MySQL, or PolarDB-X 2.0.\n\n- To query historical analysis records of full deadlocks, the destination database engine must be RDS MySQL or PolarDB for MySQL, and [DAS Alibaba Cloud Managed Services (formerly known as Economy Edition)](~~2666482~~) must be enabled.\n\n- Use the latest version of the Alibaba Cloud SDK or DAS SDK.\n\n- When you use an SDK to call the DAS service, set the region to cn-shanghai."
+  },
   "example": {
     "unifiedCli": "aliyun das get-dead-lock-history --instance-id pc-bp1u5mas9exx70000 --node-id pi-bp16v3824rt730000 --page-no 1 --page-size 10 --start-time 1731983066000 --end-time 1732069466000 --source AUTO --region cn-hangzhou",
     "legacyCli": "aliyun das GetDeadLockHistory --region cn-hangzhou --PageSize 10 --EndTime 1732069466000 --InstanceId 'pc-bp1u5mas9exx70000' --NodeId 'pi-bp16v3824rt730000' --StartTime 1731983066000 --PageNo 1 --Source AUTO"

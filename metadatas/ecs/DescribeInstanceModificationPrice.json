@@ -1,5 +1,6 @@
 {
   "name": "DescribeInstanceModificationPrice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,9 +10,23 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "数据盘类型信息。",
+        "en": "The data disk configurations."
+      },
       "sub_parameters": [
         {
           "name": "Category",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "数据盘类型。当您需要查询ECS实例挂载的新包年包月数据盘的价格时，可以传入该参数值。N的取值范围：1~16。取值范围：\n\n- cloud_efficiency：高效云盘。\n- cloud_ssd：SSD云盘。\n- cloud_essd：ESSD云盘。\n- cloud：普通云盘。\n\n默认值：无。\n\n> 查询时，实例规格参数（`InstanceType`）和数据盘参数（`DataDisk.N.*`）不得同时为空，必须至少指定一个。",
+            "en": "The category of data disk N, where N is an integer from 1 to 16. Use this parameter to query the price of adding a new data disk to the instance. Valid values:\\\n\\\n\\- `cloud_efficiency`: Ultra Disk\\\n\\\n\\- `cloud_ssd`: Standard SSD\\\n\\\n\\- `cloud_essd`: ESSD\\\n\\\n\\- `cloud`: Basic Disk\\\n\\\nDefault value: None.\\\n\\\n\\\n\\\n\\\n\\\n\\\n\\\n\\\n\\"
+          }
+        },
+        {
+          "name": "DiskId",
           "position": "Query",
           "type": "String",
           "required": false
@@ -20,41 +35,118 @@
           "name": "PerformanceLevel",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "当数据盘类型为ESSD云盘时，设置云盘的性能等级。N的取值必须和`DataDisk.N.Category=cloud_essd`中的N保持一致。取值范围：\n\n- PL0：单盘最高随机读写IOPS 1万。\n- PL1：单盘最高随机读写IOPS 5万。\n- PL2：单盘最高随机读写IOPS 10万。\n- PL3：单盘最高随机读写IOPS 100万。\n\n默认值：PL1。\n\n有关如何选择ESSD性能等级，请参见[ESSD云盘](~~122389~~)。",
+            "en": "The performance level of the ESSD. This parameter is valid only when DataDisk.N.Category is set to cloud_essd. The value of N must match the N in DataDisk.N.Category. Valid values:\n\\- PL0: up to 10,000 random read/write IOPS per disk.\n\\- PL1: up to 50,000 random read/write IOPS per disk.\n\\- PL2: up to 100,000 random read/write IOPS per disk.\n\\- PL3: up to 1,000,000 random read/write IOPS per disk.\nDefault value: PL1.\nFor more information about ESSD performance levels, see [ESSDs](~~122389~~)."
+          }
         },
         {
           "name": "Size",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘的容量大小。N的取值范围：1~16，内存单位为GiB。取值范围：\n\n- cloud_efficiency：20~32768。\n- cloud_ssd：20~32768。\n- cloud_essd：具体取值范围与`DataDisk.N.PerformanceLevel`的取值有关。    \n    - PL0：1~32768。\n    - PL1：20~32768。\n    - PL2：461~32768。\n    - PL3：1261~32768。\n- cloud：5~2000。\n\n默认值：指定数据盘类型相应的容量大小的最小值。",
+            "en": "The size of data disk N in GiB, where N is an integer from 1 to 16. The value range varies based on the disk category:\n\\- `cloud_efficiency` (Ultra Disk): 20 to 32768.\n\\- `cloud_ssd` (Standard SSD): 20 to 32768.\n\\- `cloud_essd`: The value range varies based on the value of `DataDisk.N.PerformanceLevel`.\n\\- PL0: 1 to 32768.\n\\- PL1: 20 to 32768.\n\\- PL2: 461 to 32768.\n\\- PL3: 1261 to 32768.\n\\- `cloud` (Basic Disk): 5 to 2000.\nDefault value: The minimum size supported by the specified data disk category."
+          }
         }
       ]
+    },
+    {
+      "name": "EndTime",
+      "position": "Query",
+      "type": "String",
+      "required": false
+    },
+    {
+      "name": "ISP",
+      "position": "Query",
+      "type": "String",
+      "required": false
+    },
+    {
+      "name": "ImageId",
+      "position": "Query",
+      "type": "String",
+      "required": false
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询升配价格的实例ID。",
+        "en": "The ID of the instance for which to query the modification price."
+      }
     },
     {
       "name": "InstanceType",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "实例升配的目标实例规格。建议您先调用[DescribeResourcesModification](~~66187~~)查询指定可用区内可升配的实例规格信息。\n\n> 查询时，实例规格参数（`InstanceType`）和数据盘参数（`DataDisk.N.*`）不得同时为空，必须至少指定一个。",
+        "en": "The target instance type for the instance upgrade. Call the [DescribeResourcesModification](~~66187~~) operation to query the instance types available for upgrade in the specified availability zone.\n\n> You must specify at least one of the `InstanceType` and `DataDisk.N.*` parameters."
+      }
+    },
+    {
+      "name": "InternetChargeType",
+      "position": "Query",
+      "type": "String",
+      "required": false
+    },
+    {
+      "name": "InternetMaxBandwidthOut",
+      "position": "Query",
+      "type": "Integer",
       "required": false
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call the [DescribeRegions](~~25609~~) operation to get the latest list of Alibaba Cloud regions."
+      }
+    },
+    {
+      "name": "StartTime",
+      "position": "Query",
+      "type": "String",
+      "required": false
+    },
+    {
+      "name": "SystemDisk",
+      "position": "Query",
+      "type": "Struct",
+      "required": false
     },
     {
       "name": "SystemDisk.Category",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统盘类型。仅当从已停售的实例规格升配至在售实例规格，并将非I/O优化实例规格升级为I/O优化实例规格时，才需要传入参数值。关于实例规格的更多信息，请参见[实例规格族](~~25378~~)以及[已停售的实例规格](~~55263~~)。\n\n取值范围：\n\n- cloud_efficiency：高效云盘。\n- cloud_ssd：SSD云盘。\n\n默认值：无。",
+        "en": "The category of the system disk. This parameter is required only when you upgrade a non-I/O optimized instance of a retired instance type to an I/O optimized instance of an available instance type. For more information about instance types, see [instance family](~~25378~~) and [retired instance types](~~55263~~).\n\nValid values:\n\n- `cloud_efficiency`: Ultra Disk\n\n- `cloud_ssd`: Standard SSD\n\nDefault value: None."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询未到期的包年包月ECS实例升配时目标实例规格的价格信息、新增包年包月数据盘的价格信息",
+    "en": "DescribeInstanceModificationPrice"
+  },
+  "descriptions": {
+    "zh": "- 仅支持查询未到期的包年包月ECS实例升配的价格信息，暂不支持查询实例降配的价格信息。\n- 不支持查询按量付费ECS实例变配时的价格信息。由于按量付费ECS实例变配后的价格与新购实例的价格一致，因此您可以直接调用[DescribePrice](~~107829~~)查询ECS实例的最新价格。\n- 实例升配前，建议您先调用[DescribeResourcesModification](~~66187~~)查询指定可用区内可升配的实例规格信息。",
+    "en": "- You can query pricing for upgrading unexpired subscription ECS instances, but not for downgrading them.\n\n- You cannot query prices for resizing pay-as-you-go ECS instances. Because a resized instance is priced the same as a new one, call [DescribePrice](~~107829~~) to get the current price.\n\n- Before upgrading an instance, call [DescribeResourcesModification](~~66187~~) to find the instance types available for an upgrade in a specific availability zone."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-instance-modification-price --biz-region-id cn-hangzhou --instance-id i-bp1f2o4ldh8l0000 --instance-type ecs.g6e.large --system-disk-category cloud_ssd --system-disk Category=example-string PerformanceLevel=PL0 Size=40 --data-disk Category=cloud_essd PerformanceLevel=PL1 Size=100 --image-id aliyun_2_1903_x64_20G_alibase_20200324.vhd --internet-max-bandwidth-out 10 --isp BGP --internet-charge-type PayByTraffic --start-time 2025-12-05T22:40Z --end-time 2025-12-06T22Z --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeInstanceModificationPrice --region cn-hangzhou --DataDisk.1.Size 100 --EndTime '2025-12-06T22Z' --InstanceId 'i-bp1f2o4ldh8l0000' --DataDisk.1.PerformanceLevel PL1 --ISP BGP --StartTime '2025-12-05T22:40Z' --SystemDisk.Size 40 --InternetChargeType PayByTraffic --DataDisk.1.Category cloud_essd --SystemDisk.PerformanceLevel PL0 --InternetMaxBandwidthOut 10 --ImageId 'aliyun_2_1903_x64_20G_alibase_20200324.vhd' --SystemDisk.Category cloud_ssd --RegionId 'cn-hangzhou' --InstanceType 'ecs.g6e.large' --method POST --force"

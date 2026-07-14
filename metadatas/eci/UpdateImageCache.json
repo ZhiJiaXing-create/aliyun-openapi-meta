@@ -1,5 +1,6 @@
 {
   "name": "UpdateImageCache",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,30 +10,50 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "ACR企业版实例信息。",
+        "en": "The information about the Container Registry (ACR) Enterprise Edition instance."
+      },
       "sub_parameters": [
         {
           "name": "Domain",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ACR企业版实例的域名。默认为相应实例的所有域名。支持指定个别域名，多个以半角逗号分隔。",
+            "en": "The domain names of the ACR Enterprise Edition instance. By default, all domain names of the instance are used. You can specify one or more domain names. Separate multiple domain names with commas (,)."
+          }
         },
         {
           "name": "InstanceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ACR企业版实例ID。",
+            "en": "The ID of the ACR Enterprise Edition instance."
+          }
         },
         {
           "name": "InstanceName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ACR企业版实例的名称。",
+            "en": "The name of the ACR Enterprise Edition instance."
+          }
         },
         {
           "name": "RegionId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ACR企业版实例所属地域。",
+            "en": "The region where the ACR Enterprise Edition instance is located."
+          }
         }
       ]
     },
@@ -40,85 +61,141 @@
       "name": "AutoMatchImageCache",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启镜像缓存复用。开启后，新创建的镜像缓存可以复用已有镜像缓存的镜像层，加快镜像缓存的制作速度。取值范围：\n\n- true：开启\n- false：不开启\n\n默认为false。",
+        "en": "Specifies whether to enable reuse of image cache layers. If you enable this feature, the system reuses the image layers of existing image caches to accelerate the creation of image caches. Valid values:\n\n- true\n\n- false\n\nDefault value: false."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. Generate a value that is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "EipInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性公网IP。如果需要拉取公网镜像，需要确保ECI实例能够访问公网，您可以配置EIP或者NAT网关实现公网访问。",
+        "en": "The elastic IP address (EIP). To pull images from the Internet, ensure that the ECI instance has Internet access. Configure an EIP or a NAT Gateway to enable Internet access."
+      }
     },
     {
       "name": "EliminationStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像缓存的淘汰策略。默认为空，表示一直保留。\n\n支持配置为LRU，表示可以被自动删除。当镜像缓存数量达到配额限制时，系统将自动删除最不常用的EliminationStrategy为LRU的镜像缓存。",
+        "en": "The eviction policy for the image cache. By default, the image cache is never evicted.\n\nSet this parameter to \\`LRU\\` to allow automatic deletion. If you set the policy to \\`LRU\\`, when the number of image caches reaches the quota, the system automatically deletes the least recently used caches."
+      }
     },
     {
       "name": "Flash",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启极速镜像缓存功能，开启后，可以加速镜像缓存创建。取值范围：\n\n- true：开启\n- false：不开启\n\n默认为false。",
+        "en": "Specifies whether to enable the instant image cache feature. This feature accelerates the creation of image caches. Valid values:\n\n- true\n\n- false\n\nDefault value: false."
+      }
     },
     {
       "name": "FlashCopyCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本地快照副本数。默认情况下，一个镜像缓存对应一个快照。如果该镜像缓存将用于批量创建多个ECI实例，建议您配置该参数实现快照多副本。推荐每1000个ECI实例增加一个快照副本。\n\n> 开启极速镜像缓存功能（Flash取值为true）时，创建镜像缓存的过程中将先创建本地快照，在本地快照创建完成后开始创建标准快照，待标准快照创建完成后会自动删除本地快照。",
+        "en": "The number of local snapshot replicas. By default, one snapshot is created for one image cache. If the image cache is used to create multiple ECI instances in batches, configure this parameter to create multiple snapshot replicas. We recommend creating one snapshot replica for every 1,000 ECI instances.\n\n> If the instant image cache feature is enabled (Flash is set to true), the system first creates local snapshots. After the local snapshots are created, the system starts to create standard snapshots. After the standard snapshots are created, the local snapshots are automatically deleted."
+      }
     },
     {
       "name": "Image",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于制作镜像缓存的容器镜像列表。\n\n> 如果您希望触发一次镜像缓存的原地升级，而不需要更新缓存镜像列表，仍然需要传入缓存镜像列表，否则镜像数据不会更新到最新版本，只会刷新meta数据。",
+        "en": "The list of container images used to create the image cache.\n\n> If you want to trigger an in-place upgrade of the image cache without updating the image list, you must still pass the image list. Otherwise, the image data is not updated to the latest version. Only the metadata is refreshed."
+      }
     },
     {
       "name": "ImageCacheId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像缓存ID。",
+        "en": "The ID of the image cache."
+      }
     },
     {
       "name": "ImageCacheName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像缓存名称。",
+        "en": "The name of the image cache."
+      }
     },
     {
       "name": "ImageCacheSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像缓存的大小。默认为20 GiB。",
+        "en": "The size of the image cache. The default value is 20 GiB."
+      }
     },
     {
       "name": "ImageRegistryCredential",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "镜像仓库信息。",
+        "en": "The credentials of the image repository."
+      },
       "sub_parameters": [
         {
           "name": "Password",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像仓库密码。",
+            "en": "The password for the image repository."
+          }
         },
         {
           "name": "Server",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "不带 `http://` 或  `https://` 前缀的镜像仓库地址。",
+            "en": "The address of the image repository. Do not include the `http://` or `https://` prefix."
+          }
         },
         {
           "name": "UserName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像仓库用户名。",
+            "en": "The username for the image repository."
+          }
         }
       ]
     },
@@ -126,49 +203,81 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "RetentionDays",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像缓存保留时间，过期将会被清理，默认永不过期。\n\n> 创建失败的镜像缓存仅保留一天。",
+        "en": "The retention period of the image cache in days. The image cache expires and is cleared after the retention period ends. By default, the image cache never expires.\n\n> Image caches that failed to be created are retained for only one day."
+      }
     },
     {
       "name": "SecurityGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全组ID。",
+        "en": "The ID of the security group."
+      }
     },
     {
       "name": "StandardCopyCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标准快照副本数。默认情况下，一个镜像缓存对应一个快照。如果该镜像缓存将用于批量创建多个ECI实例，建议您配置该参数实现快照多副本。推荐每1000个ECI实例增加一个快照副本。\n\n> 未开启极速镜像缓存功能（Flash取值为false）时，创镜像缓存的过程中仅生成标准快照。",
+        "en": "The number of standard snapshot replicas. By default, one snapshot is created for one image cache. If the image cache is used to create multiple ECI instances in batches, configure this parameter to create multiple snapshot replicas. We recommend creating one snapshot replica for every 1,000 ECI instances.\n\n> If the instant image cache feature is disabled (Flash is set to false), only standard snapshots are created when the image cache is being created."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "镜像缓存绑定的标签信息，最多20个。",
+        "en": "The tags to attach to the image cache. You can attach up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像缓存标签键。",
+            "en": "The key of the tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像缓存标签值。",
+            "en": "The value of the tag."
+          }
         }
       ]
     },
@@ -176,9 +285,24 @@
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机ID。",
+        "en": "The ID of the vSwitch."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新一个镜像缓存",
+    "en": "UpdateImageCache"
+  },
+  "descriptions": {
+    "zh": "仅支持更新状态为Ready（创建完成）或者UpdateFailed（更新失败）的镜像缓存。",
+    "en": "You can update only image caches that are in the Ready or UpdateFailed state."
+  },
   "example": {
     "unifiedCli": "aliyun eci update-image-cache --biz-region-id cn-hangzhou --image-cache-id imc-bp195erqe9o2pb090000 --security-group-id sg-uf66jeqopgqa9hdn0000 --vswitch-id vsw-uf6h3rbwbm90urjwa0000 --image-cache-name testcache --eip-instance-id eip-2zedsm5mfl3uhdj2d0000 --resource-group-id rg-aekzh43v00000 --client-token 123e4567-xxx-xxx-xxxx-42665544xxxx --image-cache-size 20 --retention-days 7 --auto-match-image-cache true --image-registry-credential UserName=username Server=registry-vpc.cn-hangzhou.aliyuncs.com Password=password --image registry-vpc.cn-hangzhou.aliyuncs.com/eci_open/nginx:1.15.10-perl --tag Value=test Key=imc --flash true --acr-registry-info '[{\"InstanceName\":\"test0000\",\"InstanceId\":\"cri-nwj395hgf6f30000\",\"RegionId\":\"cn-hangzhou\",\"Domain\":[\"test0000-registry.cn-hangzhou.cr.aliyuncs.com\"]}]' --standard-copy-count 7 --flash-copy-count 7 --elimination-strategy LRU --region cn-hangzhou",
     "legacyCli": "aliyun eci UpdateImageCache --region cn-hangzhou --ResourceGroupId 'rg-aekzh43v00000' --AcrRegistryInfo.1.RegionId 'cn-hangzhou' --EipInstanceId 'eip-2zedsm5mfl3uhdj2d0000' --Image.1 'registry-vpc.cn-hangzhou.aliyuncs.com/eci_open/nginx:1.15.10-perl' --ImageRegistryCredential.1.UserName username --AutoMatchImageCache true --ImageRegistryCredential.1.Password password --FlashCopyCount 7 --Flash true --ImageRegistryCredential.1.Server 'registry-vpc.cn-hangzhou.aliyuncs.com' --EliminationStrategy LRU --ImageCacheSize 20 --Tag.1.Key imc --ImageCacheId 'imc-bp195erqe9o2pb090000' --AcrRegistryInfo.1.InstanceId 'cri-nwj395hgf6f30000' --AcrRegistryInfo.1.Domain.1 'test0000-registry.cn-hangzhou.cr.aliyuncs.com' --SecurityGroupId 'sg-uf66jeqopgqa9hdn0000' --VSwitchId 'vsw-uf6h3rbwbm90urjwa0000' --RetentionDays 7 --AcrRegistryInfo.1.InstanceName test0000 --ImageCacheName testcache --Tag.1.Value test --StandardCopyCount 7 --RegionId 'cn-hangzhou' --ClientToken '123e4567-xxx-xxx-xxxx-42665544xxxx'"

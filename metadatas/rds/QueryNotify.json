@@ -1,5 +1,6 @@
 {
   "name": "QueryNotify",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "From",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间。格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，取值：大于**0**且不超过Integer的最大值。\n\n默认值：**1**。",
+        "en": "The page number. Pages start from page 1. Default value: 1.****\n\nDefault value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值：\n* **30**\n* **50**\n* **100**\n\n默认值：**30**。",
+        "en": "The number of entries per page. Valid values:\n\n*   **30**\n*   **50**\n*   **100**\n\nDefault value: **30**."
+      }
     },
     {
       "name": "To",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，需要晚于开始时间。格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "WithConfirmed",
       "position": "Body",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结果中是否包含已确认的通知。取值：\n- **true**：包含\n- **false**：不包含\n>已确认的通知即已通过ConfirmNotify接口标记为已确认的通知。",
+        "en": "Specifies whether the query results contain confirmed notifications. Valid values:\n\n*   **true**\n*   **false**\n\n>  A confirmed notification is a notification that has been marked as confirmed by calling the ConfirmNotify operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询通知",
+    "en": "QueryNotify"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 功能说明\nRDS通知会以高亮的形式展示于RDS控制台顶部，包含续费提醒、实例创建失败提醒等。\n\n通过本接口查询了通知以后，您可以调用[ConfirmNotify](~~610444~~)将该通知标记为已确认，代表您已知晓该通知的内容。",
+    "en": "### Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   SQL Server\n*   MariaDB\n\n### Feature description\n\nThe notifications are highlighted at the top of the ApsaraDB RDS console. The notifications include renewal reminders and reminders of instance creation failures.\n\nAfter you call this operation to query notifications, you can call the [ConfirmNotify](~~610444~~) operation to mark the notifications as confirmed, which means that you understand the content of the notifications."
+  },
   "example": {
     "unifiedCli": "aliyun rds query-notify --with-confirmed false --from 2022-05-02T08:38:37Z --to 2022-05-09T08:38:37Z --page-size 30 --page-number 1 --region cn-hangzhou",
     "legacyCli": "aliyun rds QueryNotify --region cn-hangzhou --PageSize 30 --PageNumber 1 --WithConfirmed false --From '2022-05-02T08:38:37Z' --To '2022-05-09T08:38:37Z'"

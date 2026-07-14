@@ -1,5 +1,6 @@
 {
   "name": "RestoreTable",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,50 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份集ID。\n> 若需要按备份集还原目标库表，该参数必传。您可以通过[DescribeBackups](~~98102~~)接口查看备份集ID。",
+        "en": "The backup set ID.\n\n> This parameter is required if you want to restore databases and tables from a backup set. Call the [DescribeBackups](~~98102~~) operation to query backup set IDs."
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。\n> 您可以通过[DescribeDBClusters](~~98094~~)接口查询账号下所有集群的信息详情。",
+        "en": "The cluster ID.\n\n> Call the [DescribeDBClusters](~~98094~~) operation to query the details of all clusters in your account."
+      }
     },
     {
       "name": "RestoreTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "还原时间点，格式为YYYY-MM-DDThh:mmZ（UTC时间）。\n>* 若需要按时间点还原，该参数必填。\n>* 仅支持恢复到7天内的任意时间点。",
+        "en": "The point in time to which you want to restore data. Specify the time in the YYYY-MM-DDThh:mmZ format. The time must be in Coordinated Universal Time (UTC).\n\n> - This parameter is required if you want to restore data to a specific point in time.\n>\n> - Data can be restored to any point in time within the last seven days."
+      }
     },
     {
       "name": "TableMeta",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要还原的目标库表信息的JSON串，库表信息的值都是字符串类型。\n例如，`[\n   {\n       \"tables\":[\n           {\n               \"name\":\"testtb\",\n               \"type\":\"table\",\n               \"newname\":\"testtb_restore\"\n           }\n       ],\n       \"name\":\"testdb\",\n       \"type\":\"db\",\n       \"newname\":\"testdb_restore\"\n   }\n]`。\n> 您可以通过[DescribeMetaList](~~194770~~)接口查看支持恢复的库表名称详情，并将支持恢复的库表信息填入上述例子中的对应位置。",
+        "en": "A JSON string that specifies the destination databases and tables to restore. All values in the JSON string must be strings.\nFor example: `[ { \"tables\":[ { \"name\":\"testtb\", \"type\":\"table\", \"newname\":\"testtb_restore\" } ], \"name\":\"testdb\", \"type\":\"db\", \"newname\":\"testdb_restore\" } ]`.\n\n> Call the [DescribeMetaList](~~194770~~) operation to query the names of the databases and tables that can be restored. Then, enter the information into the example format."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "恢复PolarDB实例的某些数据库或表到原实例",
+    "en": "RestoreTable"
+  },
   "example": {
     "unifiedCli": "aliyun polardb restore-table --db-cluster-id pc-bp000000000000000 --table-meta tables_:_name_:_testtb_,_type_:_table_,_newname_:_testtb_restore_,_name_:_testdb_,_type_:_db_,_newname_:_testdb_restore --backup-id 111111 --restore-time 2020-10-04T01:40:00Z --region cn-hangzhou",
     "legacyCli": "aliyun polardb RestoreTable --region cn-hangzhou --DBClusterId 'pc-bp000000000000000' --BackupId 111111 --TableMeta 'tables_:_name_:_testtb_,_type_:_table_,_newname_:_testtb_restore_,_name_:_testdb_,_type_:_db_,_newname_:_testdb_restore' --RestoreTime '2020-10-04T01:40:00Z'"

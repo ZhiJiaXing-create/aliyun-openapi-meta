@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始Token",
+        "en": "The token to retrieve the next page of results."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID。\n\nN的取值范围为：`[1, 50]`",
+        "en": "The IDs of the resources.\n\nYou can specify up to 50 resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义。\n\n目前分组，插件，应用接入了标签，API相关操作基于分组的标签：\n- **apiGroup**\n- **plugin**\n- **app**\n- **api**",
+        "en": "The type of the resource.\n\nValid values:\n\n- **apiGroup**\n\n- **plugin**\n\n- **app**\n\n- **api**"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "指定规则所适用的对象标签，可设置多个。",
+        "en": "Specify the object tags to which the rule applies. You can specify multiple tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。\n\nN的取值范围为：`[1, 20]`",
+            "en": "The tag key.\n\nThe value of N ranges from 1 to 20."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。当参数有值，要求对应的**tag.N.Key**在相同的N的标签键也传入值，否则会报错。\n\nN的取值范围为：`[1, 20]`",
+            "en": "The value of the tag. If you specify this parameter, you must also specify the corresponding **Tag.N.Key** parameter.\n\nYou can specify up to 20 tag values."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "用户查询标签接口",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "- 对于Tag.N.Key及Tag.N.Value中相同的N是一对键值对。\n- ResourceId.N需满足所有输入的键值对。当输入多个键值对，查询结果为资源中包含指定多个键值对的资源。\n- 查询返回符合条件的标签资源关系，当过滤后没有匹配的资源标签关系则返回空列表。\n- 用户同时查询用户标签跟可见系统标签。\n- 除必填参数传入外，传入ResourceId.N，查询某个region的指定资源的可见资源标签关系。\n- 除必填参数传入外，传入Tag.N.Key，查询某个region的指定Key下的可见资源标签关系。\n- ResourceId.N 及 (Tag.N.Key,Tag.N.Value) 至少存在一个。\n- 单次操作，标签可以为相同类型的，也可以不同类型。\n- 用户对于用户标签全部的查询权限，用户有查询可见系统标签的权限。",
+    "en": "- In Tag.N.Key and Tag.N.Value, the same value for N represents a single key-value pair.\n\n- The query returns only resources that match all specified tags. If you specify resource IDs, the query searches only within those resources.\n\n- The query returns resource-tag relationships that meet the specified conditions. If no matching relationships are found, an empty list is returned.\n\n- The query includes both user tags and visible system tags.\n\n- In addition to the required parameters, specify ResourceId.N to query visible resource-tag relationships for specific resources in a region.\n\n- In addition to the required parameters, specify Tag.N.Key to query visible resource-tag relationships for a specific tag key in a region.\n\n- Specify at least one resource ID (ResourceId.N) or one tag (Tag.N.Key and Tag.N.Value).\n\n- In a single operation, the tags can be of the same or different types.\n\n- You have full permissions to query user tags and can query visible system tags."
+  },
   "example": {
     "unifiedCli": "aliyun cloudapi list-tag-resources --resource-type apiGroup --next-token 1d2db86sca4384811e0b5e8707e68181f --resource-id example-string --tag Value=product Key=env --api-version 2016-07-14 --region cn-hangzhou",
     "legacyCli": "aliyun cloudapi ListTagResources --region cn-hangzhou --ResourceId.1 'example-string' --Tag.1.Key env --NextToken 1d2db86sca4384811e0b5e8707e68181f --Tag.1.Value product --ResourceType apiGroup"

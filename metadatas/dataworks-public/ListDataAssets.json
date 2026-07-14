@@ -1,23 +1,54 @@
 {
   "name": "ListDataAssets",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
   "parameters": [
     {
-      "name": "DataAssetIds",
+      "name": "AssetDomainId",
       "position": "Query",
-      "type": "Json",
+      "type": "Long",
       "required": false
     },
     {
-      "name": "DataAssetType",
+      "name": "CategoryUuid",
       "position": "Query",
       "type": "String",
       "required": false
     },
     {
+      "name": "DataAssetIds",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "数据资产唯一id列表",
+        "en": "The list of unique data asset IDs."
+      }
+    },
+    {
+      "name": "DataAssetType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "数据资产类型\n\n- 数据表（ACS::DataWorks::Table）\n\n- 调度任务（ACS::DataWorks::Task）",
+        "en": "The Asset Type of the data asset. Valid values:\n\n- ACS::DataWorks::Table: table.\n\n- ACS::DataWorks::Task: scheduling node."
+      }
+    },
+    {
       "name": "EnvType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "数据资产所属的工作空间环境，包括\n- Dev（开发环境）\n- Prod（生产环境）",
+        "en": "The workspace environment to which the data asset belongs. Valid values:\n- Dev: development environment.\n- Prod: production environment."
+      }
+    },
+    {
+      "name": "Name",
       "position": "Query",
       "type": "String",
       "required": false
@@ -26,43 +57,78 @@
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，从1开始，默认值为1。",
+        "en": "The page number. Pages start from page 1. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页显示的条数，默认为10条，最大为100条。",
+        "en": "The number of entries per page. Default value: 10. Maximum value: 100."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工作空间的ID。",
+        "en": "The workspace ID."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "Json",
-      "required": true,
+      "required": false,
+      "description": {
+        "zh": "数据资产关联的标签列表，基于标签做查询过滤：\n- 多个值之间是“或”的关系，比如`[\"key1:v1\", \"key2:v1\", \"key3:v1\"]`底层查询包含任一一个标签的数据资产。\n- 不传递，或者传递为空表示不作tag过滤。",
+        "en": "The list of tags associated with data assets. Tags are used as query filters:\n- Multiple values have an OR relationship. For example, `[\"key1:v1\", \"key2:v1\", \"key3:v1\"]` queries data assets that contain any of the specified tags.\n- If this parameter is not specified or is left empty, no tag-based filtering is applied."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": false,
+          "description": {
+            "zh": "用户输入的自定义标签键。\n\n最多支持64个字符，不能以`dw:`开头，仅支持中英文数字和部分符号`-@#*<>|[]()+=&%$!~`。",
+            "en": "The custom tag key.\n\nThe tag key can be up to 64 characters in length, cannot start with `dw:`, and supports only letters, digits, and the following special characters: `-@#*<>|[]()+=&%$!~`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询已关联标签的资产列表",
+    "en": "Query data assets associated with tags"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks企业版及以上版本才能使用。",
+    "en": "You must purchase DataWorks Enterprise Edition or a higher edition to use this feature."
+  },
   "example": {
-    "unifiedCli": "aliyun dataworks-public list-data-assets --tags Value=value Key=key --data-asset-ids 7000069357000 --data-asset-type ACS::DataWorks::Task --project-id 10000 --page-number 1 --page-size 10 --env-type Prod --api-version 2024-05-18 --region cn-hangzhou",
-    "legacyCli": "aliyun dataworks-public ListDataAssets --region cn-hangzhou --PageSize 10 --PageNumber 1 --ProjectId 10000 --DataAssetIds '[\"7000069357000\"]' --DataAssetType 'ACS::DataWorks::Task' --Tags '[{\"Value\":\"value\",\"Key\":\"key\"}]' --EnvType Prod"
+    "unifiedCli": "aliyun dataworks-public list-data-assets --tags Value=value Key=key --data-asset-ids 7000069357000 --data-asset-type ACS::DataWorks::Task --project-id 10000 --page-number 1 --page-size 10 --env-type Prod --asset-domain-id 1001 --category-uuid cate-xxxxxxxx --name '资产域名称' --api-version 2024-05-18 --region cn-hangzhou",
+    "legacyCli": "aliyun dataworks-public ListDataAssets --region cn-hangzhou --PageSize 10 --PageNumber 1 --ProjectId 10000 --AssetDomainId 1001 --DataAssetIds '[\"7000069357000\"]' --DataAssetType 'ACS::DataWorks::Task' --CategoryUuid 'cate-xxxxxxxx' --Tags '[{\"Value\":\"value\",\"Key\":\"key\"}]' --EnvType Prod --Name '资产域名称'"
   }
 }

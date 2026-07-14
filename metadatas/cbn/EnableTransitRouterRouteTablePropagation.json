@@ -1,5 +1,6 @@
 {
   "name": "EnableTransitRouterRouteTablePropagation",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接创建路由学习关系。\n- **true**：发送检查请求，只进行校验，不会创建路由学习关系。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Default values:\n\n*   **false** (default): performs a dry run and performs the actual request.\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned."
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Default values:\n\n- **false** (default): performs a dry run and performs the actual request.\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned."
       }
     },
     {
@@ -45,6 +46,17 @@
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建路由学习关系",
+    "en": "EnableTransitRouterRouteTablePropagation"
+  },
+  "descriptions": {
+    "zh": "在您创建网络实例连接后，您可以为其设置路由学习关系。设置后，网络实例连接自动传播网络实例的路由至其关联的路由表中。在调用本接口创建路由学习关系前，请先了解以下信息：\n\n- 仅企业版转发路由器支持创建路由学习关系。关于企业版转发路由器支持的地域和可用区信息，请参见[什么是云企业网](~~181681~~)。\n- **EnableTransitRouterRouteTablePropagation**接口属于异步接口，即系统会先返回一个**RequestId**，但网络实例连接和路由表并未完全建立路由学习关系，系统后台的创建任务仍在进行。您可以调用**ListTransitRouterRouteTablePropagations**接口查询网络实例连接和路由表之间的路由学习关系。 \n\n    - 当路由学习关系处于为**Enabling**状态时，表示网络实例连接和路由表正在建立路由学习关系。在该状态下，您只能对网络实例连接和路由表之间的路由学习关系执行查询操作，不能执行其他操作。\n    - 当路由学习关系处于**Active**状态时，表示网络实例连接和路由表已成功建立路由学习关系。",
+    "en": "After you establish a network instance connection on a transit router, you can create a route learning correlation for the network instance connection. Then, the routes of the connected network instance are automatically advertised to the route table of the transit router. Before you begin, we recommend that you take note of the following rules:\n\n- You can create route learning correlations only on Enterprise Edition transit routers. For more information about the regions and zones that support Enterprise Edition transit routers, see [What is CEN?](~~181681~~)\n- **EnableTransitRouterRouteTablePropagation** is an asynchronous operation. After you send a request, the system returns a **request ID** and runs the task in the background. You can call the **ListTransitRouterRouteTablePropagations** operation to query the route learning status between a network instance connection and a route table.\n\n  - **Enabling** indicates that a route learning correlation is being created between the network instance connection and route table. You can query the route learning correlation but cannot perform other operations.\n  - **Active** indicates that the route learning correlation is created between the network instance connection and route table."
+  },
   "example": {
     "unifiedCli": "aliyun cbn enable-transit-router-route-table-propagation --transit-router-attachment-id tr-attach-nls9fzkfat89340000 --transit-router-route-table-id vtb-bp1dudbh2d5na6b500000 --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun cbn EnableTransitRouterRouteTablePropagation --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-nls9fzkfat89340000' --TransitRouterRouteTableId 'vtb-bp1dudbh2d5na6b500000' --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

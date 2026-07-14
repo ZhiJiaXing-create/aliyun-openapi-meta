@@ -1,5 +1,6 @@
 {
   "name": "DeleteVpnRouteEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "NextHop",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由的下一跳。",
+        "en": "The next hop of the destination-based route."
+      }
     },
     {
       "name": "OverlayMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "隧道协议，取值：**Ipsec**（IPsec隧道协议）。",
+        "en": "The tunneling protocol. Set the value to **Ipsec**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例所属地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the VPN gateway is created. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "RouteDest",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由的目标网段。",
+        "en": "The destination CIDR block of the destination-based route."
+      }
     },
     {
       "name": "VpnGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关的ID。",
+        "en": "The ID of the VPN gateway."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由的权重值，取值：\n\n- **0**：低优先级。\n\n- **100**：高优先级。",
+        "en": "The weight of the destination-based route. Valid values:\n\n*   **0**: a low priority\n*   **100**: a high priority"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除VPN目的路由",
+    "en": "DeleteVpnRouteEntry"
+  },
+  "descriptions": {
+    "zh": "- **DeleteVpnRouteEntry**接口属于异步接口，即系统先返回一个请求ID，但该VPN目的路由尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeVpnGateway](~~73720~~)查询VPN网关实例状态，来确定VPN目的路由的删除状态：\n    - 当VPN网关实例处于**updating**状态时，表示VPN目的路由正在删除中。\n    - 当VPN网关实例处于**active**状态时，表示VPN目的路由删除成功。\n- **DeleteVpnRouteEntry**接口不支持在同一VPN网关下并发删除VPN目的路由。",
+    "en": "*   **DeleteVpnRouteEntry** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call [DescribeVpnGateway](~~73720~~) to query the status of the task.\n\n    *   If a VPN gateway is in the **updating** state, the destination-based route is being deleted.\n    *   If the VPN gateway is in the **active** state, the destination-based route is deleted.\n\n*   You cannot repeatedly call **DeleteVpnRouteEntry** to delete a destination-based route from a VPN gateway within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-vpn-route-entry --biz-region-id cn-hangzhou --client-token d7d24a21-f4ba-4454-9173-b3828dae492b --vpn-gateway-id vpn-bp1a3kqjiiq9legfx0000 --route-dest 10.0.0.0/24 --next-hop vco-bp15oes1py4i66rmd0000 --weight 0 --overlay-mode Ipsec --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteVpnRouteEntry --region cn-hangzhou --RouteDest '10.0.0.0/24' --OverlayMode Ipsec --VpnGatewayId 'vpn-bp1a3kqjiiq9legfx0000' --NextHop 'vco-bp15oes1py4i66rmd0000' --RegionId 'cn-hangzhou' --ClientToken 'd7d24a21-f4ba-4454-9173-b3828dae492b' --Weight 0"

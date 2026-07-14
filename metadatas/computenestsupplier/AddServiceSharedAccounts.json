@@ -1,5 +1,6 @@
 {
   "name": "AddServiceSharedAccounts",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。",
+        "en": "A unique identifier that you provide to ensure the idempotence of the request. The token can contain only ASCII characters and cannot be longer than 64 characters."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务ID。",
+        "en": "The service ID."
+      }
     },
     {
       "name": "SharedAccounts",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "服务分享账户与权限。",
+        "en": "The shared accounts and their permissions."
+      },
       "sub_parameters": [
         {
           "name": "Permission",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "权限类型。可能的值：\n\n- Deployable：可部署。\n\n- Accessible：可访问。",
+            "en": "The permission type. Valid values:\n\n- Deployable: The service can be deployed.\n\n- Accessible: The service can be accessed."
+          }
         },
         {
           "name": "UserAliUid",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "用户主账号的UID。",
+            "en": "The UID of the Alibaba Cloud account."
+          }
         }
       ]
     },
@@ -46,9 +71,20 @@
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务共享类型，默认值为SharedAccount。可选值：\n\n- SharedAccount：普通共享类型。\n\n- Reseller：分销共享类型。",
+        "en": "The service sharing type. The default value is SharedAccount. Valid values:\n\n- SharedAccount: The service is shared with a specified account.\n\n- Reseller: The service is shared with a reseller."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新增服务共享账号",
+    "en": "AddServiceSharedAccounts"
+  },
   "example": {
     "unifiedCli": "aliyun computenestsupplier add-service-shared-accounts --biz-region-id cn-hangzhou --client-token BBBAAfu+XtuBE55iRLHEYYuojI4= --shared-accounts UserAliUid=123456 Permission=Accessible --service-id service-63b8a060e9d54cxxxxxx --type SharedAccount --region cn-hangzhou",
     "legacyCli": "aliyun computenestsupplier AddServiceSharedAccounts --region cn-hangzhou --SharedAccounts.1.UserAliUid 123456 --Type SharedAccount --SharedAccounts.1.Permission Accessible --RegionId 'cn-hangzhou' --ClientToken 'BBBAAfu+XtuBE55iRLHEYYuojI4=' --ServiceId 'service-63b8a060e9d54cxxxxxx'"

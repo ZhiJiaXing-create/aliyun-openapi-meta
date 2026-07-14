@@ -1,5 +1,6 @@
 {
   "name": "RegisterTransitRouterMulticastGroupMembers",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n>若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会创建组播成员。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接创建组播成员。",
-        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the request."
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): performs a dry run and performs the request."
       }
     },
     {
@@ -71,10 +72,21 @@
       "required": false,
       "description": {
         "zh": "弹性网卡所属的VPC实例ID。\n\n- 如果弹性网卡所属阿里云账号和您当前登录的阿里云账号为相同账号，本参数可不填。\n- 如果弹性网卡所属阿里云账号和您当前登录的阿里云账号为不同账号，本参数必填。",
-        "en": "The ID of the VPC to which the ENI belongs.\n\n*   If the ENI belongs to the current Alibaba Cloud account, ignore this parameter.\n*   If the ENI belongs to a different Alibaba Cloud account, you must set this parameter."
+        "en": "The ID of the VPC to which the ENI belongs.\n\n- If the ENI belongs to the current Alibaba Cloud account, ignore this parameter.\n- If the ENI belongs to a different Alibaba Cloud account, you must set this parameter."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建组播成员",
+    "en": "RegisterTransitRouterMulticastGroupMembers"
+  },
+  "descriptions": {
+    "zh": "当前企业版转发路由器仅支持将弹性网卡ENI（Elastic Network Interface）指定为组播成员。您可以通过调用`RegisterTransitRouterMulticastGroupMembers`接口将同地域的ENI和跨地域的ENI指定为组播成员。\n\n- 如果您指定**NetworkInterfaceIds**参数的值，则表明您需要将当前地域下的ENI指定为组播成员。请确保ENI所属的交换机已被关联至组播域。具体操作，请参见[AssociateTransitRouterMulticastDomain](~~429778~~)。\n- 如果您指定**PeerTransitRouterMulticastDomains**参数的值，则表明您需要将跨地域相同组播IP地址的组播组下的组播成员指定为您当前组播组的组播成员。请确保您已经创建了跨地域连接，具体操作，请参见[CreateTransitRouterPeerAttachment](~~261363~~)。\n\n  例如：您在华东1（杭州）地域拥有一个组播域1，组播域1下拥有一个组播组1，在华东2（上海）地域拥有一个组播域2，组播域2下拥有组播组2，组播组1和组播组2拥有相同的组播IP地址，且华东2（上海）地域的组播组2下拥有一个组播成员2。在您调用`RegisterTransitRouterMulticastGroupMembers`接口为华东1（杭州）地域的组播组1创建组播成员时，如果您指定**PeerTransitRouterMulticastDomains**参数的值为华东2（上海）地域组播域2的ID，则华东2（上海）地域组播组2下的组播成员2，也将是华东1（杭州）地域组播组1下的组播成员。\n- `RegisterTransitRouterMulticastGroupMembers`接口属于异步接口，即系统会先返回一个**RequestId**，但组播成员未完全创建成功，系统后台的创建任务仍在进行。您可以调用`ListTransitRouterMulticastGroups`接口查询组播成员的状态。\n\n\t- 当组播成员处于**Registering**状态时，表示组播成员正在被创建，在该状态下，您只能对组播成员执行查询操作，不能执行其他操作。\n\t- 当组播成员处于**Registered**状态时，表示组播成员已被成功创建。",
+    "en": "Enterprise Edition transit routers support only elastic network interfaces (ENIs) as multicast members. You can call the `RegisterTransitRouterMulticastGroupMembers` operation to specify an ENI in the current region or a different region as a multicast member.\n\n- If you specify a value for the **NetworkInterfaceIds** parameter, an ENI in the current region is to be specified as a multicast member. Make sure that the ENI and vSwitch are associated with the multicast group. For more information, see [AssociateTransitRouterMulticastDomain](~~429778~~).\n- If you specify a value for the **PeerTransitRouterMulticastDomains**, a multicast member in a multicast group that belongs to another region but has the same IP address as the current multicast group is to be specified as a multicast member for the current multicast group. Make sure that an inter-region connection is established between the regions. For more information, see [CreateTransitRouterPeerAttachment](~~261363~~).\n\n  For example, you created Multicast Group 1 in Multicast Domain 1, which is in the China (Hangzhou) region. You created Multicast Group 2 in Multicast Domain 2, which is in the China (Shanghai) region. Multicast Group 1 and Multicast Group 2 use the same multicast IP address, and Multicast Member 2 is in Multicast Group 2 in the China (Shanghai) region. If you call the `RegisterTransitRouterMulticastGroupMembers` operation to add multicast members to Multicast Group 1 in the China (Hangzhou) region and set **PeerTransitRouterMulticastDomains** to the ID of Multicast Group 2, which is in the China (Shanghai) region, Multicast Member 2, which is in Multicast Domain 2 in the China (Shanghai) region is added to Multicast Group 1 in the China (Hangzhou) region.\n- `RegisterTransitRouterMulticastGroupMembers` is an asynchronous operation. After a request is sent, the system returns a **request ID** and runs the task in the background. You can call the `ListTransitRouterMulticastGroups` operation to query the status of a multicast member.\n\n  - If the multicast member is in the **Registering**, the multicast member is being created. In this case, you can query the multicast member but cannot perform other operations on the multicast member.\n  - If the multicast member is in the **Registered** state, the multicast member is created."
+  },
   "example": {
     "unifiedCli": "aliyun cbn register-transit-router-multicast-group-members --client-token 123e4567-e89b-12d3-a456-426655440000 --transit-router-multicast-domain-id tr-mcast-domain-91wpg6wbhchjeq0000 --group-ip-address 239.XX.XX.2 --network-interface-ids eni-p0weuda3lszwzjly0000 --peer-transit-router-multicast-domains tr-mcast-domain-5mjb5gjb6dgu980000 --dry-run false --vpc-id vpc-wz9fusm6zq8uy7cfa0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn RegisterTransitRouterMulticastGroupMembers --region cn-hangzhou --VpcId 'vpc-wz9fusm6zq8uy7cfa0000' --TransitRouterMulticastDomainId 'tr-mcast-domain-91wpg6wbhchjeq0000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-426655440000' --PeerTransitRouterMulticastDomains.1 'tr-mcast-domain-5mjb5gjb6dgu980000' --NetworkInterfaceIds.1 'eni-p0weuda3lszwzjly0000' --GroupIpAddress '239.XX.XX.2'"

@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,82 @@
       "name": "AcceptLanguage",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回信息的语言类型：\n\n- zh：中文\n- en：英文",
+        "en": "The language of the response. Valid values:\n\n- zh: Chinese\n\n- en: English"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域。",
+        "en": "The region."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID。\n\n- *注册配置中心*：实例ID\n- *云原生网关*：网关唯一ID\n- *微服务治理应用*：微服务治理应用AppID（注意不是LicenseKey）\n\n>表示传入第几个实例ID。例如： \n- **ResourceId.0**表示传入第一个实例ID。\n - **ResourceId.1**表示传入第二个实例ID。",
+        "en": "The resource ID.\n\n- *Registration and configuration center*: the instance ID.\n\n- *Cloud-native gateway*: the unique ID of the gateway.\n\n- *Microservice administration application*: the AppID of the microservice administration application. Note that this is not the LicenseKey.\n\n> The number in the parameter name specifies the index of the instance ID. For example:\n\n- **ResourceId.0** specifies the first instance ID.\n\n- **ResourceId.1** specifies the second instance ID."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型：\n\n- CLUSTER 注册配置中心。\n- GATEWAY 云原生网关。\n- GOVERNANCEAPPLICATION 微服务治理应用",
+        "en": "The resource type. Valid values:\n\n- CLUSTER: a registration and configuration center.\n\n- GATEWAY: a cloud-native gateway.\n\n- GOVERNANCEAPPLICATION: a microservice administration application."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签列表，最多包含20个子项。",
+        "en": "A list of tags. You can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。N的取值范围：1~20。一旦传入该值，则不允许为空字符串。最多支持128个字符，不能以aliyun和acs:开头，不能包含http://或者https://。",
+            "en": "The tag key. The tag key cannot be an empty string. It can be up to 128 characters in length. The tag key cannot start with \\`aliyun\\` or \\`acs:\\`. The tag key cannot contain \\`http\\://\\` or \\`https\\://\\`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加标签",
+    "en": "TagResources"
+  },
   "example": {
     "unifiedCli": "aliyun mse tag-resources --biz-region-id cn-hangzhou --resource-type 'CLUSTER、GATEWAY、GOVERNANCEAPPLICATION' --resource-id mse-cn-7pp2st29t16_hkhon10000@0932f4959f80000 --tag Value=prd Key=env --accept-language zh --region cn-hangzhou",
     "legacyCli": "aliyun mse TagResources --region cn-hangzhou --ResourceId.1 'mse-cn-7pp2st29t16_hkhon10000@0932f4959f80000' --Tag.1.Key env --Tag.1.Value prd --AcceptLanguage zh --ResourceType 'CLUSTER、GATEWAY、GOVERNANCEAPPLICATION' --RegionId 'cn-hangzhou'"

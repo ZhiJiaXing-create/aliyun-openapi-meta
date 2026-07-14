@@ -1,5 +1,6 @@
 {
   "name": "CreateChangeSet",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "ChangeSetName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "更改集的名称。  \n长度不超过255个字符。必须以数字或英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_）。\n\n> 更改集名称在与指定资源栈关联的所有更改集中必须是唯一的。",
+        "en": "The change set name. Maximum length: 255 characters. The name can contain digits, letters, hyphens (-), and underscores (\\_), and must start with a digit or letter.\n\n> The name of the change set must be unique within the stack."
+      }
     },
     {
       "name": "ChangeSetType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "更改集的类型。取值：\n- CREATE：为新资源栈创建更改集。\n- UPDATE（默认值）：为现有资源栈创建更改集。\n- IMPORT：为新资源栈或现有资源栈创建更改集导入非ROS托管资源。\n\n当您选择更改集类型为CREATE时，ROS会为您创建新的资源栈。此时资源栈将处于`REVIEW_IN_PROGRESS`状态，直到您执行更改集。\n\n> - 禁止使用UPDATE类型为新资源栈创建更改集，或使用CREATE类型为现有资源栈创建更改集。\n> - IMPORT类型的更改集不支持设置资源栈策略，请在创建或更新资源栈时设置相关参数。",
+        "en": "The type of the change set. Valid values:\n\n- CREATE: creates a change set for a new stack.\n\n- UPDATE (default): creates a change set for an existing stack.\n\n- IMPORT: creates a change set for a new stack or an existing stack to import resources that are not managed by ROS.\n\nIf you set the value of ChangeSetType to CREATE, ROS creates a new stack. The stack is in the `REVIEW_IN_PROGRESS` state until you execute the change set.\n\n> - You cannot use the UPDATE type to create a change set for a new stack or the CREATE type to create a change set for an existing stack.\n>\n> - You cannot set a stack policy for a change set of the IMPORT type. You can set a stack policy when you create or update a stack."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求的幂等性。该参数值由客户端生成，并且必须全局唯一。   \n长度不超过64个字符。可包含英文字母、数字、短划线（-）和下划线（_）。  \n更多详情，请参见[如何保证幂等性](~~134212~~)。",
+        "en": "The client token used to ensure request idempotence. The token must be unique across requests and can be up to 64 characters in length, containing letters, digits, hyphens (-), and underscores (\\_). [How to ensure idempotence](~~134212~~)."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "更改集的描述。最大长度为1024个字节。",
+        "en": "The description of the change set. The description can be up to 1,024 bytes in length."
+      }
     },
     {
       "name": "DisableRollback",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当创建资源栈失败时，是否禁用回滚策略。  \n取值：  \n\n- true：禁用回滚，即在创建资源栈失败时不进行回滚。  \n\n- false（默认值）：不禁用回滚，即在创建资源栈失败时进行回滚。  \n\n> 该参数仅在更改集类型为CREATE或IMPORT时生效。",
+        "en": "Specifies whether to disable rollback on stack creation failure. Valid values:\n\n- true: disables rollback on creation failure.\n\n- false (default): enables rollback on creation failure.\n\n> This parameter takes effect only when ChangeSetType is set to CREATE or IMPORT."
+      }
     },
     {
       "name": "NotificationURLs",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "接收资源栈事件的回调地址列表。",
+        "en": "The list of webhook addresses for receiving stack event notifications."
+      }
     },
     {
       "name": "Parallelism",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源最大并发数。默认为空，用户可以输入大于等于零的整数。设置资源最大并发数后，将与资源栈进行关联，影响资源栈的后续操作。\n\n该参数仅在更改集类型为CREATE或UPDATE时生效，取值：\n\n- 当更改集类型为CREATE时\n  - 设置为大于零的整数：使用整数值。\n  - 设置为零或者不设置：对于ROS类型资源栈不限制，Terraform类型资源栈使用Terraform默认值（通常为10）。\n\n- 当更改集类型为UPDATE时\n  - 设置为大于零的整数：使用整数值。\n  - 设置为零：对于ROS类型资源栈不限制，Terraform类型资源栈使用Terraform默认值（通常为10）。\n  - 不设置：使用上次操作时设置的值。如果上次操作时未设置该参数，对于ROS类型资源栈不限制，Terraform类型资源栈使用Terraform默认值（通常为10）。",
+        "en": "The maximum number of concurrent resource operations. By default, this value is empty. Once set, the value is associated with the stack and affects subsequent operations.\n\nThis parameter takes effect only when ChangeSetType is set to CREATE or UPDATE. Valid values:\n\n- If ChangeSetType is set to CREATE\n\n  - If you set this parameter to an integer that is greater than 0, the integer is used.\n\n  - If you set this parameter to 0 or do not set this parameter, no limit is imposed on ROS stacks. For Terraform stacks, the default value of Terraform is used, which is 10.\n\n- If ChangeSetType is set to UPDATE\n\n  - If you set this parameter to an integer that is greater than 0, the integer is used.\n\n  - If you set this parameter to 0, no limit is imposed on ROS stacks. For Terraform stacks, the default value of Terraform is used, which is 10.\n\n  - If you do not set this parameter, the value that you specified in the previous operation is used. If you did not set this parameter in the previous operation, no limit is imposed on ROS stacks. For Terraform stacks, the default value of Terraform is used, which is 10."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "模板中已定义的参数。",
+        "en": "The parameters that are defined in the template."
+      },
       "sub_parameters": [
         {
           "name": "ParameterKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "模板中已定义的参数的名称。如果未指定特定参数的名称和取值，则ROS将使用模板中指定的默认值。N的最大值为200。  \n\n> Parameters为可选参数。若指定了Parameters，则Parameters.N.ParameterKey为必选参数。",
+            "en": "The name of the parameter that is defined in the template. If you do not specify the name and value of a parameter, ROS uses the default name and value that are specified in the template. The value of N can be up to 200.\n\n> The Parameters parameter is optional. If you specify Parameters, you must also specify Parameters.N.ParameterKey."
+          }
         },
         {
           "name": "ParameterValue",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "模板中已定义的参数的取值。N的最大值为200。  \n\n> Parameters为可选参数。若指定了Parameters，则Parameters.N.ParameterValue为必选参数。",
+            "en": "The value of the parameter that is defined in the template. The value of N can be up to 200.\n\n> The Parameters parameter is optional. If you specify Parameters, you must also specify Parameters.N.ParameterValue."
+          }
         }
       ]
     },
@@ -70,49 +111,81 @@
       "name": "RamRoleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "RAM角色名称。ROS会扮演该角色创建资源栈，使用角色的凭证代表用户进行接口调用。  \nROS始终将此角色用于资源栈上将进行的操作。只要用户有权在资源栈上进行操作，即使用户无权使用角色，ROS也会使用此角色，确保角色授予最少的权限。   \n如果用户未指定该值，ROS将使用以前与资源栈关联的角色。如果没有可用角色，ROS将使用从您的用户凭证中生成的临时凭证。   \nRAM角色名称最大长度为64个字节。\n\nRAM角色的更多信息，请参见[资源栈角色](~~2568025~~)。",
+        "en": "The RAM role name. ROS assumes this role to call Alibaba Cloud service APIs and always uses it for all stack operations. If you lack the required permissions, ROS assumes the role specified by RamRoleName. If unspecified, ROS uses the existing stack role. If no role is available, ROS uses a temporary credential from your account. Maximum length: 64 bytes.\n\n[Stack roles](~~2568025~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "更改集所属的地域ID。\n\n您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the change set.\n\nCall [DescribeRegions](~~131035~~) to query available regions."
+      }
     },
     {
       "name": "ReplacementOption",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "如果资源的属性发生了变化，且变化的属性不支持修改更新（资源物理ID不变），是否使用替换更新（删除资源，重新创建，资源物理ID会发生变化）。取值：\n- Enabled：允许替换更新。\n- Disabled（默认）：不允许替换更新。\n\n> 修改更新的优先级高于替换更新。该参数仅在更改集类型为UPDATE时生效。",
+        "en": "Specifies whether to enable replacement update when a resource property change does not support modification updates. A replacement update deletes the existing resource and creates a new one with a new physical ID. Valid values:\n\n- Enabled: enables replacement update.\n\n- Disabled (default): disables replacement update.\n\n> Modification updates are preferentially used. This parameter takes effect only when ChangeSetType is set to UPDATE."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。如果不指定该参数，更改集对应的资源栈将加入默认资源组。  \n关于资源组的更多信息，请参见[什么是资源组](~~94475~~)。",
+        "en": "The resource group ID. If unspecified, the stack is added to the default resource group. [What is a resource group?](~~94475~~)."
+      }
     },
     {
       "name": "ResourcesToImport",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "待导入资源列表。",
+        "en": "The list of resources to be imported."
+      },
       "sub_parameters": [
         {
           "name": "LogicalResourceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源逻辑ID，即模板中资源的名称。\n\n> 该参数仅在更改集类型为IMPORT时生效。ResourcesToImport为可选参数。若指定了ResourcesToImport，则ResourcesToImport.N.LogicalResourceId为必选参数。",
+            "en": "The logical ID of the resource. The logical ID is the resource name that is defined in the template.\n\n> This parameter takes effect only when ChangeSetType is set to IMPORT. The ResourcesToImport parameter is optional. If you specify ResourcesToImport, you must also specify ResourcesToImport.N.LogicalResourceId."
+          }
         },
         {
           "name": "ResourceIdentifier",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "字符串到字符串的键值映射。取值是JSON格式的字符串，用来标识要导入的资源。  \n键是资源的标识符属性（例如：ALIYUN::ECS::VPC资源的VpcId），值是属性的取值（例如：`vpc-2zevx9ios****`）。\n\n资源的标识符属性可以通过[GetTemplateSummary](~~172485~~)接口获取。\n\n> 该参数仅在更改集类型为IMPORT时生效。ResourcesToImport为可选参数。若指定了ResourcesToImport，则ResourcesToImport.N.ResourceIdentifier为必选参数。",
+            "en": "A key-value mapping between strings. The value is a JSON string that is used to identify the resource to be imported. The key is the identifier property of the resource, such as the VpcId of an ALIYUN::ECS::VPC resource. The value is the value of the property, such as `vpc-2zevx9ios****`.\n\nCall [GetTemplateSummary](~~172485~~) to query resource identifier properties.\n\n> This parameter takes effect only when ChangeSetType is set to IMPORT. The ResourcesToImport parameter is optional. If you specify ResourcesToImport, you must also specify ResourcesToImport.N.ResourceIdentifier."
+          }
         },
         {
           "name": "ResourceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的类型，需要与模板中定义的类型一致。\n\n> 该参数仅在更改集类型为IMPORT时生效。ResourcesToImport为可选参数。若指定了ResourcesToImport，则ResourcesToImport.N.ResourceType为必选参数。",
+            "en": "The type of the resource. The resource type must be the same as the resource type that is defined in the template.\n\n> This parameter takes effect only when ChangeSetType is set to IMPORT. The ResourcesToImport parameter is optional. If you specify ResourcesToImport, you must also specify ResourcesToImport.N.ResourceType."
+          }
         }
       ]
     },
@@ -120,55 +193,91 @@
       "name": "StackId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建更改集的资源栈的ID。ROS通过将此资源栈的信息与您提交的信息（例如：修改后的模板或不同的参数输入值）进行比较来生成更改集。  \n您可以通过调用[ListStacks - 查询资源栈列表](~~610818~~)接口获取资源栈ID。\n> 该参数仅在更改集类型为UPDATE或IMPORT时生效。",
+        "en": "The stack ID. ROS compares the stack information with the submitted changes, such as a modified template or different parameter values, to generate the change set. Call [ListStacks](~~610818~~) to query stack IDs.\n\n> This parameter takes effect only when ChangeSetType is set to UPDATE or IMPORT."
+      }
     },
     {
       "name": "StackName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建更改集的资源栈的名称。  \n长度不超过255个字符。必须以数字或英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_）。\n\n> 该参数仅在更改集类型为CREATE或IMPORT时生效。",
+        "en": "The stack name. Maximum length: 255 characters. The name can contain digits, letters, hyphens (-), and underscores (\\_), and must start with a digit or letter.\n\n> This parameter takes effect only when ChangeSetType is set to CREATE or IMPORT."
+      }
     },
     {
       "name": "StackPolicyBody",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈策略的结构，长度为1~16,384个字节。\n\n当更改集类型为**CREATE**时，您仅能指定StackPolicyBody或StackPolicyURL其中一个参数。 \n\n当更改集类型为**UPDATE**时，您仅能指定以下参数之一：\n\n- StackPolicyBody\n- StackPolicyURL\n- StackPolicyDuringUpdateBody\n- StackPolicyDuringUpdateURL",
+        "en": "The structure of the stack policy. The policy body must be 1 to 16,384 bytes in length.\n\nWhen ChangeSetType is set to **CREATE**, you can specify only one of the StackPolicyBody and StackPolicyURL parameters.\n\nWhen ChangeSetType is set to **UPDATE**, you can specify only one of the following parameters:\n\n- StackPolicyBody\n\n- StackPolicyURL\n\n- StackPolicyDuringUpdateBody\n\n- StackPolicyDuringUpdateURL"
+      }
     },
     {
       "name": "StackPolicyDuringUpdateBody",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "临时覆盖资源栈策略的结构。长度为1~16,384个字节。  \n如果要更新受保护资源，请在此更新期间指定临时覆盖资源栈策略，如未指定，则将使用与资源栈关联的当前策略。  \n该参数仅在更改集类型为UPDATE时生效，您仅能指定以下参数之一：\n\n- StackPolicyBody\n- StackPolicyURL\n- StackPolicyDuringUpdateBody\n- StackPolicyDuringUpdateURL",
+        "en": "The temporary overriding stack policy body. Length: 1 to 16,384 bytes. To update protected resources, specify a temporary overriding policy. If unspecified, the current stack policy applies. This parameter takes effect only when ChangeSetType is set to UPDATE. You can specify only one of the following parameters:\n\n- StackPolicyBody\n\n- StackPolicyURL\n\n- StackPolicyDuringUpdateBody\n\n- StackPolicyDuringUpdateURL"
+      }
     },
     {
       "name": "StackPolicyDuringUpdateURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "更新资源栈策略的文件的位置。URL必须指向位于Web服务器（HTTP或HTTPS）或阿里云OSS存储空间（例如：oss://ros/stack-policy/demo、oss://ros/stack-policy/demo?RegionId=cn-hangzhou）中的策略，策略文件最长为16,384个字节。   \n\n> OSS地域如未指定，默认与接口参数RegionId相同。\n\nURL最大长度为1350个字节。  \n如果要更新受保护的资源，请在更新期间指定临时覆盖资源栈策略。如果未指定资源栈策略，则将使用与资源栈关联的当前策略。该参数仅在更改集类型为UPDATE时生效。您仅能指定以下参数之一：\n\n- StackPolicyBody\n- StackPolicyURL\n- StackPolicyDuringUpdateBody\n- StackPolicyDuringUpdateURL",
+        "en": "The URL of the temporary overriding stack policy file. The URL must point to a policy on a web server (HTTP or HTTPS) or in an OSS bucket, such as oss\\://ros/stack-policy/demo or oss\\://ros/stack-policy/demo?RegionId=cn-hangzhou. Maximum policy file size: 16,384 bytes.\n\n> If you do not specify the region of the OSS bucket, the value of RegionId is used.\n\nMaximum URL length: 1,350 bytes. To update protected resources, specify a temporary overriding stack policy. If unspecified, the current stack policy applies. This parameter takes effect only when ChangeSetType is set to UPDATE. You can specify only one of the following parameters:\n\n- StackPolicyBody\n\n- StackPolicyURL\n\n- StackPolicyDuringUpdateBody\n\n- StackPolicyDuringUpdateURL"
+      }
     },
     {
       "name": "StackPolicyURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含资源栈策略的文件的位置。URL必须指向位于Web服务器（HTTP或HTTPS）或阿里云OSS存储空间（例如：oss://ros/stack-policy/demo、oss://ros/stack-policy/demo?RegionId=cn-hangzhou）的策略，策略文件长为16384个字节。\n\nURL的最大长度为1350个字节。       \n\n> OSS地域如未指定，默认与接口参数RegionId相同。\n\n当更改集类型为**CREATE**时，您仅能指定StackPolicyBody或StackPolicyURL参数之一。\n\n当更改集类型为**UPDATE**时，您仅能指定以下参数之一：\n\n- StackPolicyBody\n- StackPolicyURL\n- StackPolicyDuringUpdateBody\n- StackPolicyDuringUpdateURL",
+        "en": "The URL of the stack policy file. The URL must point to a policy on a web server (HTTP or HTTPS) or in an OSS bucket, such as oss\\://ros/stack-policy/demo or oss\\://ros/stack-policy/demo?RegionId=cn-hangzhou. Maximum policy file size: 16,384 bytes.\n\nMaximum URL length: 1,350 bytes.\n\n> If you do not specify the region of the OSS bucket, the value of RegionId is used.\n\nWhen ChangeSetType is set to **CREATE**, you can specify only one of the StackPolicyBody and StackPolicyURL parameters.\n\nWhen ChangeSetType is set to **UPDATE**, you can specify only one of the following parameters:\n\n- StackPolicyBody\n\n- StackPolicyURL\n\n- StackPolicyDuringUpdateBody\n\n- StackPolicyDuringUpdateURL"
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "更改集的标签。",
+        "en": "The tags of the change set."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源栈的标签键。\n\nN的取值范围为1~20。  \n>- Tags为可选参数。如果需要指定Tags，则Tags.N.Key必须指定。\n>- 此标签会传递到资源栈中每个支持标签的资源中。更多信息，请参见[标签传递](~~201421~~)。",
+            "en": "The tag key of the stack.\n\nThe value of N can be from 1 to 20.\n\n> - The Tags parameter is optional. If you specify Tags, you must also specify Tags.N.Key.\n>\n> - The tag is propagated to each stack resource that supports tags. [Propagate tags](~~201421~~)."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源栈的标签值。\n\nN的取值范围为1~20。\n\n> 此标签会传递到资源栈中每个支持标签的资源中。更多信息，请参见[标签传递](~~201421~~)。",
+            "en": "The tag value of the stack.\n\nThe value of N can be from 1 to 20.\n\n> The tag is propagated to each stack resource that supports tags. For more information, see [Propagate tags](~~201421~~)."
+          }
         }
       ]
     },
@@ -176,51 +285,94 @@
       "name": "TaintResources",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标记为脏资源的列表。",
+        "en": "The list of resources to be marked as dirty."
+      }
     },
     {
       "name": "TemplateBody",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板主体的结构。长度为1~524,288个字节。如果长度较大，则建议通过HTTP POST+Body Param的方式，将参数放在请求体中进行传递，避免因URL过长而导致请求失败。                                                             \n>  您必须且仅能指定TemplateBody、TemplateURL或TemplateId其中一个参数。",
+        "en": "The template body. Length: 1 to 524,288 bytes. For large templates, use HTTP POST with a body parameter to avoid URL length limits.\n\n> You can specify only one of the TemplateBody, TemplateURL, and TemplateId parameters."
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板ID。支持共享模板和私有模板。\n\n您可以通过调用[ListTemplates - 查询模板列表](~~610842~~)接口查看模板ID。\n\n> 您仅能指定TemplateBody、TemplateURL或TemplateId其中一个参数。",
+        "en": "The template ID. This parameter applies to shared templates and private templates.\n\nCall [ListTemplates](~~610842~~) to query template IDs.\n\n> You can specify only one of the TemplateBody, TemplateURL, and TemplateId parameters."
+      }
     },
     {
       "name": "TemplateScratchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源场景ID，即资源纳管场景ID。\n\n当ChangeSetType取值为IMPORT时，该参数才有效，该参数仅支持创建新的资源栈导入。\n\n如果您想通过资源纳管场景导入资源时，请只设置该参数，而不是模板相关参数。\n\n您可以通过调用[ListTemplateScratches - 查询资源场景列表](~~610832~~)查看资源纳管场景ID。",
+        "en": "The resource scenario ID, which is the resource management scenario ID.\n\nThis parameter takes effect only when ChangeSetType is set to IMPORT. This parameter supports only the creation of new stacks for resource import.\n\nIf you want to import resources in a resource management scenario, specify only this parameter. Do not specify parameters related to templates.\n\nCall [ListTemplateScratches](~~610832~~) to query scenario IDs."
+      }
     },
     {
       "name": "TemplateURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "包含模板主体的文件的位置。URL必须指向位于Web服务器（HTTP或HTTPS）或阿里云OSS存储空间（例如：oss://ros/template/demo、oss://ros/template/demo?RegionId=cn-hangzhou）中的模板，模板最大值为524,288个字节。  \n\n> 如果OSS地域未指定，默认与接口参数RegionId相同。\n  \n您仅能指定TemplateBody、TemplateURL或TemplateId其中一个参数。\n   \nURL最大长度为1024个字节。",
+        "en": "The URL of the template file. The URL must point to a template on a web server (HTTP or HTTPS) or in an OSS bucket, such as oss\\://ros/template/demo or oss\\://ros/template/demo?RegionId=cn-hangzhou. Maximum template body size: 524,288 bytes.\n\n> If you do not specify the region of the OSS bucket, the value of RegionId is used.\n\nYou can specify only one of the TemplateBody, TemplateURL, and TemplateId parameters.\n\nThe URL can be up to 1,024 bytes in length."
+      }
     },
     {
       "name": "TemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板版本。  \n> 该参数仅在指定TemplateId时生效。",
+        "en": "The version of the template.\n\n> This parameter takes effect only when TemplateId is specified."
+      }
     },
     {
       "name": "TimeoutInMinutes",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源栈状态变为CREATE_FAILED或UPDATE_FAILED之前可以经过的时间量。  \n当更改集类型为CREATE时，该参数为必选参数；当更改集类型为UPDATE时，该参数为可选参数。\n\n- 单位：分钟。\n\n- 取值范围：10~1440。\n\n- 默认值：60。",
+        "en": "The timeout period before the stack enters CREATE\\_FAILED or UPDATE\\_FAILED state. Required when ChangeSetType is CREATE. Optional when ChangeSetType is UPDATE.\n\n- Unit: minutes.\n\n- Valid values: 10 to 1440.\n\n- Default value: 60."
+      }
     },
     {
       "name": "UsePreviousParameters",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "对于未传递的参数，是否使用上次传递的值。取值：\n\n- true\n- false（默认值）\n\n> 该参数仅在更改集类型为UPDATE或IMPORT时生效。",
+        "en": "Specifies whether to use the values of parameters that were last used. Valid values:\n\n- true\n\n- false (default)\n\n> This parameter takes effect only when ChangeSetType is set to UPDATE or IMPORT."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建更改集",
+    "en": "CreateChangeSet"
+  },
+  "descriptions": {
+    "zh": "### 使用场景\n#### 使用更改集创建资源栈\n如果您想管理大量的云资源，并在资源栈创建成功之前预览资源的创建效果，您可以选择使用更改集创建资源栈。此时您需要将`ChangeSetType`参数设置为CREATE并完成相关参数配置。关于更改集的更多信息，请参见[更改集](~~155649~~)。  \n#### 使用更改集更新资源栈\n如果您想在更新资源之前预览该操作对资源栈的影响，您可以选择为现有资源栈创建更改集。此时您需要将ChangeSetType参数设置为UPDATE并完成相关参数配置。\n关于更改集的更多信息，请参见[更改集](~~155649~~)。  \n#### 使用现有资源创建资源栈\n如果您需要将现有的云资源添加到一个新的资源栈中进行统一管理，您可以选择使用更改集创建资源栈并完成资源导入。此时您需要将ChangeSetType参数设置为IMPORT并完成相关参数配置。关于资源导入的更多信息，请参见[概览](~~193454~~)。\n\n#### 将现有资源导入资源栈\n如果您想要将现有资源导入到一个已有资源栈中进行统一管理，您可以选择使用更改集对已有资源栈进行更新。此时您需要将ChangeSetType参数设置为IMPORT并完成相关参数配置。关于资源导入的更多信息，请参见[概览](~~193454~~)。\n\n### 使用限制\n- 只有部分状态下的资源栈支持通过更改集更新。更多信息，请参见[通过更改集更新资源栈](~~155873~~)。\n- 一个资源栈最多同时存在20个更改集。  \n- 更改集只显示资源栈变化，不显示资源栈是否成功更新。  \n- 更改集不检查是否将超出账号限制、是否将更新不支持更新的资源、是否权限不足而无法修改资源，所有这些都将导致资源栈更新失败。如果更新失败，ROS将尝试将您的资源回滚到原始状态。  \n\n本文以使用更改集更新资源栈为例，在杭州地域`cn-hangzhou`创建一个名为`MyChangeSet`的更改集，将ID为`4a6c9851-3b0f-4f5f-b4ca-a14bf691****`的资源栈的模板更新为`{\"ROSTemplateFormatVersion\":\"2015-09-01\"}`。",
+    "en": "### Scenarios\n\n#### Create a stack using a change set\n\nTo manage cloud resources and preview creation results before the stack is created, set `ChangeSetType` to CREATE. [Change sets](~~155649~~).\n\n#### Update a stack using a change set\n\nTo preview the impact of an update before applying changes, set `ChangeSetType` to UPDATE. [Change sets](~~155649~~).\n\n#### Create a stack from existing resources\n\nTo import existing cloud resources into a new stack, set `ChangeSetType` to IMPORT. [Overview](~~193454~~).\n\n#### Import existing resources to a stack\n\nTo import existing resources into an existing stack, set `ChangeSetType` to IMPORT. [Overview](~~193454~~).\n\n### Limits\n\n- Only stacks in specific states can be updated using change sets. [Update a stack using a change set](~~155873~~).\n\n- A stack can have a maximum of 20 change sets at a time.\n\n- A change set shows only the changes to a stack. It does not indicate whether the stack will be successfully updated.\n\n- A change set does not check for issues such as exceeded account quotas, non-updatable resources, or insufficient permissions. These issues can cause the stack update to fail. If the update fails, ROS attempts to roll back resources to their previous state.\n\nIn this example, a change set named `MyChangeSet` is created in the China (Hangzhou) region (`cn-hangzhou`) to update the template of stack `4a6c9851-3b0f-4f5f-b4ca-a14bf691****` to `{\"ROSTemplateFormatVersion\":\"2015-09-01\"}`."
+  },
   "example": {
     "unifiedCli": "aliyun ros create-change-set --stack-id 4a6c9851-3b0f-4f5f-b4ca-a14bf6910000 --stack-policy-url oss://ros/stack-policy/demo --stack-policy-body Statement_:_Effect_:_Allow_,_Action_:_Update:0_,_Principal_:_0_,_Resource_:_0 --stack-name MyStack --use-previous-parameters true --change-set-type UPDATE --description It_is_a_demo. --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --template-url oss://ros/template/demo --stack-policy-during-update-url oss://ros/stack-policy/demo --template-body ROSTemplateFormatVersion_:_2015-09-01 --timeout-in-minutes 12 --disable-rollback false --change-set-name MyChangeSet --stack-policy-during-update-body Statement_:_Effect_:_Allow_,_Action_:_Update:0_,_Principal_:_0_,_Resource_:_0 --biz-ram-role-name test-role --replacement-option Disabled --template-id 5ecd1e10-b0e9-4389-a565-e4c15efc0000 --template-version v1 --parameters ParameterValue=12 ParameterKey=Amount --notification-urls http://example.com/ros-notify --resources-to-import ResourceIdentifier=VpcId_:_vpc-2zevx9ios000000 LogicalResourceId=Vpc ResourceType=ALIYUN::ECS::VPC --template-scratch-id 4a6c9851-3b0f-4f5f-b4ca-a14bf6910000 --parallelism 1 --tags Value=test Key=usage --resource-group-id rg-acfmxazb4ph6aiy0000 --taint-resources my_vpc --region cn-hangzhou",
     "legacyCli": "aliyun ros CreateChangeSet --region cn-hangzhou --ResourcesToImport.1.ResourceType 'ALIYUN::ECS::VPC' --Description 'It_is_a_demo.' --ResourceGroupId 'rg-acfmxazb4ph6aiy0000' --TaintResources.1 my_vpc --TemplateVersion v1 --TemplateBody 'ROSTemplateFormatVersion_:_2015-09-01' --ChangeSetName MyChangeSet --Parameters.1.ParameterValue 12 --StackPolicyDuringUpdateURL 'oss://ros/stack-policy/demo' --TemplateURL 'oss://ros/template/demo' --ResourcesToImport.1.ResourceIdentifier 'VpcId_:_vpc-2zevx9ios000000' --RamRoleName 'test-role' --NotificationURLs.1 'http://example.com/ros-notify' --ChangeSetType UPDATE --Tags.1.Key usage --DisableRollback false --TemplateId '5ecd1e10-b0e9-4389-a565-e4c15efc0000' --StackPolicyDuringUpdateBody 'Statement_:_Effect_:_Allow_,_Action_:_Update:0_,_Principal_:_0_,_Resource_:_0' --ResourcesToImport.1.LogicalResourceId Vpc --ReplacementOption Disabled --Parameters.1.ParameterKey Amount --StackPolicyBody 'Statement_:_Effect_:_Allow_,_Action_:_Update:0_,_Principal_:_0_,_Resource_:_0' --TemplateScratchId '4a6c9851-3b0f-4f5f-b4ca-a14bf6910000' --StackPolicyURL 'oss://ros/stack-policy/demo' --Tags.1.Value test --UsePreviousParameters true --Parallelism 1 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --StackName MyStack --StackId '4a6c9851-3b0f-4f5f-b4ca-a14bf6910000' --TimeoutInMinutes 12"

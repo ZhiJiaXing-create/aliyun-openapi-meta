@@ -1,5 +1,6 @@
 {
   "name": "PutDcdnKv",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Expiration",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过期时间（秒级时间戳，不能小于当前时间），同时设置Expiration和ExpirationTtl时，以ExpirationTtl为准。",
+        "en": "The expiration time. This is a UNIX timestamp in seconds and cannot be earlier than the current time. If you set both Expiration and ExpirationTtl, ExpirationTtl takes precedence."
+      }
     },
     {
       "name": "ExpirationTtl",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过期时间（相对时间，单位：秒），同时设置Expiration和ExpirationTtl时，以ExpirationTtl为准。",
+        "en": "The expiration time. This is a relative time in seconds. If you set both Expiration and ExpirationTtl, ExpirationTtl takes precedence."
+      }
     },
     {
       "name": "Key",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要设置的Key名称，最长不超过512个字符，不能包含空格、反斜杠（/）。",
+        "en": "The name of the key that you want to set. The key can be up to 512 characters in length and cannot contain spaces or backslashes (/)."
+      }
     },
     {
       "name": "Namespace",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Namespace名称。",
+        "en": "The name of the namespace."
+      }
     },
     {
       "name": "Value",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Key的内容，最大2 MB（2\\*1000\\*1000）。",
+        "en": "The content of the key. The maximum size is 2 MB (2 × 1,000 × 1,000 bytes)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置Namespace的Key-Value对",
+    "en": "PutDcdnKv"
+  },
+  "descriptions": {
+    "zh": "> 单用户调用频率：50次/秒。",
+    "en": "> The call frequency is limited to 50 calls per second per user."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn put-dcdn-kv --namespace ns1 --key key1 --value value1 --expiration 1690081381 --expiration-ttl 3600 --region cn-hangzhou",
     "legacyCli": "aliyun dcdn PutDcdnKv --region cn-hangzhou --ExpirationTtl 3600 --Value value1 --Expiration 1690081381 --Namespace ns1 --Key key1"

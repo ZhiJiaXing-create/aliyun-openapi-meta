@@ -1,5 +1,6 @@
 {
   "name": "UntagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "All",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否全部删除。只针对**TagKey.N**为空时有效。取值范围：\n- **true**\n- **false**：默认值",
+        "en": "Specifies whether to delete all tags. This parameter is valid only when the **TagKey.N**parameter is not specified. Default value: false. Valid values:\n\n*   **true**\n*   **false**"
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID。\n\nn的取值范围为`[1, 50]`",
+        "en": "The resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义，目前分组，插件，应用接入了标签，API相关操作基于分组的标签：\n- **apiGroup**\n- **plugin**\n- **app**",
+        "en": "The type of the resource. Tags are bound to API groups, plug-ins, and applications. You can use tags to manage cloud resources by group. Valid values:\n\n*   **apiGroup**\n*   **plugin**\n*   **app**"
+      }
     },
     {
       "name": "TagKey",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签键。\n\nn 的取值范围为 `[1, 20]`",
+        "en": "The tag keys of the resource."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除用户标签和资源的关系",
+    "en": "UntagResources"
+  },
+  "descriptions": {
+    "zh": "- 批量取消标记资源，接口同成功同失败。\n- 当传入ResourceId列表，没有传入TagKeys，同时All = true时，删除资源下所有资源标签关系。存在没有标签的资源，则不处理同时返回成功。\n- 当传入的ResourceId列表，没有传入TagKeys，同时All = false时，不处理接口返回成功。\n- 当TagKeys有值的时候，All是true/false都没有关系，这个字段无效。\n- 当传入多个资源及多个键值时，删除资源中存在的指定标签，资源中不存在的标签不处理。",
+    "en": "*   If you call this operation to untag multiple resources simultaneously, either all or none of the resources will be untagged.\n*   If you specify resource IDs without specifying tag keys and set the All parameter to true, all tags bound to the specified resources will be deleted. If a resource does not have any tags, the request is not processed but a success is returned.\n*   If you specify resource IDs without specifying tag keys and set the All parameter to false, the request is not processed but a success is returned.\n*   When tag keys are specified, the All parameter is invalid.\n*   When multiple resources and key-value pairs are specified, the specified tags bound to the resources are deleted."
+  },
   "example": {
     "unifiedCli": "aliyun cloudapi untag-resources --resource-type apiGroup --all true --resource-id example-string --tag-key example-string --api-version 2016-07-14 --region cn-hangzhou",
     "legacyCli": "aliyun cloudapi UntagResources --region cn-hangzhou --All true --ResourceId.1 'example-string' --TagKey.1 'example-string' --ResourceType apiGroup"

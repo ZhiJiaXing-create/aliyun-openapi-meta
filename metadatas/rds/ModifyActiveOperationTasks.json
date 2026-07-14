@@ -1,5 +1,6 @@
 {
   "name": "ModifyActiveOperationTasks",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Ids",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "运维任务ID，多个ID间使用英文逗号（,）分隔。\n> 您可以调用DescribeActiveOperationTasks获取运维任务 ID。",
+        "en": "The O\\&M task ID. Separate multiple IDs with commas (,).\n\n>  You can call the DescribeActiveOperationTask operation to query the O\\&M task ID."
+      }
     },
     {
       "name": "ImmediateStart",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否立即进入执行调度。\n- 0：否（默认）\n- 1：是\n> - 值为0时switchTime起作用；值为1时switchTime不起作用，任务开始时间将设置为当前时间，切换时间根据新的开始时间自动计算。\n> - 立即进入执行调度并不是立即切换，而是立即进入准备中状态，准备完成后，进行切换。您可以调用DescribeActiveOperationTasks，通过返回参数PrepareInterval的值来获取准备时间。",
+        "en": "Specifies whether to immediately start scheduling. Valid values:\n\n*   0 (default): no\n*   1: yes\n\n> \n\n*   If you set this parameter to 0, the SwitchTime parameter takes effect. If you set this parameter to 1, the SwitchTime parameter does not take effect. In this case, the start time of the task is the current time, and the system determines the switching time based on the start time.\n\n*   Immediate scheduling specifies that the task enters the preparing state instead of being executed immediately. After the preparation is complete, the switchover is performed. You can call the DescribeActiveOperationTasks to query the preparation time that is returned for the PrepareInterval parameter."
+      }
     },
     {
       "name": "SwitchTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要设置的计划切换时间，格式为yyyy-MM-ddTHH:mm:ssZ（UTC时间）。\n\n>不能晚于最晚操作时间，您可以调用DescribeActiveOperationTasks，通过返回参数Deadline的值来获取最晚操作时间。",
+        "en": "The scheduled switching time that you want to specify. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n>  The time that is specified by the SwitchTime parameter cannot be later than the time that is specified by the Deadline parameter. You can call the DescribeActiveOperationTasks operation to query the value of the Deadline parameter in the response."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改多个主动运维任务切换时间",
+    "en": "ModifyActiveOperationTasks"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n- [RDS MySQL计划内事件](~~104183~~)\n- [RDS PostgreSQL计划内事件](~~104452~~)\n- [RDS SQL Server计划内事件](~~104451~~)\n- [RDS MariaDB计划内事件](~~104454~~)",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   SQL Server\n*   MariaDB\n\n### [](#)References\n\n> : Before you call this operation, carefully read the following documentation. Make sure that you fully understand the prerequisites and impacts for calling this operation.\n\n*   [Scheduled events for ApsaraDB RDS for MySQL instances](~~104183~~)\n*   [Scheduled events for ApsaraDB RDS for PostgreSQL instances](~~104452~~)\n*   [Scheduled events for ApsaraDB RDS for SQL Server instances](~~104451~~)\n*   [Scheduled events for ApsaraDB RDS for MariaDB instances](~~104454~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-active-operation-tasks --ids 11111,22222 --switch-time 2019-10-17T18:50:00Z --immediate-start 0 --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyActiveOperationTasks --region cn-hangzhou --Ids '11111,22222' --SwitchTime '2019-10-17T18:50:00Z' --ImmediateStart 0"

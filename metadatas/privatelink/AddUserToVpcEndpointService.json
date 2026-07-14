@@ -1,5 +1,6 @@
 {
   "name": "AddUserToVpcEndpointService",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会添加服务白名单。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加服务白名单的地域ID。您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The region ID of the endpoint service. You can call the [DescribeRegions](~~120468~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点服务的ID。",
+        "en": "The endpoint service ID."
+      }
     },
     {
       "name": "UserARN",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ARN格式的用户白名单。",
+        "en": "The whitelist in the format of Aliyun Resource Name (ARN)."
+      }
     },
     {
       "name": "UserId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务白名单账号ID。",
+        "en": "The account ID that you want to add to the whitelist."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加服务白名单",
+    "en": "AddUserToVpcEndpointService"
+  },
+  "descriptions": {
+    "zh": "- 添加服务白名单之前，请确保终端节点服务处于**Active**状态，您可以通过调用[GetVpcEndpointServiceAttribute](~~469330~~)接口，查询终端节点服务状态。\n- **AddUserToVpcEndpointService**接口不支持在同一个阿里云账号（主账号）下并发添加服务白名单。",
+    "en": "- Before you add an account ID to the whitelist of an endpoint service, make sure that the endpoint service is in the **Active** state. You can call the [GetVpcEndpointServiceAttribute](~~469330~~) operation to query the status of the endpoint service.\n\n- You cannot repeatedly call the **AddUserToVpcEndpointService** operation to add the ID of an Alibaba Cloud account to the whitelist of an endpoint service within a specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink add-user-to-vpc-endpoint-service --biz-region-id cn-hangzhou --user-id 1321932713280000 --service-id epsrv-hp3vpx8yqxblby3i0000 --dry-run false --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --user-arn acs:ram:0:_account-id_:0 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink AddUserToVpcEndpointService --region cn-hangzhou --UserARN 'acs:ram:0:_account-id_:0' --UserId 1321932713280000 --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --ServiceId 'epsrv-hp3vpx8yqxblby3i0000'"

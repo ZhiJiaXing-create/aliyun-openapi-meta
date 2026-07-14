@@ -1,0 +1,148 @@
+{
+  "name": "CreateApplication",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AreaId",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "区域ID需与模板已发布的 region 保持一致，否则会回退到 default 版本。",
+        "en": "The ID of the region. This must be the same as the region where the template was published. Otherwise, the system reverts to the default version of the template."
+      }
+    },
+    {
+      "name": "ClientToken",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "客户端 Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken 只支持 ASCII 字符。",
+        "en": "A client token to ensure the idempotence of the request.\n\nThis token must be client-generated, unique across requests, and contain only ASCII characters."
+      }
+    },
+    {
+      "name": "Configuration",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "应用相关配置参数，例如：enableMonitor 代表是否自动创建云监控; enableReport 代表是否生成相关报告,enableCompliance设置为1代表开启合规检查",
+        "en": "The configuration parameters for the application. For example, `enableMonitor` determines whether to automatically create a monitoring task in Cloud Monitor, `enableReport` determines whether to generate reports, and setting `enableCompliance` to 1 enables compliance checks."
+      }
+    },
+    {
+      "name": "CreateAsync",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否异步创建应用\n\n异步创建：立即返回应用ID，但是应用此时没有创建完成，应用状态为 Creating ，需要等待应用创建完成，状态变为 Modified 才可以进行后续的处理。\n\n非异步创建：应用创建完成后返回应用ID\n\n注：当应用模版很大，模版变量很多时，使用非异步创建可能会发生超时情况，此时需要采用异步创建。",
+        "en": "Specifies whether to create the application asynchronously.\n\nAsynchronous creation: The application ID is returned immediately, but the application's state is `Creating`. Before performing subsequent operations, you must wait for the state to change to `Modified`.\n\nSynchronous creation: The application ID is returned only after the application is created.\n\nNote: If an application template is large or has a large number of template variables, synchronous creation may time out. In this case, create the application asynchronously."
+      }
+    },
+    {
+      "name": "Instances",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "支持在已保有VPC下创建",
+        "en": "The instances to import. You can use this parameter to create an application in an existing Virtual Private Cloud (VPC)."
+      },
+      "sub_parameters": [
+        {
+          "name": "Id",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "实例ID",
+            "en": "The instance ID."
+          }
+        },
+        {
+          "name": "NodeName",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "节点名称",
+            "en": "The node name."
+          }
+        },
+        {
+          "name": "NodeType",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "实例类型",
+            "en": "The node type."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Name",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输入应用名称。\n\n- 应用名称需唯一，不能与其他应用名称重复，可以调用<props=\"china\">[ListApplication](~~428266~~)</props><props=\"intl\">[ListApplication](https://www.alibabacloud.com/help/zh/bp-studio/latest/api-bpstudio-2021-09-31-listapplication)</props>获取应用列表。\n- 长度为2~128个英文或中文字符。必须以大小字母或中文开头，不能以http://或https://开头。可以包含数字、下划线（_）、或者短划线（-）。",
+        "en": "The name of the application.\n\n- The name must be unique. You can call the <props=\"china\">[ListApplication](~~428266~~)</props><props=\"intl\">[ListApplication](https://www.alibabacloud.com/help/zh/bp-studio/latest/api-bpstudio-2021-09-31-listapplication)</props> operation to query the list of applications.\n\n- The name can contain letters, Chinese characters, digits, underscores (`_`), and hyphens (`-`). It must be 2 to 128 characters long, start with a letter or a Chinese character, and not start with `http://` or `https://`."
+      }
+    },
+    {
+      "name": "ProcessVariables",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "流程的变量值列表",
+        "en": "The key-value pairs for the process variables."
+      }
+    },
+    {
+      "name": "ResourceGroupId",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "应用所属资源组ID\n\n><notice>此参数将影响所创应用中所有资源的资源组，请确保导入资源的资源组与之一致></notice>",
+        "en": "The ID of the resource group.\n\n><notice>\n\nThis parameter specifies the resource group for all resources in the application. Ensure that the resources you import belong to this resource group.\n\n></notice>"
+      }
+    },
+    {
+      "name": "TemplateId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "模板ID",
+        "en": "The template ID."
+      }
+    },
+    {
+      "name": "Variables",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "对于带参数的模板，这个字段用于传递相关参数值，如果未传递，则使用默认值",
+        "en": "The values of the template variables. If you omit this parameter, the variables' default values are used."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "基于模板创建应用接口",
+    "en": "CreateApplication"
+  }
+}

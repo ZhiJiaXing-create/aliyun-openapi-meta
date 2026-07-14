@@ -1,5 +1,6 @@
 {
   "name": "AsymmetricSign",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Algorithm",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "签名算法。",
+        "en": "The signature algorithm."
+      }
     },
     {
       "name": "Digest",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "使用Algorithm中对应的哈希算法，对原始消息生成的摘要。\n\n> - 使用Base64编码。\n- 关于如何计算消息摘要，请参见[非对称数字签名](~~148146~~)的**签名预处理：计算消息摘要**章节。",
+        "en": "The digest of the original message. The digest is generated using the hash algorithm that corresponds to the value of the Algorithm parameter.\n\n> - The value is Base64-encoded.\n\n- For information about how to calculate a message digest, see the \"Pre-signing: calculate a message digest\" section of the [Asymmetric digital signature](~~148146~~) topic."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启DryRun模式。\n\n- true：开启\n- false（默认值）：关闭\n\nDryRun模式用于测试API调用，验证您是否具有相应资源的权限，以及请求参数是否配置正确。DryRun模式开启后，KMS会始终返回失败并提示失败原因。失败原因包含如下：\n\n- DryRunOperationError：不配置DryRun参数时，请求会成功。\n- ValidationError：请求中指定的参数有误。\n- AccessDeniedError：您无权在KMS资源上执行该操作。",
+        "en": "Specifies whether to enable the dry-run feature.\n\n- true: enables the feature.\n\n- false (default): disables the feature.\n\nThe dry-run feature is used to test API calls and verify the permissions on the resources that you have and the validity of the request parameters. If you enable the dry-run feature, KMS always returns a failure response and a failure reason. The failure reasons include the following:\n\n- DryRunOperationError: The request would have succeeded if the DryRun parameter is not configured.\n\n- ValidationError: The specified parameters in the request are invalid.\n\n- AccessDeniedError: You are not authorized to perform the operation on the KMS resource."
+      }
     },
     {
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主密钥（CMK）的全局唯一标识符。\n\n> 该参数也可以被指定为主密钥绑定的别名。更多信息，请参见[别名使用说明](~~68522~~)。",
+        "en": "The globally unique identifier (GUID) of the customer master key (CMK).\n\n> You can also specify the alias that is bound to the CMK. For more information, see [Overview of aliases](~~68522~~)."
+      }
     },
     {
       "name": "KeyVersionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥版本ID。密钥版本的全局唯一标识符。",
+        "en": "The ID of the key version. The ID must be the GUID of the key version."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "使用非对称密钥进行签名",
+    "en": "AsymmetricSign"
+  },
+  "descriptions": {
+    "zh": "### 注意事项\n\n- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 本接口可以通过共享网关或专属网关调用。详细介绍，请参见[阿里云SDK](~~601559~~)。\n\n  - 共享网关：通过公网、VPC域名访问KMS，该方式需要打开公网开关。具体操作，请参见[通过公网访问KMS实例中的密钥](~~2856718~~)。\n  - 专属网关：通过KMS私网地址（`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`）访问KMS。\n\n\n### QPS限制\n- 通过共享网关调用：本接口的单用户QPS限制为200次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。\n- 通过专属网关调用：本接口的单用户QPS限制以您KMS实例的计算性能规格为准。详细介绍，请参见[性能数据](~~480120~~)。\n\n\n### 详细说明\n仅支持**Usage**为**SIGN/VERIFY**的非对称密钥。支持的签名算法如下表：\n\n| KeySpec        | Algorithm           | 说明  |\n| ------------- |------------   | ----- |\n| RSA_2048 | RSA_PSS_SHA_256  |RSASSA-PSS using SHA-256 and MGF1 with SHA-256 |\n| RSA_2048 | RSA_PKCS1_SHA_256   |RSASSA-PKCS1-v1_5 using SHA-256 |\n| RSA_3072 | RSA_PSS_SHA_256  |RSASSA-PSS using SHA-256 and MGF1 with SHA-256 |\n| RSA_3072 | RSA_PKCS1_SHA_256   |RSASSA-PKCS1-v1_5 using SHA-256 |\n| EC_P256 | ECDSA_SHA_256   |ECDSA on the P-256 Curve(secp256r1) with a SHA-256 digest |\n| EC_P256K | ECDSA_SHA_256   |ECDSA on the P-256K Curve(secp256k1) with a SHA-256 digest |\n| EC_SM2 | SM2DSA |SM2椭圆曲线数字签名算法 |\n\n> 按照国家标准GB/T 32918.2《信息安全技术 SM2 椭圆曲线公钥密码算法 第2部分：数字签名算法》，计算SM2签名值时，**Digest**参数不是对原始消息直接计算SM3摘要，而是对Z(A)和M的拼接值计算的摘要，其中M是待签名的原始消息，Z(A)是GB/T 32918.2中定义的用户A的杂凑值。\n\n本文将提供一个示例，使用密钥ID为`5c438b18-05be-40ad-b6c2-3be6752c****`、密钥版本ID为`2ab1a983-7072-4bbc-a582-584b5bd8****`的非对称密钥，通过签名算法`RSA_PSS_SHA_256`对摘要信息`ZOyIygCyaOW6GjVnihtTFtIS9PNmskdyMlNKiuy****=`进行签名。",
+    "en": "### Precautions\n\n- For information about the access policies that are required for a RAM user or RAM role to call this operation, see [Resource Access Management](~~2767210~~).\n\n- This operation can be called through a shared gateway or a dedicated gateway. For more information, see [Alibaba Cloud SDK](~~601559~~).\n\n  - Shared gateway: You can access KMS over the Internet or a VPC. This method requires you to enable Internet access. For more information, see [Access keys in a KMS instance over the Internet](~~2856718~~).\n\n  - Dedicated gateway: You can access KMS using the private endpoint of KMS (`<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com`).\n\n### QPS limits\n\n- Shared gateway: This operation is limited to 200 queries per second (QPS) for each user. If the limit is exceeded, API calls are throttled, which may affect your business. We recommend that you call this operation at a reasonable rate.\n\n- Dedicated gateway: The QPS for each user is limited by the performance specifications of your KMS instance. For more information, see [Performance metrics](~~480120~~).\n\n### Description\n\nThis operation supports only asymmetric keys for which the **Usage** parameter is set to **SIGN/VERIFY**. The following table describes the supported signature algorithms.\n\n| KeySpec   | Algorithm            | Description                                                |\n| --------- | -------------------- | ---------------------------------------------------------- |\n| RSA\\_2048 | RSA\\_PSS\\_SHA\\_256   | RSASSA-PSS using SHA-256 and MGF1 with SHA-256             |\n| RSA\\_2048 | RSA\\_PKCS1\\_SHA\\_256 | RSASSA-PKCS1-v1\\_5 using SHA-256                           |\n| RSA\\_3072 | RSA\\_PSS\\_SHA\\_256   | RSASSA-PSS using SHA-256 and MGF1 with SHA-256             |\n| RSA\\_3072 | RSA\\_PKCS1\\_SHA\\_256 | RSASSA-PKCS1-v1\\_5 using SHA-256                           |\n| EC\\_P256  | ECDSA\\_SHA\\_256      | ECDSA on the P-256 Curve(secp256r1) with a SHA-256 digest  |\n| EC\\_P256K | ECDSA\\_SHA\\_256      | ECDSA on the P-256K Curve(secp256k1) with a SHA-256 digest |\n| EC\\_SM2   | SM2DSA               | SM2 elliptic curve digital signature algorithm             |\n\n> According to the GB/T 32918.2 standard \"Information security technology - SM2 elliptic curve public key cryptography - Part 2: Digital signature algorithm\", when you calculate an SM2 signature, the value of the **Digest** parameter is not the SM3 hash value of the original message. Instead, the value is the SM3 hash value of the result of concatenating Z(A) and M. M is the original message to be signed. Z(A) is the hash value of user A, as defined in GB/T 32918.2.\n\nThis topic provides an example of how to use an asymmetric key with the key ID `5c438b18-05be-40ad-b6c2-3be6752c****` and the key version ID `2ab1a983-7072-4bbc-a582-584b5bd8****` to sign the digest `ZOyIygCyaOW6GjVnihtTFtIS9PNmskdyMlNKiuy****=` using the `RSA_PSS_SHA_256` signature algorithm."
+  },
   "example": {
     "unifiedCli": "aliyun kms asymmetric-sign --key-id 5c438b18-05be-40ad-b6c2-3be6752c0000 --key-version-id 2ab1a983-7072-4bbc-a582-584b5bd80000 --algorithm RSA_PSS_SHA_256 --digest ZOyIygCyaOW6GjVnihtTFtIS9PNmskdyMlNKiu0000= --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun kms AsymmetricSign --region cn-hangzhou --Digest 'ZOyIygCyaOW6GjVnihtTFtIS9PNmskdyMlNKiu0000=' --DryRun false --KeyId '5c438b18-05be-40ad-b6c2-3be6752c0000' --KeyVersionId '2ab1a983-7072-4bbc-a582-584b5bd80000' --Algorithm RSA_PSS_SHA_256"

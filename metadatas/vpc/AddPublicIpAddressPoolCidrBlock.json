@@ -1,5 +1,6 @@
 {
   "name": "AddPublicIpAddressPoolCidrBlock",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP地址网段。\n>不支持同时配置**CidrBlock**与**CidrMask**，请选择其中一个进行配置。",
+        "en": "The CIDR block.\n\n>  You can specify only one of **CidrBlock** and **CidrMask**."
+      }
     },
     {
       "name": "CidrMask",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP地址网段掩码。\n输入掩码后，系统会自动分配IP地址网段。\n\n取值范围：**24**~**28**。\n\n>不支持同时配置**CidrBlock**与**CidrMask**，请选择其中一个进行配置。",
+        "en": "The subnet mask of the CIDR block. After you enter the subnet mask, the system automatically allocates IP addresses.\n\nValid values: **24** to **28**.\n\n>  You can specify only one of **CidrBlock** and **CidrMask**."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会添加网段。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "PublicIpAddressPoolId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IP地址池的实例ID。",
+        "en": "The ID of the IP address pool."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加网段的IP地址池所在的地域ID。",
+        "en": "The region ID of the IP address pool to which you want to add the CIDR block."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为IP地址池添加IP地址段",
+    "en": "AddPublicIpAddressPoolCidrBlock"
+  },
+  "descriptions": {
+    "zh": "在调用本接口时，请了解以下内容：\n- IP地址网段和IP地址池需属于同一地域。\n- IP地址网段和IP地址池需属于同一ISP线路类型。\n- **AddPublicIpAddressPoolCidrBlock**接口属于异步接口，即系统会先返回一个请求ID，但IP地址网段并未添加完成，系统后台的添加任务仍在进行。您可以调用[ListPublicIpAddressPoolCidrBlocks](~~429436~~)查询IP地址池中IP地址网段的状态。\n    - 当IP地址网段处于**Modifying**状态时，表示IP地址网段正在添加中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当IP地址网段处于**Created**状态时，表示IP地址网段添加完成。\n- **AddPublicIpAddressPoolCidrBlock**接口不支持并发添加同一个IP地址网段至IP地址池。",
+    "en": "Before you call this operation, take note of the following limits:\n\n*   The CIDR block and the IP address pool must belong to the same region.\n\n*   The CIDR block and the IP address pool must use the same line type.\n\n*   **AddPublicIpAddressPoolCidrBlock** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [ListPublicIpAddressPoolCidrBlocks](~~429436~~) operation to query the status of the task.\n\n    *   If the CIDR block is in the **Modifying** state, the CIDR block is being added. In this state, you can only query the CIDR block and cannot perform other operations.\n    *   If the CIDR block is in the **Created** state, the CIDR block is added.\n\n*   You cannot repeatedly call the **AddPublicIpAddressPoolCidrBlock** operation to add a CIDR block to an IP address pool within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc add-public-ip-address-pool-cidr-block --public-ip-address-pool-id pippool-6wetvn6fumkgycssx0000 --cidr-block 47.0.XX.XX/24 --client-token 02fb3da4-130e-110000 --dry-run false --biz-region-id cn-hangzhou --cidr-mask 24 --region cn-hangzhou",
     "legacyCli": "aliyun vpc AddPublicIpAddressPoolCidrBlock --region cn-hangzhou --DryRun false --CidrBlock '47.0.XX.XX/24' --PublicIpAddressPoolId 'pippool-6wetvn6fumkgycssx0000' --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-110000' --CidrMask 24"

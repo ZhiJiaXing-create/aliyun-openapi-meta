@@ -1,5 +1,6 @@
 {
   "name": "CreateDataImportTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "DBInstanceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例id。>您可以调用[describedbinstances](~~196830~~)接口查看目标地域下所有实例的详情，包括实例id。",
+        "en": "The instance ID. > You can call the [DescribeDBInstances](~~196830~~) operation to query the details of all instances in the specified region, including instance IDs."
+      }
     },
     {
       "name": "DstDb",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "导入目标sql的执行环境，取值范围如下：***importing**：导入中。***success**：导入成功。***fail**：导入失败。",
+        "en": "The execution status of the target SQL import. Valid values: * **importing**: importing. * **success**: import succeeded. * **fail**: import failed."
+      }
     },
     {
       "name": "DstPassword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标rds实例高权限账号的密码。>*您可以调用[describedbinstances](~~196830~~)接口查看目标实例的高权限账号信息，包括密码。*仅当[unk]dstpassword=true[unk]时，该参数生效。",
+        "en": "The password of the privileged account for the target ApsaraDB RDS instance. > * You can call the [DescribeDBInstances](~~196830~~) operation to query the privileged account information of the target instance, including the password. * This parameter takes effect only when DstPassword is set to true."
+      }
     },
     {
       "name": "DstResId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务id。",
+        "en": "The migration task ID."
+      }
     },
     {
       "name": "DstUserName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标端用户名",
+        "en": "The username of the target."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在地域。>您可以调用[describeregions](~~196841~~)接口查看polardb-x支持的地域详情，包括地域id。",
+        "en": "The region in which the instance resides. > You can call the [DescribeRegions](~~196841~~) operation to query the regions supported by PolarDB-X, including region IDs."
+      }
     },
     {
       "name": "SlinkTaskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "导入任务id。",
+        "en": "The import task ID."
+      }
     },
     {
       "name": "SrcDb",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源数据库为rdsmysql时，迁移源的数据库信息。>源数据库必须与目标数据库保持一致。",
+        "en": "The database information of the source when the source database is ApsaraDB RDS for MySQL. > The source database must be consistent with the target database."
+      }
     },
     {
       "name": "SrcPassword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端执行导入任务的读写模式，取值范围如下：***rw**：读写***ro**：只读",
+        "en": "The read/write mode for executing the import task on the source. Valid values: * **rw**: read and write. * **ro**: read-only."
+      }
     },
     {
       "name": "SrcResId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源rds实例id。>您可以调用[describedrivingaccess](~~196830~~)接口查看目标地域下所有源rds实例的详情，包括实例id。",
+        "en": "The ID of the source ApsaraDB RDS instance. > You can call the [DescribeDrivingAccess](~~196830~~) operation to query the details of all source ApsaraDB RDS instances in the specified region, including instance IDs."
+      }
     },
     {
       "name": "SrcUserName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端用户名",
+        "en": "The username of the source."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据导入任务",
+    "en": "Create a data import task"
+  },
+  "descriptions": {
+    "zh": "CreateDataImportTask 接口用于创建数据导入任务，支持将存储在OSS、ECS或直接传入的SQL/CSV文件导入到目标数据库实例中。通过指定实例ID、数据库名、引擎类型、数据来源（如OSS路径）及导入类型，系统将异步或同步执行数据写入操作，适用于数据迁移、初始化和补录等场景，返回任务ID以便后续状态查询与管理。",
+    "en": "Creates a data import task that imports SQL or CSV files stored in OSS or ECS, or directly provided files, into a target database instance. By specifying the instance ID, database name, engine type, data source (such as an OSS path), and import type, the system performs data write operations asynchronously or synchronously. This operation is applicable to scenarios such as data migration, initialization, and data backfill. A task ID is returned for subsequent status queries and management."
+  },
   "example": {
     "unifiedCli": "aliyun polardbx create-data-import-task --biz-region-id cn-hangzhou --db-instance-name pxc-00000000 --src-res-id pxc-shrnv0000kh87z --src-db transfer_for_st --src-user-name drds_test --src-password 000000 --dst-res-id pxc-shr80000k36vrn --dst-db transfer_test3 --dst-user-name bbt_cms_prod --dst-password 000000 --slink-task-id etx-szr2rr6i00000 --region cn-hangzhou",
     "legacyCli": "aliyun polardbx CreateDataImportTask --region cn-hangzhou --DstPassword 000000 --SrcDb transfer_for_st --DstResId 'pxc-shr80000k36vrn' --DstDb transfer_test3 --SrcPassword 000000 --RegionId 'cn-hangzhou' --SrcUserName drds_test --SrcResId 'pxc-shrnv0000kh87z' --SlinkTaskId 'etx-szr2rr6i00000' --DBInstanceName 'pxc-00000000' --DstUserName bbt_cms_prod"

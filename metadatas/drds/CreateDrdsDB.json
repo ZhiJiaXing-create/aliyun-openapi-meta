@@ -1,5 +1,6 @@
 {
   "name": "CreateDrdsDB",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "AccountName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该参数仅在垂直拆分时使用。\n参数表示垂直拆分场景下，拥有所有RDS上相应数据库访问权限的一个账号名称。",
+        "en": "This parameter is used only for vertical partitioning. It specifies the name of an account that has access permissions on the corresponding databases across all RDS instances in a vertical partitioning scenario."
+      }
     },
     {
       "name": "DbInstType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "挂载的存储类型，目前仅支持RDS。",
+        "en": "The type of the attached storage. Currently, only RDS is supported."
+      }
     },
     {
       "name": "DbInstanceIsCreating",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "建库所涉及的RDS是否正在创建中。",
+        "en": "Specifies whether the RDS instances involved in database creation are being created."
+      }
     },
     {
       "name": "DbName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The database name."
+      }
     },
     {
       "name": "DrdsInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "Encode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库所用编码。",
+        "en": "The encoding used by the database."
+      }
     },
     {
       "name": "InstDbName",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "数据库列表。",
+        "en": "The list of databases."
+      },
       "sub_parameters": [
         {
           "name": "DbInstanceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "需要垂直拆分的RDS ID，该参数仅在垂直拆分时使用。",
+            "en": "The ID of the RDS instance to be vertically partitioned. This parameter is used only for vertical partitioning."
+          }
         },
         {
           "name": "ShardDbName",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "拆分数据库列表。",
+            "en": "The list of sharded databases."
+          }
         }
       ]
     },
@@ -64,37 +101,61 @@
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库访问密码。",
+        "en": "The password used to access the database."
+      }
     },
     {
       "name": "RdsInstance",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "RDS实例列表。",
+        "en": "The list of RDS instances."
+      }
     },
     {
       "name": "RdsSuperAccount",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "RDS超级账户信息列表。",
+        "en": "The list of RDS superuser account information."
+      },
       "sub_parameters": [
         {
           "name": "AccountName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "RDS超级账号名称。",
+            "en": "The name of the RDS superuser account."
+          }
         },
         {
           "name": "DbInstanceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "RDS实例ID。",
+            "en": "The RDS instance ID."
+          }
         },
         {
           "name": "Password",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "RDS超级账号密码。",
+            "en": "The password of the RDS superuser account."
+          }
         }
       ]
     },
@@ -102,9 +163,20 @@
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "库的拆分方式。取值范围如下：\n\n- **HORIZONTAL**：表示水平拆分，即通常所说的分库分表方式。\n- **VERTICAL**：表示垂直拆分。",
+        "en": "The sharding method of the database. Valid values:\n\n- **HORIZONTAL**: horizontal sharding, which is commonly known as table and database sharding.\n- **VERTICAL**: vertical partitioning."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据库实例",
+    "en": "Create a database instance"
+  },
   "example": {
     "unifiedCli": "aliyun drds create-drds-db --drds-instance-id drdshbgal1540000 --db-name testdb --encode utf8 --password drds_sample_password --type HORIZONTAL --db-inst-type RDS --db-instance-is-creating false --account-name drds_sample_account --rds-instance drds_sample_rds_id1 --rds-super-account DbInstanceId=drds_sample_rds_id Password=drds_sample_rds_super_password AccountName=drds_sample_rds_super_account --inst-db-name '[{\"ShardDbName\":[\"db1\"],\"DbInstanceId\":\"drds_sample_rds_id\"}]' --api-version 2019-01-23 --region cn-hangzhou",
     "legacyCli": "aliyun drds CreateDrdsDB --region cn-hangzhou --DbInstType RDS --RdsSuperAccount.1.DbInstanceId drds_sample_rds_id --RdsSuperAccount.1.AccountName drds_sample_rds_super_account --Encode utf8 --Type HORIZONTAL --InstDbName.1.ShardDbName.1 db1 --DrdsInstanceId drdshbgal1540000 --RdsInstance.1 drds_sample_rds_id1 --DbInstanceIsCreating false --DbName testdb --InstDbName.1.DbInstanceId drds_sample_rds_id --RdsSuperAccount.1.Password drds_sample_rds_super_password --Password drds_sample_password --AccountName drds_sample_account"

@@ -1,0 +1,90 @@
+{
+  "name": "HistoryThreeElementsVerification",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AuthCode",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "授权码。取值来源：\n- 在号码百科控制台[标签广场](https://dytns.console.aliyun.com/analysis/square)选择**身份证三要素**标签，提交使用申请，申请通过后会获得授权码。\n- 在号码百科控制台[我的申请](https://dytns.console.aliyun.com/analysis/apply)页面，查看已申请通过的**身份证三要素**授权ID。",
+        "en": "The authorization code. You can obtain it from the following sources:\n\n- On the [Tag Plaza](https://dytns.console.aliyun.com/analysis/square) page in the Phone Number Intelligence console, select the **three-element ID verification** tag and submit an application. You will receive an authorization code after the application is approved.\n\n- On the [My Applications](https://dytns.console.aliyun.com/analysis/apply) page in the Phone Number Intelligence console, find the authorization ID for your approved **three-element ID verification** service."
+      }
+    },
+    {
+      "name": "Carrier",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定运营商编码。非必填参数，当客户指定运营商入参时，系统按客户指定的运营商方向进行调度查询。不传则默认按号码归属运营商进行调度。\n\n取值：\n- `CMCC`：中国移动\n- `CUCC`：中国联通\n- `CTCC`：中国电信\n\n> 说明 由于携号转网的存在，当某个号码存在携转时，系统并不知道入参的手机号在目标时间点归属在哪个运营商，因此开放此参数供客户按需指定。如客户不传，系统以号码归属运营商查询；如客户传了，则以客户定义的入参查询。\n>\n> **重要** 不支持指定广电运营商，传入将返回 400 错误。",
+        "en": "The carrier to query. By default, the system queries the number's carrier of record. Specify this parameter to route the query to a specific carrier.\n\nValid values:\n\n- `CMCC`: China Mobile\n\n- `CUCC`: China Unicom\n\n- `CTCC`: China Telecom\n\n> Due to number portability, a ported number's historical carrier may be unknown. Use this parameter to explicitly query a specific carrier. If omitted, the query defaults to the number's current carrier of record.\n>\n> **Important** Specifying China Broadcasting Network is not supported and results in an HTTP 400 error."
+      }
+    },
+    {
+      "name": "CertCode",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "待核验的身份证号。\n\n- 若Mask取值为NORMAL，该字段为明文。",
+        "en": "The ID number to verify.\n\n- If `Mask` is set to `NORMAL`, the value of this parameter is in plaintext."
+      }
+    },
+    {
+      "name": "InputNumber",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "待查询的号码。\n\n- 若Mask取值为NORMAL，该字段为11位手机号码。",
+        "en": "The phone number to query.\n\n- If `Mask` is set to `NORMAL`, this parameter must be an 11-digit mobile phone number."
+      }
+    },
+    {
+      "name": "Mask",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "加密方式。取值：\n\n- **NORMAL**：不加密",
+        "en": "The encryption method. Valid value:\n\n- **NORMAL**: The phone number is not encrypted."
+      }
+    },
+    {
+      "name": "Name",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "待核验的姓名。",
+        "en": "The name to verify."
+      }
+    },
+    {
+      "name": "VerificationTime",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "历史核验时间，精确到秒。格式：yyyyMMddHHmmss。 如果没有精确到秒的信息，时分秒部分填充 000000。 说明 例如：20230615000000 表示核验 2023 年 6 月 15 日的持有关系。",
+        "en": "The historical point in time to verify, in `yyyyMMddHHmmss` format. If the specific time of day is unknown, set the `HHmmss` portion to `000000`. For example, `20230615000000` verifies ownership as of June 15, 2023."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "历史三要素核验",
+    "en": "HistoryThreeElementsVerification"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 在使用本接口前，请确保已了解[产品定价](https://help.aliyun.com/zh/cpns/product-overview/pricing-of-cpns)。\n- 使用前需登录号码百科控制台，在[标签广场](https://dytns.console.aliyun.com/analysis/square)页面申请开通相应标签。\n- 当 `Code='OK'` 且 `IsConsistent != 0` 时计费，其他返回结果不计费。\n- 不支持广电号码（192 开头）的核验，入参为 192 号段将返回 400 错误。\n- 携号转网可能导致实际运营商与当前归属运营商不符，可通过 `Carrier` 参数指定运营商进行定向查询。\n- 单用户 QPS 限制为 200 次/秒，超过限制将被限流。\n- 授权信息中，操作为 `dytns:HistoryThreeElementsVerification`，访问级别为读取（Read），资源类型为全部资源。",
+    "en": "## Usage notes\n\n- Before you use this API, ensure you understand its [pricing](https://help.aliyun.com/zh/cpns/product-overview/pricing-of-cpns).\n\n- Before you use this API, log on to the Phone Number Intelligence console and apply for the required tag on the [Tag Plaza](https://dytns.console.aliyun.com/analysis/square) page.\n\n- You are charged for a call only when the response returns `Code='OK'` and `IsConsistent != 0`. No charges are incurred for any other results.\n\n- Verification of China Broadcasting Network numbers (numbers with the 192 prefix) is not supported. If you provide a number with the 192 prefix, an HTTP 400 error is returned.\n\n- Due to number portability, the actual carrier may differ from the current carrier of record. You can use the `Carrier` parameter to route the query to a specific carrier.\n\n- The queries per second (QPS) limit per user is 200. Requests that exceed this limit are throttled.\n\n- In the authorization information, the action is `dytns:HistoryThreeElementsVerification`, the access level is Read, and the resource type is All Resources."
+  }
+}

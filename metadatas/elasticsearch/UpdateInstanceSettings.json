@@ -1,5 +1,6 @@
 {
   "name": "UpdateInstanceSettings",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "PATCH|POST",
   "pathPattern": "/openapi/instances/[InstanceId]/instance-settings",
@@ -8,33 +9,64 @@
       "name": "InstanceId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定待更新的YML参数的值。",
+        "en": "The values of the YML parameters that you want to update."
+      }
     },
     {
       "name": "clientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性。由客户端生成该参数值，要保证在不同请求间唯一，最大不超过64个ASCII字符。",
+        "en": "A client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制变更",
+        "en": "Specifies whether to forcefully apply the change."
+      }
     },
     {
       "name": "updateStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Elasticsearch的变更策略（例如，索引更新、集群升级、服务部署时的变更方式）。取值如下：\n- blue_green：蓝绿变更，可通过并行运行两个完全相同的环境（蓝环境和绿环境），实现无缝切换。\n- normal：原地变更，直接在当前环境进行变更（例如，升级、扩缩容），无需额外资源。\n- intelligent：智能变更，系统根据变更类型和环境状态自动分析，动态选择最优变更方式（即蓝绿变更或原地变更）。",
+        "en": "The change strategy for Elasticsearch (for example, the change method used during index updates, cluster upgrades, or service deployments). Valid values:\n- blue_green: blue-green change. Implements seamless switchover by running two identical environments (blue and green) in parallel.\n- normal: in-place change. Performs changes directly in the current environment (for example, upgrades or scaling) without requiring additional resources.\n- intelligent: intelligent change. The system automatically analyzes the change type and environment state, and dynamically selects the optimal change method (blue-green change or in-place change)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例的YML参数配置",
+    "en": "Modify YML parameter settings of an instance"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，请注意：<br>\n实例状态为生效中（activating）、失效（invalid）和冻结（inactive）时，无法更新配置。",
+    "en": "When you invoke this operation, note the following:<br>\nYou cannot update the configuration when the instance status is activating, invalid, or inactive (freeze)."
+  },
   "example": {
     "unifiedCli": "aliyun elasticsearch update-instance-settings --instance-id es-cn-nif1q9o8r00080000 --update-strategy normal --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF0000 --es-config thread_pool.write.queue_size=500 --biz-force true --api-version 2017-06-13 --region cn-hangzhou",
     "legacyCli": "aliyun elasticsearch POST /openapi/instances/es-cn-nif1q9o8r00080000/instance-settings --region cn-hangzhou --updateStrategy normal --clientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF0000' --force true --header \"Content-Type=application/json\" --body {\"esConfig\":{\"thread_pool.write.queue_size\":500}}"

@@ -1,5 +1,6 @@
 {
   "name": "CreateUserProvisioning",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DeletionStrategy",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "删除策略。删除RAM用户同步时，对已同步的RAM用户的处理策略。取值：\n\n- Delete：删除。删除RAM用户同步时，会删除从云SSO已经同步到RAM中的RAM用户。\n- Keep：保留。删除RAM用户同步时，会保留从云SSO已经同步到RAM中的RAM用户。",
+        "en": "The deletion policy. The policy is used to manage synchronized users when you delete the RAM user provisioning. Valid values:\n\n- Delete: When you delete the RAM user provisioning, the system deletes the synchronized users.\n\n- Keep: When you delete the RAM user provisioning, the system retains the synchronized users."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述。",
+        "en": "The description."
+      }
     },
     {
       "name": "DirectoryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目录ID。",
+        "en": "The ID of the resource directory."
+      }
     },
     {
       "name": "DuplicationStrategy",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "冲突策略。当云SSO用户同步到RAM时，如果RAM中存在同名用户时的处理策略。取值：\n\n- KeepBoth：两者都保留。当云SSO用户被同步到RAM时，如果RAM已经存在同名用户，则对云SSO用户的用户名添加后缀`_sso`后尝试创建该用户名的RAM用户。\n- TakeOver：替换。当云SSO用户被同步到RAM时，如果RAM已经存在同名用户，则直接将已经存在的RAM用户替换为云SSO同步用户。",
+        "en": "The conflict handling policy. The policy is used when a RAM user has the same username as the CloudSSO user who is synchronized to RAM. Valid values:\n\n- KeepBoth: When a CloudSSO user is synchronized to RAM, if a RAM user who has the same username as the CloudSSO user exists, the system creates a RAM user whose username is the username of the CloudSSO user plus the suffix `_sso`.\n\n- TakeOver: When a CloudSSO user is synchronized to RAM, if a RAM user who has the same username as the CloudSSO user exists, the system replaces the RAM user with the CloudSSO user."
+      }
     },
     {
       "name": "PrincipalId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RAM用户同步的身份ID。取值：\n\n- 当`PrincipalType`取值为`Group`时，该值为云SSO用户组ID（g-\\*\\*\\*\\*\\*\\*\\*\\*）。\n- 当`PrincipalType`取值为`User`时，该值为云SSO用户ID（u-\\*\\*\\*\\*\\*\\*\\*\\*）。",
+        "en": "The identity ID of the RAM user provisioning. Valid values:\n\n- If you set the `PrincipalType` parameter to `Group`, the value of this parameter is the ID of a CloudSSO user group (g-\\*\\*\\*\\*\\*\\*\\*\\*).\n\n- If you set the `PrincipalType` parameter to `User`, the value of this parameter is the ID of a CloudSSO user (u-\\*\\*\\*\\*\\*\\*\\*\\*)."
+      }
     },
     {
       "name": "PrincipalType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RAM用户同步的身份类型。取值：\n- User：表示该RAM用户同步的身份是云SSO用户。\n- Group：表示该RAM用户同步的身份是云SSO用户组。",
+        "en": "The identity type of the RAM user provisioning. Valid values:\n\n- User: The identity of the RAM user provisioning is a CloudSSO user.\n\n- Group: The identity of the RAM user provisioning is a CloudSSO user group."
+      }
     },
     {
       "name": "TargetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RAM用户同步的目标ID。目前取值为RD账号ID。",
+        "en": "The ID of the object for which you create the RAM user provisioning. The value is fixed as the ID of the member in the resource directory."
+      }
     },
     {
       "name": "TargetType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RAM用户同步的目标类型。目前取值为`RD-Account`。",
+        "en": "The object for which you create the RAM user provisioning. The value is fixed as `RD-Account`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建RAM用户同步",
+    "en": "CreateUserProvisioning"
+  },
+  "descriptions": {
+    "zh": "您可以创建RAM用户同步，在目标RD账号中同步创建一个与云SSO用户同名的RAM用户，然后通过该RAM用户访问该RD账号中的资源。",
+    "en": "You can create a RAM user provisioning for a member in your resource directory to create a RAM user that has the same username as a CloudSSO user. This way, the CloudSSO user can access the resources of the member as the RAM user."
+  },
   "example": {
     "unifiedCli": "aliyun cloudsso create-user-provisioning --directory-id d-003qew840000 --duplication-strategy KeepBoth --deletion-strategy Delete --description This_is_a_user_provisioning. --principal-id g-02ha881d00000 --principal-type Group --target-id 1743382000000 --target-type RD-Account --region cn-hangzhou",
     "legacyCli": "aliyun cloudsso CreateUserProvisioning --region cn-hangzhou --DirectoryId 'd-003qew840000' --Description 'This_is_a_user_provisioning.' --PrincipalId 'g-02ha881d00000' --TargetType 'RD-Account' --DuplicationStrategy KeepBoth --DeletionStrategy Delete --PrincipalType Group --TargetId 1743382000000"

@@ -1,5 +1,6 @@
 {
   "name": "CreateAIDBClusterTask",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,70 +9,124 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "DBInstanceClass",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例规格。",
+        "en": "The instance type."
+      }
     },
     {
       "name": "DatasetPath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "训练数据集ID，微调时必传",
+        "en": "The training dataset ID. This parameter is required for fine-tuning."
+      }
     },
     {
       "name": "EvalDatasetPath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "验证数据集ID，评测时必传",
+        "en": "The validation dataset ID. This parameter is required for evaluation."
+      }
     },
     {
       "name": "KubeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "模型服务类型，取值如下：\n * **aitrain**：模型算子调优",
+        "en": "The model service type. Valid values:\n * **aitrain**: model operator tuning"
+      }
     },
     {
       "name": "ModelName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "模型名称\n* **预置模型传入所选的模型名**\n* **自定义模型传入模型所在路径（冷存版实例中训练后的模型）**",
+        "en": "The model name.\n* **For a preset model, specify the name of the selected model.**\n* **For a custom model, specify the path where the model is stored (the model trained in a cold storage instance).**"
+      }
     },
     {
       "name": "ModelSource",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "模型来源，取值如下：\n* **public**：预置模型\n* **custom**：自定义模型",
+        "en": "The model source. Valid values:\n* **public**: preset model\n* **custom**: custom model"
+      }
     },
     {
       "name": "ModelType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义模型类型",
+        "en": "The custom model type."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "RunningParameter",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "运行参数，json字符串",
+        "en": "The running parameters in JSON string format."
+      }
     },
     {
       "name": "SecurityGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全组ID",
+        "en": "The security group ID."
+      }
     },
     {
       "name": "TaskName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "模型服务描述",
+        "en": "The description of the model service."
+      }
+    },
+    {
+      "name": "TuneArch",
       "position": "Query",
       "type": "String",
       "required": false
@@ -80,23 +135,42 @@
       "name": "VPCId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "专有网络ID。",
+        "en": "The virtual private cloud (VPC) ID."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定的虚拟交换机ID。",
+        "en": "The vSwitch ID."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可用区ID。",
+        "en": "The zone ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建模型算子实例",
+    "en": "Create a model operator instance"
+  },
   "example": {
     "unifiedCli": "aliyun polardb create-aidb-cluster-task --biz-region-id cn-hangzhou --db-cluster-id pc-0000000000000000 --model-source public --model-type qwen3 --model-name Qwen3-8B --dataset-path pds-2zetrain000 --eval-dataset-path pds-2zetrain000 --running-parameter 'split_dataset_ratio_:_0.1,_train_mode_:_grpo_,_train_type_:_lora_,_num_epochs_:_1,_batch_size_:_2,_eval_batch_size_:_2,_num_generations_:_2,_learning_rate_:_1e-6_,_data_file_list_:_test-00000-of-00001.jsonl#1000_,_lora_rank_:_8,_lora_alpha_:_32,_external_plugins_:_/plugin/train/plugin.py_,_reward_funcs_:_format,external_countdown_,_gpu_memory_utilization_:_0.4' --kube-type aitrain --task-name xxxx --zone-id cn-hangzhou-k --vpc-id vpc-0000000000000000000 --vswitch-id vsw-000000000000000000000 --security-group-id sg-bp00000000000000 --db-instance-class polar.pg.g6.4xlarge.guh --region cn-hangzhou",
-    "legacyCli": "aliyun polardb CreateAIDBClusterTask --region cn-hangzhou --ModelName 'Qwen3-8B' --KubeType aitrain --ZoneId 'cn-hangzhou-k' --VPCId 'vpc-0000000000000000000' --DBInstanceClass 'polar.pg.g6.4xlarge.guh' --VSwitchId 'vsw-000000000000000000000' --SecurityGroupId 'sg-bp00000000000000' --DBClusterId 'pc-0000000000000000' --DatasetPath 'pds-2zetrain000' --EvalDatasetPath 'pds-2zetrain000' --ModelSource public --RunningParameter 'split_dataset_ratio_:_0.1,_train_mode_:_grpo_,_train_type_:_lora_,_num_epochs_:_1,_batch_size_:_2,_eval_batch_size_:_2,_num_generations_:_2,_learning_rate_:_1e-6_,_data_file_list_:_test-00000-of-00001.jsonl#1000_,_lora_rank_:_8,_lora_alpha_:_32,_external_plugins_:_/plugin/train/plugin.py_,_reward_funcs_:_format,external_countdown_,_gpu_memory_utilization_:_0.4' --TaskName xxxx --ModelType qwen3 --RegionId 'cn-hangzhou'"
+    "legacyCli": "aliyun polardb CreateAIDBClusterTask --region cn-hangzhou --ModelName 'Qwen3-8B' --KubeType aitrain --ZoneId 'cn-hangzhou-k' --VPCId 'vpc-0000000000000000000' --DBInstanceClass 'polar.pg.g6.4xlarge.guh' --VSwitchId 'vsw-000000000000000000000' --SecurityGroupId 'sg-bp00000000000000' --DBClusterId 'pc-0000000000000000' --DatasetPath 'pds-2zetrain000' --EvalDatasetPath 'pds-2zetrain000' --ModelSource public --TuneArch 'example-string' --RunningParameter 'split_dataset_ratio_:_0.1,_train_mode_:_grpo_,_train_type_:_lora_,_num_epochs_:_1,_batch_size_:_2,_eval_batch_size_:_2,_num_generations_:_2,_learning_rate_:_1e-6_,_data_file_list_:_test-00000-of-00001.jsonl#1000_,_lora_rank_:_8,_lora_alpha_:_32,_external_plugins_:_/plugin/train/plugin.py_,_reward_funcs_:_format,external_countdown_,_gpu_memory_utilization_:_0.4' --TaskName xxxx --ModelType qwen3 --RegionId 'cn-hangzhou'"
   }
 }

@@ -1,5 +1,6 @@
 {
   "name": "CancelDataFlowTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，从您的客户端生成一个参数值，确保不同的请求间该参数值唯一。\n\nClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。\n\n> 若用户未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "A client-generated token that you can use to ensure the idempotence of the request. The token must be unique across different requests.\n\nThe `ClientToken` value must be an ASCII string of 64 characters or less. For more information, see [How to ensure idempotence](~~25693~~).\n\n> If you do not specify this parameter, the system automatically uses the request ID as the `ClientToken`. The request ID is unique for each request."
+      }
     },
     {
       "name": "DataFlowId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据流动ID。",
+        "en": "The data flow ID."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检。\n\n预检操作会帮助您检查参数有效性、校验库存等，并不会实际创建实例，也不会产生费用。\n\n取值：\n\n- true：发送检查请求，不会创建实例。检查项包括是否填写了必需参数、请求格式、业务限制和NAS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回200 HttpCode，但FileSystemId为空。\n- false（默认值）：发送正常请求，通过检查后直接创建实例。",
+        "en": "Specifies whether to perform a dry run for the request.\n\nA dry run checks for parameter validity and resource availability without actually canceling the task or incurring charges.\n\nValid values:\n\n- `true`: Performs a dry run. The system checks the request for potential issues, including missing parameters, invalid formats, and service limits. If the check fails, the system returns an error message; otherwise, it returns a success code.\n\n- `false` (default): Sends a normal request. After the request passes the check, the task is canceled."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。\n\n- CPFS通用版：必须以`cpfs-`开头，例如cpfs-125487\\*\\*\\*\\*。\n\n- CPFS智算版：必须以`bmcpfs-`开头，例如bmcpfs-0015\\*\\*\\*\\*。",
+        "en": "The file system ID.\n\n- For a general-purpose CPFS instance, the ID must start with `cpfs-`, for example, `cpfs-125487****`.\n\n- For a CPFS for AI Computing instance, the ID must start with `bmcpfs-`, for example, `bmcpfs-0015****`."
+      }
     },
     {
       "name": "TaskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据流动任务ID。",
+        "en": "The data flow task ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "取消数据流动任务",
+    "en": "CancelDataFlowTask"
+  },
+  "descriptions": {
+    "zh": "- 仅CPFS 2.2.0及以上版本、CPFS智算版2.4.0及以上版本支持数据流动任务。您可以在控制台文件系统详情页面查看版本信息。\n- 仅支持取消`Pending（等待）`状态的数据流动任务。\n- 取消数据流动任务一般耗时5～10分钟，您可通过[DescribeDataFlowTasks](~~2402275~~)查询任务执行状态。\n- 如果数据流动流式任务中有正在运行的流式子任务，则不支持取消流式任务。否则会返回InvalidStatus.ResourceMismatch报错信息。",
+    "en": "- Data flow tasks are supported only by CPFS 2.2.0 or later and CPFS for AI Computing 2.4.0 or later. The file system details page in the console displays the version information.\n\n- A data flow task can be canceled only if it is in the `Pending or Executing` state.\n\n- Canceling a data flow task typically takes 5 to 10 minutes. Call the [DescribeDataFlowTasks](~~2402275~~) operation to query the task execution status.\n\n- You cannot cancel a streaming task if it has running streaming subtasks. Otherwise, the system returns an InvalidStatus.ResourceMismatch error."
+  },
   "example": {
     "unifiedCli": "aliyun nas cancel-data-flow-task --file-system-id cpfs-099394bd928c0000 --data-flow-id df-194433a5be310000 --task-id task-38aa8e890f450000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun nas CancelDataFlowTask --region cn-hangzhou --TaskId 'task-38aa8e890f450000' --DryRun false --FileSystemId 'cpfs-099394bd928c0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DataFlowId 'df-194433a5be310000'"

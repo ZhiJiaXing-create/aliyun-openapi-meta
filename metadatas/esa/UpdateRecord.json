@@ -1,5 +1,6 @@
 {
   "name": "UpdateRecord",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "AuthConf",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "CNAME记录的源站鉴权信息。",
+        "en": "The origin authentication information of the CNAME record."
+      }
     },
     {
       "name": "BizName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "记录加速时的业务场景，不开启加速的记录不需要传，取值：\n- **video_image**：视频图片。\n- **api**：api接口。\n- **web**：web网页。",
+        "en": "The business scenario for record acceleration. This parameter is not required for records without acceleration enabled. Valid values:\n- **video_image**: video and image.\n- **api**: API.\n- **web**: web page."
+      }
     },
     {
       "name": "Comment",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "记录的备注。",
+        "en": "The comment for the record."
+      }
     },
     {
       "name": "Data",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "记录的DNS信息。不同类型的记录，该字段需要传的内容也不同，请参考<props=\"china\">[说明文档](~~2708761~~)</props><props=\"intl\">[说明文档](https://www.alibabacloud.com/help/doc-detail/2708761.html)</props>。",
+        "en": "The DNS information of the record. The content varies depending on the record type. For more information, see <props=\"china\">[documentation](~~2708761~~)</props><props=\"intl\">[documentation](https://www.alibabacloud.com/help/doc-detail/2708761.html)</props>."
+      }
     },
     {
       "name": "HostPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "回源HOST策略，记录类型为CNAME时生效，设置回源时带HOST的策略，有两种模式：\n\n- **follow_hostname**: 跟随主机记录。\n- **follow_origin_domain**: 跟随源站域名。",
+        "en": "The back-to-origin HOST policy. This parameter takes effect when the record type is CNAME. Settings the HOST policy for back-to-origin requests. Valid values:\n\n- **follow_hostname**: follows the host record.\n- **follow_origin_domain**: follows the Origin Domain Name."
+      }
     },
     {
       "name": "Proxied",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "记录是否开启代理加速。只有CNAME记录与A/AAAA记录可以开启代理加速。取值：\n- **true**：开启代理。\n- **false**：关闭代理加速。",
+        "en": "Specifies whether to enable proxy acceleration for the record. Only CNAME records and A/AAAA records support proxy acceleration. Valid values:\n- **true**: Enable proxy acceleration.\n- **false**: Disable proxy acceleration."
+      }
     },
     {
       "name": "RecordId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "记录的ID，可以通过[ListRecords](~~2850265~~)获取。",
+        "en": "The ID of the record. You can call [ListRecords](~~2850265~~) to obtain the record ID."
+      }
     },
     {
       "name": "SourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "CNAME记录的源站类型。添加CNAME记录时，需要填写此参数。取值：\n\n- **OSS**：OSS源站。\n- **S3**：S3源站。\n- **LB**：负载均衡器源站。\n- **OP**：源地址池源站。\n- **Domain**：普通域名源站。\n\n该参数不传或传空时，则默认为Domain，即普通域名源站类型。",
+        "en": "The origin server type of the CNAME record. This parameter is required when you add a CNAME record. Valid values:\n\n- **OSS**: OSS origin server.\n- **S3**: S3 origin server.\n- **LB**: load balancing origin server.\n- **OP**: IPAM pool origin server.\n- **Domain**: standard domain name origin server.\n\nIf this parameter is not specified or is left empty, the default value is Domain, which indicates a standard domain name origin server type."
+      }
     },
     {
       "name": "Ttl",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "记录的过期时间，单位秒。范围为**30~86400**，或为1。当取值为1时，表示记录的过期时间为自动。",
+        "en": "The time-to-live (TTL) of the record, in seconds. Valid values: **30 to 86400**, or 1. A value of 1 indicates that the TTL of the record is automatically determined."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "记录的 DNS 类型。例如A/AAAA、CNAME、TXT 等。",
+        "en": "The DNS type of the record, such as A/AAAA, CNAME, or TXT."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新解析记录",
+    "en": "Update a DNS record"
+  },
+  "descriptions": {
+    "zh": "此API允许您更新DNS记录，包括但不限于A/AAAA、CNAME、NS、MX、TXT、CAA、SRV、URI等类型。您可以通过传递相应的记录值、优先级、标志位等字段来修改记录内容。对于需要鉴权的CNAME源站（如OSS、S3），API还支持配置源站鉴权信息，确保安全访问。\n\n### 注意事项\n\n- 记录值（Value）与记录类型需匹配，如CNAME记录应对应目标域名。\n- 某些记录类型（如MX、SRV）需指定优先级（Priority）。\n- CAA记录需提供Flag、Tag等特定字段。\n- 更新CERT、SSHFP等安全记录时，需准确设置Type、Algorithm等字段。\n- 使用OSS或S3作为源站时，根据权限配置AuthConf中的鉴权详情。",
+    "en": "This API operation allows you to update a DNS record, including but not limited to A/AAAA, CNAME, NS, MX, TXT, CAA, SRV, and URI record types. You can modify the record content by specifying the corresponding record value, priority, flag, and other fields. For CNAME origin servers that require authentication, such as OSS and S3, this API operation also supports configuring origin authentication information to ensure secure access.\n\n### Before you begin\n\n- The record value (Value) must match the record type. For example, a CNAME record must correspond to a target domain name.\n- Certain record types, such as MX and SRV, require a priority (Priority) value.\n- CAA records require specific fields such as Flag and Tag.\n- When updating security records such as CERT and SSHFP, accurately set the Type, Algorithm, and other fields.\n- When using OSS or S3 as the origin server, configure the authentication details in AuthConf based on the permission settings."
+  },
   "example": {
     "unifiedCli": "aliyun esa update-record --record-id 1234567890123 --ttl 30 --proxied true --type A/AAAA --data value=2.2.2.2 --source-type OSS --biz-name web --comment This_is_a_remark. --auth-conf SecretKey=u0Nkg5gBK0000000QF5wvKMM504JUHt Version=us-east-1 Region=v2 AuthType=private AccessKey=VIxuvJSA2S03f000000kp208dy5w7 --host-policy follow_origin_domain --region cn-hangzhou",
     "legacyCli": "aliyun esa UpdateRecord --region cn-hangzhou --Comment 'This_is_a_remark.' --Proxied true --Type 'A/AAAA' --SourceType OSS --Data '{\"value\":\"2.2.2.2\"}' --BizName web --HostPolicy follow_origin_domain --RecordId 1234567890123 --Ttl 30 --AuthConf '{\"SecretKey\":\"u0Nkg5gBK0000000QF5wvKMM504JUHt\",\"Version\":\"us-east-1\",\"Region\":\"v2\",\"AuthType\":\"private\",\"AccessKey\":\"VIxuvJSA2S03f000000kp208dy5w7\"}'"

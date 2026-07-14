@@ -1,5 +1,6 @@
 {
   "name": "PushNoticeToiOS",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ApnsEnv",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "iOS的通知是通过APNS中心来发送的，需要填写对应的环境信息。\n- DEV：表示开发环境\n- PRODUCT：表示生产环境",
+        "en": "iOS notifications use Apple’s APNs service. Specify the environment.\n\n- DEV: Development environment.\n\n- PRODUCT: Production environment."
+      }
     },
     {
       "name": "AppKey",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "AppKey信息。",
+        "en": "Your AppKey."
+      }
     },
     {
       "name": "Body",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "推送的通知内容。",
+        "en": "The body text of the notification."
+      }
     },
     {
       "name": "ExtParameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义的KV结构，开发者扩展用。\n\n> 针对iOS设备，该参数要以JSON map的格式传入，否则会解析出错。",
+        "en": "A custom key-value map for developer extensions.\n\n> For iOS devices, pass this parameter as a JSON object. Otherwise, parsing fails."
+      }
     },
     {
       "name": "JobKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "推送任务自定义标识，当JobKey不为空时，回执日志中会附带该字段。查看回执日志参见[回执日志](~~434651~~)。",
+        "en": "A custom ID for the push task. If you specify a JobKey, the delivery log includes this field. For more information, see [Delivery logs](~~434651~~)."
+      }
     },
     {
       "name": "Target",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "推送目标。可取值：\n\n- **DEVICE**：根据设备推送\n- **ACCOUNT**：根据账号推送\n- **ALIAS**：根据别名推送\n- **TAG**：根据标签推送\n- **ALL**：推送给全部设备",
+        "en": "The target of the push. Valid values:\n\n- **DEVICE**: Push to specific devices.\n\n- **ACCOUNT**: Push to specific accounts.\n\n- **ALIAS**: Push to users with specific aliases.\n\n- **TAG**: Push to users with specific tags.\n\n- **ALL**: Push to all devices."
+      }
     },
     {
       "name": "TargetValue",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "根据Target来设定，多个值使用逗号分隔，超过限制需要分多次推送。\n\n- Target=DEVICE，值如`deviceid111,deviceid1111`（最多支持1000个）。\n- Target=ACCOUNT，值如`account111,account222`（最多支持1000个）。\n- Target=ALIAS，值如`alias111,alias222`（最多支持1000个）。\n- Target=TAG，支持单Tag和多Tag，格式请参见[标签格式](~~434847~~)。\n- Target=ALL，值为**ALL**。",
+        "en": "Values depend on the Target value. Separate multiple values with commas. If you exceed the limit, send multiple requests.\n\n- If Target=DEVICE, use values such as `deviceid111,deviceid1111`. Maximum: 1000.\n\n- If Target=ACCOUNT, use values such as `account111,account222`. Maximum: 1000.\n\n- If Target=ALIAS, use values such as `alias111,alias222`. Maximum: 1000.\n\n- If Target=TAG, support single or multiple tags. For format details, see [Tag format](~~434847~~).\n\n- If Target=ALL, set this to **ALL**."
+      }
     },
     {
       "name": "Title",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "推送的通知的标题。\n- iOS 10+通知显示标题。\n- iOS 8.2 <= iOS系统 < iOS 10：替换通知应用名称。",
+        "en": "The title of the notification.\n\n- iOS 10 and later: Displays as the notification title.\n\n- iOS 8.2 through iOS 9.x: Replaces the app name in the notification."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "推送通知给iOS设备",
+    "en": "Push Notification to iOS Devices"
+  },
+  "descriptions": {
+    "zh": "**这个接口即将废弃，请使用具备更多推送能力的[高级推送接口](~~2249916~~)，在该接口中指定推送平台`DeviceType`为`iOS`，推送类型`PushType`为`NOTICE`，即可达到同样效果。**\n\n**请确保在使用该接口前，以充分了解EMAS移动推送产品的[收费方式和价格](~~434638~~)。**",
+    "en": "**This operation is deprecated. Use the [Advanced Push API](~~2249916~~) instead. Set the `DeviceType` parameter to `iOS` and the `PushType` parameter to `NOTICE`.**\n\n**Before you use this operation, review the [pricing and billing model](~~434638~~) for EMAS Mobile Push.**"
+  },
   "example": {
     "unifiedCli": "aliyun push push-notice-to-ios --app-key 24780725 --target ALL --target-value ALL --apns-env DEV --title title --biz-body Hello_World --job-key 123 --ext-parameters k1_:_ios_,_k2_:_v2 --region cn-hangzhou",
     "legacyCli": "aliyun push PushNoticeToiOS --region cn-hangzhou --Target ALL --TargetValue ALL --JobKey 123 --AppKey 24780725 --Title title --ExtParameters 'k1_:_ios_,_k2_:_v2' --Body Hello_World --ApnsEnv DEV"

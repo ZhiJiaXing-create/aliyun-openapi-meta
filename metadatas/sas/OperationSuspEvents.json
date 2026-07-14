@@ -1,5 +1,6 @@
 {
   "name": "OperationSuspEvents",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "From",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求来源标识。\n\n固定取值为**sas**，表示来自云安全中心客户端的请求。",
+        "en": "The request source identifier.\n\nSet this parameter to **sas**, which indicates a request from the Security Center client."
+      }
     },
     {
       "name": "Operation",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设置要对告警进行的操作。取值：\n\n- **deal**：处理告警（隔离）\n- **ignore**：忽略\n- **mark\\_mis_info**：标记为误报（加白名单）\n- **rm\\_mark\\_mis_info**：取消标记为误报（取消加白名单）\n- **offline_handled**：标记为已处理",
+        "en": "The operation to perform on the alert. Valid values:\n\n- **deal**: handles the alert (quarantine).\n- **ignore**: ignores the alert.\n- **mark\\_mis_info**: marks the alert as a false positive (adds it to the whitelist).\n- **rm\\_mark\\_mis_info**: unmarks the alert as a false positive (removes it from the whitelist).\n- **offline_handled**: marks the alert as handled."
+      }
     },
     {
       "name": "SourceIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问源的IP地址。",
+        "en": "The IP address of the access source."
+      }
     },
     {
       "name": "SubOperation",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置对告警事件进行隔离时进行的子操作类型。取值：\n\n- **killAndQuaraFileByPidAndMd5andPath**：根据PID结束该进程的运行，并隔离该进程的源文件。\n- **quaraFileByMd5andPath**：隔离该进程的源文件。\n- **killAndQuaraFileByMd5andPath**：结束该进程的运行，并隔离该进程的源文件。",
+        "en": "The sub-operation type to perform when quarantining the alert event. Valid values:\n\n- **killAndQuaraFileByPidAndMd5andPath**: terminates the process by PID and quarantines the source file of the process.\n- **quaraFileByMd5andPath**: quarantines the source file of the process.\n- **killAndQuaraFileByMd5andPath**: terminates the process and quarantines the source file of the process."
+      }
     },
     {
       "name": "SuspiciousEventIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "告警事件ID列表。\n\n> 您可以调用[DescribeSuspEvents](~~DescribeSuspEvents~~)从返回参数SecurityEventIds处获取告警事件ID。",
+        "en": "The list of alert event IDs.\n\n> You can call [DescribeSuspEvents](~~DescribeSuspEvents~~) to obtain alert event IDs from the SecurityEventIds response parameter."
+      }
     },
     {
       "name": "WarnType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "处理的异常事件的类型。取值：\n\n- **alarm**：告警\n- **不填**：异常",
+        "en": "The type of the exception event to handle. Valid values:\n\n- **alarm**: alert.\n- **Empty**: exception."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量处理异常事件",
+    "en": "Handle alert events in batches"
+  },
   "example": {
     "unifiedCli": "aliyun sas operation-susp-events --source-ip 1.2.XX.XX --suspicious-event-ids 290852 --operation deal --sub-operation killAndQuaraFileByPidAndMd5andPath --from sas --warn-type alarm --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas OperationSuspEvents --region cn-hangzhou --WarnType alarm --SuspiciousEventIds 290852 --SourceIp '1.2.XX.XX' --Operation deal --From sas --SubOperation killAndQuaraFileByPidAndMd5andPath"

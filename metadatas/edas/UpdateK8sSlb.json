@@ -1,5 +1,6 @@
 {
   "name": "UpdateK8sSlb",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "PUT",
   "pathPattern": "/pop/v5/k8s/acs/k8s_slb_binding",
@@ -8,69 +9,120 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID，可以通过调用[ListApplication](~~149390~~)获取。",
+        "en": "The ID of the application. Call [ListApplication](~~149390~~) to get this ID."
+      }
     },
     {
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID，可以通过调用[GetK8sCluster](~~181437~~)获取。",
+        "en": "The ID of the cluster. Call [GetK8sCluster](~~181437~~) to get this ID."
+      }
     },
     {
       "name": "DisableForceOverride",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "禁止覆盖SLB监听配置：\n* true：禁止覆盖。\n* false：允许覆盖。",
+        "en": "Specifies whether to disable overwriting the SLB listener configuration.\n\n- true: Disables overwriting.\n\n- false: Allows overwriting."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "前端端口，范围1~65535。",
+        "en": "The frontend port. The value ranges from 1 to 65535."
+      }
     },
     {
       "name": "Scheduler",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SLB调度算法。不填写则默认值为rr。支持负载均衡支持轮询 (rr)、加权轮询 (wr) 两种调度算法。\n\n- 加权轮询 (wrr)：权重值越高的后端服务器，被轮询到的次数（概率）也越高。\n- 轮询 (rr)：按照访问顺序依次将外部请求分发到后端服务器。",
+        "en": "The scheduling algorithm of the SLB instance. If you do not set this parameter, rr is used. The supported algorithms are round-robin (rr) and weighted round-robin (wrr).\n\n- Weighted round-robin (wrr): Backend servers with higher weights receive more requests.\n\n- Round-robin (rr): Requests are distributed to backend servers in sequence."
+      }
     },
     {
       "name": "ServicePortInfos",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "多个端口需求以及非TCP协议需求填写字段。必须符合JsonArray格式，参考示例：\n[{\"targetPort\":8080,\"port\":82,\"loadBalancerProtocol\":\"TCP\"},{\"port\":81,\"certId\":\"1362469756373809_16c185d6fa2_1914500329_-xxxxxxx\",\"targetPort\":8181,\"lo\nadBalancerProtocol\":\"HTTPS\"}]\n- port：必填，前端端口，范围1~65535。不能重复。\n- targetPort：必填，后端端口，范围1~65535。\n- loadBalancerProtocol：必填，只支持TCP和HTTPS，对于HTTP类型的填写TCP即可。\n- certId：如果是HTTPS，则该参数必填证书ID，可以在slb控制台进行购买。\n- 注意该参数用来支持多端口支持，需要配合appId、clusterId、type、slbId进行使用。",
+        "en": "This parameter is used for scenarios that involve multiple ports or protocols other than TCP. The value must be a JSON array. For example:\n\\[{\"targetPort\":8080,\"port\":82,\"loadBalancerProtocol\":\"TCP\"},{\"port\":81,\"certId\":\"1362469756373809\\_16c185d6fa2\\_1914500329\\_-xxxxxxx\",\"targetPort\":8181,\"loadBalancerProtocol\":\"HTTPS\"}]\n\n- port: Required. The frontend port. The value ranges from 1 to 65535. Each port number must be unique.\n\n- targetPort: Required. The backend port. The value ranges from 1 to 65535.\n\n- loadBalancerProtocol: Required. Only TCP and HTTPS are supported. For HTTP listeners, set this parameter to TCP.\n\n- certId: This parameter is required for HTTPS listeners. It specifies the ID of a certificate that you can purchase in the SLB console.\n\n- Note: This parameter is used to support multiple ports and must be used with the appId, clusterId, type, and slbId parameters."
+      }
     },
     {
       "name": "SlbName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SLB实例名称。",
+        "en": "The name of the SLB instance."
+      }
     },
     {
       "name": "SlbProtocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SLB协议，目前仅支持TCP。",
+        "en": "The protocol of the SLB instance. Currently, only TCP is supported."
+      }
     },
     {
       "name": "Specification",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SLB规格，目前支持以下SLB实例的规格：\n* slb.s1.small\n* slb.s2.small\n* slb.s2.medium\n* slb.s3.small\n* slb.s3.medium\n* slb.s3.large\n\n不填默认为slb.s1.small。",
+        "en": "The specification of the SLB instance. The following specifications are supported:\n\n- slb.s1.small\n\n- slb.s2.small\n\n- slb.s2.medium\n\n- slb.s3.small\n\n- slb.s3.medium\n\n- slb.s3.large\n\nIf you do not set this parameter, the default value is slb.s1.small."
+      }
     },
     {
       "name": "TargetPort",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "后端端口，即应用的服务端口，范围1~65535。",
+        "en": "The backend port, which is the service port of the application. The value ranges from 1 to 65535."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设置SLB的类型：\n\n* Internet：公网。\n* Intranet：私网。",
+        "en": "The type of the SLB instance.\n\n- Internet: An Internet-facing instance.\n\n- Intranet: An internal-facing instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新K8s负载均衡SLB",
+    "en": "UpdateK8sSlb"
+  },
   "example": {
     "unifiedCli": "aliyun edas update-k8s-slb --app-id 5a166fbd-0000-0000-a286-781659d9f54c --cluster-id 712082c3-0000-0000-9217-a947b5cde6ee --type Internet --slb-protocol TCP --target-port 8082 --port 80 --service-port-infos targetPort_:8080,_port_:82,_loadBalancerProtocol_:_TCP_,_port_:81,_certId_:_136246975637380916c185d6fa21914500329_-xxxxxxx_,_targetPort_:8181,_lo_adBalancerProtocol_:_HTTPS --specification slb.s1.small --scheduler wrr --slb-name SLB_doctest --disable-force-override true --region cn-hangzhou",
     "legacyCli": "aliyun edas PUT /pop/v5/k8s/acs/k8s_slb_binding --region cn-hangzhou --Type Internet --TargetPort 8082 --AppId '5a166fbd-0000-0000-a286-781659d9f54c' --ClusterId '712082c3-0000-0000-9217-a947b5cde6ee' --Scheduler wrr --Port 80 --SlbProtocol TCP --DisableForceOverride true --Specification 'slb.s1.small' --ServicePortInfos 'targetPort_:8080,_port_:82,_loadBalancerProtocol_:_TCP_,_port_:81,_certId_:_136246975637380916c185d6fa21914500329_-xxxxxxx_,_targetPort_:8181,_lo_adBalancerProtocol_:_HTTPS' --SlbName SLB_doctest --header \"Content-Type=application/json\""

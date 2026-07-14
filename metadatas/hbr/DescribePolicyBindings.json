@@ -1,5 +1,6 @@
 {
   "name": "DescribePolicyBindings",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "DataSourceIds",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源ID列表。",
+        "en": "A list of data source IDs."
+      }
     },
     {
       "name": "Filters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "查询过滤器。",
+        "en": "The query filters."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "查询过滤器中的键值。取值包括：\n\n- **PolicyId**：备份策略ID\n- **DataSourceId**：ECS实例ID\n- **DataSourceType**：数据源类型",
+            "en": "The key of the filter. Valid values:\n\n- **PolicyId**: the backup policy ID\n\n- **DataSourceId**: the ECS instance ID\n\n- **DataSourceType**: the data source type"
+          }
         },
         {
           "name": "Operator",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "匹配方式。默认为IN。即过滤器中Key和Value支持的匹配操作（Operator）方式，取值包括：\n\n- **EQUAL**：等于\n- **NOT_EQUAL**：不等于\n- **GREATER_THAN**：大于\n- **GREATER_THAN_OR_EQUAL**：大于等于\n- **LESS_THAN**：小于\n- **LESS_THAN_OR_EQUAL**：小于等于\n- **BETWEEN**：区间，value为JSON数组`[下届,上届]`。\n- **IN**：在集合中，value为数组。",
+            "en": "The matching method. The default value is IN. This parameter specifies the operator to use for matching the key and value. Valid values:\n\n- **EQUAL**: equal to\n\n- **NOT\\_EQUAL**: not equal to\n\n- **GREATER\\_THAN**: greater than\n\n- **GREATER\\_THAN\\_OR\\_EQUAL**: greater than or equal to\n\n- **LESS\\_THAN**: less than\n\n- **LESS\\_THAN\\_OR\\_EQUAL**: less than or equal to\n\n- **BETWEEN**: between. The value is a JSON array in the format of `[lower_bound,upper_bound]`.\n\n- **IN**: in a set. The value is an array."
+          }
         },
         {
           "name": "Values",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "查询过滤器中的待匹配的值。",
+            "en": "The value to match in the filter."
+          }
         }
       ]
     },
@@ -40,27 +61,50 @@
       "name": "MaxResults",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每次查询结果的个数。\n\n取值范围：10~100。默认值：10。",
+        "en": "The number of results to return for each query.\n\nValid values: 10 to 100. Default value: 10."
+      }
     },
     {
       "name": "NextToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取下一页策略与数据源关联所需的Token。",
+        "en": "The token that is used to retrieve the next page of results."
+      }
     },
     {
       "name": "PolicyId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略ID。",
+        "en": "The policy ID."
+      }
     },
     {
       "name": "SourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据源类型。取值范围：\n* **UDM_ECS**：表示ECS整机备份。",
+        "en": "The type of the data source. Valid value:\n\n- **UDM\\_ECS**: ECS instance backup."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询绑定策略列表",
+    "en": "List Bound Policies"
+  },
   "example": {
     "unifiedCli": "aliyun hbr describe-policy-bindings --next-token caeba0bbb2be03f84eb48b699f0a --max-results 10 --policy-id po-000000000000000hky --data-source-ids i-uf600000000000068n --source-type UDM_ECS --filters '[{\"Operator\":\"IN\",\"Values\":[\"UDM_ECS\"],\"Key\":\"DataSourceType\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun hbr DescribePolicyBindings --region cn-hangzhou --Filters.1.Key DataSourceType --NextToken caeba0bbb2be03f84eb48b699f0a --Filters.1.Operator IN --MaxResults 10 --SourceType UDM_ECS --Filters.1.Values.1 UDM_ECS --DataSourceIds '[\"i-uf600000000000068n\"]' --PolicyId 'po-000000000000000hky'"

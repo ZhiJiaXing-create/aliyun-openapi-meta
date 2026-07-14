@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceNetworkAttribute",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ENS实例ID。",
+        "en": "The ID of the ENS instance."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新的私网 IP 地址。\n默认值：当不传该值时，从虚拟交换机子网网段中随机分配。",
+        "en": "The new private IP address of the ECS instance. By default, if this parameter is empty, a private IP address is randomly assigned from the CIDR block of the specified vSwitch."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机 ID。\n- 传入的 ID 为实例的当前交换机时，表明实例不变更交换机。\n- 传入的 ID 为一台新的交换机，新旧交换机必须属于同一个节点。\n- 当不传该值时，会从原有虚拟交换机子网网段中随机分配。",
+        "en": "The vSwitch IDs.\n\n- If you set this parameter to the ID of the current vSwitch, the vSwitch of the ECS instance remains unchanged.\n\n- The input ID is a new vSwitch, and the new and old vSwitches must belong to the same node.\n\n- By default, if this parameter is not specified, a private IP address is randomly assigned from within the CIDR block of the specified vSwitch."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例网络属性",
+    "en": "ModifyInstanceNetworkAttribute"
+  },
+  "descriptions": {
+    "zh": "调用接口时，ENS实例的状态必须是已停止（Stopped）。\n修改时，请注意：\n- 实例：\n  - 不支持已关联负载均衡的实例。\n- 网络：\n  - 不支持绑定了EIP的实例。\n  - 不支持绑定了高可用虚拟IP的实例。\n  - 不支持在路由表中已作为下一跳的实例。\n  - 不支持绑定辅助弹性网卡的实例。\n  - 不支持配置了辅助IP的实例。",
+    "en": "The instance that you want to manage must be in the Stopped state. When you modify the parameters of a scaling group, the following limits apply:\n\n- Instance:\n\n  - Instances that are associated with SLB are not supported.\n\n- Network:\n\n  - Instances that are associated with EIPs are not supported.\n\n  - Instances that are associated with high-availability virtual IP addresses are not supported.\n\n  - Instances that have been used as next hops in the routing table are not supported.\n\n  - Secondary ENIs cannot be attached to the ECS instance.\n\n  - Instances configured with secondary IP addresses are not supported."
+  },
   "example": {
     "unifiedCli": "aliyun ens modify-instance-network-attribute --instance-id i-5myukg7hnpbto7m0240020000 --vswitch-id vsw-5rllcjb3ol6duzjdnbm1o0000 --private-ip-address 192.168.XX.XX --region cn-hangzhou",
     "legacyCli": "aliyun ens ModifyInstanceNetworkAttribute --region cn-hangzhou --PrivateIpAddress '192.168.XX.XX' --InstanceId 'i-5myukg7hnpbto7m0240020000' --VSwitchId 'vsw-5rllcjb3ol6duzjdnbm1o0000'"

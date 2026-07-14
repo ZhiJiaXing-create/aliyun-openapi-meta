@@ -1,5 +1,6 @@
 {
   "name": "CreateScheduledTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,87 +9,154 @@
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务的描述信息，长度为2~200个英文或中文字符。",
+        "en": "The description of the scheduled task. The description must be 2 to 200 characters in length."
+      }
     },
     {
       "name": "DesiredCapacity",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务的伸缩方式为设置伸缩组内实例数量时，指定伸缩组内实例的期望实例数。\n\n> 伸缩组必须支持设置期望实例数，即在创建该伸缩组时指定了`DesiredCapacity`。",
+        "en": "The expected number of instances in the scaling group when the scaling method of the scheduled task is to set the number of instances in the scaling group.\n\n> The scaling group must have the expected number of instances feature enabled, which means `DesiredCapacity` was specified when the scaling group was created."
+      }
     },
     {
       "name": "LaunchExpirationTime",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务触发操作失败后，在此时间内重试。单位为秒，取值范围：0~1800。\n\n默认值：600。",
+        "en": "The time period during which a failed scheduled task is retried. Unit: seconds. Valid values: 0 to 1800.\n\nDefault value: 600."
+      }
     },
     {
       "name": "LaunchTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务触发的时间点。\n\n按照ISO8601标准表示，并需要使用UTC时间。格式：`YYYY-MM-DDThh:mmZ`。不能填写自创建当天起90日后的时间。 \n\n- 如果指定了`RecurrenceType`，则此属性指定的时间点，默认为循环执行的时间点。\n\n- 如果未指定`RecurrenceType`，则按指定的日期和时间执行一次。",
+        "en": "The point in time at which the scheduled task is triggered.\n\nSpecify the time in the ISO 8601 standard in UTC. Format: `YYYY-MM-DDThh:mmZ`. The time cannot be more than 90 days from the date of creation. \n\n- If you specify `RecurrenceType`, the scheduled task is executed repeatedly at the time specified by this parameter.\n\n- If you do not specify `RecurrenceType`, the task is executed only once at the specified date and time."
+      }
     },
     {
       "name": "MaxValue",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务的伸缩方式为设置伸缩组内实例数量时，指定伸缩组内实例的最大数量。",
+        "en": "The maximum number of instances in the scaling group when the scaling method of the scheduled task is to set the number of instances in the scaling group."
+      }
     },
     {
       "name": "MinValue",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务的伸缩方式为设置伸缩组内实例数量时，指定伸缩组内实例的最小数量。",
+        "en": "The minimum number of instances in the scaling group when the scaling method of the scheduled task is to set the number of instances in the scaling group."
+      }
     },
     {
       "name": "RecurrenceEndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重复执行定时任务的结束时间。\n\n按照ISO8601标准表示，并需要使用UTC时间。格式：`YYYY-MM-DDThh:mmZ`。不能填写自创建当天起365日后的时间。",
+        "en": "The end time of the recurrence for the scheduled task.\n\nSpecify the time in the ISO 8601 standard in UTC. Format: `YYYY-MM-DDThh:mmZ`. The end time cannot be more than 365 days from the date of creation."
+      }
     },
     {
       "name": "RecurrenceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重复执行定时任务的类型，取值范围： \n- Daily：每多少天重复执行一次定时任务。 \n- Weekly：每周指定几天重复执行一次定时任务。 \n- Monthly：每月内指定几天重复执行一次定时任务。 \n- Cron：按照指定的Cron表达式执行定时任务。 \n\n您需要同时指定`RecurrenceType`和`RecurrenceValue`。",
+        "en": "The recurrence type of the scheduled task. Valid values: \n- Daily: The scheduled task is executed once every specified number of days. \n- Weekly: The scheduled task is executed on specified days of each week. \n- Monthly: The scheduled task is executed on specified days of each month. \n- Cron: The scheduled task is executed based on the specified cron expression. \n\nYou must specify both `RecurrenceType` and `RecurrenceValue`."
+      }
     },
     {
       "name": "RecurrenceValue",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重复执行定时任务的数值。 \n\n- `RecurrenceType`取值为`Daily`时，只能填一个值，取值范围：1~31。 \n- `RecurrenceType`取值为`Weekly`时，可以填入多个值，填多个值时使用半角逗号（,）分隔。例如，周日、周一、周二、周三、周四、周五、周六的值依次为：`0,1,2,3,4,5,6`。  \n- `RecurrenceType`取值为`Monthly`时，格式为`A-B`。A、B的取值范围为1~31，并且B必须大于等于A。 \n- `RecurrenceType`取值为`Cron`时，表示UTC时间，支持分、时、日、月、星期的五个域表达式，支持通配符半角逗号（,）、半角问号（?）、短划线（-）、星号（*）、井号（#）、正斜线（/）、L和W。  \n\n您需要同时指定`RecurrenceType`和`RecurrenceValue`。",
+        "en": "The recurrence value of the scheduled task. \n\n- If `RecurrenceType` is set to `Daily`, you can specify only one value. Valid values: 1 to 31. \n- If `RecurrenceType` is set to `Weekly`, you can specify multiple values separated by commas (,). The values that correspond to Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday are `0,1,2,3,4,5,6`.  \n- If `RecurrenceType` is set to `Monthly`, the value is in the `A-B` format. Valid values of A and B: 1 to 31. B must be greater than or equal to A. \n- If `RecurrenceType` is set to `Cron`, the value is a UTC-based cron expression that supports five fields: minute, hour, day, month, and day of week. The following wildcard characters are supported: comma (,), question mark (?), hyphen (-), asterisk (\\*), pound sign (#), forward slash (/), L, and W.  \n\nYou must specify both `RecurrenceType` and `RecurrenceValue`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "定时任务所属地域的ID。",
+        "en": "The ID of the region where the scheduled task resides."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务触发时需要修改实例数量的伸缩组，填写伸缩组ID。\n\n指定该参数后，定时任务的伸缩方式为设置伸缩组内实例数量，您需要为`MinValue`、`MaxValue`和`DesiredCapacity`中至少一个参数指定数量。\n\n>  不支持同时设置`ScheduledAction`和`ScalingGroupId`。",
+        "en": "The ID of the scaling group whose number of instances is modified when the scheduled task is triggered.\n\nIf you specify this parameter, the scaling method of the scheduled task is to set the number of instances in the scaling group. You must specify a value for at least one of the following parameters: `MinValue`, `MaxValue`, and `DesiredCapacity`.\n\n> You cannot specify both `ScheduledAction` and `ScalingGroupId`."
+      }
     },
     {
       "name": "ScheduledAction",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务触发时需要执行的伸缩规则，填写伸缩规则的唯一标识符。\n\n指定该参数后，定时任务的伸缩方式为选择已有伸缩规则。\n\n> 不支持同时设置`ScheduledAction`和`ScalingGroupId`。",
+        "en": "The scaling rule to execute when the scheduled task is triggered. Set this parameter to the unique identifier of the scaling rule.\n\nIf you specify this parameter, the scaling method of the scheduled task is to use an existing scaling rule.\n\n> You cannot specify both `ScheduledAction` and `ScalingGroupId`."
+      }
     },
     {
       "name": "ScheduledTaskName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时任务的名称。长度为2~64个英文或中文字符，以数字、大小字母或中文开头，可包含数字、下划线（_）、短划线（-）或半角句号（.）。同一账号同一地域内唯一。 \n\n默认值为`ScheduledTaskId`的值。",
+        "en": "The name of the scheduled task. The name must be 2 to 64 characters in length and can contain letters, digits, underscores (_), hyphens (-), and periods (.). It must start with a digit, letter, or Chinese character. The name must be unique within the same account in the same region. \n\nDefault value: the value of `ScheduledTaskId`."
+      }
     },
     {
       "name": "TaskEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否启动定时任务。 \n- true：启动任务。\n- false：停止任务。\n\n默认值：true。",
+        "en": "Specifies whether to enable the scheduled task. Valid values: \n- true: enables the task.\n- false: disables the task.\n\nDefault value: true."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个定时任务",
+    "en": "Create a scheduled task"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 由于伸缩组正在发生伸缩活动或者伸缩组停用等原因，导致定时任务触发执行伸缩规则失败后，在`LaunchExpirationTime`内，定时任务会自动重试触发，否则放弃本次定时任务的触发。\n- 如果多个定时任务在相近的时间内触发执行同一个伸缩组的伸缩规则，则触发的伸缩活动详情如下：\n    - **已设置期望实例数的伸缩组**：多个定时任务触发的伸缩活动属于并行伸缩活动。例如，相近时间内，执行多个定时任务后，伸缩组可同时触发多个并行伸缩活动。\n    - **未设置期望实例数的伸缩组**：最早触发的定时任务会先执行伸缩活动。由于同一个伸缩组同一时刻内只能有一个伸缩活动，排在后面的定时任务会在`LaunchExpirationTime`内自动重试定时触发。如果上一个伸缩活动完成之后，排在后面的定时任务还在`LaunchExpirationTime`内重试，则执行该定时任务的伸缩规则并触发相应的伸缩活动。\n- 定时任务支持以下两种伸缩方式：\n    - 通过`ScheduledAction`参数设置需要执行的伸缩规则。\n    - 通过`ScalingGroupId`参数设置伸缩组内实例数量。",
+    "en": "## Operation description\n\n- If a scheduled task fails to trigger a scaling rule because a scaling activity is in progress in the scaling group or the scaling group is disabled, the scheduled task automatically retries within the period specified by `LaunchExpirationTime`. Otherwise, the scheduled task is skipped.\n- If multiple scheduled tasks trigger scaling rules for the same scaling group within a similar time frame, the details of the triggered scaling activities are as follows:\n    - **Scaling groups with the expected number of instances configured**: The scaling activities triggered by multiple scheduled tasks are parallel scaling activities. For example, when multiple scheduled tasks are executed within a similar time frame, the scaling group can trigger multiple parallel scaling activities simultaneously.\n    - **Scaling groups without the expected number of instances configured**: The earliest triggered scheduled task executes the scaling activity first. Because a scaling group can have only one scaling activity at a time, subsequent scheduled tasks automatically retry within the period specified by `LaunchExpirationTime`. If the previous scaling activity is completed while a subsequent scheduled task is still retrying within the `LaunchExpirationTime` period, the scaling rule of that scheduled task is executed and the corresponding scaling activity is triggered.\n- Scheduled tasks support the following two scaling methods:\n    - Use the `ScheduledAction` parameter to specify the scaling rule to execute.\n    - Use the `ScalingGroupId` parameter to specify the number of instances in the scaling group."
+  },
   "example": {
     "unifiedCli": "aliyun ess create-scheduled-task --biz-region-id cn-hangzhou --scheduled-task-name scheduled0000 --description Test_scheduled_task. --scheduled-action ari:acs:ess:cn-hangzhou:1406926470000:scalingrule/asr-bp12tcnol686y1ik0000 --recurrence-end-time 2014-08-17T16:55Z --launch-time 2014-08-17T16:52Z --recurrence-type Daily --recurrence-value 1 --task-enabled true --launch-expiration-time 600 --min-value 0 --max-value 10 --desired-capacity 10 --scaling-group-id asg-bp18p2yfxow2dloq0000 --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess CreateScheduledTask --region cn-hangzhou --Description 'Test_scheduled_task.' --LaunchTime '2014-08-17T16:52Z' --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --RecurrenceType Daily --ScheduledTaskName scheduled0000 --DesiredCapacity 10 --MaxValue 10 --LaunchExpirationTime 600 --MinValue 0 --RegionId 'cn-hangzhou' --ScheduledAction 'ari:acs:ess:cn-hangzhou:1406926470000:scalingrule/asr-bp12tcnol686y1ik0000' --RecurrenceEndTime '2014-08-17T16:55Z' --RecurrenceValue 1 --TaskEnabled true"

@@ -1,5 +1,6 @@
 {
   "name": "ExitStandby",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Async",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否采用异步任务方式执行。取值范围：\n\n- true：异步任务执行。\n- false：同步任务执行。\n\n默认值： false。",
+        "en": "Specifies whether to use an asynchronous task. Valid values:\n\n- true: The task is executed asynchronously.\n- false: The task is executed synchronously.\n\nDefault value: false."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECS实例的ID。",
+        "en": "The ID of the ECS instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "使备用状态实例进入运行状态",
+    "en": "Transition standby instances to running state"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n伸缩组中的实例移出备用状态后，您需要注意以下事项：\n\n- ECS实例或ECI实例会转为运行状态（即恢复服务状态）。\n\n- 如果ECS实例或ECI实例所在伸缩组关联了负载均衡实例，则该ECS实例或ECI实例再次加入负载均衡实例时，权重默认为50。\n\n- 如果ECS实例或ECI实例被停止或者重启时，则该ECS实例或ECI实例会重新更新健康检查状态。\n\n- 当伸缩组发生收缩的伸缩活动时，弹性伸缩可以从伸缩组移出该ECS实例或ECI实例。",
+    "en": "## Operation description\n\nAfter instances in a scaling group are removed from standby state, note the following items:\n\n- The ECS instances or ECI instances transition to the running state (that is, recover to the in-service state).\n\n- If the scaling group that contains the ECS instances or ECI instances is associated with a load balancing instance, the weight of the ECS instances or ECI instances is set to 50 by default when they are added back to the load balancing instance.\n\n- If the ECS instances or ECI instances are stopped or restarted, their health check status is updated.\n\n- When a scale-in scaling activity is triggered in the scaling group, Auto Scaling can remove the ECS instances or ECI instances from the scaling group."
+  },
   "example": {
     "unifiedCli": "aliyun ess exit-standby --scaling-group-id asg-bp1fo0dbtsbmqa9h0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --instance-id i-28wt40000 --async false --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess ExitStandby --region cn-hangzhou --ScalingGroupId 'asg-bp1fo0dbtsbmqa9h0000' --Async false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-28wt40000'"

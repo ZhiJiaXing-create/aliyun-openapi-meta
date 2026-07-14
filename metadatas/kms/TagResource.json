@@ -1,5 +1,6 @@
 {
   "name": "TagResource",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "CertificateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "证书ID。  \n\n> KeyId、SecretName和CertificateId必须且只能指定其中一个参数。",
+        "en": "The ID of the certificate.\n\n> You can configure only one of the KeyId, SecretName, and CertificateId parameters."
+      }
     },
     {
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "密钥的ID，也可以指定为密钥别名或密钥资源名称（ARN）。关于别名的详细介绍，请参见[管理密钥别名](~~480655~~)。\n>\n>- 访问其他阿里云账号下的密钥时，必须输入密钥ARN。密钥ARN的格式为`acs:kms:${region}:${account}:key/${keyid}`。\n>- KeyId、SecretName和CertificateId必须且只能指定其中一个参数。",
+        "en": "The ID of the customer master key (CMK). The ID must be globally unique.\n\n> You can configure only one of the KeyId, SecretName, and CertificateId parameters."
+      }
     },
     {
       "name": "SecretName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "凭据名称。  \n\n> KeyId、SecretName和CertificateId必须且只能指定其中一个参数。",
+        "en": "The name of the secret.\n\n> You can configure only one of the KeyId, SecretName, and CertificateId parameters."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一个或多个标签。格式为Tag对象数组。  \nTag对象属性如下：\n- TagKey：标签键。\n- TagValue：标签值。",
+        "en": "One or more tags that you want to add. The value is in the array format.\n\nTag attributes:\n\n- TagKey: the tag key.\n\n- TagValue: the tag value."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为主密钥或凭据设置标签",
+    "en": "TagResource"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 您最多可以为主密钥、凭据或证书分别绑定10个标签。\n\n本文将提供一个示例，为ID为`key-hzz630494463ejqjx****\n`的密钥绑定标签`[{\"TagKey\":\"S1key1\",\"TagValue\":\"S1val1\"},{\"TagKey\":\"S1key2\",\"TagValue\":\"S2val2\"}]`。",
+    "en": "You can add up to 10 tags to a CMK, secret, or certificate.\n\nIn this example, the tags `[{\"TagKey\":\"S1key1\",\"TagValue\":\"S1val1\"},{\"TagKey\":\"S1key2\",\"TagValue\":\"S2val2\"}]` are added to the CMK whose ID is `08c33a6f-4e0a-4a1b-a3fa-7ddf****`.\n\nFor more information about the access policy required by a RAM user or RAM role to call this API, see [Resource Access Management](~~2767210~~)."
+  },
   "example": {
     "unifiedCli": "aliyun kms tag-resource --key-id key-hzz630494463ejqjx0000 --tags TagKey_:_S1key1_,_TagValue_:_S1val1_,_TagKey_:_S1key2_,_TagValue_:_S2val2 --secret-name MyDbC0000 --certificate-id 770dbe42-e146-43d1-a55a-1355db860000 --region cn-hangzhou",
     "legacyCli": "aliyun kms TagResource --region cn-hangzhou --SecretName MyDbC0000 --CertificateId '770dbe42-e146-43d1-a55a-1355db860000' --KeyId 'key-hzz630494463ejqjx0000' --Tags 'TagKey_:_S1key1_,_TagValue_:_S1val1_,_TagKey_:_S1key2_,_TagValue_:_S2val2'"

@@ -1,5 +1,6 @@
 {
   "name": "DescribeRCDisks",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,59 +9,110 @@
       "name": "DiskIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "磁盘ID。一个带有格式的JSON数组，最多支持100个ID，用英文逗号（,）隔开。输入格式为：`[\"磁盘 ID1\",\"磁盘 ID2\"]`。",
+        "en": "The disk ID. The value is a JSON array that consists of up to 100 disk IDs. Separate the disk IDs with commas (,). Format: `[\"Disk ID1\",\"Disk ID2\"]`."
+      }
+    },
+    {
+      "name": "DiskType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "要查询的云盘、或弹性临时盘类型。取值范围：\n● all：同时查询系统盘与数据盘。\n● system：只查询系统盘。\n● data：只查询数据盘。\n默认值：all。"
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值：**30**~**100**。默认值：**30**。",
+        "en": "The number of entries per page. Valid values: **30** to **100**. Default value: **30**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "磁盘状态。取值范围：\n● In_use：使用中。\n● Available：待挂载。\n● Attaching：挂载中 。\n● Detaching：卸载中。\n● Creating：创建中。\n● ReIniting：初始化中。\n● All：所有状态。\n默认值：All。"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The list of the tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。**不允许**传入空值、重复。",
+            "en": "The key of the tag. The tag key **cannot be** an empty string or a duplicate value."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。**允许**传入空值。",
+            "en": "The value of the tag. The tag value **can be** an empty string."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询RDS Custom实例的磁盘信息",
+    "en": "Query disk information of RDS Custom instances"
+  },
   "example": {
     "unifiedCli": "aliyun rds describe-rc-disks --instance-id rc-dh2jf9n6j4s149260000 --disk-ids 'rcd-bp67acfmxazb4p0000_,_rcd-bp67acfmxazb4g0000_,_…_rcd-bp67acfmxazb4d0000' --page-number 1 --page-size 50 --biz-region-id cn-hangzhou --tag Value=testvalue1 Key=testkey1 --status All --disk-type data --region cn-hangzhou",
     "legacyCli": "aliyun rds DescribeRCDisks --region cn-hangzhou --Status All --DiskType data --DiskIds 'rcd-bp67acfmxazb4p0000_,_rcd-bp67acfmxazb4g0000_,_…_rcd-bp67acfmxazb4d0000' --Tag.1.Key testkey1 --PageSize 50 --InstanceId 'rc-dh2jf9n6j4s149260000' --PageNumber 1 --Tag.1.Value testvalue1 --RegionId 'cn-hangzhou'"

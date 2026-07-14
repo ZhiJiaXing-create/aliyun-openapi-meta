@@ -1,5 +1,6 @@
 {
   "name": "ModifyFlowLogAttribute",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,51 +9,90 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token from your client to make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each request is unique."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流日志的描述信息。描述可以为空或长度为 0～256 个字符。",
+        "en": "The description of the flow log. The description can be empty or 0 to 256 characters in length."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会修改服务资源。\n\n- **false**（默认值）：发送正常请求。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run to check the request without modifying the service resource.\n\n- **false** (default): Sends a normal request."
+      }
     },
     {
       "name": "EcrId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专线网关实例ID。",
+        "en": "The ID of the Express Connect Router (ECR) instance."
+      }
     },
     {
       "name": "FlowLogId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流日志实例ID。",
+        "en": "The ID of the flow log instance."
+      }
     },
     {
       "name": "FlowLogName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流日志的新名称。长度为0～128个字符。",
+        "en": "The new name of the flow log. The name must be 0 to 128 characters in length."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流日志捕获流量的捕获窗口时长。单位：秒。取值：\n\n- **60** \n- **600**\n\n默认值：**600**。",
+        "en": "The aggregation interval for capturing traffic data. Unit: seconds. Valid values:\n\n- **60**\n\n- **600**\n\nDefault value: **600**."
+      }
     },
     {
       "name": "SamplingRate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "采样比例。取值\n\n- **1:4096**\n- **1:2048**\n- **1:1024**\n\n默认值：**1:4096**。",
+        "en": "The sampling ratio. Valid values:\n\n- **1:4096**\n\n- **1:2048**\n\n- **1:1024**\n\nDefault value: **1:4096**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改流日志",
+    "en": "ModifyFlowLogAttribute"
+  },
   "example": {
     "unifiedCli": "aliyun expressconnectrouter modify-flow-log-attribute --ecr-id ecr-fu8rszhgv7623c0000 --dry-run false --client-token 02fb3da4-130e-11e9-8e44-000000 --flow-log-name myFlowlog --interval 600 --sampling-rate 1:4096 --description myFlowlog --flow-log-id ecr-flog-m5evbtbpt0000 --region cn-hangzhou",
     "legacyCli": "aliyun expressconnectrouter ModifyFlowLogAttribute --region cn-hangzhou --FlowLogName myFlowlog --Description myFlowlog --EcrId 'ecr-fu8rszhgv7623c0000' --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-000000' --SamplingRate '1:4096' --FlowLogId 'ecr-flog-m5evbtbpt0000' --Interval 600"

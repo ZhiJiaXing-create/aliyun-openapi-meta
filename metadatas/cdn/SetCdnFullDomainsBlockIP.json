@@ -1,5 +1,6 @@
 {
   "name": "SetCdnFullDomainsBlockIP",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "BlockInterval",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "封禁时长，单位为秒。设置为**0**时表示永久封禁。仅当**OperationType**为**block**时有效。",
+        "en": "The duration for which IP addresses or CIDR blocks are blocked. Unit: seconds. The value **0** specifies that IP addresses or CIDR blocks are permanently blocked. This parameter is available only if you set **OperationType** to **block**."
+      }
     },
     {
       "name": "IPList",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "封禁或解禁IP列表，有多个IP时请用半角逗号（,）分隔，最大支持1000个IP。",
+        "en": "The IP addresses that you want to block or unblock. Separate multiple IP addresses with commas (,). You can specify up to 1,000 IP addresses."
+      }
     },
     {
       "name": "OperationType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "操作类型。\n\n- block：封禁。\n- unblock：解禁。",
+        "en": "The type of the operation.\n\n- block\n\n- unblock"
+      }
     },
     {
       "name": "UpdateType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "封禁时间类别。仅当**OperationType**为**block**时有效。取值：\n\n- **cover**：当前请求是采取配置覆盖方式。\n- **uncover**：采取时间计算比对最长方式。\n- 该参数为空时默认采取配置覆盖方式。",
+        "en": "The type of the blocking duration. This parameter is available only if you set **OperationType** to **block**. Valid values:\n\n- **cover**: Default. The blocking duration that is specified in the request takes effect.\n\n- **uncover**: The longer of the blocking duration in the request or the remaining blocking duration takes effect.\n\n- When the value is left empty, **cover** is used."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置海量封禁IP",
+    "en": "SetCdnFullDomainsBlockIP"
+  },
+  "descriptions": {
+    "zh": "> \n>- 该接口需要<props=\"china\"><ph>[购买海量IP封禁服务](https://common-buy.aliyun.com/?commodityCode=dcdn_servicepackage_public_cn)</ph></props><props=\"intl\"><ph>[提交工单](https://workorder-intl.console.aliyun.com/?spm=5176.2020520001.aliyun_topbar.18.dbd44bd3e4f845#/ticket/createIndex)</ph></props>后使用。\n> - 适用于封禁大批量IP，接口支持单次最大1000个IP/IP段。",
+    "en": "- To use this operation, [submit a ticket](https://workorder-intl.console.aliyun.com/?spm=5176.2020520001.aliyun_topbar.18.dbd44bd3e4f845#/ticket/createIndex).\n\n- This operation is suitable for blocking or unblocking a maximum of 1,000 IP addresses or CIDR blocks at a time."
+  },
   "example": {
     "unifiedCli": "aliyun cdn set-cdn-full-domains-block-ip --ip-list 1.XXX.XXX.1,2.XXX.XXX.2 --operation-type block --block-interval 3000 --update-type cover --region cn-hangzhou",
     "legacyCli": "aliyun cdn SetCdnFullDomainsBlockIP --region cn-hangzhou --IPList '1.XXX.XXX.1,2.XXX.XXX.2' --OperationType block --BlockInterval 3000 --UpdateType cover"

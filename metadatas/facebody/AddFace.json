@@ -1,5 +1,6 @@
 {
   "name": "AddFace",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DbName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库名称。支持小写字母、数字、下划线的组合，长度1~64。",
+        "en": "Database name. Supports combinations of lowercase letters, digits, and underscores, with a length of 1 to 64 characters."
+      }
     },
     {
       "name": "EntityId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实体ID，用来标识用户的唯一性，如用户ID、员工ID等。每个实体可包含多张人脸图片。支持大小写字母、数字、下划线的组合，长度为1~64。",
+        "en": "Entity ID, used to uniquely identify a user, such as a user ID or employee ID. Each entity can contain multiple face images. Supports combinations of uppercase and lowercase letters, digits, and underscores, with a length of 1 to 64 characters."
+      }
     },
     {
       "name": "ExtraData",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义信息。支持字母、数字、标点符号和汉字。不超过512个字符。",
+        "en": "Custom information. Supports letters, digits, punctuation marks, and Chinese characters. Must not exceed 512 characters."
+      }
     },
     {
       "name": "ImageUrl",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "人脸图片地址，人脸必须是正面无遮挡人脸（若包含多张人脸则取最大人脸添加）。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。URL长度不超过1024个字符。",
+        "en": "URL of the face image. The face must be a frontal, unobstructed face. If multiple faces are included, the largest face is selected for addition. We recommend that you use China (Shanghai) region OSS links. For local files or OSS links in regions other than China (Shanghai), see [File URL Processing](~~155645~~). The URL cannot exceed 1,024 characters in length."
+      }
     },
     {
       "name": "QualityScoreThreshold",
       "position": "Body",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "质量分阈值。对新增人脸图片进行质量分析判断，得到的质量分小于该阈值则表示新增人脸图片质量不符合要求，添加失败。取值范围\\[0.0,100.0]。0.0或空则表示不做质量分判断逻辑。",
+        "en": "Quality score threshold. The system performs quality analysis on the new face image. If the quality score is lower than this threshold, the face image quality does not meet the requirements and the addition fails. Valid values: \\[0.0, 100.0]. A value of 0.0 or empty indicates that no quality score evaluation is performed."
+      }
     },
     {
       "name": "SimilarityScoreThresholdBetweenEntity",
       "position": "Body",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "类间相似度阈值。将新增人脸图片与其他所有**EntityId**内已有人脸进行相似比对，大于等于该阈值则表示其他**EntityId**内存在相似人脸，出现重复，添加失败。取值范围\\[0.0,100.0]。0.0或空则表示不做类间相似度判断逻辑。参考值见[人脸比对1:1](~~151891~~)接口的返回结果字段**Thresholds**。\n\n> 类间相似度阈值检查仅适用于每个EntityId下首次上传的第一张人脸图片。",
+        "en": "Inter-entity similarity threshold. The new face image is compared with existing faces across all other **EntityId** values. If the similarity score is greater than or equal to this threshold, it indicates that similar faces exist under other **EntityId** values, meaning duplicates are detected, and the addition fails. Valid values: \\[0.0, 100.0]. A value of 0.0 or empty indicates that no inter-entity similarity evaluation is performed. For reference values, see the **Thresholds** field in the response of the [Face Comparison 1:1](~~151891~~) operation.\n\n> The inter-entity similarity threshold check applies only to the first face image uploaded under each EntityId."
+      }
     },
     {
       "name": "SimilarityScoreThresholdInEntity",
       "position": "Body",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "类内相似度阈值。将新增人脸图片与**EntityId**内已有人脸进行相似比对，小于该阈值则表示与其他人脸图片差异较大，添加失败.；若**EntityId**内没有人脸存在，则添加成功。取值范围\\[0.0,100.0]。0.0或空则表示不做类内相似度判断逻辑。参考值见[人脸比对1:1](~~151891~~)接口的返回结果字段**Thresholds**。",
+        "en": "Intra-entity similarity threshold. The new face image is compared with existing faces within the **EntityId**. If the similarity score is lower than this threshold, the face image differs significantly from other face images, and the addition fails. If no faces exist within the **EntityId**, the addition succeeds. Valid values: \\[0.0, 100.0]. A value of 0.0 or empty indicates that no intra-entity similarity evaluation is performed. For reference values, see the **Thresholds** field in the response of the [Face Comparison 1:1](~~151891~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加人脸数据",
+    "en": "Add Face Data"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n添加人脸数据能力可以为指定数据库添加人脸数据，单个人脸数据库支持最多5万张人脸照片入库，人脸数据是在已创建好的人脸样本中添加，每个人脸样本最多可以添加5张人脸照片。\n人脸照片入库量以及每个人脸样本最多添加的照片量暂不支持扩容。\n\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[人脸人体服务](https://vision.aliyun.com/facebody)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_facebody_public_cn#/open)。\n\n><notice>\n本能力支持企业或个人认证用户开通。更多实名认证操作信息，请参见[实名认证](https://help.aliyun.com/knowledge_list/37170.html)。\n></notice>\n\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 前提条件：\n- 已通过[创建人脸数据库](~~159141~~)（CreateFaceDb）接口创建了数据库名称（DbName）。\n- 已通过[添加人脸样本](~~161144~~)（AddFaceEntity）接口创建了实体ID（EntityId）。\n\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/facebody/2019-12-30/AddFace?lang=JAVA)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为人脸人体（facebody）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 示例代码：该能力常用语言的示例代码，请参见[添加人脸数据示例代码](~~477964~~)。\n\n7. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n- 图像格式：JPG、JPEG、PNG。\n- 图像大小：不超过5 MB。\n- 图像分辨率：大于32×32像素，小于4096×4096像素。人脸占比不低于64×64像素。\n- URL地址中不能包含中文字符。\n- 图片中若包含多个人脸，会取最大的人脸进行添加。\n\n>当图像分辨率超过最大限制时，请先将图片进行缩放，调整图片大小，具体请参见[图片缩放](~~44688~~)。 \n\n## 限制说明\n添加人脸数据接口提交任务并发默认为2QPS。\n\n## 计费说明\n添加人脸数据能力可免费调用。",
+    "en": "## Feature Description\nThe Add Face Data feature enables you to add face data to a specified database. A single face database supports up to 50,000 face images. Face data is added to pre-created face entities, and each face entity supports up to 5 face images.\nThe maximum number of face images in the database and the maximum number of images per face entity cannot be expanded.\n\n\n> - You can access [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for online assistance.\n- For questions about Alibaba Cloud Visual Intelligence Open Platform visual AI capability API access, API usage, or consultation, search for DingTalk group 23109592 to join the Alibaba Cloud Visual Intelligence Open Platform consultation group and contact us.\n\n## Access Guide\n1. Register an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **Register Now** in the upper-right corner, and follow the instructions to complete account registration.\n2. Activate the service: Make sure you have activated the [Face and Body service](https://vision.aliyun.com/facebody). If the service is not activated, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_facebody_public_cn#/open).\n\n><notice>\nThis feature can be activated by enterprise or individual verified users. For more information about identity verification, see [Identity Verification](https://help.aliyun.com/knowledge_list/37170.html).\n></notice>\n\n3. Create an AccessKey: Make sure you have [created an AccessKey](~~175144~~). If you are using a RAM user AccessKey, you need to grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM Authorization](~~145025~~).\n4. Prerequisites:\n- You have created a database name (DbName) by calling the [Create Face Database](~~159141~~) (CreateFaceDb) operation.\n- You have created an entity ID (EntityId) by calling the [Add Face Entity](~~161144~~) (AddFaceEntity) operation.\n\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/facebody/2019-12-30/AddFace?lang=JAVA) to debug the feature online, view complete sample code and SDK dependency information, and download the complete project.\n5. Development access steps:\n- Select the SDK language you want to use in [SDK Overview](~~145033~~).\n- Find the SDK package for the AI category Face and Body (facebody) in the corresponding language SDK documentation and install it.\n- Modify the sample code provided in the documentation as needed and make the call.\n\n6. Sample code: For sample code of this feature in commonly used languages, see [Add Face Data Sample Code](~~477964~~).\n\n7. Client-side direct calls: Common client-side call methods for this feature include the following.\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~)\n\n## Input Limits\n- Image format: JPG, JPEG, PNG.\n- Image size: No larger than 5 MB.\n- Image resolution: Greater than 32 × 32 pixels and less than 4,096 × 4,096 pixels. The face area must be at least 64 × 64 pixels.\n- The URL cannot contain Chinese characters.\n- If the image contains multiple faces, the largest face is selected for addition.\n\n>When the image resolution exceeds the maximum limit, please resize the image first. For more information, see [Image Resizing](~~44688~~). \n\n## Rate Limiting\nThe Add Face Data operation has a default concurrency limit of 2 QPS.\n\n## Billing Description\nThe Add Face Data feature is free of charge."
+  },
   "example": {
     "unifiedCli": "aliyun facebody add-face --db-name default --image-url https://viapi-test.oss-cn-shanghai.aliyuncs.com/test/imgsearch/demo/1.png --entity-id U1 --extra-data '王小二' --quality-score-threshold 50.0 --similarity-score-threshold-in-entity 50.0 --similarity-score-threshold-between-entity 50.0 --api-version 2019-12-30 --region cn-hangzhou",
     "legacyCli": "aliyun facebody AddFace --region cn-hangzhou --EntityId U1 --SimilarityScoreThresholdBetweenEntity '50.0' --QualityScoreThreshold '50.0' --ImageUrl 'https://viapi-test.oss-cn-shanghai.aliyuncs.com/test/imgsearch/demo/1.png' --DbName default --ExtraData '王小二' --SimilarityScoreThresholdInEntity '50.0'"

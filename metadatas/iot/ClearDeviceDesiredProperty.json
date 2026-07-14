@@ -1,5 +1,6 @@
 {
   "name": "ClearDeviceDesiredProperty",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要清空期望属性值的设备名称。\n> 如果传入该参数，需同时传入**ProductKey**。",
+        "en": "The DeviceName of the device.\n\n>  If you specify a value for this parameter, you must configure the **ProductKey** parameter."
+      }
     },
     {
       "name": "Identifies",
       "position": "Body",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要清空期望属性值的属性标识符列表。属性标识符个数不能超过10个。",
+        "en": "A list of property identifiers for which you want to delete the desired property values. The number of property identifiers cannot exceed 10."
+      }
     },
     {
       "name": "IotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要清空期望属性值的设备ID。物联网平台为该设备颁发的ID，设备的唯一标识符。\n> **IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果传入该参数，则无需传入**ProductKey**和**DeviceName**。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。",
+        "en": "The ID of the device. The ID is a unique identifier that is issued by IoT Platform to the device.\n\n>  The IotId parameter specifies a globally unique identifier (GUID) for the device. The value of the **IotId** parameter is equivalent to a combination of the values of the **ProductKey** and **DeviceName** parameters. If you specify a value for the IotId parameter, you do not need to configure the **ProductKey** or **DeviceName** parameter. If you specify values for the **IotId**, **ProductKey**, and **DeviceName** parameters, the value of the **IotId** parameter takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the ID of the instance on the **Overview** page in the IoT Platform console.****\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.****\n>*   If no **Overview** page or **ID** is generated for your instance, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要清空期望属性值的设备所属的产品**ProductKey**。\n> 如果传入该参数，需同时传入**DeviceName**。",
+        "en": "The **ProductKey** of the product to which the device belongs.\n\n>  If you specify a value for this parameter, you must configure the **DeviceName** parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "ClearDeviceDesiredProperty",
+    "en": "ClearDeviceDesiredProperty"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n- 调用本接口时，必须传入要清空的属性标识符（**Identifies**）。如果不传入**Identifies**，调用会失败。\n- 单次调用本接口，**Identifies**最多可传入10个属性标识符。\n- 调用本接口清空期望属性值成功后，调用[QueryDeviceDesiredProperty](~~107566~~)接口查询期望属性值时，会返回对应参数**Identifier**（属性标识符），不会返回对应参数**Value**了。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n> RAM用户共享阿里云账号配额。",
+    "en": "## How-To  \n- When calling this API, you must specify the identifiers of the properties whose desired values you want to delete (**Identifies**). If **Identifies** is not provided, the call will fail.  \n- You can specify up to 10 property identifiers in a single API call.  \n- After successfully deleting the desired property values by using this API, when you call the [QueryDeviceDesiredProperty](~~107566~~) API to query the desired property values, the response will include the corresponding **Identifier** (property identifier) but will no longer include the corresponding **Value**.\n\n## Queries per second (QPS) limit  \nThe maximum queries per second (QPS) for a single Alibaba Cloud account calling this API is 50.  \n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot clear-device-desired-property --iot-instance-id iot-2w0000 --product-key a1BwAGV0000 --device-name light --iot-id Q7uOhVRdZRRlDnTLv000000100 --identifies example-string --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot ClearDeviceDesiredProperty --region cn-hangzhou --IotId Q7uOhVRdZRRlDnTLv000000100 --IotInstanceId 'iot-2w0000' --Identifies.1 'example-string' --ProductKey a1BwAGV0000 --DeviceName light"

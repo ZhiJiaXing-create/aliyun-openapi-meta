@@ -1,0 +1,84 @@
+{
+  "name": "ModifyRCDiskSpec",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AutoPay",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否自动支付。取值：\n-  **true**（默认值）：自动支付。您需要确保账户余额充足。\n- **false**：只生成订单不扣费。\n\n> 如果您的支付方式余额不足，可以将参数AutoPay设置为false，此时会生成未支付订单，您可以登录RDS管理控制台自行支付。\n>",
+        "en": "Specifies whether to enable automatic payment. Valid values:\n\n*   **true (default)**: automatically completes the payment. Make sure that your account balance is sufficient.\n*   **false**: does not automatically complete the payment. An unpaid order is generated.\n\n>  If your account balance is insufficient, you can set the AutoPay parameter to false. In this case, an unpaid order is generated. You can complete the payment in the Expenses and Costs console."
+      }
+    },
+    {
+      "name": "DiskCategory",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "变更云盘的类型。取值：\n- **cloud_essd**（默认）：ESSD云盘。\n- **cloud_auto**：ESSD AutoPL 云盘。\n- **cloud_ssd**：SSD云盘。",
+        "en": "The new disk type. Valid values:\n\n*   **cloud_essd**: ESSD.\n*   **cloud_auto**: ESSD AutoPL disk\n\nThis parameter is empty by default."
+      }
+    },
+    {
+      "name": "DiskId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "云盘ID。",
+        "en": "The cloud disk ID."
+      }
+    },
+    {
+      "name": "DryRun",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否对本次节点变更的操作执行预检查。取值：\n* **true**：执行预检查操作，不执行变更。检查项目包含请求参数、请求格式、业务限制和库存等。\n* **false**（默认值）：发送正常请求，通过检查后直接执行变更。",
+        "en": "Specifies whether to perform a dry run. Valid values: Valid values:\n\n*   **true**: performs a dry run and does not perform the actual request. The system checks the request parameters, request syntax, limits, and available resources.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, the operation is performed."
+      }
+    },
+    {
+      "name": "PerformanceLevel",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "修改ESSD云盘的性能级别。取值：\n\n- **PL1**（默认值）：单盘最高随机读写IOPS 5 万。\n\n- **PL2**：单盘最高随机读写IOPS 10 万。\n\n- **PL3**：单盘最高随机读写IOPS 100 万。",
+        "en": "The PL of the disk. Valid values:\n\n*   **PL1** (default): A single ESSD can deliver up to 50,000 random read/write IOPS.\n*   **PL2**: A single ESSD delivers up to 100,000 random read/write IOPS.\n*   **PL3**: A single ESSD delivers up to 1,000,000 random read/write IOPS."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "实例所在地域ID。",
+        "en": "The ID of the region in which the instance resides."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更云盘类型或性能级别",
+    "en": "ModifyRCDiskSpec"
+  },
+  "descriptions": {
+    "zh": "><notice>为了减少变配操作对您业务带来的影响，请您在业务低峰期进行变配。></notice>\n\n调用该接口时，您需要注意：\n\n- 按ESSD云盘支持升级和降低性能级别，但不支持降配到PL0。\n- ESSD云盘的状态必须是使用中（In_Use）状态或者待挂载（Available）状态。\n- 若ESSD 云盘已挂载到实例上，实例必须处于运行中（Running）状态或者已停止（Stopped）状态，不能处于过期或者账号欠费状态。\n- 由于ESSD云盘性能级别受容量限制，如果您无法升级性能级别，可以扩容后重新操作。",
+    "en": ">  To minimize the impacts on your business, we recommend that you change specifications during off-peak hours.\n\nTake note of the following items:\n\n*   For a pay-as-you-go Enterprise SSD (ESSD), you can upgrade or downgrade its PL. However, you cannot downgrade the performance level to PL0.\n*   The ESSD must be in the In Use (In_Use) or Unattached (Available) state.\n*   If the ESSD is attached to an instance, the instance must be in the Running or Stopped state. The instance cannot be in the Expired state or stopped due to overdue payments.\n*   The performance level of an ESSD is limited by the capacity of the ESSD. If you cannot upgrade the PL of an ESSD, you can expand the capacity of the ESSD."
+  },
+  "example": {
+    "unifiedCli": "aliyun rds modify-rc-disk-spec --biz-region-id cn-hangzhou --disk-id rcd-wz9f3peueu5npsl0000 --disk-category cloud_essd --performance-level PL2 --auto-pay true --dry-run false --region cn-hangzhou",
+    "legacyCli": "aliyun rds ModifyRCDiskSpec --region cn-hangzhou --PerformanceLevel PL2 --DryRun false --DiskCategory cloud_essd --RegionId 'cn-hangzhou' --AutoPay true --DiskId 'rcd-wz9f3peueu5npsl0000'"
+  }
+}

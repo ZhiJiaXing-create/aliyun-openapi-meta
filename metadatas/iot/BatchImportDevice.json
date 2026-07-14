@@ -1,5 +1,6 @@
 {
   "name": "BatchImportDevice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "待批量导入的设备列表。\n\n> 单次调用该接口，最多能传入10,000个设备。超过该限制的数据会被丢弃。",
+        "en": "The information about devices."
+      },
       "sub_parameters": [
         {
           "name": "DeviceName",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "设备的名称。\n\n设备名称支持英文字母、数字、短划线（-）、下划线（_）、at（@）、英文句号（.）和英文冒号（:），长度限制为4~32个字符。\n\n设备名称在产品维度下不可重复。\n\n> 单次调用该接口，最多能传入10,000个设备名称。超过该限制的数据会被丢弃。",
+            "en": "The DeviceName of the device.\n\nThe DeviceName must be 4 to 32 characters in length, and can contain letters, digits, hyphens (-), underscores (\\_), at signs (@), periods (.), and colons (:).\n\nThe DeviceName must be unique in the product.\n\n> You can specify up to 10,000 DeviceNames in a single call. If the number of DeviceNames reaches this limit, the excess DeviceNames are discarded."
+          }
         },
         {
           "name": "DeviceSecret",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "设备的密钥。\n\n设备密钥支持英文字母、数字、短划线（-）、下划线（_）、at（@）、英文句号（.）和英文冒号（:），长度限制为1~32个字符。\n\n> 单次调用该接口，最多能传入10,000个设备密钥。超过该限制的数据会被丢弃。",
+            "en": "The DeviceSecret of the device.\n\nThe DeviceSecret must be 1 to 32 characters in length, and can contain letters, digits, hyphens (-), underscores (\\_), at signs (@), periods (.), and colons (:).\n\n> You can specify up to 10,000 DeviceSecrets in a single call. If the number of DeviceSecrets reaches this limit, the excess DeviceSecrets are discarded."
+          }
         },
         {
           "name": "Sn",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "设备的序列号。\n\n序列号支持英文字母、数字和下划线（_），长度限制为1~64个字符。\n\n> 单次调用该接口，最多能传入10,000个设备序列号。超过该限制的数据会被丢弃。",
+            "en": "The serial number (SN) of the device.\n\nThe SN must be 1 to 64 characters in length, and can contain letters, digits, and underscores (\\_).\n\n> You can specify up to 10,000 SNs in a single call. If the number of SNs reaches this limit, the excess SNs are discarded."
+          }
         }
       ]
     },
@@ -34,15 +51,34 @@
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无**实例概览**页面或ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The instance ID. You can view the **ID** of the instance on the **Overview** page in the IoT Platform console.\n\n>  If your instance has an ID, you must specify this parameter. Otherwise, the request fails. If no Overview page exists or no instance ID is displayed, you do not need to specify this parameter.\n\nFor more information, see the [Overview](~~356505~~) topic of IoT instances."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设备所属云网关产品的**ProductKey**。",
+        "en": "The **ProductKey** of the gateway product to which the devices belong."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在MQTT云网关产品下批量导入设备",
+    "en": "Batch Import Devices under an MQTT Cloud Gateway Product"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n若添加MQTT云网关设备，调用该接口前，请先添加MQTT云网关并成功创建云网关产品，获取产品的**Productkey**。具体操作，请参见[创建云网关产品（MQTT）](~~433804~~)。\n\n\n## QPS限制\n\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n\n> 单个阿里云账号下的所有RAM用户共享该阿里云账号的配额。",
+    "en": "## How-To  \nIf you are adding MQTT cloud gateway devices, before invoking this API, first add an MQTT cloud gateway and successfully create a cloud gateway product to obtain the **ProductKey** of the product. For more information, see [Create a Cloud Gateway Product (MQTT)](~~433804~~).  \n\n## Queries per second (QPS) limit  \n\nThe maximum queries per second (QPS) for this API for a single Alibaba Cloud account is 10.  \n\n> All Resource Access Management (RAM) users under a single Alibaba Cloud account share the quota of that Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot batch-import-device --iot-instance-id iot-1n8t0000 --product-key a1BwAGV0000 --device-list DeviceSecret=b4d43f700000010ba5e5 Sn=QC4000000001 DeviceName=device1 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot BatchImportDevice --region cn-hangzhou --DeviceList.1.DeviceName device1 --IotInstanceId 'iot-1n8t0000' --DeviceList.1.DeviceSecret b4d43f700000010ba5e5 --DeviceList.1.Sn QC4000000001 --ProductKey a1BwAGV0000"

@@ -1,5 +1,6 @@
 {
   "name": "ListUserBackupFiles",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过用户备份ID查询目标用户备份。",
+        "en": "The ID of the full backup file."
+      }
     },
     {
       "name": "Comment",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过备注信息查询目标用户备份。\n>您可输入目标用户备份的部分备注信息进行模糊匹配。",
+        "en": "The description of the full backup file.\n\n> The system implements a fuzzy match based on the value of this parameter."
+      }
     },
     {
       "name": "OssUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过用户备份文件的OSS下载地址查询目标用户备份。如何获取用户备份文件的OSS下载地址，请参见[上传Object后如何获取访问URL](~~39607~~)。",
+        "en": "The URL from which you can download the full backup file that is stored as an object in an Object Storage Service (OSS) bucket. For more information about how to obtain the URL, see [Obtain the access URL after you upload objects](~~39607~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。可调用DescribeRegions获取。",
+        "en": "The region ID. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。可调用DescribeDBInstanceAttribute获取。",
+        "en": "The resource group ID. You can call the DescribeDBInstanceAttribute operation to obtain the ID of the resource group."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过用户备份文件的状态查询目标用户备份。取值：\n* **Importing**：导入中。\n* **Failed**：导入失败。\n* **CheckSuccess**：校验通过。\n* **BackupSuccess**：导入成功。\n* **Deleted**：已删除。",
+        "en": "The status of the full backup file. Valid values:\n\n*   **Importing**: The full backup file is being imported.\n*   **Failed**: The full backup file fails to be imported.\n*   **CheckSucccess**: The full backup file passes the check.\n*   **BackupSuccess**: The full backup file is imported.\n*   **Deleted**: The full backup file is deleted."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过标签信息查询目标用户备份。",
+        "en": "The tag that is added to the full backup file."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询用户备份信息",
+    "en": "ListUserBackupFiles"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n\n### 功能说明\n* 用户备份即MySQL自建库的全量备份数据，您可以将用户备份恢复至云上。更多信息，请参见[自建MySQL 5.7数据库全量上云](~~251779~~)。\n* 通过[CreateDBInstance](~~26228~~)接口创建RDS MySQL备份上云实例时，可调用此接口查询用户备份ID。\n* 您可以调用[ImportUserBackupFile](~~260266~~)接口将用户备份导入RDS。",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n\n### [](#)Feature description\n\n*   A full backup file contains the data of a self-managed MySQL database. You can restore the data of a self-managed MySQL database from a full backup file to an ApsaraDB RDS for MySQL instance. For more information, see [Migrate the data of a self-managed MySQL 5.7 instance to the cloud](~~251779~~).\n*   Before you call the [CreateDBInstance](~~26228~~) operation to create an ApsaraDB RDS for MySQL instance into which you want to import full backup files, you can call this operation to query the IDs of full backup files.\n*   You can call the [ImportUserBackupFile](~~260266~~) operation to import a full backup file into an ApsaraDB RDS for MySQL instance."
+  },
   "example": {
     "unifiedCli": "aliyun rds list-user-backup-files --status CheckSuccess --biz-region-id cn-hangzhou --comment BackupTest --backup-id b-kwwvr7v8t7of0000 --oss-url https://0000.oss-ap-0000.aliyuncs.com/backup_qp.xb --tags key1:value1 --resource-group-id rg-acfmy0000 --region cn-hangzhou",
     "legacyCli": "aliyun rds ListUserBackupFiles --region cn-hangzhou --Status CheckSuccess --Comment BackupTest --ResourceGroupId 'rg-acfmy0000' --OssUrl 'https://0000.oss-ap-0000.aliyuncs.com/backup_qp.xb' --BackupId 'b-kwwvr7v8t7of0000' --RegionId 'cn-hangzhou' --Tags 'key1:value1'"

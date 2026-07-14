@@ -1,5 +1,6 @@
 {
   "name": "GetPfsMetricTrends",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "EndTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询结束时间，格式为Unix时间戳，单位为毫秒。\n> 查询结束时间需晚于查询开始时间，最多可查看最近一个月内任意七天的数据。",
+        "en": "The end of the time range to query. Set this parameter to a UNIX timestamp representing the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 UTC.\n\n> The end time must be later than the start time. You can view the data of up to seven days in the previous 30 days."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "Metric",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询趋势的指标：\n\n- **count**：执行次数。\n- **avgRt**：平均执行时间。\n- **rtRate**：耗时比例。\n- **rowsExamined**：总扫描行数。",
+        "en": "The metric whose trend you want to query. Valid values:\n\n- **count**: the number of executions.\n\n- **avgRt**: the average execution duration.\n\n- **rtRate**: the execution duration percentage.\n\n- **rowsExamined**: the total number of scanned rows."
+      }
     },
     {
       "name": "NodeId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n> 对于RDS MySQL集群系列或PolarDB MySQL版数据库实例，需要提供节点ID。",
+        "en": "The node ID.\n\n> This parameter is required if the database instance is an ApsaraDB RDS for MySQL Cluster Edition instance or a PolarDB for MySQL clusters."
+      }
     },
     {
       "name": "StartTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询开始时间，格式为unix时间戳，单位为毫秒。",
+        "en": "The beginning of the time range to query. Set this parameter to a UNIX timestamp representing the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定指标趋势",
+    "en": "GetPfsMetricTrends"
+  },
+  "descriptions": {
+    "zh": "使用该接口需满足以下前提条件：\n\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n- 目标数据库实例为RDS MySQL或PolarDB MySQL版。\n- 目标数据库实例已开启性能洞察（新版），详情请参见[性能洞察（新版）](~~469117~~)。",
+    "en": "Before you call this operation, take note of the following items:\n\n- If you use an Alibaba Cloud SDK or a Database Autonomy Service (DAS) SDK to call this operation, we recommend that you use the latest version of the SDK.\n\n- If you use an SDK to call operations of DAS, you must set the region ID to cn-shanghai.\n\n- An ApsaraDB RDS for MySQL instance or a PolarDB for MySQL cluster is connected to DAS.\n\n- The new version of the performance insight feature is enabled for the database instance. For more information, see [Performance insight (new version)](~~469117~~)."
+  },
   "example": {
     "unifiedCli": "aliyun das get-pfs-metric-trends --instance-id rm-m5ea73876ukci0000 --node-id r-x0000-db-0 --metric Count --start-time 1677461663092 --end-time 1678432430967 --region cn-hangzhou",
     "legacyCli": "aliyun das GetPfsMetricTrends --region cn-hangzhou --EndTime 1678432430967 --InstanceId 'rm-m5ea73876ukci0000' --NodeId 'r-x0000-db-0' --StartTime 1677461663092 --Metric Count"

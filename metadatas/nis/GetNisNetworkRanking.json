@@ -1,5 +1,6 @@
 {
   "name": "GetNisNetworkRanking",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "AccountIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "显式传递子账号ID。",
+        "en": "The IDs of the member accounts."
+      }
     },
     {
       "name": "BeginTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "起始时间戳，单位**ms**。未指定时默认查最近1小时。",
+        "en": "The beginning of the time range to query. This is a UNIX timestamp. Unit: **ms**. If you do not specify this parameter, data from the last hour is queried."
+      }
     },
     {
       "name": "Direction",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基于阿里云资源的网络流量方向，取值：\n\n- in：流入资源的流量方向。\n- out：流出资源的流量方向。\n\n><notice>跨域流量分析因只采集出向流量，所以传入in也以out处理。\n地域内性能观测和地域间性能观测因需在Filter内指定源或目的，所以指定Direction无效。></notice>",
+        "en": "The direction of network traffic on the Alibaba Cloud resource. Valid values:\n\n- in: the inbound traffic direction.\n\n- out: the outbound traffic direction.\n\n><notice>\n\nCross-domain traffic analysis collects only outbound traffic. Therefore, if you set this parameter to in, the value is automatically changed to out. For intra-region and inter-region performance monitoring, you must specify the source or destination in the Filter parameter. Therefore, the Direction parameter is invalid.\n\n></notice>"
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间戳，单位**ms**。未指定时默认查最近1小时。只指定了BeginTime时查BeginTime之后的1小时。",
+        "en": "The end of the time range to query. This is a UNIX timestamp. Unit: **ms**. If you do not specify this parameter, data from the last hour is queried. If you specify only BeginTime, data within 1 hour after the specified BeginTime is queried."
+      }
     },
     {
       "name": "Filter",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "支持进一步指定流量的过滤条件，进行聚焦性流量分析。",
+        "en": "Specifies additional filter conditions to focus the network traffic analysis."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件的名字。",
+            "en": "The name of the filter condition."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件的值。",
+            "en": "The value of the filter condition."
+          }
         }
       ]
     },
@@ -52,45 +81,84 @@
       "name": "GroupBy",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定指标排名的维度，各场景取值：\n <br>完整流数据排名分析：\n\n- Tuple1：表示一元组，提供云端IP粒度完整流数据排名分析。 \n- Tuple2：表示二元组，提供源和目的IP粒度完整流数据排名分析。 \n- Tuple5：表示五元组，提供源和目的IP、端口、协议粒度完整流数据排名分析。\n\n 流量统计排名分析： \n\n- Protocol：按协议类型统计流量。\n- SourcePort：按源端口统计流量。\n- DestinationPort：按目的端口统计流量。\n- InstanceId：按云上资源ID统计流量。\n- IpPair：按源和目的IP对统计流量。\n- Country：按客户端国家来源统计流量。\n- Province：指定客户端省份来源统计流量。\n- City：按客户端城市来源统计流量。\n- ISP：按客户端运营商来源统计流量。\n- ASN：按客户端运营商ASN来源统计流量。\n- CityASN：按客户端城市和运营商ASN来源统计流量。\n- RegionPair：按云企业网跨地域访问统计流量。\n\n网络访问性能排名分析： \n\n- CountryIsp：指定Region访问互联网国家和运营商性能排名。 \n- Province：指定Region访问国内省份性能排名。\n- ProvinceIsp：指定Region访问国内省份和运营商性能排名。\n- RegionPair：阿里云跨地域互访性能排名。 \n- ZonePair：指定地域内可用区互访性能排名。",
+        "en": "The dimension for ranking metrics. The valid values vary based on the scenario.\n<br>Rankings of full stream data:\n\n- Tuple1: a 1-tuple that provides rankings of full stream data at the cloud IP address granularity.\n\n- Tuple2: a 2-tuple that provides rankings of full stream data at the source and destination IP address granularity.\n\n- Tuple5: a 5-tuple that provides rankings of full stream data at the granularity of source and destination IP addresses, ports, and protocols.\n\nRankings of traffic statistics:\n\n- Protocol: aggregates traffic by protocol type.\n\n- SourcePort: aggregates traffic by source port.\n\n- DestinationPort: aggregates traffic by destination port.\n\n- InstanceId: aggregates traffic by cloud resource ID.\n\n- IpPair: aggregates traffic by source and destination IP address pair.\n\n- Country: aggregates traffic by client country.\n\n- Province: aggregates traffic by client province.\n\n- City: aggregates traffic by client city.\n\n- ISP: aggregates traffic by client ISP.\n\n- ASN: aggregates traffic by client ISP autonomous system number (ASN).\n\n- CityASN: aggregates traffic by client city and ISP ASN.\n\n- RegionPair: aggregates traffic for cross-region access over CEN.\n\nRankings of network access performance:\n\n- CountryIsp: ranks the performance of Internet access from a specified region to different countries and ISPs.\n\n- Province: ranks the performance of access from a specified region to different provinces in China.\n\n- ProvinceIsp: ranks the performance of access from a specified region to different provinces and ISPs in China.\n\n- RegionPair: ranks the performance of cross-region access between Alibaba Cloud regions.\n\n- ZonePair: ranks the performance of access between zones in a specified region."
+      }
     },
     {
       "name": "OrderBy",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定公网流量进行排名的指标。大小写敏感，取值：\n  \n- bps：每秒比特数。\n-   pps：每秒包数。\n-   ByteCount：累计字节数。\n-   PacketCount：累计包数。\n-   rtt：tcp协议建立连接时的往返延迟。\n-   RetransmitRate：重传率。\n-   RatelimitDropPps：限速丢包速率。\n-   ActiveSessionCount：并发会话数。\n-   NewSessionPerSecond：每秒新建会话数。",
+        "en": "The metric used to rank Internet traffic. This parameter is case-sensitive. Valid values:\n\n- bps: bits per second.\n\n- pps: packets per second.\n\n- ByteCount: the total number of bytes.\n\n- PacketCount: the total number of packets.\n\n- rtt: the RT when a TCP connection is established.\n\n- RetransmitRate: the retransmission rate.\n\n- RatelimitDropPps: the rate of packet loss due to speed limiting.\n\n- ActiveSessionCount: the number of concurrent sessions.\n\n- NewSessionPerSecond: the number of new sessions per second."
+      }
     },
     {
       "name": "RegionNo",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源所在地域。",
+        "en": "The region where the resource is located."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "按流量转发所使用的阿里云网络资源类型进行分析，取值：\n- AccessInternetIpV4：所有阿里云公网类型IPv4。\n- AccessInternetIpV4Limited：所有受地域限速的阿里云公网类型IPv4。\n- ElasticIP：弹性公网EIP（IPv4）。\n- PublicIpEcs：绑定在ECS的固定公网IP（IPv4）。\n- PublicIpClb：绑定在CLB的固定公网IP（IPv4）。\n- NAT：通过SNAT的访问公网流量。\n- TR：流经云企业网转发路由器的流量。\n- TRAttachment：流经云企业网连接实例的流量，包括地域内连接和跨地域连接。\n- VBR：流经边界路由器的流量。\n- GA：流经全球加速的流量。\n- InternetProbing：公网探测质量数据。\n- IntranetProbing：内网探测质量数据。",
+        "en": "The type of the Alibaba Cloud network resource that is used for traffic forwarding. Valid values:\n\n- AccessInternetIpV4: all types of Alibaba Cloud public IPv4 addresses.\n\n- AccessInternetIpV4Limited: all types of Alibaba Cloud public IPv4 addresses that are subject to region-specific speed limits.\n\n- ElasticIP: elastic IP addresses (EIPs) (IPv4).\n\n- PublicIpEcs: fixed public IP addresses (IPv4) that are attached to ECS instances.\n\n- PublicIpClb: fixed public IP addresses (IPv4) that are attached to CLB instances.\n\n- NAT: Internet traffic that passes through SNAT.\n\n- TR: traffic that flows through a TransitRouter of a Cloud Enterprise Network (CEN) instance.\n\n- TRAttachment: traffic that flows through a CEN connection instance, including intra-region connections and inter-region connections.\n\n- VBR: traffic that flows through a virtual border router.\n\n- GA: traffic that flows through a Global Accelerator (GA) instance.\n\n- InternetProbing: data about Internet probe quality.\n\n- IntranetProbing: data about internal network probe quality."
+      }
     },
     {
       "name": "Sort",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方式，默认desc，取值：\n\n- asc：按正序排序。\n- desc：按逆序排序。",
+        "en": "The sorting order. The default value is desc. Valid values:\n\n- asc: ascending order.\n\n- desc: descending order."
+      }
     },
     {
       "name": "TopN",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "展示排序靠前的数据。默认值：**10**。表示默认展示排序前 10 的数据。最大值：**100**。",
+        "en": "The number of entries to return. Default value: **10**. This indicates that the top 10 entries are returned. Maximum value: **100**."
+      }
     },
     {
       "name": "UseCrossAccount",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用多账号访问模式，保留参数，目前不支持。",
+        "en": "Specifies whether to use the multi-account access mode. This is a reserved parameter and is not supported."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取云网络指标排名",
+    "en": "GetNisNetworkRanking"
+  },
+  "descriptions": {
+    "zh": "支持分析场景： \n- 公网性能观测大盘场景\n\n- 跨可用区内网性能观测大盘场景\n\n- 跨地域内网性能观测大盘场景\n\n\n\n## 公网性能观测大盘场景\n\n**说明**\n\n不需要指定时间，查询最新探测结果\n\n### **请求参数**\n\n| **名称** | **类型** | **必填** | **描述** |\n| --- | --- | --- | --- |\n| RegionNo | string | 是   | 探测源所在阿里云地域。 |\n| ResourceType | string | 是   | 固定选择**InternetProbing**，表示查询公网性能观测排名。 |\n| Direction | string | 是   | 固定选择**out**，探测方向为出向流量。 |\n| GroupBy | string | 是   | 指定指标排名的维度，枚举如下： - **Country**：探测的国家。 - **CountryIsp**：探测的国家及运营商。 - **Province**：探测的省份。 - **ProvinceIsp**：探测的省份及运营商。 |\n| OrderBy | string | 是   | 指定进行排名的指标，取值：**rtt**，探测的往返延迟。 |\n| Filter | object\\[\\] | 否   | 过滤信息。 |\n| \\-Name | string | 否   | 过滤条件，取值：<br> - **Country**：探测的国家。<br> - **Province**：探测的省份。 <br>- **Isp**：探测的运营商。 |\n| \\-Value | string | 否   | 过滤条件对应的过滤值。 |\n\n### **返回参数**\n\n| **名称** | **类型** | **描述** |\n| --- | --- | --- |\n| RequestId | string | 请求ID。 |\n| Data | array | 云网络指标排名数据集合。 |\n| Country | string | 探测的国家。 |\n| Province | string | 探测的省份。 |\n| Isp | string | 探测的运营商。 |\n| RTT | double | 探测的往返延迟，单位ms。 |\n\n## 跨可用区内网性能观测大盘场景\n\n**说明**\n\n支持最大查询时间跨度为1小时。\n\n### **请求参数**\n\n| **名称** | **类型** | **必填** | **描述** |\n| --- | --- | --- | --- |\n| RegionNo | string | 是   | 阿里云地域。 |\n| ResourceType | string | 是   | 固定选择**IntranetProbing**，表示查询跨可用区性能观测排名。 |\n| Direction | string | 是   | 因需在**Filter**参数内指定探测源或目的，意味着方向已定，所以选择**in**或**out**无影响。 |\n| GroupBy | string | 是   | 指定指标排名的维度，取值：**ZonePair**，按可用区对进行聚合分析。 |\n| OrderBy | string | 是   | 指定进行排名的指标，取值：**rtt**，探测的往返延迟。 |\n| Filter | object\\[\\] | 是   | 过滤信息。 |\n| \\-Name | string | 是   | 过滤条件，取值：<br> - **SourceZone**：探测的源可用区。<br> - **DestinationZone**：探测的目的可用区。<br> **说明:** **SourceZone**和**DestinationZone**必须至少选择一个。 |\n| \\-Value | string | 是   | 过滤条件对应的过滤值。 |\n\n### **返回参数**\n\n| **名称** | **类型** | **描述** |\n| --- | --- | --- |\n| RequestId | string | 请求ID。 |\n| Data | array | 云网络指标排名数据集合。 |\n| SourceZone | string | 探测的源可用区。 |\n| DestinationZone | string | 探测的目的可用区。 |\n| RTT | double | 探测的往返延迟，单位ms。 |\n\n## **跨地域内网性能观测大盘场景**\n\n**说明**\n\n支持最大查询时间跨度为24小时，不指定时默认查询最近1小时。\n\n### **请求参数**\n\n| **名称** | **类型** | **必填** | **描述** |\n| --- | --- | --- | --- |\n| RegionNo | string | 是   | 阿里云地域。 |\n| ResourceType | string | 是   | 固定选择**IntranetProbing**，表示查询跨地域性能观测排名。 |\n| Direction | string | 是   | 探测方向，取值： - **in**：以RegionNo为目的的探测。 - **out**：以RegionNo为源的探测。 |\n| GroupBy | string | 是   | 指定指标排名的维度，取值：**RegionPair**，按地域区对进行聚合分析。 |\n| OrderBy | string | 是   | 指定进行排名的指标，取值：**rtt**，探测的往返延迟。 |\n| Filter | object\\[\\] | 否   | 过滤信息。 |\n| \\-Name | string | 否   | 过滤条件，取值：**DestinationRegionNo**，当**Direction**为**out**时，可指定此参数表示探测的目的地域。 |\n| \\-Value | string | 否   | 目的地域。 |\n\n### **返回参数**\n\n| **名称** | **类型** | **描述** |\n| --- | --- | --- |\n| RequestId | string | 请求ID。 |\n| Data | array | 云网络指标排名数据集合。 |\n| RegionNo | string | 探测的源地域。 |\n| DestinationRegionNo | string | 探测的目的地域。 |\n| RTT | double | 探测的往返延迟，单位ms。 |",
+    "en": "This operation supports the following analysis scenarios:\n\n- Internet performance monitoring dashboard\n\n- Cross-zone internal network performance monitoring dashboard\n\n- Cross-region internal network performance monitoring dashboard\n\n## Internet performance monitoring dashboard scenario\n\n**Note**\n\nYou do not need to specify a time to query the latest probe results.\n\n### **Request parameters**\n\n| **Name**     | **Type** | **Required** | **Description**                                                                                                                                                                                                                                                                                |\n| ------------ | -------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| RegionNo     | string   | Yes          | The Alibaba Cloud region where the monitoring node is located.                                                                                                                                                                                                                                 |\n| ResourceType | string   | Yes          | Set the value to **InternetProbing**. This value indicates that you want to query the rankings of Internet performance monitoring.                                                                                                                                                             |\n| Direction    | string   | Yes          | Set the value to **out**. This value indicates that the traffic direction is outbound.                                                                                                                                                                                                         |\n| GroupBy      | string   | Yes          | The dimension for ranking metrics. Valid values: **Country**: the country where the probe is located. **CountryIsp**: the country and ISP where the probe is located. **Province**: the province where the probe is located. **ProvinceIsp**: the province and ISP where the probe is located. |\n| OrderBy      | string   | Yes          | The metric used for ranking. Set the value to **rtt**, which specifies the response time (RT) of the probe.                                                                                                                                                                                    |\n| Filter       | object[] | No           | The filter conditions.                                                                                                                                                                                                                                                                         |\n| -Name        | string   | No           | The filter condition. Valid values:<br>\\- **Country**: the country where the probe is located.<br>\\- **Province**: the province where the probe is located.<br>\\- **Isp**: the ISP of the probe.                                                                                               |\n| -Value       | string   | No           | The value of the filter condition.                                                                                                                                                                                                                                                             |\n\n### **Response parameters**\n\n| **Name**  | **Type** | **Description**                                    |\n| --------- | -------- | -------------------------------------------------- |\n| RequestId | string   | The request ID.                                    |\n| Data      | array    | A collection of cloud network metric ranking data. |\n| Country   | string   | The country where the probe is located.            |\n| Province  | string   | The province where the probe is located.           |\n| Isp       | string   | The ISP of the probe.                              |\n| RTT       | double   | The RT of the probe. Unit: ms.                     |\n\n## Cross-zone internal network performance monitoring dashboard scenario\n\n**Note**\n\nThe maximum time range that you can query is 1 hour.\n\n### **Request parameters**\n\n| **Name**     | **Type** | **Required** | **Description**                                                                                                                                                                                                                             |\n| ------------ | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| RegionNo     | string   | Yes          | The Alibaba Cloud region.                                                                                                                                                                                                                   |\n| ResourceType | string   | Yes          | Set the value to **IntranetProbing**. This value indicates that you want to query the rankings of cross-zone performance monitoring.                                                                                                        |\n| Direction    | string   | Yes          | You must specify the source or destination of the probe in the **Filter** parameter. This means the direction is already determined. Therefore, setting this parameter to **in** or **out** has no effect.                                  |\n| GroupBy      | string   | Yes          | The dimension for ranking metrics. Set the value to **ZonePair**, which specifies that aggregation and analysis are performed by zone pair.                                                                                                 |\n| OrderBy      | string   | Yes          | The metric used for ranking. Set the value to **rtt**, which specifies the RT of the probe.                                                                                                                                                 |\n| Filter       | object[] | Yes          | The filter conditions.                                                                                                                                                                                                                      |\n| -Name        | string   | Yes          | The filter condition. Valid values:<br>\\- **SourceZone**: the source zone of the probe.<br>\\- **DestinationZone**: the destination zone of the probe.<br>**Note:** You must specify at least one of **SourceZone** and **DestinationZone**. |\n| -Value       | string   | Yes          | The value of the filter condition.                                                                                                                                                                                                          |\n\n### **Response parameters**\n\n| **Name**        | **Type** | **Description**                                    |\n| --------------- | -------- | -------------------------------------------------- |\n| RequestId       | string   | The request ID.                                    |\n| Data            | array    | A collection of cloud network metric ranking data. |\n| SourceZone      | string   | The source zone of the probe.                      |\n| DestinationZone | string   | The destination zone of the probe.                 |\n| RTT             | double   | The RT of the probe. Unit: ms.                     |\n\n## **Cross-region internal network performance monitoring dashboard scenario**\n\n**Note**\n\nThe maximum time range that you can query is 24 hours. If you do not specify a time range, data from the last hour is queried by default.\n\n### **Request parameters**\n\n| **Name**     | **Type** | **Required** | **Description**                                                                                                                                                                  |\n| ------------ | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| RegionNo     | string   | Yes          | The Alibaba Cloud region.                                                                                                                                                        |\n| ResourceType | string   | Yes          | Set the value to **IntranetProbing**. This value indicates that you want to query the rankings of cross-region performance monitoring.                                           |\n| Direction    | string   | Yes          | The probe direction. Valid values: **in**: The probe destination is the region specified by RegionNo. **out**: The probe source is the region specified by RegionNo.             |\n| GroupBy      | string   | Yes          | The dimension for ranking metrics. Set the value to **RegionPair**, which specifies that aggregation and analysis are performed by region pair.                                  |\n| OrderBy      | string   | Yes          | The metric used for ranking. Set the value to **rtt**, which specifies the RT of the probe.                                                                                      |\n| Filter       | object[] | No           | The filter conditions.                                                                                                                                                           |\n| -Name        | string   | No           | The filter condition. Set the value to **DestinationRegionNo**. When **Direction** is set to **out**, you can use this parameter to specify the destination region of the probe. |\n| -Value       | string   | No           | The destination region.                                                                                                                                                          |\n\n### **Response parameters**\n\n| **Name**            | **Type** | **Description**                                    |\n| ------------------- | -------- | -------------------------------------------------- |\n| RequestId           | string   | The request ID.                                    |\n| Data                | array    | A collection of cloud network metric ranking data. |\n| RegionNo            | string   | The source region of the probe.                    |\n| DestinationRegionNo | string   | The destination region of the probe.               |\n| RTT                 | double   | The RT of the probe. Unit: ms.                     |"
+  },
   "example": {
     "unifiedCli": "aliyun nis get-nis-network-ranking --region-no cn-beijing --resource-type AccessInternetIpV4 --direction in --group-by Protocol --order-by bps --filter Value=lb-2zxxxxz1d Name=instanceId --begin-time 1684373600099 --end-time 1684379093000 --sort desc --topn 10 --use-cross-account false --account-ids 1186399538210000 --region cn-hangzhou",
     "legacyCli": "aliyun nis GetNisNetworkRanking --region cn-hangzhou --OrderBy bps --RegionNo 'cn-beijing' --GroupBy Protocol --EndTime 1684379093000 --AccountIds.1 1186399538210000 --Filter '[{\"Value\":\"lb-2zxxxxz1d\",\"Name\":\"instanceId\"}]' --UseCrossAccount false --BeginTime 1684373600099 --Sort desc --ResourceType AccessInternetIpV4 --Direction in --TopN 10"

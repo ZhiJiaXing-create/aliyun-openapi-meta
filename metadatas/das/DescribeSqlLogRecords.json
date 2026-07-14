@@ -1,5 +1,6 @@
 {
   "name": "DescribeSqlLogRecords",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "EndTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": true,
+      "description": {
+        "zh": "结束时间，格式为Unix时间戳，单位为毫秒。",
+        "en": "The end of the time range to query. This is a UNIX timestamp representing the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 UTC."
+      }
     },
     {
       "name": "Filters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "筛选条件列表。",
+        "en": "A list of filter conditions."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数。\n\n> 支持的过滤参数及其取值请参考**请求参数补充说明**。",
+            "en": "The filter key.\n\n> For details on supported filter keys and their values, see **Additional information about request parameters**."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数取值。",
+            "en": "The filter value."
+          }
         }
       ]
     },
@@ -34,39 +51,74 @@
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库实例ID。",
+        "en": "The ID of the database instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n- 对于RDS MySQL和PolarDB MySQL版，该参数仅适用于集群版实例。若不传该参数，默认查询主节点日志明细。\n- 对于PolarDB-X 2.0，该参数传入**polarx_cn**（计算节点）或**polarx_dn**（数据节点）。",
+        "en": "The node ID.\n\n- This parameter is applicable only to ApsaraDB RDS for MySQL and PolarDB for MySQL cluster instances. If this parameter is omitted, the log details of the primary node are returned by default.\n\n- For PolarDB-X 2.0, set this parameter to **polarx\\_cn** (compute node) or **polarx\\_dn** (data node)."
+      }
     },
     {
       "name": "PageNo",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询的页码，从1开始，默认为1。",
+        "en": "The page number. Pages start from page 1. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页最大记录数，最大支持100，默认值为10。",
+        "en": "The number of entries per page. Maximum value: 100. Default value: 10."
+      }
     },
     {
       "name": "Role",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "PolarDB-X 2.0数据库实例节点的角色。\n\n- **polarx_cn **：计算节点。\n- **polarx_dn **：数据节点。",
+        "en": "The role of the node in the PolarDB-X 2.0 database instance.\n\n- **polarx\\_cn**: compute node.\n\n- **polarx\\_dn**: data node."
+      }
     },
     {
       "name": "StartTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": true,
+      "description": {
+        "zh": "开始时间，格式为Unix时间戳，单位为毫秒。",
+        "en": "The beginning of the time range to query. This is a UNIX timestamp representing the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "（废弃）查询DAS企业版日志明细",
+    "en": "DescribeSqlLogRecords"
+  },
+  "descriptions": {
+    "zh": "使用该接口需满足以下前提条件：\n\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。",
+    "en": "Before calling this operation, note the following:\n\n- When you use an Alibaba Cloud or Database Autonomy Service (DAS) SDK, we recommend that you use the latest version.\n\n- When you call the DAS service by using an SDK, you must set the region to `cn-shanghai`."
+  },
   "example": {
     "unifiedCli": "aliyun das describe-sql-log-records --instance-id pc-2ze8g2am976240000 --node-id pi-uf6k5f6g3912i0000 --role polarx_cn --filters Value=select Key=keyWords --start-time 1596177993000 --end-time 1608888296000 --page-no 1 --page-size 10 --region cn-hangzhou",
     "legacyCli": "aliyun das DescribeSqlLogRecords --region cn-hangzhou --Role polarx_cn --Filters.1.Key keyWords --EndTime 1608888296000 --PageSize 10 --InstanceId 'pc-2ze8g2am976240000' --Filters.1.Value select --NodeId 'pi-uf6k5f6g3912i0000' --StartTime 1596177993000 --PageNo 1"

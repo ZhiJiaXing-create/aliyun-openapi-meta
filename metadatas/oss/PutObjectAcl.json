@@ -1,0 +1,60 @@
+{
+  "name": "PutObjectAcl",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "PUT",
+  "pathPattern": "/[key]?acl",
+  "parameters": [
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object的完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "versionId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "Object对应的版本",
+        "en": "The version ID of the object."
+      }
+    },
+    {
+      "name": "x-oss-object-acl",
+      "position": "Header",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "指定OSS创建Object时的访问权限。\n取值：\n\n- default（默认）：Object遵循所在存储空间的访问权限。\n- private：Object是私有资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户没有权限操作该Object。\n- public-read：Object是公共读资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户只有该Object的读权限。请谨慎使用该权限。\n- public-read-write：Object是公共读写资源。所有用户都有该Object的读写权限。请谨慎使用该权限。\n\n关于访问权限的更多信息，请参见**[读写权限ACL](~~100676~~)**。",
+        "en": "The access control list of the object when OSS creates the object.\nValid values:\n\n- default (default): The object inherits the ACL of the bucket in which the object is stored.\n- private: The object is a private resource. Only the object owner and authorized users have the access control list permissions on the object. Other users do not have permissions to perform operations on the object.\n- public-read: The object is a public-read resource. Only the object owner and authorized users have the access control list permissions on the object. Other users have only read permissions on the object. Exercise caution when you set the ACL to this value.\n- public-read-write: The object is a public-read-write resource. All users have the access control list permissions on the object. Exercise caution when you set the ACL to this value.\n\nFor more information about access permissions, see [Access control list ACL](~~100676~~)."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改文件的访问权限",
+    "en": "Modify the access permissions of a file"
+  },
+  "descriptions": {
+    "zh": "**注意事项**\n\n此操作只有Bucket Owner有权限执行，且需对Object有读写权限。\n\n**版本控制**\n\n调用PutObjectACL接口时，默认只能设置Object当前版本的ACL。您可以通过指定versionId参数来设置指定Object版本的ACL。如果Object的对应版本为删除标记（Delete Marker），则OSS将返回404 Not Found。\n\n**ACL说明**\n\nPutObjectACL接口通过Put请求中的`x-oss-object-acl`头来设置Object ACL。目前Object包括如下四种访问权限。\n\n- private：Object是私有资源。只有该Object的Owner拥有该Object的读写权限，其他用户没有权限操作该Object。\n- public-read：Object是公共读资源。Object Owner拥有该Object的读写权限。非Object Owner只有该Object的读权限。\n- public-read-write：Object是公共读写资源。所有用户拥有对该Object的读写权限。\n- default：Object遵循其所在Bucket的读写权限，即Bucket是什么权限，Object就是什么权限。\n\n>**注意**\n- Object ACL优先级高于Bucket ACL。例如Bucket ACL是private的，而Object ACL是public-read-write的，则所有用户都拥有该Object的访问权限，即使该Bucket是私有Bucket。如果某个Object未设置过ACL，则访问权限遵循Bucket ACL。\n- Object的读操作包括GetObject、HeadObject、CopyObject和UploadPartCopy中的对原Object的读；Object的写操作包括PutObject、PostObject、AppendObject、DeleteObject、DeleteMultipleObjects、CompleteMultipartUpload以及CopyObject对新Object的写。\n- 您还可以在进行Object的写操作时，在请求头中带上x-oss-object-acl来设置Object\n ACL，效果与PutObjectACL等同。例如PutObject时在请求头中带上x-oss-object-acl可以在上传一个Object的同时设置此Object的ACL。",
+    "en": "**Before you begin**.\n\nOnly the bucket owner can execute this operation, and the bucket owner must have the access control list permissions on the object.\n\n**Versioning**.\n\nWhen you call the PutObjectACL operation, the ACL of the current version of the object is configured by default. You can specify the versionId parameter to configure the ACL of a specific object version. If the specified version is a delete marker, OSS returns 404 Not Found.\n\n**ACL description**.\n\nThe PutObjectACL operation uses the `x-oss-object-acl` request header in the PUT request to configure the object ACL. The following four access permissions are supported for objects.\n\n- private: The object is a private resource. Only the owner of the object has the access control list permissions on the object. Other users do not have permissions to perform operations on the object.\n- public-read: The object is a public-read resource. The object owner has the access control list permissions on the object. Other users have only read permissions on the object.\n- public-read-write: The object is a public-read-write resource. All users have the access control list permissions on the object.\n- default: The object inherits the access control list of the bucket in which the object is stored.\n\n>**Note**\n- The ACL of an object takes precedence over the ACL of the bucket in which the object is stored. For example, if the bucket ACL is private and the object ACL is public-read-write, all users have access permissions on the object, even if the bucket is a private bucket. If no ACL is configured for an object, the access permissions of the object are determined by the ACL of the bucket.\n- Read operations on an object include GetObject, HeadObject, CopyObject, and the read operation on the source object in UploadPartCopy. Write operations on an object include PutObject, PostObject, AppendObject, DeleteObject, DeleteMultipleObjects, CompleteMultipartUpload, and the write operation on the destination object in CopyObject.\n- You can also include the x-oss-object-acl request header in the request when you perform write operations on an object to configure the object access permissions. This has the same effect as calling PutObjectACL. For example, you can include the x-oss-object-acl request header in a PutObject request to configure the access permissions of the object when you upload the object."
+  }
+}

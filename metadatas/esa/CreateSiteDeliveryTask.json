@@ -1,5 +1,6 @@
 {
   "name": "CreateSiteDeliveryTask",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "BusinessType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "业务类型，取值：\n\n- **dcdn_log_access_l1**（默认值）：访问日志。\n- **dcdn_log_er**：边缘函数日志。\n- **dcdn_log_waf**：安全防护日志。\n- **dcdn_log_ipa**：四层加速日志。",
+        "en": "The business type. Valid values:\n\n- **dcdn\\_log\\_access\\_l1** (default): access log.\n\n- **dcdn\\_log\\_er**: edge function log.\n\n- **dcdn\\_log\\_waf**: WAF protection log.\n\n- **dcdn\\_log\\_ipa**: Layer-4 acceleration log."
+      }
     },
     {
       "name": "DataCenter",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据中心。取值为：\n- **cn**：中国内地。\n- **oversea**：海外（非中国内地）。",
+        "en": "The data center. Valid values:\n\n- **cn**: Chinese mainland.\n\n- **oversea**: regions outside the Chinese mainland."
+      }
     },
     {
       "name": "DeliveryType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "投递类型：\n- **sls**： 阿里云日志服务。\n- **http**： http服务。\n- **aws3**： 亚马逊s3服务。\n- **oss**： 阿里云对象存储服务。\n- **kafka**： kafka服务。\n- **aws3cmpt**： 亚马逊s3兼容服务。",
+        "en": "The type of the delivery destination. Valid values:\n\n- **sls**: Log Service.\n\n- **http**: an HTTP service.\n\n- **aws3**: Amazon S3.\n\n- **oss**: Object Storage Service.\n\n- **kafka**: a Kafka service.\n\n- **aws3cmpt**: an Amazon S3-compatible service."
+      }
     },
     {
       "name": "DiscardRate",
       "position": "Body",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "丢弃率不填则默认为0。",
+        "en": "The discard rate. If you do not specify this parameter, the default value 0 is used."
+      }
     },
     {
       "name": "FieldName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "日志所选的字段，以英文逗号“，”隔开。",
+        "en": "The log fields for delivery. Separate multiple fields with a comma (,)."
+      }
     },
     {
       "name": "FilterVer",
@@ -44,45 +65,80 @@
       "name": "HttpDelivery",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HTTP投递配置参数。",
+        "en": "The parameters for delivering logs to an HTTP server."
+      }
     },
     {
       "name": "KafkaDelivery",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Kafka投递配置参数。",
+        "en": "The parameters for delivering logs to a Kafka cluster."
+      }
     },
     {
       "name": "OssDelivery",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OSS投递配置。",
+        "en": "The parameters for delivering logs to Object Storage Service (OSS)."
+      }
     },
     {
       "name": "S3Delivery",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "S3/S3兼容投递配置参数。",
+        "en": "The parameters for delivering logs to an Amazon S3 bucket or an S3-compatible service."
+      }
     },
     {
       "name": "SiteId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~2850189~~)接口获取。",
+        "en": "The ID of the site. You can call the [ListSites](~~2850189~~) operation to obtain the ID."
+      }
     },
     {
       "name": "SlsDelivery",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SLS投递配置。",
+        "en": "The parameters for delivering logs to Log Service."
+      }
     },
     {
       "name": "TaskName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务名称。",
+        "en": "The task name."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新建实时日志投递任务",
+    "en": "CreateSiteDeliveryTask"
+  },
   "example": {
     "unifiedCli": "aliyun esa create-site-delivery-task --business-type dcdn_log_access_l1 --site-id 12312312112000 --data-center cn --task-name dcdn-test-task --field-name user_agent,ip_adress,ip_port --delivery-type sls --discard-rate 0.0 --s3-delivery SecretKey=LDSIKh000 Endpoint=https://s3.oss-cn-hangzhou.aliyuncs.com VertifyType=example-string Region=cn-beijing BucketPath=logriver-test/log ServerSideEncryption=true AccessKey=yourAccessKeyID PrefixPath=logriver-test/log S3Cmpt=true --oss-delivery BucketName=test_rlog Region=cn-shanghai PrefixPath=test/ Aliuid=1234000 --http-delivery '{\"Compress\":\"gzip\",\"LogSplit\":true,\"LogBodySuffix\":\"cdnVersion:1.0\",\"HeaderParam\":{\"key\":\"example-string\"},\"StandardAuthParam\":{\"PrivateKey\":\"000\",\"UrlPath\":\"v1/log/upload\",\"ExpiredTime\":300},\"StandardAuthOn\":true,\"DestUrl\":\"http://xxx.aliyun.com/v1/log/upload\",\"MaxBatchSize\":1000,\"MaxRetry\":3,\"MaxBatchMB\":5,\"LogBodyPrefix\":\"cdnVersion:1.0\",\"QueryParam\":{\"key\":\"example-string\"},\"LastLogSplit\":true,\"TransformTimeout\":10,\"LogSplitWords\":\"example-string\"}' --kafka-delivery '{\"Compress\":\"lz4\",\"UserName\":\"xxx\",\"MachanismType\":\"plain\",\"Brokers\":[\"192.168.xxx.xxx:9902\"],\"Balancer\":\"kafka.LeastBytes\",\"Topic\":\"dqc_test2\",\"UserAuth\":true,\"Password\":\"000\"}' --sls-delivery SLSProject=dcdn-test20240417 SLSRegion=cn-hangzhou SLSLogStore=accesslog-test --filter-ver example-string --region cn-hangzhou",
     "legacyCli": "aliyun esa CreateSiteDeliveryTask --region cn-hangzhou --SlsDelivery '{\"SLSProject\":\"dcdn-test20240417\",\"SLSRegion\":\"cn-hangzhou\",\"SLSLogStore\":\"accesslog-test\"}' --SiteId 12312312112000 --HttpDelivery '{\"Compress\":\"gzip\",\"LogSplit\":true,\"LogBodySuffix\":\"cdnVersion:1.0\",\"HeaderParam\":{\"key\":\"example-string\"},\"StandardAuthParam\":{\"PrivateKey\":\"000\",\"UrlPath\":\"v1/log/upload\",\"ExpiredTime\":300},\"StandardAuthOn\":true,\"DestUrl\":\"http://xxx.aliyun.com/v1/log/upload\",\"MaxBatchSize\":1000,\"MaxRetry\":3,\"MaxBatchMB\":5,\"LogBodyPrefix\":\"cdnVersion:1.0\",\"QueryParam\":{\"key\":\"example-string\"},\"LastLogSplit\":true,\"TransformTimeout\":10,\"LogSplitWords\":\"example-string\"}' --FilterVer 'example-string' --DiscardRate '0.0' --BusinessType dcdn_log_access_l1 --DataCenter cn --TaskName 'dcdn-test-task' --S3Delivery '{\"SecretKey\":\"LDSIKh000\",\"Endpoint\":\"https://s3.oss-cn-hangzhou.aliyuncs.com\",\"VertifyType\":\"example-string\",\"Region\":\"cn-beijing\",\"BucketPath\":\"logriver-test/log\",\"ServerSideEncryption\":true,\"AccessKey\":\"yourAccessKeyID\",\"PrefixPath\":\"logriver-test/log\",\"S3Cmpt\":true}' --KafkaDelivery '{\"Compress\":\"lz4\",\"UserName\":\"xxx\",\"MachanismType\":\"plain\",\"Brokers\":[\"192.168.xxx.xxx:9902\"],\"Balancer\":\"kafka.LeastBytes\",\"Topic\":\"dqc_test2\",\"UserAuth\":true,\"Password\":\"000\"}' --FieldName 'user_agent,ip_adress,ip_port' --OssDelivery '{\"BucketName\":\"test_rlog\",\"Region\":\"cn-shanghai\",\"PrefixPath\":\"test/\",\"Aliuid\":\"1234000\"}' --DeliveryType sls"

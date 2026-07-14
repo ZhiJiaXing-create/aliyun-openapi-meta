@@ -1,5 +1,6 @@
 {
   "name": "GetPipelineRunNode",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/pipelineruns/[PipelineRunId]/nodes/[NodeId]",
@@ -8,33 +9,64 @@
       "name": "Depth",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询节点详细信息的深度（层数），当Depth为2时，将会返回该节点及其下一层的所有子节点的详细信息。",
+        "en": "The depth at which information about the node is queried. If you set Depth to 2, the information about the node and all its child nodes at the next layer is returned."
+      }
     },
     {
       "name": "NodeId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作流任务中一个节点的ID。如何查看节点ID，请参见[ListPipelineRuns](~~438042~~)。",
+        "en": "The ID of a node in the pipeline job. You can call [ListPipelineRuns](~~438042~~) to obtain the node ID."
+      }
     },
     {
       "name": "PipelineRunId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作流任务的ID。如何获取工作流任务ID，请参见[ListPipelineRuns](~~438042~~)。",
+        "en": "The ID of the pipeline job. You can call [ListPipelineRuns](~~438042~~) to obtain the ID of the pipeline job."
+      }
     },
     {
       "name": "TokenId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "被分享的工作流任务的ID。",
+        "en": "The ID of the shared pipeline job."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点类型，取值如下：\n* Logical（默认值）：表示逻辑节点，用户提交节点的都是逻辑节点。\n* Physical：表示物理节点，对应一个执行特定逻辑的容器的运行，逻辑节点在后台运行时会转换为物理节点。",
+        "en": "The node type. Valid values:\n\n*   Logical (default): the logical node. The nodes submitted by users are logical nodes.\n*   Physical: the physical node on which a container is deployed for executing specific logic. A logical node is converted to a physical node when the logical node runs in the background."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取工作流任务节点信息",
+    "en": "GetPipelineRunNode"
+  },
+  "descriptions": {
+    "zh": "PAIFlow支持复合形式的工作流，这些工作流在运行时也会体现为复合形式的节点。想要获取到这类节点的详细信息，可以传入Depth参数（默认值为2），可以递归地获取到所查询节点及其内含有的Depth层数的子节点的详细信息。\n\n工作流的每次运行会存在一个虚拟的根节点，这个根节点可以通过GetRun接口返回获取。调用GetNode接口查询该根节点，可以获取到对应运行的所有节点的详细信息及其组织结构。",
+    "en": "PAIFlow supports composite pipelines, which are reflected as composite nodes during running. To obtain information about such nodes, you can configure the Depth parameter (default value: 2). You can configure the Depth parameter to recursively obtain information about the queried node and its child nodes.\n\nA virtual root node exists each time a pipeline runs. You can call GetRun to obtain the root node. You can call GetNode to query the root node. The returned result also includes information about all nodes that run and their hierarchies."
+  },
   "example": {
     "unifiedCli": "aliyun paiflow get-pipeline-run-node --pipeline-run-id flow-ebppc000000005lwea --node-id node-wcs9z0000000027ps3 --depth 2 --type Logical --token-id 'https://pai.console.aliyun.com/0regionId=cn-hangzhou_workspaceId=102000000_mode=noSidebar#/paiflow/pipeline-runs/flow-6y70000000Token=eyJ0e000000' --region cn-hangzhou",
     "legacyCli": "aliyun paiflow GET /api/v1/pipelineruns/flow-ebppc000000005lwea/nodes/node-wcs9z0000000027ps3 --region cn-hangzhou --Type Logical --TokenId 'https://pai.console.aliyun.com/0regionId=cn-hangzhou_workspaceId=102000000_mode=noSidebar#/paiflow/pipeline-runs/flow-6y70000000Token=eyJ0e000000' --Depth 2 --header \"Content-Type=application/json\""

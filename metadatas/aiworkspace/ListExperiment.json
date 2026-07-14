@@ -1,5 +1,6 @@
 {
   "name": "ListExperiment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/experiments",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "标签过滤条件，多个条件以半角逗号（,）分隔。\n单个条件过滤格式为`Key=Value`。",
-        "en": "The tag filter conditions. Multiple conditions are separated by commas (,). The format of a single condition filter is `key=value`."
+        "en": "The filter conditions for labels. Separate multiple conditions with commas (,). A single filter condition must be in the `Key=Value` format."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "请求的最大结果数，默认为10。",
-        "en": "The maximum number of entries in the request. Default value: 10."
+        "en": "The maximum number of results to return. The default is 10."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "实验名称。",
-        "en": "The experiment name."
+        "en": "The name of the experiment."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "可选参数。",
-        "en": "The optional parameters."
+        "en": "Optional parameters."
       }
     },
     {
@@ -51,7 +52,7 @@
       "required": false,
       "description": {
         "zh": "分页查询时，对指定的排序字段进行升序或降序。\n- ASC：升序。\n- DESC（默认）：降序。",
-        "en": "The order of specific fields of results in a paged query (ascending or descending).\n\n*   ASC: ascending order\n*   DESC: descending order. This is the default value."
+        "en": "The order in which to sort the results of a paged query. Valid values:\n\n- ASC: ascending order.\n\n- DESC (default): descending order."
       }
     },
     {
@@ -61,7 +62,7 @@
       "required": false,
       "description": {
         "zh": "排序方式字符串列表，支持排序的字段包括：GmtCreateTime、Name、GmtModifiedTime或ExperimentId。排序方式包括DESC和ASC，默认为ASC。",
-        "en": "The strings used for sorting. The following fields can be used for sorting: GmtCreateTime, Name, GmtModifiedTime, and ExperimentId. The sorting order can be ASC (default) and DESC."
+        "en": "A list of sorting methods as strings. You can sort by the following fields: GmtCreateTime, Name, GmtModifiedTime, or ExperimentId. The sorting methods are DESC and ASC. The default is ASC."
       }
     },
     {
@@ -71,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "分页编号，从1开始。",
-        "en": "The page number. The value starts from 1."
+        "en": "The page number. Pages start from 1."
       }
     },
     {
@@ -91,7 +92,7 @@
       "required": false,
       "description": {
         "zh": "分页token，从0开始，默认为0。",
-        "en": "The pagination token, which starts from 0. Default value: 0."
+        "en": "The paging token. It starts from 0. The default is 0."
       }
     },
     {
@@ -101,7 +102,7 @@
       "required": false,
       "description": {
         "zh": "分页查询时的排序字段。目前GmtCreateTime字段用于排序。",
-        "en": "The field used for sorting. The GmtCreateTime field is used."
+        "en": "The field to use for sorting in a paged query. Currently, only the GmtCreateTime field is supported for sorting."
       }
     },
     {
@@ -111,7 +112,7 @@
       "required": false,
       "description": {
         "zh": "是否获取于实验相关的LatestRun信息。",
-        "en": "Specifies whether to obtain the LatestRun value that is related to the experiment."
+        "en": "Specifies whether to retrieve the LatestRun information related to the experiment."
       }
     },
     {
@@ -121,10 +122,17 @@
       "required": false,
       "description": {
         "zh": "实验所在工作空间ID。如何获取工作空间ID，请参见[ListWorkspaces](~~449124~~)。\n> 不填写工作空间ID，系统将返回默认工作空间的实验列表。\n>",
-        "en": "The ID of the workspace to which the experiment belongs. You can call [ListWorkspaces](~~449124~~) to obtain the workspace ID.\n\n>  If you do not specify a workspace ID, the system returns the experiments in the default workspace."
+        "en": "The ID of the workspace where the experiment resides. For more information about how to obtain a workspace ID, see [ListWorkspaces](~~449124~~).\n\n> If you do not specify a workspace ID, the system returns the list of experiments in the default workspace."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取实验列表",
+    "en": "ListExperiment"
+  },
   "example": {
     "unifiedCli": "aliyun aiworkspace list-experiment --name exp-test --workspace-id 151700 --labels is_evaluation:true --sort-by GmtCreateTime --order DESC --page-number 1 --page-size 10 --order-by GmtCreateTime_DESC,Name_ASC --page-token 0 --max-results 10 --verbose false --options match_name_exactly=true --region cn-hangzhou",
     "legacyCli": "aliyun aiworkspace GET /api/v1/experiments --region cn-hangzhou --Order DESC --OrderBy 'GmtCreateTime_DESC,Name_ASC' --Options '{\"match_name_exactly\":\"true\"}' --PageSize 10 --Verbose false --PageNumber 1 --SortBy GmtCreateTime --MaxResults 10 --WorkspaceId 151700 --PageToken 0 --Labels 'is_evaluation:true' --Name 'exp-test' --header \"Content-Type=application/json\""

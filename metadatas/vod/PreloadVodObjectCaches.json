@@ -1,5 +1,6 @@
 {
   "name": "PreloadVodObjectCaches",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Area",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预热区域，取值：**domestic**, **overseas**。",
+        "en": "The acceleration region in which you want to prefetch content. If you do not specify a region, the value overseas is used.\n\n*   **domestic**: Chinese mainland\n*   **overseas**: outside the Chinese mainland"
+      }
     },
     {
       "name": "L2Preload",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否直接预热到L2节点。取值：\n\n- **true**：代表预热的节点层级必须包含L2节点。\n\n- **false**：代表仅预热回源层节点（false为**默认值**，回源层节点可能是L2节点，也可能是L3节点）。",
+        "en": "Specifies whether to prefetch content to POPs. Valid values:\n\n*   **true**: prefetches content to nodes that include L2 DCDN nodes.\n*   **false**: prefetches content to L2 POPs or L3 POPs."
+      }
     },
     {
       "name": "ObjectPath",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预热文件URL。多个URL使用换行符（\\n或\\r\\n）分隔。",
+        "en": "The URL of the file to be prefetched. Separate multiple URLs with line breaks (\\n or \\r\\n)."
+      }
     },
     {
       "name": "WithHeader",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预热请求默认携带的header是Accept-Encoding:gzip，如果您需要预热请求携带其他header，或者实现多副本预热，那么可以使用该参数来实现自定义预热header。用JSON串格式提交。",
+        "en": "The custom header for prefetch in the JSON format."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "预热缓存",
+    "en": "PreloadVodObjectCaches"
+  },
+  "descriptions": {
+    "zh": "- 目前服务地址仅支持：**华东2（上海）**。\n- 同一账号每天最多可提交预热URL请求共500条，目前不支持目录级别的预热。\n- 刷新预热类接口包含[RefreshVodObjectCaches](~~RefreshVodObjectCaches~~)刷新接口和[PreloadVodObjectCaches](~~PreloadVodObjectCaches~~)预热接口。",
+    "en": "> *   This operation is available only in the **China (Shanghai)** region.\n> *   You can submit a maximum of 500 requests to prefetch resources based on URLs each day by using an Alibaba Cloud account. You cannot prefetch resources based on directories.\n> *   You can call the [RefreshVodObjectCaches](~~69215~~) operation to refresh content and the [PreloadVodObjectCaches](~~69211~~l) operation to prefetch content."
+  },
   "example": {
     "unifiedCli": "aliyun vod preload-vod-object-caches --object-path vod.test.com/test.txt --area domestic --l2-preload true --with-header Accept-Encoding_:_gzip,_deflate,_br --region cn-hangzhou",
     "legacyCli": "aliyun vod PreloadVodObjectCaches --region cn-hangzhou --ObjectPath 'vod.test.com/test.txt' --Area domestic --WithHeader 'Accept-Encoding_:_gzip,_deflate,_br' --L2Preload true"

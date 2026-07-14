@@ -1,5 +1,6 @@
 {
   "name": "CreateServerGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,7 +12,7 @@
       "required": false,
       "description": {
         "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
-        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+        "en": "The client token that is used to ensure the idempotency of the request.\n\nYou can use the client to generate a token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each request may be different."
       }
     },
     {
@@ -21,7 +22,7 @@
       "required": false,
       "description": {
         "zh": "连接优雅中断相关配置。\n\n开启连接优雅中断，在移除后端服务器或者健康检查失败后，负载均衡使现有连接在一定时间内正常传输。\n\n>\n> - 基础版实例不支持开启连接优雅中断，仅标准版、WAF增强版实例支持。\n> - 服务器类型、IP类型服务器组支持连接优雅中断，函数计算类型不支持。",
-        "en": "The configurations of connection draining.\n\nAfter connection draining is enabled, ALB maintains data transmission for a period of time after the backend server is removed or declared unhealthy.\n\n\n>*   Basic ALB instances do not support connection draining. Standard and WAF-enabled ALB instances support connection draining.\n>*   Server groups of the instance and IP types support connection draining. Server groups of the Function Compute type do not support connection draining."
+        "en": "The settings for connection draining.\n\nIf you enable connection draining, the load balancer allows existing connections to be processed for a specified period of time after a backend server is removed or becomes unhealthy.\n\n> - Basic ALB instances do not support connection draining. This feature is supported only by standard and WAF-enabled ALB instances.\n>\n> - Connection draining is supported for instance-type and IP-type server groups, but not for function-type server groups."
       }
     },
     {
@@ -31,7 +32,7 @@
       "required": false,
       "description": {
         "zh": "服务器组是否开启跨AZ负载均衡。取值：\n\n- **true**：开启（默认值）\n\n- **false**：关闭\n\n> \n> -  基础版实例不支持绑定关闭跨AZ负载均衡的服务器组，仅标准版、WAF 增强版实例支持。\n> -  服务器类型、IP 类型服务器组支持关闭跨AZ负载均衡，函数计算类型不支持。\n> - 关闭跨AZ负载均衡时，不支持开启会话保持。",
-        "en": "Specifies whether to enable cross-zone load balancing. Valid values:\n\n*   **true** (default)\n*   **false**\n\n> *   Basic ALB instances do not support server groups that have cross-zone load balancing disabled. Only Standard and WAF-enabled ALB instances support server groups that have cross-zone load balancing.\n> *   Cross-zone load balancing can be disabled for server groups of the server and IP type, but not for server groups of the Function Compute type.\n> *   When cross-zone load balancing is disabled, session persistence cannot be enabled."
+        "en": "Specifies whether to enable cross-zone load balancing for the server group. Valid values:\n\n- **true** (default): Enables cross-zone load balancing.\n\n- **false**: Disables cross-zone load balancing.\n\n> * Basic ALB instances cannot be associated with server groups for which cross-zone load balancing is disabled. This feature is supported only by standard and WAF-enabled ALB instances.\n>\n> * You can disable cross-zone load balancing for instance-type and IP-type server groups, but not for function-type server groups.\n>\n> * You cannot enable sticky sessions if you disable cross-zone load balancing."
       }
     },
     {
@@ -41,7 +42,7 @@
       "required": false,
       "description": {
         "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会创建服务器组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
-        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run. The system validates the request for issues such as missing required parameters, incorrect syntax, and service limits, but does not create the server group. If the request is invalid, an error message is returned. If the request is valid, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. If the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
       }
     },
     {
@@ -51,7 +52,17 @@
       "required": true,
       "description": {
         "zh": "健康检查相关配置。",
-        "en": "The configuration of the health check feature."
+        "en": "The health check settings."
+      }
+    },
+    {
+      "name": "IpVersionAffinityMode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "IP版本亲和模式",
+        "en": "The IP version affinity mode of the server group."
       }
     },
     {
@@ -61,7 +72,7 @@
       "required": false,
       "description": {
         "zh": "是否开启Ipv6",
-        "en": "Specifies whether to enable Ipv6."
+        "en": "Specifies whether to enable IPv6."
       }
     },
     {
@@ -71,7 +82,7 @@
       "required": false,
       "description": {
         "zh": "后端协议。取值：\n\n- **HTTP**（默认值）：支持关联HTTPS、HTTP和QUIC监听。\n\n- **HTTPS**：支持关联HTTPS监听。\n\n- **gRPC**：关联HTTPS和QUIC监听。\n\n> **ServerGroupType**取值为**Fc**时，无需配置后端协议。",
-        "en": "The backend protocol. Valid values:\n\n*   **HTTP**: allows you to associate an HTTPS, HTTP, or QUIC listener with the server group. This is the default value.\n*   **HTTPS**: allows you to associate HTTPS listeners with backend servers.\n*   **gRPC**: allows you to associate an HTTPS or QUIC listener with the server group.\n\n>  You do not need to specify a backend protocol if you set **ServerGroupType** to **Fc**."
+        "en": "The backend protocol. Valid values:\n\n- **HTTP** (default): The server group can be associated with HTTPS, HTTP, and QUIC listeners.\n\n- **HTTPS**: The server group can be associated with HTTPS listeners.\n\n- **gRPC**: The server group can be associated with HTTPS and QUIC listeners.\n\n> You do not need to configure this parameter if **ServerGroupType** is set to **Fc**."
       }
     },
     {
@@ -91,7 +102,7 @@
       "required": false,
       "description": {
         "zh": "调度算法。取值：\n\n- **Wrr**（默认值）：加权轮询，权重值越高的后端服务器，被轮询到的概率也越高。\n\n- **Wlc**：加权最小连接数，除了根据每台后端服务器设定的权重值来进行轮询，同时还考虑后端服务器的实际负载（即连接数）。当权重值相同时，当前连接数越小的后端服务器被轮询到的概率也越高。\n\n- **Sch**：一致性哈希，相同哈希因子计算结果的请求将会调度到相同的后端服务器。不配置**UchConfig**参数时，默认哈希因子为源IP，相同源IP地址的请求会分发到同一台后端服务器；配置了**UchConfig**参数时，哈希因子为URL参数，相同URL参数的请求会分发到同一台后端服务器。\n\n\n> **ServerGroupType**取值为**Instance**或**Ip**时，该参数生效。",
-        "en": "The scheduling algorithm. Valid values:\n\n*   **Wrr** (default): The weighted round-robin algorithm is used. Backend servers that have higher weights receive more requests than those that have lower weights.\n*   **Wlc**: The weighted least connections algorithm is used. Requests are distributed based on the weights and the number of connections to backend servers. If two backend servers have the same weight, the backend server that has fewer connections is expected to receive more requests.\n*   **Sch**: The consistent hashing algorithm is used. Requests from the same source IP address are distributed to the same backend server.\n\n> This parameter takes effect when the **ServerGroupType** parameter is set to **Instance** or **Ip**."
+        "en": "The scheduling algorithm. Valid values:\n\n- **Wrr** (default): weighted round robin. Backend servers with higher weights receive more requests.\n\n- **Wlc**: weighted least connections. Requests are distributed based on the weight and the number of connections for each backend server. If two backend servers have the same weight, the one with fewer connections receives more requests.\n\n- **Sch**: consistent hashing. Routes requests with the same hash factor to the same backend server. By default, if the **UchConfig** parameter is not configured, the source IP address is used as the hash factor. If the **UchConfig** parameter is configured, a specified URL parameter is used as the hash factor.\n\n> This parameter is valid only when **ServerGroupType** is set to **Instance** or **Ip**."
       }
     },
     {
@@ -100,8 +111,8 @@
       "type": "String",
       "required": true,
       "description": {
-        "zh": "服务器组名称。长度为2~128个字符，必须以大小写字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
-        "en": "The name of the server group. The name must be 2 to 128 characters in length, and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-). The name must start with a letter."
+        "zh": "服务器组名称。长度为2~128个字符，必须以大小写字母、中文或数字开头，可包含数字、半角句号（.）、下划线（_）、短划线（-）和空格。",
+        "en": "The name of the server group. The name must be 2 to 128 characters in length, start with a letter, digit, or Chinese character, and can contain digits, periods (.), underscores (\\_), hyphens (-), and spaces."
       }
     },
     {
@@ -111,7 +122,7 @@
       "required": false,
       "description": {
         "zh": "服务器组类型。取值：\n\n- **Instance**（默认值）：服务器类型，该类型服务器组支持添加**Ecs**、**Eni**、**Eci**实例。\n\n- **Ip**：IP地址类型，该类型服务器组支持添加IP地址类型的后端服务器。\n\n- **Fc**：函数计算类型，该类型支持添加函数计算类型的后端服务器。",
-        "en": "The type of server group. Valid values:\n\n*   **Instance** (default): allows you to add servers by specifying **Ecs**, **Eni**, or **Eci**.\n*   **Ip**: allows you to add servers by specifying IP addresses.\n*   **Fc**: allows you to add servers by specifying functions of Function Compute."
+        "en": "The type of the server group. Valid values:\n\n- **Instance** (default): an instance-type server group. You can add **ECS** instances, **elastic network interfaces**, and **elastic container instances** to this type of server group.\n\n- **Ip**: an IP-type server group. You can add IP addresses as backend servers to this type of server group.\n\n- **Fc**: a function-type server group. You can add functions of Function Compute as backend servers to this type of server group."
       }
     },
     {
@@ -121,7 +132,7 @@
       "required": false,
       "description": {
         "zh": "仅适用于ALB Ingress场景，表示服务器组对应的`K8s Service`名称。",
-        "en": "This parameter is available only if the ALB Ingress controller is used. In this case, set this parameter to the name of the `Kubernetes Service` that is associated with the server group."
+        "en": "This parameter is available only in ALB Ingress scenarios. It specifies the name of the Kubernetes `Service` that is associated with the server group."
       }
     },
     {
@@ -131,7 +142,7 @@
       "required": false,
       "description": {
         "zh": "慢启动相关配置。\n\n开启慢启动后，将会在设定的时间段内对新添加到后端服务器组的后端服务器进行预热，转发到该服务器的请求数量线性增加。\n\n> \n> - 基础版实例不支持开启慢启动，仅标准版、WAF增强版实例支持。\n> - 服务器类型、IP类型服务器组支持配置慢启动，函数计算类型不支持。\n> - 慢启动仅在后端调度算法是加权轮询算法时可开启。",
-        "en": "The configurations of slow starts.\nAfter slow starts are enabled, SLB prefetches data to newly added backend servers. Requests distributed to the backend servers gradually increase.\n\n> - Basic SLB instances do not support slow starts. Standard and WAF-enabled SLB instances support slow starts. \n>* Server groups of the server and IP types support slow starts. Server groups of the Function Compute type do not support slow starts.\n>* Slow start is supported only by the weighted round-robin scheduling algorithm."
+        "en": "The slow start settings.\n\nIf you enable slow start, requests are gradually and linearly routed to a newly added backend server over a specified period of time.\n\n> - Basic ALB instances do not support slow start. This feature is supported only by standard and WAF-enabled ALB instances.\n>\n> - Slow start is supported for instance-type and IP-type server groups, but not for function-type server groups.\n>\n> - Slow start can be enabled only if the scheduling algorithm is set to **Wrr** (weighted round robin)."
       }
     },
     {
@@ -141,7 +152,7 @@
       "required": false,
       "description": {
         "zh": "会话保持配置结构体。\n\n> **ServerGroupType**取值为**Instance**或**Ip**时，该参数生效。",
-        "en": "The configuration of session persistence.\n\n>  This parameter takes effect when the **ServerGroupType** parameter is set to **Instance** or **Ip**."
+        "en": "The sticky session settings.\n\n> This parameter is valid only when **ServerGroupType** is set to **Instance** or **Ip**."
       }
     },
     {
@@ -151,7 +162,7 @@
       "required": false,
       "description": {
         "zh": "标签。",
-        "en": "The tag."
+        "en": "The tags."
       }
     },
     {
@@ -161,7 +172,7 @@
       "required": false,
       "description": {
         "zh": "url一致性hash参数配置。",
-        "en": "The configuration of consistent hashing based on URLs."
+        "en": "The settings for URL-based consistent hashing."
       }
     },
     {
@@ -171,7 +182,7 @@
       "required": false,
       "description": {
         "zh": "是否开启后端长链接。\n\n- **true**：开启\n- **false**（默认值）：不开启。",
-        "en": "Specifies whether to enable persistent TCP connections."
+        "en": "Specifies whether to enable upstream keep-alive.\n\n- **true**: enables upstream keep-alive.\n\n- **false** (default): disables upstream keep-alive."
       }
     },
     {
@@ -181,10 +192,21 @@
       "required": false,
       "description": {
         "zh": "VPC实例ID。只有该VPC下的服务器可以加入到该服务器组。\n\n> **ServerGroupType**取值为**Instance**或**Ip**时，该参数生效。",
-        "en": "The ID of the virtual private cloud (VPC). You can add only servers that are deployed in the specified VPC to the server group.\n\n>  This parameter takes effect when the **ServerGroupType** parameter is set to **Instance** or **Ip**."
+        "en": "The ID of the VPC where the server group is created. You can add only servers within this VPC to the server group.\n\n> This parameter is valid only when **ServerGroupType** is set to **Instance** or **Ip**."
       }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建服务器组",
+    "en": "CreateServerGroup"
+  },
+  "descriptions": {
+    "zh": "**CreateServerGroup**接口属于异步接口，即系统返回一个请求ID，但该服务器组尚未创建成功，系统后台的创建任务仍在进行。您可以调用[ListServerGroups](~~213627~~)查询服务器组的创建状态：\n- 当服务器组处于**Creating**状态时，表示服务器组正在创建中。\n- 当服务器组处于**Available**状态时，表示服务器组创建成功。",
+    "en": "The **CreateServerGroup** API is asynchronous. After you send a request, the system returns a request ID but the server group is still being created in the background. You can call the [ListServerGroups](~~213627~~) operation to query the status of the server group.\n\n- If the server group is in the **Creating** state, it is being created.\n\n- If the server group is in the **Available** state, it is created."
+  },
   "example": {
     "unifiedCli": "aliyun alb create-server-group --server-group-name test --server-group-type Instance --vpc-id vpc-bp15zdkdt37pq72zv0000 --scheduler Wrr --protocol HTTP --resource-group-id rg-atstuj3rsop0000 --health-check-config rg-123 --sticky-session-config Cookie=B490B6EBF6F3CD402E515D22BCDA0000 CookieTimeout=1000 StickySessionType=Insert StickySessionEnabled=false --client-token 5A2CAF0E-5718-45B5-9D4D-70B000000 --dry-run false --ipv6-enabled true --upstream-keepalive-enabled false --service-name test --uch-config Type=QueryString Value=abc --connection-drain-config ConnectionDrainEnabled=false ConnectionDrainTimeout=300 --slow-start-config SlowStartEnabled=false SlowStartDuration=30 --tag Value=product Key=env --cross-zone-enabled true --ip-version-affinity-mode Affinity --region cn-hangzhou",
     "legacyCli": "aliyun alb CreateServerGroup --region cn-hangzhou --UchConfig.Type QueryString --ResourceGroupId 'rg-atstuj3rsop0000' --UchConfig.Value abc --Scheduler Wrr --DryRun false --IpVersionAffinityMode Affinity --StickySessionConfig.Cookie B490B6EBF6F3CD402E515D22BCDA0000 --CrossZoneEnabled true --Ipv6Enabled true --ConnectionDrainConfig.ConnectionDrainEnabled false --ConnectionDrainConfig.ConnectionDrainTimeout 300 --StickySessionConfig.StickySessionEnabled false --Protocol HTTP --SlowStartConfig.SlowStartEnabled false --ServerGroupName test --Tag.1.Key env --StickySessionConfig.StickySessionType Insert --UpstreamKeepaliveEnabled false --ServerGroupType Instance --SlowStartConfig.SlowStartDuration 30 --VpcId 'vpc-bp15zdkdt37pq72zv0000' --ServiceName test --Tag.1.Value product --StickySessionConfig.CookieTimeout 1000 --HealthCheckConfig 'rg-123' --ClientToken '5A2CAF0E-5718-45B5-9D4D-70B000000' --method POST --force"

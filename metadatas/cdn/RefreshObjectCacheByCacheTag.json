@@ -1,5 +1,6 @@
 {
   "name": "RefreshObjectCacheByCacheTag",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,40 @@
       "name": "CacheTag",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "缓存标签。多个用逗号隔开。",
+        "en": "The tags of Cache. If multiple tags are returned, the tags are separated by commas (,)."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "加速域名。",
+        "en": "The accelerated domain name."
+      }
     },
     {
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制刷新对应范围内的全部资源。默认为false。\n- **true**：刷新全部资源。选择 “true” 时，如果用户请求的内容匹配到了对应范围内的资源，CDN 节点将会直接回源拉取新资源返回给用户，并重新缓存该资源。\n- **false**：刷新变更资源。选择 “false” 时，如果用户请求的内容匹配到了对应范围内的资源，CDN 节点将会回源获取资源的 Last-Modified 信息，若与当前缓存资源一致，则直接返回已缓存资源，若不一致，则回源拉取新资源返回给用户，并重新缓存该资源。",
+        "en": "Specifies whether to purge all resources that you submit if the requested content is one of the resources that you submit to purge. Default value: false.\n\n*   **true**: The nearest POP fetches all resources from the origin server, delivers them to the client, and updates the cache with the new version.\n*   **false**: The nearest POP checks the Last-Modified parameter of the resource on the origin server. If the parameter value is the same as that of the cached resource, the POP serves the cached resource. If the parameter value is not the same as that of the cached resource, the POP fetches the latest version from the origin server, delivers it to the client, and updates the cache with the new version."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "根据缓存标签刷新缓存",
+    "en": "RefreshObjectCacheByCacheTag"
+  },
   "example": {
     "unifiedCli": "aliyun cdn refresh-object-cache-by-cache-tag --domain-name example.com --cache-tag tag1,tag2 --biz-force true --region cn-hangzhou",
     "legacyCli": "aliyun cdn RefreshObjectCacheByCacheTag --region cn-hangzhou --DomainName 'example.com' --Force true --CacheTag 'tag1,tag2'"

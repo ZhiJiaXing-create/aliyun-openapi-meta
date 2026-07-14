@@ -1,5 +1,6 @@
 {
   "name": "OnsDLQMessagePageQueryByGroupId",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "BeginTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询范围的起始时间戳，单位：毫秒。\n通过**TaskId**进行后续取消息时，该参数设置的值不生效，默认以第一次查询时输入的起始时间为准。",
+        "en": "The start of the time range to query. This value is a UNIX timestamp in milliseconds.\nIf you specify `TaskId` to retrieve more pages, this parameter is ignored. The start time from the first query is used."
+      }
     },
     {
       "name": "CurrentPage",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "当前取第几页消息，从1开始递增，最大值为50，取消息时不可超过最大页数。",
+        "en": "The page number to return. Pages start from 1. The value can be up to 50 and must not exceed the total number of pages."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询范围的终止时间戳，单位：毫秒。\n通过**TaskId**进行后续取消息时，该参数设置的值不生效，默认以第一次查询时输入的终止时间为准。",
+        "en": "The end of the time range to query. This value is a UNIX timestamp in milliseconds.\nIf you specify `TaskId` to retrieve more pages, this parameter is ignored. The end time from the first query is used."
+      }
     },
     {
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需查询的消费端Group ID。",
+        "en": "The ID of the consumer group to query."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需查询的消息所对应的实例ID。",
+        "en": "The ID of the instance that contains the message."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询，每页最多显示的消息数量，默认显示20条，最小5条，最多50条。\n通过**TaskId**进行后续取消息时，该参数设置的值不生效，默认以第一次查询时输入的每页消息数量为准。",
+        "en": "The number of messages to return on each page. Default value: 20. Minimum value: 5. Maximum value: 50.\nIf you specify `TaskId` to retrieve more pages, this parameter is ignored. The page size from the first query is used."
+      }
     },
     {
       "name": "TaskId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询任务的ID，首次查询不需要输入，后续取消息必须传入，根据前一次的返回结果取出该字段。",
+        "en": "The ID of the query task. Omit this parameter for the first query. For subsequent queries, use the task ID returned by the previous query."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询Group ID内所有死信消息",
+    "en": "OnsDLQMessagePageQueryByGroupId"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>\n\n- 按Group ID查询死信消息的方式属于范围查询，查询结果会通过分页的方式展示给调用方，仅适用于没有任何搜索条件Message ID查询场景。\n- 根据Group ID查询死信消息应尽可能缩短查询的时间区间，否则匹配的消息过多，不利于定位问题。调用流程如下：\n    1. 传入Group ID、起止时间以及每页的消息数量，进行分页查询。如果有消息，默认返回第一页的消息、总页数和查询任务 ID。\n    2. 根据返回的结果中的查询任务ID，进行后续取消息，取消息时传入查询任务ID以及当前页数。此时输入的起止时间和每页消息数量不生效，默认以第一次查询时输入的参数值为准。",
+    "en": "><notice>\n\nAlibaba Cloud OpenAPI is a management API. You can use it to manage and query Alibaba Cloud service resources. Integrate this API for management purposes only. Do not use this API for core data links that send and receive messages because this can create security threats.\n\n></notice>\n\n- Querying dead-letter messages by Group ID is a paged range query. This method applies only to scenarios in which you query messages without specifying a message ID.\n\n- When you query dead-letter messages by Group ID, specify a time range that is as short as possible. A long time range can return too many messages and make it difficult to identify issues. The call flow is as follows:\n\n  1. For the first paged query, specify the Group ID, start time, end time, and the number of messages per page. If messages are found, the API returns the messages on the first page, the total number of pages, and a query task ID.\n\n  2. Use the returned query task ID to retrieve more pages of messages. In subsequent requests, specify the query task ID and the page number. The start time, end time, and number of messages per page in these requests are ignored because the values from the first query are used."
+  },
   "example": {
     "unifiedCli": "aliyun ons ons-dlq-message-page-query-by-group-id --group-id GID_test_group_id --begin-time 1570723200000 --end-time 1570809600000 --task-id 0BC1310300002A9F000021E4D7A48346 --current-page 2 --page-size 5 --instance-id MQ_INST_111111111111_DOxxxxxx --region cn-hangzhou",
     "legacyCli": "aliyun ons OnsDLQMessagePageQueryByGroupId --region cn-hangzhou --TaskId 0BC1310300002A9F000021E4D7A48346 --EndTime 1570809600000 --PageSize 5 --CurrentPage 2 --InstanceId MQ_INST_111111111111_DOxxxxxx --BeginTime 1570723200000 --GroupId GID_test_group_id"

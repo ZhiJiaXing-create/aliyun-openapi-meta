@@ -1,5 +1,6 @@
 {
   "name": "DescribeDcdnDomainUsageData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "Area",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "区域代号。取值：\n- **CN**：中国内地。\n- **OverSeas**：全球（不包含中国内地）。\n- **AP1**：亚太1区。\n- **AP2**：亚太2区。\n- **AP3**：亚太3区。\n- **NA**：北美。\n- **SA**：南美。\n- **EU**：欧洲。\n- **MEAA**：中东、非洲。\n- **all**：以上全部区域。\n\n默认为**CN**。",
+        "en": "The region. Valid values:\n\n- **CN**: the Chinese mainland\n\n- **OverSeas**: global (excluding the Chinese mainland)\n\n- **AP1**: Asia Pacific Region 1\n\n- **AP2**: Asia Pacific Region 2\n\n- **AP3**: Asia Pacific Region 3\n\n- **NA**: North America\n\n- **SA**: South America\n\n- **EU**: Europe\n\n- **MEAA**: Middle East and Africa\n\n- **all**: all regions\n\nThe default value is **CN**."
+      }
     },
     {
       "name": "DataProtocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要获取的数据的协议。取值：\n- **quic**：QUIC协议。\n- **https**：HTTPS协议。\n- **http**：HTTP协议。\n- **all**：以上全部协议。\n\n默认为**all**。",
+        "en": "The protocol of the data to query. Valid values:\n\n- **quic**: QUIC\n\n- **https**: HTTPS\n\n- **http**: HTTP\n\n- **all**: all protocols\n\nThe default value is **all**."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的加速域名。支持批量查询，一次最多可以查询100个域名，多个域名用英文逗号（,）分隔。\n\n> 如果不传该参数，默认返回所有加速域名合并后的数据。",
+        "en": "The accelerated domain name that you want to query. You can specify multiple domain names and separate them with commas (,). You can specify up to 100 domain names in each call.\n\n> If you do not specify this parameter, the merged data of all accelerated domain names is returned."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据的结束时间点，日期格式按照ISO8601表示法，并使用UTC时间。格式为：yyyy-MM-ddTHH:mm:ssZ\n\n> 结束时间需大于起始时间，且时间相差不能超过31天。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time. The time range between the start time and the end time cannot exceed 31 days."
+      }
     },
     {
       "name": "Field",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "请求的数据类型。取值：\n- **bps**：带宽。\n- **traf**：流量。\n- **acc**：请求数。\n\n> **acc**不支持根据**Area**参数查询。",
+        "en": "The type of data to query. Valid values:\n\n- **bps**: bandwidth\n\n- **traf**: traffic\n\n- **acc**: number of requests\n\n> You cannot query the number of requests by **Area**."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "强制指定获取指定时间粒度的数据，单位为秒。\n\n根据单次查询的最大时间跨度不同，该参数支持300（5分钟）、3600（1小时）和86400（1天）取值，具体请参见**使用说明**中支持查询的时间粒度。",
+        "en": "The time granularity of the data to query, in seconds.\n\nThe time granularity varies with the maximum time range per query. Valid values are 300 (5 minutes), 3600 (1 hour), and 86400 (1 day). For more information, see the **Usage notes** section."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据的起始时间点，日期格式按照ISO8601表示法，并使用UTC时间。格式为：yyyy-MM-ddTHH:mm:ssZ。\n\n> 查询数据的最小粒度为5分钟。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The minimum time granularity is 5 minutes."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求数类型，取值：\n\n- **static**：静态。\n- **dynamic**：动态。\n- **all**：全部。\n\n默认为**all**。",
+        "en": "The type of requests. Valid values:\n\n- **static**: static\n\n- **dynamic**: dynamic\n\n- **all**: all\n\nThe default value is **all**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询用量数据",
+    "en": "DescribeDcdnDomainUsageData"
+  },
+  "descriptions": {
+    "zh": "- 单用户调用频率：10次/秒\n- 用量数据包括流量、带宽和请求数三大类，单位分别为Byte、bps和次数。\n\n**支持查询的时间粒度**：\n\n根据单次查询的最大时间跨度不同，请求参数Interval支持不同的查询数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n\n| 时间粒度          | 单次查询的最大时间跨度            | 可查询历史数据时间范围   | 数据延迟 |\n| -------------- | -------------- | ------ |-----|\n| 5分钟     | 3天      | 93天  | 15分钟 |\n| 1小时       | 31天      |   186天  | 一般延迟3-4小时 |\n| 1天  | 366天     |    366天  | 一般延迟4小时，最长不超过24小时 |",
+    "en": "- The maximum number of calls that can be made by a single user is 10 per second.\n\n- Usage data includes traffic, bandwidth, and the number of requests. The units are bytes, bps, and counts, respectively.\n\n**Supported time granularities**\n\nThe available time granularity depends on the maximum time range of your query. The following table describes the supported time granularities, queryable historical data, and data latency.\n\n| Time granularity | Maximum time range per query | Queryable historical data | Data latency                                  |\n| ---------------- | ---------------------------- | ------------------------- | --------------------------------------------- |\n| 5 minutes        | 3 days                       | 93 days                   | 15 minutes                                    |\n| 1 hour           | 31 days                      | 186 days                  | Typically 3 to 4 hours                        |\n| 1 day            | 366 days                     | 366 days                  | Typically 4 hours, with a maximum of 24 hours |"
+  },
   "example": {
     "unifiedCli": "aliyun dcdn describe-dcdn-domain-usage-data --domain-name example.com --start-time 2015-12-10T20:00:00Z --end-time 2015-12-10T22:00:00Z --field bps --type dynamic --data-protocol all --area CN --interval 300 --region cn-hangzhou",
     "legacyCli": "aliyun dcdn DescribeDcdnDomainUsageData --region cn-hangzhou --Field bps --Type dynamic --Area CN --DataProtocol all --EndTime '2015-12-10T22:00:00Z' --DomainName 'example.com' --StartTime '2015-12-10T20:00:00Z' --Interval 300"

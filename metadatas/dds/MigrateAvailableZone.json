@@ -1,5 +1,6 @@
 {
   "name": "MigrateAvailableZone",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 如果实例的网络类型为专有网络，您还需要传入**Vswitch**参数。",
+        "en": "The ID of the instance.\n\n> If the instance is deployed in a VPC, you must specify the **Vswitch** parameter."
+      }
     },
     {
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移可用区的生效时间，取值：\n- **Immediately**：立即生效。\n- **MaintainTime**：在实例的可运维时间段内生效。\n\n默认为**Immediately**。",
+        "en": "The time when the instance is migrated to the destination zone. Valid values:\n\n- **Immediately**: The instance is immediately migrated to the destination zone.\n\n- **MaintainTime**: The instance is migrated to the destination zone during the maintenance window of the instance.\n\nDefault value: **Immediately**."
+      }
     },
     {
       "name": "HiddenZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移的目标备可用区2的ID。",
+        "en": "The ID of the destination hidden zone."
+      }
     },
     {
       "name": "SecondaryZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移的目标备可用区1的ID。",
+        "en": "The ID of the destination secondary zone."
+      }
     },
     {
       "name": "Vswitch",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移的目标可用区虚拟交换机ID。\n\n> 当实例的网络类型为专有网络时，需要配置该参数。",
+        "en": "The ID of the vSwitch in the destination zone.\n\n> If the instance is deployed in a VPC, you must specify this parameter."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "迁移的目标可用区ID。\n\n> - 迁移的目标可用区和当前实例的可用区处于同一地域。\n> - 您可以通过调用[DescribeRegions](~~61933~~)接口查询可用区ID。",
+        "en": "The ID of the destination zone.\n\n>\n\n- The source zone and the destination zone belong to the same region.\n\n- You can call the [DescribeRegions](~~61933~~) operation to query the zone ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "迁移实例的可用区",
+    "en": "MigrateAvailableZone"
+  },
+  "descriptions": {
+    "zh": "- MigrateAvailableZone接口暂不支持单节点实例，可适用于云盘实例与本地盘实例。\n- 实例未开启透明数据加密TDE功能。\n- 迁移的目标可用区和当前实例的可用区处于同一地域。\n- 专有网络的实例在操作迁移可用区之前，请确保目标可用区已创建相应的虚拟交换机。如需创建，请参见[创建虚拟交换机](~~65387~~)。",
+    "en": "- This operation is available only for replica set instances that run MongoDB 4.2 or earlier and sharded cluster instances.\n\n- If you have applied for a public endpoint for the ApsaraDB for MongoDB instance, you must call the [ReleasePublicNetworkAddress](~~67604~~) operation to release the public endpoint before you call the MigrateAvailableZone operation.\n\n- Transparent data encryption (TDE) is disabled for the ApsaraDB for MongoDB instance.\n\n- The source zone and the destination zone belong to the same region.\n\n- A vSwitch is created in the destination zone. This prerequisite must be met if the instance resides in a virtual private cloud (VPC). For more information about how to create a vSwitch, see [Work with vSwitches](~~65387~~)."
+  },
   "example": {
     "unifiedCli": "aliyun dds migrate-available-zone --db-instance-id dds-bp1ece71ff2f0000 --zone-id cn-hangzhou-b --vswitch vsw-bp1buy0h9myt5i9e70000 --effective-time Immediately --secondary-zone-id cn-hangzhou-h --hidden-zone-id cn-shanghai-n --region cn-hangzhou",
     "legacyCli": "aliyun dds MigrateAvailableZone --region cn-hangzhou --ZoneId 'cn-hangzhou-b' --DBInstanceId 'dds-bp1ece71ff2f0000' --EffectiveTime Immediately --HiddenZoneId 'cn-shanghai-n' --Vswitch 'vsw-bp1buy0h9myt5i9e70000' --SecondaryZoneId 'cn-hangzhou-h'"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateWorkflow",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ClientUniqueCode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "工作流的客户端唯一码，用于实现异步和幂等。创建时如果不指定，系统将自动生成，该代码将与资源ID进行唯一绑定。更新、删除资源时如果指定该参数，应与创建时的客户端唯一码保持统一。",
+        "en": "The client unique code of the workflow, used for asynchronous operations and idempotence. If not specified during creation, the system automatically generates one, and the code is uniquely bound to the resource ID. If this parameter is specified during update or deletion, it must be consistent with the client unique code used during creation."
+      }
     },
     {
       "name": "Dependencies",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "依赖信息。",
+        "en": "The dependency information."
+      },
       "sub_parameters": [
         {
           "name": "Type",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "依赖类型。\n- CrossCycleDependsOnChildren：跨周期依赖一级子节点\n- CrossCycleDependsOnSelf：跨周期依赖自己\n- CrossCycleDependsOnOtherNode：跨周期依赖其他节点\n- Normal：同周期依赖",
+            "en": "The dependency type. Valid values:\n- CrossCycleDependsOnChildren: cross-cycle dependency on first-level child nodes\n- CrossCycleDependsOnSelf: cross-cycle dependency on the current node\n- CrossCycleDependsOnOtherNode: cross-cycle dependency on other nodes\n- Normal: same-cycle dependency"
+          }
         },
         {
           "name": "UpstreamOutput",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "上游任务的输出标识符。（`同周期依赖`且设置input内容时，返回此字段）",
+            "en": "The output identifier of the upstream node. This field is returned when the dependency type is `same-cycle dependency` and input content is specified."
+          }
         },
         {
           "name": "UpstreamTaskId",
           "position": "FormData",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "上游任务的Id。（`跨周期依赖其他节点`与`同周期依赖`未设置input内容时，返回此字段，其他情况不返回）",
+            "en": "The ID of the upstream node. This field is returned when the dependency type is `cross-cycle dependency on other nodes` or `same-cycle dependency` without input content specified. It is not returned in other cases."
+          }
         }
       ]
     },
@@ -40,67 +61,111 @@
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述信息。",
+        "en": "The description."
+      }
     },
     {
       "name": "EnvType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "项目环境。\n- Prod：生产\n- Dev：开发",
+        "en": "The project environment. Valid values:\n- Prod: production\n- Dev: development"
+      }
     },
     {
       "name": "Id",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作流ID。",
+        "en": "The workflow ID."
+      }
     },
     {
       "name": "InstanceMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例生成模式。\n\n- T+1（第二天生成）\n- Immediately（立即生成）。注意：工作流定时时间在工作流发布时间点十分钟后的周期实例才会正常生成。全量转实例期间（22:00~24:00点期间）不能进行实时转实例，可以提交发布工作流，但提交后不会重新生成实例。",
+        "en": "The instance generation mode. Valid values:\n\n- T+1: Instances are generated the next day.\n- Immediately: Instances are generated immediately. Periodic instances are generated only if the scheduled time of the workflow is at least 10 minutes after the workflow is published. During the full instance generation period (22:00 to 24:00), real-time instance generation is not available. You can submit and publish workflows during this period, but instances are not regenerated after submission."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "名称。",
+        "en": "The name."
+      }
     },
     {
       "name": "Outputs",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "输出信息。",
+        "en": "The output information."
+      }
     },
     {
       "name": "Owner",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "责任人的账号ID。",
+        "en": "The account ID of the owner."
+      }
     },
     {
       "name": "Parameters",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "参数列表。",
+        "en": "The parameter list."
+      }
     },
     {
       "name": "Tags",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "工作流标签列表。",
+        "en": "The list of workflow tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -109,126 +174,210 @@
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "任务列表。",
+        "en": "The node list."
+      },
       "sub_parameters": [
         {
           "name": "BaseLineId",
           "position": "FormData",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "基线ID。",
+            "en": "The baseline ID."
+          }
         },
         {
           "name": "ClientUniqueCode",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务的客户端唯一码，用于实现异步和幂等。创建时如果不指定，系统将自动生成，该代码将与资源ID进行唯一绑定。更新、删除资源时如果指定该参数，应与创建时的客户端唯一码保持统一。",
+            "en": "The client unique code of the node, used for asynchronous operations and idempotence. If not specified during creation, the system automatically generates one, and the code is uniquely bound to the resource ID. If this parameter is specified during update or deletion, it must be consistent with the client unique code used during creation."
+          }
         },
         {
           "name": "DataSource",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "关联数据源信息。",
+            "en": "The associated data source information."
+          }
         },
         {
           "name": "Dependencies",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "依赖信息。注意，此字段未填或为空数组时将默认删除所有Dependencies配置。",
+            "en": "The dependency information. If this field is not specified or is an empty array, all Dependencies configurations are deleted by default."
+          }
         },
         {
           "name": "Description",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "描述信息。",
+            "en": "The description."
+          }
         },
         {
           "name": "EnvType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "项目环境。\n- Prod：生产\n- Dev：开发",
+            "en": "The project environment. Valid values:\n- Prod: production\n- Dev: development"
+          }
         },
         {
           "name": "Id",
           "position": "FormData",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务ID。填写此字段会对相应任务执行全量更新，未填写此字段则会创建新任务。",
+            "en": "The node ID. If this field is specified, the corresponding node is fully updated. If this field is not specified, a new node is created."
+          }
         },
         {
           "name": "Inputs",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "输入信息。注意，此字段为空时将默认删除所有Inputs配置。",
+            "en": "The input information. If this field is empty, all Inputs configurations are deleted by default."
+          }
         },
         {
           "name": "Name",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "任务的名称。",
+            "en": "The name of the node."
+          }
         },
         {
           "name": "Outputs",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "输出信息。注意，此字段为空时将默认删除所有Outputs配置。",
+            "en": "The output information. If this field is empty, all Outputs configurations are deleted by default."
+          }
         },
         {
           "name": "Owner",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "责任人的账号ID。",
+            "en": "The account ID of the owner."
+          }
         },
         {
           "name": "RerunInterval",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "重试时间间隔，单位秒。",
+            "en": "The retry time interval, in seconds."
+          }
         },
         {
           "name": "RerunMode",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "任务是否允许重跑的配置。\n- AllDenied：失败或成功都不可重跑\n- FailureAllowed：只有失败可重跑\n- AllAllowed：失败或成功均可重跑",
+            "en": "Specifies whether the node can be rerun. Valid values:\n- AllDenied: cannot be rerun regardless of success or failure\n- FailureAllowed: can be rerun only upon failure\n- AllAllowed: can be rerun regardless of success or failure"
+          }
         },
         {
           "name": "RerunTimes",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "重试次数，当任务设置为可重跑时生效。",
+            "en": "The number of retries. This parameter takes effect only when the node is configured to allow reruns."
+          }
         },
         {
           "name": "RuntimeResource",
           "position": "FormData",
           "type": "Struct",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "运行环境配置，如资源组信息。",
+            "en": "The runtime environment configuration, such as resource group information."
+          }
         },
         {
           "name": "Script",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "运行脚本信息。",
+            "en": "The script information."
+          }
         },
         {
           "name": "Tags",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务标签列表。注意，此字段未填或为空数组时将默认删除所有Tags配置。",
+            "en": "The list of node tags. If this field is not specified or is an empty array, all Tags configurations are deleted by default."
+          }
         },
         {
           "name": "Timeout",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务执行超时时间，单位秒。",
+            "en": "The timeout period for node execution, in seconds."
+          }
         },
         {
           "name": "Trigger",
           "position": "FormData",
           "type": "Struct",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "任务触发方式。",
+            "en": "The trigger configuration of the node."
+          }
         },
         {
           "name": "Type",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "任务类型。",
+            "en": "The node type."
+          }
         }
       ]
     },
@@ -236,9 +385,24 @@
       "name": "Trigger",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "触发方式。",
+        "en": "The trigger configuration."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新工作流",
+    "en": "Update a workflow"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用。",
+    "en": "DataWorks Basic Edition or a more advanced edition is required."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public update-workflow --id 1234 --env-type Prod --name My_Workflow --owner 1000 --trigger Type=Scheduler EndTime=9999-01-01_00:00:00 StartTime=1970-01-01_00:00:00 Cron=00_00_00_0_0_0 --description test --dependencies Type=Normal UpstreamOutput=pre.odps_sql_demo_0 UpstreamTaskId=1234 --parameters para1=_bizdate_para2=_yyyymmdd --tasks '[{\"Script\":{\"Parameters\":\"para1=_bizdate\",\"Content\":\"echo_helloWorld\"},\"Owner\":\"1000\",\"Description\":\"Test\",\"BaseLineId\":1234,\"RerunTimes\":3,\"RerunInterval\":60,\"Timeout\":3600,\"EnvType\":\"Prod\",\"Name\":\"SQL_node\",\"RuntimeResource\":{\"Cu\":\"0.25\",\"ResourceGroupId\":\"S_res_group_524258031846018_1684XXXXXXXXX\",\"Image\":\"i-xxxxxx\"},\"DataSource\":{\"Name\":\"odps_test\"},\"ClientUniqueCode\":\"Task_0bc5213917368545132902xxxxxxxx\",\"Type\":\"ODPS_SQL\",\"Trigger\":{\"Recurrence\":\"Normal\",\"Type\":\"Scheduler\"},\"Outputs\":{\"Variables\":[{\"Type\":\"Constant\",\"Value\":\"value1\",\"Name\":\"key1\"}],\"TaskOutputs\":[\"pre.odps_sql_demo_0\"]},\"RerunMode\":\"AllAllowed\",\"Id\":1234,\"Dependencies\":[{\"Type\":\"Normal\",\"UpstreamOutput\":\"pre.odps_sql_demo_0\",\"UpstreamTaskId\":1234}],\"Inputs\":{\"Variables\":[{\"Type\":\"Constant\",\"Value\":\"value1\",\"Name\":\"key1\"}]},\"Tags\":[{\"Value\":\"value1\",\"Key\":\"key1\"}]}]' --outputs '{\"TaskOutputs\":[\"pre.odps_sql_demo_0\"]}' --tags Value=value1 Key=key1 --client-unique-code Workflow_0bc5213917368545132902xxxxxxxx --instance-mode T+1 --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public UpdateWorkflow --region cn-hangzhou --Owner 1000 --Description test --Parameters 'para1=_bizdate_para2=_yyyymmdd' --Tasks '[{\"Script\":{\"Parameters\":\"para1=_bizdate\",\"Content\":\"echo_helloWorld\"},\"Owner\":\"1000\",\"Description\":\"Test\",\"BaseLineId\":1234,\"RerunTimes\":3,\"RerunInterval\":60,\"Timeout\":3600,\"EnvType\":\"Prod\",\"Name\":\"SQL_node\",\"RuntimeResource\":{\"Cu\":\"0.25\",\"ResourceGroupId\":\"S_res_group_524258031846018_1684XXXXXXXXX\",\"Image\":\"i-xxxxxx\"},\"DataSource\":{\"Name\":\"odps_test\"},\"ClientUniqueCode\":\"Task_0bc5213917368545132902xxxxxxxx\",\"Type\":\"ODPS_SQL\",\"Trigger\":{\"Recurrence\":\"Normal\",\"Type\":\"Scheduler\"},\"Outputs\":{\"Variables\":[{\"Type\":\"Constant\",\"Value\":\"value1\",\"Name\":\"key1\"}],\"TaskOutputs\":[\"pre.odps_sql_demo_0\"]},\"RerunMode\":\"AllAllowed\",\"Id\":1234,\"Dependencies\":[{\"Type\":\"Normal\",\"UpstreamOutput\":\"pre.odps_sql_demo_0\",\"UpstreamTaskId\":1234}],\"Inputs\":{\"Variables\":[{\"Type\":\"Constant\",\"Value\":\"value1\",\"Name\":\"key1\"}]},\"Tags\":[{\"Value\":\"value1\",\"Key\":\"key1\"}]}]' --InstanceMode 'T+1' --EnvType Prod --Name My_Workflow --ClientUniqueCode Workflow_0bc5213917368545132902xxxxxxxx --Trigger '{\"Type\":\"Scheduler\",\"EndTime\":\"9999-01-01_00:00:00\",\"StartTime\":\"1970-01-01_00:00:00\",\"Cron\":\"00_00_00_0_0_0\"}' --Outputs '{\"TaskOutputs\":[\"pre.odps_sql_demo_0\"]}' --Id 1234 --Dependencies '[{\"Type\":\"Normal\",\"UpstreamOutput\":\"pre.odps_sql_demo_0\",\"UpstreamTaskId\":1234}]' --Tags '[{\"Value\":\"value1\",\"Key\":\"key1\"}]'"

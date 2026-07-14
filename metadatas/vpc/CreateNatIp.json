@@ -1,5 +1,6 @@
 {
   "name": "CreateNatIp",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会创建NAT IP地址。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并创建NAT IP地址。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the AccessKey pair, the authorization of the Resource Access Management (RAM) user, and the required parameters. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a Normal request. If the request passes the dry run, a 2xx HTTP status code is returned and the NAT IP address is created."
+      }
     },
     {
       "name": "Ipv4Prefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建的IP前缀地址段。\n\n该IP前缀地址段必须位于NAT所在交换机的预留网段内，且预留网段不能被占用。IP前缀掩码必须为/28。",
+        "en": "The IP prefix CIDR block to create.\n\nThe IP prefix CIDR block must be within the reserved CIDR block of the vSwitch where the NAT gateway resides, and the reserved CIDR block must not be occupied. The prefix mask must be /28."
+      }
     },
     {
       "name": "Ipv4PrefixCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自动分配的IP前缀数量。\n\n从NAT所在交换机的未分配预留网段内随机分配。取值范围：1~10。",
+        "en": "The number of IP prefixes to automatically assign.\n\nThe IP prefixes are randomly assigned from unallocated reserved CIDR blocks of the vSwitch where the NAT gateway resides. Valid values: 1 to 10."
+      }
     },
     {
       "name": "NatGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "NAT IP地址所属的VPC NAT网关实例ID。",
+        "en": "The instance ID of the VPC NAT gateway to which the NAT IP address belongs."
+      }
     },
     {
       "name": "NatIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建的NAT IP地址。\n\n如果您不指定该IP地址，系统会在您的NAT IP地址段中随机分配一个IP地址。",
+        "en": "The NAT IP address to create.\n\nIf you do not specify this parameter, the system randomly assigns an IP address from the NAT CIDR block."
+      }
     },
     {
       "name": "NatIpCidr",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "创建NAT IP地址的地址段。",
+        "en": "The NAT CIDR block from which the NAT IP address is created."
+      }
     },
     {
       "name": "NatIpDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建的NAT IP地址的描述信息。\n\n长度为2~256个字符，必须以字母或中文开头，但不能以`http://`或`https://`开头。",
+        "en": "The description of the NAT IP address.\n\nThe description must be 2 to 256 characters in length and must start with a letter or Chinese character. It cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "NatIpName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建的NAT IP地址的名称。\n\n长度为2~128个字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。但不能以`http://`或`https://`开头。",
+        "en": "The name of the NAT IP address.\n\nThe name must be 2 to 128 characters in length and must start with a letter or Chinese character. It can contain digits, periods (.), underscores (_), and hyphens (-). It cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要创建NAT IP地址所属NAT网关实例的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPC NAT gateway instance to which the NAT IP address belongs.\n\nYou can call [DescribeRegions](~~36063~~) to query the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建NAT IP地址",
+    "en": "Create NAT IP address"
+  },
+  "descriptions": {
+    "zh": "**CreateNatIp**接口属于异步接口，即系统会先返回一个NAT IP地址，但该NAT IP地址并未创建完成，系统后台的创建任务仍在进行。您可以调用[ListNatIps](~~287000~~)查询NAT IP地址创建的状态：\n\n- 当NAT IP地址处于**Creating**状态时，表示NAT IP地址正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n- 当NAT IP地址处于**Available**状态时，表示NAT IP地址创建完成。\n\n**CreateNatIp**接口在同一个NAT网关内不支持并发创建NAT IP地址。",
+    "en": "**CreateNatIp** is an asynchronous operation. After you call this operation, the system returns a NAT IP address, but the NAT IP address is not yet created. The creation task is still running in the background. You can call [ListNatIps](~~287000~~) to query the status of the NAT IP address:\n\n- If the NAT IP address is in the **Creating** state, the NAT IP address is being created. In this state, you can only perform query operations.\n\n- If the NAT IP address is in the **Available** state, the NAT IP address is created.\n\n**CreateNatIp** does not support concurrent creation of NAT IP addresses within the same NAT gateway."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-nat-ip --biz-region-id cn-hangzhou --nat-gateway-id ngw-gw8v16wgvtq26vh590000 --nat-ip-name newnatip --nat-ip-description test --dry-run false --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --nat-ip-cidr 192.168.0.0/24 --nat-ip 192.168.0.34 --ipv4-prefix 192.168.0.0/28 --ipv4-prefix-count 1 --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateNatIp --region cn-hangzhou --NatIp '192.168.0.34' --NatIpCidr '192.168.0.0/24' --DryRun false --Ipv4PrefixCount 1 --RegionId 'cn-hangzhou' --NatIpName newnatip --NatIpDescription test --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --NatGatewayId 'ngw-gw8v16wgvtq26vh590000' --Ipv4Prefix '192.168.0.0/28'"
