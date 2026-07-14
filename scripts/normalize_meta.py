@@ -1,102 +1,158 @@
 #!/usr/bin/env python3
 """
-将 aliyun-openapi-meta 从三份冗余归一化为 single meta + description overlay。
+将 aliyun-openapi-meta 从分散的多目录结构合并为单一 metadatas/ 目录。
 
 Before:
-  metadatas/{product}/{api}.json    - 结构 + example（语言无关）
-  zh-CN/{product}/{api}.json        - 完整复制 + 中文描述
-  en-US/{product}/{api}.json        - 完整复制 + 英文描述
+  metadatas/{product}/{api}.json              — 结构数据 (无 description, 无 deprecated)
+  descriptions/{locale}/{product}/{api}.json  — deprecated + 参数描述
+  en-US/{product}/{api}.json                  — 老结构 (description 内联)
+  zh-CN/{product}/{api}.json                  — 老结构 (description 内联)
 
 After:
-  metadatas/{product}/{api}.json    - 结构 + example（不变）
-  descriptions/zh-CN/{product}/{api}.json  - 仅 parameters 的 description
-  descriptions/en-US/{product}/{api}.json  - 仅 parameters 的 description
-  products/zh-CN/products.json             - 产品列表（含中文名称）
-  products/en-US/products.json             - 产品列表（含英文名称）
+  metadatas/{product}/{api}.json              — 完整合并数据 (含 {zh, en} 描述)
+  products/{locale}/products.json             — 不变
+
+执行后删除 en-US/, zh-CN/, descriptions/ 目录。
 """
 
 import json
-import os
 import shutil
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
-def extract_descriptions(api_data):
-    """Extract only language-dependent fields from an API JSON."""
-    result = {}
-    params = api_data.get("parameters", [])
-    desc_params = []
-    for p in params:
-        desc = p.get("description", "")
-        if desc:
-            desc_params.append({"name": p["name"], "description": desc})
-    if desc_params:
-        result["parameters"] = desc_params
-    if "deprecated" in api_data:
-        result["deprecated"] = api_data["deprecated"]
-    return result
+def load_json(path):
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return None
+
+
+def merge_parameters(zh_params, en_params):
+    """Merge zh and en parameter descriptions into {zh, en} objects."""
+    en_map = {}
+    if en_params:
+        for p in en_params:
+            en_map[p.get("name", "")] = p.get("description", "")
+
+    result = []
+    for p in zh_params or []:
+        name = p.get("name", "")
+        zh_desc = (p.get("description", "") or "").strip()
+        en_desc = (en_map.get(name, "") or "").strip()
+
+        merged = {}
+        if zh_desc:
+            merged["zh"] = zh_desc
+        if en_desc:
+            merged["en"] = en_desc
+
+        result.append((name, merged))
+
+    # Also add en-only params not in zh
+    zh_names = {p.get("name", "") for p in (zh_params or [])}
+    for p in en_params or []:
+        name = p.get("name", "")
+        if name not in zh_names:
+            en_desc = (p.get("description", "") or "").strip()
+            if en_desc:
+                result.append((name, {"en": en_desc}))
+
+    return dict(result)
 
 
 def main():
-    descriptions_dir = REPO_ROOT / "descriptions"
-    products_dir = REPO_ROOT / "products"
+    metadatas_dir = REPO_ROOT / "metadatas"
+    desc_dir = REPO_ROOT / "descriptions"
+    zh_dir = REPO_ROOT / "zh-CN"
+    en_dir = REPO_ROOT / "en-US"
 
-    for lang in ["zh-CN", "en-US"]:
-        lang_dir = REPO_ROOT / lang
-        if not lang_dir.exists():
-            print(f"Skipping {lang} (not found)")
+    api_count = 0
+    param_count = 0
+    deprecated_count = 0
+
+    for product_dir in sorted(metadatas_dir.iterdir()):
+        if not product_dir.is_dir() or product_dir.name.startswith("."):
             continue
+        product = product_dir.name
 
-        desc_lang_dir = descriptions_dir / lang
-        desc_lang_dir.mkdir(parents=True, exist_ok=True)
-
-        # Move products.json to products/{lang}/
-        products_lang_dir = products_dir / lang
-        products_lang_dir.mkdir(parents=True, exist_ok=True)
-        products_src = lang_dir / "products.json"
-        if products_src.exists():
-            shutil.copy2(products_src, products_lang_dir / "products.json")
-            print(f"Moved {lang}/products.json -> products/{lang}/products.json")
-
-        # Extract descriptions from each API JSON
-        api_count = 0
-        for product_dir in sorted(lang_dir.iterdir()):
-            if not product_dir.is_dir() or product_dir.name.startswith("."):
+        for api_file in sorted(product_dir.iterdir()):
+            if not api_file.name.endswith(".json") or api_file.name in ("products.json", "version.json"):
                 continue
-            product = product_dir.name
-            desc_product_dir = desc_lang_dir / product
-            desc_product_dir.mkdir(parents=True, exist_ok=True)
 
-            for api_file in sorted(product_dir.iterdir()):
-                if not api_file.name.endswith(".json") or api_file.name == "products.json":
-                    continue
-                try:
-                    data = json.loads(api_file.read_text(encoding="utf-8"))
-                except (json.JSONDecodeError, UnicodeDecodeError):
-                    continue
+            base_data = load_json(api_file)
+            if base_data is None:
+                continue
 
-                desc = extract_descriptions(data)
-                if desc:
-                    (desc_product_dir / api_file.name).write_text(
-                        json.dumps(desc, indent=2, ensure_ascii=False) + "\n",
-                        encoding="utf-8",
-                    )
+            # Try loading from en-US/zh-CN (old full structure)
+            en_data = load_json(en_dir / product / api_file.name)
+            zh_data = load_json(zh_dir / product / api_file.name)
+
+            # Try loading from descriptions/ (extracted structure)
+            desc_zh = load_json(desc_dir / "zh-CN" / product / api_file.name)
+            desc_en = load_json(desc_dir / "en-US" / product / api_file.name)
+
+            # Merge deprecated
+            deprecated = None
+            for src in [en_data, zh_data, desc_zh, desc_en]:
+                if src and "deprecated" in src:
+                    deprecated = src["deprecated"]
+                    break
+            if deprecated is not None:
+                base_data["deprecated"] = deprecated
+                deprecated_count += 1
+
+            # Collect parameter descriptions
+            zh_params = None
+            en_params = None
+
+            # Priority: old full structure > descriptions/
+            if zh_data and "parameters" in zh_data:
+                zh_params = zh_data["parameters"]
+            elif desc_zh and "parameters" in desc_zh:
+                zh_params = desc_zh["parameters"]
+
+            if en_data and "parameters" in en_data:
+                en_params = en_data["parameters"]
+            elif desc_en and "parameters" in desc_en:
+                en_params = desc_en["parameters"]
+
+            # Build description map
+            desc_map = merge_parameters(zh_params, en_params)
+
+            # Merge into base parameters
+            if desc_map:
+                modified = False
+                for param in base_data.get("parameters", []):
+                    pname = param.get("name", "")
+                    if pname in desc_map and desc_map[pname]:
+                        param["description"] = desc_map[pname]
+                        modified = True
+                        param_count += 1
+                if modified:
                     api_count += 1
 
-        print(f"Extracted {api_count} description files for {lang}")
+            # Write back
+            api_file.write_text(
+                json.dumps(base_data, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
 
-    # Remove old zh-CN and en-US directories
-    for lang in ["zh-CN", "en-US"]:
-        lang_dir = REPO_ROOT / lang
-        if lang_dir.exists():
-            shutil.rmtree(lang_dir)
-            print(f"Removed {lang}/")
+    print(f"Merged descriptions into {api_count} API files, {param_count} parameters")
+    print(f"Set deprecated on {deprecated_count} API files")
+
+    # Remove old directories
+    for d in [zh_dir, en_dir, desc_dir]:
+        if d.exists():
+            shutil.rmtree(d)
+            print(f"Removed {d.relative_to(REPO_ROOT)}/")
 
     # Summary
     print("\n=== After ===")
-    for d in ["metadatas", "descriptions", "products"]:
+    for d in ["metadatas", "products"]:
         dp = REPO_ROOT / d
         if dp.exists():
             size = sum(f.stat().st_size for f in dp.rglob("*") if f.is_file())
