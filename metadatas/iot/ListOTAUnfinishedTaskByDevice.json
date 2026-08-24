@@ -1,5 +1,6 @@
 {
   "name": "ListOTAUnfinishedTaskByDevice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备名称。\n\n><notice>如果传入该参数，需同时传入**ProductKey**。\n></notice>",
+        "en": "The DeviceName of the device.\n\n> If you specify this parameter, you must also specify the **ProductKey** parameter."
+      }
     },
     {
       "name": "IotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询设备的设备ID。\n\n><notice>如果传入该参数，则无需传入**ProductKey**和**DeviceName**。**IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**的组合是一一对应的关系。如果您同时传入**IotId**和**ProductKey**与**DeviceName**的组合，则以**IotId**为准。\n></notice>",
+        "en": "The ID of the device.\n\n> If you specify this parameter, you do not need to specify **ProductKey** or **DeviceName**. The **IotId** parameter specifies a globally unique identifier (GUID) of the device, which corresponds to a combination of **ProductKey** and **DeviceName**. If you specify both **IotId** and the combination of **ProductKey** and **DeviceName**, **IotId** takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ModuleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OTA模块名称。\n\n- 传入时，表示查询指定模块的升级任务。\n- 不传入时，表示查询所有模块的升级任务。",
+        "en": "The name of the OTA module.\n\n*   If you specify this parameter, update tasks of the specified module are queried.\n*   If you do not specify this parameter, update tasks of all modules are queried."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备所属产品的ProductKey。\n\n><notice>如果传入该参数，需同时传入**DeviceName**。\n   ></notice>",
+        "en": "The ProductKey of the product to which the device belongs.\n\n> If you specify this parameter, you must also specify the **DeviceName** parameter."
+      }
     },
     {
       "name": "TaskStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询单个指定升级状态下的设备升级作业。\n- **CONFIRM**：待确认。\n- **QUEUED**：待推送。\n- **NOTIFIED**：已推送。\n- **IN_PROGRESS**：升级中。\n\n> 单次调用本接口，仅可传入一个状态进行查询。该参数与**TaskStatusList**二选一使用。",
+        "en": "The status of the update task.\n\n*   **CONFIRM**: The update task is pending confirmation.\n*   **QUEUED**: The update notification is to be pushed.\n*   **NOTIFIED**: The update notification is pushed to the device.\n*   **IN_PROGRESS**: The update task is in progress."
+      }
     },
     {
       "name": "TaskStatusList",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询多个指定升级状态下的设备升级作业。\n- **CONFIRM**：待确认。\n- **QUEUED**：待推送。\n- **NOTIFIED**：已推送。\n- **IN_PROGRESS**：升级中。\n\n> 单次调用本接口，可传入多个状态进行查询。该参数与**TaskStatus**二选一使用。",
+        "en": "Queries device upgrade jobs in multiple specified upgrade statuses.  \n- **CONFIRM**: Awaiting confirmation.  \n- **QUEUED**: Awaiting push.  \n- **NOTIFIED**: Pushed.  \n- **IN_PROGRESS**: Upgrading.  \n\n> You can specify multiple statuses in a single API call. Use either this parameter or **TaskStatus**, but not both."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定设备未完成的升级作业",
+    "en": "Query Unfinished Upgrade Jobs for a Specified Device"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n请求参数中的**IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**的组合是一一对应的关系。调用API时，**ProductKey**与**DeviceName**的组合和**IotId**必须传入一个。\n\n## QPS限制\n\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n\n   > 单个阿里云账号下的所有RAM用户共享该阿里云账号的配额。",
+    "en": "## How-To  \nThe **IotId** parameter serves as the Unique Identifier of the device and has a one-to-one mapping relationship with the combination of **ProductKey** and **DeviceName**. When invoking the API, you must provide either the **IotId** or the combination of **ProductKey** and **DeviceName**.\n\n## QPS Limit\n\nThe maximum queries per second (QPS) for a single Alibaba Cloud account calling this API is 10.\n\n   > All Resource Access Management (RAM) users under an Alibaba Cloud account share the quota of that Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot list-ota-unfinished-task-by-device --iot-instance-id iot-c3j000 --module-name WifiConfigModify --product-key a19mzPZ0000 --device-name light --task-status CONFIRM --iot-id TfmUAeJjQQhCPH84UVNn0010c60000 --task-status-list example-string --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot ListOTAUnfinishedTaskByDevice --region cn-hangzhou --IotId TfmUAeJjQQhCPH84UVNn0010c60000 --TaskStatusList.1 'example-string' --IotInstanceId 'iot-c3j000' --ModuleName WifiConfigModify --TaskStatus CONFIRM --ProductKey a19mzPZ0000 --DeviceName light"

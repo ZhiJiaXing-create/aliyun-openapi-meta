@@ -1,5 +1,6 @@
 {
   "name": "AsyncRRpc",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要接收消息的设备名称。",
+        "en": "The device name of the target device."
+      }
     },
     {
       "name": "ExtInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "发送消息给云网关GB/T 32960协议的设备时，需要传入此参数，标识消息的命令类型，可取值：\n\n- **128**：查询命令（0x80）。\n- **129**：设置命令（0x81）。\n- **130**：车载终端控制命令（0x82）。\n\n\n云网关GB/T 32960协议的设备接入详情，请参见[云网关GB/T 32960协议概述](~~2248990~~)。",
+        "en": "This parameter is required when sending a message to a device that uses the cloud gateway GB/T 32960 protocol. It specifies the command type of the message. Valid values:\n- **128**: Query command (0x80).\n- **129**: Set command (0x81).\n- **130**: In-vehicle terminal control command (0x82).\n\nFor more information about connecting devices that use the cloud gateway GB/T 32960 protocol, see [Overview of the Cloud Gateway GB/T 32960 Protocol](~~2248990~~)."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The instance ID. You can view the **ID** of the current instance on the **Instance Overview** page in the IoT Platform console.\n\n><notice>\n- If an ID exists, you must specify this **ID**. Otherwise, the invocation fails.\n- If the **Instance Overview** page or the **ID** does not exist, this parameter is not required.\n\n></notice>\n\nFor more information about instances, see [Instance Overview](~~356505~~)."
+      }
     },
     {
       "name": "MessageContent",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要发送的消息主体。\n\n您需要将消息原文转换成二进制数据，并进行Base64编码，从而生成消息主体。",
+        "en": "The body of the message to be sent.\n\nYou must convert the original message into binary data and then encode it in Base64 to generate the message body."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要接收消息的设备所属产品的**ProductKey**。",
+        "en": "The **ProductKey** of the product to which the target device belongs."
+      }
     },
     {
       "name": "TopicFullName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "发送消息给MQTT协议设备时，需要传入对应设备的自定义Topic。Topic的操作权限必须为**订阅**或**发布和订阅**。\n\n发送消息给云网关GB/T 32960协议的设备时，无需传入此参数。",
+        "en": "When sending a message to a device that uses the MQTT protocol, you must specify the custom topic of the corresponding device. The operation permission of the topic must be **subscribe** or **publish and subscribe**.\n\nWhen sending a message to a device that uses the GB/T 32960 protocol via a cloud gateway, you do not need to specify this parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "AsyncRRpc",
+    "en": "AsyncRRpc"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n对于MQTT协议（包括云网关和非云网关）和云网关GB/T 32960协议的设备，可调用本接口从服务端下发消息给对应设备。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为1,000。\n> RAM用户共享阿里云账号配额。",
+    "en": "## How-To\nYou can call this API to send messages from the server to devices that use the Message Queuing Telemetry Transport (MQTT) protocol (including cloud gateway and non-cloud gateway devices) or the cloud gateway GB/T 32960 protocol.\n\n## QPS Limit\nThe maximum queries per second (QPS) for this API is 1,000 per Alibaba Cloud account.  \n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot async-rrpc --iot-instance-id iot-v6400000000 --product-key aldfeSe0000 --device-name device1 --ext-info commandType_:_128 --message-content eyJ0ZXN0IjoidGFzayBwdWIgYnJvYWRjYXN0In0= --topic-full-name /a1uZfYb0000/A_Vol0000/user/update --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot AsyncRRpc --region cn-hangzhou --MessageContent 'eyJ0ZXN0IjoidGFzayBwdWIgYnJvYWRjYXN0In0=' --IotInstanceId 'iot-v6400000000' --ExtInfo 'commandType_:_128' --ProductKey aldfeSe0000 --DeviceName device1 --TopicFullName '/a1uZfYb0000/A_Vol0000/user/update'"

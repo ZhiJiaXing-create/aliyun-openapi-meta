@@ -1,5 +1,6 @@
 {
   "name": "DeleteSlot",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标实例ID。可调用DescribeDBInstances接口查询。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID，可以为空。",
+        "en": "The ID of the resource group. You can leave this parameter empty."
+      }
     },
     {
       "name": "SlotName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Replication Slot名称。可调用DescribeSlots接口查询。",
+        "en": "The name of the replication slot. You can call the DescribeSlots operation to query the name of the replication slot."
+      }
     },
     {
       "name": "SlotStatus",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Replication Slot状态。可调用DescribeSlots接口查询。\n- **ACTIVE**：活跃。\n- **INACTIVE**：不活跃。",
+        "en": "The status of the replication slot. You can call the DescribeSlots operation to query the status of the replication slot. Valid values:\n\n*   **ACTIVE**\n*   **INACTIVE**"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除PostgreSQL实例Replication Slot",
+    "en": "DeleteSlot"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS PostgreSQL\n\n### 注意事项\n仅当Replication Slot的状态（SlotStatus）为**INACTIVE**时，可以被删除。您可以调用DescribeSlots接口查询Replication Slot状态。",
+    "en": "### [](#)Supported database engine\n\n*   PostgreSQL\n\n### [](#)Precautions\n\nYou can delete a replication slot only when the status of the slot is **INACTIVE**. You can call the DescribeSlots operation to query the status of a replication slot."
+  },
   "example": {
     "unifiedCli": "aliyun rds delete-slot --client-token ETnLKlblzczshOTUbOC0000 --db-instance-id pgm-bp102g323jd40000 --slot-name slot_test01 --slot-status INACTIVE --resource-group-id rg-acfmy0000 --region cn-hangzhou",
     "legacyCli": "aliyun rds DeleteSlot --region cn-hangzhou --ResourceGroupId 'rg-acfmy0000' --DBInstanceId 'pgm-bp102g323jd40000' --SlotStatus INACTIVE --ClientToken ETnLKlblzczshOTUbOC0000 --SlotName slot_test01"

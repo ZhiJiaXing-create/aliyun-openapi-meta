@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodTranscodeData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用ID。传入此参数，可以查询指定应用下的转码用量。默认返回所有应用的转码用量数据。本参数值可以从[CreateAppInfo](~~CreateAppInfo~~)接口的返回参数`AppId`获取。",
+        "en": "The ID of the application. You can specify this parameter to query the transcoding statistics of a specific application. By default, the transcoding statistics of all applications is returned. You can obtain the application ID from the `AppId` parameter in the response to the [CreateAppInfo](~~CreateAppInfo~~) operation."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据结束时间点，需晚于起始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时间粒度。取值：\n\n- **day**：天。\n- **hour**：小时。",
+        "en": "The interval at which you want to query data. Valid values:\n\n*   **day**: days\n*   **hour**: hours"
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "存储地域。默认返回所有区域。支持批量查询，多个地域使用半角逗号（,）分隔。取值：\n- **cn-shanghai**：上海。\n- **cn-beijing**：北京。\n- **eu-central-1**：德国。\n- **ap-southeast-1**：新加坡。",
+        "en": "The region in which you want to query data. If you leave this parameter empty, data in all regions is returned. Separate multiple regions with commas (,). Valid values:\n\n*   **cn-shanghai**: China (Shanghai)\n*   **cn-beijing**: China (Beijing)\n*   **eu-central-1**: Germany (Frankfurt)\n*   **ap-southeast-1**: Singapore"
+      }
     },
     {
       "name": "Specification",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码规格，默认返回所有转码规格。支持批量查询，多个用半角逗号（,）分隔。取值：\n- **Audio**：音频。\n- **Segmentation**：转封装。\n- **H264.LD**、**H264.SD**、**H264.HD**、**H264.2K**、**H264.4K**等。",
+        "en": "The transcoding specification. If you leave this parameter empty, data of all transcoding specifications is returned. Separate multiple transcoding specifications with commas (,). Valid values:\n\n*   **Audio**: audio transcoding\n*   **Segmentation**: container format conversion\n*   **H264.LD**, **H264.SD**, **H264.HD**, **H264.2K**, **H264.4K**, and more"
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据起始时间点。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "Storage",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "存储名称（阿里云OSS存储Bucket名称）。默认返回所有存储。支持批量查询，多个用半角逗号（,）分隔。",
+        "en": "The name of the Object Storage Service (OSS) bucket. If you leave this parameter empty, data of all buckets is returned. Separate multiple bucket names with commas (,)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询转码用量数据",
+    "en": "DescribeVodTranscodeData"
+  },
+  "descriptions": {
+    "zh": "- 目前服务地址仅支持：**华东2（上海）**。\n- 当起始结束时间间隔在7天以内时，返回小时粒度的数据。当起始结束时间间隔大于7天时，返回天粒度的数据，最大间隔为31天。",
+    "en": "*   This operation is available only in the **China (Shanghai)** region.\n\n*   If the time range to query is less than or equal to seven days, the system returns the statistics collected on an hourly basis. If the time range to query is greater than seven days, the system returns the statistics collected on a daily basis. The maximum time range that you can specify to query is 31 days."
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-transcode-data --start-time 2019-02-01T15:00:00Z --end-time 2019-02-01T15:59:00Z --biz-region cn-shanghai --interval day --storage bucket01 --specification Audio --app-id app-1000001 --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodTranscodeData --region cn-hangzhou --Storage bucket01 --EndTime '2019-02-01T15:59:00Z' --AppId 'app-1000001' --StartTime '2019-02-01T15:00:00Z' --Region 'cn-shanghai' --Specification Audio --Interval day"

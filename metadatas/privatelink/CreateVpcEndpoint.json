@@ -1,5 +1,6 @@
 {
   "name": "CreateVpcEndpoint",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,109 +9,181 @@
       "name": "AddressIpVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议版本。取值：\n\n- **IPv4**：IPv4类型（默认）。\n- **DualStack**：双栈类型。\n> 终端节点支持双栈，要求其连接的终端节点服务及终端节点所处的VPC均支持双栈。",
+        "en": "The protocol version. Valid values:\n\n- **IPv4**: IPv4 (default).\n- **DualStack**: dual-stack.\n> To use dual-stack for the endpoint, the endpoint service connected to the endpoint and the VPC in which the endpoint resides must both support dual-stack."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "CrossRegionBandwidth",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域带宽值，仅当终端节点和终端节点服务跨地域时涉及该参数。单位：Mbps。取值：\n\n- **默认值**：中国内地与中国内地跨地域取值1000，其他情况取值100。\n- **最小值**：100。\n- **最大值**：受限于当前账号的配额（具体数值请参见[配额与限制](https://help.aliyun.com/zh/privatelink/quotas-and-limits?spm=a2c4g.11174283.help-menu-search-120462.d_0)章节）。\n> 如需指定该参数，请确保您创建的是跨地域的终端节点。",
+        "en": "The cross-region bandwidth. This parameter is required only when the endpoint and the endpoint service are in different regions. Unit: Mbps. Valid values:\n\n- **Default value**: 1000 for cross-region connections within the Chinese mainland. 100 for other scenarios.\n- **Minimum value**: 100.\n- **Maximum value**: subject to the quota of your account. For more information, see [Quotas and limits](https://www.alibabacloud.com/help/en/privatelink/quotas-and-limits).\n> Specify this parameter only when you create a cross-region endpoint."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建终端节点。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request format, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): sends a normal request, passes the dry run, and returns an HTTP 2xx status code. The system proceeds to create an endpoint."
+      }
     },
     {
       "name": "EndpointDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点描述。\n\n描述长度为2~256个字符，开头不能为`http://`和`https://`。",
+        "en": "The description of the endpoint.\n\nThe description must be 2 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "EndpointName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点名称。\n\n长度为2~128个字符，以英文字母或中文开头，可包含数字、短划线（-）和下划线（_）。",
+        "en": "The name of the endpoint.\n\nThe name must be 2 to 128 characters in length, and can contain letters, digits, hyphens (-), and underscores (_). It must start with a letter."
+      }
     },
     {
       "name": "EndpointType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点类型。取值：\n\n- **Interface**：表示接口终端节点。您可以添加应用型负载均衡ALB（ApplicationLoad Balancer）、传统型负载均衡CLB（Classic Load Balancer）和网络型负载均衡NLB（Network Load Balancer ）的服务资源类型。\n\n- **Reverse**：表示反向终端节点。您可以添加VPC NAT网关作为服务资源。\n- **GatewayLoadBalancer**： 表示网关型负载均衡终端节点。您可以添加网关型负载均衡 GWLB（Gateway Load Balancer）作为服务资源。\n\n> 支持反向终端节点的服务只能由阿里云和生态合作伙伴提供，默认不支持自己创建，如需自己创建，请联系客户经理申请。",
+        "en": "The endpoint type. Valid values:\n\n- **Interface**: interface endpoint. You can add Application Load Balancer (ALB), Classic Load Balancer (CLB), and Network Load Balancer (NLB) as EPS resource types.\n\n- **Reverse**: reverse endpoint. You can add VPC NAT gateways as service resources.\n- **GatewayLoadBalancer**: Gateway Load Balancer endpoint (GWLBe). You can add Gateway Load Balancer (GWLB) as service resources.\n\n> Services that support reverse endpoints can be provided only by Alibaba Cloud and ecosystem partners. By default, you cannot create reverse endpoints on your own. To create a reverse endpoint, contact your account manager."
+      }
     },
     {
       "name": "PolicyDocument",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "RAM权限策略。关于策略定义的更多信息，请参见[权限策略基本元素](~~93738~~)。",
+        "en": "The RAM access policy. For more information about the policy definition, see [Basic elements of a policy](~~93738~~)."
+      }
     },
     {
       "name": "ProtectedEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启托管保护，STS调用方式下生效。取值：\n \n- **true**：开启。开启托管保护后，只有和创建时相同的用户才能通过STS方式对该终端节点进行修改或者删除等操作。\n- **false**（默认值）：不开启。",
+        "en": "Specifies whether to enable managed protection. This parameter takes effect only for STS-based calls. Valid values:\n \n- **true**: enables managed protection. After managed protection is enabled, only the same user who created the endpoint can modify or delete the endpoint by using STS.\n- **false** (default): does not enable managed protection."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The region ID of the endpoint.\n\nYou can call [DescribeRegions](~~120468~~) to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "SecurityGroupId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点网卡关联的安全组列表。",
+        "en": "The security groups associated with the endpoint elastic network interface (ENI)."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点关联的终端节点服务。",
+        "en": "The ID of the endpoint service with which the endpoint is associated."
+      }
     },
     {
       "name": "ServiceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点关联的终端节点服务的名称。",
+        "en": "The name of the endpoint service with which the endpoint is associated."
+      }
     },
     {
       "name": "ServiceRegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点服务所属的地域 ID。缺省值为当前地域，即您创建终端节点所在地域。",
+        "en": "The region ID of the endpoint service. The default value is the current region where you create an endpoint."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -118,37 +191,61 @@
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点所属的专有网络。",
+        "en": "The ID of the virtual private cloud (VPC) to which the endpoint belongs."
+      }
     },
     {
       "name": "Zone",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "终端节点可用区列表。",
+        "en": "The endpoint zones."
+      },
       "sub_parameters": [
         {
           "name": "Ipv6Address",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定终端节点可用区的弹性网卡 IPv6 地址。\n>仅AddressIpVersion属性取值为DualStack时，该参数才可指定。",
+            "en": "The IPv6 address of the ENI in the specified endpoint zone.\n>This parameter can be specified only when the AddressIpVersion parameter is set to DualStack."
+          }
         },
         {
           "name": "VSwitchId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "在可用区内要创建终端节点网卡的交换机。\n您最多可以设置10个交换机。",
+            "en": "The ID of the vSwitch in the zone where you want to create an endpoint elastic network interface (ENI).\nYou can configure up to 10 vSwitches."
+          }
         },
         {
           "name": "ZoneId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "终端节点的可用区。\n\n您最多可以设置10个可用区。",
+            "en": "The zone of the endpoint.\n\nYou can specify up to 10 zones."
+          }
         },
         {
           "name": "ip",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定终端节点可用区的弹性网卡 IPv4 地址。",
+            "en": "The IPv4 address of the ENI in the specified endpoint zone."
+          }
         }
       ]
     },
@@ -156,15 +253,34 @@
       "name": "ZoneAffinityEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否支持连接服务的终端节点域名就近解析，取值：\n\n- **true**：是。\n- **false**（默认值）：否。",
+        "en": "Specifies whether to enable zone affinity for the endpoint domain name of the connected service. Valid values:\n\n- **true**: enabled.\n- **false** (default): disabled."
+      }
     },
     {
       "name": "ZonePrivateIpAddressCount",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每个可用区ENI的私网IP的数量。仅取值：**1**。",
+        "en": "The number of private IP addresses per endpoint ENI in each zone. Set the value to **1**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建终端节点",
+    "en": "Create an endpoint"
+  },
+  "descriptions": {
+    "zh": "**CreateVpcEndpoint**接口属于异步接口，即系统会返回一个实例ID，但该终端节点尚未创建完成，系统后台任务仍在进行中。您可以调用[GetVpcEndpointAttribute](~~469349~~)查询终端节点的创建状态：\n\n- 当终端节点处于**Creating**状态时，表示终端节点正在创建中。\n- 当终端节点处于**Active**状态时，表示终端节点创建完成。",
+    "en": "**CreateVpcEndpoint** is an asynchronous operation. After you call the operation, the system returns an instance ID while the endpoint is still being created as a background node. You can call [GetVpcEndpointAttribute](~~469349~~) to query the creation status of the endpoint:\n\n- If the endpoint is in the **Creating** state, the endpoint is being created.\n- If the endpoint is in the **Active** state, the endpoint is created."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink create-vpc-endpoint --biz-region-id cn-hangzhou --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --endpoint-name test --biz-endpoint-type Interface --zone-private-ip-address-count 1 --endpoint-description This_is_my_Endpoint. --vpc-id vpc-hp356stwkxg3fn2xe0000 --service-id epsrv-hp3xdsq46ael67lo0000 --service-name com.aliyuncs.privatelink.cn-huhehaote.epsrv-hp3vpx8yqxblby3i0000 --zone ZoneId=cn-huhehaote-b VSwitchId=vsw-hp3uf6045ljdhd5zr0000 ip=192.168.XX.XX Ipv6Address=2408:4005:34d:0000:a58b:62a3:6b55:0000 --security-group-id sg-bp1fg655nh68xyz90000 --protected-enabled false --tag Value=prod Key=env --resource-group-id rg-acfmy00000 --policy-document Version_:_1_,_Statement_:_Effect_:_Allow_,_Action_:_oss:List0_,_oss:PutObject_,_oss:GetObject_,_Resource_:_acs:oss:oss-0:0:pvl-policy-test/policy-test.txt_,_Principal_:_RAM_:_acs:ram::14199xxxxxx:0 --address-ip-version IPv4 --zone-affinity-enabled false --service-region-id cn-huhehaote --cross-region-bandwidth 1000 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink CreateVpcEndpoint --region cn-hangzhou --Tag.1.Key env --AddressIpVersion IPv4 --ServiceRegionId 'cn-huhehaote' --ResourceGroupId 'rg-acfmy00000' --DryRun false --Zone.1.VSwitchId 'vsw-hp3uf6045ljdhd5zr0000' --ZonePrivateIpAddressCount 1 --EndpointDescription 'This_is_my_Endpoint.' --ServiceId 'epsrv-hp3xdsq46ael67lo0000' --CrossRegionBandwidth 1000 --Zone.1.ip '192.168.XX.XX' --SecurityGroupId.1 'sg-bp1fg655nh68xyz90000' --Zone.1.Ipv6Address '2408:4005:34d:0000:a58b:62a3:6b55:0000' --ProtectedEnabled false --EndpointName test --VpcId 'vpc-hp356stwkxg3fn2xe0000' --ServiceName 'com.aliyuncs.privatelink.cn-huhehaote.epsrv-hp3vpx8yqxblby3i0000' --Tag.1.Value prod --EndpointType Interface --PolicyDocument 'Version_:_1_,_Statement_:_Effect_:_Allow_,_Action_:_oss:List0_,_oss:PutObject_,_oss:GetObject_,_Resource_:_acs:oss:oss-0:0:pvl-policy-test/policy-test.txt_,_Principal_:_RAM_:_acs:ram::14199xxxxxx:0' --Zone.1.ZoneId 'cn-huhehaote-b' --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --ZoneAffinityEnabled false"

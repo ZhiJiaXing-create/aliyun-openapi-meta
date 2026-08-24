@@ -1,0 +1,50 @@
+{
+  "name": "DescribeCreditUsageInfo",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BizType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "业务类型",
+        "en": "The business type."
+      }
+    },
+    {
+      "name": "InstanceIds",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "实例 ID 列表 JSON 字符串；`UsageType=User` 时可省略，`CreditPackage` 时传积分包实例 ID，`Agent` 时传 `AgentId`",
+        "en": "The JSON string of instance IDs. This parameter can be omitted when `UsageType=User`. Set this parameter to the credit package instance ID when `UsageType=CreditPackage`, or to the `AgentId` when `UsageType=Agent`."
+      }
+    },
+    {
+      "name": "UsageType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用量类型（UseageType）：User、CreditPackage、Agent\n*   User：返回用户当前生效积分包的用量、余量及消耗趋势\n*   CreditPackage：需要传入CreditPackageId，返回指定积分包的总量、余量\n*   Agent：需要传入AgentId，返回累计积分用量、累计分配额度及两者百分比",
+        "en": "The usage type. Valid values:\n*   User: Returns the usage, remaining credits, and consumption trends of the active credit packages for the current user.\n*   CreditPackage: Requires a CreditPackageId. Returns the total and remaining credits of the specified credit package.\n*   Agent: Requires an AgentId. Returns the cumulative credit usage, cumulative allocated quota, and the percentages of both."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询积分用量详情",
+    "en": "Query credit usage details"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n\n该API用于根据`UsageType`指定的维度（User / CreditPackage / Agent）查询积分用量详情。返回内容包括当前积分包总量/余量/用量、按小时消耗采样、告警阈值、周期配额等信息。\n\n- **User**：用户维度，返回当前用户全部生效积分包的合计用量、余量。\n- **CreditPackage**：积分包维度，返回指定积分包实例的总量、余量、消耗采样。\n- **Agent**：Agent维度，返回指定Agent的累计用量、当前周期用量、配额、告警等信息。\n\n**注意**：\n- `InstanceIds`参数在`UsageType=User`时可省略，在`CreditPackage`时传积分包实例ID，在`Agent`时传AgentId。\n- 匿名版请求支持`FillInstance`参数，当未显式传入`InstanceIds`且`FillInstance=true`时，服务端依据当前登录`wyId`自动填充已绑定的`JVS_COPILOT`AgentId。\n- 时间窗口常量：`dayUsedCredit`统计窗口为`now - ONE_DAY_MILLIS`，`weekUsedCredit`统计窗口为`now - ONE_WEEK_MILLIS`。\n- 消耗采样`currentCreditConsumeList`按小时聚合，可能存在≤5分钟的异步同步延迟。",
+    "en": "## Operation description\n\nThis API operation queries credit usage details based on the dimension specified by `UsageType` (User, CreditPackage, or Agent). The response includes the total, remaining, and used credits of the current credit package, hourly consumption samples, alert thresholds, period quotas, and other information.\n\n- **User**: User dimension. Returns the aggregated usage and remaining credits across all active credit packages for the current user.\n- **CreditPackage**: Credit package dimension. Returns the total, remaining, and consumption samples for a specified credit package instance.\n- **Agent**: Agent dimension. Returns the cumulative usage, current period usage, quota, alert, and other information for a specified agent.\n\n**Notes**:\n- The `InstanceIds` parameter can be omitted when `UsageType=User`. Set this parameter to the credit package instance ID when `UsageType=CreditPackage`, or to the AgentId when `UsageType=Agent`.\n- Anonymous requests support the `FillInstance` parameter. If `InstanceIds` is not explicitly specified and `FillInstance=true`, the server automatically populates the bound `JVS_COPILOT` AgentId based on the current logon `wyId`.\n- Time window constants: The `dayUsedCredit` statistics window is `now - ONE_DAY_MILLIS`, and the `weekUsedCredit` statistics window is `now - ONE_WEEK_MILLIS`.\n- The consumption samples in `currentCreditConsumeList` are aggregated by hour and may have an asynchronous synchronization delay of up to 5 minutes."
+  }
+}

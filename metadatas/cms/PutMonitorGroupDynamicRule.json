@@ -1,5 +1,6 @@
 {
   "name": "PutMonitorGroupDynamicRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "GroupId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用分组ID。",
+        "en": "The ID of the application group."
+      }
     },
     {
       "name": "GroupRules",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "无。",
+        "en": "None."
+      },
       "sub_parameters": [
         {
           "name": "Category",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "动态报警规则的云服务类型。N的取值范围：1~3。取值：\n\n- ecs：云服务器ECS。\n\n- rds：关系型数据库。\n\n- slb：负载均衡。",
+            "en": "The cloud service to which the alert rule is applied. Valid values of N: 1 to 3. Valid values:\n\n- ecs: Elastic Compute Service (ECS)\n\n- rds: ApsaraDB RDS\n\n- slb: Server Load Balancer (SLB)"
+          }
         },
         {
           "name": "FilterRelation",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "动态报警规则的组合条件。N的取值范围：1~3。取值：\n\n- and：满足所有报警规则的实例才会自动添加到应用分组。\n\n- or：满足任意报警规则的实例都会自动添加到应用分组。",
+            "en": "The logical operator used between conditional expressions in the alert rule. Valid values of N: 1 to 3. Valid values:\n\n- and: The instances that meet all the conditional expressions are automatically added to the application group.\n\n- or: The instances that meet one of the conditional expressions are automatically added to the application group."
+          }
         },
         {
           "name": "Filters",
           "position": "Query",
           "type": "RepeatList",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "无。",
+            "en": "None."
+          }
         }
       ]
     },
@@ -40,9 +61,20 @@
       "name": "IsAsync",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建动态报警规则的模式。取值：\n\n- true：异步创建。\n- false（默认值）：同步创建。",
+        "en": "The mode for creating the alert rule. Valid values:\n\n- true: creates asynchronously\n\n- false (default): creates synchronously"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建或修改按照实例名称动态匹配的应用分组",
+    "en": "PutMonitorGroupDynamicRule"
+  },
   "example": {
     "unifiedCli": "aliyun cms put-monitor-group-dynamic-rule --group-id 123456 --group-rules '[{\"FilterRelation\":\"and\",\"Filters\":[{\"Function\":\"contains\",\"Value\":\"nginx\",\"Name\":\"hostName\"}],\"Category\":\"ecs\"}]' --is-async false --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun cms PutMonitorGroupDynamicRule --region cn-hangzhou --GroupRules.1.Filters.1.Name hostName --GroupRules.1.Filters.1.Value nginx --GroupRules.1.Category ecs --GroupRules.1.Filters.1.Function contains --IsAsync false --GroupRules.1.FilterRelation and --GroupId 123456"

@@ -1,0 +1,80 @@
+{
+  "name": "SendSms",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "OutId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "外部流水扩展字段。\n\n> 无特殊需要可忽略此字段。",
+        "en": "The external transaction ID.\n\n> You can ignore this parameter if you do not have special requirements."
+      }
+    },
+    {
+      "name": "PhoneNumbers",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "接收短信的手机号码。手机号码格式：\n\n* 国内短信：+/+86/0086/86或无任何前缀的手机号码，例如1390000\\*\\*\\*\\*。\n* 国际/港澳台消息：国际区号+号码，例如852000012\\*\\*\\*\\*。\n* 接收测试短信的手机号：必须先在[控制台](https://dysms.console.aliyun.com/quickstart)绑定测试手机号后才可以发送。\n\n>支持向不同的手机号码发送短信，手机号码之间以半角逗号（,）分隔。上限为1000个手机号码。批量发送相对于单条发送，及时性稍有延迟。验证码类型的短信，建议单条发送。",
+        "en": "The recipient's mobile number. The format varies based on the destination region:\n\n- For messages to the Chinese mainland: A mobile number, with or without a country code. Valid prefixes are +, +86, 0086, and 86. Example: 1390000\\*\\*\\*\\*.\n\n- For international messages or messages to Hong Kong, Macao, or Taiwan: Use the format \\[Country code]\\[Mobile number]. Example: 852000012\\*\\*\\*\\*.\n\n- To send a test message, bind a test mobile number in the [console](https://dysms.console.aliyun.com/quickstart).\n\n> To send a message to multiple numbers, separate them with commas (,). You can specify up to 1,000 mobile numbers per request. Bulk sending may have higher latency than sending single messages. For time-sensitive messages such as verification codes, we recommend sending them individually."
+      }
+    },
+    {
+      "name": "SignName",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "短信签名名称。\n\n您可以通过[QuerySmsSignList](~~419282~~)接口查询当前账号已申请的签名或在[短信服务控制台](https://dysms.console.aliyun.com/domestic/text/sign)查看签名列表，必须使用**审核通过**的签名发送短信。\n\n> - 1、如果验证码签名和通用签名相同时，默认使用通用签名发送短信。\n> - 2、系统会根据您选择的签名执行短信发送任务。",
+        "en": "The signature name.\n\nCall the [QuerySmsSignList](~~419282~~) API or view your list of signatures in the [Short Message Service console](https://dysms.console.aliyun.com/domestic/text/sign). You must use a signature that has been **approved**.\n\n> - 1\\. If a verification code signature and a general-purpose signature share the same name, the general-purpose signature is used by default.\n>\n> - 2\\. The system uses the specified signature to send the message."
+      }
+    },
+    {
+      "name": "SmsUpExtendCode",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "上行短信扩展码。上行短信指发送给通信服务提供商的短信，用于定制某种服务、完成查询，或是办理某种业务等，需要收费，按运营商普通短信资费进行扣费。\n> 扩展码是生成签名时系统自动默认生成的，不支持自行传入。无特殊需要可忽略此字段。",
+        "en": "The upstream SMS extension code. An upstream SMS message is a message sent from a user to a service provider to subscribe to a service, make a query, or perform other tasks. Such messages are charged by the carrier at standard rates.\n\n> The system assigns a default extension code when a signature is created. Use this parameter to specify a different code. You can ignore this parameter if you do not have special requirements."
+      }
+    },
+    {
+      "name": "TemplateCode",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "短信模板Code。\n\n您可以通过[QuerySmsTemplateList](~~419288~~)接口查询当前账号已申请的模板或在[短信服务控制台](https://dysms.console.aliyun.com/domestic/text/template)查看模板列表，必须使用已**审核通过**的模板Code发送短信。",
+        "en": "The code of the template.\n\nCall the [QuerySmsTemplateList](~~419288~~) API or view your list of templates in the [Short Message Service console](https://dysms.console.aliyun.com/domestic/text/template). You must use the code of a template that has been **approved**."
+      }
+    },
+    {
+      "name": "TemplateParam",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "短信模板变量对应的实际值，请传入**JSON字符串**。当您选择的模板内容含有变量时，此参数必填。参数个数应与模板内变量个数一致。\n\n> - 如果JSON中需要带换行符，请参照标准的JSON协议处理。\n> - 模板变量规范，请参见[短信模板规范](~~463161~~)。",
+        "en": "The values for the template variables, specified as a **JSON string**. This parameter is required if the template contains variables. The JSON string must provide a value for each variable.\n\n> - If the JSON string needs to include line breaks, format it according to standard JSON specifications.\n>\n> - For more information about template variable formatting, see [SMS template specifications](~~463161~~)."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "发送短信",
+    "en": "SendSms"
+  },
+  "descriptions": {
+    "zh": "本接口主要用于向单个手机号发送短信，也支持向多个手机号（单次最多支持 1000 个手机号）发送相同签名、相同模板变量的短信，群发存在一定延迟。如果您需要向多个手机号发送不同签名、不同模板变量的短信，请使用[SendBatchSms](~~419274~~)接口（单次最多支持100个手机号）。\n\n### 注意事项\n- 国内短信服务超时时间建议设置为≥1S；发生超时失败的情况时，建议查看回执状态后再判断是否重试。超时和重试的相关设置，请参见[超时机制](~~262079~~)、[重试机制](~~262080~~)。\n- 国内短信、国际短信及多媒体短信目前均不支持幂等的能力，请您做好幂等控制，防止因多次重试而导致的重复操作问题。\n- 发送短信为计费接口，国内短信按照运营商回执状态计费，调用 SendSms 提交成功但运营商回执失败时不计费。计费详情请参见[计费概述](~~44340~~)。\n\n### QPS 限制\n本接口的单用户 QPS 限制为 5000/秒。超过限制，API 调用将会被限流，请合理使用。",
+    "en": "Use this API to send an SMS message to a single mobile number. This API also supports sending messages with the same signature and template variables to multiple mobile numbers, up to 1,000 per request. Note that bulk sending may experience some latency. If you need to send messages with different signatures or template variables to multiple recipients, use the [SendBatchSms](~~419274~~) API, which supports up to 100 mobile numbers per request.\n\n### Usage notes\n\n- For SMS messages sent to the Chinese mainland, we recommend setting the timeout period to 1 second or longer. If a timeout occurs, check the delivery receipt status before retrying the request. For more information about timeout and retry settings, see [Timeout mechanism](~~262079~~) and [Retry mechanism](~~262080~~).\n\n- This API does not support idempotence for domestic, international, or multimedia SMS messages. You must implement your own idempotence controls to prevent sending duplicate messages during retries.\n\n- This is a billable API. For messages sent to the Chinese mainland, billing is based on the delivery receipt status from the carrier. You are not charged if the API call is successful but the carrier fails to deliver the message. For more information, see [Billing](~~44340~~).\n\n### QPS limit\n\nThis API has a queries per second (QPS) limit of 5,000 for each user. The system throttles calls that exceed this limit. To avoid throttling, use this API within the specified limit."
+  }
+}

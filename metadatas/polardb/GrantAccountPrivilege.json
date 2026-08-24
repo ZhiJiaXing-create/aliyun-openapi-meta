@@ -1,5 +1,6 @@
 {
   "name": "GrantAccountPrivilege",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AccountName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "账号名。",
+        "en": "The username of the account."
+      }
     },
     {
       "name": "AccountPrivilege",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "账号权限，取值范围如下： \n\n* **ReadWrite**：读写\n* **ReadOnly**：只读\n* **DMLOnly**：只允许DML \n* **DDLOnly**：只允许DDL\n* **ReadIndex**：只读+索引\n\n> **AccountPrivilege**需与**DBName**输入的参数数量保持一致，且顺序对应。例如，输入**DBName**为`testdb_1,testdb_2`，**AccountPrivilege**为`ReadWrite,ReadOnly`，则表示授予目标账号对数据库**testdb_1**的**读写**权限，对数据库**testdb_2**的**只读**权限。",
+        "en": "The permissions that are granted to the account. Valid values:\n\n- **ReadWrite**: read and write permissions\n\n- **ReadOnly**: read-only permissions\n\n- **DMLOnly**: The account is granted the permissions to execute only DML statements on the database.\n\n- **DDLOnly**: The account is granted the permissions to execute only DDL statements on the database.\n\n- **ReadIndex**: The account has the read and index permissions on the database.\n\n> The number of **AccountPrivilege** values must be the consistent with the number of **DBName** values. Each account permission must correspond to a database name in sequence. For example, you can set **DBName** to `testdb_1,testdb_2` and set **AccountPrivilege** to `ReadWrite,ReadOnly`. In this case, the specified standard account is granted the **read and write** permissions on the **testdb\\_1** database and the **read** permission on the **testdb\\_2** database."
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The ID of the cluster."
+      }
     },
     {
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要授权的数据库名称。支持同时对一个或多个数据库授权，多个数据库名称之间用英文逗号（,）隔开。",
+        "en": "The names of the databases that the account can access. You can grant the access permissions on one or more databases to the specified standard account. If you need to specify multiple database names, separate the database names with commas (,)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "授权普通账号访问某个数据库",
+    "en": "GrantAccountPrivilege"
+  },
+  "descriptions": {
+    "zh": ">* 一个账号可关联一个或多个数据库。\n>* 如果目标账号对指定数据库已经具有访问权限，则会直接返回成功。\n>* 集群状态需要为运行中，否则操作将失败。\n>* 目前仅支持PolarDB MySQL版。\n>* 高权限账号默认拥有集群里所有数据库的权限，无需进行授权操作。",
+    "en": "> - An account can be authorized to access one or more databases.\n>\n> - If the specified account already has the access permissions on the specified databases, the operation returns a successful response.\n>\n> - Before you call this operation, make sure that the cluster is in the Running state. Otherwise, the operation fails.\n>\n> - This operation is supported only for PolarDB for MySQL clusters.\n>\n> - By default, a privileged account for a cluster has all the permissions on the databases in the cluster."
+  },
   "example": {
     "unifiedCli": "aliyun polardb grant-account-privilege --db-cluster-id pc-0000000000000000 --account-name testacc --db-name testdb_1,testdb_2 --account-privilege ReadWrite,ReadOnly --region cn-hangzhou",
     "legacyCli": "aliyun polardb GrantAccountPrivilege --region cn-hangzhou --AccountPrivilege 'ReadWrite,ReadOnly' --DBClusterId 'pc-0000000000000000' --DBName 'testdb_1,testdb_2' --AccountName testacc"

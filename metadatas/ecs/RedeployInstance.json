@@ -1,5 +1,6 @@
 {
   "name": "RedeployInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "ForceStop",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制停止运行中（Running）的实例。\n\n默认值：false。\n\n> 强制停止等同于典型的服务器断电关机，实例操作系统中暂未写入存储设备的数据会丢失。建议您尽量对已停止实例做重新部署操作。",
+        "en": "Specifies whether to forcefully stop the instance that is in the Running state.\n\nDefault value: false.\n\n> A forced stop is equivalent to a typical server power-off. Data in the instance operating system that has not been written to storage devices is lost. We recommend that you redeploy instances that are already stopped."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "处于运行中或者已停止状态的实例ID。",
+        "en": "The instance ID of the instance that is in the Running or Stopped state."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重新部署实例",
+    "en": "Redeploy an instance"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\nRedeployInstance为异步调用接口，会重启并迁移实例。重新部署成功后，实例进入运行中（`Running`）状态。重新部署失败时，实例返回原有的物理服务器，并恢复到重新部署前的状态。\n\n调用该接口时，您需要注意：\n\n- 目标实例必须处于运行中或者已停止状态，调用接口后的实例状态变化：\n    - 处于运行中（`Running`）的实例会进入停止中（`Stopping`）状态。\n    - 处于已停止（`Stopped`）的实例会进入启动中（`Starting`）状态。\n- 不支持重新部署专有宿主机上的实例。\n- 被安全控制的实例的`OperationLocks`中标记了`\"LockReason\": \"security\"`时，不支持重新部署。\n- 不支持响应通过CreateSimulatedSystemEvent创建的模拟事件。\n- 在隔离本地盘的系统事件流程中，受损本地盘已隔离但尚未发出**因系统维护计划重启并重新初始化坏盘**事件（SystemMaintenance.RebootAndReInitErrorDisk）时，也可以调用RedeployInstance。更多信息，请参见[本地盘实例系统事件概述](~~107693~~)。\n\nRedeployInstance能响应系统事件类型及事件状态请参见下表。\n\n| 事件名称及参数 | 事件状态 |\n| --- | --- |\n| 因系统维护实例重启（SystemMaintenance.Reboot）| Inquiring、Scheduled|\n| 因系统维护实例重新部署（SystemMaintenance.Redeploy）| Inquiring、Scheduled |\n| 因系统维护重启并更换坏盘（SystemMaintenance.RebootAndIsolateErrorDisk）| Inquiring |\n| 因系统维护重启并重新初始化坏盘（SystemMaintenance.RebootAndReInitErrorDisk）| Inquiring |\n| 因系统错误实例重新部署（SystemFailure.Redeploy）| Inquiring |\n| 仅限使用了本地盘的ECS实例：因系统错误实例重新启动（SystemFailure.Reboot）| Executing |\n| 因系统维护隔离坏盘（SystemMaintenance.IsolateErrorDisk） | Inquiring |\n| 因系统维护重新初始化坏盘（SystemMaintenance.ReInitErrorDisk） | Inquiring |\n\n> 重新部署本地盘实例会重新初始化本地盘，存储设备的数据被清空。",
+    "en": "## Operation description\n\nRedeployInstance is an asynchronous invocation that restarts and migrates an instance. After the redeployment succeeds, the instance enters the Running state. If the redeployment fails, the instance is returned to the original physical server and recovers to the state before the redeployment.\n\nWhen you invoke this operation, take note of the following items:\n\n- The target instance must be in the Running or Stopped state. The instance status changes after the operation is invoked:\n    - An instance in the Running (`Running`) state enters the Stopping (`Stopping`) state.\n    - An instance in the Stopped (`Stopped`) state enters the Starting (`Starting`) state.\n- Instances on dedicated hosts cannot be redeployed.\n- If the OperationLocks of an instance is marked with `\"LockReason\": \"security\"`, the instance cannot be redeployed.\n- Simulated events created by invoking CreateSimulatedSystemEvent cannot be responded to.\n- During the flow of isolating a local disk in a system event, you can also invoke RedeployInstance if the damaged local disk has been isolated but the SystemMaintenance.RebootAndReInitErrorDisk event has not been issued. For more information, see [Overview of system events for instances with local disks](~~107693~~).\n\nThe following table describes the system event types and event states that RedeployInstance can respond to.\n\n| Event name and parameter | Event status |\n| --- | --- |\n| Instance restart due to system maintenance (SystemMaintenance.Reboot) | Inquiring, Scheduled |\n| Instance redeployment due to system maintenance (SystemMaintenance.Redeploy) | Inquiring, Scheduled |\n| Instance restart and damaged disk replacement due to system maintenance (SystemMaintenance.RebootAndIsolateErrorDisk) | Inquiring |\n| Instance restart and damaged disk reinitialization due to system maintenance (SystemMaintenance.RebootAndReInitErrorDisk) | Inquiring |\n| Instance redeployment due to system fault (SystemFailure.Redeploy) | Inquiring |\n| For ECS instances with local disks only: instance restart due to system fault (SystemFailure.Reboot) | Executing |\n| Damaged disk isolation due to system maintenance (SystemMaintenance.IsolateErrorDisk) | Inquiring |\n| Damaged disk reinitialization due to system maintenance (SystemMaintenance.ReInitErrorDisk) | Inquiring |\n\n> Redeploying an instance with local disks reinitializes the local disks, and all data on the storage devices is cleared."
+  },
   "example": {
     "unifiedCli": "aliyun ecs redeploy-instance --instance-id i-bp1azkttqpldxgted0000 --force-stop false --region cn-hangzhou",
     "legacyCli": "aliyun ecs RedeployInstance --region cn-hangzhou --InstanceId 'i-bp1azkttqpldxgted0000' --ForceStop false"

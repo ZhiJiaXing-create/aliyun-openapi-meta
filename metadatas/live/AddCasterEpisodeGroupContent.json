@@ -1,5 +1,6 @@
 {
   "name": "AddCasterEpisodeGroupContent",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用户生成的请求token。用于保证请求的幂等性。\n\n> 由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。",
+        "en": "A client-generated token that is used to ensure the idempotence of the request.\n\n> The client generates this value. Make sure that the value is unique among different requests. The value can be up to 64 ASCII characters in length."
+      }
     },
     {
       "name": "Content",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设置导播台节目属性。JSON字符串格式。参数采用首字母大写驼峰格式。属性信息说明如下：\n- **CallbackUrl**：用户回调地址。\n- **SideOutputUrl**： 用户自定义旁路输出地址。\n- **RepeatNum**：重复次数。0表示不循环，-1表示无限循环。\n- **StartTime**：起始时间，格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n- **DomainName**：域名。\n- **Items**：节目列表。\n    - **ItemName**：节目名称。\n    - **VodUrl**：点播文件地址，当且仅当资源为文件视频，且视频文件未导入素材库时使用，支持MP4、FLV、TS格式。",
+        "en": "The properties of the episode in the production studio. This parameter is a JSON string. The parameter names are in upper camel case. The properties are described as follows:\n\n- **CallbackUrl**: The webhook address.\n\n- **SideOutputUrl**: The custom bypass output URL.\n\n- **RepeatNum**: The number of times to loop the episode. A value of 0 means the episode does not loop. A value of -1 means the episode loops indefinitely.\n\n- **StartTime**: The start time in UTC. The format is *yyyy-MM-dd*T*HH:mm:ss*Z.\n\n- **DomainName**: The domain name.\n\n- **Items**\n\n  : The list of items in the episode.\n\n  - **ItemName**: The item name.\n\n  - **VodUrl**: The URL of the video-on-demand (VOD) file. This parameter is required only when the resource is a video file that has not been imported to the Material Library. The MP4, FLV, and TS formats are supported."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域id。",
+        "en": "The region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加导播台节目列表",
+    "en": "AddCasterEpisodeGroupContent"
+  },
+  "descriptions": {
+    "zh": "先创建导播台和添加导播台节目列表，再调用接口添加导播台节目列表信息。使用API创建导播台，请参见[创建导播台](~~2848009~~)。\n \n## QPS限制\n本接口的单用户QPS限制为4次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "Before you call this operation, you must create a production studio and an episode group. For more information, see [Create a production studio](~~2848009~~).\n\n## QPS limit\n\nThe queries per second (QPS) limit for this operation is 4 for each user. If you exceed this limit, your API calls are throttled. This may impact your business. Plan your calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun live add-caster-episode-group-content --biz-region-id cn-hangzhou --client-token 8751ad99-2ddb-4aac-ad44-84b211020000 --content CallbackUrl_:_http://example.aliyundoc.com/callBackLive_,_SideOutputUrl_:_rtmp://guide.aliyundoc.com/caster/4a82a3d1b7f0462ea3734836620100000auth_key=1608953344-0-0-ac8c628078541d7055a170ec59a50000_,_DomainName_:_developer.aliyundoc.com_,_StartTime_:_2018-03-26T16:00:00Z_,_RepeatNum_:-1,_Items_:_ItemName_:_program1_,_VodUrl_:_http://learn.aliyundoc.com_,_ItemName_:_program2_,_VodUrl_:_http://demo.aliyundoc.com --region cn-hangzhou",
     "legacyCli": "aliyun live AddCasterEpisodeGroupContent --region cn-hangzhou --Content 'CallbackUrl_:_http://example.aliyundoc.com/callBackLive_,_SideOutputUrl_:_rtmp://guide.aliyundoc.com/caster/4a82a3d1b7f0462ea3734836620100000auth_key=1608953344-0-0-ac8c628078541d7055a170ec59a50000_,_DomainName_:_developer.aliyundoc.com_,_StartTime_:_2018-03-26T16:00:00Z_,_RepeatNum_:-1,_Items_:_ItemName_:_program1_,_VodUrl_:_http://learn.aliyundoc.com_,_ItemName_:_program2_,_VodUrl_:_http://demo.aliyundoc.com' --RegionId 'cn-hangzhou' --ClientToken '8751ad99-2ddb-4aac-ad44-84b211020000'"

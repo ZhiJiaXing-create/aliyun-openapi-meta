@@ -1,5 +1,6 @@
 {
   "name": "GetNisNetworkMetrics",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "AccountIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "显式传递子账号ID。",
+        "en": "The IDs of member accounts to query."
+      }
     },
     {
       "name": "BeginTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "起始时间，单位**ms**，格式**unix**时间戳。未指定时默认查最近1小时。起始时间最早可选择7天前。",
+        "en": "The start of the time range to query. This value is a **Unix** timestamp in **ms**. If you do not specify this parameter, data from the last hour is queried. The earliest start time that you can specify is 7 days ago."
+      }
     },
     {
       "name": "Dimensions",
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "具体业务的Metric查询参数集合。各场景参数说明，请参见[GetNisNetworkMetrics](~~2833348~~)。",
+        "en": "An array of metric dimensions. For details on parameters in different scenarios, see [GetNisNetworkMetrics](~~2833348~~)."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件的名字。",
+            "en": "The name of the dimension."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件的值。",
+            "en": "The value of the dimension."
+          }
         }
       ]
     },
@@ -40,31 +61,51 @@
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间，单位**ms**，格式**unix**时间戳。未指定时默认查最近1小时。只指定了BeginTime时查BeginTime之后的一小时。结束时间距起始时间最多24小时。",
+        "en": "The end of the time range to query. This value is a **Unix** timestamp in **ms**. If you specify only `BeginTime`, data for the one-hour period after the specified `BeginTime` is queried. The time between the start time and the end time cannot exceed 24 hours."
+      }
     },
     {
       "name": "MetricName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指标名。取值：\n\n-   bps：每秒比特数。\n-   pps：每秒包数。\n-   rtt：tcp协议建立连接时的往返延迟。\n-   RetransmitRate：重传率。\n-   RatelimitDropPps：限速丢包速率。\n-   ActiveSessionCount：并发会话数。\n-   NewSessionPerSecond：每秒新建会话数。\n-   BandwidthUtilization：带宽利用率。\n-   passRate：巡检通过率。\n> 选定时间范围内RTT无数据，是因为该时间段里，此连接是长连接，没有触发首次建连。",
+        "en": "The metric name. Valid values:\n\n- `bps`: Bits per second.\n\n- `pps`: Packets per second.\n\n- `rtt`: The round-trip time (RTT) for TCP connection establishment.\n\n- `RetransmitRate`: The retransmission rate.\n\n- `RatelimitDropPps`: The rate of packet loss due to bandwidth limits.\n\n- `ActiveSessionCount`: Concurrent sessions.\n\n- `NewSessionPerSecond`: New sessions per second.\n\n- `BandwidthUtilization`: Bandwidth utilization.\n\n- `passRate`: Inspection pass rate.\n\n> If no RTT data is available for the specified time range, it indicates a persistent connection and no new connection was established during this period."
+      }
     },
     {
       "name": "RegionNo",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "按流量转发所使用的阿里云网络资源类型进行分析，取值：\n\n- AccessInternetIpV4：所有阿里云公网类型IPv4。\n- AccessInternetIpV4Limited：所有受地域限速的阿里云公网类型IPv4。\n- ElasticIP：弹性公网EIP（IPv4）。\n- PublicIpEcs：绑定在ECS的固定公网IP（IPv4）。\n- PublicIpClb：绑定在CLB的固定公网IP（IPv4）。\n- NAT：通过SNAT的访问公网流量。\n- TR：流经云企业网转发路由器的流量。\n- TRAttachment：流经云企业网连接实例的流量，包括地域内连接和跨地域连接，地域内连接具备出入方向，跨地域连接仅具备出方向。\n- VBR：流经边界路由器的流量。\n- GA：流经全球加速的流量。\n- InternetProbing：公网质量探测数据。\n- IntranetProbing：内网质量探测数据。\n- NisInspectionHistoryReportScore：巡检历史评分。",
+        "en": "The type of Alibaba Cloud network resource that forwards traffic. Valid values:\n\n- `AccessInternetIpV4`: All types of public IPv4 addresses provided by Alibaba Cloud.\n\n- `AccessInternetIpV4Limited`: All types of public IPv4 addresses provided by Alibaba Cloud that are subject to region-specific bandwidth limits.\n\n- `ElasticIP`: Elastic IP (EIP) addresses (IPv4).\n\n- `PublicIpEcs`: Fixed public IP addresses (IPv4) for ECS instances.\n\n- `PublicIpClb`: Fixed public IP addresses (IPv4) for CLB instances.\n\n- `NAT`: Internet traffic that passes through a NAT gateway via SNAT.\n\n- `TR`: Traffic that passes through a Cloud Enterprise Network (CEN) Transit Router.\n\n- `TRAttachment`: Traffic that passes through a CEN connection. This includes intra-region and inter-region connections. Intra-region connections support both inbound and outbound traffic. Inter-region connections support only outbound traffic.\n\n- `VBR`: Traffic that passes through a virtual border router (VBR).\n\n- `GA`: Traffic that passes through Global Accelerator (GA).\n\n- `InternetProbing`: Data from Internet probing.\n\n- `IntranetProbing`: Data from intranet probing.\n\n- `NisInspectionHistoryReportScore`: Historical inspection scores."
+      }
     },
     {
       "name": "ScanBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方式，默认TimestampAscending，取值：\n\n- TimestampAscending：按时间正向排序。\n- TimestampDescending：按时间逆向排序。",
+        "en": "The sort order for the returned data points. Default value: TimestampAscending. Valid values:\n\n- `TimestampAscending`: sorts the results in chronological order.\n\n- `TimestampDescending`: sorts the results in reverse chronological order."
+      }
     },
     {
       "name": "StepMinutes",
@@ -76,9 +117,24 @@
       "name": "UseCrossAccount",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用多账号访问模式，保留参数，暂不支持。",
+        "en": "Specifies whether to use the multi-account access mode. This parameter is reserved and not supported."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取云网络指标趋势",
+    "en": "GetNisNetworkMetrics"
+  },
+  "descriptions": {
+    "zh": "数据查询结果同步说明：\n\n- API数据跨度6小时同步一次，6小时后才可查询当前网络分析数据。\n\n支持分析场景： \n- 公网性能观测大盘场景\n- 跨可用区内网性能观测大盘场景\n- 跨地域内网性能观测大盘场景\n\n\n## 公网性能观测大盘场景\n\n**说明**\n\n支持最大查询时间跨度为24小时，不指定时默认查询最近1小时，查询的数据结果为1分钟1条。\n\n### **请求参数**\n\n| **名称** | **类型** | **必填** | **描述** |\n| --- | --- | --- | --- |\n| RegionNo | string | 是   | 探测源所在阿里云地域。 |\n| ResourceType | string | 是   | 固定选择**InternetProbing**，表示查询公网性能监控趋势。 |\n| MetricName | string | 是   | 指定查询趋势的指标，取值：**rtt**，探测的往返延迟。 |\n| Dimensions | object\\[\\] | 是   | 过滤信息。 |\n| \\-Name | string | 是   | 过滤条件，取值：<br> - **Country**：探测的国家。<br> - **Province**：探测的省份<br> - **Isp**：探测的运营商。<br> **说明:** 以上参数至少配置其中一个。 |\n| \\-Value | string | 是   | 过滤条件对应的过滤值，示例如下：<br> - Country：China<br> - Province：Zhejiang <br>- Isp：阿里巴巴 <br>**说明:** 国家，省份格式为首字母大写，运营商参数与控制台显示名称一致即可。 |\n\n### **返回参数**\n\n| **名称** | **类型** | **描述** |\n| --- | --- | --- |\n| RequestId | string | 请求ID。 |\n| Data | object | 云网络指标趋势数据对象 |\n| Metrics | array | 指标趋势数据集合 |\n| \\-TimeStamp | long | 毫秒时间戳。 |\n| \\-Value | double | 入参**MetricName**对应的指标值。 |\n| Unit | String | 表示**Value**的单位。 |\n\n## 跨可用区内网性能观测大盘场景\n\n**说明**\n\n-   查询时间长度超过5天时，查询数据结果为1天1条。\n    \n-   查询时间长度超过1天时，查询数据结果为1小时1条。\n    \n-   查询时间长度小于1天时，查询数据结果为5分钟1条。\n    \n\n### **请求参数**\n\n| **名称** | **类型** | **必填** | **描述** |\n| --- | --- | --- | --- |\n| RegionNo | string | 是   | 阿里云地域。 |\n| ResourceType | string | 是   | 固定选择**IntranetProbing**，表示查询跨可用区性能监控趋势。 |\n| MetricName | string | 是   | 指定查询趋势的指标，取值：**rtt**，探测的往返延迟。 |\n| Dimensions | object\\[\\] | 是   | 过滤信息。 |\n| \\-Name | string | 是   | 过滤条件，取值：<br> - **SourceZone**：探测的源可用区，必须指定。<br> - **DestinationZone**：探测的目的可用区，必须指定。 |\n| \\-Value | string | 是   | 过滤条件对应的过滤值，示例如下：<br> - SourceZone：cn-hangzhou-j<br> - DestinationZone：cn-hangzhou-k |\n\n### **返回参数**\n\n| **名称** | **类型** | **描述** |\n| --- | --- | --- |\n| RequestId | string | 请求ID。 |\n| Data | object | 云网络指标趋势数据对象 |\n| Metrics | array | 指标趋势数据集合 |\n| \\-TimeStamp | long | 毫秒时间戳。 |\n| \\-Value | double | 入参**MetricName**对应的指标值。 |\n| Unit | String | 表示**Value**的单位。 |\n\n## **跨地域内网性能观测大盘场景**\n\n**说明**\n\n-   查询时间长度超过5天时，查询数据结果为1天1条。\n    \n-   查询时间长度超过1天时，查询数据结果为1小时1条。\n    \n-   查询时间长度小于1天时，查询数据结果为5分钟1条。\n    \n\n### **请求参数**\n\n| **名称** | **类型** | **必填** | **描述** |\n| --- | --- | --- | --- |\n| RegionNo | string | 是   | 阿里云地域。 |\n| ResourceType | string | 是   | 固定选择**IntranetProbing**，表示查询跨地域性能观测排名。 |\n| Direction | string | 是   | 探测方向，取值：<br> - **in**：以RegionNo为目的的探测。<br> - **out**：以RegionNo为源的探测。 |\n| MetricName | string | 是   | 指定查询趋势的指标，取值：**rtt**，探测的往返延迟。 |\n| Dimensions | object\\[\\] | 否   | 过滤信息。 |\n| \\-Name | string | 否   | 过滤条件，取值：**DestinationRegionNo**，探测的目的地域，该参数必须指定。 |\n| \\-Value | string | 否   | 目的地域ID，示例如下： DestinationRegionNo：cn-shenzhen |\n\n### **返回参数**\n\n| **名称** | **类型** | **描述** |\n| --- | --- | --- |\n| RequestId | string | 请求ID。 |\n| Data | object | 云网络指标趋势数据对象 |\n| Metrics | array | 指标趋势数据集合 |\n| \\-TimeStamp | long | 毫秒时间戳。 |\n| \\-Value | double | 入参**MetricName**对应的指标值。 |\n| Unit | String | 表示**Value**的单位。 |",
+    "en": "Notes on data synchronization:\n\n- API data is synchronized every six hours. Data available for querying is delayed by six hours.\n\nSupported analysis scenarios:\n\n- Internet performance monitoring\n\n- Cross-zone intranet performance monitoring\n\n- Cross-region intranet performance monitoring\n\n## Internet performance monitoring\n\n**Note**\n\nThe maximum time range for a query is 24 hours. If you do not specify a time range, the system queries data from the last hour by default. The system returns one data point per minute.\n\n### **Request parameters**\n\n| **Parameter** | **Type** | **Required** | **Description**                                                                                                                                                                                                                                              |\n| ------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| RegionNo      | string   | Yes          | The Alibaba Cloud region of the probe source.                                                                                                                                                                                                                |\n| ResourceType  | string   | Yes          | Set to **InternetProbing** to query trend data for Internet performance monitoring.                                                                                                                                                                          |\n| MetricName    | string   | Yes          | The metric to query. Set to **rtt** for the probe's round-trip time.                                                                                                                                                                                         |\n| Dimensions    | object[] | Yes          | The filter conditions.                                                                                                                                                                                                                                       |\n| -Name         | string   | Yes          | The filter key. Valid values:<br>\\- **Country**: The country where the probe is located.<br>\\- **Province**: The province where the probe is located.<br>\\- **ISP**: The ISP of the probe.<br>**Note:** You must specify at least one of these parameters.   |\n| -Value        | string   | Yes          | The value for the filter key. Examples:<br>\\- Country: China<br>\\- Province: Zhejiang<br>\\- ISP: Alibaba<br>**Note:** The values for Country and Province must start with an uppercase letter. The value for ISP must match its display name in the console. |\n\n### **Response parameters**\n\n| **Parameter** | **Type** | **Description**                                                   |\n| ------------- | -------- | ----------------------------------------------------------------- |\n| RequestId     | string   | The request ID.                                                   |\n| Data          | object   | An object that contains the trend data for cloud network metrics. |\n| Metrics       | array    | An array of metric trend data points.                             |\n| -TimeStamp    | long     | The timestamp, in milliseconds.                                   |\n| -Value        | double   | The value of the metric specified by **MetricName**.              |\n| Unit          | string   | The unit for **Value**.                                           |\n\n## Cross-zone intranet performance monitoring\n\n**Note**\n\n- If the query time range is longer than five days, one data point is returned per day.\n\n- If the query time range is longer than one day but no more than five days, one data point is returned per hour.\n\n- If the query time range is one day or shorter, one data point is returned every five minutes.\n\n### **Request parameters**\n\n| **Parameter** | **Type** | **Required** | **Description**                                                                                                                                   |\n| ------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |\n| RegionNo      | string   | Yes          | The ID of the Alibaba Cloud region.                                                                                                               |\n| ResourceType  | string   | Yes          | Set to **IntranetProbing** to query trend data for cross-zone performance monitoring.                                                             |\n| MetricName    | string   | Yes          | The metric to query. Set to **rtt** for the probe's round-trip time.                                                                              |\n| Dimensions    | object[] | Yes          | The filter conditions.                                                                                                                            |\n| -Name         | string   | Yes          | The filter key. Valid values:<br>\\- **SourceZone**: The source zone for the probe.<br>\\- **DestinationZone**: The destination zone for the probe. |\n| -Value        | string   | Yes          | The value for the filter key. Examples:<br>\\- SourceZone: cn-hangzhou-j<br>\\- DestinationZone: cn-hangzhou-k                                      |\n\n### **Response parameters**\n\n| **Parameter** | **Type** | **Description**                                                   |\n| ------------- | -------- | ----------------------------------------------------------------- |\n| RequestId     | string   | The request ID.                                                   |\n| Data          | object   | An object that contains the trend data for cloud network metrics. |\n| Metrics       | array    | An array of metric trend data points.                             |\n| -TimeStamp    | long     | The timestamp, in milliseconds.                                   |\n| -Value        | double   | The value of the metric specified by **MetricName**.              |\n| Unit          | string   | The unit for **Value**.                                           |\n\n## **Cross-region intranet performance monitoring**\n\n**Note**\n\n- If the query time range is longer than five days, one data point is returned per day.\n\n- If the query time range is longer than one day but no more than five days, one data point is returned per hour.\n\n- If the query time range is one day or shorter, one data point is returned every five minutes.\n\n### **Request parameters**\n\n| **Parameter** | **Type** | **Required** | **Description**                                                                                                                                                                                                      |\n| ------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| RegionNo      | string   | Yes          | The ID of the Alibaba Cloud region.                                                                                                                                                                                  |\n| ResourceType  | string   | Yes          | Set to **IntranetProbing** to query cross-region performance monitoring rankings.                                                                                                                                    |\n| Direction     | string   | Yes          | The probe direction. Valid values:<br>\\- **in**: The probe destination is the region specified by the **RegionNo** parameter.<br>\\- **out**: The probe source is the region specified by the **RegionNo** parameter. |\n| MetricName    | string   | Yes          | The metric to query. Set to **rtt** for the probe's round-trip time.                                                                                                                                                 |\n| Dimensions    | object[] | No           | The filter conditions.                                                                                                                                                                                               |\n| -Name         | string   | No           | The filter key. Valid value: **DestinationRegionNo**, which specifies the destination region of the probe.                                                                                                           |\n| -Value        | string   | No           | The ID of the destination region. Example: cn-shenzhen                                                                                                                                                               |\n\n### **Response parameters**\n\n| **Parameter** | **Type** | **Description**                                                   |\n| ------------- | -------- | ----------------------------------------------------------------- |\n| RequestId     | string   | The request ID.                                                   |\n| Data          | object   | An object that contains the trend data for cloud network metrics. |\n| Metrics       | array    | An array of metric trend data points.                             |\n| -TimeStamp    | long     | The timestamp, in milliseconds.                                   |\n| -Value        | double   | The value of the metric specified by **MetricName**.              |\n| Unit          | string   | The unit for **Value**.                                           |"
+  },
   "example": {
     "unifiedCli": "aliyun nis get-nis-network-metrics --region-no cn-shenzhen --resource-type AccessInternetIPV4 --metric-name bps --dimensions Value=eip-sample0 Name=instanceId --begin-time 1638239092000 --end-time 1684373700099 --scan-by TimestampAscending --use-cross-account false --account-ids 1186399538210000 --step-minutes 1 --region cn-hangzhou",
     "legacyCli": "aliyun nis GetNisNetworkMetrics --region cn-hangzhou --RegionNo 'cn-shenzhen' --MetricName bps --StepMinutes 1 --EndTime 1684373700099 --AccountIds.1 1186399538210000 --ScanBy TimestampAscending --UseCrossAccount false --Dimensions '[{\"Value\":\"eip-sample0\",\"Name\":\"instanceId\"}]' --BeginTime 1638239092000 --ResourceType AccessInternetIPV4"

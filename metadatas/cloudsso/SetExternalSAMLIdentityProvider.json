@@ -1,5 +1,6 @@
 {
   "name": "SetExternalSAMLIdentityProvider",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "BindingType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "发起SAML请求的Binding方式。取值：\n- Post：以Post的方式发起SAML请求。\n- Redirect：以Redirect的方式发起SAML请求。",
+        "en": "The binding for sending SAML requests. Valid values:\n\n*   Post: HTTP Post bindings.\n*   Redirect: HTTP Redirect bindings."
+      }
     },
     {
       "name": "DirectoryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目录ID。",
+        "en": "The ID of the directory."
+      }
     },
     {
       "name": "EncodedMetadataDocument",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IdP元数据文档（Base64编码）。\n\n由支持SAML 2.0协议的IdP提供。",
+        "en": "The metadata file of the IdP. The value of this parameter is Base64-encoded.\n\nThe file is provided by the IdP that supports SAML 2.0."
+      }
     },
     {
       "name": "EntityId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IdP标识。",
+        "en": "The entity ID of the IdP."
+      }
     },
     {
       "name": "LoginUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IdP的登录地址。",
+        "en": "The logon URL of the IdP."
+      }
     },
     {
       "name": "SSOStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SSO登录的启用状态。取值：\n\n- Enabled：启用。\n- Disabled（默认值）：禁用。",
+        "en": "The status of SSO logon. Valid values:\n\n*   Enabled\n*   Disabled (default)"
+      }
     },
     {
       "name": "WantRequestSigned",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "在用户访问云SSO登录页面发起SAML SSO时，是否要求云SSO发送签名的SAML请求。取值：\n\n- true：要求云SSO发送签名的SAML请求。\n- false（默认值）：不要求云SSO发送签名的SAML请求。",
+        "en": "Specifies whether CloudSSO needs to sign SAML requests. The requests are sent when users log on to the CloudSSO user portal to initiate SAML-based SSO. Valid values:\n\n*   true\n*   false (default)"
+      }
     },
     {
       "name": "X509Certificate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "PEM格式的X509证书。指定该参数会替换所有已经存在的证书。",
+        "en": "The X.509 certificate in the PEM format. If you specify this parameter, all existing certificates are replaced."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "配置SAML身份提供商信息",
+    "en": "SetExternalSAMLIdentityProvider"
+  },
+  "descriptions": {
+    "zh": "在基于SAML 2.0的SSO登录过程中，云SSO目录是服务提供商（SP），而企业自有的身份管理系统则是身份提供商（IdP）。\n\n配置SAML身份提供商（IdP）信息有以下两种方式，您可以任选其一进行配置，但不能同时进行配置。需要用到的元数据文档或相关参数，请从您的IdP中获取。\n\n- 元数据文档：通过`EncodedMetadataDocument`参数配置元数据文档。\n- 手动配置：通过`EntityId`、`LoginUrl`、`WantRequestSigned`和`X509Certificate`参数手动配置IdP信息。\n\n如果已经配置过SAML IdP信息，则调用本API会替换已有的配置信息。具体如下：\n\n- 元数据文档：全部替换为新的配置信息。\n- 手动配置：只替换提供的新参数值。\n\n> 如果SSO登录状态是已启用，替换后的配置信息会立即生效，请注意对生产环境的影响。\n\n本文将提供一个示例，在目录`d-00fc2p61****`下通过元数据文档配置IdP信息。",
+    "en": "During SAML 2.0-based single sign-on (SSO) logon, CloudSSO is a service provider (SP), and the identity management system of an enterprise is an IdP.\n\nYou can use one of the following methods to configure a SAML IdP. You can obtain the required metadata file or parameter values from your IdP.\n\n*   Use the metadata file: You can specify the `EncodedMetadataDocument` parameter to upload the metadata file.\n*   Manually configure the IdP: You can manually specify the following parameters for your IdP: `EntityId`, `LoginUrl`, `WantRequestSigned`, and `X509Certificate`.\n\nIf you have configured a SAML IdP, the existing configurations are replaced after you call this operation.\n\n*   If the IdP is configured by using the metadata file, all existing configurations are replaced with new configurations.\n*   If the IdP is manually configured, the original parameter values that are different from the new parameter values are replaced.\n\n>  If SSO logon is enabled, new configurations immediately take effect. Take note of the impacts on the production environment.\n\nThis topic provides an example on how to configure an IdP by using the metadata file within the directory `d-00fc2p61****`."
+  },
   "example": {
     "unifiedCli": "aliyun cloudsso set-external-saml-identity-provider --directory-id d-00fc2p610000 --encoded-metadata-document PD94bWwgdmVyc2lvbj0iMS40000 --sso-status Disabled --entity-id http://www.okta.com/exk3qwgtjhetR2Od0000 --login-url https://dev-xxxxxx.okta.com/app/dev-xxxxxx_cloudssodemo_1/exk3qwgtjhetR2Od0000/sso/saml --want-request-signed false --x509-certificate MIIC8DCCAdigAwIBAgIQP9eomUYGeoND0000 --binding-type Redirect --region cn-hangzhou",
     "legacyCli": "aliyun cloudsso SetExternalSAMLIdentityProvider --region cn-hangzhou --EntityId 'http://www.okta.com/exk3qwgtjhetR2Od0000' --SSOStatus Disabled --DirectoryId 'd-00fc2p610000' --EncodedMetadataDocument PD94bWwgdmVyc2lvbj0iMS40000 --BindingType Redirect --WantRequestSigned false --LoginUrl 'https://dev-xxxxxx.okta.com/app/dev-xxxxxx_cloudssodemo_1/exk3qwgtjhetR2Od0000/sso/saml' --X509Certificate MIIC8DCCAdigAwIBAgIQP9eomUYGeoND0000"

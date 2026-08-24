@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要创建并绑定标签的资源所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the resource.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID，最多支持输入50个资源ID。",
+        "en": "The resource ID. You can specify at most 20 IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，取值：\n- **VPC**：表示资源类型为专有网络实例。\n- **VSWITCH**：表示资源类型为交换机实例。\n- **ROUTETABLE**：表示资源类型为路由表实例。\n- **EIP**：表示资源类型为弹性公网IP实例。\n- **VPNGATEWAY**：表示资源类型为VPN网关实例。\n- **NATGATEWAY**：表示资源类型为NAT网关实例。\n- **COMMONBANDWIDTHPACKAGE**：表示资源类型为共享带宽实例。\n- **PREFIXLIST**：表示资源类型为前缀列表实例。\n- **PUBLICIPADDRESSPOOL**：表示资源类型为IP地址池实例。\n- **IPV4GATEWAY**：表示资源类型为IPv4网关实例。\n- **IPV6GATEWAY**：表示资源类型为IPv6网关实例。\n- **NETWORKACL**：表示资源类型为网络ACL实例。\n- **TRAFFICMIRRORFILTER**：表示资源类型为流量镜像筛选条件实例。\n- **TRAFFICMIRRORSESSION**：表示资源类型为流量镜像会话实例。\n- **FLOWLOG**：表示资源类型为流日志实例。\n- **HAVIP**：表示资源类型为高可用虚拟IP实例。\n- **DHCPOPTIONSSET**：表示资源类型为DHCP选项集实例。\n- **GATEWAYENDPOINT**：表示资源类型为网关终端节点实例。\n- **IPV6ADDRESS**：表示资源类型为IPv6地址实例。\n\n\n> 输入的资源类型取值不区分大小写。",
+        "en": "The resource type. Valid values:\n\n*   **VPC**: a VPC\n*   **VSWITCH**: a vSwitch\n*   **ROUTETABLE**: a route table\n*   **EIP**: an EIP\n*   **VpnGateway**: a VPN gateway\n*   **NATGATEWAY**: a NAT gateway\n*   **COMMONBANDWIDTHPACKAGE**: an EIP bandwidth plan"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签信息。",
+        "en": "The tag information."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。至少输入1个标签键，最多支持输入20个标签键。\n\n一个标签键最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n> 调用该API时，必须输入**Tag.N.Key**参数，且不能是空字符串。",
+            "en": "The key of the tag that is added to the resource. You can specify at most 20 tag keys.\n\nThe key cannot exceed 128 characters in length. The key cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`.\n\n> When you call this operation, the **Tag.N.Key** parameter is required and cannot be an empty string."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。至少输入1个标签值，最多支持输入20个标签值。\n\n一个标签值最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n> 调用该API时，必须输入**Tag.N.Value**参数，且可以是空字符串。",
+            "en": "The value of the tag that is added to the resource. You can specify at most 20 tag values.\n\nThe tag value cannot exceed 128 characters in length. The value cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`.\n\n> When you call this operation, the **Tag.N.Value** parameter is required and can be an empty string."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为指定的资源统一创建并绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "标签是您为实例分配的标记，每个标签都由一对键值对（Key-Value）组成。标签的使用说明如下： \n\n- 一个实例上的每条标签的标签键（Key）必须唯一。\n\n- 不支持未绑定实例的空标签存在，标签必须绑定在实例上。\n\n- 不同地域下的标签信息不互通。 \n\n    例如在华东1（杭州）地域创建的标签在华东2（上海）地域不可见。\n\n- 同账号同地域下，专有网络、路由表、交换机和弹性公网IP的标签信息互通。 \n\n    例如在同账号同地域下，专有网络绑定了某个标签，那么您可以在交换机、路由表或弹性公网IP的编辑标签页面，直接选择将该标签绑定到实例上，而无需手动输入标签的键值信息。您可以修改标签的键和值，也可以随时删除实例的标签。如果删除实例，绑定实例的所有标签也会被删除。\n\n- 单个实例最多可绑定20条标签。绑定标签前，阿里云会校验资源已有标签数量。超过限制值后返回报错信息。",
+    "en": "Tags are used to classify instances. Each tag consists of a key-value pair. Before you use tags, take note of the following limits:\n\n*   The keys of tags that are added to the same instance must be unique.\n\n*   You cannot create tags without adding them to instances. All tags must be added to instances.\n\n*   Tag information is not shared across regions.\n\n    For example, you cannot view the tags that are created in the China (Hangzhou) region from the China (Shanghai) region.\n\n*   Virtual private clouds (VPCs), route tables, vSwitches, and elastic IP addresses (EIPs) that belong to the same Alibaba Cloud account and are deployed in the same region share tag information with each other.\n\n    For example, if you added a tag to a VPC, the tag is available to vSwitches, route tables, and EIPs that belong to the same account and are deployed in the same region in which the VPC is created. You can select this tag from the editing page without the need to enter the tag again. You can modify the key and the value of a tag or remove a tag from an instance. After you delete an instance, all tags that are added to the instance are deleted.\n\n*   You can add up to 20 tags to each instance. Before you add a tag to an instance, the system automatically checks the number of existing tags. An error message is returned if the maximum number of tags is reached."
+  },
   "example": {
     "unifiedCli": "aliyun vpc tag-resources --resource-type VPC --resource-id vpc-bp16qjewdsunr41m10000 --biz-region-id cn-hangzhou --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpc TagResources --region cn-hangzhou --ResourceId.1 'vpc-bp16qjewdsunr41m10000' --Tag.1.Key FinanceDept --Tag.1.Value FinanceJoshua --ResourceType VPC --RegionId 'cn-hangzhou'"

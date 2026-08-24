@@ -1,5 +1,6 @@
 {
   "name": "ModifyReadWriteSplittingConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ConnectionStringPrefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "读写分离地址前缀名，不可重复，由小写字母和中划线组成，需以字母开头，长度不超过30个字符。\n>默认以“实例名+rw”字符串组成前缀。",
+        "en": "The prefix of the read/write splitting endpoint. The prefix must be unique. It can be up to 30 characters in length and can contain lowercase letters and hyphens (-). It must start with a lowercase letter.\n\n> The default prefix consists of the name of the primary instance followed by the letters rw."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主实例ID。可调用DescribeDBInstances获取。",
+        "en": "The ID of the primary instance. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "DistributionType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "读权重分配模式，取值：\n* **Standard**：按规格权重自动分配\n* **Custom**：自定义分配权重\n\n>至少传入**MaxDelayTime**或**DistributionType**中的一个。",
+        "en": "The method that is used to assign read weights. Valid values:\n\n*   **Standard**: The system automatically assigns read weights to the primary and read-only instances based on the specifications of these instances.\n*   **Custom**: You must manually assign a read weight to each instance.\n\n> You must specify at least one of **MaxDelayTime** and **DistributionType**."
+      }
     },
     {
       "name": "MaxDelayTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "延迟阈值，单位为秒。当只读实例延迟时间超过该阈值时，读取流量不发往该实例。不传该参数则保持原值。\n\n> * 参数**MaxDelayTime**不适用于SQL Server 2017集群版实例。\n> * 至少传入**MaxDelayTime**或**DistributionType**中的一个。",
+        "en": "The latency threshold that is allowed by the read/write splitting link. Unit: seconds. If the latency on a read-only instance exceeds the specified threshold, the system no longer routes read requests to the read-only instance. If you do not specify this parameter, the default value of this parameter is retained.\n\n> *   If the primary instance runs SQL Server 2017 on RDS Cluster Edition, the **MaxDelayTime** parameter is not supported.\n> *   You must specify at least one of **MaxDelayTime** and **DistributionType**."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "读写分离地址端口号。",
+        "en": "The port that is associated with the read/write splitting endpoint."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "读权重分配，即传入主实例和只读实例的读请求权重。以100递增，最大值为10000。\n* RDS实例格式：`{\"<只读实例ID>\":<权重>,\"master\":<权重>,\"slave\":<权重>}`\n* MyBASE实例格式：`[{\"instanceName\":\"<主实例ID>\",\"weight\":<权重>,\"role\":\"master\"},{\"instanceName\":\"<主实例ID>\",\"weight\":<权重>,\"role\":\"slave\"},{\"instanceName\":\"<只读实例ID>\",\"weight\":<权重>,\"role\":\"master\"}]`\n\n> * 当**DistributionType**为**Custom**时，必须传入该参数。\n> * 当**DisrtibutionType**为**Standard**时，传入该参数无效。",
+        "en": "The read weights of the primary instance and its read-only instances. A read weight must be a multiple of 100 and cannot exceed 10,000.\n\n*   For ApsaraDB RDS instances, the value of this parameter is in the following format: `{\"<ID of the read-only instance >\":<Weight>,\"master\":<Weight>,\"slave\":<Weight>}`.\n*   For ApsaraDB MyBase instances, the value of this parameter is in the following format: `[{\"instanceName\":\"<ID of the primary instance>\",\"weight\":<Weight>,\"role\":\"master\"},{\"instanceName\":\"<ID of the primary instance>\",\"weight\":<Weight>,\"role\":\"slave\"},{\"instanceName\":\"<ID of the read-only instance>\",\"weight\":<Weight>,\"role\":\"master\"}]`\n\n> \n\n*   This parameter must be specified when **DistributionType** is set to **Custom**.\n\n*   If **DistributionType** is set to **Standard**, this parameter is invalid."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改读写分离链路的延迟阈值和各个实例的读权重",
+    "en": "ModifyReadWriteSplittingConnection"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS SQL Server\n\n### 前提条件\n调用该接口时，实例必须满足以下条件，否则将操作失败：\n* MySQL实例使用的是共享代理。\n* MySQL实例已开通读写分离。\n* 实例为如下版本：\n    * MySQL 5.7高可用系列（本地SSD盘）\n    * MySQL 5.6\n    * SQL Server集群系列",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   SQL Server\n\n### [](#)Prerequisites\n\nBefore you call this operation, make sure that the following requirements are met:\n\n*   The shared proxy feature is enabled for your ApsaraDB RDS for MySQL instance.\n\n*   The read/write splitting feature is enabled for your ApsaraDB RDS for MySQL instance.\n\n*   The instance must run one of the following database engine versions and RDS editions:\n\n    *   MySQL 5.7 on RDS High-availability Edition with local disks\n    *   MySQL 5.6\n    *   SQL Server on RDS Cluster Edition"
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-read-write-splitting-connection --db-instance-id rm-uf6wjk50000 --connection-string-prefix rm-m50000rw.mysql.rds.aliyuncs.com --port 3306 --max-delay-time 12 --distribution-type Standard --weight rm-bp10000_:_800,_master_:_400,_slave_:_400 --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifyReadWriteSplittingConnection --region cn-hangzhou --MaxDelayTime 12 --DBInstanceId 'rm-uf6wjk50000' --Port 3306 --ConnectionStringPrefix 'rm-m50000rw.mysql.rds.aliyuncs.com' --Weight 'rm-bp10000_:_800,_master_:_400,_slave_:_400' --DistributionType Standard"

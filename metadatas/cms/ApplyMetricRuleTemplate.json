@@ -1,5 +1,6 @@
 {
   "name": "ApplyMetricRuleTemplate",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AppendMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板应用策略。取值：\n\n- all：删除已选择分组上所有通过报警模板创建的规则，然后按模板创建新的报警规则（默认值）。\n\n- append：删除已选择分组上通过该报警模板创建的规则，然后按当前模板创建新的报警规则。",
+        "en": "The policy for applying the template. Valid values:\n\n- all: deletes all rules that were created from alert templates for the selected group, and then creates new alert rules based on the template (default value).\n\n- append: deletes the rules that were created from this alert template for the selected group, and then creates new alert rules based on the current template."
+      }
     },
     {
       "name": "ApplyMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板应用方式。取值：\n\n- GROUP_INSTANCE_FIRST：应用分组实例优先。应用报警模板时，以应用分组实例优先，如果应用分组中不存在该实例，则忽略模板中的规则。\n\n- ALARM_TEMPLATE_FIRST：报警模板实例优先。应用报警模板时，不管应用分组中是否存在该实例，都创建报警规则。",
+        "en": "The mode in which the alert template is applied. Valid values:\n\n- GROUP_INSTANCE_FIRST: application group instances take priority. When the alert template is applied, instances in the application group take priority. If an instance does not exist in the application group, the rule in the template is ignored.\n\n- ALARM_TEMPLATE_FIRST: alert template instances take priority. When the alert template is applied, alert rules are created regardless of whether the instances exist in the application group."
+      }
     },
     {
       "name": "EnableEndTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警生效的结束时间。取值范围：00~23，表示00:59到23:59。",
+        "en": "The end time of the alert effective period. Valid values: 00 to 23, which indicates 00:59 to 23:59."
+      }
     },
     {
       "name": "EnableStartTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警生效的开始时间。取值范围：00~23，表示00:00到23:00。",
+        "en": "The start time of the alert effective period. Valid values: 00 to 23, which indicates 00:00 to 23:00."
+      }
     },
     {
       "name": "GroupId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用分组ID。\n\n关于如何获取应用分组ID，请参见[DescribeMonitorGroups](~~115032~~)。",
+        "en": "The ID of the application group.\n\nFor information about how to obtain the application group ID, see [DescribeMonitorGroups](~~115032~~)."
+      }
     },
     {
       "name": "NotifyLevel",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警通知方式。取值：\n\n<props=\"china\">- 2：电话+短信+邮箱+旺旺+钉钉机器人。</props>\n\n<props=\"china\">- 3：短信+邮箱+旺旺+钉钉机器人。</props>\n\n<props=\"china\">- 4：旺旺+钉钉机器人。</props>\n\n\n<props=\"intl\">4：旺旺+钉钉机器人。</props>\n\n<props=\"partner\">4：旺旺+钉钉机器人。</props>",
+        "en": "The alert notification method. Valid values:\n\n<props=\"china\">- 2: phone call + text message + mailbox + TradeManager + DingTalk chatbot.</props>\n\n<props=\"china\">- 3: text message + mailbox + TradeManager + DingTalk chatbot.</props>\n\n<props=\"china\">- 4: TradeManager + DingTalk chatbot.</props>\n\n\n<props=\"intl\">4: TradeManager + DingTalk chatbot.</props>\n\n<props=\"partner\">4: TradeManager + DingTalk chatbot.</props>"
+      }
     },
     {
       "name": "SilenceTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通道沉默周期。单位：秒。默认值：86400。\n\n> 当监控数据持续超过报警规则阈值时，每个沉默周期内只发送一次报警通知。",
+        "en": "The mute for. Unit: seconds. Default value: 86400.\n\n> When monitoring data continuously exceeds the alert rule threshold, only one alert notification is sent within each mute period."
+      }
     },
     {
       "name": "TemplateIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "报警模板ID。\n\n关于如何获取报警模板ID，请参见[DescribeMetricRuleTemplateList](~~114982~~)。",
+        "en": "The ID of the alert template.\n\nFor information about how to obtain the alert template ID, see [DescribeMetricRuleTemplateList](~~114982~~)."
+      }
     },
     {
       "name": "Webhook",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "报警发生时会回调指定的URL地址并发送POST请求。",
+        "en": "The callback URL to which a POST request is sent when an alert is triggered."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "应用报警模板至应用分组",
+    "en": "Apply an alert template to an application group"
+  },
+  "descriptions": {
+    "zh": "本文将提供一个示例，将报警模板`700****`应用到应用分组`123456`，生成报警规则的ID为`applyTemplate8ab74c6b-9f27-47ab-8841-de01dc08****`，名称为`test123`。",
+    "en": "This topic provides an example on how to apply the alert template `700****` to the application group `123456`. The ID of the generated alert rule is `applyTemplate8ab74c6b-9f27-47ab-8841-de01dc08****`, and the name is `test123`."
+  },
   "example": {
     "unifiedCli": "aliyun cms apply-metric-rule-template --silence-time 86400 --group-id 123456 --template-ids 7000000 --enable-start-time 0 --enable-end-time 23 --notify-level 4 --apply-mode GROUP_INSTANCE_FIRST --webhook https://www.aliyun.com --append-mode all --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun cms ApplyMetricRuleTemplate --region cn-hangzhou --SilenceTime 86400 --NotifyLevel 4 --ApplyMode GROUP_INSTANCE_FIRST --AppendMode all --EnableEndTime 23 --Webhook 'https://www.aliyun.com' --TemplateIds 7000000 --GroupId 123456 --EnableStartTime 0"

@@ -1,5 +1,6 @@
 {
   "name": "TerminatePhysicalConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "PhysicalConnectionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线实例ID。",
+        "en": "The ID of the Express Connect circuit."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "物理专线所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the Express Connect circuit.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "终止物理专线接入",
+    "en": "TerminatePhysicalConnection"
+  },
+  "descriptions": {
+    "zh": "调用TerminatePhysicalConnection接口后，物理专线进入**Terminating**状态，处理完成后进入**Terminated**状态。\n调用本接口终止物理专线时，请注意：\n\n- 只能终止处于**Enabled**状态的物理专线。\n- 终止物理专线之前，必须删除与其关联的VBR。",
+    "en": "After you call this operation, the specified Express Connect circuit changes to the **Terminating** state. After the Express Connect circuit is disabled, it changes to the **Terminated** state. When you call this operation, take note of the following limits:\n\n*   You can only disable an Express Connect circuit that is in the **Enabled** state.\n*   Before you disable an Express Connect circuit, you must delete the virtual border routers (VBRs) associated with it."
+  },
   "example": {
     "unifiedCli": "aliyun vpc terminate-physical-connection --biz-region-id cn-hangzhou --physical-connection-id pc-119mfjzm0000 --client-token 02fb3da4-130e-11e9-8e44-0016e04115b --region cn-hangzhou",
     "legacyCli": "aliyun vpc TerminatePhysicalConnection --region cn-hangzhou --PhysicalConnectionId 'pc-119mfjzm0000' --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-11e9-8e44-0016e04115b'"

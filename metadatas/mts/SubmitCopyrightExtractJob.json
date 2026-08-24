@@ -1,5 +1,6 @@
 {
   "name": "SubmitCopyrightExtractJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "CallBack",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务结果回调URL，目前仅支持HTTP地址。",
+        "en": "The callback URL for the job result. Only HTTP URLs are supported."
+      }
     },
     {
       "name": "Input",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待提取版权水印文件的输入OSS地址。",
+        "en": "The OSS URL of the input file."
+      }
     },
     {
       "name": "Params",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印任务参数，JSONString。目前支持设置参数如下：\n\n- algoType：算法类型，默认值为v1。\n\n  - v1：长视频版权提取接口。\n  - v2：短视频版权提取接口。",
+        "en": "The parameters for the watermarking job, specified as a JSON string. It supports the following parameter:\n\n- `algoType`: The algorithm to use. Default value: v1.\n\n  - `v1`: For long-form videos.\n\n  - `v2`: For short-form videos."
+      }
     },
     {
       "name": "Url",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可公网访问的视频URL链接。填写后优先将其作为任务输入，其次再考虑Input输入。",
+        "en": "A publicly accessible URL for the video. If this parameter is specified, this URL is used as the job input and takes precedence over the Input parameter."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，最大长度1024字节。",
+        "en": "The custom data. The maximum length is 1,024 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交版权水印提取作业",
+    "en": "Submit a Copyright Watermark Extraction Job"
+  },
+  "descriptions": {
+    "zh": "- 目前数字水印相关接口只支持华东2（上海）、华北2（北京）地域使用。\n- 该接口为[异步接口](~~3027615~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询版权水印提取作业](~~2834790~~)主动查询任务状态。",
+    "en": "- Currently, digital watermarking operations are supported only in the China (Shanghai) and China (Beijing) regions.\n\n- This is an [asynchronous operation](~~3027615~~). After you submit a request, the system returns a job ID and queues the job for background processing. You can obtain the final result through a callback notification, or call the [QueryCopyrightExtractJob](~~2834790~~) operation to query the job status."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-copyright-extract-job --input Bucket_:_example_,_Location_:_oss-cn-shanghai_,_Object_:_example.mp4 --call-back http://example.com/callback --url http://www.example.com/video/test.mp4 --user-data 123 --params algoType_:_v1 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitCopyrightExtractJob --region cn-hangzhou --Input 'Bucket_:_example_,_Location_:_oss-cn-shanghai_,_Object_:_example.mp4' --CallBack 'http://example.com/callback' --UserData 123 --Params 'algoType_:_v1' --Url 'http://www.example.com/video/test.mp4'"

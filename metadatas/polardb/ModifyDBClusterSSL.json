@@ -1,23 +1,48 @@
 {
   "name": "ModifyDBClusterSSL",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
   "parameters": [
     {
-      "name": "DBClusterId",
-      "position": "Query",
-      "type": "String",
-      "required": true
-    },
-    {
-      "name": "DBEndpointId",
+      "name": "ConnectionString",
       "position": "Query",
       "type": "String",
       "required": false
     },
     {
+      "name": "DBClusterId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
+    },
+    {
+      "name": "DBEndpointId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "连接地址ID。\n\n>* 若目标集群为PolarDB MySQL版，该参数必填。\n>* 若目标集群为PolarDB PostgreSQL版或PolarDB PostgreSQL版（兼容Oracle），无需传入该参数，默认所有地址开启SSL加密。\n>* 可以通过[DescribeDBClusterSSL](~~2319159~~)接口查看连接地址详情。",
+        "en": "The endpoint ID.\n\n>* If the cluster is a PolarDB for MySQL cluster, this parameter is required.\n>* If the cluster is a PolarDB for PostgreSQL cluster or a PolarDB for PostgreSQL (Compatible with Oracle) cluster, you do not need to specify this parameter. SSL encryption is enabled for all endpoints by default.\n>* You can call the [DescribeDBClusterSSL](~~2319159~~) operation to query endpoint details."
+      }
+    },
+    {
       "name": "NetType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "连接地址的网络类型，需要与**DBEndpointId**参数传入的连接地址的网络类型保持一致，取值：\n* **Public**：公网\n* **Private**：私网\n* **Inner**：私网（经典网络）\n\n>* 若目标集群为PolarDB MySQL版，该参数必填。\n>* 若目标集群为PolarDB PostgreSQL版或PolarDB PostgreSQL版（兼容Oracle），无需传入该参数，默认所有地址开启SSL加密。",
+        "en": "The network type of the endpoint. The value must be the same as the network type of the endpoint specified by **DBEndpointId**. Valid values:\n* **Public**: public network\n* **Private**: private network\n* **Inner**: private network (classic network)\n\n>* If the cluster is a PolarDB for MySQL cluster, this parameter is required.\n>* If the cluster is a PolarDB for PostgreSQL cluster or a PolarDB for PostgreSQL (Compatible with Oracle) cluster, you do not need to specify this parameter. SSL encryption is enabled for all endpoints by default."
+      }
+    },
+    {
+      "name": "PfsInstanceId",
       "position": "Query",
       "type": "String",
       "required": false
@@ -26,15 +51,30 @@
       "name": "SSLAutoRotate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启SSL证书自动轮转，取值：\n\n- **Enable**：开启\n\n- **Disable**：关闭",
+        "en": "Specifies whether to enable automatic SSL certificate rotation. Valid values:\n\n- **Enable**: enables automatic SSL certificate rotation.\n\n- **Disable**: disables automatic SSL certificate rotation."
+      }
     },
     {
       "name": "SSLEnabled",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改SSL状态，取值：\n* **Disable**：关闭SSL加密。\n* **Enable**：开启SSL加密。\n* **Update**：更新CA证书。\n\n> 开启SSL加密或更新CA证书后，需要下载和配置证书，详情请参见[设置SSL加密](~~153182~~)。",
+        "en": "The SSL status. Valid values:\n* **Disable**: shutdown SSL encryption.\n* **Enable**: enables SSL encryption.\n* **Update**: updates the CA certificate.\n\n> After you enable SSL encryption or update the CA certificate, you must download and configure the certificate. For details, see [Settings for SSL encryption](~~153182~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置集群SSL",
+    "en": "Set cluster SSL"
+  },
   "example": {
     "unifiedCli": "aliyun polardb modify-db-cluster-ssl --db-cluster-id pc-000000000000 --ssl-enabled Enable --db-endpoint-id pe-000000000000000000 --net-type Public --ssl-auto-rotate Enable --pfs-instance-id pfs-xxx --connection-string xxx --region cn-hangzhou",
     "legacyCli": "aliyun polardb ModifyDBClusterSSL --region cn-hangzhou --DBEndpointId 'pe-000000000000000000' --SSLEnabled Enable --PfsInstanceId 'pfs-xxx' --SSLAutoRotate Enable --DBClusterId 'pc-000000000000' --ConnectionString xxx --NetType Public"

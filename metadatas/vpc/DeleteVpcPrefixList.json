@@ -1,5 +1,6 @@
 {
   "name": "DeleteVpcPrefixList",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system uses **RequestId** as **ClientToken**. **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除前缀列表。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接删除前缀列表。",
+        "en": "Specifies whether to check the request without performing the operation. Valid values:\n\n*   **true**: checks the request without performing the operation. The system checks the required parameters, request syntax, and limits. If the request fails to pass the check, an error message is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n*   **false** (default): sends the request. If the request passes the check, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "PrefixListId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的前缀列表的实例ID。",
+        "en": "The ID of the prefix list that you want to delete."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的前缀列表所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the prefix list.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除前缀列表",
+    "en": "DeleteVpcPrefixList"
+  },
+  "descriptions": {
+    "zh": "**DeleteVpcPrefixList**接口不支持并发删除同一个前缀列表实例。",
+    "en": "You cannot repeatedly call the **DeleteDhcpOptionsSet** operation to delete a prefix list within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-vpc-prefix-list --prefix-list-id pl-0b78hw45f0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteVpcPrefixList --region cn-hangzhou --PrefixListId 'pl-0b78hw45f0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

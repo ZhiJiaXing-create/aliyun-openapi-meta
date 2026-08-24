@@ -1,5 +1,6 @@
 {
   "name": "LookupEvents",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "Direction",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检索事件的读取顺序，取值：\n\n- FORWARD：正序。\n- BACKWARD（默认值）：反序。",
+        "en": "The order in which events are retrieved. Valid values:\n\n- FORWARD: Chronological order.\n\n- BACKWARD (default): Reverse chronological order."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检索事件的结束时间，日期格式按照ISO8601标准，并使用UTC时间。格式为：`YYYY-MM-DDThh:mm:ssZ`。\n>StartTime和EndTime需同时设置或均不设置，不设置时EndTime默认为当前时间点。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> You must specify both `StartTime` and `EndTime`, or leave both unspecified. If you leave them unspecified, the default value of `EndTime` is the current time."
+      }
     },
     {
       "name": "LookupAttribute",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "检索条件。\n> 一次只能指定一个或两个检索条件，参考[限制说明](~~2920829~~)。",
+        "en": "The filter conditions.\n\n> You can specify one or two filter conditions at a time. For more information, see [Limitations](~~2920829~~)."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检索条件的Key。取值请参见： [调用LookupEvents接口检索事件时如何设置LookupAttribute参数](~~2920829~~)",
+            "en": "The attribute key. For information about valid values, see [How do I configure the LookupAttribute parameter when calling LookupInsightEvents?](~~2920829~~)"
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检索条件的Value。取值请参见： [调用LookupEvents接口检索事件时如何设置LookupAttribute参数](~~2920829~~)",
+            "en": "The attribute value. For information about valid values, see [How do I configure the LookupAttribute parameter when calling LookupInsightEvents?](~~2920829~~)"
+          }
         }
       ]
     },
@@ -40,21 +61,44 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "允许返回的最大结果数目。  \n取值范围：1~50。",
+        "en": "The maximum number of results to return.<br>Valid values: 1 to 50."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于请求下一页检索的结果。  \n\n> 请求参数必须保证和上次请求一致。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results.\n\n> You do not need to specify this parameter for the first request. You must specify the token that is obtained from the previous query as the value of NextToken."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检索事件的开始时间，日期格式按照ISO8601标准，并使用UTC时间。格式为：`YYYY-MM-DDThh:mm:ssZ`。\n>StartTime和EndTime需同时设置或均不设置，不设置时StartTime默认为当前时间7天前的时间点。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the `yyyy-MM-ddTHH:mm:ssZ` format. The time must be in UTC.\n\n> You must specify both `StartTime` and `EndTime`, or leave both unspecified. If you leave them unspecified, the default value of `StartTime` is 7 days before the current time."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "检索详细事件",
+    "en": "LookupEvents"
+  },
+  "descriptions": {
+    "zh": "> 请勿频繁调用该接口。您可以创建跟踪，将事件投递到日志服务SLS，通过SLS的实时消费功能来近实时地检索事件。具体操作，请参见[创建单账号跟踪](~~28810~~)、[创建多账号跟踪](~~160661~~)和[实时消费](~~28997~~)。",
+    "en": "> Do not call this operation frequently. To query events in near-real time, you can create a trail to deliver events to Simple Log Service (SLS) and use its real-time consumption feature. For more information, see [Create a single-account trail](~~28810~~), [Create a multi-account trail](~~160661~~), and [Real-time consumption](~~28997~~)."
+  },
   "example": {
     "unifiedCli": "aliyun actiontrail lookup-events --next-token eyJhY2NvdW50IjoiMTQyNDM3OTU4NjM4NzE2MSIsImV2ZW50SWQiOiI3MkJDRTExRi02OTU3LTQ0NUItQjY0MC1CNEUyMkM4NUEwQzgiLCJsb2dJZCI6IjgyLTE0MjQzNzk1ODYzODcxNjEiLCJ0aW1lIjoxNjAyMzExNTQwMD0000 --max-results 20 --start-time 2020-10-08T11:00:00Z --end-time 2020-10-15T11:00:00Z --direction BACKWARD --lookup-attribute Value=Ecs Key=ServiceName --api-version 2020-07-06 --region cn-hangzhou",
     "legacyCli": "aliyun actiontrail LookupEvents --region cn-hangzhou --NextToken eyJhY2NvdW50IjoiMTQyNDM3OTU4NjM4NzE2MSIsImV2ZW50SWQiOiI3MkJDRTExRi02OTU3LTQ0NUItQjY0MC1CNEUyMkM4NUEwQzgiLCJsb2dJZCI6IjgyLTE0MjQzNzk1ODYzODcxNjEiLCJ0aW1lIjoxNjAyMzExNTQwMD0000 --EndTime '2020-10-15T11:00:00Z' --MaxResults 20 --StartTime '2020-10-08T11:00:00Z' --LookupAttribute.1.Value Ecs --Direction BACKWARD --LookupAttribute.1.Key ServiceName"

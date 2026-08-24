@@ -1,0 +1,162 @@
+{
+  "name": "GenerateVideo",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "Duration",
+      "position": "Body",
+      "type": "Float",
+      "required": false,
+      "description": {
+        "zh": "输出视频时长，单位为秒。默认为20秒。\n视频输出最短为5秒，最长为60秒。",
+        "en": "The duration of the output video. Unit: seconds. Default value: 20.\nThe minimum output video duration is 5 seconds, and the maximum is 60 seconds."
+      }
+    },
+    {
+      "name": "DurationAdaption",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "输出视频时长自适应。取值true或false，为true时`Duration`设置不生效。",
+        "en": "Specifies whether to enable adaptive output video duration. Valid values: true and false. If this parameter is set to true, the Duration parameter does not take effect."
+      }
+    },
+    {
+      "name": "FileList",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": true,
+      "description": {
+        "zh": "1",
+        "en": "1."
+      },
+      "sub_parameters": [
+        {
+          "name": "FileName",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "输入文件名称。视频音频文件格式为MP4或MP3时，可以忽略文件后缀。其他格式必须包含后缀。",
+            "en": "The name of the input file. For video and audio files in MP4 or MP3 format, the file extension can be omitted. For other formats, the file extension is required."
+          }
+        },
+        {
+          "name": "FileUrl",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "输入文件URL地址。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n输入限制：\n- 图片格式：JPG、PNG。\n- 图片大小：每张图片大于30 KB，小于100 MB。\n- 音频格式：MP3。\n- 视频格式：MP4、AVI、MKV、MOV。\n- 视频大小：不超过1 GB。\n- 视频素材最多5个，且总时长不超过3分钟，超过部分会被自动截断丢弃（按输入视频顺序保留前3分钟）。图像素材最多40个。音频素材最多1个。\n- URL地址中不能包含中文字符。",
+            "en": "The URL of the input file. We recommend that you use an OSS URL in the China (Shanghai) region. If the file is stored locally or in an OSS bucket outside the China (Shanghai) region, see [File URL processing](~~155645~~).\nInput limits:\n- Image format: JPG or PNG.\n- Image size: Each image must be greater than 30 KB and less than 100 MB.\n- Audio format: MP3.\n- Video format: MP4, AVI, MKV, or MOV.\n- Video size: Up to 1 GB.\n- A maximum of 5 video materials are supported, and the total duration cannot exceed 3 minutes. Excess content is automatically truncated and discarded (the first 3 minutes are retained in the order of input videos). A maximum of 40 image materials and 1 audio material are supported.\n- The URL cannot contain Chinese characters."
+          }
+        },
+        {
+          "name": "Type",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "输入文件类型。包括video、audio、image。\n可以同时输入多种素材（video+image+audio或video+image或video+audio或image+audio）。",
+            "en": "The type of the input file. Valid values: video, audio, and image.\nYou can input multiple types of materials at the same time (video+image+audio, video+image, video+audio, or image+audio)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Height",
+      "position": "Body",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "输出视频的height，取值范围32~2160。若width和height均没有设置，则按照750×750输出。如果设置了其中一个，则按照1:1输出。",
+        "en": "The height of the output video. Valid values: 32 to 2160. If neither width nor height is specified, the output resolution is 750 × 750. If only one is specified, the output aspect ratio is 1:1."
+      }
+    },
+    {
+      "name": "Mute",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "生成视频是否静音。默认为false。\n\n> 如果没有音乐素材或视频素材无声时生成的视频没有音乐。",
+        "en": "Specifies whether to mute the generated video. Default value: false.\n\n> If no audio material is provided or the video material has no sound, the generated video has no music."
+      }
+    },
+    {
+      "name": "PuzzleEffect",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否动态拼图特效，支持在单镜头中通过拼图展示多个视频图像素材。默认为false。",
+        "en": "Specifies whether to enable dynamic collage effects, which display multiple video and image materials through collage in a single shot. Default value: false."
+      }
+    },
+    {
+      "name": "Scene",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "生成视频场景类型。取值如下：\n\n- costume：服饰场景（默认）\n- general：通用场景\n- keeporder：强制按输入素材顺序合成视频场景",
+        "en": "The scene type for video generation. Valid values:\n\n- costume: costume scene (default)\n- general: general scene\n- keeporder: forces video scene composition in the order of input materials."
+      }
+    },
+    {
+      "name": "SmartEffect",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否添加智能特效，默认为true。当前支持音画联动和静转动特效。",
+        "en": "Specifies whether to add intelligent effects. Default value: true. Audio-visual synchronization and static-to-dynamic effects are currently supported."
+      }
+    },
+    {
+      "name": "Style",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "输出视频节奏。可选normal、fast、slow。默认为normal。",
+        "en": "The pace of the output video. Valid values: normal, fast, and slow. Default value: normal."
+      }
+    },
+    {
+      "name": "TransitionStyle",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "镜头转场风格。共计15种风格。如果没有设置则按照`Style`随机。\n目前支持的镜头转场风格包括：basic（无）、slow（舒缓）、fast（动感）、normal（自然）、ink（水墨）、glitch（机械故障）、shift（切换）、mosaic（马赛克）、shutter（百叶窗）、zoom（缩放）、mask（遮罩）、brush（笔刷）、wind（风舞）、smog（烟雾）。",
+        "en": "The shot transition style. A total of 15 styles are available. If this parameter is not specified, a random style is selected based on Style.\nThe following shot transition styles are supported: basic (none), slow (soothing), fast (dynamic), normal (natural), ink (ink wash), glitch (mechanical glitch), shift (switch), mosaic (mosaic), shutter (venetian blind), zoom (zoom), mask (mask), brush (brush), wind (wind dance), and smog (smoke)."
+      }
+    },
+    {
+      "name": "Width",
+      "position": "Body",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "输出视频的width，取值范围32~2160。",
+        "en": "The width of the output video. Valid values: 32 to 2160."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通用视频生成",
+    "en": "General video generation"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n通用视频生成能力可以根据输入的原始视频，智能生成营销短视频。支持图像、视频、音频等素材混合处理，支持转场特效等加工效果叠加。输入视频的场景类型可选择服饰场景（默认）或通用场景，通过分析视频中的人和物，生成故事线来组织素材的顺序。您也可以通过输入参数的设置强制按输入素材顺序合成视频场景。\n\n通用视频生成能力主要包含以下功能点：\n- 输入文件类型：支持video（视频）、audio（音频）、image（图像）中的一种或多种。\n- 输出视频节奏：可选normal（普通）、fast（快）、slow（慢），默认为normal（普通）。\n- 镜头转场风格的选择：共计15种风格，如果没有设置则按照Style随机，目前支持的镜头转场风格包括：basic（无）、slow（舒缓）、fast（动感）、normal（自然）、ink（水墨）、glitch（机械故障）、shift（切换）、mosaic（马赛克）、shutter（百叶窗）、zoom（缩放）、mask（遮罩）、brush（笔刷）、wind（风舞）、smog（烟雾）。\n- 智能特效：当前支持音画联动和静转动特效，默认添加。\n- 动态拼图特效：支持在单镜头中通过拼图展示多个视频图像素材，默认不添加。\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 当前能力可在视觉智能开放平台有完整的免费产品体验，您可以单击[立即试用](https://vision.aliyun.com/experience/detail?&tagName=videoenhan&children=GenerateVideo)对该能力进行更直观试用以及在线购买。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n- 信息流广告制作：基于提供的素材批量生成广告视频，进行低成本投放。\n- 短视频二次加工：基于提供的视频内容和图片素材，进行新的视频素材制作。\n\n## 特色优势\n- 全自动生产：根据业务需要配置参数，自动化生产视频。\n- 功能丰富：支持多种素材输入，支持转场特效等，实现更丰富的业务场景应用。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[视频生产服务](https://vision.aliyun.com/videoenhan)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_videoenhan_public_cn#/open)。\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/videoenhan/2020-03-20/GenerateVideo?lang=JAVA&sdkStyle=dara&params=%7B%22FileList%22%3A%5B%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-video1.mp4%22%2C%22Type%22%3A%22video%22%2C%22FileName%22%3A%221-video1%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-video2.mp4%22%2C%22Type%22%3A%22video%22%2C%22FileName%22%3A%221-video2%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic1.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic1%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic2.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic2%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic3.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic3%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic4.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic4%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2FI%2520Dunno-Grapes_spinningmerkaba.mp3%22%2C%22Type%22%3A%22audio%22%2C%22FileName%22%3A%22I%2520Dunno-Grapes_spinningmerkaba%22%7D%5D%7D&tab=DEMO)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：    \n    - 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n    - 在对应语言的SDK文档中找到AI类目为视频生产（videoenhan）类目的SDK包进行安装。\n    - 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 示例代码：该能力常用语言的示例代码，请参见[通用视频生成示例代码](~~478975~~)，常用语言查询异步任务结果的示例代码，请参见[查询异步任务结果示例代码](~~607974~~)。\n\n7. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n\n- 图片格式：JPG、PNG。\n- 图片大小：每张图片大于30 KB，小于100 MB。\n- 音频格式：MP3。\n- 视频格式：MP4、AVI、MKV、MOV。\n- 视频大小：不超过1 GB。\n- 视频素材最多5个，且总时长不超过3分钟，超过部分会被自动截断丢弃（按输入视频顺序保留前3分钟）。图像素材最多40个。音频素材最多1个。\n- URL地址中不能包含中文字符。\n\n## 计费说明\n关于通用视频生成的计费方式及报价，请参见[计费介绍](~~202487~~)。\n> 下方调试接口为付费接口。\n\n## 调用步骤\n该能力为异步能力，需分两步进行调用。\n第一步调用GenerateVideo接口提交任务，请求成功后，得到一个任务ID。\n第二步调用[GetAsyncJobResult](~~607824~~)接口查询结果，根据任务ID查询任务执行状态和结果。如果任务还在处理中，可稍等一段时间后再进行查询。当同一个任务还未处理完时，建议不要重复提交任务。",
+    "en": "## Feature description\nThe general video generation feature intelligently generates marketing short videos based on input source videos. It supports mixed processing of images, videos, audio, and other materials, and supports overlay effects such as transition effects. You can select the costume scene (default) or general scene as the scene type for input videos. The feature analyzes people and objects in the video and generates a storyline to organize the order of materials. You can also configure input parameters to force video scene composition in the order of input materials.\n\nThe general video generation feature includes the following functions:\n- Input file types: Supports one or more of video, audio, and image.\n- Output video pace: You can select normal, fast, or slow. Default value: normal.\n- Shot transition style: A total of 15 styles are available. If no style is specified, a random style is selected based on Style. The following shot transition styles are supported: basic (none), slow (soothing), fast (dynamic), normal (natural), ink (ink wash), glitch (mechanical glitch), shift (switch), mosaic (mosaic), shutter (venetian blind), zoom (zoom), mask (mask), brush (brush), wind (wind dance), and smog (smoke).\n- Intelligent effects: Audio-visual synchronization and static-to-dynamic effects are currently supported and added by default.\n- Dynamic collage effects: Supports displaying multiple video and image materials through collage in a single shot. Not added by default.\n\n> - You can access [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for online assistance.\n- You can try this feature for free on the Vision Intelligence Open Platform. Click [Try Now](https://vision.aliyun.com/experience/detail?&tagName=videoenhan&children=GenerateVideo) to try this feature or purchase it online.\n- To learn more about API integration, usage, or consultation for Alibaba Cloud Vision Intelligence Open Platform visual AI capabilities, join the DingTalk group (23109592) to contact us.\n\n## Common scenarios\n- Information feed ad production: Batch generate advertising videos based on provided materials for low-cost distribution.\n- Short video reprocessing: Create new video materials based on provided video content and image materials.\n\n## Benefits\n- Fully automated production: Configure parameters based on business requirements to automatically produce videos.\n- Rich features: Supports multiple material inputs and transition effects for a wider range of business scenarios.\n\n## Getting started\n1. Create an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **Sign Up** in the upper-right corner, and follow the instructions to create an account.\n2. Activate the service: Make sure that you have activated the [Video Production service](https://vision.aliyun.com/videoenhan). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_videoenhan_public_cn#/open).\n3. Create an AccessKey pair: Make sure that you have [created an AccessKey pair](~~175144~~). If you are using a RAM user AccessKey pair, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/videoenhan/2020-03-20/GenerateVideo?lang=JAVA&sdkStyle=dara&params=%7B%22FileList%22%3A%5B%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-video1.mp4%22%2C%22Type%22%3A%22video%22%2C%22FileName%22%3A%221-video1%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-video2.mp4%22%2C%22Type%22%3A%22video%22%2C%22FileName%22%3A%221-video2%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic1.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic1%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic2.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic2%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic3.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic3%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2F1-pic4.jpg%22%2C%22Type%22%3A%22image%22%2C%22FileName%22%3A%221-pic4%22%7D%2C%7B%22FileUrl%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fvideoenhan%2FGenerateVideo%2FI%2520Dunno-Grapes_spinningmerkaba.mp3%22%2C%22Type%22%3A%22audio%22%2C%22FileName%22%3A%22I%2520Dunno-Grapes_spinningmerkaba%22%7D%5D%7D&tab=DEMO) to debug the feature online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development and integration steps:    \n    - Select the SDK language you want to use from the [SDK overview](~~145033~~).\n    - Find the SDK package for the Video Production (videoenhan) AI category in the corresponding SDK documentation and install it.\n    - Modify the sample code provided in the References as needed and invoke the operation.\n\n6. Sample code: For sample code in common programming languages for this feature, see [GenerateVideo sample code](~~478975~~). For sample code in common programming languages for querying asynchronous task results, see [GetAsyncJobResult sample code](~~607974~~).\n\n7. Direct client invocations: Common client invocation methods for this feature include the following.\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~).\n\n## Input limits\n\n- Image format: JPG or PNG.\n- Image size: Each image must be greater than 30 KB and less than 100 MB.\n- Audio format: MP3.\n- Video format: MP4, AVI, MKV, or MOV.\n- Video size: Up to 1 GB.\n- A maximum of 5 video materials are supported, and the total duration cannot exceed 3 minutes. Excess content is automatically truncated and discarded (the first 3 minutes are retained in the order of input videos). A maximum of 40 image materials and 1 audio material are supported.\n- The URL cannot contain Chinese characters.\n\n## Billable methods\nFor information about the billable methods and pricing of general video generation, see [Billing overview](~~202487~~).\n> The following debugging operation is a paid operation.\n\n## Procedure\nThis feature is asynchronous and requires two steps.\nIn the first step, call the GenerateVideo operation to submit a task. If the request is successful, a task ID is returned.\nIn the second step, call the [GetAsyncJobResult](~~607824~~) operation to query the result based on the task ID. If the task is still being processed, wait a moment and query again. Do not submit duplicate tasks while the same task is still being processed."
+  }
+}

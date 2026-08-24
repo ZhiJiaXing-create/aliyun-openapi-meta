@@ -1,5 +1,6 @@
 {
   "name": "RealTimeRecordCommand",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。您可在[流管理](~~197397~~)页面查看AppName。",
+        "en": "The AppName of the live stream. View AppNames on the [Stream Management](~~197397~~) page."
+      }
     },
     {
       "name": "Command",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "操作行为。取值：\n\n- **start**：强制启动录制。必须作为首次操作调用，不可在未停止前重复调用。\n- **stop**：强制暂停录制，断流延迟时间（默认180秒）到达后，生成录制文件。 仅可在 start 或 restart 后调用；调用后如需立即出文件，可以调用 cancel_delay。\n- **cancel_delay**：立即终止等待并生成录制文件，完全停止录制。需要在 stop 后调用以提前生成文件。\n- **restart**：强制重新开始录制。如果restart之前在录制，立即生成文件。仅可在任务启动或停止状态下调用。",
+        "en": "The action to perform. Valid values:\n\n- **start**: Starts the recording. This command must be the first one called for a session and cannot be called again before a stop command is issued.\n\n- stop: Stops the recording. A recording file is generated after the configured stream merge window (default: 180 seconds). Call this command only after start or restart. To generate the recording file immediately, call **cancel\\_delay** after this command.\n\n- cancel\\_delay: Immediately finalizes the recording file, terminating the waiting period. This must be called after stop to generate the file ahead of schedule.\n\n- **restart**: Restarts the recording. If a recording is already in progress, this command first finalizes the current recording file and then immediately starts a new one. This can only be called when the recording session is in a started or stopped state."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The main streaming domain."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流名称。请确保StreamName正确，您可在[流管理](~~197397~~)页面查看StreamName。\n\n> 该接口仅支持单条流操作，不支持通配符。",
+        "en": "The stream name. Make sure the StreamName is correct. View StreamNames on the [Stream Management](~~197397~~) page.\n\n> This API only supports operations on a single stream. Wildcard are not supported."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "实时录制指令",
+    "en": "RealTimeRecordCommand"
+  },
+  "descriptions": {
+    "zh": "- 请确保在使用该接口前，已充分了解直播录制的收费方式和价格。计费详情，请参见[直播录制费用](~~195287~~)。\n- 该接口前只能控制录制配置生效的直播流，需要先完成[添加录制配置](~~2847881~~)。\n\n- 如果某条直播流正在录制（自动录制或手动录制启动），您可以调用此接口停止该直播流的录制；但如果在启动时调用该接口尝试启动录制，则会返回 TaskAlreadyStarted 错误，表示任务已启动。\n\n- 手动启动录制的直播流如果发生断流，即会停止录制。如果没有配置自动录制，重新推流后不会自动启动录制。\n\n\n## QPS限制\n本接口的单用户QPS限制为50次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Before you call this API, review the billing methods and pricing of live stream recording. For more information, see [Billing of live stream recording](~~195287~~).\n\n- This API applies to live streams that have an active recording configuration. You must first [add a recording configuration](~~2847881~~).\n\n- You can use this API to stop a recording that was started either automatically or manually. However, if you call this API to start a recording that is already in progress, the system returns a TaskAlreadyStarted error.\n\n- If a manually started recording is interrupted, the recording stops. If automatic recording is not configured, the recording does not automatically restart when stream ingest resumes.\n\n## QPS limits\n\nYou can call this operation up to 50 times per second per account. Requests that exceed this limit are dropped and you may experience service interruptions."
+  },
   "example": {
     "unifiedCli": "aliyun live real-time-record-command --biz-region-id cn-hangzhou --command start --domain-name example.com --app-name liveApp0000 --stream-name liveStream0000 --region cn-hangzhou",
     "legacyCli": "aliyun live RealTimeRecordCommand --region cn-hangzhou --StreamName liveStream0000 --Command start --DomainName 'example.com' --RegionId 'cn-hangzhou' --AppName liveApp0000"

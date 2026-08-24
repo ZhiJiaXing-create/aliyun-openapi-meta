@@ -1,5 +1,6 @@
 {
   "name": "AttachCommonBandwidthPackageToLoadBalancer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "BandwidthPackageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "绑定的共享带宽包ID。",
+        "en": "The EIP bandwidth plan ID."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会将共享带宽包绑定到负载均衡实例。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false**(default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用型负载均衡实例ID。",
+        "en": "The ALB instance ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~448570~~)接口获取地域ID。",
+        "en": "The region ID of the ALB instance.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "实例绑定共享带宽包",
+    "en": "AttachCommonBandwidthPackageToLoadBalancer"
+  },
+  "descriptions": {
+    "zh": "**AttachCommonBandwidthPackageToLoadBalancer**接口属于异步接口，即系统返回一个请求ID，但该负载均衡实例尚未绑定关联共享带宽包，系统后台的绑定任务仍在进行。您可以调用[GetLoadBalancerAttribute](~~2254835~~)查询共享带宽包的绑定状态：\n- 当负载均衡实例处于**Configuring**状态时，表示共享带宽包正在绑定中。\n- 当负载均衡实例处于**Active**状态时，表示共享带宽包绑定成功。",
+    "en": "**AttachCommonBandwidthPackageToLoadBalancer** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call [GetLoadBalancerAttribute](~~214362~~) to query the status of the task.\n\n*   If the ALB instance is in the **Configuring** state, the EIP bandwidth plan is being associated with the ALB instance.\n*   If the ALB instance is in the **Active** state, the EIP bandwidth plan is associated with the ALB instance."
+  },
   "example": {
     "unifiedCli": "aliyun alb attach-common-bandwidth-package-to-load-balancer --client-token 123e4567-e89b-12d3-a456-4266500000 --biz-region-id cn-hangzhou --load-balancer-id alb-d676fho813rmu30000 --bandwidth-package-id cbwp-bp1pzf0ym72pu3y760000 --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun alb AttachCommonBandwidthPackageToLoadBalancer --region cn-hangzhou --DryRun true --BandwidthPackageId 'cbwp-bp1pzf0ym72pu3y760000' --LoadBalancerId 'alb-d676fho813rmu30000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-4266500000'"

@@ -1,5 +1,6 @@
 {
   "name": "DescribeDiskMonitorData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DiskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待查询的云盘ID。",
+        "en": "The ID of the disk to query."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据的结束时间。按照[ISO 8601](~~25696~~)标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。如果秒（ss）不是00，则自动取为下一分钟开始时。",
+        "en": "The end time of the data. Specify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. If the value of seconds (ss) is not 00, the end time is automatically set to the beginning of the next minute."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据的精度，单位为秒。取值范围：\n\n- 60。\n- 600。 \n- 3600。\n\n默认值：60。\n\n> （EndTime–StartTime）/Period必须小于等于400，即一次最多返回400个周期的数据。",
+        "en": "The granularity of the data. Unit: seconds. Valid values:\n\n- 60.\n- 600.\n- 3600.\n\nDefault value: 60.\n\n> The value of (EndTime – StartTime) / Period must be less than or equal to 400. A maximum of 400 data entries can be returned at a time."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据的起始时间。按照[ISO 8601](~~25696~~)标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。如果秒（ss）不是00，则自动取为下一分钟开始时。\n\n> 一次最多能查询近30天内的监控信息，即参数`StartTime`距今不能超过30天。",
+        "en": "The start time of the data. Specify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. If the value of seconds (ss) is not 00, the start time is automatically set to the beginning of the next minute.\n\n> You can query the monitoring information of up to the last 30 days. The `StartTime` parameter cannot be more than 30 days earlier than the current time."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询云盘监控数据",
+    "en": "DescribeDiskMonitorData"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，您需要注意以下限制：\n\n-  只能查询状态为使用中（`In_use`）的云盘使用信息。更多详情，请参见[普通云盘状态表](~~25689~~)。\n    > 若查询的信息中出现内容缺失，是因为无法获取该段时间的使用信息，即云盘状态不是使用中（`In_use`）。\n\n-  一次最多返回400条数据，需满足`（EndTime–StartTime）/Period`小于等于400的条件限制，即返回参数`TotalCount`不能超过400，否则将返回`InvalidParameter.TooManyDataQueried`的错误提示。  \n\n- 一次最多能查询近30天内的监控信息，即指定的参数`StartTime`距今不能超过30天。\n\n\n## 请求示例\n\n假设您需要查询华东 1（杭州）地域下ID为`d-bp14emm68wx98vjk****`的磁盘，在`2025-02-17T00:00:00Z`至`2025-02-18T10:00:00Z`期间，每600秒内的使用信息。相关配置请求参数如下：\n```\nRegionId:\"cn-hangzhou\", //设置华东 1（杭州）地域\nDiskId:\"d-bp14emm68wx98vjk****\", //设置磁盘ID\nStartTime:\"2025-02-15T00:00:00Z\", //设置查询起始时间\nEndTime:\"2025-02-17T00:00:00Z\", //设置查询结束时间\nPeriod:\"600\", //设置数据精度\n```",
+    "en": "When you call this operation, take note of the following limits:\n\n- You can query only the usage information of disks that are in the In Use (`In_use`) state. For more information, see [Disk states](~~25689~~).\n    > If the returned information has missing content, the disk was not in the In Use (`In_use`) state during that period, and the usage information cannot be obtained.\n\n- A maximum of 400 data entries can be returned at a time. The value of `(EndTime – StartTime) / Period` must be less than or equal to 400. That is, the value of the `TotalCount` response parameter cannot exceed 400. Otherwise, the `InvalidParameter.TooManyDataQueried` error is returned.\n\n- You can query the monitoring information of up to the last 30 days. The specified `StartTime` parameter cannot be more than 30 days earlier than the current time.\n\n\n## Request example\n\nAssume that you want to query the usage information of a disk whose ID is `d-bp14emm68wx98vjk****` in the China (Hangzhou) region from `2025-02-17T00:00:00Z` to `2025-02-18T10:00:00Z` at intervals of 600 seconds. Configure the request parameters as follows:\n```\nRegionId:\"cn-hangzhou\", // Set the China (Hangzhou) region\nDiskId:\"d-bp14emm68wx98vjk****\", // Set the disk ID\nStartTime:\"2025-02-15T00:00:00Z\", // Set the query start time\nEndTime:\"2025-02-17T00:00:00Z\", // Set the query end time\nPeriod:\"600\", // Set the data granularity\n```"
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-disk-monitor-data --disk-id d-bp1bq5g3dxxo1x4o0000 --start-time 2014-07-23T12:07:00Z --end-time 2014-07-23T12:09:00Z --period 60 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeDiskMonitorData --region cn-hangzhou --EndTime '2014-07-23T12:09:00Z' --StartTime '2014-07-23T12:07:00Z' --Period 60 --DiskId 'd-bp1bq5g3dxxo1x4o0000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateAgentResource",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/webapi/lifecycle/createAgentNodeGroup",
@@ -8,51 +9,90 @@
       "name": "AutoRenew",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启自动续费，仅在 payType 为 PrePaid 时有意义。默认不开启。",
+        "en": "Enable auto-renewal. This parameter is valid only when payType is set to PrePaid. Auto-renewal is disabled by default."
+      }
     },
     {
       "name": "Cu",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "CU数量。CU (Compute Unit) 是服务的基本计量单元，1 CU=1 核 CPU+4GiB 内存，仅在 SpecType 为内存增强型时 1 CU=1 核 CPU+8GiB 内存。",
+        "en": "Number of CUs. A CU (Compute Unit) is the basic unit of service measurement. 1 CU = 1 CPU core + 4 GiB memory. For memory-enhanced instance family, 1 CU = 1 CPU core + 8 GiB memory."
+      }
     },
     {
       "name": "Duration",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买时长。仅在 payType 为 PrePaid 时有意义。",
+        "en": "Duration. This parameter is valid only when payType is set to PrePaid."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例 ID。",
+        "en": "Instance ID."
+      }
     },
     {
       "name": "PayType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "付费类型：\n<ol>\n<li>包年包月（prePaid）。</li>\n<li>按量付费（postPaid）。</li>\n</ol>",
+        "en": "Payment type:\n\n1. Subscription (prePaid).\n\n2. Pay-as-you-go (postPaid)."
+      }
     },
     {
       "name": "PricingCycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买时长单位：\n<ul>\n<li>    月（Month）</li>\n<li>      年（Year）</li>\n</ul>\n仅在 payType 为 PrePaid 时有意义。",
+        "en": "Unit of subscription duration:\n\n- Month\n\n- Year\n\nThis parameter is valid only when payType is set to PrePaid."
+      }
     },
     {
       "name": "PromotionOptionNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "优惠券ID。",
+        "en": "Coupon ID."
+      }
     },
     {
       "name": "SpecType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计算组规格类型。",
+        "en": "Compute group specification type."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建Agent计算组",
+    "en": "CreateAgentResource"
+  },
   "example": {
     "unifiedCli": "aliyun starrocks create-agent-resource --pay-type prePay --duration 2 --pricing-cycle Month --auto-renew true --spec-type standard --cu 2 --instance-id c-b25e21e243880000 --promotion-option-no 2345 --region cn-hangzhou",
     "legacyCli": "aliyun starrocks POST /webapi/lifecycle/createAgentNodeGroup --region cn-hangzhou --Cu 2 --SpecType standard --InstanceId 'c-b25e21e243880000' --PromotionOptionNo 2345 --PricingCycle Month --AutoRenew true --Duration 2 --PayType prePay --header \"Content-Type=application/json\""

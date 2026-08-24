@@ -1,5 +1,6 @@
 {
   "name": "DescribeInvocations",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,109 +9,181 @@
       "name": "CommandId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令ID。您可以通过接口[DescribeCommands](~~64843~~)查询所有可用的CommandId。",
+        "en": "The command ID. You can call [DescribeCommands](~~64843~~) to query all available command IDs."
+      }
     },
     {
       "name": "CommandName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令名称。如果同时设置了`InstanceId`参数，则该参数不生效。",
+        "en": "The command name. This parameter does not take effect if you also specify InstanceId."
+      }
     },
     {
       "name": "CommandType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令类型。取值范围：\n\n- RunBatScript：命令为在Windows实例中运行的Bat脚本。\n- RunPowerShellScript：命令为在Windows实例中运行的PowerShell脚本。\n- RunShellScript：命令为在Linux实例中运行的Shell脚本。",
+        "en": "The command type. Valid values:\n\n- RunBatScript: Bat script that runs on Windows instances.\n- RunPowerShellScript: PowerShell script that runs on Windows instances.\n- RunShellScript: Shell script that runs on Linux instances."
+      }
     },
     {
       "name": "ContentEncoding",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置返回数据中`CommandContent`字段和`Output`字段的编码方式。取值范围：\n\n- PlainText：返回原始命令内容和输出信息。\n- Base64：返回Base64编码后的命令内容和输出信息。\n\n默认值：Base64。",
+        "en": "The encoding mode of the CommandContent and Output fields in the response. Valid values:\n\n- PlainText: Returns the original command content and output.\n- Base64: Returns Base64-encoded command content and output.\n\nDefault value: Base64."
+      }
     },
     {
       "name": "IncludeOutput",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否在结果中返回命令运行的输出信息。\n\n- true：返回。此时，您至少指定参数`InvokeId`或`InstanceId`。\n- false：不返回。\n\n默认值：false。",
+        "en": "Specifies whether to return the command output in the results.\n\n- true: The command output is returned. You must specify at least InvokeId or InstanceId.\n- false: The command output is not returned.\n\nDefault value: false."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。当您传入了该参数，将查询该实例所有的命令执行记录。",
+        "en": "The instance ID. If you specify this parameter, all command execution records for the instance are queried."
+      }
     },
     {
       "name": "InvokeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令执行ID。",
+        "en": "The command execution ID."
+      }
     },
     {
       "name": "InvokeStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令执行的总执行状态。总执行状态取决于创建执行中的一台或多台实例的共同执行状态。取值范围： \n         \n- Running：\n    - 定时执行：未手动停止定时执行命令前，执行状态一直为进行中。\n    - 单次执行：一旦有进行中的命令进程，总的执行状态就为进行中。\n- Finished：\n    - 定时执行：命令进程不可能为执行完成。\n    - 单次执行：所有实例全部完成执行。或者手动停止部分实例的命令进程，其余实例全部执行完成。\n- Success：各个实例上的命令执行状态均为Stopped或Success，且至少一个实例的命令执行状态是Success，则总执行状态为Success。\n    - 立即运行的任务：命令执行完成，且退出码为0。\n    - 定时运行的任务：最近一次执行成功且退出码为0，且指定的时间已全部完成。\n- Failed：\n    - 定时执行：命令进程不可能为执行失败。\n    - 单次执行：所有实例全部执行失败。\n- Stopped：停止命令。\n- Stopping：停止中。\n- PartialFailed：部分失败；如果同时设置了`InstanceId`参数，则不生效。\n- Pending：系统正在校验或发送命令。存在至少一台实例的命令执行状态为Pending，则总执行状态为Pending。\n- Scheduled：定时执行的命令已发送，等待运行。存在至少一台实例的命令执行状态为Scheduled，则总执行状态为Scheduled。",
+        "en": "The overall execution status of the command. The overall execution status is determined by the combined execution status across one or more instances. Valid values: \n         \n- Running:\n    - Scheduled execution: The execution status remains Running until you manually stop the scheduled command.\n    - One-time execution: The overall status is Running if any command process is in progress.\n- Finished:\n    - Scheduled execution: The status can never be Finished.\n    - One-time execution: All instances have completed execution, or you manually stopped the command process on some instances while the remaining instances completed execution.\n- Success: The command execution status on each instance is Stopped or Success, and at least one instance has a status of Success. The overall status is then Success.\n    - Immediate task: The command execution is complete and the exit code is 0.\n    - Scheduled task: The most recent execution succeeded with an exit code of 0, and all specified execution times have elapsed.\n- Failed:\n    - Scheduled execution: The status can never be Failed.\n    - One-time execution: All instances failed to run the command.\n- Stopped: The command has been stopped.\n- Stopping: The command is being stopped.\n- PartialFailed: Some instances succeeded while others failed. This value does not take effect if you also specify InstanceId.\n- Pending: The system is validating or sending the command. The overall status is Pending if at least one instance has a status of Pending.\n- Scheduled: The scheduled command has been sent and is waiting to run. The overall status is Scheduled if at least one instance has a status of Scheduled."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时每页的最大条目数。\n\n最大值为50。\n\n默认值为10。",
+        "en": "The maximum number of entries per page for paging.\n\nMaximum value: 50.\n\nDefault value: 10."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询凭证（Token），取值为上一次API调用返回的NextToken参数值。",
+        "en": "The pagination token. Set this parameter to the NextToken value returned in the previous API call."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "> 该参数即将下线，推荐您使用NextToken与MaxResults完成分页查询操作。",
+        "en": "> This parameter is about to be deprecated. Use NextToken and MaxResults to complete paging operations."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "> 该参数即将下线，推荐您使用NextToken与MaxResults完成分页查询操作。",
+        "en": "> This parameter is about to be deprecated. Use NextToken and MaxResults to complete paging operations."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "RepeatMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令执行的方式。如果同时设置了`InstanceId`参数，则不生效。取值范围：\n\n- Once：立即执行命令。\n- Period：定时执行命令。\n- NextRebootOnly：当实例下一次启动时，自动执行命令。\n- EveryReboot：实例每一次启动都将自动执行命令。\n\n默认值为空，表示查询全部。",
+        "en": "The execution mode of the command. This parameter does not take effect if you also specify InstanceId. Valid values:\n\n- Once: immediately runs the command.\n- Period: runs the command on a schedule.\n- NextRebootOnly: automatically runs the command the next time the instance starts.\n- EveryReboot: automatically runs the command every time the instance starts.\n\nDefault value: empty, which indicates that all execution modes are queried."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令执行的资源组ID。传入该参数后，需要在执行命令时指定ResourceGroupId，支持筛选出对应的命令执行结果。",
+        "en": "The resource group ID for command execution. After you specify this parameter, the resource group ID must also be specified when you run the command. This parameter filters the corresponding command execution results."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "命令执行的标签键。N的取值范围为1~20。一旦传入该值，则不允许为空字符串。\n\n使用一个标签过滤资源，查询到该标签下的资源数量不能超过1000个；使用多个标签过滤资源，查询到同时绑定了多个标签的资源数量不能超过1000个。如果资源数量超过1000个，您需要使用[ListTagResources](~~110425~~)接口进行查询。\n\n最多支持64个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。",
+            "en": "The tag key of the command execution. Valid values of N: 1 to 20. The tag key cannot be an empty string.\n\nIf you use a single tag to filter resources, the resource count with the specified tag cannot exceed 1,000. If you use multiple tags to filter resources, the resource count with all specified tags attached cannot exceed 1,000. If the resource count exceeds 1,000, call [ListTagResources](~~110425~~) to execute the query.\n\nThe tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "命令执行的标签值。N的取值范围为1~20。该值可以为空字符串。\n最多支持128个字符，不能包含`http://`或`https://`。",
+            "en": "The tag value of the command execution. Valid values of N: 1 to 20. The tag value can be an empty string.\nThe tag value can be up to 128 characters in length and cannot contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -118,9 +191,24 @@
       "name": "Timed",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询的命令是否在将来会自动执行。取值范围：\n\n- true：查询在调用`RunCommand`或`InvokeCommand`执行命令时，`RepeatMode`参数取值为`Period`、`NextRebootOnly`或者`EveryReboot`。\n- false：查询以下两种状态的命令。\n    - 在调用`RunCommand`或`InvokeCommand`执行命令时，`RepeatMode`参数取值为`Once`。\n    - 已被取消、被停止或者已完成执行的命令。\n\n默认值：false。",
+        "en": "Specifies whether the queried commands will be automatically run in the future. Valid values:\n\n- true: queries commands whose RepeatMode parameter is set to Period, NextRebootOnly, or EveryReboot when RunCommand or InvokeCommand is called.\n- false: queries commands in the following states:\n    - Commands whose RepeatMode parameter is set to Once when RunCommand or InvokeCommand is called.\n    - Commands that have been canceled, stopped, or completed.\n\nDefault value: false."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询云助手命令的执行信息列表",
+    "en": "Query Cloud assistant command execution information"
+  },
+  "descriptions": {
+    "zh": "- 当您执行命令后，不代表命令一定成功运行，并且一定有预期的命令效果。您需要通过接口返回值查看实际执行结果，以实际输出结果为准。\n\n- 您可以查询最近 30 天的执行信息，执行信息的保留上限为 1 万条。\n- 您可以通过[云助手任务状态事件订阅](~~2669130~~)的方式，通过事件获取任务结果，避免频繁轮询，用以提升效率。\n- 分页查询首页时，仅需设置`MaxResults`以限制返回信息的条目数，返回结果中的`NextToken`将作为查询后续页的凭证。查询后续页时，将`NextToken`参数设置为上一次返回结果中获取到的`NextToken`作为查询凭证，并设置`MaxResults`限制返回条目数。\n- `DescribeInvocations`和`DescribeInvocationResults`差异点：\n    - 当一次`RunCommand`/`InvokeCommand`调用指定有多个实例时：\n        - 使用`DescribeInvocations`可以获得任务在各个实例上的执行状态、多个实例任务状态的聚合状态；\n        - 使用`DescribeInvocationResults`仅能获得各个实例上的单独的执行状态，不包含多实例的聚合状态；\n    - 当一次`RunCommand`/`InvokeCommand`调用指定有一个实例时：\n        - `DescribeInvocations`与`DescribeInvocationResults`区别不大，完全可以互相替换。\n    - 当需要查看定时性（周期性）任务、开机自动执行任务（`RepeatMode=Period, EveryReboot`）的每一次执行情况时，仅能用`DescribeInvocationResults`可以查询获得执行的过往历史记录（需指定`IncludeHistory=true`），而`DescribeInvocations`仅支持返回最新的任务状态。\n    - 当需要查看命令的内容、参数时，仅有`DescribeInvocations`返回`CommandContent`。",
+    "en": "- After you run a command, the command does not necessarily run successfully or produce the expected results. You must check the actual execution results based on the return values of this operation. The actual output takes precedence.\n\n- You can query execution information from the last 30 days. A maximum of 10,000 execution records are retained.\n- You can subscribe to [Cloud Assistant task status events](~~2669130~~) to obtain task results through events, which avoids frequent polling and improves efficiency.\n- When paged query the first page, set only MaxResults to limit the number of entries to return. The NextToken value in the response serves as the token for querying subsequent pages. When paged query subsequent pages, set NextToken to the NextToken value obtained from the previous response and set MaxResults to limit the number of entries to return.\n- Differences between `DescribeInvocations` and `DescribeInvocationResults`:\n    - When a single `RunCommand`/`InvokeCommand` call specifies multiple instances:\n        - `DescribeInvocations` returns the execution status on each instance and the aggregated status across all instances.\n        - `DescribeInvocationResults` returns only the individual execution status on each instance, without the aggregated status.\n    - When a single `RunCommand`/`InvokeCommand` call specifies one instance:\n        - `DescribeInvocations` and `DescribeInvocationResults` are largely interchangeable.\n    - To view the execution details of each run for scheduled (periodic) or boot-triggered tasks (`RepeatMode=Period, EveryReboot`), only `DescribeInvocationResults` can return historical execution records (with `IncludeHistory=true` specified). `DescribeInvocations` returns only the latest task status.\n    - To view the command content and parameters, only `DescribeInvocations` returns `CommandContent`."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-invocations --biz-region-id cn-hangzhou --resource-group-id rg-bp67acfmxazb4p0000 --invoke-id t-hz0jdfwd9f0000 --command-id c-hz0jdfwcsr0000 --command-name CommandTestName --command-type RunShellScript --timed true --invoke-status Finished --instance-id i-bp1i7gg30r52z2em0000 --content-encoding PlainText --include-output false --page-number 1 --page-size 10 --max-results 10 --next-token AAAAAdDWBF2 --repeat-mode Once --tag Value=TestValue Key=TestKey --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeInvocations --region cn-hangzhou --Tag.1.Key TestKey --ResourceGroupId 'rg-bp67acfmxazb4p0000' --PageSize 10 --NextToken AAAAAdDWBF2 --InstanceId 'i-bp1i7gg30r52z2em0000' --Timed true --MaxResults 10 --ContentEncoding PlainText --IncludeOutput false --RepeatMode Once --InvokeStatus Finished --CommandType RunShellScript --PageNumber 1 --Tag.1.Value TestValue --RegionId 'cn-hangzhou' --CommandId 'c-hz0jdfwcsr0000' --CommandName CommandTestName --InvokeId 't-hz0jdfwd9f0000'"

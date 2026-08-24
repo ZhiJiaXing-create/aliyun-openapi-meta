@@ -1,5 +1,6 @@
 {
   "name": "ListCenChildInstanceRouteEntriesToAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "CenId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云企业网实例ID。",
+        "en": "The ID of the CEN instance."
+      }
     },
     {
       "name": "ChildInstanceRouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络实例的路由表ID。",
+        "en": "The ID of the route table of the network instance."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批次查询时，每次显示的条目数。默认值为**20**。",
+        "en": "The number of entries to return on each page. The default value is **20**."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否拥有下一次查询的令牌（Token）。取值：\n- 第一次查询和没有下一次查询时，均无需填写。\n- 如果有下一次查询，取值为上一次API调用返回的NextToken值。",
+        "en": "The token for the next page of results.\n\n- If this is your first query, leave this parameter empty.\n\n- If a next query is required, set the value to the NextToken value returned from the last call."
+      }
     },
     {
       "name": "RouteFilter",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "目标网段过滤。",
+        "en": "The filter for the destination CIDR block."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "路由匹配值模式。\n- **prefix-exact-match**：完全匹配",
+            "en": "The route matching mode.\n\n- **prefix-exact-match**: exact match"
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "目标网段列表。",
+            "en": "A list of destination CIDR blocks."
+          }
         }
       ]
     },
@@ -52,15 +81,34 @@
       "name": "ServiceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由托管的类型。如果该字段为空，即表示该路由没有被托管。取值：TR，表示托管类型为转发路由器类型。",
+        "en": "The type of the managed routing service. If this parameter is empty, the route is not managed. Set the value to TR. This value indicates that the route is managed by a transit router."
+      }
     },
     {
       "name": "TransitRouterAttachmentId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络实例连接ID。",
+        "en": "The ID of the network instance connection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询企业版转发路由器连接的网络实例的路由条目",
+    "en": "ListCenChildInstanceRouteEntriesToAttachment"
+  },
+  "descriptions": {
+    "zh": "在调用ListCenChildInstanceRouteEntriesToAttachment接口过程时请确保输入的参数值无误。如果您输入的参数有误调用接口后仍然会返回RequestId，但不会显示企业版转发路由器连接的网络实例的路由条目。",
+    "en": "Ensure that you specify valid parameter values when you call the ListCenChildInstanceRouteEntriesToAttachment operation. If you specify an invalid parameter, the system returns a request ID but does not return the routes of the network instance that is connected to the Enterprise Edition transit router."
+  },
   "example": {
     "unifiedCli": "aliyun cbn list-cen-child-instance-route-entries-to-attachment --max-results 20 --next-token FFmyTO70tTpLG6I3FmYAXGKPd0000 --cen-id cen-dc4vwznpwbobrl0000 --child-instance-route-table-id vtb-bp174d1gje79u1g4t0000 --transit-router-attachment-id tr-attach-r6g0m3epjehw570000 --route-filter '[{\"Value\":[\"10.0.0.0/8\"],\"Key\":\"prefix-exact-match\"}]' --service-type TR --region cn-hangzhou",
     "legacyCli": "aliyun cbn ListCenChildInstanceRouteEntriesToAttachment --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-r6g0m3epjehw570000' --NextToken FFmyTO70tTpLG6I3FmYAXGKPd0000 --RouteFilter.1.Value.1 '10.0.0.0/8' --ServiceType TR --RouteFilter.1.Key 'prefix-exact-match' --MaxResults 20 --CenId 'cen-dc4vwznpwbobrl0000' --ChildInstanceRouteTableId 'vtb-bp174d1gje79u1g4t0000'"

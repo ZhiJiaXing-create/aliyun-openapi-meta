@@ -1,5 +1,6 @@
 {
   "name": "CreateVcoRouteEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The status of the destination-based route.\n\nOnly **published** is returned, which indicates that the current route is published to the transit router."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目的路由条目的描述信息。",
+        "en": "The weight of the destination-based route. Valid values:\n\n*   **0**: a low priority.\n*   **100**: a high priority."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建路由。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to only precheck the request. Valid values:\n\n*   **true**: prechecks the request without performing the operation. The system prechecks the required parameters, request syntax, and limits. If the request fails to pass the precheck, an error message is returned. If the request passes the precheck, the `DryRunOperation` error code is returned.\n*   **false** (default): sends the request. After the request passes the precheck, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "NextHop",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由条目的下一跳。",
+        "en": "The next hop of the destination-based route."
+      }
     },
     {
       "name": "OverlayMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "隧道协议。仅取值：**Ipsec**（默认值），表示IPsec隧道协议。",
+        "en": "The tunneling protocol.\n\nThe value is set to **Ipsec**, which indicates the IPsec tunneling protocol."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "RouteDest",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由条目的目标网段。",
+        "en": "The ID of the IPsec-VPN connection."
+      }
     },
     {
       "name": "VpnConnectionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接ID。",
+        "en": "The response parameters."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由条目的权重值。取值：\n\n- **0**：表示低优先级。\n- **100**：表示高优先级。",
+        "en": "The destination CIDR block of the destination-based route."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为IPsec连接添加目的路由条目",
+    "en": "CreateVcoRouteEntry"
+  },
+  "descriptions": {
+    "zh": "- IPsec连接需已绑定转发路由器实例。具体操作，请参见[CreateTransitRouterVpnAttachment](~~468249~~)。\n- 不支持添加目标网段为0.0.0.0/0的目的路由。\n- 请勿添加目标网段为100.64.0.0/10、100.64.0.0/10下的子网段或者包含100.64.0.0/10网段的目的路由，该类路由条目会导致控制台无法显示IPsec连接的状态或者导致IPsec连接协商失败。\n- **CreateVcoRouteEntry**接口属于异步接口，即系统先返回一个实例ID，但该目的路由条目尚未创建成功，系统后台的创建任务仍在进行。您可以调用[DescribeVpnConnection](~~53046~~)查询目的路由条目的创建状态：\n    - 当IPsec连接处于**updating**状态时，表示目的路由条目正在创建中。\n    - 当IPsec连接处于**attached**状态时，表示目的路由条目创建成功。\n- **CreateVcoRouteEntry**接口不支持在同一IPsec连接下并发创建目的路由条目。",
+    "en": "- The IPsec-VPN connection must be attached to a transit router instance. For more information, see [CreateTransitRouterVpnAttachment](~~468249~~).  \n- You cannot add a destination-based route with a destination CIDR block of 0.0.0.0/0.  \n- Do not add destination-based routes with a destination CIDR block of 100.64.0.0/10, any subnet within 100.64.0.0/10, or any CIDR block that includes 100.64.0.0/10. Such route entries may cause the console to fail to display the status of the IPsec-VPN connection or cause IPsec tunnel negotiation to fail.  \n- The **CreateVcoRouteEntry** API is asynchronous. The system immediately returns an instance ID, but the destination-based route entry is not yet created successfully. The creation task continues in the background. You can invoke [DescribeVpnConnection](~~53046~~) to query the creation status of the destination-based route entry:  \n    - If the IPsec-VPN connection is in the **updating** state, the destination-based route entry is being created.  \n    - If the IPsec-VPN connection is in the **attached** state, the destination-based route entry has been created successfully.  \n- The **CreateVcoRouteEntry** API does not support concurrent creation of destination-based route entries under the same IPsec-VPN connection."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-vco-route-entry --biz-region-id cn-hangzhou --vpn-connection-id vco-p0w2jpkhi2eeop6q60000 --route-dest 192.168.10.0/24 --weight 100 --next-hop vco-p0w2jpkhi2eeop6q60000 --description desctest --overlay-mode Ipsec --client-token 123e4567-e89b-12d3-a456-42660000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateVcoRouteEntry --region cn-hangzhou --RouteDest '192.168.10.0/24' --Description desctest --OverlayMode Ipsec --NextHop 'vco-p0w2jpkhi2eeop6q60000' --DryRun false --RegionId 'cn-hangzhou' --VpnConnectionId 'vco-p0w2jpkhi2eeop6q60000' --ClientToken '123e4567-e89b-12d3-a456-42660000' --Weight 100"

@@ -1,5 +1,6 @@
 {
   "name": "DetachDhcpOptionsSetFromVpc",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DhcpOptionsSetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要与VPC取消关联的DHCP选项集的ID。",
+        "en": "The ID of the DHCP options set to be disassociated from a VPC."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n**true**：发送检查请求，不会取消DHCP选项集与VPC的关联。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n**false**（默认值）：发送正常请求，通过检查后返回2XX HTTP状态码并取消DHCP选项集与VPC的关联。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n**true**: performs only a dry run. The system checks your AccessKey pair, the Resource Access Management (RAM) user permissions, and the required parameters. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n**false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DHCP选项集所在的地域。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region to which the DHCP options set belongs. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要与DHCP选项集取消关联的VPC的ID。",
+        "en": "The ID of the VPC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将DHCP选项集与VPC取消关联",
+    "en": "DetachDhcpOptionsSetFromVpc"
+  },
+  "descriptions": {
+    "zh": "- **DetachDhcpOptionsSetFromVpc**接口属于异步接口，即系统返回一个请求ID，但该DHCP选项集尚未解绑成功，系统后台的解绑任务仍在进行。您可以调用[DescribeVpcAttribute](~~94565~~)查询DHCP选项集的解绑状态：\n    - 当DHCP选项集处于**Pending**状态时，表示DHCP选项集正在解绑中。\n    - 当DHCP选项集处于**UnUsed**状态时，表示DHCP选项集解绑成功。\n- **DetachDhcpOptionsSetFromVpc**接口不支持在同一个VPC中并发解绑DHCP选项集。",
+    "en": "- **DetachDhcpOptionsSetFromVpc**接口属于异步接口，即系统返回一个请求ID，但该DHCP选项集尚未解绑成功，系统后台的解绑任务仍在进行。您可以调用[DescribeVpcAttribute](~~94565~~)查询DHCP选项集的解绑状态：\n    - 当DHCP选项集处于**Pending**状态时，表示DHCP选项集正在解绑中。\n    - 当DHCP选项集处于**UnUsed**状态时，表示DHCP选项集解绑成功。\n- **DetachDhcpOptionsSetFromVpc**接口不支持在同一个VPC中并发解绑DHCP选项集。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc detach-dhcp-options-set-from-vpc --biz-region-id cn-hangzhou --dhcp-options-set-id dopt-o6w0df4epg9zo8isy0000 --vpc-id vpc-dfdgrgthhy0000 --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc DetachDhcpOptionsSetFromVpc --region cn-hangzhou --DhcpOptionsSetId 'dopt-o6w0df4epg9zo8isy0000' --VpcId 'vpc-dfdgrgthhy0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760'"

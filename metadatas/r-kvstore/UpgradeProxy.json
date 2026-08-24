@@ -1,5 +1,6 @@
 {
   "name": "UpgradeProxy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例id。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "ProxyInstanceIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要升级的代理节点id，使用英文小写逗号分隔。该参数仅对经典版实例有效。",
+        "en": "The IDs of the proxy nodes that you want to update. Separate multiple IDs with commas (,). This parameter is valid only for Redis Open-Source Edition classic instances."
+      }
     },
     {
       "name": "SwitchTimeMode",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "变更规格的执行时间，取值：\n* **Immediately**：默认值，立即执行。\n* **MaintainTime**：实例可运维时间段内执行。\n\n> 您可以调用[ModifyInstanceMaintainTime](~~473775~~)修改Redis实例的可维护时间段。",
+        "en": "The time to execute the specification change. Valid values:\n\n*   **Immediately** (default): immediately executes the change.\n*   **MaintainTime**: executes the change during the maintenance window of the instance.\n\n> You can call the [ModifyInstanceMaintainTime](~~61000~~) operation to modify the maintenance window of an instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "升级集群实例的数据库代理节点",
+    "en": "UpgradeProxy"
+  },
+  "descriptions": {
+    "zh": "不同的架构在升级时所采取的流程和影响有所区别，详细介绍，请参见[小版本升级原理](~~56450~~)。\n\n> * 调用本接口前，您可以调用[DescribeEngineVersion](~~473781~~)查询实例代理节点当前的小版本。\n> * 升级会发生连接断开，请在业务低峰期进行升级，并确保应用程序具备重连机制，具体影响请参见[小版本升级原理](~~56450~~)。",
+    "en": "The procedure and impacts for updating the minor version of an instance varies based on the instance architecture. For more information, see [Update the minor version of an instance](~~56450~~).\n\n> \n\n*   Before you call this operation, you can call the [DescribeEngineVersion](~~473781~~) operation to query the current minor version of the proxy node.\n\n*   The connection to the instance is interrupted during the update. We recommend that perform an update during off-peak hours. Make sure your application can reconnect to the instance after the update. For more information, see [Minor version update](~~56450~~)."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore upgrade-proxy --instance-id r-bp1vgja77wl7pb0000 --proxy-instance-ids r-bp1vgja77wl7pb0000-proxy-0 --switch-time-mode 1 --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore UpgradeProxy --region cn-hangzhou --ProxyInstanceIds 'r-bp1vgja77wl7pb0000-proxy-0' --SwitchTimeMode 1 --InstanceId 'r-bp1vgja77wl7pb0000'"

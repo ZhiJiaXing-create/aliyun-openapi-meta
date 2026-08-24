@@ -1,5 +1,6 @@
 {
   "name": "DeleteVcoRouteEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "NextHop",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除的目的路由条目的下一跳。",
+        "en": "The next hop of the destination route entry to be deleted."
+      }
     },
     {
       "name": "OverlayMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "隧道协议。仅取值：**Ipsec**（默认值），表示IPsec隧道协议。",
+        "en": "The tunneling protocol. Set the value to **Ipsec** (default), which specifies the IPsec tunneling protocol."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the IPsec connection.\n\nYou can call [DescribeRegions](~~36063~~) to query region IDs."
+      }
     },
     {
       "name": "RouteDest",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除的目的路由条目的目标网段。",
+        "en": "The destination CIDR block of the destination route entry to be deleted."
+      }
     },
     {
       "name": "VpnConnectionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec连接ID。",
+        "en": "The ID of the IPsec connection."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除的目的路由条目的权重值。取值：\n\n- **0**：表示低优先级。\n- **100**：表示高优先级。",
+        "en": "The weight of the destination route entry to be deleted. Valid values:\n\n- **0**: low priority.\n- **100**: high priority."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除IPsec连接下的目的路由条目",
+    "en": "Delete a destination route entry from an IPsec connection"
+  },
+  "descriptions": {
+    "zh": "- **DeleteVcoRouteEntry**接口属于异步接口，即系统先返回一个请求ID，但该目的路由条目尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeVpnConnection](~~53046~~)查询目的路由条目的删除状态：\n    - 当IPsec连接处于**updating**状态时，表示目的路由条目正在删除中。\n    - 当IPsec连接处于**attached**状态时，表示目的路由条目删除成功。\n- **DeleteVcoRouteEntry**接口不支持在同一IPsec连接下并发删除目的路由条目。",
+    "en": "- The **DeleteVcoRouteEntry** operation is asynchronous. After you send a request, the system returns a request ID, but the destination route entry is not immediately deleted. The deletion task runs in the background. You can call [DescribeVpnConnection](~~53046~~) to query the deletion status of the destination route entry:\n    - If the IPsec connection is in the **updating** state, the destination route entry is being deleted.\n    - If the IPsec connection is in the **attached** state, the destination route entry is deleted.\n- The **DeleteVcoRouteEntry** operation does not support concurrent deletion of destination route entries from the same IPsec connection."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-vco-route-entry --biz-region-id cn-hangzhou --vpn-connection-id vco-p0w5112fgnl2ihlmf0000 --route-dest 192.168.10.0/24 --weight 100 --next-hop vco-p0w5112fgnl2ihlmf0000 --overlay-mode Ipsec --client-token 123e4567-e89b-12d3-a456-42660000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteVcoRouteEntry --region cn-hangzhou --RouteDest '192.168.10.0/24' --OverlayMode Ipsec --NextHop 'vco-p0w5112fgnl2ihlmf0000' --RegionId 'cn-hangzhou' --VpnConnectionId 'vco-p0w5112fgnl2ihlmf0000' --ClientToken '123e4567-e89b-12d3-a456-42660000' --Weight 100"

@@ -1,5 +1,6 @@
 {
   "name": "CreateRoutineCodeDeployment",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Body",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "比例灰度版本号配置列表。最多支持两个版本号，且总比例之和等于100。",
+        "en": "The list of percentage-based canary release version configurations. A maximum of two versions are supported, and the total percentage must equal 100."
+      },
       "sub_parameters": [
         {
           "name": "CodeVersion",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "代码版本号。",
+            "en": "The code version number."
+          }
         },
         {
           "name": "Percentage",
           "position": "FormData",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "代码版本灰度比例。取值1-100。",
+            "en": "The canary release percentage for the code version. Valid values: 1 to 100."
+          }
         }
       ]
     },
@@ -28,21 +41,44 @@
       "name": "Env",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "环境名  \n枚举值：\n- `staging`：测试环境 \n- `production`：生产环境",
+        "en": "The environment name.  \nValid values:\n- `staging`: staging environment \n- `production`: production environment"
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "边缘函数Routine名。",
+        "en": "The name of the Edge Function Routine."
+      }
     },
     {
       "name": "Strategy",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "部署策略  \n取值：\n- `percentage`：百分比模式",
+        "en": "The deployment strategy.  \nValid values:\n- `percentage`: percentage mode"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建边缘函数代码版本部署",
+    "en": "CreateRoutineCodeDeployment"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 创建Routine代码版本部署时，环境名`Env`仅支持填写测试环境`staging`或生产环境`production`。\n- `CodeVersions`参数最多支持两个版本的灰度发布，并且这些版本的比例总和必须等于100%。",
+    "en": "## Usage notes\n- When creating a Routine code version deployment, the `Env` parameter only supports `staging` for the staging environment or `production` for the production environment.\n- The `CodeVersions` parameter supports a maximum of two versions for canary release, and the total percentage of these versions must equal 100%."
+  },
   "example": {
     "unifiedCli": "aliyun esa create-routine-code-deployment --name test --env staging --strategy percentage --code-versions Percentage=100 CodeVersion=1723599747213377175 --region cn-hangzhou",
     "legacyCli": "aliyun esa CreateRoutineCodeDeployment --region cn-hangzhou --CodeVersions '[{\"Percentage\":100,\"CodeVersion\":\"1723599747213377175\"}]' --Strategy percentage --Env staging --Name test"

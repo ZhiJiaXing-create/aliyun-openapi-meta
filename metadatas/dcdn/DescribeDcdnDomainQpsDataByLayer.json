@@ -1,5 +1,6 @@
 {
   "name": "DescribeDcdnDomainQpsDataByLayer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的加速域名。支持批量域名查询，多个域名用半角逗号（,）分隔，最多支持500个域名，多个域名会按照聚合结果进行输出。\n若参数为空，默认返回所有加速域名合并后的数据。",
+        "en": "The accelerated domain name that you want to query. You can specify multiple domain names. Separate them with commas (,). You can specify up to 500 domain names. If you specify multiple domain names, the data is aggregated. If you leave this parameter empty, the aggregated data for all your accelerated domain names is returned."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据结束时间。日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定查询数据的时间粒度，单位：秒。\n\n根据单次查询的最大时间跨度不同，该参数支持300（5分钟）、3600（1小时）和86400（1天）取值，具体请参见**使用说明**中支持查询的时间粒度。",
+        "en": "The time granularity for the query, in seconds.\n\nValid values are 300 (5 minutes), 3600 (1 hour), and 86400 (1 day). The supported value depends on the maximum time span of a single query. For more information, see the table of supported time granularities in this topic."
+      }
     },
     {
       "name": "IspNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商英文名，通过[DescribeDcdnRegionAndIsp](~~DescribeDcdnRegionAndIsp~~)接口获得，不传值代表所有运营商。",
+        "en": "The English name of the carrier. Call the [DescribeDcdnRegionAndIsp](~~DescribeDcdnRegionAndIsp~~) operation to obtain the name. If you do not set this parameter, data for all carriers is returned."
+      }
     },
     {
       "name": "Layer",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询维度，可选网络层（IPv4、IPv6）或应用层（http、https、quic）或all。\n默认为all。",
+        "en": "The layer to query. Valid values: \\`network\\` (IPv4 and IPv6), \\`application\\` (HTTP, HTTPS, and QUIC), or \\`all\\`. The default value is \\`all\\`."
+      }
     },
     {
       "name": "LocationNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "区域英文名，通过[DescribeDcdnRegionAndIsp](~~DescribeDcdnRegionAndIsp~~)接口获得，不传值代表所有区域。",
+        "en": "The English name of the region. Call the [DescribeDcdnRegionAndIsp](~~DescribeDcdnRegionAndIsp~~) operation to obtain the name. If you do not set this parameter, data for all regions is returned."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间。日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。\n最小数据粒度为5分钟。\n不写默认读取过去24小时数据。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC. The minimum time granularity is 5 minutes. If you do not set this parameter, data in the last 24 hours is returned."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询QPS-按协议",
+    "en": "DescribeDcdnDomainQpsDataByLayer"
+  },
+  "descriptions": {
+    "zh": "> \n> - 单用户调用频率：20次/秒。\n> - 不指定**StartTime**和**EndTime**，默认返回过去24小时的数据；指定**StartTime**和**EndTime**，返回指定起止时间的数据。\n\n**支持查询的时间粒度**\n\n根据单次查询的最大时间跨度不同，请求参数Interval支持不同的查询数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n| 时间粒度         | 单次查询的最大时间跨度           | 可查询历史数据时间范围   | 数据延迟 |\n| -------------- | -------------- | ------|----------|\n| 5分钟       | 3天        | 93天  | 15分钟 |\n| 1小时       | 31天       |   186天  | 一般延迟3-4小时 |\n| 1天  | 366天       |    366天  | 一般延迟4小时，不超过24小时|",
+    "en": "> - A single user can make up to 20 calls per second.\n>\n> - If you do not specify **StartTime** and **EndTime**, data in the last 24 hours is returned by default. If you specify **StartTime** and **EndTime**, data in the specified time range is returned.\n\n**Supported time granularities**\n\nThe time granularity that you can specify in the Interval parameter varies based on the maximum time span of a single query. The following table lists the queryable historical data range and data latency for each time granularity.\n\n| Time granularity | Maximum time span for a single query | Queryable historical data range | Data latency                                 |\n| ---------------- | ------------------------------------ | ------------------------------- | -------------------------------------------- |\n| 5 minutes        | 3 days                               | 93 days                         | 15 minutes                                   |\n| 1 hour           | 31 days                              | 186 days                        | Typically 3 to 4 hours                       |\n| 1 day            | 366 days                             | 366 days                        | Typically 4 hours, but no more than 24 hours |"
+  },
   "example": {
     "unifiedCli": "aliyun dcdn describe-dcdn-domain-qps-data-by-layer --domain-name example.com --start-time 2015-12-10T20:00:00Z --end-time 2015-12-10T21:00:00Z --interval 300 --isp-name-en telecom --location-name-en hangzhou --layer all --region cn-hangzhou",
     "legacyCli": "aliyun dcdn DescribeDcdnDomainQpsDataByLayer --region cn-hangzhou --IspNameEn telecom --EndTime '2015-12-10T21:00:00Z' --DomainName 'example.com' --LocationNameEn hangzhou --StartTime '2015-12-10T20:00:00Z' --Layer all --Interval 300"

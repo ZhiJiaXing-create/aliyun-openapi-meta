@@ -1,5 +1,6 @@
 {
   "name": "AddWatermark",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用ID。默认取值：**app-1000000**。若已开通多应用体系，传入应用ID，可将水印模板添加到指定应用下。使用说明，请参见[多应用体系](~~113600~~)。",
+        "en": "The ID of the application. Default value: **app-1000000**. If you have activated the multi-application service, specify the ID of the application to add the watermark template in the specified application. For more information, see [Overview](~~113600~~)."
+      }
     },
     {
       "name": "FileUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印图片文件的OSS地址（不带鉴权）。\n>- 设置图片水印模板（`Type`为`Image`）时，本参数必传。\n>- 您可以调用[CreateUploadAttachedMedia](~~CreateUploadAttachedMedia~~)接口将水印图片上传到视频点播中，上传后返回参数`FileURL`的值可作为本参数的请求参数。",
+        "en": "The URL of the watermark file. The URL must be an Object Storage Service (OSS) URL and cannot contain the information used for URL signing.\n\n> *   This parameter is required if you set `Type` to `Image`.\n> *  You can obtain the URL from the `FileURL` parameter in the response to the [CreateUploadAttachedMedia](~~CreateUploadAttachedMedia~~) operation that you call to upload the watermark image to ApsaraVideo VOD."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "水印模板名称。\n- 仅支持中英文、数字。\n- 长度不超过128个字节。\n- UTF-8编码。",
+        "en": "The name of the watermark template.\n\n*   Only letters and digits are supported.\n*   The name cannot exceed 128 bytes.\n*   The value must be encoded in UTF-8."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "水印模板类型：\n- **Image**（默认）：图片水印模板。\n- **Text**：文字水印模板。",
+        "en": "The type of the watermark template. Valid values:\n\n*   **Image** (default): image watermark template\n*   **Text**: text watermark template"
+      }
     },
     {
       "name": "WatermarkConfig",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "图文水印的配置信息（JSON字符串），包括水印显示位置、水印效果等配置。图片水印和文字水印的配置参数不同，参数结构详情，请参见[WatermarkConfig](~~98618#section-h01-44s-2lr~~) 。",
+        "en": "The configuration information of the watermark such as the display position and special effects. The value must be a JSON string. The configuration parameters for image and text watermarks are different. For more information about the parameter structure, see [WatermarkConfig](~~98618#section-h01-44s-2lr~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加图文水印模板",
+    "en": "AddWatermark"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口可以添加图片水印模板（`Image`）或文字水印模板（`Text`），其中，图片水印模板支持如下格式：静态图片（PNG）、动态图片（GIF、APNG、MOV）。\n- 调用本接口添加图文水印模板后，您还需调用[AddTranscodeTemplateGroup](~~AddTranscodeTemplateGroup~~)或[UpdateTranscodeTemplateGroup](~~UpdateTranscodeTemplateGroup~~)接口，将图文水印模板关联到转码模板组上，以便后续发起水印转码时选用。\n- 为视频添加图文水印的详细信息，请参见[视频图文水印](~~99369~~)。",
+    "en": "*   You can call this operation to create an `Image` watermark template or a `Text` watermark template. You can use static images in the PNG format or dynamic images in the GIF, APNG, and MOV formats as image watermarks.\n*   After you call this operation to create a watermark template, you must call the [AddTranscodeTemplateGroup](~~AddTranscodeTemplateGroup~~) or [UpdateTranscodeTemplateGroup](~~UpdateTranscodeTemplateGroup~~) operation to associate the watermark template with a transcoding template group. This way, you can add watermarks to videos during transcoding.\n*   For more information, see [Video watermarks](~~99369~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vod add-watermark --type Image --name Image_watermark_template --watermark-config Width_:_55_,_Height_:_55_,_Dx_:_9_,_Dy_:_9_,_ReferPos_:_BottomLeft --file-url http://outin-3262680000063e1403e7.oss-cn-shanghai.aliyuncs.com/image/cover/C9934500000E7FDEC-6-2.png --app-id app-0000 --region cn-hangzhou",
     "legacyCli": "aliyun vod AddWatermark --region cn-hangzhou --FileUrl 'http://outin-3262680000063e1403e7.oss-cn-shanghai.aliyuncs.com/image/cover/C9934500000E7FDEC-6-2.png' --Type Image --AppId 'app-0000' --WatermarkConfig 'Width_:_55_,_Height_:_55_,_Dx_:_9_,_Dy_:_9_,_ReferPos_:_BottomLeft' --Name Image_watermark_template"

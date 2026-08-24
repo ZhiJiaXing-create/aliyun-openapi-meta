@@ -1,5 +1,6 @@
 {
   "name": "ReportTaskFailed",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Cause",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "失败错误原因。长度为1~4096个字符。",
+        "en": "The cause of the failure. The value must be 1 to 4,096 characters in length."
+      }
     },
     {
       "name": "Error",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "失败错误代码。长度为1~128个字符。",
+        "en": "The error code for the failed task. The error code must be 1 to 128 characters in length."
+      }
     },
     {
       "name": "TaskToken",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "汇报任务指定的令牌。TaskToken会传递给被调用的服务，比如消息队列MNS或函数计算FC。对于MNS，用户可以从接收到的消息中获取，对于FC，用户可以从Event中获取。\n详情请参见[服务集成模式](~~2592915~~)。",
+        "en": "The token of the task whose execution you want to report. The task token is passed to the called service, such as Message Service (MNS) or Function Compute. For MNS, the value of this parameter can be obtained from a message. For Function Compute, the value of this parameter can be obtained from an event. For more information, see [Service integration modes](~~2592915~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "汇报指定的任务执行失败",
+    "en": "ReportTaskFailed"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n在旧版Serverless 工作流中，使用该接口回调`pattern: waitForCallback`的任务步骤，表明当前任务执行失败。\n\n在新版云工作流中，使用该接口回调`TaskMode: WaitForCustomCallback`的任务步骤，表明当前任务执行失败。",
+    "en": "## [](#)Usage notes\n\nIn the previous service (Serverless Workflow), the task step that ReportTaskFailed is used to call back `pattern: waitForCallback` indicates that the current task fails to be executed.\n\nIn the new service (CloudFlow), the task step that ReportTaskFailed is used to call back `TaskMode: WaitForCustomCallback` indicates that the current task fails to be executed."
+  },
   "example": {
     "unifiedCli": "aliyun fnf report-task-failed --task-token djEjYSNkZTdkYWZjMi0zMGRlLTRlMDMtOTA2OC0yMTMxYmM5NGJlZTIjNSMvV1ZHYks3RTc0WUsra25nQTNYSmtFa0t60000 --error InvalidArgument --cause emptyString --region cn-hangzhou",
     "legacyCli": "aliyun fnf ReportTaskFailed --region cn-hangzhou --Cause emptyString --TaskToken djEjYSNkZTdkYWZjMi0zMGRlLTRlMDMtOTA2OC0yMTMxYmM5NGJlZTIjNSMvV1ZHYks3RTc0WUsra25nQTNYSmtFa0t60000 --Error InvalidArgument"

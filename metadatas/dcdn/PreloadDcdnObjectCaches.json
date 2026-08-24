@@ -1,5 +1,6 @@
 {
   "name": "PreloadDcdnObjectCaches",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Area",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预热区域，取值：\n- **domestic**：仅中国内地。\n- **overseas**：全球（不包含中国内地）。\n\n如果不传该参数，默认的预热区域为您的域名所配置的DCDN加速区域。具体如下：\n\n- 域名的加速区域为“**仅中国内地**”，预热区域是仅中国内地。\n- 域名的加速区域为“**全球**”，预热区域是全球。\n- 域名的加速区域为“**全球（不包含中国内地）**”，预热区域是全球（不包含中国内地）。",
+        "en": "The prefetch region. Valid values:\n- **domestic**: the Chinese mainland only.\n- **overseas**: global (excluding the Chinese mainland).\n\nIf you do not specify this parameter, the prefetch region defaults to the DCDN acceleration region configured for your domain name:\n\n- If the acceleration region of the domain name is **Chinese Mainland Only**, the prefetch region is the Chinese mainland only.\n- If the acceleration region of the domain name is **Global**, the prefetch region is global.\n- If the acceleration region of the domain name is **Global (Excluding the Chinese Mainland)**, the prefetch region is global (excluding the Chinese mainland)."
+      }
     },
     {
       "name": "L2Preload",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否直接预热到L2节点。取值：\n\n- **true**：代表预热的节点层级必须包含L2节点。\n\n- **false**：代表仅预热回源层节点（false为默认值，回源层节点可能是L2节点，也可能是L3节点）。",
+        "en": "Specifies whether to prefetch content directly to L2 nodes. Valid values:\n\n- **true**: The prefetch node hierarchy must include L2 nodes.\n\n- **false** (default): Only origin-layer nodes are prefetched. Origin-layer nodes can be L2 nodes or L3 nodes."
+      }
     },
     {
       "name": "ObjectPath",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预热URL，格式为**加速域名/预热的文件**。\n>多个URL之间用换行符分隔，ObjectPath的单条长度最长为1024个字符。",
+        "en": "The URLs to prefetch. The format is **accelerated domain name/file to prefetch**.\n>Separate multiple URLs with line breaks. Each URL can be up to 1,024 characters in length."
+      }
     },
     {
       "name": "QueryHashkey",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配置了某些规则（如 URL 重写、参数过滤等）开启使用。该参数用于控制执行预热任务时是否开启hashkey查询模式。取值范围：\n- false：默认模式，不传参数的时候使用该模式，指的是直接使用提交的URL作为预热文件的hashkey。\n- true：根据域名的配置来查询预热URL实际使用的hashkey。",
+        "en": "This parameter is used when certain rules (such as URL rewrite or parameter filtering) are configured. It specifies whether to enable hashkey query mode when executing prefetch tasks. Valid values:\n- false: default mode. This mode is used when this parameter is not specified. The submitted URL is directly used as the hashkey of the prefetched file.\n- true: queries the actual hashkey used by the prefetch URL based on the domain name configuration."
+      }
     },
     {
       "name": "WithHeader",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "支持用户自定义预热Header，用JSON串格式提交。",
+        "en": "The custom prefetch headers. Specify the value in JSON format."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "预热URL",
+    "en": "Prefetch uRLs"
+  },
+  "descriptions": {
+    "zh": "- 相关接口：刷新预热类接口包含[RefreshDcdnObjectCaches](~~130620~~)刷新接口和[PreloadDcdnObjectCaches](~~130636~~)预热接口。\n\n- 请求方式：支持POST请求，参数用form表单显示。\n\n- URL预热配额（每日）：默认情况下，一个账号每日最多可以提交1000条URL预热任务，如果您账号的日带宽峰值大于200 Mbps，可通过<props=\"china\">[配额管理](~~375348~~)</props><props=\"intl\">[提交工单](https://account.alibabacloud.com/login/login.htm?oauth_callback=https%3A//ticket-intl.console.aliyun.com/%23/ticket/createIndex)</props>申请提升每日配额，阿里云将根据您业务的实际需求进行评估和配置。\n\n- 每次最多可以提交100条URL预热任务。\n\n- 预热队列规则：每个账号的预热队列最大为100,000条URL，DCDN根据URL提交的先后顺序进行预热，当预热队列中未完成的任务达到了100,000条URL时，阿里云DCDN将会采取排队机制（即完成排序最前的一条URL预热后才可以继续提交下一条URL预热）完成预热。\n\n- 单用户调用频率：15次/秒。\n\n#### 注意事项\n\n- 提交预热任务并成功执行后，DCDN节点会立即回源站加载所需资源，因此大批量提交预热任务会生成较多的并发下载任务，导致回源带宽和请求突增，增加源站压力。\n- 预热任务从提交到预热完成，实际执行时间视预热文件大小而定，大约需要5~30分钟，文件平均大小越小，预热速度越快。\n- 使用RAM用户来执行刷新或预热操作的，需要先获得授权，请参见[授予RAM用户刷新预热权限](~~445051~~)完成授权。",
+    "en": "- Related operations: The refresh and prefetch operations include the [RefreshDcdnObjectCaches](~~130620~~) refresh operation and the [PreloadDcdnObjectCaches](~~130636~~) prefetch operation.\n\n- Request method: POST requests are supported. Parameters are displayed in a form.\n\n- Daily URL prefetch quota: By default, each account can submit up to 1,000 URL prefetch tasks per day. If the daily peak bandwidth of your account exceeds 200 Mbit/s, you can request a higher daily quota by <props=\"china\">[Quota Management](~~375348~~)</props><props=\"intl\">[submitting a ticket](https://account.alibabacloud.com/login/login.htm?oauth_callback=https%3A//ticket-intl.console.aliyun.com/%23/ticket/createIndex)</props>. Alibaba Cloud evaluates and configures the quota based on your actual business requirements.\n\n- You can submit up to 100 URL prefetch tasks at a time.\n\n- Prefetch queue rules: The prefetch queue for each account can contain up to 100,000 URLs. DCDN processes prefetch tasks in the order in which URLs are submitted. When the number of pending tasks in the prefetch queue reaches 100,000, DCDN uses a queuing mechanism. This means that the next URL prefetch task can be submitted only after the earliest URL prefetch task in the queue is completed.\n\n- Maximum invocation frequency per user: 15 times per second.\n\n#### Before you begin\n\n- After a prefetch task is submitted and successfully executed, points of presence immediately fetch the required resources from the origin server through back-to-origin requests. Submitting a large number of prefetch tasks at a time generates many concurrent download tasks, which causes a surge in back-to-origin bandwidth and requests and increases the load on the origin server.\n- The time required to complete a prefetch task after submission depends on the size of the prefetched file. It takes approximately 5 to 30 minutes. The smaller the average file size, the faster the prefetch.\n- To use a Resource Access Management (RAM) user to perform refresh and prefetch operations, obtain the required authorization first. For more information, see [Grant permissions to a RAM user for refresh and prefetch](~~445051~~)."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn preload-dcdn-object-caches --object-path http://example.com/examplefile.txt_http://example.com/examplefile2.txt --area domestic --l2-preload true --with-header Accept-Encoding_:_gzip --query-hashkey true --region cn-hangzhou",
     "legacyCli": "aliyun dcdn PreloadDcdnObjectCaches --region cn-hangzhou --QueryHashkey true --ObjectPath 'http://example.com/examplefile.txt_http://example.com/examplefile2.txt' --Area domestic --WithHeader 'Accept-Encoding_:_gzip' --L2Preload true"

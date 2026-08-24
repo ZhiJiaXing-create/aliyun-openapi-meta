@@ -1,5 +1,6 @@
 {
   "name": "UnassociateAnycastEipAddress",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "AnycastId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Anycast EIP实例ID。",
+        "en": "The ID of the Anycast EIP."
+      }
     },
     {
       "name": "BindInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要解绑的云资源实例ID。",
+        "en": "The ID of the endpoint from which you want to disassociate the Anycast EIP."
+      }
     },
     {
       "name": "BindInstanceRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要解绑的云资源实例地域ID。",
+        "en": "The region where the endpoint is deployed."
+      }
     },
     {
       "name": "BindInstanceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要解绑的云资源实例类型。取值：\n\n- **SlbInstance**：专有网络类型的CLB实例。\n- **NetworkInterface**：弹性网卡。",
+        "en": "The type of endpoint from which you want to disassociate the Anycast EIP. Valid values:\n\n- **SlbInstance**: an internal-facing Server Load Balancer (SLB) instance that is deployed in a virtual private cloud (VPC)\n\n- **NetworkInterface**: elastic network interface (ENI)"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会解绑后端实例。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要解绑的弹性网卡的辅助私网IP。\n\n\n只有当**BindInstanceType**取值为**NetworkInterface**时，该参数生效。不输入时，该参数默认为弹性网卡的主私网IP。",
+        "en": "The secondary private IP address of the ENI from which you want to disassociate the Anycast EIP.\n\nThis parameter is valid only when you set **BindInstanceType** to **NetworkInterface**. If you do not specify this parameter, the primary private IP address of the ENI is used."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解绑后端云资源实例",
+    "en": "UnassociateAnycastEipAddress"
+  },
   "example": {
     "unifiedCli": "aliyun eipanycast unassociate-anycast-eip-address --bind-instance-id lb-2zebb08phyczzawe0000 --bind-instance-region-id us-west-1 --bind-instance-type SlbInstance --anycast-id aeip-2zeerraiwb7ujsxdc0000 --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --private-ip-address 192.168.XX.XX --region cn-hangzhou",
     "legacyCli": "aliyun eipanycast UnassociateAnycastEipAddress --region cn-hangzhou --BindInstanceId 'lb-2zebb08phyczzawe0000' --PrivateIpAddress '192.168.XX.XX' --BindInstanceRegionId 'us-west-1' --BindInstanceType SlbInstance --AnycastId 'aeip-2zeerraiwb7ujsxdc0000' --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

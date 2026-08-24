@@ -1,5 +1,6 @@
 {
   "name": "StartReplicaGroupDrill",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "复制组ID。您可以通过[DescribeDiskReplicaGroups](~~426614~~)接口查询异步复制组列表，获得复制组ID。",
+        "en": "The ID of the replication pair-consistent group ID. You can call the [DescribeDiskReplicaGroups](~~426614~~) operation the most recent list of async replication pair-consistent groups, including group IDs."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制组的当前从端所属地域ID。您可以通过[DescribeDiskReplicaGroups](~~426614~~)接口查询异步复制组的当前从端地域。\n> 必须在当前从端所属地域下启用容灾演练功能。",
+        "en": "The ID of the region where the secondary site in the replication pair-consistent group is located. You can call the [DescribeDiskReplicaGroups](~~426614~~) operation to query the region where the secondary site in the replication pair-consistent group is located.\n\n>  You must enable the disaster recovery drill feature in the region in which the secondary site resides."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "对异步复制组的从盘启动容灾演练",
+    "en": "StartReplicaGroupDrill"
+  },
+  "descriptions": {
+    "zh": "从盘容灾演练任务完成后，会给每个复制对在从盘所在可用区创建一块与从盘类型及大小相同的云盘，称之为演练盘，该云盘是按量付费模式，持有最近恢复点的数据，可用于验证应用的完整性和正确性。",
+    "en": "After the disaster recovery drill is complete on secondary disks, a pay-as-you-go drill disk is created in the zone where the secondary disk of each replication pair resides. The latest-recovery-point data is restored to the drill disks to test the completeness and correctness of applications."
+  },
   "example": {
     "unifiedCli": "aliyun ebs start-replica-group-drill --biz-region-id cn-hangzhou --group-id pg-xxxx --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ebs StartReplicaGroupDrill --region cn-hangzhou --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --GroupId 'pg-xxxx'"

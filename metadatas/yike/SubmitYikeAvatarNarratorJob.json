@@ -1,0 +1,40 @@
+{
+  "name": "SubmitYikeAvatarNarratorJob",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "JobParams",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "任务请求内容，Json String，包含以下参数：\n\n- SceneType，string，枚举值，应用场景类型，包含：`creator-talk`：知识讲解，资讯/科普/财经讲解场景；`avatar-broadcast`：数字人播报，固定单镜场景\n- TextType，int 类型，文本类型，可选值：1-原始稿（商品或资讯信息，系统自动转为口播稿，avatar-broadcast不支持）；2-（口播稿）\n- TextContent，string 类型，文本内容，最大长度 10000 字符\n- UserMaterials，Array< Object>类型，用户素材列表（avatar-broadcast不支持），包含字段：MediaId：媒资 ID（上传到万镜一刻的图片或视频）\n- AvatarData，object 类型，数字人信息，AvatarPortrait，必填，String，人像图片URL；AvatarVoice，选填，String，音频URL（用于音频复刻参考） 或 库内音色ID（详见万镜一刻音色库，系统自动选择）\n- VoiceDuration，int，预期口播时长，当TextType==1时设置，单位：秒，默认 60，最终成片会略少于预期时长\n- AspectRatio，string 类型，成片尺寸，可选值：16:9、9:16、4:3、3:4\n- Resolution，string 类型，视频清晰度，可选值：720P、1080P\n- WithSubtitles，bool 类型，是否带字幕，true：带字幕（默认），false：不带字幕",
+        "en": "The task request content. The value is a JSON string that contains the following parameters:\n\n- SceneType: string. The common scenario type. Valid values:\n  - creator-talk: knowledge explanation. Applicable to scenarios such as news, popular science, and financial explanation.\n  - avatar-broadcast: digital human broadcasting. A fixed single-shot scenario.\n- TextType: int. The text type. Valid values:\n  - 1: raw script. The system automatically converts product or news information into an oral broadcast script. This value is not supported for avatar-broadcast.\n  - 2: oral broadcast script.\n- TextContent: string. The text content. Maximum length: 10,000 characters.\n- UserMaterials: Array\\<Object\\>. The list of user materials. This parameter is not supported for avatar-broadcast. Fields:\n  - MediaId: the media asset ID. The ID of an image or video uploaded to Wanjing Yike.\n- AvatarData: object. The digital human information.\n  - AvatarPortrait: required. String. The URL of the portrait image.\n  - AvatarVoice: optional. String. The URL of an audio file for voice cloning reference, or a voice ID from the built-in voice library. For more information, see the Wanjing Yike voice library. If this parameter is not specified, the system automatically selects a voice.\n- VoiceDuration: int. The expected oral broadcast duration. Set this parameter when TextType is set to 1. Unit: seconds. Default value: 60. The final video duration is slightly shorter than the expected duration.\n- AspectRatio: string. The video dimensions. Valid values: 16:9, 9:16, 4:3, and 3:4.\n- Resolution: string. The video resolution. Valid values: 720P and 1080P.\n- WithSubtitles: bool. Specifies whether to add subtitles. Valid values:\n  - true (default): Add subtitles.\n  - false: Do not add subtitles."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用户自定义参数，JSON String，回调结果会原样携带（如：newsKey）\n\n系统保留字段 NotifyAddress，回调地址 URL，任务完成后回调 {\"NotifyAddress\": \"http://xxx.callback.url\"}",
+        "en": "The custom user parameter. The value is a JSON string that is returned as-is in the callback result, for example, newsKey.\n\nThe system reserved field NotifyAddress specifies the callback URL. The system sends a callback to this URL after the task is complete. Example: {\"NotifyAddress\": \"http://xxx.callback.url\"}."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数字人口播场景智能成片任务",
+    "en": "Create an intelligent video production task for a digital human oral broadcasting scenario"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n该API用于根据提供的文本内容及其它参数（如数字人信息、应用场景类型等）生成一段由虚拟人物口播的视频。用户需指定文本类型（原始稿或口播稿）、成片尺寸与清晰度等关键配置项，并可选择是否添加字幕或指定输出语言种类。此外，支持通过`UserData`字段传递自定义参数，在回调时原样返回。",
+    "en": "## Description\nThis operation generates a video in which a virtual human delivers an oral broadcast based on the provided text content and other parameters such as digital human information and application scenario type. You must specify key configuration items including the text type (raw script or oral broadcast script), video dimensions, and resolution. You can also choose whether to add subtitles or specify the output language. In addition, you can use the `UserData` field to pass custom parameters, which are returned as-is in the callback.\n\nCommon scenarios: influencer product promotion, knowledge explanation, and similar video scenarios."
+  }
+}

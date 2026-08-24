@@ -1,5 +1,6 @@
 {
   "name": "OnsMessagePageQueryByTopic",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "BeginTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询范围的起始时间戳，单位：毫秒。\n通过**TaskId**进行后续取消息时，该参数设置的值不生效，默认以第一次查询时输入的起始时间为准。",
+        "en": "The beginning of the time range to query. The value of this parameter is a UNIX timestamp in milliseconds. If you specify a valid value for the **TaskId** parameter in the request, this parameter does not take effect. The system uses the value of the BeginTime parameter that you specified in the request when you created the specified query task."
+      }
     },
     {
       "name": "CurrentPage",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "当前取第几页消息，从1开始递增，最大值为50，取消息时不可超过最大页数。",
+        "en": "The number of the page to return. Pages start from page 1. Valid values: 1 to 50."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询范围的终止时间戳，单位：毫秒。\n通过**TaskId**进行后续取消息时，该参数设置的值不生效，默认以第一次查询时输入的终止时间为准。",
+        "en": "The end of the time range to query. The value of this parameter is a UNIX timestamp in milliseconds. If you specify a valid value for the **TaskId** parameter in the request, this parameter does not take effect. The system uses the value of the EndTime parameter that you specified in the request when you created the specified query task."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需查询的消息所对应的实例ID。",
+        "en": "The ID of the instance to which the message you want to query belongs."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询，每页最多显示的消息数量，默认是20，最小5条，最多50条。\n通过**TaskId**进行后续取消息时，该参数设置的值不生效，默认以第一次查询时输入的每页消息数量为准。",
+        "en": "The number of entries to return on each page. Valid values: 5 to 50. Default value: 20. If you specify a valid value for the **TaskId** parameter in the request, this parameter does not take effect. The system uses the value of the PageSize parameter that you specified in the request for creating the query task."
+      }
     },
     {
       "name": "TaskId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询任务的ID，首次查询不需要输入，后续取消息必须传入，根据前一次的返回结果取出该字段。",
+        "en": "The ID of the query task. The first time you call this operation to query the information about messages in a specified topic within a specified time range, this parameter is not required. This parameter is required in subsequent queries for messages on a specified page. You can obtain the task ID from the returned result of the first query."
+      }
     },
     {
       "name": "Topic",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需查询的消息的Topic名称。",
+        "en": "The name of the topic whose messages you want to query."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询Topic内所有消息",
+    "en": "OnsMessagePageQueryByTopic"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>\n\n- 按Topic查询消息的方式属于范围查询，查询结果会通过分页的方式展示给调用方，仅适用于没有任何搜索条件（Message ID和Message Key）的查询场景。\n- 根据Topic查询消息应尽可能缩短查询的时间区间，否则匹配的消息过多，将无法定位问题。调用流程如下所示：\n  \n    1. 传入Topic、起止时间以及每页的消息数量，进行分页查询。如果有消息，默认返回第一页的消息、总页数和查询任务ID。 \n    2. 根据返回的结果中的查询任务ID，进行后续取消息，取消息时传入查询任务ID以及当前页数。此时输入的起止时间和每页消息数量不生效，默认以第一次查询时输入的参数值为准。",
+    "en": "> API operations provided by Alibaba Cloud are used to manage and query resources of Alibaba Cloud services. We recommend that you integrate these API operations only in management systems. Do not use these API operations in the core system of messaging services. Otherwise, system risks may occur.\n\n*   If you do not know the ID or key of a message that you want to query, you can call this operation to query all messages that are stored in the topic within a specified time range. The results are displayed by page.\n\n*   We recommend that you specify a short time range to query messages. If you specify a long time range, a large number of messages are returned. In this case, you cannot find the message that you want to query in an efficient manner. You can perform the following steps to query messages:\n\n    1.  Perform a paged query by specifying the topic, start time, end time, and number of entries to return on each page. If the topic contains messages, the information about the messages on the first page, total number of pages, and task ID are returned by default.\n    2.  Specify the task ID and a page number to call this operation again to query the messages on the specified page. The BeginTime, EndTime, and PageSize parameters do not take effect. By default, the system uses the values of these parameters that you specified in the request when you created the specified query task."
+  },
   "example": {
     "unifiedCli": "aliyun ons ons-message-page-query-by-topic --topic test-mq_topic --begin-time 1570723200000 --end-time 1570809600000 --task-id 0BC1310300002A9F000021E4D7A48346 --current-page 2 --page-size 5 --instance-id MQ_INST_111111111111_DOxxxxxx --region cn-hangzhou",
     "legacyCli": "aliyun ons OnsMessagePageQueryByTopic --region cn-hangzhou --TaskId 0BC1310300002A9F000021E4D7A48346 --EndTime 1570809600000 --PageSize 5 --CurrentPage 2 --InstanceId MQ_INST_111111111111_DOxxxxxx --BeginTime 1570723200000 --Topic 'test-mq_topic'"

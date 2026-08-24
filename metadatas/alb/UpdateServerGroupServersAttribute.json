@@ -1,5 +1,6 @@
 {
   "name": "UpdateServerGroupServersAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会更新服务器组中后端服务器的权重和描述等配置信息。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: performs a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request format, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): sends a Normal request, passes the dry run, and returns an HTTP 2xx status code. The operation to update the weight and description of the backend server in the server group is directly performed."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组ID。",
+        "en": "The server group ID."
+      }
     },
     {
       "name": "Servers",
       "position": "Body",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "后端服务器组列表，单次调用最多支持传入40个服务器。",
+        "en": "The backend server group list. You can specify up to 40 servers in a single invoke."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新后端服务器配置",
+    "en": "Update backend server configurations"
+  },
+  "descriptions": {
+    "zh": "**UpdateServerGroupServersAttribute**接口属于异步接口，即系统返回一个请求ID，但该后端服务器配置信息尚未添加成功，系统后台的添加任务仍在进行。\n1. 您可以调用[ListServerGroups](~~213627~~)查询服务器组状态：\n    - 当服务器组处于**Configuring**状态时，表示服务器组正在变配中。\n    - 当服务器组处于**Available**状态时，表示服务器组运行中。\n\n2. 您可以调用[ListServerGroupServers](~~213628~~)查询后端服务器状态：\n    - 当后端服务器处于**Configuring**状态时，表示后端服务器正在变配中。\n    - 当后端服务器处于**Available**状态时，表示后端服务器运行中。",
+    "en": "**UpdateServerGroupServersAttribute** is an asynchronous operation. After a request is sent, the system returns a request ID. However, the backend server configurations are not yet updated, and the update task is still running in the background.\n1. You can call [ListServerGroups](~~213627~~) to query the status of a server group:\n    - If the server group is in the **Configuring** state, the server group is being modified.\n    - If the server group is in the **Available** state, the server group is running.\n\n2. You can call [ListServerGroupServers](~~213628~~) to query the status of a backend server:\n    - If the backend server is in the **Configuring** state, the backend server is being modified.\n    - If the backend server is in the **Available** state, the backend server is running."
+  },
   "example": {
     "unifiedCli": "aliyun alb update-server-group-servers-attribute --server-group-id sgp-atstuj3rtop0000 --servers ServerType=Ecs Description=test ServerId=i-bp1f9kdprbgy9uiu0000 Port=80 ServerIp=192.168.1.1 Weight=100 --client-token 593B0448-D13E-4C56-AC0D-FDF0000000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun alb UpdateServerGroupServersAttribute --region cn-hangzhou --Servers.1.ServerType Ecs --Servers.1.Description test --Servers.1.ServerId 'i-bp1f9kdprbgy9uiu0000' --DryRun false --Servers.1.Port 80 --ServerGroupId 'sgp-atstuj3rtop0000' --Servers.1.Weight 100 --Servers.1.ServerIp '192.168.1.1' --ClientToken '593B0448-D13E-4C56-AC0D-FDF0000000' --method POST --force"

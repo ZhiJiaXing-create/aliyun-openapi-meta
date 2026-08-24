@@ -1,5 +1,6 @@
 {
   "name": "ListOnlineEvalTaskResults",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/api/v1/PAILLMTrace/onlineevaltaskresults",
@@ -8,33 +9,60 @@
       "name": "EvaluationId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "评估任务的id。链路id和任务Id至少要设置其中一个。",
+        "en": "The ID of the evaluation task. At least one of the trace ID or task ID must be set."
+      }
     },
     {
       "name": "MostRecentResultsOnly",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同一条链路数据可能会被不同的任务都评估过。如果不指定任务id，且同一个链路id有多条评估结果，那么这个参数指定是否只返回最新的一条评估结果。默认为True，只返回最新的一条结果。",
+        "en": "The same trace data may have been evaluated by different tasks. If no task ID is specified and there are multiple evaluation results for the same trace ID, this parameter specifies whether to return only the most recent evaluation result."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前页数。取值范围：大于0的整数。默认值：1。",
+        "en": "The current page number. Value range: integers greater than 0. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，默认为10，最大为50。",
+        "en": "Page size, default is 10."
+      }
     },
     {
       "name": "TraceIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定一组链路id，只返回这些链路的评估结果。链路id和任务Id至少要设置其中一个。",
+        "en": "Specify a set of trace IDs, and only return the evaluation results for these traces. At least one of the trace ID or task ID must be set."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取一个链路评估任务的结果列表",
+    "en": "Get a list of trace evaluation task results"
+  },
   "example": {
     "unifiedCli": "aliyun paillmtrace list-online-eval-task-results --trace-ids 3fbb8d864ac0004b7e41b6f4512c80ae --page-number 2 --page-size 50 --evaluation-id 0bb05ae8888c11ef9757faaa2a1ec0c6 --most-recent-results-only true --region cn-hangzhou",
     "legacyCli": "aliyun paillmtrace GET /api/v1/PAILLMTrace/onlineevaltaskresults --region cn-hangzhou --TraceIds 3fbb8d864ac0004b7e41b6f4512c80ae --PageSize 50 --PageNumber 2 --EvaluationId 0bb05ae8888c11ef9757faaa2a1ec0c6 --MostRecentResultsOnly true --header \"Content-Type=application/json\""

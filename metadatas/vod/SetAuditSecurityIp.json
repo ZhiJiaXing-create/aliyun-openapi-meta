@@ -1,5 +1,6 @@
 {
   "name": "SetAuditSecurityIp",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Ips",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "审核安全IP列表。每个分组最多支持100个，多个IP使用英文逗号（,）隔开，格式如下：\n\n- 精确IP：192.168.0.1\n- CIDR模式：192.168.0.1/24（无类域间路由，/24表示了地址中前缀的长度，范围：`[1,32]`）",
+        "en": "The IP addresses that you want to add to the review security group. You can add a maximum of 100 IP addresses to a review security group. Separate multiple IP addresses with commas (,). You can add IP addresses in the following formats to review security groups:\n\n*   IP address: 192.168.0.1\n*   CIDR block: 192.168.0.1/24. /24 indicates that the prefix of the CIDR block is 24 bits in length. You can replace 24 with a value that ranges `from 1 to 32`."
+      }
     },
     {
       "name": "OperateMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "操作方式，取值范围：\n\n- **Append**：默认值，追加IP白名单。\n- **Cover**：覆盖原IP白名单。\n- **Delete**：删除IP白名单。\n> 当输入的参数取值不在上述取值范围内时，会使用默认值调用(即Append)。",
+        "en": "The operation type. Valid values:\n\n*   **Append** (default): adds the IP addresses to the original whitelist.\n*   **Cover**: overwrites the original whitelist.\n*   **Delete**: removes the IP addresses from the original whitelist.\n\n>  If the value that you specify is invalid, the default value is used."
+      }
     },
     {
       "name": "SecurityGroupName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "审核安全组名称。默认值为：**Default**。最多支持10个安全分组。",
+        "en": "The name of the review security group. Default value: **Default**. You can specify a maximum of 10 review security groups."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置审核安全IP",
+    "en": "SetAuditSecurityIp"
+  },
+  "descriptions": {
+    "zh": "当视频状态为审核中（Checking）或屏蔽（Blocked）状态时，只有来自审核安全IP的请求才可以播放。",
+    "en": "You can play videos in the Checking or Blocked state only from the IP addresses that are added to review security groups."
+  },
   "example": {
     "unifiedCli": "aliyun vod set-audit-security-ip --security-group-name Default --ips 192.168.0.1 --operate-mode Cover --region cn-hangzhou",
     "legacyCli": "aliyun vod SetAuditSecurityIp --region cn-hangzhou --SecurityGroupName Default --OperateMode Cover --Ips '192.168.0.1'"

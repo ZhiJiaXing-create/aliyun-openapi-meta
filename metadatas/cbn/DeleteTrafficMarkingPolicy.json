@@ -1,5 +1,6 @@
 {
   "name": "DeleteTrafficMarkingPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among all requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the value of **RequestId** as the value of **ClientToken**. The value of **RequestId** for each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会删除流量标记策略。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后直接删除流量标记策略。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: performs a dry run. The system checks the required parameters, request syntax, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the DryRunOperation error code is returned.\n*   **false** (default): performs a dry run and sends the request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制删除流量标记策略，取值：\n- **false**（默认值）：删除流量标记策略前校验是否存在流分类规则。如果存在流分类规则，则不允许删除流量标记策略，返回对应错误。\n- **true**：删除流量标记策略时，默认删除所有流分类规则。",
+        "en": "Whether to force delete the traffic marking policy. Valid values:\n\n*   **false** (default): checks whether there is a traffic classification rule before deleting the traffic marking policy. If there is, the traffic marking policy cannot be deleted and an error is returned.\n*   **true**: When you delete a traffic marking policy, all traffic classification rules are deleted by default."
+      }
     },
     {
       "name": "TrafficMarkingPolicyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量标记策略ID。",
+        "en": "The ID of the traffic marking policy."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除流量标记策略",
+    "en": "DeleteTrafficMarkingPolicy"
+  },
+  "descriptions": {
+    "zh": "- **DeleteTrafficMarkingPolicy**接口属于异步接口，即系统会先返回一个**RequestId**，但该流量标记策略并未删除完成，系统后台的删除任务仍在进行。您可以调用**ListTrafficMarkingPolicies**接口查询流量标记策略的状态。 \n\n    - 当流量标记策略处于**Deleting**状态时，表示流量标记策略正在删除中，在该状态下，您只能对流量标记策略执行查询操作，不能执行其他操作。\n    - 当查询不到指定的流量标记策略时，表示流量标记策略删除完成。\n- 删除流量标记策略前，请先删除流量标记策略下的流分类规则。具体操作，请参见[RemoveTrafficMatchRuleFromTrafficMarkingPolicy](~~468330~~)。",
+    "en": "*   **DeleteTrafficMarkingPolicy** is an asynchronous operation. After a request is sent, the system returns a **request ID** and runs the task in the background. You can call the **ListTrafficMarkingPolicies** operation to query the status of a traffic marking policy.\n\n    *   If a traffic marking policy is in the **Deleting** state, the traffic marking policy is being deleted. You can query the traffic marking policy but cannot perform other operations.\n    *   If a traffic marking policy cannot be found, the traffic marking policy is deleted.\n\n*   Before you delete a traffic marking policy, you must delete all traffic classification rules from the policy. For more information, see [RemoveTrafficMatchRuleFromTrafficMarkingPolicy](~~468330~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-traffic-marking-policy --client-token 123e4567-e89b-12d3-a456-4260000 --dry-run false --traffic-marking-policy-id tm-u9nxup5kww5po80000 --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteTrafficMarkingPolicy --region cn-hangzhou --Force false --TrafficMarkingPolicyId 'tm-u9nxup5kww5po80000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-4260000'"

@@ -1,5 +1,6 @@
 {
   "name": "Encrypt",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "Algorithm",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "加密算法，取值：\n\n- **RSAES_OAEP_SHA_1**\n- **RSAES_OAEP_SHA_256**\n- **SM2PKE**",
+        "en": "The encryption algorithm. Valid values:\n\n- **RSAES\\_OAEP\\_SHA\\_1**\n\n- **RSAES\\_OAEP\\_SHA\\_256**\n\n- **SM2PKE**"
+      }
     },
     {
       "name": "CertIdentifier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "证书唯一识别码。该参数可通过调用[ListCert](~~455806~~)获取。\n- SSL证书识别码一般为{证书ID}-cn-hangzhou。\n- PCA证书为对应私有证书的Identifier字段。",
+        "en": "The unique identifier of the certificate. To obtain this parameter, call the [ListCert](~~455806~~) operation.\n\n- The identifier of an SSL certificate is usually in the {Certificate ID}-cn-hangzhou format.\n\n- For a private certificate authority (PCA) certificate, this is the value of the Identifier field of the private certificate."
+      }
     },
     {
       "name": "CustomIdentifier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义标识，唯一键。",
+        "en": "The custom identifier, which serves as a unique key."
+      }
     },
     {
       "name": "MessageType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息类型。取值：\n\n- RAW（默认值）：将会对Plaintext直接加密操作。\n- Base64：Plaintext为base64编码格式，将会对Plaintext base64解密之后再进行加密操作。",
+        "en": "The message type. Valid values:\n\n- RAW (default): Directly encrypts the value of Plaintext.\n\n- Base64: Decodes the Base64-encoded value of Plaintext and then encrypts the decoded data."
+      }
     },
     {
       "name": "Plaintext",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待加密数据。\n可以是原文，也可以对原文进行Base64。具体参考MessageType字段。\n如果使用Base64编码，例如：待加密数据的十六进制内容为`[0x31, 0x32, 0x33, 0x34]`，则对应的Base64编码为MTIzNA==。\nPlaintext数据大小限制根据Algorithm的取值有所不同，具体如下：\n\n- **RSAES_OAEP_SHA_1**：214字节。\n- **RSAES_OAEP_SHA_256**：190字节。\n- **SM2PKE**：6047字节。",
+        "en": "The data to encrypt. The data can be plaintext or Base64-encoded plaintext. For more information, see the MessageType parameter. If you use Base64 encoding, for example, if the hexadecimal content of the data to be encrypted is `[0x31, 0x32, 0x33, 0x34]`, the corresponding Base64-encoded string is MTIzNA==. The maximum size of Plaintext depends on the Algorithm:\n\n- **RSAES\\_OAEP\\_SHA\\_1**: 214 bytes.\n\n- **RSAES\\_OAEP\\_SHA\\_256**: 190 bytes.\n\n- **SM2PKE**: 6047 bytes."
+      }
     },
     {
       "name": "WarehouseId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "仓库ID。\n> 此ID可通过调用[ListCertWarehouse ](~~455805~~)获取。",
+        "en": "The repository ID.\n\n> To obtain this ID, call the [ListCertWarehouse](~~455805~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "证书仓库中证书加密",
+    "en": "Encrypt"
+  },
+  "descriptions": {
+    "zh": "本接口的单用户QPS限制为10次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。",
+    "en": "The queries per second (QPS) limit for a single user is 10. If you exceed this limit, API calls are throttled, which may affect your business. To prevent this, call this operation at a reasonable rate."
+  },
   "example": {
     "unifiedCli": "aliyun cas encrypt --plaintext 1234000 --cert-identifier 1ef1da5f-38ed-69b3-0000-037781890265 --algorithm RSAESOAEPSHA_1 --message-type RAW --custom-identifier 00006bb538d538c70c01f81dg30000 --warehouse-id 12 --api-version 2020-04-07 --region cn-hangzhou",
     "legacyCli": "aliyun cas Encrypt --region cn-hangzhou --Plaintext 1234000 --CertIdentifier '1ef1da5f-38ed-69b3-0000-037781890265' --WarehouseId 12 --CustomIdentifier 00006bb538d538c70c01f81dg30000 --Algorithm RSAESOAEPSHA_1 --MessageType RAW"

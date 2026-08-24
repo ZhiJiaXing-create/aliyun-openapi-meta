@@ -1,5 +1,6 @@
 {
   "name": "EventRedeployInstance",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,19 +9,31 @@
       "name": "EventId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "系统事件ID。",
+        "en": "The system event ID."
+      }
     },
     {
       "name": "OpsType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "运维任务类型，取值范围：\n\n- immediate：立即执行。\n- scheduled：预约执行。",
+        "en": "The O\\&M task type. Valid values:\n\n- immediate: Immediate execution.\n\n- scheduled: Scheduled execution."
+      }
     },
     {
       "name": "PlanTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预约执行时间，时间戳，单位毫秒。 当OpsType=scheduled时，此字段为必输。",
+        "en": "The scheduled execution time, specified as a timestamp in milliseconds. This parameter is required if 'OpsType' is set to 'scheduled'."
+      }
     },
     {
       "name": "PlanUtcTime",
@@ -32,9 +45,24 @@
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID。",
+        "en": "The resource ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重新部署实例",
+    "en": "EventRedeployInstance"
+  },
+  "descriptions": {
+    "zh": "- 此运维操作，目前仅支持事件类型：Instance:SystemFailure.Redeploy（因系统问题实例重新部署）、Instance:SystemMaintenance.Redeploy（因系统维护实例重新部署）",
+    "en": "- This O\\&M operation supports only the following event types: `Instance:SystemFailure.Redeploy` (redeployment due to a system failure) and `Instance:SystemMaintenance.Redeploy` (redeployment for system maintenance)."
+  },
   "example": {
     "unifiedCli": "aliyun ens event-redeploy-instance --event-id e-d71ff150945b9c02eb6ebc0016328468 --resource-id i-55qi8m11rr53c4i964md8a00l --ops-type immediate --plan-time 1742452232000 --plan-utc-time example-string --region cn-hangzhou",
     "legacyCli": "aliyun ens EventRedeployInstance --region cn-hangzhou --ResourceId 'i-55qi8m11rr53c4i964md8a00l' --EventId 'e-d71ff150945b9c02eb6ebc0016328468' --PlanUtcTime 'example-string' --OpsType immediate --PlanTime 1742452232000"

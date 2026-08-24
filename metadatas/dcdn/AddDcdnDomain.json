@@ -1,5 +1,6 @@
 {
   "name": "AddDcdnDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "CheckUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "健康检测URL。",
+        "en": "The health check URL."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待添加的加速域名，仅支持添加单个域名。\n\n支持添加泛域名，以点号（.）开头，例如.example.com。",
+        "en": "The domain name to be accelerated. You can add only one domain name per request.\n\nWildcard domains are supported. A wildcard domain must start with a period (.), for example, `.example.com`."
+      }
     },
     {
       "name": "FunctionType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计算服务类型。取值：\n- **routine**：程序。\n- **image**：镜像。\n- **cloudFunction**：函数。",
+        "en": "The computing service type. Valid values:\n\n- **routine**: Routine.\n\n- **image**: Image.\n\n- **cloudFunction**: Cloud function."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。不传该参数时，系统自动补全默认资源组ID。",
+        "en": "The ID of the resource group. If you omit this parameter, the system uses the ID of the default resource group."
+      }
     },
     {
       "name": "Scope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速区域。取值：\n\n- **domestic**：仅中国内地。\n- **overseas**：全球（不包含中国内地）。\n- **global**：全球。\n\n默认取值为**domestic**。",
+        "en": "The service scope. Valid values:\n\n- **domestic**: Chinese mainland.\n\n- **overseas**: Regions outside the Chinese mainland.\n\n- **global**: Global.\n\nDefault value: **domestic**."
+      }
     },
     {
       "name": "Sources",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "回源地址列表。",
+        "en": "The list of sources."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。最多20个标签。",
+        "en": "The tags to add to the domain. You can add up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -64,9 +101,24 @@
       "name": "TopLevelDomain",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "顶级接入域。",
+        "en": "The top-level domain."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加域名",
+    "en": "AddDcdnDomain"
+  },
+  "descriptions": {
+    "zh": "- 创建域名之前，您必须先开通DCDN服务。具体操作，请参见[OpenDcdnService](~~OpenDcdnService~~)。\n- 如果加速区域选择的是仅中国内地或者全球，则加速域名必须已完成备案。\n- 当您首次将新域名添加至阿里云DCDN时，需按要求做域名归属权验证。具体操作，请参见[VerifyDcdnDomainOwner](~~VerifyDcdnDomainOwner~~)。\n- 每次只能添加一个加速域名，每个用户默认最多可以添加50个域名，如果需要添加更多域名，您可以通过配额中心申请。\n- 每个用户每小时最多调用100次。",
+    "en": "- You must activate the DCDN service before you add a domain name. For more information, see [OpenDcdnService](~~OpenDcdnService~~).\n\n- If the acceleration region is set to Chinese mainland only or Global, the accelerated domain must have an ICP filing.\n\n- The first time you add a domain name to Alibaba Cloud DCDN, you must complete domain ownership verification. For more information, see [VerifyDcdnDomainOwner](~~VerifyDcdnDomainOwner~~).\n\n- You can add only one accelerated domain at a time. By default, each user can add up to 50 domain names. To add more, request a quota increase in Quota Center.\n\n- This operation is limited to 100 calls per user per hour."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn add-dcdn-domain --domain-name example.com --resource-group-id rg-acfmyuji4b6r400 --sources content_:_10.10.10.10_,_type_:_ipaddr_,_priority_:_20_,_port_:80 --check-url www.example.com/test.html --scope domestic --top-level-domain yourTopLevelDomain --tag Value=value Key=env --function-type routine --region cn-hangzhou",
     "legacyCli": "aliyun dcdn AddDcdnDomain --region cn-hangzhou --Tag.1.Key env --CheckUrl 'www.example.com/test.html' --ResourceGroupId 'rg-acfmyuji4b6r400' --Scope domestic --DomainName 'example.com' --FunctionType routine --Tag.1.Value value --TopLevelDomain yourTopLevelDomain --Sources 'content_:_10.10.10.10_,_type_:_ipaddr_,_priority_:_20_,_port_:80'"

@@ -1,5 +1,6 @@
 {
   "name": "InsertCluster",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/pop/v5/resource/cluster",
@@ -8,45 +9,80 @@
       "name": "ClusterName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群名。",
+        "en": "The name of the cluster."
+      }
     },
     {
       "name": "ClusterType",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群类型。\n\n- 2：ECS集群\n- 3：EDAS自带K8s集群\n- 5：Kubernetes集群",
+        "en": "The type of the cluster. Valid values:\n\n*   2: Elastic Compute Service (ECS) cluster\n*   3: self-managed Kubernetes cluster in Enterprise Distributed Application Service (EDAS)\n*   5: Kubernetes cluster"
+      }
     },
     {
       "name": "IaasProvider",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IaaS资源供应商。\n\n<note>选择阿里云时，需要使用全大写的拼音，例如`ALIYUN`。</note>",
+        "en": "The provider of Infrastructure as a Service (IaaS) resources that are used in the cluster.\n\nWhen you use Alibaba Cloud, set the value to `ALIYUN`. The value is case-sensitive."
+      }
     },
     {
       "name": "LogicalRegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义命名空间的RegionId。\n格式为：`物理Region:自定义命名空间标识符`，例如`cn-hangzhou:test`。",
+        "en": "The ID of the custom namespace. The ID is in the `physical region ID:custom namespace identifier` format. Example: `cn-hangzhou:test`."
+      }
     },
     {
       "name": "NetworkMode",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络类型。\n\n- 1：经典网络\n- 2：VPC",
+        "en": "The network type of the cluster. Valid values:\n\n*   1: classic network\n*   2: virtual private cloud (VPC)"
+      }
     },
     {
       "name": "OversoldFactor",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "（**参数已不适用**）\nDocker集群CPU超卖：\n- 2：1:2比例\n- 4：1:4比例\n- 8：1:8比例",
+        "en": "**This parameter is deprecated.** The CPU overcommit ratio supported by a Docker cluster. Valid values:\n\n*   2: 1:2, which means that resources are overcommitted by 1:2.\n*   4: 1:4, which means that resources are overcommitted by 1:4.\n*   8: 1:8, which means that resources are overcommitted by 1:8."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VPC网络ID。若选择VPC网络，此参数为必选。",
+        "en": "The ID of the VPC. This parameter is required if you set the NetworkMode parameter to 2."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建集群",
+    "en": "InsertCluster"
+  },
   "example": {
     "unifiedCli": "aliyun edas insert-cluster --logical-region-id cn-beijing:td0000 --cluster-name 0000_product_test2 --cluster-type 2 --network-mode 2 --vpc-id vpc-2zef6ob8mrlzv8x3q0000 --oversold-factor 2 --iaas-provider ALIYUN --region cn-hangzhou",
     "legacyCli": "aliyun edas POST /pop/v5/resource/cluster --region cn-hangzhou --LogicalRegionId 'cn-beijing:td0000' --OversoldFactor 2 --VpcId 'vpc-2zef6ob8mrlzv8x3q0000' --ClusterName 0000_product_test2 --ClusterType 2 --NetworkMode 2 --IaasProvider ALIYUN --header \"Content-Type=application/json\""

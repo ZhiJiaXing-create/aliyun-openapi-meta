@@ -1,5 +1,6 @@
 {
   "name": "UpdateNetworkAclEntries",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,73 +9,121 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否是预检",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs a dry run. The system checks the request for potential issues, including the AccessKey pair, the permissions of the RAM user, and the required parameters. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EgressAclEntries",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "出方向规则的信息。",
+        "en": "The information about the outbound rules."
+      },
       "sub_parameters": [
         {
           "name": "Description",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则的描述信息。\n\n描述长度为1～256个字符，不能以`http://`或`https://`开头。",
+            "en": "The description of the outbound rule.\n\nThe description must be 1 to 256 characters in length and cannot start with `http://` or `https://`."
+          }
         },
         {
           "name": "DestinationCidrIp",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "目标地址网段。也支持传入前缀列表。",
+            "en": "The destination CIDR block. Alternatively, a prefix list ID can be provided."
+          }
         },
         {
           "name": "EntryType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则类型，取值为**custom**，表示自定义。",
+            "en": "The rule type. Set the value to **custom**."
+          }
         },
         {
           "name": "IpVersion",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "IP版本：\n\n- **IPv4**\n- **IPv6**",
+            "en": "The IP version:\n\n*   **IPv4**\n*   **IPv6**"
+          }
         },
         {
           "name": "NetworkAclEntryId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则条目的ID。\n\n**N**的取值为**0**~**99**，即最多可以更新100条出方向规则的信息。",
+            "en": "The ID of the outbound rule.\n\nValid values of **N**: **0** to **99**. You can specify at most 100 outbound rule IDs."
+          }
         },
         {
           "name": "NetworkAclEntryName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则条目的名称。\n\n名称长度为1～128个字符，不能以`http://`或`https://`开头。",
+            "en": "The name of the outbound rule.\n\nThe name must be 1 to 128 characters in length and cannot start with `http://` or `https://`."
+          }
         },
         {
           "name": "Policy",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "授权策略。取值：\n\n- **accept**：允许。\n\n- **drop**：拒绝。",
+            "en": "The access control policy. Valid values:\n\n*   **accept**\n*   **drop**"
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出方向规则的目的端口范围。\n\n- 当出方向规则的**Protocol**（协议类型）为**all**、**icmp**或**gre**时，端口范围为-1/-1，表示不限制端口。\n- 当出方向规则的**Protocol**（协议类型）为**tcp**或**udp**时，端口范围为**1**~**65535**，格式为**1/200**或**80/80**，表示端口1到端口200或端口80。",
+            "en": "The destination port range of the outbound traffic.\n\n*   If **Protocol** is set to **all**, **icmp**, or **gre**, the port range is -1/-1, which indicates all ports are available.\n*   If **Protocol** is set to **tcp** or **udp**, valid port numbers are **1** to **65535**. Format: **1/200** (port 1 to 200) or **80/80** (port 80)."
+          }
         },
         {
           "name": "Protocol",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "协议类型。取值：\n\n- **icmp**：网络控制报文协议。\n\n- **gre**：通用路由封装协议。\n\n- **tcp**：传输控制协议。\n\n- **udp**：用户数据报协议。\n\n- **all**：支持所有协议。\n\n- **icmpv6**：ipv6网络控制报文协议",
+            "en": "The protocol type. Valid values:\n\n*   **icmp**\n*   **gre**\n*   **tcp**\n*   **udp**\n*   **all**\n*   **icmpv6**"
+          }
         }
       ]
     },
@@ -83,60 +132,100 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "入方向规则的信息。",
+        "en": "The information about the inbound rules."
+      },
       "sub_parameters": [
         {
           "name": "Description",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则的描述信息。\n\n描述长度为1～256个字符，不能以`http://`或`https://`开头。",
+            "en": "The description of the inbound rule.\n\nThe description must be 1 to 256 characters in length and cannot start with `http://` or `https://`."
+          }
         },
         {
           "name": "EntryType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则类型，取值为**custom**，表示自定义。",
+            "en": "The rule type. Set the value to **custom**."
+          }
         },
         {
           "name": "IpVersion",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "IP版本：\n- **IPv4**\n- **IPv6**",
+            "en": "The IP version:\n\n*   **IPv4**\n*   **IPv6**"
+          }
         },
         {
           "name": "NetworkAclEntryId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则条目的ID。\n\n**N**的取值为**0**~**99**，即最多可以更新100条入方向规则的信息。",
+            "en": "The ID of the inbound rule.\n\nValid values of **N**: **0** to **99**. You can specify at most 100 inbound rule IDs."
+          }
         },
         {
           "name": "NetworkAclEntryName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则条目的名称。\n\n名称长度为1～128个字符，不能以`http://`或`https://`开头。",
+            "en": "The name of the inbound rule.\n\nThe name must be 1 to 128 characters in length and cannot start with `http://` or `https://`."
+          }
         },
         {
           "name": "Policy",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "授权策略。取值：\n\n- **accept**：允许。\n\n- **drop**：拒绝。",
+            "en": "The access control policy. Valid values:\n\n*   **accept**: allows network traffic.\n*   **drop**"
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "入方向规则的源端口范围。\n\n- 当入方向规则的**Protocol**（协议类型）为**all**、**icmp**或**gre**时，端口范围为-1/-1，表示不限制端口。\n- 当入方向规则的**Protocol**（协议类型）为**tcp**或**udp**时，端口范围为**1**~**65535**，格式为**1/200**或**80/80**，表示端口1到端口200或端口80。",
+            "en": "The source port range of the inbound rule.\n\n*   If **Protocol** is set to **all**, **icmp**, or **gre**, the port range is -1/-1, which indicates all ports are available.\n*   If **Protocol** is set to **tcp** or **udp**, valid port numbers are **1** to **65535**. Format: **1/200** (port 1 to 200) or **80/80** (port 80)."
+          }
         },
         {
           "name": "Protocol",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "协议类型。取值：\n\n- **icmp**：网络控制报文协议。\n\n- **gre**：通用路由封装协议。\n\n- **tcp**：传输控制协议。\n\n- **udp**：用户数据报协议。\n\n- **all**：支持所有协议。\n\n- **icmpv6**: ipv6网络控制报文协议。",
+            "en": "Protocol type. Valid values:\n\n*   **icmp**\n*   **gre**\n*   **tcp**\n*   **udp**\n*   **all**\n*   **icmpv6**"
+          }
         },
         {
           "name": "SourceCidrIp",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源地址网段。也支持传入前缀列表。",
+            "en": "The source CIDR block. Alternatively, a prefix list ID can be provided."
+          }
         }
       ]
     },
@@ -144,27 +233,54 @@
       "name": "NetworkAclId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络ACL的ID。",
+        "en": "The ID of the network ACL."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络ACL所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the network ACL.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "UpdateEgressAclEntries",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否更新出方向规则。取值：\n\n- **true**：更新。\n\n- **false**（默认）：不更新。\n\n> 该参数不支持增量修改，当ACL已经有一条出方向规则，如果想要再增加一条出方向规则，调用该API时必须把这两条规则都传入，如果只传入新增的出方向规则，会把已有的出方向规则删除。",
+        "en": "Specifies whether to update outbound rules. Valid values:\n\n*   **true**\n*   **false** (default)\n\n>  This parameter cannot be used to add outbound rules to ACLs. If you want to add more outbound rules to ACLs, specify both the existing rule and the rule that you want to add when you call this API operation. If you specify only the rule that you want to add, it overwrites the existing rule."
+      }
     },
     {
       "name": "UpdateIngressAclEntries",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否更新入方向规则。取值：\n\n- **true**：更新。\n\n- **false**（默认）：不更新。\n\n> 该参数不支持增量修改，当ACL已经有一条入方向规则，如果想要再增加一条入方向规则，调用该API时必须把这两条规则都传入，如果只传入新增的入方向规则，会把已有的入方向规则删除。",
+        "en": "Specifies whether to update inbound rules. Valid values:\n\n*   **true**\n*   **false** (default)\n\n>  This parameter cannot be used to add inbound rules to ACLs. If you want to add more inbound rules to ACLs, you must specify both the existing rule and the rule that you want to add when you call this API operation. If you specify only the rule that you want to add, it overwrites the existing rule."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新网络ACL规则",
+    "en": "UpdateNetworkAclEntries"
+  },
+  "descriptions": {
+    "zh": "- **UpdateNetworkAclEntries**接口属于异步接口，即系统返回一个请求ID，但该网络ACL规则尚未更新成功，系统后台的更新任务仍在进行。您可以调用[DescribeNetworkAclAttributes](~~116542~~)查询网络ACL规则的更新状态：\n    - 当网络ACL规则处于**Modifying**状态时，表示网络ACL规则正在更新中。\n    - 当网络ACL规则处于**Available**状态时，表示网络ACL规则更新成功。\n- **UpdateNetworkAclEntries**接口不支持并发更新同一个网络ACL规则。",
+    "en": "- **UpdateNetworkAclEntries**接口属于异步接口，即系统返回一个请求ID，但该网络ACL规则尚未更新成功，系统后台的更新任务仍在进行。您可以调用[DescribeNetworkAclAttributes](~~116542~~)查询网络ACL规则的更新状态：\n    - 当网络ACL规则处于**Modifying**状态时，表示网络ACL规则正在更新中。\n    - 当网络ACL规则处于**Available**状态时，表示网络ACL规则更新成功。\n- **UpdateNetworkAclEntries**接口不支持并发更新同一个网络ACL规则。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc update-network-acl-entries --ingress-acl-entries Policy=accept EntryType=custom Description=This_is_IngressAclEntries. IpVersion=IPv4 SourceCidrIp=10.0.0.0/24_pl-xxxxxx Port=-1/-1 NetworkAclEntryName=acl-3 Protocol=all NetworkAclEntryId=nae-2zepn32de59j8m40000 --egress-acl-entries Policy=accept EntryType=custom Description=This_is_EgressAclEntries. DestinationCidrIp=10.0.0.0/24_pl-xxxxxx IpVersion=IPv4 Port=-1/-1 NetworkAclEntryName=acl-2 Protocol=all NetworkAclEntryId=nae-2zecs97e0brcge460000 --update-ingress-acl-entries false --update-egress-acl-entries false --network-acl-id nacl-bp1lhl0taikrzxsc0000 --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun vpc UpdateNetworkAclEntries --region cn-hangzhou --EgressAclEntries.1.NetworkAclEntryId 'nae-2zecs97e0brcge460000' --UpdateEgressAclEntries false --NetworkAclId 'nacl-bp1lhl0taikrzxsc0000' --EgressAclEntries.1.IpVersion IPv4 --EgressAclEntries.1.DestinationCidrIp '10.0.0.0/24_pl-xxxxxx' --IngressAclEntries.1.Description 'This_is_IngressAclEntries.' --IngressAclEntries.1.IpVersion IPv4 --DryRun true --IngressAclEntries.1.SourceCidrIp '10.0.0.0/24_pl-xxxxxx' --IngressAclEntries.1.EntryType custom --EgressAclEntries.1.Description 'This_is_EgressAclEntries.' --IngressAclEntries.1.Policy accept --EgressAclEntries.1.EntryType custom --EgressAclEntries.1.NetworkAclEntryName 'acl-2' --IngressAclEntries.1.NetworkAclEntryName 'acl-3' --EgressAclEntries.1.Protocol all --EgressAclEntries.1.Policy accept --IngressAclEntries.1.Protocol all --UpdateIngressAclEntries false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --IngressAclEntries.1.NetworkAclEntryId 'nae-2zepn32de59j8m40000' --EgressAclEntries.1.Port '-1/-1' --IngressAclEntries.1.Port '-1/-1'"

@@ -1,5 +1,6 @@
 {
   "name": "DeleteBasicEndpoint",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nSet this parameter to a value that is generated from your client to make sure that the value is unique among different requests. The ClientToken value supports only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除的基础型全球加速实例终端节点所属的终端节点组ID。",
+        "en": "The ID of the endpoint group to which the endpoint that you want to delete belongs. You can call the [ListBasicEndpointGroups](~~~~) operation to query the endpoint group ID of a basic Alibaba Cloud Global Accelerator (GA) instance."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除的基础型全球加速实例终端节点ID。",
+        "en": "The ID of the endpoint that you want to delete from the basic Alibaba Cloud Global Accelerator (GA) instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Global Accelerator instance. Set the value to **ap-southeast-1**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除基础型全球加速实例的终端节点",
+    "en": "Delete an endpoint of a basic global accelerator instance"
+  },
+  "descriptions": {
+    "zh": "- **DeleteBasicEndpoint**接口属于异步接口，即系统会先返回一个请求ID，但终端节点未删除完成，系统后台的删除任务仍在进行。您可以调用[ListBasicEndpoints](~~466831~~)查询终端节点的状态：\n    - 当终端节点状态为**deleting**时，表示终端节点正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到该终端节点时，表示终端节点已删除完成。\n- **DeleteBasicEndpoint**接口不支持在同一个基础型全球加速实例内并发删除终端节点。",
+    "en": "- **DeleteBasicEndpoint** is an asynchronous operation. After a request is sent, the system returns a request ID, but the endpoint is not yet deleted and the deletion node continues in the background. You can invoke [ListBasicEndpoints](~~466831~~) to query the status of the endpoint:\n    - If the endpoint is in the **deleting** state, the endpoint is being deleted. In this state, you can only execute query operations.\n    - If the endpoint cannot be found, the endpoint is deleted.\n- **DeleteBasicEndpoint** does not support concurrent deletion of endpoints within the same basic Alibaba Cloud Global Accelerator (GA) instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-basic-endpoint --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-group-id epg-bp1dmlohjjz4kqaun0000 --endpoint-id ep-bp14sz7ftcwwjgrdm0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteBasicEndpoint --region cn-hangzhou --EndpointGroupId 'epg-bp1dmlohjjz4kqaun0000' --EndpointId 'ep-bp14sz7ftcwwjgrdm0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

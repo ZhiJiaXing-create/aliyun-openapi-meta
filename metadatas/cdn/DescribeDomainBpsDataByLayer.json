@@ -1,5 +1,6 @@
 {
   "name": "DescribeDomainBpsDataByLayer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的加速域名，多个域名用半角逗号（,）分隔，一次最多支持500个域名查询。\n\n> 不传该参数，默认返回所有加速域名合并后的数据。",
+        "en": "The accelerated domain name. You can specify up to 500 domain names in each request. Separate multiple domain names with commas (,).\n\n> If you do not specify this parameter, the bandwidth data about all accelerated domain names that belong to your Alibaba Cloud account is queried."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定查询数据的时间粒度，单位：秒。\n\n根据单次查询的最大时间跨度不同，该参数支持300（5分钟）、3600（1小时）和86400（1天）取值，具体请参见**使用说明**中支持查询的时间粒度。",
+        "en": "The time granularity of the data entries. Unit: seconds.\n\nThe time granularity varies with the maximum time range per query. Valid values: 300 (5 minutes), 3600 (1 hour), and 86400 (1 day). For more information, see **Usage notes**."
+      }
     },
     {
       "name": "IspNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商英文名。通过[DescribeCdnRegionAndIsp](~~DescribeCdnRegionAndIsp~~)接口获得，默认查询所有运营商。",
+        "en": "The name of the Internet service provider (ISP). You can call the [DescribeCdnRegionAndIsp](~~DescribeCdnRegionAndIsp~~) operation to query ISPs. If you do not specify an ISP, data of all ISPs is queried."
+      }
     },
     {
       "name": "Layer",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询维度。\n- 网络层：**IPv4**、**IPv6**。\n- 应用层：**http**、**https**、**quic**。\n- **all**：包含网络层和应用层。\n\n默认值为**all**。",
+        "en": "The layer at which you want to query the bandwidth data. Valid values:\n\n- Network layer: **IPv4** and **IPv6**.\n\n- Application layer: **http**, **https**, and **quic**.\n\n- **all**: specifies that both the network and application layers are included.\n\nDefault value: **all**."
+      }
     },
     {
       "name": "LocationNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域英文名。通过[DescribeCdnRegionAndIsp](~~DescribeCdnRegionAndIsp~~)接口获得，默认查询所有地域。",
+        "en": "The name of the region. You can call the [DescribeCdnRegionAndIsp](~~DescribeCdnRegionAndIsp~~) operation to query regions. If you do not specify a region, data in all regions is queried."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的起始时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询带宽-按协议",
+    "en": "DescribeDomainBpsDataByLayer"
+  },
+  "descriptions": {
+    "zh": "- 单用户调用频率：20次/秒。\n- 如果您不指定StartTime和EndTime，该接口返回过去24小时的数据；指定StartTime和EndTime，该接口返回指定时间段的数据。\n\n**支持查询的时间粒度**\n\n根据单次查询的最大时间跨度不同，请求参数Interval支持不同的查询数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n\n|时间粒度         |单次查询的最大时间跨度  |可查询历史数据时间范围|数据延迟|\n|---------------|--------|---|---|\n|5分钟|3天|93天|15分钟|\n|1小时|31天|186天|一般延迟3-4小时|\n|1天|90天|366天|一般延迟4小时，不超过24小时|",
+    "en": "- Each account can call this operation up to 20 times per second.\n\n- If you do not set the StartTime or EndTime parameter, the request returns the data collected in the last 24 hours. If you set both these parameters, the request returns the data collected within the specified time range.\n\n**Time granularity**\n\nThe time granularity supported by the Interval parameter, the maximum time period within which historical data is available, and the data delay vary with the maximum time range per query, as described in the following table.\n\n| Time granularity | Maximum time range per query | Historical data available | Data delay            |\n| ---------------- | ---------------------------- | ------------------------- | --------------------- |\n| 5 minutes        | 3 days                       | 93 days                   | 15 minutes            |\n| 1 hour           | 31 days                      | 186 days                  | 4 hours               |\n| 1 day            | 366 days                     | 366 days                  | 04:00 on the next day |"
+  },
   "example": {
     "unifiedCli": "aliyun cdn describe-domain-bps-data-by-layer --domain-name example.com --start-time 2020-05-06T07:10:00Z --end-time 2020-05-06T07:20:00Z --interval 300 --isp-name-en unicom --location-name-en beijing --layer IPv4 --region cn-hangzhou",
     "legacyCli": "aliyun cdn DescribeDomainBpsDataByLayer --region cn-hangzhou --IspNameEn unicom --EndTime '2020-05-06T07:20:00Z' --DomainName 'example.com' --LocationNameEn beijing --StartTime '2020-05-06T07:10:00Z' --Layer IPv4 --Interval 300"

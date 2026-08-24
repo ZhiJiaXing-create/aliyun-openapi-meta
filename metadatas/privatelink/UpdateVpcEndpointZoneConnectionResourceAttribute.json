@@ -1,5 +1,6 @@
 {
   "name": "UpdateVpcEndpointZoneConnectionResourceAttribute",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会修改服务资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点ID。",
+        "en": "The endpoint ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的终端节点连接带宽的地域ID。\n\n您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The region ID of the endpoint connection whose bandwidth you want to modify.\n\nYou can call the [DescribeRegions](~~120468~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceAllocateMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源分配模式，只能在终端节点连接处于**已断开**时调整资源分配模式。取值：\n\n- **Auto**：自动分配服务资源（随机分配），此时会清除已经指定的服务资源。\n\n- **Manual**：手动分配服务资源，此时必须输入**ResourceId**和**ResourceType**参数。",
+        "en": "The resource allocation mode. You can change the resource allocation mode only if the endpoint connection is in the **Disconnected** state. Valid values:\n\n- **Auto**: automatically and randomly allocates service resources. In this mode, the specified service resource is deleted.\n\n- **Manual**: manually allocates service resources. If you set the value to Manual, you must also specify the **ResourceId** and **ResourceType** parameters."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点连接所在可用区手动分配或迁移的服务资源ID。\n\n> 当**ResourceAllocateMode**为**Manual**或指定**ResourceReplaceMode**参数时，此参数必选。",
+        "en": "The ID of the service resource that you want to manually allocate or migrate in the zone where the endpoint connection is deployed.\n\n> If **ResourceAllocateMode** is set to **Mannual**, or **ResourceReplaceMode** is set, this parameter is required."
+      }
     },
     {
       "name": "ResourceReplaceMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务资源迁移方式。取值：\n\n- **Graceful**：平滑迁移，此时可用区连接平滑迁移服务资源。\n\n- **Force**：强制迁移，此时可用区连接强制迁移服务资源。\n\n\n>只能在终端节点连接处于**已连接**且需要迁移服务资源时输入此参数，此时必须输入**ResourceId**和**ResourceType**参数。",
+        "en": "The migration mode of the service resource. Valid values:\n\n- **Graceful**: smooth migration. Service resources in the zone are smoothly migrated.\n\n- **Force**: forced migration. Service resources in the zone are forcefully migrated.\n\n> You need to specify this parameter only if you want to migrate service resources and the endpoint connection is in the **Connected** state. If you specify this parameter, you must also specify the **ResourceId** and **ResourceType** parameters."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务资源类型。取值：\n\n- **slb**：表示服务资源类型为专有网络类型且支持PrivateLink功能的传统型负载均衡CLB（Classic Load Balancer）。\n\n-  **alb**：表示服务资源类型为专有网络类型且支持PrivateLink功能的应用型负载均衡ALB（Application Load Balancer）。\n\n> 当**ResourceAllocateMode**为**Manual**或指定**ResourceReplaceMode**参数时，此参数必选。",
+        "en": "The type of the service resource. Valid values:\n\n- **slb**: a CLB instance that supports PrivateLink. In addition, the CLB instance is deployed in a VPC.\n\n- **alb**: an Application Load Balancer (ALB) instance that supports PrivateLink. In addition, the ALB instance is deployed in a VPC.\n\n> If **ResourceAllocateMode** is set to **Mannual**, or **ResourceReplaceMode** is set, this parameter is required."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点服务ID。",
+        "en": "The endpoint service ID."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "可用区ID。",
+        "en": "The zone ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "替换终端节点可用区连接服务资源",
+    "en": "UpdateVpcEndpointZoneConnectionResourceAttribute"
+  },
+  "descriptions": {
+    "zh": "- 替换终端节点可用区连接服务资源的功能默认不开放，请登录[配额中心控制台](https://quotas.console.aliyun.com/white-list-products/privatelink/quotas)，搜索ID`privatelink_whitelist/svc_res_mgt_uat`进行申请。\n\n- 请确保旧的服务资源不允许自动分配，具体操作，请参见[UpdateVpcEndpointServiceResourceAttribute](~~469340~~)。\n\n- 终端节点连接处于**未连接**状态时，支持手动分配可用区的服务资源。\n- 终端节点连接处于**已连接**状态后，支持手动迁移可用区的服务资源（此时有断连风险）。\n- **UpdateVpcEndpointZoneConnectionResourceAttribute**接口属于异步接口，即系统会返回一个请求ID，但终端节点连接可用区的服务资源尚未修改完成，系统后台修改任务仍在进行中。您可以调用[GetVpcEndpointServiceAttribute](~~469330~~)查询服务资源的修改状态：\n\n    - 当终端节点服务处于**Pending**状态时，表示服务资源正在修改中。\n    - 当终端节点服务处于**Active**状态时，表示服务资源修改完成。\n\n- **UpdateVpcEndpointZoneConnectionResourceAttribute**接口不支持在同一个终端节点实例下并发修改终端节点连接可用区的服务资源。",
+    "en": "### Prerequisites\n\nBy default, the feature of modifying a service resource of a zone to which an endpoint connection belongs is unavailable. To use this feature, log on to the [Quota Center console](https://quotas.console.aliyun.com/white-list-products/privatelink/quotas). Click Whitelist Quotas in the left-side navigation pane and click PrivateLink in the Networking section. On the page that appears, search for `privatelink_whitelist/svc_res_mgt_uat` and click Apply in the Actions column.\n\n### Usage notes\n\n- If the endpoint connection is in the **Disconnected** state, you can manually allocate the service resource in the zone.\n\n- If the endpoint connection is in the **Connected** state, you can manually migrate the service resource in the zone. In this case, the connection might be interrupted.\n\n- **UpdateVpcEndpointZoneConnectionResourceAttribute** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetVpcEndpointServiceAttribute](~~469330~~) operation to check whether the service resource is modified.\n\n  - If the endpoint service is in the **Pending** state, the service resource is being modified.\n\n  - If the endpoint service is in the **Active** state, the service resource is modified.\n\n- You cannot repeatedly call the **UpdateVpcEndpointZoneConnectionResourceAttribute** operation to modify a service resource in the zone to which an endpoint connection belongs within a specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink update-vpc-endpoint-zone-connection-resource-attribute --biz-region-id cn-hangzhou --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --service-id epsrv-hp3vpx8yqxblby3i0000 --endpoint-id ep-hp33b2e43fays7s80000 --zone-id cn-hangzhou-b --resource-allocate-mode Auto --resource-replace-mode Graceful --resource-type slb --resource-id lb-hp32z1wp5peaoox2q0000 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink UpdateVpcEndpointZoneConnectionResourceAttribute --region cn-hangzhou --ZoneId 'cn-hangzhou-b' --ResourceAllocateMode Auto --ResourceId 'lb-hp32z1wp5peaoox2q0000' --EndpointId 'ep-hp33b2e43fays7s80000' --DryRun false --ResourceType slb --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --ResourceReplaceMode Graceful --ServiceId 'epsrv-hp3vpx8yqxblby3i0000'"

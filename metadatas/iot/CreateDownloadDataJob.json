@@ -1,5 +1,6 @@
 {
   "name": "CreateDownloadDataJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DownloadDataType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "下载对象的类型，暂只支持**TABLE**。",
+        "en": "The type of object to download. Only **TABLE** is currently supported."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时间范围，查询数据的结束时间。",
+        "en": "The end time of the time range for querying data."
+      }
     },
     {
       "name": "FileConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下载文件设置。给下载文件设置一个名称（fileName），可自定义，若fileName不传则默认生成一个文件名。",
+        "en": "File settings for the download. You can specify a custom file name (fileName). If fileName is not provided, a default file name is generated."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The instance ID. You can view the current instance ID on the **Instance Overview** page in the IoT Platform console.\n\n><notice>\n- If an ID value exists, you must provide it; otherwise, the invocation will fail.\n- If there is no <props=\"intl\"><ph>**Instance Overview** page or</ph></props> ID value, you do not need to provide it.\n\n></notice>\n\nFor more information about instances, see [Instance Overview](~~356505~~)."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时间范围，查询数据的开始时间。",
+        "en": "The start time of the time range for querying data."
+      }
     },
     {
       "name": "TableName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需下载的表名称。",
+        "en": "The name of the table to download."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "CreateDownloadDataJob",
+    "en": "CreateDownloadDataJob"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n- 该任务等同于在控制台创建的数据下载任务，用户可在对应数据表的导出管理页面查看此次下载任务的日志，并下载文件。\n\n- 通过该接口创建下载任务会增加[AMQP消息推送](~~143601~~)，其中`consumerGroupId`请选用`dop_aliyun_group_name`，消息内容包含此次下载任务的执行状态，用户可根据此状态，配合[GetDownloadFile](~~445783~~)接口获取文件下载地址或查看下载任务的异常信息。\n\n## 使用限制\n\n- 同一数据实例下，每次只能创建1个下载任务。待上一个任务执行完成后才能创建新的下载任务，否则会提示超过下载任务数限制异常。\n\n- 单次下载数据时间范围最多为3天。\n\n- 1天内只能创建3个下载任务，RAM用户共享阿里云账号配额。",
+    "en": "## How-To\n\n- This job is equivalent to a data download job created in the console. You can view the log of this download job and download the file on the export management page of the corresponding data table.\n\n- Creating a download job through this API triggers an [AMQP message push](~~143601~~). Use `dop_aliyun_group_name` as the `consumerGroupId`. The message content includes the execution status of this download job. You can use this status together with the [GetDownloadFile](~~445783~~) API to obtain the file download URL or view abnormal information about the download job.\n\n## Limits\n\n- Only one download job can be created at a time under the same data instance. You must wait until the previous job finishes before creating a new one. Otherwise, an exception indicating that the limit on the number of download jobs has been exceeded is returned.\n\n- The maximum time range for data in a single download is 3 days.\n\n- You can create up to 3 download jobs per day. Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot create-download-data-job --iot-instance-id iot-cn-npk1u000000 --table-name product_info --download-data-type TABLE --file-config fileName=fileName01 --start-time 1658332800000 --end-time 1658406464534 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot CreateDownloadDataJob --region cn-hangzhou --TableName product_info --FileConfig '{\"fileName\":\"fileName01\"}' --DownloadDataType TABLE --IotInstanceId 'iot-cn-npk1u000000' --EndTime 1658406464534 --StartTime 1658332800000"

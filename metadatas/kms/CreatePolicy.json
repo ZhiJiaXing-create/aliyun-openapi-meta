@@ -1,5 +1,6 @@
 {
   "name": "CreatePolicy",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AccessControlRules",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络控制规则名称。\n\n>查询已创建的网络控制规则，请参见[ListNetworkRules](~~2539433~~)。",
+        "en": "The name of the access control rule.\n\n> For more information about how to query created access control rules, see [ListNetworkRules](~~2539433~~)."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述信息。",
+        "en": "The description."
+      }
     },
     {
       "name": "KmsInstance",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "权限策略的作用域。即要访问的KMS实例。",
+        "en": "The scope of the permission policy. You need to specify the KMS instance that you want to access."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "权限策略名称。",
+        "en": "The name of the permission policy."
+      }
     },
     {
       "name": "Permissions",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "权限策略支持的操作。取值：\n\n- RbacPermission/Template/CryptoServiceKeyUser：可以对KMS实例进行密码运算操作。\n\n- RbacPermission/Template/CryptoServiceSecretUser：可以对KMS实例进行凭据相关操作。\n\n支持同时选择这两种操作。",
+        "en": "The operations that can be performed. Valid values:\n\n*   RbacPermission/Template/CryptoServiceKeyUser: allows you to perform cryptographic operations.\n*   RbacPermission/Template/CryptoServiceSecretUser: allows you to perform secret-related operations.\n\nYou can select both."
+      }
     },
     {
       "name": "Resources",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "允许访问的密钥和凭据。\n\n- 密钥：格式为`key/${KeyId}`，如果允许访问当前KMS实例的所有密钥请输入key/*。\n\n- 凭据：格式为`secret/${SecretName}`，如果允许访问当前KMS实例的所有凭据请输入secret/*。",
+        "en": "The key and secret that are allowed to access.\n\n*   Key: Enter a key in the `key/${KeyId}` format. To allow access to all keys of a KMS instance, enter key/\\*.\n*   Secret: Enter a secret in the `secret/${SecretName}` format. To allow access to all secrets of a KMS instance, enter secret/\\*."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建访问策略",
+    "en": "CreatePolicy"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 自建应用进行密码运算操作、获取凭据值前，需要通过应用身份凭证（ClientKey）访问KMS实例。创建应用接入点AAP和身份凭证（ClientKey）的整体流程如下：\n\n  1. 创建网络控制规则：设置允许访问KMS的私网IP或私网网段。更多信息，请参见[CreateNetworkRule](~~2539407~~)。\n  2. 创建权限策略：设置允许应用访问的密钥和凭据，并绑定网络控制规则。即本文介绍的内容。\n  3. 创建应用接入点：设置认证方式，并绑定权限策略。更多信息，请参见[CreateApplicationAccessPoint](~~2539467~~)。\n  4. 创建应用身份凭证（ClientKey）：设置ClientKey的加密口令、有效期，并绑定应用接入点。更多信息，请参见[CreateClientKey](~~2539509~~)。",
+    "en": "To perform cryptographic operations and retrieve secret values, self-managed applications must use a client key to access a Key Management Service (KMS) instance. The following process shows how to create a client key-based application access point (AAP):\n\n1.Create an access control rule: You can configure the private IP addresses or private CIDR blocks that are allowed to access a KMS instance. For more information, see [CreateNetworkRule](~~2539407~~).\n\n2.Create a permission policy: You can configure the keys and secrets that are allowed to access and bind access control rules to the keys and secrets.\n\n3.Create an AAP: You can configure an authentication method and bind a permission policy to an AAP. For more information, see [CreateApplicationAccessPoint](~~2539467~~).\n\n4.Create a client key: You can configure the encryption password and validity period of a client key and bind the client key to an AAP. For more information, see [CreateClientKey](~~2539509~~)."
+  },
   "example": {
     "unifiedCli": "aliyun kms create-policy --name policy_test --description policy_description --kms-instance kst-hzz634e67d126u9p90000 --permissions RbacPermission/Template/CryptoServiceKeyUser_,_RbacPermission/Template/CryptoServiceSecretUser --resources secret/acs/ram/user/ram-secret_,_secret/acs/ram/user/acr-master_,_key/key-hzz63d9c8d3dfv8cv0000 --access-control-rules NetworkRules_:_kst-hzz62ee817bvyyr5x0000.efkd_,_kst-hzz62ee817bvyyr5x0000.eyyp --region cn-hangzhou",
     "legacyCli": "aliyun kms CreatePolicy --region cn-hangzhou --KmsInstance 'kst-hzz634e67d126u9p90000' --Description policy_description --AccessControlRules 'NetworkRules_:_kst-hzz62ee817bvyyr5x0000.efkd_,_kst-hzz62ee817bvyyr5x0000.eyyp' --Permissions 'RbacPermission/Template/CryptoServiceKeyUser_,_RbacPermission/Template/CryptoServiceSecretUser' --Resources 'secret/acs/ram/user/ram-secret_,_secret/acs/ram/user/acr-master_,_key/key-hzz63d9c8d3dfv8cv0000' --Name policy_test"

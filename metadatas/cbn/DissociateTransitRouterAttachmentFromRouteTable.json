@@ -1,5 +1,6 @@
 {
   "name": "DissociateTransitRouterAttachmentFromRouteTable",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "A client token that ensures the idempotence of the request.\n\nGenerate a unique token on your client. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接解除关联转发关系。\n- **true**：发送检查请求，只进行校验，不会解除关联转发关系。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **false** (default): Sends a normal request. If the request passes the check, the network instance connection is dissociated from the route table.\n\n- **true**: Sends a dry run request to check the required parameters, request format, and permissions. An error message is returned if the request fails the dry run. The corresponding request ID is returned if the request passes the dry run."
+      }
     },
     {
       "name": "TransitRouterAttachmentId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络实例连接ID。",
+        "en": "The ID of the network instance connection."
+      }
     },
     {
       "name": "TransitRouterRouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "企业版转发路由器路由表ID。",
+        "en": "The ID of the route table of the Enterprise Edition transit router."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解除关联转发关系",
+    "en": "DissociateTransitRouterAttachmentFromRouteTable"
+  },
+  "descriptions": {
+    "zh": "**DissociateTransitRouterAttachmentFromRouteTable**接口属于异步接口，即系统会先返回一个**RequestId**，但网络实例连接和路由表并未完全解除关联转发关系，系统后台的解除任务仍在进行。您可以调用**ListTransitRouterRouteTableAssociations**接口查询网络实例连接和路由表的关联转发状态。 \n\n- 当关联转发状态为**Dissociating**时，表示网络实例连接和路由表正在解除关联转发关系。在该状态下，您只能对网络实例连接和路由表之间的关联转发关系执行查询操作，不能执行其他操作。\n- 当**ListTransitRouterRouteTableAssociations**接口无法查询到网络实例连接和路由表的关联转发关系时，表示网络实例连接和路由表已成功解除关联转发关系。",
+    "en": "**DissociateTransitRouterAttachmentFromRouteTable** is an asynchronous operation. After you send a request, the system returns a **RequestId**, but the operation runs in the background. The network instance connection is not immediately dissociated from the route table. To query the status of the association, call the **ListTransitRouterRouteTableAssociations** operation.\n\n- If the association status is **Dissociating**, the network instance connection is being dissociated from the route table. In this state, you can only query the association. You cannot perform other operations.\n\n- If the **ListTransitRouterRouteTableAssociations** operation does not return information about the association, the network instance connection has been dissociated."
+  },
   "example": {
     "unifiedCli": "aliyun cbn dissociate-transit-router-attachment-from-route-table --transit-router-attachment-id tr-attach-nls9fzkfat89340000 --transit-router-route-table-id vtb-bp1dudbh2d5na6b500000 --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun cbn DissociateTransitRouterAttachmentFromRouteTable --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-nls9fzkfat89340000' --TransitRouterRouteTableId 'vtb-bp1dudbh2d5na6b500000' --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

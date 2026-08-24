@@ -1,5 +1,6 @@
 {
   "name": "CreateAccount",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AccountDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账号描述，长度为2~256个字符。以中文、英文字母开头，可以包含数字、中文、英文、下划线（_）、短横线（-）。\n>不能以`http://`和`https://`开头。",
+        "en": "The description of the account. The value must be 2 to 256 characters in length. The value can contain letters, digits, underscores (\\_), and hyphens (-), and must start with a letter.\n\n> : The name cannot start with http:// or https://."
+      }
     },
     {
       "name": "AccountName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库账号名称。\n\n> 该名称必须唯一，且由大写字母（仅MySQL支持）、小写字母、数字或下划线组成。账号命名具体限制，请参见各引擎教程：[创建MySQL账号](~~96089~~)、[创建PostgreSQL账号](~~96753~~)、[创建SQL Server账号](~~95810~~)、[创建MariaDB账号](~~97132~~)。",
+        "en": "The name of the database account.\n\n\n*   The name must be unique.\n\n*   The name can contain lowercase letters, digits, and underscores (\\_). For MySQL databases, the name can contain uppercase letters.\n\n*   The name must start with a letter and end with a letter or digit.\n\n*   For MySQL databases, the name of the privileged account cannot be the same as that of the standard account. For example, if the name of the privileged account is `Test1`, the name of the standard account cannot be `test1`.\n\n*   The length of the value must meet the following requirements:\n\n    *   If the instance runs MySQL 5.7 or MySQL 8.0, the value must be 2 to 32 characters in length.\n    *   If the instance runs MySQL 5.6, the value must be 2 to 16 characters in length.\n    *   If the instance runs SQL Server, the value must be 2 to 64 characters in length.\n    *   If the instance runs PostgreSQL with cloud disks, the value must be 2 to 63 characters in length.\n    *   If the instance runs PostgreSQL with local disks, the value must be 2 to 16 characters in length.\n    *   If the instance runs MariaDB, the value must be 2 to 16 characters in length.\n\n*   For more information about invalid characters, see [Forbidden keywords](~~26317~~)."
+      }
     },
     {
       "name": "AccountPassword",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库账号的密码。\n> * 长度为8~32个字符。\n> * 由大写字母、小写字母、数字、特殊字符（`!@#$%^&*()_+-=`）中的任意三种组成。",
+        "en": "The password of the account.\n \n\n*   The value must be 8 to 32 characters in length.\n\n*   The password must contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters.\n\n*   Special characters include `! @ # $ % ^ & * ( ) _ + - =`"
+      }
     },
     {
       "name": "AccountType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账号类型，取值：\n\n- **Normal**（默认值）：普通账号。\n- **Super**：高权限账号，每个实例至多创建一个。\n- **Sysadmin**（仅SQL Server实例）：SA权限的数据库账号。创建前请先检查实例是否满足[前提条件](~~170736~~)。\n- **GlobalRO**（仅SQL Server实例）：全局只读账号，每个实例至多创建两个。实例数据库版本需为SQL Server 2016及以上且实例规格族为独享型或通用型。",
+        "en": "The account type. Valid values:\n\n*   **Normal** (default): standard account.\n*   **Super**: privileged account.\n*   **Sysadmin**: system admin account. The account type is available only for ApsaraDB RDS for SQL Server instances.\n\nBefore you create a system admin account, check whether the instance meets all prerequisites. For more information, see [Create a system admin account](~~170736~~)."
+      }
     },
     {
       "name": "CheckPolicy",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SQL Server实例的[账号密码策略](~~2845728~~)，取值：\n- **true**：应用策略\n- **false**：不应用策略\n> - 设置为true时，必须预先[设置SQL Server账号密码策略](~~2848317~~)。\n> - 该参数不支持SQL Server[共享型](~~57184~~)、[2008 R2版本](~~145468~~)以及[Serverless类型](~~603466~~)的实例。",
+        "en": "Specifies whether to use a password policy.\n\n> \n\n*   This parameter is available only for ApsaraDB RDS for SQL Server instances that do not belong to the shared instance family and do not run SQL Server 2008 R2.\n\n*   Before you call this operation, you must configure a password policy for the account of your instance. For more information, see [Configure a password policy for the account of an ApsaraDB RDS for SQL Server instance](~~2848317~~)."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，可调用[DescribeDBInstances](~~610396~~)获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据库账号",
+    "en": "CreateAccount"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n- [RDS MySQL创建账号](~~96089~~)\n- [RDS PostgreSQL创建账号](~~96753~~)\n- [RDS SQL Server创建账号](~~95810~~)\n- [RDS MariaDB创建账号](~~97132~~)",
+    "en": "### Supported database engines\n\n*   RDS MySQL\n*   RDS PostgreSQL\n*   RDS SQL Server\n*   RDS MariaDB\n\n### References\n\n> : Before you call this operation, read the following documentation and make sure that you fully understand the prerequisites and impacts of this operation.\n\n*   [Create an account on an ApsaraDB RDS for MySQL instance](~~96089~~)\n*   [Create an account on an ApsaraDB RDS for PostgreSQL instance](~~96753~~)\n*   [Create an account on an ApsaraDB RDS for SQL Server instance](~~95810~~)\n*   [Create an account on an ApsaraDB RDS for MariaDB instance](~~97132~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds create-account --db-instance-id rm-uf6wjk50000 --account-name test1 --account-password Test123456 --account-description testuser --account-type Normal --check-policy true --region cn-hangzhou",
     "legacyCli": "aliyun rds CreateAccount --region cn-hangzhou --AccountDescription testuser --DBInstanceId 'rm-uf6wjk50000' --CheckPolicy true --AccountType Normal --AccountName test1 --AccountPassword Test123456"

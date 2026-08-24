@@ -1,5 +1,6 @@
 {
   "name": "UpdateProtectionPolicy",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "PATCH",
   "pathPattern": "/api/v1/protection-policies/[ProtectionPolicyId]",
@@ -8,47 +9,82 @@
       "name": "BoundResourceCategoryIds",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "关联的资源分类ID列表",
+        "en": "The list of associated resource category IDs."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。说明 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters. If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+      }
     },
     {
       "name": "ProtectionPolicyId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "保护策略ID",
+        "en": "The protection policy ID."
+      }
     },
     {
       "name": "ProtectionPolicyName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保护策略名",
+        "en": "The protection policy name."
+      }
     },
     {
       "name": "SubProtectionPolicies",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "启用的子保护策略列表",
+        "en": "The list of enabled sub-protection policies."
+      },
       "sub_parameters": [
         {
           "name": "Config",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "子保护策略配置",
+            "en": "The sub-protection policy configuration."
+          }
         },
         {
           "name": "SubProtectionPolicyType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "子保护策略类型",
+            "en": "The sub-protection policy type."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新保护策略",
+    "en": "UpdateProtectionPolicy"
+  },
   "example": {
     "unifiedCli": "aliyun bdrc update-protection-policy --client-token a1b2c3d4-0000-0000-0000-a1b2c3d4f5e6 --protection-policy-id p-1230007890 --protection-policy-name My000Policy --bound-resource-category-ids rc-1230007890 --sub-protection-policies Config=autoSnapshotPolicyId_:_sp-1230007890 SubProtectionPolicyType=ECS_AUTO_SNAPSHOT_POLICY --region cn-hangzhou",
     "legacyCli": "aliyun bdrc PATCH /api/v1/protection-policies/p-1230007890 --region cn-hangzhou --header \"Content-Type=application/x-www-form-urlencoded\" --body ProtectionPolicyName=My000Policy&SubProtectionPolicies=[{Config=autoSnapshotPolicyId_:_sp-1230007890,SubProtectionPolicyType=ECS_AUTO_SNAPSHOT_POLICY}]&BoundResourceCategoryIds=[rc-1230007890]&ClientToken=a1b2c3d4-0000-0000-0000-a1b2c3d4f5e6"

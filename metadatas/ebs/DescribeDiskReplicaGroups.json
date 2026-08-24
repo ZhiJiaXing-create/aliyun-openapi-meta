@@ -1,5 +1,6 @@
 {
   "name": "DescribeDiskReplicaGroups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,77 +9,136 @@
       "name": "GroupIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "一致性复制组的ID列表。您可以指定一个或多个一致性复制组的ID进行查询。多个一致性复制组的ID之间用半角逗号（,）分隔。\n\n默认值为空，表示查询当前地域下所有的一致性复制组。最多允许填写100个复制组ID。",
+        "en": "The IDs of the replication pair-consistent groups. You can specify one or more group IDs. Separate multiple IDs with a comma (,).\n\nIf you do not specify this parameter, all replication pair-consistent groups in the current region are queried. You can specify up to 100 group IDs."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本次调用期望查询的最大条目数。可配合NextToken参数一起使用。\n\n取值范围：1~500。\n\n默认值：10。",
+        "en": "The maximum number of entries to return on a single page. You can use this parameter with NextToken.\n\nValid values: 1 to 500.\n\nDefault value: 10."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "复制组名称，支持模糊搜索。",
+        "en": "The name of the replication group. Fuzzy search is supported."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询凭证（Token）。取值为上一次调用该接口返回的NextToken参数值，初次调用接口时无需设置该参数。如果设置了NextToken，则请求参数PageSize和PageNumber将失效，且返回数据中的TotalCount无效。",
+        "en": "The query token. Set this parameter to the NextToken value returned from the previous call to this operation. You do not need to set this parameter for the first call. If you set NextToken, the PageSize and PageNumber parameters are ignored, and the TotalCount in the response is invalid."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时的页码。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时设置的每页行数。\n取值范围1~100。",
+        "en": "The number of entries per page.\nValid values: 1 to 100."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一致性复制组所属的地域ID。",
+        "en": "The region ID of the replication pair-consistent group."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "一致性复制组所在的企业资源组ID。",
+        "en": "The ID of the resource group to which the replication pair-consistent group belongs."
+      }
     },
     {
       "name": "Site",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询并返回指定站点的记录，主要应用于跨可用区复制对的场景。\n\n- 如果不指定该参数，则系统会返回生产站点的复制对记录和状态信息。\n\n- 如果指定该参数，则系统仅返回指定Site的复制对的记录和状态信息。取值范围：\n    - production：生产站点。\n    - backup：灾备站点。",
+        "en": "The site to query. This parameter is used when replication pairs are deployed across zones.\n\n- If you do not specify this parameter, the records and status information of replication pairs at the production site are returned.\n\n- If you specify this parameter, only the records and status information of replication pairs at the specified site are returned. Valid values:\n\n  - production: The production site.\n\n  - backup: The disaster recovery site."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表，最多包含20个子项。",
+        "en": "The tags. The list can contain up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "一致性复制组的标签键。",
+            "en": "The key of the tag of the replication pair-consistent group."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "一致性复制组的标签值。",
+            "en": "The value of the tag of the replication pair-consistent group."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询一个或多个异步复制组",
+    "en": "DescribeDiskReplicaGroups"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n当您需要分页查询时，请使用MaxResults与NextToken参数进行查询。\n\n分页查询首页时，设置`MaxResults`以限制返回信息的条目数，返回结果中的`NextToken`将作为查询后续页的凭证。查询后续页时，将`NextToken`参数设置为上一次返回结果中获取到的`NextToken`作为查询凭证，并设置MaxResults限制返回条目数。",
+    "en": "## Description\n\nTo perform a paged query, you can use the MaxResults and NextToken parameters.\n\nWhen you query the first page, set `MaxResults` to specify the number of entries to return. The `NextToken` value in the response is the token used to query subsequent pages. To query a subsequent page, set `NextToken` to the value from the previous response and set MaxResults to specify the number of entries for the current page."
+  },
   "example": {
     "unifiedCli": "aliyun ebs describe-disk-replica-groups --biz-region-id cn-hangzhou --max-results 10 --next-token AAAAAdDWBF20000 --group-ids AAAAAdDWBF20000 --site production --page-number 5 --page-size 10 --resource-group-id rg-aekz00000 --name pg-name000 --tag Value=tag-value Key=tag-key --region cn-hangzhou",
     "legacyCli": "aliyun ebs DescribeDiskReplicaGroups --region cn-hangzhou --Site production --GroupIds AAAAAdDWBF20000 --Tag.1.Key 'tag-key' --NextToken AAAAAdDWBF20000 --PageSize 10 --ResourceGroupId 'rg-aekz00000' --PageNumber 5 --MaxResults 10 --Tag.1.Value 'tag-value' --RegionId 'cn-hangzhou' --Name 'pg-name000'"

@@ -1,5 +1,6 @@
 {
   "name": "InstallMonitoringAgent",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制安装云监控插件。取值：\n- true（默认值）：强制安装。\n- false：不强制安装。",
+        "en": "Specifies whether to forcibly install the CloudMonitor agent. Valid values:\n\n- true (default): Forcibly installs the agent.\n\n- false: Does not forcibly install the agent."
+      }
     },
     {
       "name": "InstallCommand",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为当前阿里云账号下的所有阿里云主机安装云监控插件。取值：\n\n- `onlyInstallNotHasAgent` ： 仅为未安装云监控插件的阿里云主机安装最新版本插件。\n\n- `onlyUpgradeAgent`：仅为已安装非最新版本云监控插件的阿里云主机升级插件。\n\n- `installAndUpgrade`：不仅为未安装云监控插件的阿里云主机安装最新版本插件，且为已安装非最新版本云监控插件的阿里云主机升级插件。\n\n> 如果您已设置该参数，参数`InstanceIds`的设置无效。",
+        "en": "The installation command. This command installs the CloudMonitor agent on all Alibaba Cloud hosts that belong to your Alibaba Cloud account. Valid values:\n\n- `onlyInstallNotHasAgent`: Installs the latest version of the CloudMonitor agent only on Alibaba Cloud hosts where the agent is not installed.\n\n- `onlyUpgradeAgent`: Upgrades the CloudMonitor agent only on Alibaba Cloud hosts where an earlier version of the agent is installed.\n\n- `installAndUpgrade`: Installs the latest version of the CloudMonitor agent on Alibaba Cloud hosts where the agent is not installed, and upgrades the agent on Alibaba Cloud hosts where an earlier version of the agent is installed.\n\n> If you set this parameter, the `InstanceIds` parameter is invalid."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云主机ID。\n\nN的取值范围：1~10。\n\n> `InstallCommand`和`InstanceIds`必须二选一。",
+        "en": "The IDs of the Alibaba Cloud hosts.\n\nYou can specify from 1 to 10 instance IDs.\n\n> You must specify either `InstallCommand` or `InstanceIds`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为指定阿里云主机安装云监控插件",
+    "en": "InstallMonitoringAgent"
+  },
+  "descriptions": {
+    "zh": "## 前提条件\n请确保阿里云主机已安装云助手。关于如何安装云助手，请参见[云助手概述](~~64601~~)。\n\n## 背景信息\n本接口仅适用于阿里云主机，即ECS实例。\n通过API安装云监控插件的成功率约为95%，如果安装失败，则请手动安装。关于如何安装云监控插件，请参见[安装和卸载C++版本插件](~~183482~~)。\n\n## 使用说明\n本文将提供一个示例，强制为阿里云主机`i-m5e0k0bexac8tykr****`安装最新版本云监控插件。",
+    "en": "## Prerequisites\n\nEnsure that Cloud Assistant is installed on the Alibaba Cloud host. For more information, see [Cloud Assistant overview](~~64601~~).\n\n## Background information\n\nThis API applies only to Alibaba Cloud hosts, which are Elastic Compute Service (ECS) instances. The success rate for installing the CloudMonitor agent using this API is approximately 95%. If the installation fails, you must manually install the agent. For more information about how to install the CloudMonitor agent, see [Install and uninstall the C++ agent](~~183482~~).\n\n## Example\n\nThis example shows how to forcibly install the latest version of the CloudMonitor agent on the ECS instance `i-m5e0k0bexac8tykr****`."
+  },
   "example": {
     "unifiedCli": "aliyun cms install-monitoring-agent --biz-force true --instance-ids i-m5e0k0bexac8tykr0000 --install-command onlyInstallNotHasAgent --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun cms InstallMonitoringAgent --region cn-hangzhou --Force true --InstallCommand onlyInstallNotHasAgent --InstanceIds.1 'i-m5e0k0bexac8tykr0000'"

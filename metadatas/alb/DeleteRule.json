@@ -1,5 +1,6 @@
 {
   "name": "DeleteRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会删除一条转发规则。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回`HTTP_2xx`状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: sends the request without performing the operation. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false**: performs a dry run and sends the request. If the request passes the dry run, the `HTTP_2xx` status code is returned and the operation is performed. This is the default value."
+      }
     },
     {
       "name": "RuleId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发规则ID。",
+        "en": "The ID of the forwarding rule."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除转发规则",
+    "en": "DeleteRule"
+  },
+  "descriptions": {
+    "zh": "**DeleteRule**接口属于异步接口，即系统返回一个请求ID，但该转发规则尚未删除成功，系统后台的删除任务仍在进行。您可以调用[ListRules](~~214379~~)查询转发规则的删除状态：\n- 当转发规则处于**Deleting**状态时，表示转发规则正在删除中。\n- 当查询不到转发规则状态时，表示转发规则删除成功。",
+    "en": "**DeleteRule** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [ListRules](~~214379~~) operation to query the status of a forwarding rule:\n\n*   If the forwarding rule is in the **Deleting** state, the forwarding rule is being deleted.\n*   If the forwarding rule cannot be found, the forwarding rule is deleted."
+  },
   "example": {
     "unifiedCli": "aliyun alb delete-rule --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --dry-run true --rule-id rule-doc0000 --region cn-hangzhou",
     "legacyCli": "aliyun alb DeleteRule --region cn-hangzhou --RuleId 'rule-doc0000' --DryRun true --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898'"

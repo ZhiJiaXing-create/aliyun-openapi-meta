@@ -1,5 +1,6 @@
 {
   "name": "UpdateDataQualityRule",
+  "deprecated": true,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "CheckingConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "样本校验设置",
+        "en": "The sample verification settings."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则描述信息，最长500个字符",
+        "en": "The rule description. The maximum length is 500 characters."
+      }
     },
     {
       "name": "Enabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则是否启用",
+        "en": "Specifies whether the rule is enabled."
+      }
     },
     {
       "name": "ErrorHandlers",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "质量规则校验问题处理器列表",
+        "en": "The list of issue handlers for data quality rule verification."
+      },
       "sub_parameters": [
         {
           "name": "ErrorDataFilter",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "如果是自定义SQL规则，需要用户指定SQL来过滤问题数据",
+            "en": "For a custom SQL rule, you must specify the SQL used to filter problematic data."
+          }
         },
         {
           "name": "Type",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "处理器类型：\n- SaveErrorData",
+            "en": "The handler type.\n- SaveErrorData"
+          }
         }
       ]
     },
@@ -46,39 +71,74 @@
       "name": "Id",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则ID",
+        "en": "The rule ID."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则名称，数字、英文字母、汉字、半角全角标点符号组合，最长255个字符",
+        "en": "The rule name. The name can be a combination of digits, English letters, Chinese characters, and half-width or full-width punctuation. The maximum length is 255 characters."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DataWorks工作空间的ID。您可以登录[DataWorks控制台](https://workbench.data.aliyun.com/console)，进入工作空间配置页面获取工作空间ID。",
+        "en": "The ID of the DataWorks workspace. You can log on to the [DataWorks console](https://workbench.data.aliyun.com/console) and go to the Workspace Settings page to obtain the workspace ID."
+      }
     },
     {
       "name": "SamplingConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "样本采集所需的设置",
+        "en": "The settings required for sample collection."
+      }
     },
     {
       "name": "Severity",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则对于业务的等级（对应页面上的强弱规则），可选的枚举值：\n- Normal\n- High",
+        "en": "The severity level of the rule for the business (corresponding to strong/weak rules on the page). Valid values:\n- Normal\n- High"
+      }
     },
     {
       "name": "TemplateCode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则所引用的规则模板唯一标识",
+        "en": "The unique identifier of the rule template referenced by the rule."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新质量规则",
+    "en": "Updates a data quality rule"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用",
+    "en": "You must purchase DataWorks Basic Edition or above to use this feature."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public update-data-quality-rule --id 100001 --name The_table_cannot_be_empty. --enabled true --severity High --description this_is_a_odps_sql_task --project-id 10000 --template-code SYSTEM:table:table_count:fixed --sampling-config SettingConfig=SET_odps.sql.udf.timeout=600s_SET_odps.sql.python.version=cp27 SamplingFilter=id_IS_NULL Metric=Min MetricParameters=Columns_:_id_,_name_,_SQL_:_select_count_1_from_table --checking-config '{\"Type\":\"Fixed\",\"Thresholds\":{\"Expected\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_=_0.01\",\"Value\":\"100.0\"},\"Warned\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"100.0\"},\"Critical\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.05\",\"Value\":\"100.0\"}},\"ReferencedSamplesFilter\":\"bizdate_:_-1_,_-7_,_-1m\"}' --error-handlers Type=SaveErrorData ErrorDataFilter=SELECT_0_FROM_tb_api_log_WHERE_id_IS_NULL --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public UpdateDataQualityRule --region cn-hangzhou --TemplateCode 'SYSTEM:table:table_count:fixed' --Description this_is_a_odps_sql_task --CheckingConfig '{\"Type\":\"Fixed\",\"Thresholds\":{\"Expected\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_=_0.01\",\"Value\":\"100.0\"},\"Warned\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"100.0\"},\"Critical\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.05\",\"Value\":\"100.0\"}},\"ReferencedSamplesFilter\":\"bizdate_:_-1_,_-7_,_-1m\"}' --ProjectId 10000 --Enabled true --Severity High --Id 100001 --SamplingConfig '{\"SettingConfig\":\"SET_odps.sql.udf.timeout=600s_SET_odps.sql.python.version=cp27\",\"SamplingFilter\":\"id_IS_NULL\",\"Metric\":\"Min\",\"MetricParameters\":\"Columns_:_id_,_name_,_SQL_:_select_count_1_from_table\"}' --ErrorHandlers '[{\"Type\":\"SaveErrorData\",\"ErrorDataFilter\":\"SELECT_0_FROM_tb_api_log_WHERE_id_IS_NULL\"}]' --Name 'The_table_cannot_be_empty.'"

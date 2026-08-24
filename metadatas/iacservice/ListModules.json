@@ -1,5 +1,6 @@
 {
   "name": "ListModules",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/modules",
@@ -8,13 +9,21 @@
       "name": "groupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分组ID",
+        "en": "The group ID."
+      }
     },
     {
       "name": "keyword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索关键词，支持对模板名称的模糊搜索。",
+        "en": "The search keyword. Fuzzy match is supported for template names."
+      }
     },
     {
       "name": "moduleName",
@@ -26,41 +35,76 @@
       "name": "pageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，默认1。",
+        "en": "The page number. Default value: 1."
+      }
     },
     {
       "name": "pageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页返回的结果数量。默认值：20，最小值：1，最大值：100。",
+        "en": "The number of results per page. Default value: 20. Minimum value: 1. Maximum value: 100."
+      }
     },
     {
       "name": "projectId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "项目ID",
+        "en": "The project ID."
+      }
     },
     {
       "name": "tag",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "模板标签列表。",
+        "en": "The list of template tags."
+      },
       "sub_parameters": [
         {
           "name": "tagKey",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "模板的标签键。",
+            "en": "The tag key of the template."
+          }
         },
         {
           "name": "tagValue",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "模板的标签值。",
+            "en": "The tag value of the template."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "列举模板",
+    "en": "List templates"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n\n该接口用于列举当前用户下的所有 Terraform 模板。可以通过指定查询参数来实现分页、模糊匹配模板名称、筛选模板来源或状态等功能。此外，还可以通过标签进行更细粒度的筛选。\n\n### 特别注意\n- 分页参数 `pageNumber` 和 `pageSize` 可以帮助控制返回结果的数量。\n- 使用 `name` 参数可以对模板名称进行模糊匹配搜索。\n- 通过 `source` 参数可按模板来源（如 OSS 导入、文件上传等）筛选模板。\n- 利用 `status` 参数可以根据模板的状态（如已创建、已发布等）进行过滤。\n- 标签筛选需提供 JSON 格式的字符串，例如 `[{\"key\":\"env\",\"value\":\"prod\"}]`。",
+    "en": "## Operation description\n\nThis operation lists all Terraform templates for the current user. You can specify query parameters to implement pagination, fuzzy match template names, and filter templates by source or status. You can also filter templates by tag for more granular results.\n\n### Notes\n- Use the pageNumber and pageSize parameters to control the number of returned results.\n- Use the name parameter to perform a fuzzy match on template names.\n- Use the source parameter to filter templates by source, such as OSS import or file upload.\n- Use the status parameter to filter templates by status, such as Created or Published.\n- Tag-based filtering requires a JSON-formatted string, for example, `[{\"key\":\"env\",\"value\":\"prod\"}]`."
+  },
   "example": {
     "unifiedCli": "aliyun iacservice list-modules --keyword key --page-size 20 --page-number 1 --project-id p-al1c58tb2lu9oej36kclvf --group-id g-kw1a50tj8rk7cki2q8bbat --tag tagValue=TestValue tagKey=TestKey --module-name example-string --api-version 2021-08-06 --region cn-hangzhou",
     "legacyCli": "aliyun iacservice GET /modules --region cn-hangzhou --pageNumber 1 --groupId 'g-kw1a50tj8rk7cki2q8bbat' --moduleName 'example-string' --pageSize 20 --tag '[{\"tagValue\":\"TestValue\",\"tagKey\":\"TestKey\"}]' --keyword key --projectId 'p-al1c58tb2lu9oej36kclvf' --header \"Content-Type=application/json\""

@@ -1,5 +1,6 @@
 {
   "name": "CreateRouteEntries",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,65 +9,116 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n**true**：发送请求，不会创建路由条目。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n**false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并直接创建路由条目。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n**true**: Sends a request to check whether the request is valid. The system checks whether your AccessKey is valid, whether the RAM user is authorized, and whether the required parameters are specified. If the request fails the check, an error message is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n\n**false** (default): Sends a normal request. After the request passes the check, a 2xx HTTP status code is returned and the routes are created."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由表所属地域的ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the route table is located.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "RouteEntries",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "路由条目信息列表。",
+        "en": "The list of route information."
+      },
       "sub_parameters": [
         {
           "name": "Description",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "自定义路由条目的描述信息。最多支持输入50个描述。\n\n描述长度为1～256个字符，不能以`http://`或`https://`开头。",
+            "en": "The description of the custom route. You can specify up to 50 descriptions.\n\nThe description must be 1 to 256 characters in length and cannot start with `http://` or `https://`."
+          }
         },
         {
           "name": "DstCidrBlock",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "自定义路由条目的目标网段，支持IPv4和IPv6的目标网段。最多支持输入50个目标网段。需满足以下要求：\n          \n- 目标网段不能指向100.64.0.0/10或被100.64.0.0/10包含。  \n \n- 同一张路由表内的不同路由条目的目标网段不能相同。",
+            "en": "The destination CIDR block of the custom route. Both IPv4 and IPv6 CIDR blocks are supported. You can specify up to 50 destination CIDR blocks. The destination CIDR blocks must meet the following requirements:\n\n- The destination CIDR block cannot point to 100.64.0.0/10 or be a subset of 100.64.0.0/10.\n\n- The destination CIDR blocks of different routes in the same route table cannot be the same."
+          }
         },
         {
           "name": "IpVersion",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "IP协议的版本。最多支持输入50个IP协议的版本。取值：\n\n- **4**：IPv4协议。\n- **6**：IPv6协议。",
+            "en": "The IP protocol version. You can specify up to 50 IP protocol versions. Valid values:\n\n- **4**: IPv4.\n\n- **6**: IPv6."
+          }
         },
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "要添加的自定义路由条目的名称。最多支持输入50个名称。\n\n名称长度为1～128个字符，不能以`http://`或`https://`开头。",
+            "en": "The name of the custom route that you want to add. You can specify up to 50 names.\n\nThe name must be 1 to 128 characters in length and cannot start with `http://` or `https://`."
+          }
         },
         {
           "name": "NextHop",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "自定义路由条目的下一跳实例的ID。最多支持输入50个实例ID。\n> 若选择NextHopType为ECR，您可以通过[DescribeExpressConnectRouterAssociation](~~2712069~~)接口获取AssociationId作为下一跳ID。",
+            "en": "The ID of the next hop instance for the custom route. You can specify up to 50 instance IDs.\n\n> If you set NextHopType to Ecr, call the [DescribeExpressConnectRouterAssociation](~~2712069~~) operation to obtain the AssociationId and use it as the next hop ID."
+          }
         },
         {
           "name": "NextHopType",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "自定义路由条目的下一跳的类型。最多支持输入50个下一跳类型。取值： \n\n- **Instance**（默认值）：ECS实例。\n\n- **HaVip**：高可用虚拟IP。  \n\n- **RouterInterface**：路由器接口。\n\n- **NetworkInterface**：弹性网卡。\n\n- **VpnGateway**：VPN网关。\n\n- **IPv6Gateway**：IPv6网关。\n\n- **NatGateway**：NAT网关。\n\n- **Attachment**：转发路由器。\n\n- **VpcPeer**：VPC对等连接。\n- **Ipv4Gateway**：IPv4网关。\n- **GatewayEndpoint**：网关终端节点。\n- **CenBasic**：CEN不支持转发路由器。\n- **Ecr**：专线网关。\n- **GatewayLoadBalancerEndpoint**：网关型负载均衡终端节点。",
+            "en": "The type of the next hop for the custom route. You can specify up to 50 next hop types. Valid values:\n\n- **Instance** (default): an ECS instance.\n\n- **HaVip**: a high-availability virtual IP address (HAVIP).\n\n- **RouterInterface**: a router interface.\n\n- **NetworkInterface**: an elastic network interface (ENI).\n\n- **VpnGateway**: a VPN Gateway.\n\n- **IPv6Gateway**: an IPv6 Gateway.\n\n- **NatGateway**: a NAT Gateway.\n\n- **Attachment**: a transit router.\n\n- **VpcPeer**: a VPC peering connection.\n\n- **Ipv4Gateway**: an IPv4 gateway.\n\n- **GatewayEndpoint**: a gateway endpoint.\n\n- **CenBasic**: CEN does not support transit routers.\n\n- **Ecr**: an Express Connect Router (ECR).\n\n- **GatewayLoadBalancerEndpoint**: a Gateway Load Balancer endpoint (GWLBe)."
+          }
         },
         {
           "name": "RouteTableId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "要添加自定义路由条目的路由表ID。 最多支持输入50个路由表ID。",
+            "en": "The ID of the route table to which you want to add custom routes. You can specify up to 50 route table IDs."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量添加自定义路由条目",
+    "en": "CreateRouteEntries"
+  },
+  "descriptions": {
+    "zh": "- **CreateRouteEntries**接口属于异步接口，即系统会返回一个实例ID，但该路由的创建尚未完成，系统后台的启动任务仍在进行。您可以调用[DescribeRouteEntryList](~~138148~~)查询路由的创建状态：\n    - 当路由处于**Creating**状态时，表示路由创建中。\n    - 当路由处于**Created**状态时，表示路由创建完成。\n- **CreateRouteEntries**接口不支持在同一个VPC中并发批量创建自定义路由条目。\n\n**使用该接口为VPC路由器的路由表添加自定义路由条目时，请注意以下事项：**\n\n- 同一个路由表中自定义路由条目不能超过200条。  \n\n- 自定义路由条目的目标网段（**DstCidrBlock**）不能和VPC内的交换机的网段相同，也不能包含交换机的网段或者被交换机的网段包含。   \n\n- 自定义路由条目的目标网段（**DstCidrBlock**）不能指向100.64.0.0/10，也不能被100.64.0.0/10包含。   \n\n- 同一路由表下的路由条目的目标网段（**DstCidrBlock**）不允许相同。   \n\n- 如果指定的目标网段（**DstCidrBlock**）是一个IP地址，会按照32位掩码来处理。   \n\n- 多条自定义路由条目可以指向同一个下一跳（**NextHop**）。  \n\n- 自定义路由条目的下一跳（**NextHop**）必须和路由表在同一个VPC。",
+    "en": "- **CreateRouteEntries** is an asynchronous operation. After you send a request, the system returns a request ID, but the operation is still being performed in the background. You can call [DescribeRouteEntryList](~~138148~~) to query the status of a route:\n\n  - If a route is in the **Creating** state, the route is being created.\n\n  - If a route is in the **Created** state, the route is created.\n\n- **CreateRouteEntries** does not support concurrent batch operations to add custom routes to the same VPC.\n\n**Note the following when you add custom routes to the route table of a VPC router:**\n\n- A route table can contain a maximum of 200 custom routes.\n\n- The destination CIDR block (**DstCidrBlock**) of a custom route cannot be the same as, overlap with, or be a subset of the CIDR block of a vSwitch in the VPC.\n\n- The destination CIDR block (**DstCidrBlock**) of a custom route cannot be 100.64.0.0/10 or a subset of 100.64.0.0/10.\n\n- The destination CIDR blocks (**DstCidrBlock**) of routes in the same route table cannot be the same.\n\n- An IP address specified as the destination CIDR block (**DstCidrBlock**) is processed with a 32-bit subnet mask.\n\n- Multiple custom routes can point to the same next hop (**NextHop**).\n\n- The next hop (**NextHop**) of a custom route must be in the same VPC as the route table."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-route-entries --biz-region-id cn-hangzhou --route-entries DstCidrBlock=192.168.0.0/24 NextHopType=RouterInterface RouteTableId=vtb-bp145q7glnuzd0000 Description=test IpVersion=4 NextHop=i-j6c2fp57q8rr4jlu0000 Name=test --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateRouteEntries --region cn-hangzhou --RouteEntries.1.RouteTableId 'vtb-bp145q7glnuzd0000' --RouteEntries.1.Name test --RouteEntries.1.NextHopType RouterInterface --RouteEntries.1.IpVersion 4 --RouteEntries.1.NextHop 'i-j6c2fp57q8rr4jlu0000' --DryRun true --RouteEntries.1.Description test --RegionId 'cn-hangzhou' --RouteEntries.1.DstCidrBlock '192.168.0.0/24'"

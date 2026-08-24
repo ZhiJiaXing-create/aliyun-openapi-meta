@@ -1,5 +1,6 @@
 {
   "name": "CreateCacheAnalysisJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "BackupSetId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份文件ID，可以通过[DescribeBackups](~~473823~~)接口获取。\n\n- 如需传入多个备份文件ID，请使用英文逗号（,）分隔，例如`12345,67890`。\n- 如果不传入本参数，系统会自动执行备份并对该备份文件执行缓存分析。",
+        "en": "The ID of the backup file. You can call the [DescribeBackups](~~473823~~) operation to query the ID.\n\n- If you need to specify multiple backup file IDs, separate them with commas (,). For example, you can set this parameter to `12345,67890`.\n\n- If you do not specify this parameter, the system automatically backs up the task and performs cache analysis on the backup file."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Redis实例ID。",
+        "en": "The ID of the ApsaraDB for Redis instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的数据节点ID，传入本参数可查询指定节点的监控信息。\n>当您传入BackupSetId参数，系统会忽略此参数，您可调用[DescribeLogicInstanceTopology](~~473786~~)接口查询节点ID。",
+        "en": "The ID of the data node on the instance. You can specify this parameter to query the monitoring information about the specified node.\n\n> If you specify the BackupSetId parameter, the system ignores the NodeId parameter. You can call the [DescribeLogicInstanceTopology](~~473786~~) operation to query the node ID."
+      }
     },
     {
       "name": "Separators",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于识别Key前缀的分隔符。当分隔符为默认的`:;,_-+@=|#`时，不需要输入。",
+        "en": "The delimiters used to identify the prefixes of keys. You do not need to specify this parameter if one or more of the following default delimiters are used: `: ; , _ - + @ = | #`"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建缓存分析任务",
+    "en": "CreateCacheAnalysisJob"
+  },
+  "descriptions": {
+    "zh": "使用该接口需满足以下前提条件：\n\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n- 只支持分析Redis数据结构和以下Tair自研数据结构：TairString、TairHash、TairGIS、TairBloom、TairDoc、TairCpc、TairZset，暂不支持分析其他Tair自研数据结构。\n- 如果目标实例规格已发生变更，则不支持分析实例变更前的备份文件。\n- 暂不支持Tair磁盘型实例。",
+    "en": "Before you call this operation, take note of the following items:\n\n- If you use an Alibaba Cloud SDK or Database Autonomy Service (DAS) SDK to call this operation, we recommend that you use the latest version of the SDK.\n\n- If you use an SDK to call the API operations of DAS, you must set the region ID to cn-shanghai.\n\n- Analyzes the data structures of ApsaraDB for Redis and the following self-developed Tair data structures: TairString, TairHash, TairGIS, TairBloom, TairDoc, TairCpc, and TairZset. Other self-developed Tair data structures are not supported.\n\n- If the specifications of the database instance that you want to analyze are changed, the backup file generated before the specification change cannot be analyzed.\n\n- Tair ESSD/SSD-based instances are not supported."
+  },
   "example": {
     "unifiedCli": "aliyun das create-cache-analysis-job --instance-id r-bp18ff4a195d0000 --node-id r-x0000-db-0 --backup-set-id 12345 --separators example-string --region cn-hangzhou",
     "legacyCli": "aliyun das CreateCacheAnalysisJob --region cn-hangzhou --InstanceId 'r-bp18ff4a195d0000' --NodeId 'r-x0000-db-0' --Separators 'example-string' --BackupSetId 12345"

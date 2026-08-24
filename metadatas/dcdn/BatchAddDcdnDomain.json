@@ -1,5 +1,6 @@
 {
   "name": "BatchAddDcdnDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "CheckUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "健康检测URL。",
+        "en": "The health check URL."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DCDN加速域名，一个用户最多添加20个域名。多个域名使用半角逗号（,）分隔。",
+        "en": "The domain names to accelerate with DCDN. You can specify up to 20 domain names, separated by commas."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID，不传时，自动补全默认资源组ID。",
+        "en": "The ID of the resource group. If you omit this parameter, the system uses the default resource group."
+      }
     },
     {
       "name": "Scope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速区域。取值：\n- domestic（默认值）：仅中国内地。\n- overseas：全球（不包含中国内地）。\n- global：全球。",
+        "en": "The acceleration region. Valid values:\n\n- `domestic` (Default): Chinese mainland only.\n\n- `overseas`: Global (excluding the Chinese mainland).\n\n- `global`: Global."
+      }
     },
     {
       "name": "Sources",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "回源地址列表。",
+        "en": "A JSON string specifying the origin servers."
+      }
     },
     {
       "name": "TopLevelDomain",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "顶级接入域。",
+        "en": "The primary domain."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量添加域名",
+    "en": "BatchAddDcdnDomain"
+  },
+  "descriptions": {
+    "zh": "**前提条件**：\n- 创建加速域名之前，必须先[开通DCDN服务](~~64926~~)。\n- 如果加速区域选择的是仅中国内地或者全球，则加速域名必须已完成备案。\n- 当您首次将新域名添加至阿里云DCDN时，需按要求做域名归属权验证。具体操作，请参见[VerifyDcdnDomainOwner](~~VerifyDcdnDomainOwner~~)。\n - 每次只能添加一个加速域名，每个用户默认最多可以添加50个域名，如果需要添加更多域名，您可以通过配额中心申请。\n - 每个用户每小时最多调用100次。",
+    "en": "**Prerequisites**:\n\n- You must [activate DCDN](~~64926~~) before you add an accelerated domain name.\n\n- If you select **Chinese mainland only** or **Global** as the acceleration region, the accelerated domain name must have a valid ICP filing.\n\n- You must complete domain ownership verification when you add a domain name to Alibaba Cloud DCDN for the first time. For more information, see [VerifyDcdnDomainOwner](~~VerifyDcdnDomainOwner~~).\n\n- You can add only one accelerated domain name per call. Each user has a default quota of 50 domain names. To add more, submit a request in Quota Center.\n\n- Each user can call this operation up to 100 times per hour."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn batch-add-dcdn-domain --domain-name example.com,example.org --resource-group-id testID --sources content_:_10.10.10.10_,_type_:_ipaddr_,_priority_:_20_,_port_:80,_weight_:_15 --check-url www.example.com/test.html --scope domestic --top-level-domain example.com --region cn-hangzhou",
     "legacyCli": "aliyun dcdn BatchAddDcdnDomain --region cn-hangzhou --CheckUrl 'www.example.com/test.html' --ResourceGroupId testID --Scope domestic --DomainName 'example.com,example.org' --TopLevelDomain 'example.com' --Sources 'content_:_10.10.10.10_,_type_:_ipaddr_,_priority_:_20_,_port_:80,_weight_:_15'"

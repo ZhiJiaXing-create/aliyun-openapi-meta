@@ -1,5 +1,6 @@
 {
   "name": "CreateFileDetectUploadUrl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "文件标识。目前仅支持MD5。列表最多传入100个元素。\n> **HashKeyList** 和 **HashKeyContextList**不能同时为空。",
+        "en": "The hash values of files.\n\n> You must specify at least one of the **HashKeyList** and **HashKeyContextList** parameters."
+      },
       "sub_parameters": [
         {
           "name": "FileSize",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "文件大小。如果文件大小超过限制，将不会返回上传参数。单位：字节。",
+            "en": "The size of the file. Unit: bytes."
+          }
         },
         {
           "name": "HashKey",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "文件HASH。",
+            "en": "The hash value of the file."
+          }
         }
       ]
     },
@@ -28,15 +41,34 @@
       "name": "HashKeyList",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "文件唯一标识。列表最多传入100个元素。\n> **HashKeyList** 和 **HashKeyContextList**不能同时为空。",
+        "en": "The identifiers of files. Only MD5 hash values are supported.\n\n> You must specify at least one of the **HashKeyList** and **HashKeyContextList** parameters."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件类型。取值：\n-  **0**：不确定的文件类型",
+        "en": "The type of the file. Valid values:\n\n*   **0**: unknown file\n*   **1**: binary file\n*   **2**: webshell file\n*   **4**: script file\n\n> If you do not know the type of the file, set this parameter to **0**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取文件上传参数",
+    "en": "CreateFileDetectUploadUrl"
+  },
+  "descriptions": {
+    "zh": "通过此接口获取文件上传参数。如果返回参数中的FileExist的值为true，表示待检测文件在云端已存在，不需要再上传，可以直接推送检测。如果FileExist的值为false，需要用此接口返回的参数，通过表单上传的方式将文件上传至指定存储位置。\n\n表单上传服务由OSS产品提供，请参考[表单上传](~~84788~~)。\n\n文件检测相关接口均包含HashKey参数，表示文件唯一标识，仅支持传入文件完整内容的MD5或SHA-256，请在调用接口前计算该值。注意，一次文件检测的推送和查询接口必须使用同一个HashKey，否则无法正确推送检测和查询结果。\n\n计算文件内容的MD5或SHA-256值可以参考以下两个步骤：\n\n1. 使用MD5、SHA-256算法对数据进行加密，生成128位或256位的散列值。现有工具库包括Java的MessageDigest工具、Python的hashlib库等。\n\n2. 将生成的散列值编码为十六进制字符串形式，现有工具库包括Java的Codec工具、Python的hex函数等。请确认最终生成的字符串为数字和小写英文字符的组合，MD5为32个字符，SHA-256为64个字符。",
+    "en": "You can call this operation to query the parameters that are required to upload a file for detection. If the value of the response parameter FileExist is true, the file that you want to upload for detection already exists in the cloud. In this case, you can directly push the file for detection. If the value of the response parameter FileExist is false, you must use the form upload method to upload the file to the specified Object Storage Service (OSS) bucket based on the response parameters of this operation.\n\nThe form upload method is provided by OSS. For more information, see [Form upload](~~84788~~).\n\nThe HashKey parameter is included in all API operations that are related to the file detection feature. The parameter specifies the unique identifier of a file. Only MD5 hash values are supported. Before you call this operation, calculate the MD5 hash value of the file."
+  },
   "example": {
     "unifiedCli": "aliyun sas create-file-detect-upload-url --hash-key-list 0a212417e65c26ff133cfff28f6c0000 --type 0 --hash-key-context-list HashKey=30319dd5cee8f894766e479cac170da0 FileSize=2698557 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas CreateFileDetectUploadUrl --region cn-hangzhou --HashKeyContextList.1.HashKey 30319dd5cee8f894766e479cac170da0 --Type 0 --HashKeyContextList.1.FileSize 2698557 --HashKeyList.1 0a212417e65c26ff133cfff28f6c0000"

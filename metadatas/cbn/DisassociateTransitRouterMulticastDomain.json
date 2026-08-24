@@ -1,5 +1,6 @@
 {
   "name": "DisassociateTransitRouterMulticastDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token from your client to make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会解除交换机和组播域的关联关系。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接解除交换机和组播域的关联关系。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a normal request. If the request passes the check, the vSwitch is dissociated from the multicast domain."
+      }
     },
     {
       "name": "TransitRouterAttachmentId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPC连接ID。\n\n本参数为交换机所属的专有网络VPC（Virtual Private Cloud）被连接至转发路由器实例后生成的VPC连接的ID。",
+        "en": "The ID of the VPC connection.\n\nThe VPC connection is created after the Virtual Private Cloud (VPC) to which the vSwitch belongs is connected to the transit router."
+      }
     },
     {
       "name": "TransitRouterMulticastDomainId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "组播域ID。",
+        "en": "The ID of the multicast domain."
+      }
     },
     {
       "name": "VSwitchIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机ID列表。",
+        "en": "The list of vSwitch IDs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解除交换机与组播域的关联关系",
+    "en": "DisassociateTransitRouterMulticastDomain"
+  },
+  "descriptions": {
+    "zh": "- 交换机和组播域解除关联前，请确保交换机下不存在组播源和组播成员。删除组播源和删除组播成员的操作，请参见[DeregisterTransitRouterMulticastGroupSources](~~468416~~)和[DeregisterTransitRouterMulticastGroupMembers](~~468409~~)。\n- 如果您输入的参数有误调用接口后仍然会返回RequestId，但不会解除交换机与组播域的关联关系。\n- **DisassociateTransitRouterMulticastDomain**接口属于异步接口，即系统会先返回一个**RequestId**，但交换机和组播域并未完全解除关联关系，系统后台的解除任务仍在进行。您可以调用**ListTransitRouterMulticastDomainAssociations**接口查询交换机和组播域的关联状态。 \n\n    - 当关联状态为**Dissociating**时，表示交换机和组播域正在解除关联关系，在该状态下，您只能对交换机执行查询操作，不能执行其他操作。\n    - 当在组播域下查询不到该交换机的信息时，表示交换机和组播域已成功解除关联关系。",
+    "en": "- Before you dissociate a vSwitch from a multicast domain, make sure that no multicast source or member exists on the vSwitch. For more information about how to delete a multicast source and a multicast member, see [DeregisterTransitRouterMulticastGroupSources](~~468416~~) and [DeregisterTransitRouterMulticastGroupMembers](~~468409~~).\n\n- If you provide invalid parameters, the system returns a request ID but does not dissociate the vSwitch from the multicast domain.\n\n- **DisassociateTransitRouterMulticastDomain** is an asynchronous operation. After you send a request, the system returns a **RequestId**, but the vSwitch is not immediately dissociated from the multicast domain. The system runs the dissociation task in the background. You can call the **ListTransitRouterMulticastDomainAssociations** operation to query the association status of the vSwitch and the multicast domain.\n\n  - If the association status is **Dissociating**, the vSwitch is being dissociated from the multicast domain. In this state, you can only query the vSwitch. You cannot perform other operations.\n\n  - If the vSwitch cannot be found in the multicast domain, the vSwitch has been successfully dissociated from the multicast domain."
+  },
   "example": {
     "unifiedCli": "aliyun cbn disassociate-transit-router-multicast-domain --client-token 123e4567-e89b-12d3-a456-426655440000 --transit-router-multicast-domain-id tr-mcast-domain-91wpg6wbhchjeq0000 --transit-router-attachment-id tr-attach-g3kz2k3u76amsk0000 --dry-run false --vswitchids vsw-p0w9s2ig1jnwgrbzl0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn DisassociateTransitRouterMulticastDomain --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-g3kz2k3u76amsk0000' --VSwitchIds.1 'vsw-p0w9s2ig1jnwgrbzl0000' --TransitRouterMulticastDomainId 'tr-mcast-domain-91wpg6wbhchjeq0000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

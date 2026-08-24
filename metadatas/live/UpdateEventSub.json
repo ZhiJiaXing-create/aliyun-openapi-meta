@@ -1,5 +1,6 @@
 {
   "name": "UpdateEventSub",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "订阅的应用ID。",
+        "en": "The application ID."
+      }
     },
     {
       "name": "CallbackUrl",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "回调地址。回调内容请参见[CallBack](~~610983~~)。",
+        "en": "The callback URL. For more information about the callback content, see CreateEventSub."
+      }
     },
     {
       "name": "ChannelId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "订阅的频道ID。订阅的频道ID。您可通过调用[ListEventSub](~~2848210~~)接口查询订阅的频道ID。\n\n>- 如果Users.N参数不为空，则此参数必填。\n> - ChannelId为*或者不填，表示为全频道订阅，每个AppId只允许1个全频道订阅。\n> - 每个AppId最多同时允许创建20个订阅事件。",
+        "en": "The channel ID. You can call the [ListEventSub](~~2848210~~) operation to query the channel ID.\n\n>\n\n- This parameter is required if you specify the Users.N parameter.\n\n- If you set this parameter to \\* or do not specify this parameter, all channels are subscribed to.\n\n- You can create up to 20 subscriptions for each application ID."
+      }
     },
     {
       "name": "Events",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "订阅事件。",
+        "en": "The type of the events to which you want to subscribe."
+      }
     },
     {
       "name": "SubscribeId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "订阅事件ID。您可通过[CreateEventSub](~~2848209~~)接口的返回参数查询订阅ID。",
+        "en": "The subscription ID. You can obtain the ID from the response to the [CreateEventSub](~~2848209~~) operation."
+      }
     },
     {
       "name": "Users",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "订阅哪些用户的消息。",
+        "en": "The user whose events you want to subscribe to."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新订阅房间消息回调",
+    "en": "UpdateEventSub"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口前，您必须已经调用[CreateEventSub](~~2848209~~)创建订阅房间消息回调。\n- 已有关联频道，依然使用原规则。频道关闭20分钟以上，再次开启才会适用新规则。\n- 如果只想更新某些字段，则其他字段也需要用原有内容进行填充。\n\n## QPS限制\n本接口的单用户QPS限制为50次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Before you call this operation, make sure that you have called the [CreateEventSub](~~2848209~~) operation to create a callback that is used to subscribe to channel or user events.\n\n- An existing channel that you specify in this operation still uses its original callback configuration. The updated configuration can apply to the channel only if you restart the channel after it is closed for longer than 20 minutes.\n\n- If you only want to update specific parameters, you must also specify the other required parameters with their original values.\n\n## [](#qps-)QPS limit\n\nYou can call this operation up to 50 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun live update-event-sub --app-id 9qb10000 --subscribe-id ad53276431c0000 --channel-id 123333 --users user1 --events ChannelEvent --callback-url http://0000.com/callback --region cn-hangzhou",
     "legacyCli": "aliyun live UpdateEventSub --region cn-hangzhou --CallbackUrl 'http://0000.com/callback' --SubscribeId ad53276431c0000 --Events.1 ChannelEvent --AppId 9qb10000 --Users.1 user1 --ChannelId 123333"

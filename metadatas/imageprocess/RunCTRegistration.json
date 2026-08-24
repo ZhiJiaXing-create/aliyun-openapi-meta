@@ -1,0 +1,96 @@
+{
+  "name": "RunCTRegistration",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "DataFormat",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "DICOM。",
+        "en": "DICOM."
+      }
+    },
+    {
+      "name": "DataSourceType",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输入数据的类型，仅支持`HTTP_FILES`。",
+        "en": "The type of the input data. Only `HTTP_FILES` is supported."
+      }
+    },
+    {
+      "name": "FloatingList",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": true,
+      "sub_parameters": [
+        {
+          "name": "FloatingURL",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "待配准图像URL地址列表。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n>至少8帧，至多600帧。",
+            "en": "The list of image URLs to be registered. We recommend that you use OSS links in the China (Shanghai) region. If the files are stored locally or in an OSS bucket outside the China (Shanghai) region, see [File URL processing](~~155645~~).\n>At least 8 frames and at most 600 frames."
+          }
+        }
+      ]
+    },
+    {
+      "name": "OrgId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构代码。",
+        "en": "The code of the data source organization."
+      }
+    },
+    {
+      "name": "OrgName",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "数据来源机构名称。",
+        "en": "The name of the data source organization."
+      }
+    },
+    {
+      "name": "ReferenceList",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": true,
+      "sub_parameters": [
+        {
+          "name": "ReferenceURL",
+          "position": "FormData",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "参考图像URL地址列表。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。\n>至少8帧，至多600帧。",
+            "en": "The list of reference image URLs. We recommend that you use OSS links in the China (Shanghai) region. If the files are stored locally or in an OSS bucket outside the China (Shanghai) region, see [File URL processing](~~155645~~).\n>At least 8 frames and at most 600 frames."
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "胸部CT配准",
+    "en": "Chest CT registration"
+  },
+  "descriptions": {
+    "zh": "## 服务说明\n由于产品业务调整，胸部CT配准服务将迁移至达摩院[达医智影官网](https://damomed.com)，胸部CT配准服务于2025年11月26日起停止新用户开通调用，历史开通过该服务的老用户可继续调用，2026年11月26日后该服务将下架，不再支持新老用户调用视觉智能开放平台的服务。如果对服务迁移有疑问，您可前往达摩院[达医智影官网](https://damomed.com)联系相关人员。\n\n## 功能描述 \n胸部CT配准能力可以根据同病人不同时期的胸部CT扫描，进行图像配准。输入两套标准DICOM数据，分别作为参考图像和待配准图像，输出配准结果HTTP下载路径。\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n\n## 输入限制\n- 输入图像必须为横断面图像。\n- 图像格式：DICOM。\n- 图像帧数：至少8帧，至多600帧。\n- URL地址中不能包含中文字符。\n\n## 调用步骤\n该能力为异步能力，需分两步进行调用。\n第一步调用RunCTRegistration接口提交任务，请求成功后，得到一个任务ID。\n第二步调用[GetAsyncJobResult](~~607824~~)接口查询结果，根据任务ID查询任务执行状态和结果。如果任务还在处理中，可稍等一段时间后再进行查询。当同一个任务还未处理完时，建议不要重复提交任务。\n\n## 计费说明\n胸部CT配准能力目前处于公测期，可免费调用。",
+    "en": "## Operation description\nDue to product business adjustments, the chest CT registration service will be migrated to the DAMO Academy [DaMo Medical Imaging website](https://damomed.com). Starting from November 26, 2025, new users can no longer activate or call this service. Existing users who have previously activated this service can continue to use it. After November 26, 2026, this service will be delisted and will no longer be available to any users on the Visual Intelligence Open Platform. If you have questions about the service migration, visit the DAMO Academy [DaMo Medical Imaging website](https://damomed.com) to contact the relevant personnel.\n\n## Feature description \nThe chest CT registration feature performs image registration based on chest CT scans of the same patient taken at different time periods. Provide two sets of standard DICOM data as the reference image and the image to be registered. The output is an HTTP download URL for the registration result.\n\n> - You can visit [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) to get online assistance.\n- To learn more about Alibaba Cloud Visual Intelligence Open Platform visual AI API integration, usage, or consultation, join the DingTalk group (23109592) to contact us.\n\n## Input limits\n- Input images must be axial images.\n- Image format: DICOM.\n- Number of image frames: at least 8 and at most 600.\n- URLs cannot contain Chinese characters.\n\n## Procedure\nThis is an asynchronous operation that requires two steps.\nStep 1: Call the RunCTRegistration operation to submit a task. If the request is successful, a task ID is returned.\nStep 2: Call the [GetAsyncJobResult](~~607824~~) operation to query the result based on the task ID. If the task is still being processed, wait and try again later. Do not submit duplicate tasks while the same task is still being processed.\n\n## Billing description\nThe chest CT registration feature is currently in public preview and can be called for free."
+  }
+}

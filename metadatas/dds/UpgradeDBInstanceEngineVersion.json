@@ -1,5 +1,6 @@
 {
   "name": "UpgradeDBInstanceEngineVersion",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "EngineVersion",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "升级的目标数据库版本。\n\n> 实例的存储引擎对数据库版本的选择有约束性，详情请参见[MongoDB数据库版本升级说明](~~398673~~)，您也可以调用[DescribeAvailableEngineVersion](~~468471~~)接口查询实例可升级的版本。",
+        "en": "The database version to which you want to upgrade. Valid values: **3.4**, **4.0**, and **4.2**.\n\n> This database version must be later than the current database version of the instance."
+      }
     },
     {
       "name": "SwitchMode",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例版本升级模式。取值：\n\n- 0：立即升级。\n- 1：在可运维时间段内升级。",
+        "en": "The time when to perform the upgrade. Valid values:\n\n- **0**: immediately performs the upgrade.\n\n- **1**: performs the upgrade during the maintenance window."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "升级实例的数据库版本",
+    "en": "UpgradeDBInstanceEngineVersion"
+  },
+  "descriptions": {
+    "zh": "调用本接口时，要求实例状态为运行中。\n\n> - 实例的存储引擎对数据库版本的选择有约束性，详情请参见[MongoDB数据库版本升级说明](~~398673~~)，您也可以调用[DescribeAvailableEngineVersion](~~141355~~)接口查询实例可升级的版本。\n> - 升级数据库版本后不支持降级数据库版本。\n> - 升级过程中会自动对实例进行2-3次重启，请确保在业务低峰执行。",
+    "en": "The instance must be in the running state when you call this operation.\n\n> - The available database versions depend on the storage engine used by the instance. For more information, see [Upgrades of MongoDB major versions](~~398673~~). You can also call the [DescribeAvailableEngineVersion](~~141355~~) operation to query the available database versions.\n>\n> - You cannot downgrade the MongoDB version of an instance after you upgrade it.\n>\n> - The instance is automatically restarted for two to three times during the upgrade process. Make sure that you upgrade the instance during off-peak hours."
+  },
   "example": {
     "unifiedCli": "aliyun dds upgrade-db-instance-engine-version --db-instance-id dds-bpxxxxxxxx --engine-version 4.0 --switch-mode 1 --region cn-hangzhou",
     "legacyCli": "aliyun dds UpgradeDBInstanceEngineVersion --region cn-hangzhou --EngineVersion '4.0' --DBInstanceId 'dds-bpxxxxxxxx' --SwitchMode 1"

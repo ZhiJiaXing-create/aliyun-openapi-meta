@@ -1,5 +1,6 @@
 {
   "name": "ModifyHybridMonitorTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "监控项的标签。",
+        "en": "The tags of the metric."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控项的标签键。",
+            "en": "The tag key of the metric."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控项的标签值。",
+            "en": "The tag value of the metric."
+          }
         }
       ]
     },
@@ -28,33 +41,64 @@
       "name": "CollectInterval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监控项的采集周期。取值：\n\n- 15\n\n- 60\n\n单位：秒。",
+        "en": "The collection interval of the metric. Valid values:\n\n- 15\n\n- 60\n\nUnit: seconds."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监控任务描述。",
+        "en": "The description of the monitoring task."
+      }
     },
     {
       "name": "SLSProcessConfig",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SLS日志配置。",
+        "en": "The SLS log configuration."
+      }
     },
     {
       "name": "TaskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监控任务ID。\n\n关于如何获取监控任务ID，请参见[DescribeHybridMonitorTaskList](~~428624~~)。",
+        "en": "The monitoring task ID.\n\nFor information about how to obtain the monitoring task ID, see [DescribeHybridMonitorTaskList](~~428624~~)."
+      }
     },
     {
       "name": "TaskName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监控任务名称。\n\n关于如何获取监控任务ID，请参见[DescribeHybridMonitorTaskList](~~428624~~)。",
+        "en": "The monitoring task name.\n\nFor information about how to obtain the monitoring task ID, see [DescribeHybridMonitorTaskList](~~428624~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改监控任务",
+    "en": "Modify a monitoring task"
+  },
+  "descriptions": {
+    "zh": "本文将提供一个示例，将SLS日志的监控任务`36****`的采集周期修改为`15`秒。返回结果显示，修改监控项成功。",
+    "en": "This topic provides an example on how to change the collection interval of the SLS log monitoring task `36****` to `15` seconds. The response shows that the metric is modified."
+  },
   "example": {
     "unifiedCli": "aliyun cms modify-hybrid-monitor-task --task-id 360000 --task-name SLS_task --description SLS_log_monitoring_data. --collect-interval 15 --attach-labels Value=testValue Name=app_service --sls-process-config '{\"GroupBy\":[{\"Alias\":\"ApiResult\",\"SLSKeyName\":\"code\"}],\"Express\":[{\"Express\":\"success_count\",\"Alias\":\"SuccRate\"}],\"Filter\":{\"Relation\":\"and\",\"Filters\":[{\"Operator\":\"=\",\"Value\":\"200\",\"SLSKeyName\":\"code\"}]},\"Statistics\":[{\"Parameter2\":\"299\",\"Function\":\"count\",\"Parameter1\":\"200\",\"Alias\":\"level_count\",\"SLSKeyName\":\"name\"}]}' --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun cms ModifyHybridMonitorTask --region cn-hangzhou --SLSProcessConfig.Filter.Filters.1.Value 200 --CollectInterval 15 --TaskId 360000 --Description 'SLS_log_monitoring_data.' --SLSProcessConfig.Express.1.Express success_count --SLSProcessConfig.Filter.Filters.1.Operator '=' --AttachLabels.1.Name app_service --SLSProcessConfig.GroupBy.1.Alias ApiResult --SLSProcessConfig.Express.1.Alias SuccRate --SLSProcessConfig.Statistics.1.Alias level_count --SLSProcessConfig.Statistics.1.Function count --TaskName SLS_task --SLSProcessConfig.Filter.Relation and --SLSProcessConfig.Statistics.1.SLSKeyName name --AttachLabels.1.Value testValue --SLSProcessConfig.Filter.Filters.1.SLSKeyName code --SLSProcessConfig.GroupBy.1.SLSKeyName code --SLSProcessConfig.Statistics.1.Parameter1 200 --SLSProcessConfig.Statistics.1.Parameter2 299 --method POST --force"

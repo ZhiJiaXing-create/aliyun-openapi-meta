@@ -1,5 +1,6 @@
 {
   "name": "DeleteTrafficMirrorFilter",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** as the **ClientToken**. The **RequestId** may differ for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会删除流量镜像筛选条件。检查项包括是否填写了必需参数、请求格式和限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接删除流量镜像筛选条件。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): sends the request. If the request passes the check, the traffic mirror filter is deleted."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量镜像的所属地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。关于流量镜像支持的地域，请参见[流量镜像概述](~~207513~~)。",
+        "en": "The region ID of the traffic mirror. You can call [DescribeRegions](~~36063~~) to query the most recent region list. For more information about the regions that support traffic mirroring, see [Overview of traffic mirroring](~~207513~~)."
+      }
     },
     {
       "name": "TrafficMirrorFilterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量镜像筛选条件的实例ID。",
+        "en": "The instance ID of the traffic mirror filter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除流量镜像筛选条件",
+    "en": "Delete a traffic mirror filter"
+  },
+  "descriptions": {
+    "zh": "- **DeleteTrafficMirrorFilter**接口属于异步接口，即系统返回一个请求ID，但该流量镜像筛选条件尚未删除成功，系统后台的删除任务仍在进行。您可以调用[ListTrafficMirrorFilters](~~261353~~)查询流量镜像筛选条件的删除状态：\n    - 当流量镜像筛选条件处于**Deleting**状态时，表示流量镜像筛选条件正在删除中。\n    - 当查询不到指定的流量镜像筛选条件时，表示流量镜像筛选条件删除成功。\n- **DeleteTrafficMirrorFilter**接口不支持并发删除同一个流量镜像筛选条件。",
+    "en": "- **DeleteTrafficMirrorFilter** is an asynchronous operation. After you send a request, the system returns a request ID, but the traffic mirror filter is not yet deleted. The deletion task runs in the background. You can call [ListTrafficMirrorFilters](~~261353~~) to query the deletion status of the traffic mirror filter:\n    - If the traffic mirror filter is in the **Deleting** state, the traffic mirror filter is being deleted.\n    - If the specified traffic mirror filter cannot be found, the traffic mirror filter is deleted.\n- **DeleteTrafficMirrorFilter** does not support concurrent deletion of the same traffic mirror filter."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-traffic-mirror-filter --traffic-mirror-filter-id tmf-j6cmls82xnc86vtpe0000 --client-token 0c593ea1-3bea-11e9-b96b-88e9fe630000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteTrafficMirrorFilter --region cn-hangzhou --DryRun false --RegionId 'cn-hangzhou' --TrafficMirrorFilterId 'tmf-j6cmls82xnc86vtpe0000' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe630000'"

@@ -1,5 +1,6 @@
 {
   "name": "RebalanceInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重新平衡ECS实例分布",
+    "en": "Rebalance ECS instance distribution"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n再平衡分布会通过新建ECS实例替换已有ECS实例补偿平衡可用区，终止已有ECS实例前会先启动新ECS实例，再平衡分布不会影响您的应用程序性能或可用性。\n\n- 只支持设置了`MultiAZPolicy`为`BALANCE`的多可用区伸缩组，用于平衡多可用区间ECS实例的分布。\n\n- 只有伸缩组内实例分布严重不平衡时可以执行再平衡操作，才需要执行一次再平衡分布操作，且一次再平衡分布活动最多可以替换20台ECS实例。\n\n- 再平衡分布活动期间，如果组内实例数量接近或达到指定的最大ECS实例台数（MaxSize），但需要继续平衡ECS实例分布，弹性伸缩允许ECS实例数量暂时超出MaxSize的10%。该超出状态会持续一段时间，直至完成平衡ECS实例分布，通常为1分钟至6分钟。\n\n    >如果伸缩组的最大实例数的10%不是整数，则小数部分取整允许超出1台。例如，伸缩组最大实例数为15，取10%为1.5台，则暂时允许超出2台。",
+    "en": "## Operation description\n\nThe rebalancing operation compensates for imbalanced zones by creating new ECS instances to replace existing ones. New ECS instances are started before existing ones are terminated, so the rebalancing operation does not affect your application performance or availability.\n\n- This operation is supported only for multi-zone scaling groups whose `MultiAZPolicy` is set to `BALANCE`, and is used to balance the distribution of ECS instances across zones.\n\n- You can perform a rebalancing operation only when the instance distribution in the scaling group is severely imbalanced. A single rebalancing activity can replace up to 20 ECS instances.\n\n- During a rebalancing activity, if the number of instances in the scaling group approaches or reaches the specified maximum number of ECS instances (MaxSize) but further balancing is required, Auto Scaling allows the number of ECS instances to temporarily exceed MaxSize by 10%. This excess state persists until the instance distribution is balanced, typically for 1 to 6 minutes.\n\n    >If 10% of the maximum number of instances is not an integer, the decimal part is rounded up to allow one additional instance. For example, if the maximum number of instances is 15, 10% is 1.5, so a temporary excess of 2 instances is allowed."
+  },
   "example": {
     "unifiedCli": "aliyun ess rebalance-instances --scaling-group-id asg-bp18p2yfxow2dloq0000 --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess RebalanceInstances --region cn-hangzhou --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --RegionId 'cn-hangzhou'"

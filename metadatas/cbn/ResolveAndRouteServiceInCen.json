@@ -1,5 +1,6 @@
 {
   "name": "ResolveAndRouteServiceInCen",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AccessRegionIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "访问云服务的地域ID列表。",
+        "en": "The IDs of the regions where the cloud service is accessed."
+      }
     },
     {
       "name": "CenId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云企业网实例ID。",
+        "en": "The ID of the CEN instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** for each API request may be different."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云服务的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
+        "en": "The description of the cloud service.\n\nThis parameter is optional. If you enter a description, it must be 1 to 256 characters in length and cannot start with http\\:// or https\\://."
+      }
     },
     {
       "name": "Host",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云服务IP地址或地址段。\n\n> 通常云服务会使用多个地址或地址段，建议您重复调用本接口，添加该云服务所有地址或地址段。",
+        "en": "The IP addresses or CIDR blocks of the cloud service.\n\n> In most cases, multiple IP addresses or CIDR blocks are assigned to a cloud service. We recommend that you call this operation multiple times to add all IP addresses and CIDR blocks of the cloud service."
+      }
     },
     {
       "name": "HostRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云服务所在的地域ID。",
+        "en": "The ID of the region in which the cloud service is deployed."
+      }
     },
     {
       "name": "HostVpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云服务关联的VPC实例ID。",
+        "en": "The ID of the VPC that is associated with the cloud service."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置云服务",
+    "en": "ResolveAndRouteServiceInCen"
+  },
+  "descriptions": {
+    "zh": "云服务指使用阿里云云服务地址段100.64.0.0/10提供服务的云产品，例如对象存储OSS（Object Storage Service）、日志服务SLS（Log Service）、数据传输服务DTS（Data Transmission Service）等。如果您的本地网络需要访问云服务，您需要将本地网络关联的边界路由器VBR（Virtual Border Router）实例或云连接网CCN（Cloud Connect Network）实例加载至云企业网，并且将云服务所在地域的一个专有网络VPC（Virtual Private Cloud）实例加载至该云企业网。加载后，您的本地网络可通过云企业网访问云服务所在地域的VPC实例，并通过该VPC访问云服务。\n\n- 使用限制，该接口仅适用于基础版转发路由器。VBR实例关联的本地网络只能通过云企业网访问和其同地域的云服务。\n\n    例如：云服务所在地域为华北2（北京），那么只有华北2（北京）地域下的VBR实例关联的本地网络可以访问云服务。\n\n- **ResolveAndRouteServiceInCen**接口属于异步接口，即系统会先返回一个**RequestId**，但云服务配置并未添加完成，系统后台的添加任务仍在进行。您可以调用**DescribeRouteServicesInCen**接口查询云服务的状态。 \n    - 当云服务处于**Creating**状态时，表示云服务配置正在添加中，在该状态下，您只能对云服务配置执行查询操作，不能执行其他操作。\n    - 当云服务处于**Active**状态时，表示云服务配置添加完成。\n    - 当云服务处于**Failed**状态时，表示云服务配置添加失败。\n### 前提条件\n\n在调用ResolveAndRouteServiceInCen接口前，确保满足以下条件：\n\n- 您本地网络连接的VBR或CCN实例已经加载到云企业网。\n- 云服务所在地域已有VPC实例加载至云企业网。具体操作，请参见[AttachCenChildInstance](~~65902~~)。",
+    "en": "Cloud services refer to Alibaba Cloud services that use the 100.64.0.0/10 CIDR block to provide services. These cloud services include Object Storage Service (OSS), Simple Log Service (SLS), and Data Transmission Service (DTS). If your on-premises network needs to access a cloud service, you must attach the virtual border router (VBR) or Cloud Connect Network (CCN) instance that is connected to your on-premises network to a Cloud Enterprise Network (CEN) instance. In addition, you must attach a virtual private cloud (VPC) that is deployed in the same region as the cloud service to the CEN instance. This way, your on-premises network can connect to the VPC that is deployed in the same region as the cloud service and access the cloud service through the VPC.\n\n- This operation is supported only by Basic Edition transit routers. An on-premises network associated with a VBR can use CEN to access only a cloud service that is deployed in the same region.\n\n  For example, if cloud services are deployed in the China (Beijing) region, only on-premises networks connected to VBRs in the China (Beijing) region can access the cloud services.\n- **ResolveAndRouteServiceInCen** is an asynchronous operation. After a request is sent, the system returns a **request ID** and runs the task in the background. You can call **DescribeRouteServicesInCen** to query the status of a cloud service.\n\n  - If the cloud service is in the **Creating** state, the connection to the cloud service is being created. In this case, you can query the cloud service but cannot perform other operations.\n  - If the cloud service is in the **Active** state, the connection to the cloud service is created.\n  - If the cloud service is in the **Failed** state, the connection to the cloud service failed.\n\n### [](#)Prerequisites\n\nBefore you call this operation, make sure that the following conditions are met:\n\n- The VBR or CCN instance to which your on-premises network is connected is attached to a CEN instance.\n- A VPC that is deployed in the same region as the cloud service is attached to the CEN instance. For more information, see [AttachCenChildInstance](~~65902~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn resolve-and-route-service-in-cen --client-token 02fb3da40000 --cen-id cen-ckwa2hhmuislse0000 --host 100.118.28.0/24 --host-region-id cn-hangzhou --host-vpc-id vpc-o6woh5s494zueq40v0000 --description descname --access-region-ids cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun cbn ResolveAndRouteServiceInCen --region cn-hangzhou --HostRegionId 'cn-hangzhou' --Description descname --CenId 'cen-ckwa2hhmuislse0000' --AccessRegionIds.1 'cn-hangzhou' --Host '100.118.28.0/24' --ClientToken 02fb3da40000 --HostVpcId 'vpc-o6woh5s494zueq40v0000'"

@@ -1,5 +1,6 @@
 {
   "name": "AddIpamMembers",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "A client token to ensure the idempotence of the request.\n\nGenerate a unique value from your client for each request. The ClientToken parameter supports only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会添加IPAM可信服务纳管成员。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并添加IPAM可信服务纳管成员。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run. The request is checked for required parameters, request format, and service limits. Members are not added to the IPAM trusted service. If the check passes, the DryRunOperation error code is returned. If the check fails, an error is returned.\n\n- **false** (Default): Sends a request. If the request passes the check, the members are added to the IPAM trusted service and an HTTP 2xx status code is returned."
+      }
     },
     {
       "name": "Members",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "IPAM可信服务纳管成员。",
+        "en": "The members managed by the IPAM trusted service."
+      },
       "sub_parameters": [
         {
           "name": "MemberId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "成员ID。\n\n- **Folder ID**：资源夹ID。\n\n- **Account UID**：资源目录成员账号UID。",
+            "en": "The member ID.\n\n- **Folder ID**: The ID of the folder.\n\n- **Account UID**: The UID of a member account in the resource directory."
+          }
         },
         {
           "name": "MemberType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "成员类型，取值：\n\n- **Folder**：资源夹。\n\n- **Account**：资源目录成员账号。",
+            "en": "The member type. Valid values:\n\n- **Folder**: A folder.\n\n- **Account**: A member account in a resource directory."
+          }
         }
       ]
     },
@@ -40,9 +61,24 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPAM托管地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the IPAM hosted region.\n\nCall the [DescribeRegions](~~36063~~) operation to get the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加IPAM可信服务纳管成员",
+    "en": "AddIpamMembers"
+  },
+  "descriptions": {
+    "zh": "- IPAM多账号管理仅支持资源目录IPAM委派管理员进行操作。\n- 仅允许IPAM委派管理员选择一个地域的IPAM进行多账号管理，支持纳管的成员账号总计不超过1000。\n<notice>当纳管成员为Folder类型时，按Folder下包含的资源目录成员账号计数。</notice>\n- 纳管成员类型包含Folder和Account\n  - Folder：IPAM委派管理员可查看Folder下所有资源目录成员账号在IPAM生效地域的IP使用情况；\n  - Account：IPAM委派管理员可查看指定资源目录账号在IPAM生效地域的IP使用情况。\n- 已纳管成员不允许将资源发现共享给IPAM委派管理员，IPAM委派管理员也不允许纳管已将资源发现共享给自己的成员。\n- IPAM委派管理员首次添加纳管成员后，资源目录IPAM可信服务开启。",
+    "en": "- Only the delegated administrator of an IPAM instance in a resource directory can perform multi-account management.\n\n- An IPAM delegated administrator can use an IPAM instance in only one region for multi-account management. A maximum of 1,000 member accounts can be added.\n\n  ><notice>\n\n  If you add a folder as a member, the system counts all member accounts of the resource directory that are in the folder.\n\n  ></notice>\n\n- Members can be of the Folder or Account type.\n\n  - Folder: The delegated IPAM administrator can view IP usage in the IPAM effective region for all resource directory member accounts in the folder.\n\n  - Account: The delegated IPAM administrator can view IP usage in the IPAM effective region for the specified resource directory member account.\n\n- A managed member cannot share its resource discovery with the IPAM delegated administrator. The IPAM delegated administrator cannot add a member if that member has already shared its resource discovery.\n\n- Adding the first member enables the IPAM trusted service for the resource directory."
+  },
   "example": {
     "unifiedCli": "aliyun vpcipam add-ipam-members --biz-region-id cn-hangzhou --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --members MemberId=fd-ccccncASqa MemberType=Folder --region cn-hangzhou",
     "legacyCli": "aliyun vpcipam AddIpamMembers --region cn-hangzhou --Members.1.MemberType Folder --DryRun false --Members.1.MemberId 'fd-ccccncASqa' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

@@ -1,5 +1,6 @@
 {
   "name": "SubmitTraceExtractJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "CallBack",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务结果回调URL，目前仅支持HTTP地址。",
+        "en": "The callback URL for job results. Only HTTP URLs are supported."
+      }
     },
     {
       "name": "Input",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待提取溯源水印文件的输入OSS地址。",
+        "en": "The OSS address of the input file for trace watermark extraction."
+      }
     },
     {
       "name": "Params",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "提取任务参数，JSONString。目前支持设置参数如下：\n\n- m3u8Type：算法类型，默认值为v1。\n\n  - v1：提取绝对路径的m3u8。\n  - v2：提取相对路径的m3u8。",
+        "en": "Parameters for the extraction job, specified as a JSON string. The following parameter is supported:\n\n- m3u8Type: The algorithm type. Default: v1.\n\n  - v1: Extracts an M3U8 file with an absolute path.\n\n  - v2: Extracts an M3U8 file with a relative path."
+      }
     },
     {
       "name": "Url",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可公网访问的视频URL链接。填写后优先将其作为任务输入，其次再考虑Input输入。",
+        "en": "A publicly accessible URL of the video file. If specified, this URL is used as the job input and takes precedence over the Input parameter."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，最大长度1024字节。",
+        "en": "User-defined data. Maximum length: 1,024 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交溯源水印提取作业",
+    "en": "Submit a Tracing Watermark Extraction Job"
+  },
+  "descriptions": {
+    "zh": "- 目前数字水印相关接口只支持华东2（上海）、华北2（北京）地域使用。\n- 该接口为[异步接口](~~3027615~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询溯源水印提取作业](~~2834787~~)主动查询任务状态。",
+    "en": "- Digital watermark APIs are available only in the China (Shanghai) and China (Beijing) regions.\n\n- This is an [asynchronous API](~~3027615~~). After you submit a job, a job ID is returned. The job is then queued for background processing. The final result is sent via a callback. You can also check the job status by calling the [Query Trace Extraction Job](~~2834787~~) operation."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-trace-extract-job --input Bucket_:_example_,_Location_:_oss-cn-shanghai_,_Object_:_example.mp4 --user-data 123 --call-back http://example.com/callback --url http://www.example.com/video/test.mp4 --params m3u8Type_:_v1 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitTraceExtractJob --region cn-hangzhou --Input 'Bucket_:_example_,_Location_:_oss-cn-shanghai_,_Object_:_example.mp4' --CallBack 'http://example.com/callback' --UserData 123 --Params 'm3u8Type_:_v1' --Url 'http://www.example.com/video/test.mp4'"

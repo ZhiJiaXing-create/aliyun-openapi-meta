@@ -1,5 +1,6 @@
 {
   "name": "CreateVpd",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "Cidr",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPD的网段。\n- 建议您使用RFC私网地址作为灵骏网段的网段如10.0.0.0/8，172.16.0.0/12，192.168.0.0/16，多灵骏网段互通场景或灵骏网段和VPC互通场景需确保地址规划不能冲突。\n- 您也可以使用除 100.64.0.0/10、224.0.0.0/4、127.0.0.0/8 或 169.254.0.0/16 及其子网外的自定义地址段作为VPD的主IPv4网段。",
+        "en": "The CIDR block of the VPD.\n\n*   We recommend that you use an RFC private endpoint as the Lingjun CIDR block, such as 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16. In scenarios where the Doringjun CIDR block is connected to each other or where the Lingjun CIDR block is connected to a VPC, make sure that the addresses do not conflict with each other.\n*   You can also use a custom CIDR block other than 100.64.0.0/10, 224.0.0.0/4, 127.0.0.0/8, or 169.254.0.0/16 and their subnets as the primary IPv4 CIDR block of the VPD."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域",
+        "en": "The region ID of the disk."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。\n\n关于资源组的更多信息，请参见[什么是资源组](https://help.aliyun.com/document_detail/94475.htm?spm=a2c4g.11186623.0.0.29e15d7akXhpuu)。",
+        "en": "The resource group ID.\n\nFor more information about resource groups, see [Resource groups](https://help.aliyun.com/document_detail/94475.htm?spm=a2c4g.11186623.0.0.29e15d7akXhpuu)."
+      }
     },
     {
       "name": "Subnets",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "灵骏子网信息列表",
+        "en": "Lingjun subnet information list"
+      },
       "sub_parameters": [
         {
           "name": "Cidr",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Subnet的网段。\n\n- 子网的网段必须是其所属灵骏网段的真子集且掩码需在16位到29位之间，可提供 8 ~ 65536 个地址。\n例如，灵骏网段的网段为192.168.0.0/16，该灵骏网段下的子网的网段为 192.168.0.0/17 ~ 192.168.0.0/29。\n- 每个子网网段的第一个和最后三个IP地址为系统保留地址。\n例如，子网的网段为192.168.1.0/24，192.168.1.0、192.168.1.253、192.168.1.254和192.168.1.255这四个IP地址为系统保留地址。",
+            "en": "The CIDR block of the Subnet.\n\n*   The network segment of the subnet must be a proper subset of the network segment of Lingjun to which it belongs, and the mask must be between 16 bits and 29 bits, which can provide 8 to 65536 addresses. For example, the CIDR block of the Lingjun CIDR block is 192.168.0.0/16, and the CIDR blocks of the subnets under the Lingjun CIDR block are 192.168.0.0/17 to 192.168.0.0/29.\n*   The first and last three IP addresses of each subnet segment are reserved by the system. For example, the CIDR blocks of the subnet are 192.168.1.0/24,192.168.1.0, 192.168.1.253, 192.168.1.254, and 192.168.1.255."
+          }
         },
         {
           "name": "RegionId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "地域",
+            "en": "The region in which the instance resides."
+          }
         },
         {
           "name": "SubnetName",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "灵骏子网实例名称",
+            "en": "Lingjun subnet instance name"
+          }
         },
         {
           "name": "Type",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "灵骏子网使用类型；非必选；可选值：\n- **通用类型不填**；\n- **OOB**：OOB类型\n- **LB**： LB类型",
+            "en": "Lingjun Subnet Usage Type; optional; optional. Valid values:\n\n*   **Generic type is not specified**.\n*   **OOB** :OOB type\n*   **LB**: LB type"
+          }
         },
         {
           "name": "ZoneId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "可用区",
+            "en": "The zone ID of the disk."
+          }
         }
       ]
     },
@@ -65,18 +102,30 @@
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "A tag."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以aliyun或者acs:开头，不能包含http://或者https://。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key of the VPN attachment.\n\nYou cannot specify an empty string as a tag key. It can be up to 64 characters in length and cannot start with aliyun or acs:. It cannot contain http:// or https://.\n\nYou can specify at most 20 tag keys in each call."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以aliyun或者acs:开头，不能包含http://或者https://。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值",
+            "en": "The tag value of the VPN connection.\n\nThe tag value can be empty or a string of up to 128 characters. It cannot start with aliyun or acs:, and cannot contain http:// or https://.\n\nEach tag key corresponds to a tag value. You can enter a maximum of 20 tag values at a time."
+          }
         }
       ]
     },
@@ -84,9 +133,24 @@
       "name": "VpdName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "灵骏网段实例名称",
+        "en": "Lingjun CIDR block instance name"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建灵骏网段",
+    "en": "CreateVpd"
+  },
+  "descriptions": {
+    "zh": "调用该接口创建灵骏网段时，请注意：\n\n- 一个灵骏网段除了可以指定一个主网段之外，还可以指定附加网段。\n- 灵骏网段创建后将无法修改网段。\n- 请确保您有足够的灵骏网段配额。\n- 该接口属于异步接口，调用该接口后，系统将返回一个灵骏网段的ID，此时灵骏网段可能尚未创建完成，系统后台的创建任务仍在进行中。您可以通过ListVpds或者GetVpd查询灵骏网段的状态：\n    - 当灵骏网段状态是Executing时，表示正在创建。\n    - 当灵骏网段状态是Available时，表示创建成功。",
+    "en": "When you call this operation to create a CIDR block for Lingjun, take note of the following:\n\n*   A Lingjun network segment can specify an additional network segment in addition to a main network segment.\n\n*   After the Lingjun network segment is created, the network segment cannot be modified.\n\n*   Make sure that you have a sufficient quota of Lingjun CIDR blocks.\n\n*   This interface is an asynchronous interface. After calling this interface, the system will return the ID of a Lingjun network segment. At this time, the Lingjun network segment may not be created yet, and the system background creation task is still in progress. You can call the ListVpds or GetVpd operation to query the status of the CIDR block of Lingjun.\n\n    *   If the status of the Lingjun CIDR block is Executed, the CIDR block is being created.\n    *   If the status of the Lingjun CIDR block is Available, the creation is successful."
+  },
   "example": {
     "unifiedCli": "aliyun eflo create-vpd --biz-region-id cn-hangzhou --vpd-name vpd-1 --cidr 10.0.0.0/8 --subnets SubnetName=subnet-1 Type=OOB ZoneId=cn-wulanchabu-b Cidr=10.1.0.0/16 RegionId=cn-hangzhou --resource-group-id rg-aek2l4sq6l7unhi --tag Value=wulanchabu-a Key=vpd-wulanchabu --region cn-hangzhou",
     "legacyCli": "aliyun eflo CreateVpd --region cn-hangzhou --Subnets.1.Type OOB --Tag.1.Key 'vpd-wulanchabu' --Cidr '10.0.0.0/8' --ResourceGroupId 'rg-aek2l4sq6l7unhi' --Subnets.1.RegionId 'cn-hangzhou' --Tag.1.Value 'wulanchabu-a' --VpdName 'vpd-1' --RegionId 'cn-hangzhou' --Subnets.1.SubnetName 'subnet-1' --Subnets.1.Cidr '10.1.0.0/16' --Subnets.1.ZoneId 'cn-wulanchabu-b'"

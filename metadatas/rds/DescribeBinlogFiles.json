@@ -1,5 +1,6 @@
 {
   "name": "DescribeBinlogFiles",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，大于查询开始时间。\n\n格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）",
+        "en": "The end of the time range to query. The end time must be later than the start time.\n\nSpecify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，取值：大于0且不超过Integer的最大值。\n\n默认值：**1**",
+        "en": "The page number. Pages start from 1.\n\nDefault value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数。\n\n取值：**30**~**100**\n\n默认值：**30**",
+        "en": "The number of entries per page.\n\nValid values: **30** to **100**.\n\nDefault value: **30**."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间。\n\n格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）",
+        "en": "The beginning of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查看RDS实例的日志（Binglog/Wal）文件",
+    "en": "DescribeBinlogFiles"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS MariaDB\n\n### 注意事项\n- 当**DownloadLink**为NULL时，表示RDS没有提供下载链接URL。\n- 当**DownloadLink**不为NULL时，用户可以根据此URL下载备份文件，此URL已设置过期时间**LinkExpiredTime**，请在过期时间之前下载。\n- 当通过RAM账号下载备份文件时，需要为RAM账号授权，详情请参见[添加下载备份文件权限给只读RAM账号](~~100043~~)。\n- 返回的日志列表中包含日志记录结束时间在查询开始时间之后，并且日志记录开始时间在查询结束时间之前的所有日志。",
+    "en": "### Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   MariaDB\n\n### Usage notes\n\n*   If the return value of the **DownloadLink** parameter is NULL, ApsaraDB RDS does not provide a download URL.\n*   If the return value of the **DownloadLink** parameter is not NULL, ApsaraDB RDS provides a URL for you to download backup files. The expiration time of the URL is specified by the **LinkExpiredTime** parameter. You must download the backup files before the expiration time.\n*   If you use a RAM user to download backup files, you must grant permissions to the RAM user. For more information, see [Grant backup file download permissions to a RAM user with read-only permissions](~~100043~~).\n*   Each log file that is returned by this operation contains the log entries that are generated over the time range that is specified by the StartTime and EndTime parameters."
+  },
   "example": {
     "unifiedCli": "aliyun rds describe-binlog-files --db-instance-id rm-uf6wjk50000 --start-time 2011-06-01T15:00:00Z --end-time 2011-06-20T15:00:00Z --page-size 30 --page-number 1 --region cn-hangzhou",
     "legacyCli": "aliyun rds DescribeBinlogFiles --region cn-hangzhou --EndTime '2011-06-20T15:00:00Z' --PageSize 30 --DBInstanceId 'rm-uf6wjk50000' --PageNumber 1 --StartTime '2011-06-01T15:00:00Z'"

@@ -1,5 +1,6 @@
 {
   "name": "GetPayAsYouGoPrice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "计价模块列表。",
+        "en": "The list of pricing modules."
+      },
       "sub_parameters": [
         {
           "name": "Config",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个计价模块的配置，n的取值范围为（1~50），格式：“AA:aa,BB:bb”，其中AA,BB分别为计价模块属性标识，aa,bb分别为计价模块属性的属性值。\n\n> 可通过[DescribePricingModule](~~96469~~)接口获取Module参数。",
+            "en": "The configuration of the Nth pricing module. The value of N can be an integer from 1 to 50. The configuration is in the \"AA:aa,BB:bb\" format. In this format, AA and BB are the property codes of the pricing module, and aa and bb are the property values.\n\n> Obtain the configuration by calling the [DescribePricingModule](~~96469~~) operation."
+          }
         },
         {
           "name": "ModuleCode",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个计价模块的模块标识。\n\n\n> 可通过[DescribePricingModule](~~96469~~)接口获取Module参数。",
+            "en": "The code of the Nth pricing module.\n\n> Obtain the module code by calling the [DescribePricingModule](~~96469~~) operation."
+          }
         },
         {
           "name": "PriceType",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个计价模块的价格类型，取值范围：\n- Hour：小时价。\n- Usage：使用量。\n- Month：月价。\n- Year：年价。\n\n> 可通过[DescribePricingModule](~~96469~~)接口获取Module参数。",
+            "en": "The price type of the Nth pricing module. Valid values:\n\n- Hour: hourly price.\n\n- Usage: usage.\n\n- Month: monthly price.\n\n- Year: yearly price.\n\n> Obtain the price type by calling the [DescribePricingModule](~~96469~~) operation."
+          }
         }
       ]
     },
@@ -34,27 +51,54 @@
       "name": "ProductCode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "产品代码。",
+        "en": "The product code."
+      }
     },
     {
       "name": "ProductType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品类型。",
+        "en": "The product type."
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所属的 Region ID。",
+        "en": "The ID of the region where the instance resides."
+      }
     },
     {
       "name": "SubscriptionType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "订阅类型。取值类型：PayAsYouGo（后付费）。",
+        "en": "The subscription type. Valid value: PayAsYouGo."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "后付费产品询价服务",
+    "en": "GetPayAsYouGoPrice"
+  },
+  "descriptions": {
+    "zh": "### API描述\n1. 调用QueryProductList获取产品code,参见[查询产品信息](~~95984~~)。\n2. 调用DescribePricingModule接口获取产品的配置参数，参见[查询产品模块信息](~~96469~~)。\n3. 根据查询到的产品配置参数调用本接口获取后付费产品的价格。",
+    "en": "### API description\n\n1. Call the QueryProductList operation to obtain the product code. For more information, see [Query product information](~~95984~~).\n\n2. Call the DescribePricingModule operation to obtain the configuration parameters of the product. For more information, see [Query product module information](~~96469~~).\n\n3. Call this operation with the obtained configuration parameters to query the prices of pay-as-you-go products."
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi get-pay-as-you-go-price --product-code ecs --product-type ecs --subscription-type PayAsYouGo --biz-region cn-hangzhou --module-list ModuleCode=InstanceType Config=InstanceType:ecs.g5.xlarge,IoOptimized:IoOptimized,ImageOs:linux PriceType=Hour --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi GetPayAsYouGoPrice --region cn-hangzhou --SubscriptionType PayAsYouGo --ModuleList.1.PriceType Hour --ProductCode ecs --ModuleList.1.ModuleCode InstanceType --ModuleList.1.Config 'InstanceType:ecs.g5.xlarge,IoOptimized:IoOptimized,ImageOs:linux' --ProductType ecs --Region 'cn-hangzhou'"

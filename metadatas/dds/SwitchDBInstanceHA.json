@@ -1,5 +1,6 @@
 {
   "name": "SwitchDBInstanceHA",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance"
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分片集群实例中Shard节点的ID。\n\n> 当**DBInstanceId**参数传入的是分片集群实例ID时，本参数必须传入。",
+        "en": "The ID of the shard node in the sharded cluster instance.\n\n> You must specify this parameter if you set the **DBInstanceId** parameter to the ID of a sharded cluster instance."
+      }
     },
     {
       "name": "RoleIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要执行切换的角色ID。您可以调用[DescribeRoleZoneInfo](~~123802~~)接口获取角色ID和节点角色信息。\n\n> - 角色ID以英文逗号（,）分隔，不传入本参数则切换主备节点。\n> - 当**DBInstanceId**参数传入的是分片集群实例ID时，执行切换的角色必须属于同一Shard节点中。",
+        "en": "The IDs of the roles who switch the primary and secondary nodes for the instance. You can call the [DescribeRoleZoneInfo](~~123802~~) operation to view the IDs and information of roles of nodes.\n\n>\n\n- Separate role IDs with commas (,). If this parameter is not specified, the primary and secondary nodes are switched.\n\n- If you set the **DBInstanceId** parameter to the ID of a sharded cluster instance, the roles who switch the primary and secondary nodes for the instance must belong to one shard node."
+      }
     },
     {
       "name": "SwitchMode",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "切换主备节点的时间点。取值：\n- 0：立即切换。\n- 1：在可运维时间段内切换。",
+        "en": "The time when the primary and secondary nodes are switched. Valid values:\n\n- 0: The primary and secondary nodes are immediately switched.\n\n- 1: The primary and secondary nodes are switched during the O\\&M time period."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "切换实例中的主备节点",
+    "en": "SwitchDBInstanceHA"
+  },
+  "descriptions": {
+    "zh": "调用本接口时，实例状态要求为运行中。\n\n> - 本接口适用于副本集实例和分片集群实例，暂不支持单节点实例。\n> - 副本集实例以实例为单位进行切换，分片集群实例以Shard为单位进行切换。",
+    "en": "The instance must be running when you call this operation.\n\n>\n\n- This operation is applicable to replica set instances and sharded cluster instances, but cannot be performed on standalone instances.\n\n- On replica set instances, the switch is performed between instances. On sharded cluster instances, the switch is performed between shards."
+  },
   "example": {
     "unifiedCli": "aliyun dds switch-db-instance-ha --db-instance-id dds-bpxxxxxxxx --node-id d-bpxxxxxxxx --role-ids 972xxxx,972xxxx --switch-mode 0 --region cn-hangzhou",
     "legacyCli": "aliyun dds SwitchDBInstanceHA --region cn-hangzhou --DBInstanceId 'dds-bpxxxxxxxx' --NodeId 'd-bpxxxxxxxx' --RoleIds '972xxxx,972xxxx' --SwitchMode 0"

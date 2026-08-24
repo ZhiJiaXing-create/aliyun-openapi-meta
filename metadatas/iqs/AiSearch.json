@@ -1,5 +1,6 @@
 {
   "name": "AiSearch",
+  "deprecated": false,
   "protocol": "HTTPS|SSE",
   "method": "GET",
   "pathPattern": "/linked-retrieval/linked-retrieval-entry/v3/linkedRetrieval/commands/aiSearch",
@@ -8,33 +9,64 @@
       "name": "industry",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "行业,指定后只召回行业限定的站点内容，多个行业使用逗号分隔；",
+        "en": "The industry. After you specify an industry, only content from websites within the specified industry is recalled. Separate multiple industries with commas."
+      }
     },
     {
       "name": "page",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码：从1开始",
+        "en": "The page number. Pages start from 1."
+      }
     },
     {
       "name": "query",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待查询问题",
+        "en": "The query to search for."
+      }
     },
     {
       "name": "sessionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网页发布时间查询范围",
+        "en": "The time range for filtering web page publication dates."
+      }
     },
     {
       "name": "timeRange",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "多轮交互的sessionId",
+        "en": "The session ID for multi-turn interactions."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "多阶段流式API",
+    "en": "Multi-stage streaming API"
+  },
+  "descriptions": {
+    "zh": "提供common_search，post_retrieval两个阶段流式结果供客户按需使用。\n通用搜索结果（common_search）：搜索的原始结果。覆盖网页标题、动态摘要、正文、来源网站、发布时间等关键字段。检索后处理（post_retrieval）：通过使用rerank模型对上一阶段common_search结果进行重排序与过滤。检索结果相关性（Context Relevancy）的mAP指标提升约5%，时延增加约110ms。",
+    "en": "Provides streaming results in two stages, common_search and post_retrieval, for on-demand use.\nGeneral search results (common_search): The raw search results. Covers key fields such as web page title, dynamic summary, body text, source website, and publication time. Post-retrieval processing (post_retrieval): Uses a rerank model to rerank and filter the common_search results from the previous stage. The mAP metric for context relevancy improves by approximately 5%, with an additional latency of approximately 110 ms."
+  },
   "example": {
     "unifiedCli": "aliyun iqs ai-search --query '苹果手机' --session-id 17dc8bcd-f34a-46d1-a7a3-0fa3d1ce3824 --time-range OneWeek --industry finance --page 685154100 --api-version 2024-11-11 --region cn-hangzhou",
     "legacyCli": "aliyun iqs GET /linked-retrieval/linked-retrieval-entry/v3/linkedRetrieval/commands/aiSearch --region cn-hangzhou --query '苹果手机' --industry finance --sessionId '17dc8bcd-f34a-46d1-a7a3-0fa3d1ce3824' --page 685154100 --timeRange OneWeek --header \"Content-Type=application/json\""

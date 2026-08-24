@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "所需绑定标签的资源所在的实例的ID。\n> 如需为Topic或Group ID绑定标签，则必须填写该参数。",
+        "en": "The ID of the ApsaraMQ for RocketMQ instance that contains the resource to which you want to attach tags.\n\n> This parameter is required when you attach tags to a topic or a group."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID列表",
+        "en": "The resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。枚举类型。取值：\n\n- **INSTANCE**\n- **TOPIC**\n- **GROUP**",
+        "en": "The type of the resource to which you want to attach tags. Valid values:\n\n*   **INSTANCE**\n*   **TOPIC**\n*   **GROUP**"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags that you want to attach to the resource."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "资源的标签键。**Key**和**Value**值必须同时输入。\n\n- 该值不允许为空字符串。\n- 最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key. If you configure this parameter, you must also configure the **Value** parameter.****\n*   The value of this parameter cannot be an empty string.\n*   A tag key must be 1 to 128 characters in length and cannot contain `http://` or `https://`. A tag key cannot start with `acs:` or `aliyun`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "资源的标签值。**Key**和**Value**值必须同时输入。\n\n- 该值可以为空字符串。\n- 最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The value of the tag that you want to attach to the resource. If you configure this parameter, you must also configure the **Key** parameter.****\n*   The value of this parameter can be an empty string.\n*   A tag value must be 1 to 128 characters in length and cannot contain `http://` or `https://`. A tag value cannot start with `acs:` or `aliyun`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为资源绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>本接口一般在需要对云消息队列 RocketMQ 版的资源进行归类时使用，便于搜索和资源聚合。",
+    "en": "> API operations provided by Alibaba Cloud are used to manage and query resources of Alibaba Cloud services. We recommend that you integrate these API operations only in management systems. Do not use these API operations in the core system of messaging services. Otherwise, system risks may occur.\n\nYou can call this operation to attach tags to a source. You can use tags to classify resources in ApsaraMQ for RocketMQ. This can help you aggregate and search resources in an efficient manner."
+  },
   "example": {
     "unifiedCli": "aliyun ons tag-resources --instance-id MQ_INST_1880770869020000_BXSuW61e --resource-type TOPIC --tag Value=FinanceJoshua Key=FinanceDept --resource-id TopicA --region cn-hangzhou",
     "legacyCli": "aliyun ons TagResources --region cn-hangzhou --ResourceId.1 TopicA --Tag.1.Key FinanceDept --InstanceId MQ_INST_1880770869020000_BXSuW61e --Tag.1.Value FinanceJoshua --ResourceType TOPIC"

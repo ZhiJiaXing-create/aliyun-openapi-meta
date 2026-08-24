@@ -1,5 +1,6 @@
 {
   "name": "CreateImportTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "DbInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID",
+        "en": "The ID of the destination RDS instance."
+      }
     },
     {
       "name": "EstimatedSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预估数据空间，单位：GB",
+        "en": "The estimated data size, in GB."
+      }
     },
     {
       "name": "Host",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源端MySQL Host IP，RDS会访问该IP并获取备份",
+        "en": "The IP address of the source MySQL database. RDS accesses this IP address to obtain a backup."
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源端MySQL账户密码，需要进行Base64编码",
+        "en": "The password for the source MySQL user. It must be Base64-encoded."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源端MySQL端口",
+        "en": "The port of the source MySQL database."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。可调用[DescribeRegions](~~610399~~)获取。",
+        "en": "The region ID. You can call the [DescribeRegions](~~610399~~) operation to query the latest region list."
+      }
     },
     {
       "name": "SourceInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端云上实例ID",
+        "en": "The ID of the cloud instance that hosts the source database."
+      }
     },
     {
       "name": "SourcePlatform",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端云上实例类型",
+        "en": "The type of the cloud instance that hosts the source database."
+      }
     },
     {
       "name": "StreamPort",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流式传输端口，用于传输备份",
+        "en": "The streaming port used to transfer the backup."
+      }
     },
     {
       "name": "User",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源端MySQL账户，需要具有创建备份与搭建复制的权限，参考赋权sql\n```\n-- MySQL 5.7\nmysql> CREATE USER 'myadmin'@'%' IDENTIFIED BY 's3cret';\nmysql> GRANT RELOAD, LOCK TABLES, PROCESS, REPLICATION CLIENT, REPLICATION SLAVE ON *.* TO\n       'myadmin'@'%';\nmysql> FLUSH PRIVILEGES;\n-- MySQL 8.0\nmysql> CREATE USER 'myadmin'@'%' IDENTIFIED BY 'Test123!';\nmysql> GRANT BACKUP_ADMIN, PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT, REPLICATION SLAVE ON *.* TO 'myadmin'@'%';\nmysql> GRANT SELECT ON performance_schema.log_status TO 'myadmin'@'%';\nmysql> GRANT SELECT ON performance_schema.keyring_component_status TO myadmin@'%';\nmysql> GRANT SELECT ON performance_schema.replication_group_members TO myadmin@'%';\nmysql> FLUSH PRIVILEGES;",
+        "en": "The user of the source MySQL database. This user requires permissions to create backups and set up replication. For more information, see the following sample SQL statements:\n\n```\n-- MySQL 5.7\nmysql> CREATE USER 'myadmin'@'%' IDENTIFIED BY 's3cret';\nmysql> GRANT RELOAD, LOCK TABLES, PROCESS, REPLICATION CLIENT, REPLICATION SLAVE ON *.* TO\n       'myadmin'@'%';\nmysql> FLUSH PRIVILEGES;\n-- MySQL 8.0\nmysql> CREATE USER 'myadmin'@'%' IDENTIFIED BY 'Test123!';\nmysql> GRANT BACKUP_ADMIN, PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT, REPLICATION SLAVE ON *.* TO 'myadmin'@'%';\nmysql> GRANT SELECT ON performance_schema.log_status TO 'myadmin'@'%';\nmysql> GRANT SELECT ON performance_schema.keyring_component_status TO myadmin@'%';\nmysql> GRANT SELECT ON performance_schema.replication_group_members TO myadmin@'%';\nmysql> FLUSH PRIVILEGES;\n```"
+      }
     },
     {
       "name": "XtrabackupPath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端xtrabackup安装地址",
+        "en": "The installation path of xtrabackup on the source server."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据导入任务",
+    "en": "Create a Data Import Job"
+  },
+  "descriptions": {
+    "zh": "创建数据导入任务，用于RDS MySQL原生复制实例数据导入",
+    "en": "Creates a data import task to import data into an RDS for MySQL instance that uses native replication."
+  },
   "example": {
     "unifiedCli": "aliyun rds create-import-task --biz-region-id cn-hangzhou --host 172.20.246.90 --port 3306 --stream-port 9999 --user myadmin --password OEF5JjVOM2pzZXFKRw== --source-platform ECS --source-instance-id i-bp1fe296n52ub3chezpg --xtrabackup-path /usr/bin/xtrabackup --db-instance-id rm-bp1u00000ggm7j9j --estimated-size 1000 --region cn-hangzhou",
     "legacyCli": "aliyun rds CreateImportTask --region cn-hangzhou --SourcePlatform ECS --User myadmin --XtrabackupPath '/usr/bin/xtrabackup' --EstimatedSize 1000 --Port 3306 --StreamPort 9999 --Host '172.20.246.90' --RegionId 'cn-hangzhou' --SourceInstanceId 'i-bp1fe296n52ub3chezpg' --DbInstanceId 'rm-bp1u00000ggm7j9j' --Password 'OEF5JjVOM2pzZXFKRw=='"

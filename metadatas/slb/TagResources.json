@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~27584~~)接口查询地域ID。",
+        "en": "The ID of the region where the Server Load Balancer (SLB) instance is created.\n\nYou can call the [DescribeRegions](~~27584~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID，最多支持20个资源ID。\n> **listener**的**ResourceId**取值为**LoadBalancerId\\_监听协议\\_Port**，其中LoadBalancerId为实例ID，port为监听端口。示例：lb\\-bp1snb10sbml4****\\_http\\_80。",
+        "en": "The ID of the resource. You can specify at most 20 resources.\n\n> Set **ResourceId** of the **listener** to **LoadBalancerId\\_Listener protocol\\_Port**. Set LoadBalancerId to the ID of the SLB instance, and Port to the listener port. Example: lb-bp1snb10sbml4\\*\\*\\*\\*\\_http\\_80."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义，取值：\n\n- **instance**：负载均衡实例。\n\n- **certificate**：证书。\n\n- **acl**：访问控制。\n\n- **listener**：监听。\n\n- **vservergroup**：虚拟服务器组。\n\n- **masterslaveservergroup**：主备服务器组。",
+        "en": "The type of the resource. Valid values:\n\n- **instance**: a Server Load Balancer (SLB) instance\n\n- **certificate**: a certificate\n\n- **acl**: an access control list (ACL)\n\n- **listener**: a listener\n\n- **vservergroup**: a vServer group\n\n- **masterslaveservergroup**: a primary/secondary server group"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持64个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key must be 1 to 64 characters in length and cannot start with `aliyun` or `acs:`. The tag key cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持20个标签值。一旦传入该值，可以为空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value. You can specify up to 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot start with `acs:` or `aliyun`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "给资源添加标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "> 单个实例最多可绑定20条标签。绑定标签前，阿里云会校验资源已有标签数量，超过限制值会返回报错信息。",
+    "en": "> You can add at most 20 tags to each instance. Before you add tags to a resource, Alibaba Cloud checks the number of existing tags of the resource. If the maximum number is reached, an error message is returned."
+  },
   "example": {
     "unifiedCli": "aliyun slb tag-resources --biz-region-id cn-hangzhou --resource-type instance --resource-id lb-bp16qjewdsunr41m10000 --tag Value=FinanceJoshua Key=FinanceDept --api-version 2014-05-15 --region cn-hangzhou",
     "legacyCli": "aliyun slb TagResources --region cn-hangzhou --ResourceId.1 'lb-bp16qjewdsunr41m10000' --Tag.1.Key FinanceDept --Tag.1.Value FinanceJoshua --ResourceType instance --RegionId 'cn-hangzhou'"

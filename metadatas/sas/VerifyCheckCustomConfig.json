@@ -1,5 +1,6 @@
 {
   "name": "VerifyCheckCustomConfig",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "CheckId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检查项ID。",
+        "en": "The ID of the check item."
+      }
     },
     {
       "name": "CustomCheckConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义检查项验证输入参数。",
+        "en": "The input parameters for custom check item validation."
+      }
     },
     {
       "name": "CustomConfigs",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "检查项自定义参数配置项列表。",
+        "en": "The list of custom parameter configuration items for the check item."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检查项自定义配置项名称，同检查项唯一。",
+            "en": "The name of the custom configuration item for the check item. The name is unique within the check item."
+          }
         },
         {
           "name": "Operation",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检查项自定义配置项操作类型，只有删除时传DELETE，创建和更新不用传。",
+            "en": "The operation type of the custom configuration item for the check item. Set this parameter to DELETE only for deletion operations. You do not need to specify this parameter for creation or update operations."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检查项自定义配置项用户配置值字符串。",
+            "en": "The user-configured value string of the custom configuration item for the check item."
+          }
         }
       ]
     },
@@ -47,30 +72,50 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "检查项修复功能支持的修复参数。",
+        "en": "The repair parameters supported by the repair feature of the check item."
+      },
       "sub_parameters": [
         {
           "name": "FlowId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "修复时对应修复流程的ID。",
+            "en": "The ID of the repair flow that corresponds to the repair operation."
+          }
         },
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检查项修复参数名称，同检查项唯一。",
+            "en": "The name of the repair parameter for the check item. The name is unique within the check item."
+          }
         },
         {
           "name": "Operation",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检查项自定义配置项操作类型，只有删除时传DELETE，创建和更新不用传。",
+            "en": "The operation type of the custom configuration item for the check item. Set this parameter to DELETE only for deletion operations. You do not need to specify this parameter for creation or update operations."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "检查项修复配置项用户配置值字符串。",
+            "en": "The user-configured value string of the repair configuration item for the check item."
+          }
         }
       ]
     },
@@ -78,9 +123,20 @@
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "态势感知参数验证类型：\n- **REPAIR_CONFIG**：修复与自定义参数验证（默认）\n- **CHECK_ITEM_CONFIG**：自定义检查项验证",
+        "en": "The validation type for Threat Detection Service parameters. Valid values:\n- **REPAIR_CONFIG**: repair and custom parameter validation (default).\n- **CHECK_ITEM_CONFIG**: custom check item validation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "验证态势感知自定义配置",
+    "en": "Validate threat detection service custom configuration"
+  },
   "example": {
     "unifiedCli": "aliyun sas verify-check-custom-config --check-id 76 --custom-configs Value=10.12.4.XX Operation=DELETE Name=IPList --repair-configs FlowId=7fec0a3395b345c18f108ffc9fc00000 Value=172.26.49.XX Operation=DELETE Name=IPLists --type REPAIR_CONFIG --custom-check-config '{\"InstanceSubType\":\"DISK\",\"CheckRule\":\"AssociatedData_:_ToDataList_:_DataName_:_ACS_ECS_Instance_,_PropertyPath_:_InstanceId_,_FromPropertyPath_:_InstanceId_,_MatchProperty_:_Operator_:_AND_,_MatchProperties_:_DataName_:_ACS_ECS_Disk_,_PropertyPath_:_DiskId_,_MatchOperator_:_EQ_,_MatchPropertyValue_:_testId\",\"Vendor\":\"ALIYUN\",\"InstanceType\":\"ECS\",\"CloudAssetInstance\":{\"InstanceId\":\"i-0jl4mjgl261cfrz50000\",\"RegionId\":\"cn-hangzhou\"}}' --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas VerifyCheckCustomConfig --region cn-hangzhou --Type REPAIR_CONFIG --RepairConfigs.1.Name IPLists --RepairConfigs.1.FlowId 7fec0a3395b345c18f108ffc9fc00000 --CheckId 76 --RepairConfigs.1.Value '172.26.49.XX' --CustomConfigs.1.Name IPList --CustomConfigs.1.Operation DELETE --CustomConfigs.1.Value '10.12.4.XX' --RepairConfigs.1.Operation DELETE --CustomCheckConfig '{\"InstanceSubType\":\"DISK\",\"CheckRule\":\"AssociatedData_:_ToDataList_:_DataName_:_ACS_ECS_Instance_,_PropertyPath_:_InstanceId_,_FromPropertyPath_:_InstanceId_,_MatchProperty_:_Operator_:_AND_,_MatchProperties_:_DataName_:_ACS_ECS_Disk_,_PropertyPath_:_DiskId_,_MatchOperator_:_EQ_,_MatchPropertyValue_:_testId\",\"Vendor\":\"ALIYUN\",\"InstanceType\":\"ECS\",\"CloudAssetInstance\":{\"InstanceId\":\"i-0jl4mjgl261cfrz50000\",\"RegionId\":\"cn-hangzhou\"}}'"

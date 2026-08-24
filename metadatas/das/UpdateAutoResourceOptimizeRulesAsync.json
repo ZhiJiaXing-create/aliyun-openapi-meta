@@ -1,5 +1,6 @@
 {
   "name": "UpdateAutoResourceOptimizeRulesAsync",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ConsoleContext",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备用参数。",
+        "en": "The reserved parameter."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库实例ID。\n\n> 数据格式为JSONArray，例如`['实例ID1','实例ID2']`，实例ID间用英文逗号（,）分隔。",
+        "en": "The database instance IDs.\n\n> Set this parameter to a JSON array that consists of multiple instance IDs. Separate instance IDs with commas (,). Example: `['Instance ID1', 'Instance ID2']`."
+      }
     },
     {
       "name": "ResultId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "异步请求的ID。\n> 异步调用后不会立即返回完整结果，首先需要调用该接口获取**ResultId**，然后使用返回数据的**ResultId**，重新发起调用，直到**isFinish**取值为**true**时，返回完整结果。即获取一次完整数据，至少需要调用该接口两次。",
+        "en": "The ID of the asynchronous request.\n\n> Asynchronous calls do not immediately return the complete results. To obtain the complete results, you must use the value of **ResultId** returned in the response to re-initiate the call until the value of **isFinish** is **true**.\\*\\*\\*\\* In this case, you must call this operation at least twice."
+      }
     },
     {
       "name": "TableFragmentationRatio",
       "position": "Query",
       "type": "Double",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "触发空间碎片自动回收单个物理表的碎片率，取值范围：**0.10**~**0.99**。",
+        "en": "The fragmentation rate that triggers automatic fragment recycling of a single physical table. Valid values: **0.10** to **0.99**."
+      }
     },
     {
       "name": "TableSpaceSize",
       "position": "Query",
       "type": "Double",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "触发空间碎片自动回收单个物理表的最小空间，取值范围：**5**~**100**，单位为GB。",
+        "en": "The minimum storage usage that triggers automatic fragment recycling of a single physical table. Valid values: **5** to **100**. Unit: GB."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置空间碎片自动回收功能的配置参数",
+    "en": "UpdateAutoResourceOptimizeRulesAsync"
+  },
+  "descriptions": {
+    "zh": "> 异步调用后不会立即返回完整结果，首先需要调用该接口获取**ResultId**，然后使用返回数据的**ResultId**，重新发起调用，直到**isFinish**取值为**true**时，返回完整结果。即获取一次完整数据，至少需要调用该接口两次。\n\n使用该接口需满足以下前提条件：\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n\n- 数据库实例类型为RDS MySQL高可用系列。\n\n- 数据库实例已开启DAS企业版，您可以调用[DescribeInstanceDasPro](~~413866~~)查询。\n\n- 数据库实例的CPU规格不小于4核，且**innodb_file_per_table**参数值为**ON**。",
+    "en": "> Asynchronous calls do not immediately return the complete results. To obtain the complete results, you must use the value of **ResultId** returned in the response to re-initiate the call until the value of **isFinish** is **true**.\\*\\*\\*\\* In this case, you must call this operation at least twice.\n\nBefore you call this operation, take note of the following items:\n\n- If you use an SDK to call the API operations of Database Autonomy Service (DAS), you must set the region ID to cn-shanghai.\n\n- The database instances must be an ApsaraDB RDS for MySQL High-availability Edition instance.\n\n- DAS Enterprise Edition must be enabled for the database instance. You can call the call [DescribeInstanceDasPro](~~413866~~) operation to query whether DAS Enterprise Edition is enabled.\n\n- The database instance has four or more CPU cores, and **innodb\\_file\\_per\\_table** is set to **ON**."
+  },
   "example": {
     "unifiedCli": "aliyun das update-auto-resource-optimize-rules-async --console-context None --instance-ids rm-2ze8g2am976240000_,_rm-2ze9xrhze07090000 --table-space-size 10.0 --table-fragmentation-ratio 0.2 --result-id async_507044db6c4eadfa2dab9b084e800000 --region cn-hangzhou",
     "legacyCli": "aliyun das UpdateAutoResourceOptimizeRulesAsync --region cn-hangzhou --TableSpaceSize '10.0' --ConsoleContext None --TableFragmentationRatio '0.2' --InstanceIds 'rm-2ze8g2am976240000_,_rm-2ze9xrhze07090000' --ResultId async_507044db6c4eadfa2dab9b084e800000"

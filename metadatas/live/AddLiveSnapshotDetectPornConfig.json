@@ -1,5 +1,6 @@
 {
   "name": "AddLiveSnapshotDetectPornConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。\n \nAppName名称与推流地址中的AppName名称对应，模板才能生效。不超过255字符，支持数字、大小写字母、短横线（-）、下划线（_），短横线、下划线不能位于首位。也支持取值为单个星号（*）字符，即可匹配所有AppName。",
+        "en": "The name of the application to which the live stream belongs."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The main streaming domain."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "采样间隔。取值范围：**5~3600**。单位：秒。",
+        "en": "The interval at which snapshots are captured from the live stream. Valid values: **5 to 3600**. Unit: seconds."
+      }
     },
     {
       "name": "OssBucket",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储Bucket名称。\n\n审核完成后，您可以根据审核回调信息，在OSS控制台查找指定的审核内容。OSS Bucket需要提前创建，创建方法请参考[配置审核](~~199449~~) 。",
+        "en": "The name of the OSS bucket.\n\nAfter the review is complete, you can search for specific violations in the OSS console based on the callback information. You must create the OSS bucket in advance. For more information, see [Configure content moderation](~~199449~~)."
+      }
     },
     {
       "name": "OssEndpoint",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储Endpoint名称。\n\n审核完成后，您可以根据审核回调信息，在OSS控制台查找指定的审核内容。OSS Endpoint需要提前创建，创建方法请参考[配置审核](~~199449~~) 。",
+        "en": "The endpoint of the Object Storage Service (OSS) bucket.\n\nAfter the review is complete, you can search for specific violations in the OSS console based on the callback information. You must configure the OSS endpoint in advance. For more information, see [Configure content moderation](~~199449~~)."
+      }
     },
     {
       "name": "OssObject",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保存涉黄涉政等违规图片名称。",
+        "en": "The name of the snapshot that stores violations such as pornographic content and politically sensitive content."
+      }
     },
     {
       "name": "Scene",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检测场景列表。",
+        "en": "Scene list detection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "按照域名和App级别配置直播流审核服务",
+    "en": "AddLiveSnapshotDetectPornConfig"
+  },
+  "descriptions": {
+    "zh": "- 直播审核按照域名和App级别对于其中违规敏感内容进行识别审查，并通过回调的方式实时将违规内容通知到用户，用户可以对内容进行复审并进行相应处置。\n\n- 目前仅部分直播中心支持直播智能审核，具体支持该功能的直播中心，请参见[服务地域](~~193730~~)。\n\n\n## QPS限制\n本接口的单用户QPS限制为30次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- The live streaming audit function identifies and reviews non-compliant sensitive content at the domain and App level, and promptly notifies users of such violations via callbacks. Users can then review the content and take appropriate actions.\n\n- Currently, only some live streaming centers support intelligent auditing. For a list of live streaming centers that support this feature, please refer to [Service Regions](~~193730~~).\n\n## QPS Limitation\n\nThe QPS limit for this API per user is 30 requests/second. Exceeding this limit will result in API throttling, which may impact your services. Please use the API judiciously. For more information, see [QPS Limitations](~~343507~~)."
+  },
   "example": {
     "unifiedCli": "aliyun live add-live-snapshot-detect-porn-config --domain-name example.com --app-name testApp --oss-endpoint cn-oss-0000.aliyuncs.com --oss-bucket livebucket --oss-object record/_AppName_/_StreamName_/_Sequence_.jpg --interval 10 --scene live --region cn-hangzhou",
     "legacyCli": "aliyun live AddLiveSnapshotDetectPornConfig --region cn-hangzhou --OssEndpoint 'cn-oss-0000.aliyuncs.com' --DomainName 'example.com' --OssBucket livebucket --Scene.1 live --OssObject 'record/_AppName_/_StreamName_/_Sequence_.jpg' --AppName testApp --Interval 10"

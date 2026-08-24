@@ -1,5 +1,6 @@
 {
   "name": "RemoveIpamMembers",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。说明 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "A client token to ensure the idempotence of the request. Generate a value from your client to make sure that the value is unique among different requests. The ClientToken parameter can contain only ASCII characters. Note: If you do not specify this parameter, the system uses the RequestId of the API request as the ClientToken. The RequestId may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会移除IPAM可信服务纳管成员。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并移除IPAM可信服务纳管成员。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run. The system checks the required parameters, the request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the DryRunOperation error code is returned. The members are not removed.\n\n- **false** (default): Sends a request. If the request passes the check, a 2xx HTTP status code is returned, and the members are removed."
+      }
     },
     {
       "name": "Members",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "IPAM可信服务纳管成员。",
+        "en": "The members managed by the IPAM trusted service."
+      },
       "sub_parameters": [
         {
           "name": "MemberId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "成员ID。\n\n- **Folder ID**：资源夹ID。\n\n- **Account UID**：资源目录成员账号UID。",
+            "en": "The member ID.\n\n- **Folder ID**: The ID of the folder.\n\n- **Account UID**: The UID of the member account in the resource directory."
+          }
         },
         {
           "name": "MemberType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "成员类型，取值：\n\n- **Folder**：资源夹。\n\n- **Account**：资源目录成员账号。",
+            "en": "The type of the member. Valid values:\n\n- **Folder**: The member is a folder.\n\n- **Account**: The member is a member account in the resource directory."
+          }
         }
       ]
     },
@@ -40,9 +61,24 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPAM托管地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the IPAM is hosted. To get the region ID, call the [DescribeRegions](~~36063~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除IPAM可信服务纳管成员",
+    "en": "RemoveIpamMembers"
+  },
+  "descriptions": {
+    "zh": "- IPAM委派管理员移除最后一个纳管成员后，资源目录IPAM可信服务关闭。",
+    "en": "- If the delegated IPAM administrator removes the last member, the IPAM trusted service is disabled for the resource directory."
+  },
   "example": {
     "unifiedCli": "aliyun vpcipam remove-ipam-members --biz-region-id cn-hangzhou --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --members MemberId=Folder MemberType=fd-ccccncASqa --region cn-hangzhou",
     "legacyCli": "aliyun vpcipam RemoveIpamMembers --region cn-hangzhou --Members.1.MemberType 'fd-ccccncASqa' --DryRun false --Members.1.MemberId Folder --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

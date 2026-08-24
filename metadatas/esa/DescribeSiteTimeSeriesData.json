@@ -1,5 +1,6 @@
 {
   "name": "DescribeSiteTimeSeriesData",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end time for obtaining data.\n\nThe date format follows ISO8601 notation and uses UTC+0 time, in the format yyyy-MM-ddTHH:mm:ssZ.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "Fields",
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "查询指标。",
+        "en": "Query metrics."
+      },
       "sub_parameters": [
         {
           "name": "Dimension",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "查询维度。",
+            "en": "Query dimension."
+          }
         },
         {
           "name": "FieldName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "查询指标值。\n\n>具体维度请参见[数据分析字段说明](~~2878520~~)。",
+            "en": "Query metric value.\n\n> For specific dimensions, see [Data Analysis Field Description](~~2878520~~)."
+          }
         }
       ]
     },
@@ -34,21 +51,44 @@
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询数据的时间粒度，单位为秒。\n\n根据单次查询的最大时间跨度不同，该参数支持60(一分钟) 、300(5分钟)、3600(1小时)和86400(1天)取值，具体请参见上方的**支持查询的时间粒度**。",
+        "en": "The time granularity for querying data, in seconds.\n\nDepending on the maximum time span of a single query, this parameter supports values of 60 (1 minute), 300 (5 minutes), 3600 (1 hour), and 86400 (1 day). For details, see the **Supported Query Time Granularities**."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "站点ID。通过调用[ListSites](~~ListSites~~)接口获取站点ID。\n\n此参数为空时查询用户维度数据。",
+        "en": "Site ID. Obtain the site ID by calling the [ListSites](~~ListSites~~) interface.\n\nIf this parameter is empty, user-level data will be queried."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的起始时间。\n\n日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The start time for obtaining data.\n\nThe date format follows ISO8601 notation and uses UTC+0 time, in the format yyyy-MM-ddTHH:mm:ssZ."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询流量分析时序数据",
+    "en": "Query Traffic Analysis Time Series Data"
+  },
+  "descriptions": {
+    "zh": "- 如果您不指定 StartTime 和 EndTime，该接口返回过去 24 小时的数据；指定 StartTime 和 EndTime，该接口返回指定时间段的数据。\n- 根据 StartTime 和 EndTime 跨度返回不同时间粒度。\n  * 小于等于 3 小时，返回 1 分钟粒度数据。\n  * 跨度大于 3 小时且小于等于 12 小时, 返回 5 分钟粒度数据。\n  * 跨度大于 12 小时且小于等于 1 天, 返回 15 分钟粒度数据。\n  * 跨度大于 1 天且小于等于10 天，返回小时粒度数据。\n  * 跨度大于 10 天且小于等于 31 天返回天粒度数据。\n- 由于查询时间段的访问次数较大，数据分析可能经过采样。",
+    "en": "- If you do not specify `StartTime` and `EndTime`, the API returns data for the past 24 hours; if you specify `StartTime` and `EndTime`, the API returns data for the specified time period.\n- The API returns different time granularities based on the span between `StartTime` and `EndTime`.\n  * For a span of 3 hours or less, it returns 1-minute granularity data.\n  * For a span greater than 3 hours but no more than 12 hours, it returns 5-minute granularity data.\n  * For a span greater than 12 hours but no more than 1 day, it returns 15-minute granularity data.\n  * For a span greater than 1 day but no more than 10 days, it returns hourly granularity data.\n  * For a span greater than 10 days but no more than 31 days, it returns daily granularity data.\n- Due to the high number of accesses during the query period, the data analysis may be sampled."
+  },
   "example": {
     "unifiedCli": "aliyun esa describe-site-time-series-data --site-id 115037603600000 --start-time 2023-04-08T16:00:00Z --end-time 2023-04-09T16:00:00Z --interval 300 --fields '[{\"Dimension\":[\"ALL\"],\"FieldName\":\"Traffic\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun esa DescribeSiteTimeSeriesData --region cn-hangzhou --SiteId 115037603600000 --Fields '[{\"Dimension\":[\"ALL\"],\"FieldName\":\"Traffic\"}]' --EndTime '2023-04-09T16:00:00Z' --StartTime '2023-04-08T16:00:00Z' --Interval 300"

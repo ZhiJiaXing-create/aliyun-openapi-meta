@@ -1,5 +1,6 @@
 {
   "name": "RebootInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "BatchOptimization",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置批量操作模式。取值范围：\n\n- AllTogether：该模式下，如果实例全部重启成功，则返回成功信息；如果任意一个实例校验不通过，则所有实例重启失败，并返回失败信息。\n\n- SuccessFirst：该模式下，分别重启每个实例，返回结果包含每个实例的操作结果信息。\n\n默认值：AllTogether。",
+        "en": "The batch operation mode. Valid values:\n\n- AllTogether: In this mode, if all instances are restarted, a success message is returned. If an instance fails the verification, all instances fail to be restarted and an error message is returned.\n\n- SuccessFirst: In this mode, each instance is restarted separately. The response contains the operation results of each instance.\n\nDefault value: AllTogether."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- true：发送检查请求，不会重启实例。检查项包括是否填写了必需参数、请求格式、实例状态。如果检查不通过，则返回对应错误。如果检查通过，则返回`DRYRUN.SUCCESS`。\n> 如果参数`BatchOptimization`被设置为`SuccessFirst`，对应的`DryRun=true`的预检结果只会返回`DRYRUN.SUCCESS`。\n\n- false：发送正常请求，通过检查后直接重启实例。\n\n默认值：false。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- true: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and instance status. If the request fails the dry run, an error message is returned. If the request passes the dry run, `DRYRUN.SUCCESS` is returned.\n\n> If you set `BatchOptimization` to `SuccessFirst` and `DryRun` to true, only `DRYRUN.SUCCESS` is returned regardless of whether the request passes the dry run.\n\n- false: performs a dry run and sends the request. If the request passes the dry run, the instance is restarted.\n\nDefault value: false."
+      }
     },
     {
       "name": "ForceReboot",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制重启。取值范围：\n\n-   true：强制重启。相当于典型的断电操作，所有未写入存储设备的缓存数据会丢失。\n\n-   false：正常重启。\n\n默认值：false。",
+        "en": "Specifies whether to forcefully restart the instance. Valid values:\n\n- true: forcefully restarts the instance. This operation is equivalent to the typical power-off operation. Cache data that is not written to storage devices on the instance is lost.\n\n- false: normally restarts the instance.\n\nDefault value: false."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID数组。数组长度：1~100。",
+        "en": "The IDs of ECS instances. Valid values of N: 1 to 100."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在的地域。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量重启实例",
+    "en": "RebootInstances"
+  },
+  "descriptions": {
+    "zh": "该接口为异步接口，实例的重启不是立即完成的，成功调用后，实例会先进入启动中（`Starting`）状态，你可以调用[DescribeInstanceStatus](~~2679688~~)查看实例状态，当返回的状态为`Running`时代表重启成功。\n\n### 使用须知\n- 被安全锁定的实例不能通过调用该接口重启。更多信息，请参见[资源安全锁定对调用API的影响](~~25695~~)。\n- ECS实例的状态必须为**运行中**（`Running`）。",
+    "en": "该接口为异步接口，实例的重启不是立即完成的，成功调用后，实例会先进入启动中（`Starting`）状态，你可以调用 [DescribeInstanceStatus](~~2679688~~) 查看实例状态，当返回的状态为`Running`时代表重启成功。\n\n### 使用须知\n\n- 被安全锁定的实例不能通过调用该接口重启。更多信息，请参见[资源安全锁定对调用 API 的影响](~~25695~~)。\n\n- ECS 实例的状态必须为**运行中**（`Running`）。"
+  },
   "example": {
     "unifiedCli": "aliyun ecs reboot-instances --dry-run false --biz-region-id cn-hangzhou --force-reboot false --batch-optimization AllTogether --instance-id i-bp67acfmxazb4p0000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs RebootInstances --region cn-hangzhou --DryRun false --BatchOptimization AllTogether --RegionId 'cn-hangzhou' --InstanceId.1 'i-bp67acfmxazb4p0000' --ForceReboot false"

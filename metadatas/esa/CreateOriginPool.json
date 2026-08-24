@@ -1,5 +1,6 @@
 {
   "name": "CreateOriginPool",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "Enabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源地址池是否启用：\n\n- true: 启用；\n- false：不启用。",
+        "en": "Specifies whether the origin pool is enabled.\n\n- `true`: enabled\n\n- `false`: disabled"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源地址池名称，一个站点下源地址池名称唯一。",
+        "en": "The name of the origin pool. The name must be unique within a site."
+      }
     },
     {
       "name": "Origins",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "源地址池里添加的源站信息，多个源站使用数组传值。",
+        "en": "The list of origins to add to the origin pool. Use an array to specify multiple origins."
+      },
       "sub_parameters": [
         {
           "name": "Address",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站地址，如：www.example.com。",
+            "en": "The address of the origin. For example, www\\.example.com."
+          }
         },
         {
           "name": "AuthConf",
           "position": "Query",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "鉴权信息，源站为OSS或者S3等源站需要鉴权时，需要传鉴权相关配置信息。",
+            "en": "The authentication configuration for the origin. Required if the origin is an OSS or AWS S3 bucket that requires authentication."
+          }
         },
         {
           "name": "Enabled",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站是否启用：\n\n- true: 启用；\n- false：不启用。",
+            "en": "Specifies whether the origin is enabled.\n\n- `true`: enabled\n\n- `false`: disabled"
+          }
         },
         {
           "name": "Header",
           "position": "Query",
           "type": "Any",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "回源时带的请求头，只支持Host。",
+            "en": "The request header to include in back-to-origin requests. Only the `Host` header is supported."
+          }
         },
         {
           "name": "IpVersionPolicy",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "回源请求使用的 IP 协议版本：\n- round_robin：默认策略，随机轮询 IPv4 或 IPv6 源站\n- ipv4_first：优先使用 IPv4 源站\n- ipv6_first：优先使用 IPv6 源站\n- follow：优先跟随客户端使用的 IP 版本",
+            "en": "The IP protocol version for back-to-origin requests. Valid values:\n\n- `round_robin`: Default. Randomly selects an IPv4 or IPv6 origin.\n\n- `ipv4_first`: Prioritizes IPv4 origins.\n\n- `ipv6_first`: Prioritizes IPv6 origins.\n\n- `follow`: Uses the same IP protocol version as the client's request."
+          }
         },
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站名称，一个源地址下源站名称唯一。",
+            "en": "The name of the origin. The name must be unique within the origin pool."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站类型：\n\n- ip_domain: ip或域名类型源站；\n- OSS：OSS地址源站；\n- S3：AWS S3源站。",
+            "en": "The type of the origin. Valid values:\n\n- `ip_domain`: An IP address or a domain name.\n\n- `OSS`: An Alibaba Cloud OSS bucket.\n\n- `S3`: An AWS S3 bucket."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "权重，0-100的整数。",
+            "en": "The weight of the origin. The value must be an integer from 0 to 100."
+          }
         }
       ]
     },
@@ -76,9 +121,24 @@
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~2850189~~)接口获取。",
+        "en": "The site ID. To obtain this ID, call the [ListSites](~~2850189~~) operation."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建源地址池",
+    "en": "Create Origin Address Pool"
+  },
+  "descriptions": {
+    "zh": "源地址下可以添加多个源站，支持域名、IP、OSS、S3等类型的源站，支持OSS和S3类型源站的回源鉴权。",
+    "en": "You can add multiple origins to an origin pool, such as a domain name, IP, OSS, or S3. Back-to-origin authentication is available for OSS and S3 origins."
+  },
   "example": {
     "unifiedCli": "aliyun esa create-origin-pool --name pool1 --enabled true --origins '[{\"Type\":\"ip_domain\",\"Address\":\"www.example.com\",\"Header\":\"Host_:_example.com\",\"Enabled\":true,\"AuthConf\":{\"SecretKey\":\"yourAccessKeySecret\",\"Version\":\"v2\",\"Region\":\"us-east-1\",\"AuthType\":\"public\",\"AccessKey\":\"yourAccessKeyID\"},\"Weight\":50,\"IpVersionPolicy\":\"round_robin\",\"Name\":\"origin1\"}]' --site-id 216558609790000 --region cn-hangzhou",
     "legacyCli": "aliyun esa CreateOriginPool --region cn-hangzhou --Origins '[{\"Type\":\"ip_domain\",\"Address\":\"www.example.com\",\"Header\":\"Host_:_example.com\",\"Enabled\":true,\"AuthConf\":{\"SecretKey\":\"yourAccessKeySecret\",\"Version\":\"v2\",\"Region\":\"us-east-1\",\"AuthType\":\"public\",\"AccessKey\":\"yourAccessKeyID\"},\"Weight\":50,\"IpVersionPolicy\":\"round_robin\",\"Name\":\"origin1\"}]' --SiteId 216558609790000 --Enabled true --Name pool1"

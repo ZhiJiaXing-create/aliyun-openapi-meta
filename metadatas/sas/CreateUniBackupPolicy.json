@@ -1,5 +1,6 @@
 {
   "name": "CreateUniBackupPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,75 +9,130 @@
       "name": "AccountName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库账户名称。",
+        "en": "The name of the database account."
+      }
     },
     {
       "name": "AccountPassword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库账户密码。",
+        "en": "The password of the database account."
+      }
     },
     {
       "name": "DatabaseAddByUser",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库是否用户添加。取值：\n\n- **true**：是\n- **false**：否",
+        "en": "Specifies whether the database is manually added. Valid values:\n\n*   **true**: yes\n*   **false**: no"
+      }
     },
     {
       "name": "DatabaseType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库类型，取值如下：\n\n- **MYSQL**\n- **ORACLE**\n- **MSSQL**",
+        "en": "The type of the database. Valid values:\n\n*   **MYSQL**\n*   **ORACLE**\n*   **MSSQL**"
+      }
     },
     {
       "name": "FullPlan",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全量备份策略。格式为JSON格式。包含以下字段：\n\n- **start**：备份开始时间\n- **interval**：间隔周期\n- **type**：间隔周期单位\n- **days**：周中执行日期",
+        "en": "The policy for full data backup. The value of this parameter is a JSON string. The JSON string contains the following fields:\n\n*   **start**: the start time of a backup task.\n*   **interval**: the interval of backup tasks.\n*   **type**: the unit of the interval.\n*   **days**: the days of a week on which a backup task is performed."
+      }
     },
     {
       "name": "IncPlan",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "增量备份策略。格式为JSON格式。包含以下字段：\n- **start**：备份开始时间\n- **interval**：间隔周期\n- **type**：间隔周期单位\n- **days**：周中执行日期",
+        "en": "The policy for incremental data backup. The value of this parameter is a JSON string. The JSON string contains the following fields:\n\n*   **start**: the start time of a backup task.\n*   **interval**: the interval of backup tasks.\n*   **type**: the unit of the interval.\n*   **days**: the days of a week on which a backup task is performed."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECS实例的ID。\n>调用[DescribeUniBackupDatabase](~~DescribeUniBackupDatabase~~)接口可以获取该参数。",
+        "en": "The ID of the Elastic Compute Service (ECS) instance.\n\n>  You can call the [DescribeUniBackupDatabase](~~DescribeUniBackupDatabase~~) operation to query the IDs of ECS instances."
+      }
     },
     {
       "name": "PolicyName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "防勒索备份策略的名称。",
+        "en": "The name of the anti-ransomware policy."
+      }
     },
     {
       "name": "Retention",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份保留天数。",
+        "en": "The retention period of backup data."
+      }
     },
     {
       "name": "SpeedLimiter",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份网络带宽限制。单位为字节。",
+        "en": "The maximum network bandwidth that is allowed during data backup. Unit: bytes."
+      }
     },
     {
       "name": "UniRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份策略防护的服务器所在的地域。",
+        "en": "The region in which the server resides."
+      }
     },
     {
       "name": "Uuid",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库防勒索所备份服务器的UUID。\n> 您可以调用[DescribeCloudCenterInstances](~~141932~~)接口获取服务器的UUID。",
+        "en": "The UUID of the server whose data is backed up based on the anti-ransomware policy.\n\n>  You can call the [DescribeCloudCenterInstances](~~141932~~) operation to query the UUIDs of servers."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据库防勒索策略",
+    "en": "CreateUniBackupPolicy"
+  },
   "example": {
     "unifiedCli": "aliyun sas create-uni-backup-policy --policy-name mysql-policy --instance-id i-bp1fu4aqltf1huhc0000 --uuid 045cad48-eb08-4047-a70c-713aec7b0000 --database-type MYSQL --retention 7 --speed-limiter 5242880 --account-name admin --account-password Pass0000 --database-add-by-user true --uni-region-id cn-hangzhou --full-plan planType=weekly days=[4] interval=1 startTime=22:00:00 --inc-plan planType=daily interval=1 startTime=23:30:00 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas CreateUniBackupPolicy --region cn-hangzhou --IncPlan '{\"planType\":\"daily\",\"interval\":1,\"startTime\":\"23:30:00\"}' --Uuid '045cad48-eb08-4047-a70c-713aec7b0000' --DatabaseType MYSQL --InstanceId 'i-bp1fu4aqltf1huhc0000' --DatabaseAddByUser true --FullPlan '{\"planType\":\"weekly\",\"days\":[4],\"interval\":1,\"startTime\":\"22:00:00\"}' --PolicyName 'mysql-policy' --UniRegionId 'cn-hangzhou' --Retention 7 --SpeedLimiter 5242880 --AccountName admin --AccountPassword Pass0000"

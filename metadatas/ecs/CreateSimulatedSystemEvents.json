@@ -1,5 +1,6 @@
 {
   "name": "CreateSimulatedSystemEvents",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "EventType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "系统事件的类型。取值范围： \n- SystemMaintenance.Reboot：因系统维护实例重启 \n- SystemFailure.Reboot：因系统错误实例重启 \n- InstanceFailure.Reboot：因实例错误实例重启\n- SystemMaintenance.Stop：因系统维护实例停止\n- SystemMaintenance.Redeploy：因系统维护实例重新部署\n- SystemFailure.Redeploy：因系统错误实例重新部署\n- SystemFailure.Stop：因系统错误实例重新停止\n- InstanceFailure.Reboot：因实例错误实例重启",
+        "en": "The type of the system event. Valid values:\n- SystemMaintenance.Reboot: The instance is restarted due to system maintenance.\n- SystemFailure.Reboot: The instance is restarted due to a system error.\n- InstanceFailure.Reboot: The instance is restarted due to an instance error.\n- SystemMaintenance.Stop: The instance is stopped due to system maintenance.\n- SystemMaintenance.Redeploy: The instance is redeployed due to system maintenance.\n- SystemFailure.Redeploy: The instance is redeployed due to a system error.\n- SystemFailure.Stop: The instance is stopped due to a system error.\n- InstanceFailure.Reboot: The instance is restarted due to an instance error."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECS实例ID列表信息。可输入最多100个实例ID。",
+        "en": "The list of ECS instance IDs. You can specify up to 100 instance IDs."
+      }
     },
     {
       "name": "NotBefore",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "事件计划执行的开始时间。按照[ISO8601](~~25696~~)标准表示，并使用UTC +0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 对于系统错误或实例错误导致的异常事件，创建事件后，事件已处于正在执行（`Executing`）状态，此时参数`NotBefore`为事件进入完成执行（`Executed`）状态的时间。",
+        "en": "The scheduled start time of the event. Specify the time in the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> For unexpected events caused by system errors or instance errors, after the event is created, the event enters the Executing state. In this case, the NotBefore parameter specifies the time when the event enters the Executed state."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为实例预约模拟系统事件",
+    "en": "Schedule simulated system events for instances"
+  },
+  "descriptions": {
+    "zh": "预约模拟事件后，您可以通过ECS管理控制台、[ECS API](~~63962~~)和云监控服务查看已经预约的模拟系统事件。\n\n下表为模拟系统事件的生命周期：\n\n- Scheduled（计划中）：预约后，模拟系统事件自动切换为Scheduled状态。\n- Executed（已完成）：在没有人为干预的情况下，模拟系统事件在指定时间点（NotBefore）自动变成Executed状态。\n- Canceled（已取消）：您调用[CancelSimulatedSystemEvents](~~88808~~)取消模拟系统事件后，变成Canceled状态。         \n- Avoided（已避免）：对于因系统维护实例重启（SystemMaintenance.Reboot）的模拟系统事件，可以通过在指定时间点前[重启实例](~~25502~~)而变成Avoided状态。",
+    "en": "After you schedule simulated events, you can view the scheduled simulated system events in the ECS console, by calling [ECS API](~~63962~~) operations, or by using CloudMonitor.\n\nThe following list describes the lifecycle of simulated system events:\n\n- Scheduled: After the simulated system event is scheduled, it automatically enters the Scheduled state.\n- Executed: If no manual intervention is performed, the simulated system event automatically enters the Executed state at the specified point in time (NotBefore).\n- Canceled: After you call [CancelSimulatedSystemEvents](~~88808~~) to cancel the simulated system event, the event enters the Canceled state.\n- Avoided: For simulated system events of the SystemMaintenance.Reboot type, you can [restart the instance](~~25502~~) before the scheduled time to change the event to the Avoided state."
+  },
   "example": {
     "unifiedCli": "aliyun ecs create-simulated-system-events --biz-region-id cn-hangzhou --event-type SystemMaintenance.Reboot --not-before 2018-12-01T06:32:31Z --instance-id i-bp1gtjxuuvwj17zr0000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs CreateSimulatedSystemEvents --region cn-hangzhou --EventType 'SystemMaintenance.Reboot' --RegionId 'cn-hangzhou' --NotBefore '2018-12-01T06:32:31Z' --InstanceId.1 'i-bp1gtjxuuvwj17zr0000'"

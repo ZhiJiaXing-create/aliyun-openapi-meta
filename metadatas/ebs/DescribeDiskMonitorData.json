@@ -1,5 +1,6 @@
 {
   "name": "DescribeDiskMonitorData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DiskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云盘ID。",
+        "en": "The ID of the disk."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取云盘的秒级监控数据的结束时间点。按照[ISO 8601](~~25696~~)标准表示，并使用UTC+0时间，格式为`yyyy-MM-ddTHH:mm:ssZ`。",
+        "en": "The end of the time range during which you want to query the near real-time monitoring data of the disk. Specify the time in the [ISO 8601](~~25696~~) standard in the `yyyy-MM-ddTHH:mm:ssZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取云盘的秒级监控数据的间隔时间。单位：秒。取值范围：\n\n- 5。\n- 60。\n\n默认值：5。",
+        "en": "The interval at which the near real-time monitoring data is collected. Unit: seconds. Valid values:\n\n*   5\n*   60\n\nDefault value: 5."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID of the disk."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取云盘的秒级监控数据的起始时间点。按照[ISO 8601](~~25696~~)标准表示，并使用UTC +0时间，格式为`yyyy-MM-ddTHH:mm:ssZ`。",
+        "en": "The beginning of the time range during which you want to query the near real-time monitoring data of the disk. Specify the time in the [ISO 8601](~~25696~~) standard in the `yyyy-MM-ddTHH:mm:ssZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "磁盘监控数据类型。取值范围：\n\n- basic：基础性能数据。\n\n- pro：包含Burst IO数据。",
+        "en": "The type of the monitoring data. Valid values:\n\n*   basic: baseline performance data.\n*   pro: burst performance data, such as burst I/O operations."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询云盘监控（API下线中）",
+    "en": "DescribeDiskMonitorData"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 查询结果一次最多返回400条数据，即指定的`（EndTime-StartTime）/Period`不能超过400。\n\n- 查询结果一次最多能查询近3天内的监控信息，即`StartTime`指定的时间与当前时间相差不能超过3天。",
+    "en": "## Usage notes\n\n*   CloudLens for EBS is in invitational preview in the China (Hangzhou), China (Shanghai), China (Zhangjiakou), China (Shenzhen), and China (Hong Kong) regions. To use the feature, [submit a ticket](https://workorder-intl.console.aliyun.com/#/ticket/createIndex).\n*   Up to 400 monitoring data entries can be returned at a time. An error is returned if the value calculated based on the following formula is greater than 400: `(EndTime - StartTime)/Period`.\n*   You can query the monitoring data collected in the last three days. An error is returned if the time specified by `StartTime` is more than three days prior to the current time."
+  },
   "example": {
     "unifiedCli": "aliyun ebs describe-disk-monitor-data --biz-region-id cn-hangzhou --disk-id d-bp67acfmxazb4p0000 --start-time 2022-06-01T03:00:00Z --end-time 2022-06-01T05:00:00Z --period 5 --type basic --region cn-hangzhou",
     "legacyCli": "aliyun ebs DescribeDiskMonitorData --region cn-hangzhou --Type basic --EndTime '2022-06-01T05:00:00Z' --StartTime '2022-06-01T03:00:00Z' --Period 5 --RegionId 'cn-hangzhou' --DiskId 'd-bp67acfmxazb4p0000'"

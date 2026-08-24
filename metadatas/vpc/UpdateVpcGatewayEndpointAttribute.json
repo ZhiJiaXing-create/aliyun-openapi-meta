@@ -1,5 +1,6 @@
 {
   "name": "UpdateVpcGatewayEndpointAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among all requests. The token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system uses **RequestId** as **ClientToken**. The value of **RequestId** of each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会修改网关终端节点的信息。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并修改网关终端节点的信息。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: performs a dry run. The system checks your AccessKey pair, the RAM user permissions, and the required parameters If the request fails the dry run, the corresponding error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and sends the request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndpointDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网关终端节点需要被修改的描述信息。\n\n描述信息的长度在1~255个字符之间。",
+        "en": "The new description of the gateway endpoint.\n\nThe description must be 1 to 255 characters in length."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要修改信息的网关终端节点的实例ID。",
+        "en": "The ID of the gateway endpoint that you want to modify."
+      }
     },
     {
       "name": "EndpointName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网关终端节点需要被修改的名称。\n\n名称的长度在1~128个字符之间。",
+        "en": "The new name of the gateway endpoint.\n\nThe name must be 1 to 128 characters in length."
+      }
     },
     {
       "name": "PolicyDocument",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云服务的访问策略。\n\n关于访问策略的语法和结构，请参见[权限策略语法和结构](~~93739~~)。",
+        "en": "The access policy for the cloud service.\n\nFor more information about the syntax and structure of the access policy, see [Policy syntax and structure](~~93739~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要修改信息的网关终端节点所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the gateway endpoint.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改网关终端节点的配置信息",
+    "en": "UpdateVpcGatewayEndpointAttribute"
+  },
+  "descriptions": {
+    "zh": "- **UpdateVpcGatewayEndpointAttribute**接口属于异步接口，即系统会先返回一个**RequestId**，但该网关终端节点的配置信息并未修改完成，系统后台的修改任务仍在进行。您可以调用[GetVpcGatewayEndpointAttribute](~~311017~~)查询网关终端节点的状态。\n\n    - 当网关终端节点处于**Updating**状态时，表示正在修改中。\n\n    - 当网关终端节点处于**Created**状态时，表示修改完成。\n\n- **UpdateVpcGatewayEndpointAttribute**接口不支持并发修改同一个网关终端节点。",
+    "en": "*   **UpdateVpcGatewayEndpointAttribute** is an asynchronous operation. After a request is sent, the system returns a **request ID** and runs the task in the background. You can call the [GetVpcGatewayEndpointAttribute](~~311017~~) operation to query the status of the task.\n\n    *   If the gateway endpoint is in the **Updating** state, it is being modified.\n    *   If the gateway endpoint is in the **Created** state, it is modified.\n\n*   You cannot call the **UpdateVpcGatewayEndpointAttribute** operation within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc update-vpc-gateway-endpoint-attribute --endpoint-id vpce-bp1w1dmdqjpwul0v30000 --endpoint-name update --endpoint-description updateendpoint --policy-document Version_:_1_,_Statement_:_Effect_:_Allow_,_Resource_:_0_,_Action_:_0_,_Principal_:_0 --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc UpdateVpcGatewayEndpointAttribute --region cn-hangzhou --EndpointName update --EndpointId 'vpce-bp1w1dmdqjpwul0v30000' --DryRun false --PolicyDocument 'Version_:_1_,_Statement_:_Effect_:_Allow_,_Resource_:_0_,_Action_:_0_,_Principal_:_0' --EndpointDescription updateendpoint --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760'"

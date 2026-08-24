@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodDomainTrafficData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的加速域名。\n\n- 不传入该参数，则默认返回所有加速域名的合并数据。\n- 支持批量查询，多个域名之间用半角逗号（,）分隔，一次最多支持500个域名查询。\n- 您可以登录[视频点播控制台](https://vod.console.aliyun.com)，从左侧导航选择**配置管理 > 分发加速配置 > 域名管理**，查看您已接入到视频点播的加速域名，或者调用[DescribeVodUserDomains](~~455030~~)接口查询加速域名列表。",
+        "en": "The accelerated domain name that you want to query.\n\n- If you do not specify this parameter, the pooled data of all accelerated domain names is returned by default.\n\n- Batch queries are supported. Separate multiple domain names with commas (,). You can query a maximum of 500 domain names at a time.\n\n- Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com) and choose **Configuration Management > CDN Configuration > Domain Names** in the navigation pane on the left to view the accelerated domain names that are added to ApsaraVideo VOD. You can also call the [DescribeVodUserDomains](~~455030~~) operation to query the list of accelerated domain names."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nThe time follows the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time is displayed in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置查询数据的时间粒度。单位：秒。取值：**300**、**3600**和**86400**。不传和传的值不支持时，使用默认值。根据您指定的`StartTime`和`EndTime`的时间跨度，支持设置的时间粒度如下：\n\n- 3天以内（不包含3天整）支持：**300**（默认）、**3600**、**86400**。\n- 3-31天（不包含31天整）支持：**3600**（默认）和**86400**。\n- 31天以上支持：**86400**（默认）。",
+        "en": "The time granularity of the data to query. Unit: seconds. Valid values: **300**, **3600**, and **86400**. If you do not set this parameter, or if you set it to an unsupported value, the default value is used. The supported time granularity varies based on the time range specified by `StartTime` and `EndTime`:\n\n- If the time range is less than 3 days, valid values are **300** (default), **3600**, and **86400**.\n\n- If the time range is from 3 to 31 days, valid values are **3600** (default) and **86400**.\n\n- If the time range is more than 31 days, the valid value is **86400** (default)."
+      }
     },
     {
       "name": "IspNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商英文名。不传入该参数，默认查询所有运营商。",
+        "en": "The name of the carrier. If you do not set this parameter, data of all carriers is queried."
+      }
     },
     {
       "name": "LocationNameEn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域英文名。不传入该参数，默认查询所有地域。目前仅支持上海地域。",
+        "en": "The name of the region. If you do not set this parameter, data in all regions is queried. Currently, only the Shanghai region is supported."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点。 \n\n日期格式按照 ISO8601 表示法，并使用 UTC 时间，格式为 yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query.\n\nThe time follows the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time is displayed in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询流量",
+    "en": "DescribeVodDomainTrafficData"
+  },
+  "descriptions": {
+    "zh": "- 目前该接口服务地址仅支持：**华东 2（上海）**。\n- 支持批量查询，一次最多查询500个域名数据。\n- 如果您不指定`StartTime`和`EndTime`，该接口默认返回过去24小时的数据；指定`StartTime`和`EndTime`，该接口返回指定时间段的数据。\n\n**返回数据时间粒度**\n\n根据您指定`StartTime`和`EndTime`的时间跨度，且未同时设置`Interval`的情况下，默认返回的数据时间粒度，以及对应的可查询历史数据时间范围和数据延迟如下：\n|时间粒度  |单次查询的时间跨度   |  可查询历史数据时间范围  |  数据延迟   |\n| ------------- |------------   | ----------- | ----------- |\n|5分钟  | 单次查询的时间跨度 ＜ 3天   |93天  |15分钟  |\n|1小时  | 3天 ≤ 单次查询的时间跨度 ＜ 31天  |186 天  |一般延迟 3-4 小时  |\n| 1天 | 31天 ≤ 单次查询的时间跨度 ≤ 366天 |366 天  |一般延迟 4 小时，不超过 24 小时  |",
+    "en": "- The endpoint for this operation is available only in the **China (Shanghai)** region.\n\n- This operation supports batch queries. You can query data for up to 500 domain names in a single request.\n\n- If you do not specify the `StartTime` and `EndTime` parameters, data from the last 24 hours is returned by default. If you specify `StartTime` and `EndTime`, data within the specified time range is returned.\n\n**Data time granularity**\n\nIf you do not set the `Interval` parameter, the default time granularity of the returned data is determined by the time range that you specify between `StartTime` and `EndTime`. The following table describes the time granularity, the supported time range for historical data queries, and the data latency.\n\n| Time granularity | Time span of a single query                                                                            | Queryable time range for historical data | Data latency                               |\n| ---------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------- | ------------------------------------------ |\n| 5 minutes        | The time span of a single query is less than 3 days                                                    | 93 days                                  | 15 minutes                                 |\n| 1 hour           | The time span of a single query is greater than or equal to 3 days and less than 31 days               | 186 days                                 | Usually 3 to 4 hours                       |\n| 1 day            | The time span of a single query is greater than or equal to 31 days and less than or equal to 366 days | 366 days                                 | Usually 4 hours, but no more than 24 hours |"
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-domain-traffic-data --domain-name example.com --start-time 2019-01-20T13:59:58Z --end-time 2019-01-20T14:59:58Z --interval 300 --isp-name-en unicom --location-name-en shanghai --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodDomainTrafficData --region cn-hangzhou --IspNameEn unicom --EndTime '2019-01-20T14:59:58Z' --DomainName 'example.com' --LocationNameEn shanghai --StartTime '2019-01-20T13:59:58Z' --Interval 300"

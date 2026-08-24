@@ -1,5 +1,6 @@
 {
   "name": "UpdateTaskFlowSchedule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "CronBeginDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "此时间点之前任务流不进行调度。",
+        "en": "The start of the time range for scheduling."
+      }
     },
     {
       "name": "CronEndDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时调度结束时间，此时间点之后任务流不进行调度。",
+        "en": "The end of the time range for scheduling."
+      }
     },
     {
       "name": "CronStr",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时调度Cron。",
+        "en": "The cron expression for timed scheduling."
+      }
     },
     {
       "name": "CronType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度周期类型。取值如下：\n- **HOUR**：小时级调度\n- **DAY**：日级调度\n- **WEEK**: 周级调度\n- **MONTH**：月级调度",
+        "en": "The type of the scheduling cycle. Valid values:\n\n*   **MINUTE**: scheduling by minute\n*   **HOUR**: scheduling by hour\n*   **DAY**: scheduling by day\n*   **WEEK**: scheduling by week\n*   **MONTH**: scheduling by month"
+      }
     },
     {
       "name": "DagId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务流ID，任务流的唯一标识。",
+        "en": "The ID of the task flow."
+      }
     },
     {
       "name": "ScheduleParam",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "事件调度配置，JSON字符串格式。",
+        "en": "The event scheduling configuration. The value of this parameter is a JSON string."
+      }
     },
     {
       "name": "ScheduleSwitch",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否开启调度。\n\n- **true**\n- **false**",
+        "en": "Specifies whether to enable scheduling. Valid values:\n\n*   **Enable**\n*   **Disable**"
+      }
     },
     {
       "name": "Tid",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID。\n> 鼠标移动到界面右上角的头像处，查看租户ID。具体操作，请参见[查看租户信息](~~181330~~)。",
+        "en": "The ID of the tenant.\n\n> : To view the ID of the tenant, go to the Data Management (DMS) console and move the pointer over the profile picture in the upper-right corner. For more information, see [View information about the current tenant](~~181330~~)."
+      }
     },
     {
       "name": "TimeZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时区设置，默认为东八区（Asia/Shanghai）。",
+        "en": "The time zone. The default time zone is UTC+8 (Asia/Shanghai)."
+      }
     },
     {
       "name": "TriggerType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "触发类型，取值如下：\n- **Cron**：定时调度\n- **Event**：事件触发",
+        "en": "The mode in which the task flow is triggered. Valid values:\n\n*   **Cron**: The task flow is triggered based on timed scheduling.\n*   **Event**: The task flow is triggered by events."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新任务流调度配置",
+    "en": "UpdateTaskFlowSchedule"
+  },
+  "descriptions": {
+    "zh": "该接口用于更新编辑态任务流的调度设置。可配置**定时调度**、**周期调度**、**事件调度**；其中**定时调度**可配置调度一次或周期调度，**事件调度**可配置的订阅包括任务流和任务流节点。  \n配置更新后，将任务流重新发布并部署，新的任务流实例将按照配置的调度设置进行调度。",
+    "en": "You can call this operation to update the scheduling properties for a task flow in the editing state. You can configure a **timed scheduling** task flow or an **event scheduling** task flow. When you configure a **timed scheduling** task flow, you can choose from one-time scheduling or periodic scheduling. When you configure an **event scheduling** task flow, you can subscribe to task flows or task flow nodes.****\\\nAfter you update the scheduling properties, you need to publish and deploy the task flow again. The new task flow instance will run based on the updated scheduling properties."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise update-task-flow-schedule --tid 3000 --dag-id 7000 --schedule-switch false --cron-begin-date CronBeginDate_test --cron-end-date CronEndDate_test --schedule-param ScheduleParam_test --cron-str CronStr_test --trigger-type Event --cron-type HOUR --time-zone-id Asia/Shanghai --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise UpdateTaskFlowSchedule --region cn-hangzhou --TriggerType Event --ScheduleParam ScheduleParam_test --TimeZoneId 'Asia/Shanghai' --CronEndDate CronEndDate_test --CronStr CronStr_test --CronType HOUR --Tid 3000 --DagId 7000 --ScheduleSwitch false --CronBeginDate CronBeginDate_test"

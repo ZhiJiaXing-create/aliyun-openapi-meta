@@ -1,5 +1,6 @@
 {
   "name": "CreateFailoverTestJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "故障演练任务的描述信息。\n\n长度为0～256个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the failover test.\n\nThe description must be 0 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- **true**：发送请求，不会创建故障演练任务。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并直接创建故障演练任务。",
+        "en": "If you set the value to true, the system performs only a dry run without actually performing the actual request. If you set the value to false, the system performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "JobDuration",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "故障演练任务时长。单位为分钟，取值范围为：**1~4320**。",
+        "en": "The duration of the failover test. Unit: minutes. Valid values: **1 to 4320**."
+      }
     },
     {
       "name": "JobType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "故障演练任务方式。取值：\n\n- **StartNow**：立即开始，演练任务创建成功后立即开始执行演练。\n\n- **StartLater**：暂不演练，仅创建演练任务暂不执行演练。",
+        "en": "The type of the failover test. Valid values:\n\n*   **StartNow**\n*   **StartLater**"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "故障演练任务的名称。\n\n长度为0～128个字符，不能以`http://` 或`https://`开头。",
+        "en": "The name of the failover test.\n\nThe name must be 0 to 128 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "故障演练任务所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the failover test.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "演练资源ID列表。最多可以添加16个演练资源。",
+        "en": "The IDs of failover test resources. You can add at most 16 resources."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "演练资源类型。取值：**PHYSICALCONNECTION** 物理专线。",
+        "en": "The resource type of the failover test. Set the value to **PHYSICALCONNECTION**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建高速通道故障演练任务",
+    "en": "CreateFailoverTestJob"
+  },
+  "descriptions": {
+    "zh": "以下场景不支持创建故障演练任务：\n\n- 当前地域您已经有正在演练的故障演练任务，且本次创建故障演练任务的任务类型为立即开始。\n\n- 物理专线实例或者共享物理专线实例没有支付完成或者处于欠费状态。\n\n- 物理专线实例或者共享物理专线实例处于其他正在演练的故障演练任务中。\n \n- 物理专线实例下有超过1个共享物理专线。\n\n- 物理专线实例下有超过1个跨账号VBR。\n\n- 共享物理专线实例没有绑定VBR。\n\n- 共享物理专线实例的VLAN配置为0。",
+    "en": "You cannot create a failover test in the following scenarios:\n\n*   You have created a failover test in the region and its type is StartNow.\n*   The Express Connect circuit or hosted connection has pending orders or overdue payments.\n*   A failover test is already performed on the Express Connect circuit or hosted connection.\n*   More than one hosted connection is created over the Express Connect circuit.\n*   More than one cross-account VBR is created on the Express Connect circuit.\n*   No VBR is associated with the hosted connection.\n*   The VLAN ID of the hosted connection is set to 0."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-failover-test-job --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --name test --description test --resource-type PHYSICALCONNECTION --resource-id pc-uf66k4e8pq3r00jfq0000 --job-type StartNow --job-duration 60 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateFailoverTestJob --region cn-hangzhou --ResourceId.1 'pc-uf66k4e8pq3r00jfq0000' --Description test --JobType StartNow --JobDuration 60 --DryRun false --ResourceType PHYSICALCONNECTION --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Name test"

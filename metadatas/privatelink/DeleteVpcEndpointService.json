@@ -1,5 +1,6 @@
 {
   "name": "DeleteVpcEndpointService",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点服务所属的地域ID。您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The region ID of the endpoint service. You can call the [DescribeRegions](~~120468~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的终端节点服务的ID。",
+        "en": "The ID of the endpoint service that you want to delete."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除终端节点服务",
+    "en": "DeleteVpcEndpointService"
+  },
+  "descriptions": {
+    "zh": "- 删除终端节点服务之前，请先断开终端节点连接并移除服务资源。\n- **DeleteVpcEndpointService**接口属于异步接口，即系统会返回一个请求ID，但终端节点服务尚未删除，系统后台的删除任务仍在进行。您可以调用[GetVpcEndpointServiceAttribute](~~183542~~)查询终端节点服务的删除状态：\n    - 当终端节点服务处于**Deleting**状态时，表示终端节点服务正在删除中。\n  - 当查询不到该终端节点服务时，表示终端节点服务删除完成。\n- **DeleteVpcEndpointService**接口不支持在同一个阿里云账号（主账号）下并发删除终端节点服务。",
+    "en": "- Before you delete an endpoint service, you must disconnect the endpoint from the endpoint service and remove the service resources.\n\n- **DeleteVpcEndpointService** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. You can call the [GetVpcEndpointServiceAttribute](~~183542~~) operation to check whether the endpoint service is deleted.\n\n  - If the endpoint service is in the **Deleting** state, the endpoint service is being deleted.\n\n  - If the endpoint service cannot be queried, the endpoint service is deleted.\n\n- You cannot repeatedly call the **DeleteVpcEndpointService** operation to delete an endpoint service that belongs to an Alibaba Cloud account within a specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink delete-vpc-endpoint-service --biz-region-id cn-hangzhou --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --service-id epsrv-hp3vpx8yqxblby3i0000 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink DeleteVpcEndpointService --region cn-hangzhou --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --ServiceId 'epsrv-hp3vpx8yqxblby3i0000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateBasicEndpointGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例ID。",
+        "en": "The instance ID of the basic Alibaba Cloud Global Accelerator (GA)."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组描述信息。\n\n描述长度最大200字符，不能以`http://`和`https://`开头。",
+        "en": "The description of the endpoint group for the basic Alibaba Cloud Global Accelerator (GA) instance.\n\nThe description can be up to 200 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "EndpointAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点的地址。",
+        "en": "The address of the endpoint."
+      }
     },
     {
       "name": "EndpointGroupRegion",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组所在的地域ID。\n\n您可以通过调用[ListAvailableBusiRegions](~~2253223~~)接口获取地域ID。",
+        "en": "The region ID of the endpoint group for the basic Alibaba Cloud Global Accelerator (GA) instance.\n\nYou can invoke the [ListAvailableBusiRegions](~~2253223~~) operation to query the region ID."
+      }
     },
     {
       "name": "EndpointSubAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点辅助地址。\n\n当加速IP绑定到ECS辅助私网IP地址或ENI辅助私网IP时，需配置该参数。\n\n- 当终端节点类型为**ECS**时，**EndpointSubAddress**可以为主网卡的辅助私网IP，为空表示主网卡的主私网IP。\n- 当终端节点类型为**ENI**时，**EndpointSubAddress**可以为辅助网卡的辅助私网IP，为空表示辅助网卡的主私网IP。",
+        "en": "The secondary address of the endpoint.\n\nSpecify this parameter when the accelerated IP address is associated with a secondary private IP address of an ECS instance or an ENI.\n\n- If the endpoint type is **ECS**, EndpointSubAddress can be set to a secondary private IP address of the primary ENI. If this parameter is left empty, the primary private IP address of the primary ENI is used.\n- If the endpoint type is **ENI**, EndpointSubAddress can be set to a secondary private IP address of the secondary ENI. If this parameter is left empty, the primary private IP address of the secondary ENI is used."
+      }
     },
     {
       "name": "EndpointType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点类型。取值：\n- **ENI**：阿里云弹性网卡。\n- **SLB**：阿里云CLB实例。\n- **ECS**：阿里云ECS实例。",
+        "en": "The endpoint type. Valid values:\n- **ENI**: elastic network interface (ENI).\n- **SLB**: Classic Load Balancer (CLB) instance.\n- **ECS**: ECS instance."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组的名称。\n\n名称长度为1~128个字符，以大小写字母或中文开头，可包含数字、半角句号（.）下划线（_）和短划线（-）。",
+        "en": "The name of the endpoint group for the basic Alibaba Cloud Global Accelerator (GA) instance.\n\nThe name must be 1 to 128 characters in length and must start with a letter or a Chinese character. The name can contain digits, periods (.), underscores (_), and hyphens (-)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例所在的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the basic Alibaba Cloud Global Accelerator (GA) instance. Set the value to **ap-southeast-1**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建基础型全球加速实例的终端节点组",
+    "en": "Create an endpoint group for a basic global accelerator instance"
+  },
+  "descriptions": {
+    "zh": "- **CreateBasicEndpointGroup**接口属于异步接口，即系统会先返回一个终端节点组ID，但终端节点组未创建完成，系统后台的创建任务仍在进行。您可以调用[GetBasicEndpointGroup](~~362984~~)查询终端节点组的状态：\n    - 当终端节点组处于**init**状态时，表示终端节点组正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示终端节点组创建完成。\n- **CreateBasicEndpointGroup**接口不支持在同一个基础型全球加速实例内并发创建终端节点组。",
+    "en": "- **CreateBasicEndpointGroup** is an asynchronous operation. After you invoke this operation, the system returns an endpoint group ID before the endpoint group is created. The endpoint group is being created in the background. You can invoke [GetBasicEndpointGroup](~~362984~~) to query the status of the endpoint group:\n    - If the endpoint group is in the **init** state, the endpoint group is being created. In this state, you can only perform query operations.\n    - If the endpoint group is in the **active** state, the endpoint group is created.\n- **CreateBasicEndpointGroup** does not support concurrent requests to create an endpoint group for the same basic Alibaba Cloud Global Accelerator (GA) instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-basic-endpoint-group --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp17frjjh0udz4qz0000 --endpoint-group-region cn-shanghai --name group1 --description BasicEndpointGroup --biz-endpoint-type ENI --endpoint-address eni-bp1a05txelswuj8g0000 --endpoint-sub-address 172.16.XX.XX --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateBasicEndpointGroup --region cn-hangzhou --EndpointGroupRegion 'cn-shanghai' --Description BasicEndpointGroup --EndpointType ENI --EndpointSubAddress '172.16.XX.XX' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp17frjjh0udz4qz0000' --Name group1 --EndpointAddress 'eni-bp1a05txelswuj8g0000'"

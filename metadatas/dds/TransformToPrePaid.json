@@ -1,5 +1,6 @@
 {
   "name": "TransformToPrePaid",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动支付订单，取值：\n\n- **true**：自动支付订单。\n- **false**：手动支付订单，详情请参见[手动续费包年包月实例](~~85052~~)。\n\n> 默认值为**true**。",
+        "en": "Specifies whether to enable automatic payment. Valid values:\n\n- **true**: enables automatic payment.\n\n- **false**: disables automatic payment. For more information, see [Renew an ApsaraDB for MongoDB subscription instance](~~85052~~).\n\n> Default value: **true**."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "到期后是否自动续费，取值：\n\n- **true**：自动续费。\n- **false**：手动续费。\n\n> 默认值为**false**。",
+        "en": "Specifies whether to enable auto-renewal for the instance. Valid values:\n\n- **true**\n\n- **false**\n\n> Default value: **false**."
+      }
     },
     {
       "name": "BusinessInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "附加参数，业务信息。",
+        "en": "The business information. This is an additional parameter."
+      }
     },
     {
       "name": "CouponNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用优惠券，取值说明：\n- **default**或**null**（默认）：使用优惠券。\n- **youhuiquan_promotion_option_id_for_blank**：不使用优惠券。",
+        "en": "The coupon code. Default value: `youhuiquan_promotion_option_id_for_blank`."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预付费时长，单位为月。取值范围为**1**~**9**、**12**、**24**、**36**。",
+        "en": "The subscription duration of the instance. Unit: months. Valid values: **1**, **2**, **3**, **4**, **5**, **6**, **7**, **8**, **9**, **12**, **24**, and **36**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将按量付费实例转换为包年包月实例",
+    "en": "TransformToPrePaid"
+  },
+  "descriptions": {
+    "zh": "请确保在使用该接口前，已充分了解MongoDB产品的收费方式和和和<props=\"china\">[价格](https://www.aliyun.com/price/product#/mongodb/detail)</props><props=\"intl\">[价格](https://www.alibabacloud.com/zh/product/apsaradb-for-mongodb/pricing)</props>。\n\n包年包月的实例无法转换为按量付费的实例，为避免浪费您的资源，请谨慎操作。\n\n\n调用本接口时，实例必须满足以下条件：\n\n- 实例状态为运行中。\n- 实例的计费类型为按量付费。\n- 实例没有未完成支付的转包年包月订单。\n- 实例规格不能为历史规格（不再售卖的规格），历史规格列表请参见[实例规格表](~~57141~~)。\n\n> 如需将历史规格实例转变为包年包月，请先调用[ModifyDBInstanceSpec](~~61816~~)或[ModifyNodeSpec](~~61923~~)接口变更实例规格。",
+    "en": "Before you call this operation, make sure that you understand the billing methods and [pricing](https://www.alibabacloud.com/zh/product/apsaradb-for-mongodb/pricing).\n\nA subscription instance cannot be changed to a pay-as-you-go instance. To avoid wasting resources, proceed with caution.\n\nBefore you call this API operation, make sure that the ApsaraDB for MongoDB instance meets the following requirements:\n\n- The instance is in the running state.\n\n- The billing method of the instance is pay-as-you-go.\n\n- The instance has no unpaid subscription orders.\n\n- The instance type is available for purchase. For more information about unavailable instance types, see [Instance types](~~57141~~).\n\n> To change the billing method of an instance whose instance type is no longer available to subscription, call the [ModifyDBInstanceSpec](~~61816~~) or [ModifyNodeSpec](~~61923~~) operation to first change the instance type."
+  },
   "example": {
     "unifiedCli": "aliyun dds transform-to-pre-paid --instance-id dds-bp1366caac830000 --period 1 --auto-pay true --business-info '“ActivityId_:_000000000' --auto-renew true --coupon-no default --region cn-hangzhou",
     "legacyCli": "aliyun dds TransformToPrePaid --region cn-hangzhou --CouponNo default --BusinessInfo '“ActivityId_:_000000000' --InstanceId 'dds-bp1366caac830000' --AutoRenew true --Period 1 --AutoPay true"

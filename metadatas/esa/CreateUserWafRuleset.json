@@ -1,5 +1,6 @@
 {
   "name": "CreateUserWafRuleset",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "/",
@@ -8,51 +9,94 @@
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF规则集描述。",
+        "en": "The description of the WAF ruleset."
+      }
     },
     {
       "name": "Expression",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF 规则集的匹配表达式。只有当请求命中该表达式时，本规则集下的规则才会继续匹配。\n\n示例：\n- `http.host eq \"example.com\"` — 仅主机为 example.com 的请求进入本规则集\n- `starts_with(http.uri.path, \"/api/\")` — 仅 /api/ 前缀的请求进入\n\n> 表达式完整语法与可用字段集以服务端 wirefilter 方言为准。",
+        "en": "The match expression of the WAF ruleset. Rules in this ruleset are evaluated only when a request matches this expression.\n\nExamples:\n- `http.host eq \"example.com\"` — Only requests with the host example.com enter this ruleset.\n- `starts_with(http.uri.path, \"/api/\")` — Only requests with the /api/ prefix enter this ruleset.\n\n> The complete expression syntax and available field set are subject to the server-side wirefilter dialect."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF 规则集名称。\n\n**命名建议**：字母/数字 + 下划线组合，便于后续引用。具体字符集、长度上限、唯一性约束以 WAF 规则集服务端命名规范为准。",
+        "en": "The name of the WAF ruleset.\n\n**Naming suggestion**: Use a combination of letters, digits, and underscores for easy reference. The specific character set, maximum length, and uniqueness constraints are subject to the WAF ruleset service naming conventions."
+      }
     },
     {
       "name": "Phase",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF 规则集属于的运行阶段。\n\n- `http_whitelist`：白名单规则\n- `http_custom`：自定义规则\n- `http_managed`：托管规则\n- `http_anti_scan`：扫描防护规则\n- `http_ratelimit`：频次控制规则\n\n> 说明：各 phase 下具体支持的字段（Expression 匹配域、Action 取值等）不同，详见对应 phase 的规则配置文档。",
+        "en": "The phase to which the WAF ruleset belongs. Valid values:\n\n- http_whitelist: whitelist rules\n- http_custom: custom rules\n- http_managed: managed rules\n- http_anti_scan: scan protection rules\n- http_ratelimit: rate limiting rules\n\n> Note: The supported fields (Expression match fields, Action values, and others) vary by phase. For more information, refer to the rule configuration documentation for the corresponding phase."
+      }
     },
     {
       "name": "Rules",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF 规则集下的规则配置列表，每个元素对应一条规则。\n\n- 每条规则的字段结构以 `WafRuleConfig` 数据结构为准（Expression、Action、Name 等）。",
+        "en": "The list of rule configurations in the WAF ruleset. Each element corresponds to a rule.\n\n- The field structure of each rule is subject to the `WafRuleConfig` data structure, which includes Expression, Action, Name, and other fields."
+      }
     },
     {
       "name": "Shared",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当本规则集包含多条规则时，可在此指定多条规则的共享字段（如统一的 Action、Name 前缀等）。\n\n> 字段结构以 `WafBatchRuleShared` 数据结构为准。若不共享属性，可不传此字段。",
+        "en": "The shared fields across multiple rules in this ruleset, such as a unified Action or Name prefix.\n\n> The field structure is subject to the `WafBatchRuleShared` data structure. If you do not need to share properties, you can leave this parameter empty."
+      }
     },
     {
       "name": "Status",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF 规则集的启用状态。\n\n- `on`：启用。规则集中的规则将参与匹配与拦截。\n- `off`：停用。规则集保留，但不参与匹配。\n\n> 完整取值以服务端 enum 为准。",
+        "en": "The status of the WAF ruleset. Valid values:\n\n- on: Enabled. The rules in the ruleset participate in matching and blocking.\n- off: Disabled. The ruleset is retained but does not participate in matching.\n\n> The complete set of valid values is subject to the server-side enum."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建用户WAF规则集",
+    "en": "Create a WAF ruleset"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 本API允许用户为指定实例创建新的WAF（Web Application Firewall）规则集。\n- `InstanceId` 是必需参数，指定了要为其创建规则集的具体实例。\n- `Phase` 参数定义了规则集的应用阶段，例如自定义规则、频次控制等。\n- `Name` 和 `Expression` 是必填项，分别代表规则集的名字和具体的匹配表达式。\n- 可选参数 `Description` 提供了对规则集功能或用途的文字描述。\n- `Status` 控制着规则集是否立即生效 (`on`) 或者处于关闭状态 (`off`)。\n- 通过 `Rules` 参数可以进一步配置更详细的规则列表，每个规则都包含名称、位置、表达式及动作等属性。\n- 成功响应将返回新创建规则集的唯一标识符 `Id` 以及所有关联规则的ID列表 `RuleIds`。",
+    "en": "## Operation description\n- This API operation allows you to create a WAF ruleset for a specified instance.\n- InstanceId is a required parameter that specifies the instance for which you want to create the ruleset.\n- The Phase parameter defines the phase in which the ruleset is applied, such as custom rules or rate limiting.\n- Name and Expression are required parameters that specify the ruleset name and the match expression.\n- The optional Description parameter provides a text description of the ruleset function or purpose.\n- Status controls whether the ruleset takes effect immediately (`on`) or is disabled (`off`).\n- Use the Rules parameter to configure a detailed list of rules. Each rule contains properties such as name, position, expression, and action.\n- A successful response returns the unique identifier Id of the newly created ruleset and the RuleIds list of all associated rule IDs."
+  },
   "example": {
     "unifiedCli": "aliyun esa create-user-waf-ruleset --instance-id esa-site-ads11w --phase http_custom --name example --description this_is_a_test_ruleset. --status on --expression ip.src_==_1.1.1.1 --shared example-string --rules '[\"example-string\"]' --region cn-hangzhou",
     "legacyCli": "aliyun esa CreateUserWafRuleset --region cn-hangzhou --Status on --Phase http_custom --Description 'this_is_a_test_ruleset.' --InstanceId 'esa-site-ads11w' --Expression 'ip.src_==_1.1.1.1' --Shared 'example-string' --Rules '[\"example-string\"]' --Name example"

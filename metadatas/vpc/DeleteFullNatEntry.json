@@ -1,5 +1,6 @@
 {
   "name": "DeleteFullNatEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会删除FULLNAT条目。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并删除FULLNAT条目。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, the related error message is returned. If the request passes the dry run, the DryRunOperation error code is returned.\n*   **false**: performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "FullNatEntryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的FULLNAT条目ID。",
+        "en": "The ID of the FULLNAT entry that you want to delete."
+      }
     },
     {
       "name": "FullNatTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的FULLNAT条目所属的FULLNAT表ID。",
+        "en": "The ID of the FULLNAT table to which the FULLNAT entry to be deleted belongs."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的FULLNAT条目所在VPC NAT网关的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPC NAT gateway to which the FULLNAT entry to be deleted belongs.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent list of regions."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除FULLNAT条目",
+    "en": "DeleteFullNatEntry"
+  },
+  "descriptions": {
+    "zh": "**DeleteFullNatEntry**接口属于异步接口，即系统会先返回一个请求ID，但该FULLNAT条目并未删除完成，系统后台的删除任务仍在进行。您可以调用[ListFullNatEntries](~~348779~~)查询删除FULLNAT条目的状态：\n\n- 当FULLNAT条目处于**Deleting**状态时，表示FULLNAT条目正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n- 当查询不到该FULLNAT条目时，表示该FULLNAT条目删除完成。",
+    "en": "## [](#)Description\n\n**DeleteFullNatEntry** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [ListFullNatEntries](~~348779~~) operation to query the status of a FULLNAT entry.\n\n*   If the FULLNAT entry is in the **Deleting** state, the system is deleting the FULLNAT entry. In this case, you can query the status of the FULLNAT entry, but cannot perform other operations.\n*   If the FULLNAT entry cannot be found, the FULLNAT entry is deleted.\n\nYou cannot repeatedly call the **DeleteFullNatEntry** operation to delete a FULLNAT entry within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-full-nat-entry --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --full-nat-table-id fulltb-gw88z7hhlv43rmb260000 --full-nat-entry-id fullnat-gw8fz23jezpbblf1j0000 --dry-run false --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteFullNatEntry --region cn-hangzhou --FullNatTableId 'fulltb-gw88z7hhlv43rmb260000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --FullNatEntryId 'fullnat-gw8fz23jezpbblf1j0000'"

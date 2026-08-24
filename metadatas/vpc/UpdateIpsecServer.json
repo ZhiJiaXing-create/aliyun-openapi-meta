@@ -1,5 +1,6 @@
 {
   "name": "UpdateIpsecServer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,75 +9,134 @@
       "name": "ClientIpPool",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端网段，指给客户端虚拟网卡分配访问地址的网段。\n\n> 客户端网段不能和VPC侧网段冲突。",
+        "en": "The client CIDR block from which an IP address is allocated to the virtual network interface controller (NIC) of the client.\n\n>  The client CIDR block must not overlap with the CIDR blocks of the VPC."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a value, and you must make sure that each request has a unique token value. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the value of **RequestId** as the value of **ClientToken**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：只预检此次请求，不会更改IPsec服务端配置。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误信息。如果检查通过，则返回`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后直接更改IPsec服务端配置。",
+        "en": "Specifies whether to only precheck this request. Valid values:\n\n*   **true**: prechecks the request without modifying the configurations of the IPsec server. The system checks the required parameters, request format, and service limits. If the request fails to pass the precheck, an error code is returned. If the request passes the precheck, the `DryRunOperation` error code is returned.\n*   **false**: sends the request. This is the default value. If the request passes the precheck, the system modifies the configurations of the IPsec server."
+      }
     },
     {
       "name": "EffectImmediately",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否删除当前已协商成功的IPsec隧道并重新发起协商。取值：\n\n- **true**：配置完成后立即进行协商。\n\n- **false**：当有流量进入时进行协商。",
+        "en": "Specifies whether to delete the negotiated IPsec tunnel and initiate the negotiation again. Valid values:\n\n*   **true**: immediately initiates negotiations after the configuration is complete.\n*   **false**: initiates negotiations when inbound traffic is detected."
+      }
     },
     {
       "name": "IkeConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "第一阶段协商参数配置。取值：\n\n- **IkeVersion**：IKE协议的版本。取值：**ikev1**或**ikev2**。\n\n- **IkeMode**：IKE版本的协商模式。默认值：**main**。\n\n- **IkeEncAlg**：第一阶段协商的加密算法。默认值：**aes**。\n\n- **IkeAuthAlg**：第一阶段协商的认证算法。默认值：**sha1**。\n\n- **IkePfs**：第一阶段协商使用的Diffie-Hellman密钥交换算法。默认值：**group2**。\n\n- **IkeLifetime**：第一阶段协商出的SA的生存周期。单位：秒，取值范围：**0**~**86400**，默认值：**86400**。\n\n- **LocalId**：IPsec服务端标识。支持FQDN和IP地址格式。\n\n- **RemoteId**：对端标识。支持FQDN和IP地址格式。",
+        "en": "The configuration of Phase 1 negotiations. Valid values:\n\n*   **IkeVersion**: The IKE version. Valid values: **ikev1** and **ikev2**.\n*   **IkeMode**: The IKE negotiation mode. Default value: **main**.\n*   **IkeEncAlg**: the encryption algorithm that is used in Phase 1 negotiation. Default value: **aes**.\n*   **IkeAuthAlg**: the authentication algorithm that is used in Phase 1 negotiation. Default value: **sha1**.\n*   **IkePfs**: The Diffie-Hellman key exchange algorithm that is used in Phase 1 negotiations. Default value: **group2**.\n*   **IkeLifetime**: The SA lifetime determined by Phase 1 negotiations. Unit: seconds. Valid values: **0** to **86400**. Default value: **86400**.\n*   **LocalId**: The identifier of the IPsec server. Only FQDN and IP address formats are supported.\n*   **RemoteId**: the peer identifier. Only FQDN and IP address formats are supported."
+      }
     },
     {
       "name": "IpsecConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "第二阶段协商参数配置。取值：\n\n- **IpsecEncAlg**：第二阶段协商的加密算法。默认值：**aes**。\n\n- **IpsecAuthAlg**：第二阶段协商的认证算法。默认值：**sha1**。\n\n- **IpsecPfs**：转发所有协议的报文。第二阶段协商使用的Diffie-Hellman密钥交换算法。默认值：**group2**。\n\n- **IpsecLifetime**：第二阶段协商出的SA的生存周期。单位：秒，取值范围：**0**~**86400**，默认值：**86400**。",
+        "en": "The configuration of Phase 2 negotiation. Valid values:\n\n*   **IpsecEncAlg**: the encryption algorithm that is used in Phase 2 negotiation. Default value: **aes**.\n*   **IpsecAuthAlg**: the authentication algorithm that is used in Phase 2 negotiation. Default value: **sha1**.\n*   **IpsecPfs**: forwards packets of all protocols. The Diffie-Hellman key exchange algorithm that is used in Phase 2 negotiation. Default value: **group2**.\n*   **IpsecLifetime**: the SA lifetime determined by Phase 2 negotiation. Unit: seconds. Valid values: **0** to **86400**. Default value: **86400**."
+      }
     },
     {
       "name": "IpsecServerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec服务端ID。",
+        "en": "The IPsec server ID."
+      }
     },
     {
       "name": "IpsecServerName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPsec服务端名称。\n\n长度为1～100个字符。",
+        "en": "The name of the IPsec server.\n\nIt must be 1 to 100 characters in length."
+      }
     },
     {
       "name": "LocalSubnet",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本端网段，指需要和客户端网段互连的VPC侧的网段。\n\n多个网段之间用半角逗号（,）分隔，例如：192.168.1.0/24,192.168.2.0/24。",
+        "en": "The local CIDR blocks, which are the CIDR blocks of the virtual private cloud (VPC) for the client to access.\n\nMultiple CIDR blocks are separated with commas (,). Example: 192.168.1.0/24,192.168.2.0/24."
+      }
     },
     {
       "name": "Psk",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预共享密钥。\n\n用于IPsec服务端与客户端之间的身份认证。密钥长度为1~100个字符。\n\n您可以调用[ListIpsecServers](~~2794120~~)接口查询系统生成的密钥信息。\n\n> IPsec服务端的预共享密钥需和客户端的认证密钥一致，否则IPsec服务端和客户端之间无法建立连接。",
+        "en": "The pre-shared key.\n\nThe pre-shared key that is used for authentication between the IPsec server and the client. The key must be 1 to 100 characters in length.\n\nYou can call [ListIpsecServers](~~2794120~~) to query keys generated by the system.\n\n> The pre-shared key of the IPsec server key must be the same as that of the client. Otherwise, the connection between the IPsec server and the client cannot be established."
+      }
     },
     {
       "name": "PskEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启预共享密钥认证方式。取值：**true**，表示开启预共享密钥认证方式。",
+        "en": "Specifies whether to enable pre-shared key authentication. If you set the value to **true**, pre-shared key authentication is enabled."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPsec服务端所属地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the IPsec server is created.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新IPsec服务端",
+    "en": "UpdateIpsecServer"
+  },
+  "descriptions": {
+    "zh": "- 如果您只修改IPsec服务端的**IpsecServerName**信息时该接口为同步接口，如果您修改了除**IpsecServerName**之外的配置，该接口为异步接口。\n- 当**UpdateIpsecServer**接口为异步接口时，系统会先返回一个请求ID，但该IPsec服务端的配置尚未修改成功，系统后台的修改任务仍在进行。您可以调用[DescribeVpnGateway](~~2794055~~)查询VPN网关实例的状态，来确定IPsec服务端配置的修改状态：\n    - 当VPN网关实例处于**updating**状态时，表示IPsec服务端的配置正在修改中。\n    - 当VPN网关实例处于**active**状态时，表示IPsec服务端的配置修改成功。\n- **UpdateIpsecServer**接口不支持在同一VPN网关下并发修改IPsec服务端的配置。",
+    "en": "*   If you modify only **IpsecServerName** of the IPsec server, this operation is synchronous. If you modify other parameters besides **IpsecServerName**, this operation is asynchronous.\n\n*   If **UpdateIpsecServer** is an asynchronous operation, after a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeVpnGateway](~~2794055~~) operation to query the status of the task.\n\n    *   If the VPN gateway is in the **updating** state, the IPsec server is being modified.\n    *   If the VPN gateway is in the **active** state, the IPsec server is modified.\n\n*   You cannot repeatedly call **UpdateIpsecServer** within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc update-ipsec-server --biz-region-id cn-hangzhou --ipsec-server-id iss-bp1bo3xuvcxo7ixll0000 --local-subnet 192.168.0.0/24,172.17.0.0/16 --client-ip-pool 10.0.0.0/24 --ipsec-server-name test --effect-immediately false --ike-config IkeVersion_:_ikev2_,_IkeMode_:_main_,_IkeEncAlg_:_aes_,_IkeAuthAlg_:_sha1_,_IkePfs_:_group2_,_IkeLifetime_:86400 --ipsec-config IpsecEncAlg_:_aes_,_IpsecAuthAlg_:_sha1_,_IpsecPfs_:_group2_,_IpsecLifetime_:86400 --psk-enabled true --psk Cfd1230000 --client-token e4567-e89b-12d3-a456-426655440000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc UpdateIpsecServer --region cn-hangzhou --LocalSubnet '192.168.0.0/24,172.17.0.0/16' --EffectImmediately false --ClientIpPool '10.0.0.0/24' --IpsecConfig 'IpsecEncAlg_:_aes_,_IpsecAuthAlg_:_sha1_,_IpsecPfs_:_group2_,_IpsecLifetime_:86400' --IpsecServerId 'iss-bp1bo3xuvcxo7ixll0000' --DryRun false --Psk Cfd1230000 --RegionId 'cn-hangzhou' --ClientToken 'e4567-e89b-12d3-a456-426655440000' --IpsecServerName test --IkeConfig 'IkeVersion_:_ikev2_,_IkeMode_:_main_,_IkeEncAlg_:_aes_,_IkeAuthAlg_:_sha1_,_IkePfs_:_group2_,_IkeLifetime_:86400' --PskEnabled true"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyCfwInstance",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,29 +9,56 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云防火墙实例的ID。",
+        "en": "The ID of the Cloud Firewall instance."
+      }
     },
     {
       "name": "UpdateList",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "更新的实例属性的列表。",
+        "en": "A list of instance properties to update."
+      },
       "sub_parameters": [
         {
           "name": "Code",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "更新的实例属性的Code。\n目前支持：\n\n- Code：MajorVersion，对应Value可选值：2。仅对按量付费1.0用户支持，即按量付费1.0升级为按量付费2.0。\n><warning>请确保已充分了解按量付费2.0的收费方式和价格。></warning>\n><warning>请注意，若升级前已开启日志投递，升级后日志投递会继续开启，且会切换至新日志库。></warning>\n- Code: ThreatIntelligence，对应Value可选值：0,1。仅对按量付费2.0用户支持，用于按量付费2.0用户开关威胁情报。\n- Code: Sdl，对应Value可选值：0,1。仅对按量付费2.0用户支持，用于按量付费2.0用户开关敏感数据泄漏检测。",
+            "en": "The code of the instance property to update.\nThe following codes are supported:\n\n- \\`Code\\`: \\`MajorVersion\\`. Set \\`Value\\` to \\`2\\`. This is available only for pay-as-you-go 1.0 users to upgrade their instances to pay-as-you-go 2.0.\n\n  ><warning>\n\n  Make sure you understand the billing methods and pricing of pay-as-you-go 2.0.\n\n  ></warning>\n\n  ><warning>\n\n  Note that if log delivery is enabled before the upgrade, it will remain enabled after the upgrade, and logs will be delivered to a new Logstore.\n\n  ></warning>\n\n- \\`Code\\`: \\`ThreatIntelligence\\`. This is available only for pay-as-you-go 2.0 users to enable or disable the threat intelligence feature. Set \\`Value\\` to \\`1\\` to enable the feature or \\`0\\` to disable it.\n\n- \\`Code\\`: \\`Sdl\\`. This is available only for pay-as-you-go 2.0 users to enable or disable the sensitive data leak detection feature. Set \\`Value\\` to \\`1\\` to enable the feature or \\`0\\` to disable it."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "对应Code的Value。可选值详见Code描述。",
+            "en": "The value for the specified \\`Code\\`. For valid values, see the description of the \\`Code\\` parameter."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改云防火墙实例",
+    "en": "ModifyCfwInstance"
+  },
+  "descriptions": {
+    "zh": "请确保在使用该接口前，已充分了解云防火墙产品按量版的收费方式和[价格](https://help.aliyun.com/zh/cloud-firewall/cloudfirewall/product-overview/pay-as-you-go)。",
+    "en": "Before calling this operation, ensure that you understand the billing methods and [pricing](https://help.aliyun.com/zh/cloud-firewall/cloudfirewall/product-overview/pay-as-you-go) for the pay-as-you-go edition of Cloud Firewall."
+  },
   "example": {
     "unifiedCli": "aliyun cloudfw modify-cfw-instance --instance-id cfw_elasticity_public_cn-zsk39m000000 --update-list Value=1 Code=Sdl --region cn-hangzhou",
     "legacyCli": "aliyun cloudfw ModifyCfwInstance --region cn-hangzhou --InstanceId 'cfw_elasticity_public_cn-zsk39m000000' --UpdateList.1.Value 1 --UpdateList.1.Code Sdl"

@@ -1,5 +1,6 @@
 {
   "name": "CreateImage",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "Architecture",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统架构，指定数据盘快照做镜像的系统盘后，需要通过Architecture确定系统盘的系统架构。取值范围：\n\n- i386。\n- x86_64。\n- arm64。\n\n默认值：x86_64。",
+        "en": "The system architecture. After a data disk snapshot is specified as the system disk of the image, use this parameter to specify the system architecture of the system disk. Valid values:\n\n- i386.\n- x86_64.\n- arm64.\n\nDefault value: x86_64."
+      }
     },
     {
       "name": "BootMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改镜像的启动模式。取值范围：\n\n- BIOS：BIOS启动模式。\n- UEFI：UEFI启动模式。\n- （默认）UEFI-Preferred：双启动模式。  \n\n<notice>\n\n为了避免使用镜像不支持的启动模式导致实例无法正常启动，请您务必在选择该参数之前了解目标镜像支持的启动模式。镜像启动模式详情，请参见[镜像启动模式](~~2244655#b9caa9b8bb1wf~~)。\n\n</notice>",
+        "en": "The boot mode of the image. Valid values:\n\n- BIOS: BIOS boot mode.\n- UEFI: UEFI boot mode.\n- (Default) UEFI-Preferred: dual boot mode.  \n\n<notice>\n\nTo prevent instances from failing to start due to an unsupported boot mode, make sure that you understand the boot modes supported by the target image before specifying this parameter. For more information about image boot modes, see [Image boot modes](~~2244655#b9caa9b8bb1wf~~).\n\n</notice>"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. **ClientToken** can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像的描述信息。长度为2~256个英文或中文字符，不能以http://或https://开头。",
+        "en": "The description of the image. The description must be 2 to 256 characters in length and cannot start with http:// or https://."
+      }
     },
     {
       "name": "DetectionStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像检测策略，不配置此参数时不触发检测。仅支持标准（Standard）检测模式。 \n\n> 目前已支持大部分的Linux/Windows版本，关于镜像检测项与操作系统限制说明，请参见[镜像检测概述](~~439819~~)和[镜像检测操作系统限制](~~475800~~)。",
+        "en": "The image detection strategy. If this parameter is not specified, detection is not triggered. Only the Standard detection mode is supported. \n\n> Most Linux and Windows versions are supported. For more information about image detection items and operating system limitations, see [Image detection overview](~~439819~~) and [Operating system limitations for image detection](~~475800~~)."
+      }
     },
     {
       "name": "DiskDeviceMapping",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "创建自定义镜像使用的云盘和快照信息集合。如果需要根据系统盘快照和数据盘快照创建自定义镜像，请使用该参数指定快照。",
+        "en": "The disk and snapshot information used to create the custom image. Use this parameter to specify snapshots when you want to create a custom image from system disk and data disk snapshots."
+      },
       "sub_parameters": [
         {
           "name": "Device",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定在自定义镜像中的设备名称。取值范围：\n\n- 系统盘的设备名必须为：/dev/xvda。\n\n- 数据盘设备名从/dev/xvdb 依次排序到/dev/xvdz，不能重复。",
+            "en": "The device name in the custom image. Valid values:\n\n- The device name of the system disk must be /dev/xvda.\n\n- Data disk device names are sequentially ordered from /dev/xvdb to /dev/xvdz and cannot be duplicated."
+          }
         },
         {
           "name": "DiskType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定在新镜像中的云盘类型。您可以通过该参数使用数据盘快照作为镜像的系统盘，如果不指定，默认为快照对应的云盘类型。取值范围：\n\n- system：系统盘。只能指定 1 块系统盘快照。\n- data：数据盘。最多可以指定 16 块数据盘快照。",
+            "en": "The type of the disk in the new image. You can use this parameter to specify a data disk snapshot as the system disk of the image. If this parameter is not specified, the disk type defaults to the type of the disk corresponding to the snapshot. Valid values:\n\n- system: system disk. Only one system disk snapshot can be specified.\n- data: data disk. Up to 16 data disk snapshots can be specified."
+          }
         },
         {
           "name": "Size",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "云盘的大小，单位为GiB。DiskDeviceMapping.N.Size的取值和默认值和DiskDeviceMapping.N.SnapshotId有关：\n\n- 如果没有指定SnapshotId，Size取值以及默认值为：\n    - 普通云盘：5~2000GiB，默认为5。\n    - 其他云盘：20~32768GiB，默认为20。\n- 如果指定了SnapshotId，Size取值必须大于等于SnapshotId的大小，默认为SnapshotId的大小。",
+            "en": "The size of the disk, in GiB. The valid values and default value of DiskDeviceMapping.N.Size depend on DiskDeviceMapping.N.SnapshotId:\n\n- If SnapshotId is not specified, the valid values and default value of Size are:\n    - Basic disk: 5 to 2000 GiB. Default value: 5.\n    - Other disk types: 20 to 32768 GiB. Default value: 20.\n- If SnapshotId is specified, the value of Size must be greater than or equal to the size of the snapshot. Default value: the size of the snapshot."
+          }
         },
         {
           "name": "SnapshotId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "快照ID。",
+            "en": "The snapshot ID."
+          }
         }
       ]
     },
@@ -76,89 +117,156 @@
       "name": "Features",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像特性相关属性。",
+        "en": "The image feature properties."
+      }
     },
     {
       "name": "ImageFamily",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像族系名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以aliyun和acs:开头，不能包含http://或者https://。可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The image family name. The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character and cannot start with aliyun or acs:. It cannot contain http:// or https://. It can contain digits, colons (:), underscores (_), or hyphens (-)."
+      }
     },
     {
       "name": "ImageName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像名称。长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以http://和https://开头。可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The image name. The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character and cannot start with http:// or https://. It can contain digits, colons (:), underscores (_), or hyphens (-)."
+      }
     },
     {
       "name": "ImageVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像版本。\n\n> 当您指定了实例ID（`InstanceId`），并且该实例的镜像是云市场镜像或者来自云市场镜像创建的自定义镜像时，该参数必须和当前实例镜像的`ImageVersion`相同或置为空。",
+        "en": "The image version.\n\n> If you specify an instance ID (`InstanceId`) and the image of the instance is an Alibaba Cloud Marketplace image or a custom image created from an Alibaba Cloud Marketplace image, this parameter must be the same as the `ImageVersion` of the current instance image or left empty."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。根据实例创建自定义镜像时，必须指定该参数。",
+        "en": "The instance ID. This parameter is required when you create a custom image from an instance."
+      }
     },
     {
       "name": "Platform",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "操作系统，指定数据盘快照做镜像的系统盘后，需要通过Platform确定系统盘的操作系统发行版。取值范围：\n\n- Aliyun\n- Anolis\n- CentOS\n- Ubuntu\n- CoreOS\n- SUSE\n- Debian\n- OpenSUSE\n- FreeBSD\n- RedHat\n- Kylin\n- UOS\n- Fedora\n- Fedora CoreOS\n- CentOS Stream\n- AlmaLinux\n- Rocky Linux\n- Gentoo\n- Customized Linux\n- Others Linux\n- Windows Server 2022\n- Windows Server 2019\n- Windows Server 2016\n- Windows Server 2012\n- Windows Server 2008\n- Windows Server 2003\n\n默认值：Others Linux。",
+        "en": "The operating system distribution. After a data disk snapshot is specified as the system disk of the image, use this parameter to specify the operating system distribution of the system disk. Valid values:\n\n- Aliyun\n- Anolis\n- CentOS\n- Ubuntu\n- CoreOS\n- SUSE\n- Debian\n- OpenSUSE\n- FreeBSD\n- RedHat\n- Kylin\n- UOS\n- Fedora\n- Fedora CoreOS\n- CentOS Stream\n- AlmaLinux\n- Rocky Linux\n- Gentoo\n- Customized Linux\n- Others Linux\n- Windows Server 2022\n- Windows Server 2019\n- Windows Server 2016\n- Windows Server 2012\n- Windows Server 2008\n- Windows Server 2003\n\nDefault value: Others Linux."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像所在的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the image. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义镜像所在的资源组ID。如果不设置该参数值，创建的镜像属于默认资源组。\n\n> 如果您使用RAM用户调用该接口，且`ResourceGroupId`取值为空，您需要注意，当RAM用户没有默认资源组权限时，调用接口会返回报错信息`Forbidden: User not authorized to operate on the specified resource`。请设置RAM用户支持的资源组ID或者通过相应阿里云账号为该RAM用户授予默认资源组权限后，再次调用该接口。",
+        "en": "The ID of the resource group to which the custom image belongs. If this parameter is not set, the created image belongs to the default resource group.\n\n> If you invoke this operation as a Resource Access Management (RAM) user and `ResourceGroupId` is left empty, note that when the RAM user does not have permissions on the default resource group, the error message `Forbidden: User not authorized to operate on the specified resource` is returned. Set a resource group ID that the RAM user has permissions on, or grant the RAM user permissions on the default resource group before invoking this operation again."
+      }
     },
     {
       "name": "SnapshotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于创建自定义镜像的快照ID。\n\n> 如果仅使用实例的系统盘快照创建自定义镜像时，您可以使用该参数，也可以选用参数`DiskDeviceMapping.N.SnapshotId`。如果增加数据盘快照，只能使用`DiskDeviceMapping.N.SnapshotId`参数指定快照。",
+        "en": "The snapshot ID used to create the custom image.\n\n> If you want to create a custom image only from the system disk snapshot of an instance, you can use this parameter or the `DiskDeviceMapping.N.SnapshotId` parameter. To include data disk snapshots, use only the `DiskDeviceMapping.N.SnapshotId` parameter to specify snapshots."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签键。N的取值范围为1~20。一旦传入该值，则不允许为空字符串。最多支持128个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the image. Valid values of N: 1 to 20. The tag key cannot be an empty string. It can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签值。N的取值范围为1~20。一旦传入该值，允许为空字符串。最多支持128个字符，不能以`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the image. Valid values of N: 1 to 20. The tag value can be an empty string. It can be up to 128 characters in length and cannot start with `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签键。\n\n>为提高兼容性，建议您尽量使用Tag.N.Key参数。",
+            "en": "The tag key of the image.\n\n> For better compatibility, use Tag.N.Key instead."
+          }
         },
         {
           "name": "value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签值。\n\n>为提高兼容性，建议您尽量使用Tag.N.Value参数。",
+            "en": "The tag value of the image.\n\n> For better compatibility, use Tag.N.Value instead."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自定义镜像",
+    "en": "Create a custom image"
+  },
+  "descriptions": {
+    "zh": "### 注意事项\n\n- 本接口为异步接口，创建自定义镜像请求发送成功后会返回镜像 ID，镜像的创建不是立即完成的，需要调用 [DescribeImage](~~2679797~~) 查看镜像信息，当返回信息中的状态为`Available`时代表镜像创建成功并可用。更多信息，请参见[自定义镜像概述](~~172789~~)。\n\n- 查询 ECS 实例信息时，如果返回数据中包含{\"OperationLocks\": {\"LockReason\" : \"security\"}}，则禁止创建自定义镜像。\n\n- 建议在创建镜像时配置镜像检测参数`DetectionStrategy`，有助于系统帮助优化您的镜像。更多信息，请参见[镜像检测概述](~~439819~~)。\n\n以下描述了三种通过该接口创建自定义镜像的方法。请求参数的优先级为：InstanceId > DiskDeviceMapping > SnapshotId，若您的请求中同时含有两个及以上参数，默认以优先级更高的参数为准创建镜像。\n\n- **根据实例创建自定义镜像**：指定实例ID（`InstanceId`）。\n  - 实例的状态必须为运行中（`Running`）或者已停止（`Stopped`）。\n  - 接口调用成功后，实例的每块云盘均会新增一份快照。\n\n  ><notice>由于运行中的实例存在缓存数据未落盘的情况，可能导致创建的自定义镜像数据与实例数据不完全一致，因此建议您停止实例（[StopInstances](~~155372~~)）后创建镜像。></notice>\n\n- **根据快照创建自定义镜像（指定的快照不能是2013年7月15日（含）之前创建的快照。）**\n  - **使用系统盘快照创建自定义镜像**：只需指定实例系统盘的快照ID（`SnapshotId`）。\n  - **使用系统盘快照和数据盘快照创建自定义镜像**：这需要建立几块云盘的数据关联（`DiskDeviceMapping`）。\n    -  系统盘快照只能被指定一个。 \n    -  数据盘快照可以指定多个，最多不能超过16块。不指定`DiskDeviceMapping.N.SnapshotId`时会创建一个默认容量的空数据盘。  \n \n> 当释放实例时，系统盘将被转为按量付费数据盘保留。该盘创建的快照不支持创建自定义镜像，请根据需要在实例释放前制作自定义镜像。",
+    "en": "### Before you begin\n\n- This is an asynchronous operation. After a request to create a custom image is sent, the image ID is returned. However, the image creation is not immediately complete. Call [DescribeImage](~~2679797~~) to query the image information. When the status in the response is `Available`, the image is created and ready for use. For more information, see [Custom image overview](~~172789~~).\n\n- When you query ECS instance information, if the response contains {\"OperationLocks\": {\"LockReason\" : \"security\"}}, you cannot create a custom image.\n\n- Configure the image detection parameter `DetectionStrategy` when creating an image to help the system optimize your image. For more information, see [Image detection overview](~~439819~~).\n\nThe following describes three methods to create a custom image by calling this operation. The priority of request parameters is: InstanceId > DiskDeviceMapping > SnapshotId. If your request contains two or more of these parameters, the image is created based on the parameter with the highest priority.\n\n- **Create a custom image from an instance**: Specify the instance ID (`InstanceId`).\n  - The instance must be in the Running (`Running`) or Stopped (`Stopped`) state.\n  - After the operation is called, a new snapshot is created for each disk of the instance.\n\n  ><notice>Because a running instance may have cached data that has not been written to disks, the data of the created custom image may be inconsistent with the instance data. Stop the instance ([StopInstances](~~155372~~)) before creating the image.></notice>\n\n- **Create a custom image from a snapshot (the specified snapshot cannot be one created on or before July 15, 2013.)**\n  - **Create a custom image from a system disk snapshot**: Specify only the snapshot ID of the instance system disk (`SnapshotId`).\n  - **Create a custom image from system disk and data disk snapshots**: Establish data associations among multiple disks (`DiskDeviceMapping`).\n    -  Only one system disk snapshot can be specified. \n    -  You can specify multiple data disk snapshots, up to a maximum of 16. If `DiskDeviceMapping.N.SnapshotId` is not specified, an empty data disk with the default capacity is created.  \n \n> When an instance is released, the system disk is retained as a pay-as-you-go data disk. Snapshots created from this disk do not support creating custom images. Create a custom image before releasing the instance as needed."
+  },
   "example": {
     "unifiedCli": "aliyun ecs create-image --biz-region-id cn-hangzhou --snapshot-id s-bp17441ohwkdca00000 --instance-id i-bp1g6zv0ce8oghu70000 --image-name TestCentOS --image-family hangzhou-daily-update --image-version 2017011017 --description ImageTestDescription --platform CentOS --boot-mode BIOS --architecture x86_64 --client-token 123e4567-e89b-12d3-a456-426655440000 --resource-group-id rg-bp67acfmxazb4p0000 --disk-device-mapping DiskType=system SnapshotId=s-bp17441ohwkdca00000 Size=2000 Device=/dev/xvdb --tag Value=ValueTest key=example-string --detection-strategy Standard --features ImdsSupport=v2 --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun ecs CreateImage --region cn-hangzhou --DetectionStrategy Standard --DiskDeviceMapping.1.DiskType system --Features.ImdsSupport v2 --Description ImageTestDescription --Platform CentOS --Architecture x86_64 --ResourceGroupId 'rg-bp67acfmxazb4p0000' --InstanceId 'i-bp1g6zv0ce8oghu70000' --DiskDeviceMapping.1.Device '/dev/xvdb' --BootMode BIOS --DryRun true --ImageFamily 'hangzhou-daily-update' --SnapshotId 's-bp17441ohwkdca00000' --ImageName TestCentOS --DiskDeviceMapping.1.SnapshotId 's-bp17441ohwkdca00000' --ImageVersion 2017011017 --Tag.1.Value ValueTest --DiskDeviceMapping.1.Size 2000 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Tag.1.key 'example-string' --method POST --force"

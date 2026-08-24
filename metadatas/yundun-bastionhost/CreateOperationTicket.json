@@ -1,5 +1,6 @@
 {
   "name": "CreateOperationTicket",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,100 @@
       "name": "ApproveComment",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "申请单备注。",
+        "en": "The comments on the ticket."
+      }
     },
     {
       "name": "AssetAccountName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定要申请运维的资产账户登录名。",
+        "en": "The logon name of the asset account for the O\\&M request."
+      }
     },
     {
       "name": "AssetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要申请运维的资产ID。\n> 您可以调用[ListOperationDatabases](~~2758856~~)和[ListOperationHosts](~~2758857~~)接口获取该参数。",
+        "en": "The ID of the asset for which to request O\\&M.\n\n> Call the [ListOperationDatabases](~~2758856~~) and [ListOperationHosts](~~2758857~~) operations to obtain this parameter."
+      }
     },
     {
       "name": "EffectEndTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "申请登录的有效期结束时间。（秒，时间戳格式）\n> 申请登录的有效期结束时间需要晚于申请登录的有效期开始时间",
+        "en": "The end time of the validity period for the logon request. This value is a UNIX timestamp. Unit: seconds.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "EffectStartTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "申请登录的有效期开始时间。（秒，时间戳格式）",
+        "en": "The start time of the validity period for the logon request. This value is a UNIX timestamp. Unit: seconds."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "堡垒机的实例ID。\n> 您可以调用[DescribeInstances](~~153281~~)接口获取该参数。",
+        "en": "The ID of the Bastionhost instance.\n\n> Call the [DescribeInstances](~~153281~~) operation to obtain this parameter."
+      }
     },
     {
       "name": "IsOneTimeEffect",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "申请登录次数。取值：\n- **true**：在有效期内仅登录一次。\n- **false**：在有效期内不限制登录次数。",
+        "en": "Specifies whether the ticket is valid for a single logon. Valid values:\n\n- **true**: The ticket is valid for a single logon.\n\n- **false**: The ticket is valid for multiple logons within the validity period."
+      }
     },
     {
       "name": "ProtocolName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定要申请运维的协议名称。取值：\n- SSH\n- RDP\n- MySQL\n- PostgreSQL\n- Oracle\n- SQLServer",
+        "en": "The name of the protocol for the O\\&M request. Valid values:\n\n- SSH\n\n- RDP\n\n- MySQL\n\n- PostgreSQL\n\n- Oracle\n\n- SQLServer"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "堡垒机的区域ID。\n> 区域ID和区域名称的对应关系，请参见[地域和可用区](~~40654~~)。",
+        "en": "The region ID of the Bastionhost instance.\n\n> For more information about regions and zones, see [Regions and zones](~~40654~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建运维申请（仅支持V3.2.44及以上版本使用）",
+    "en": "CreateOperationTicket"
+  },
   "example": {
     "unifiedCli": "aliyun yundun-bastionhost create-operation-ticket --instance-id bastionhost-cn-st220aw0000 --biz-region-id cn-hangzhou --asset-id 2 --protocol-name SSH --asset-account-name root --is-one-time-effect false --effect-start-time 1685600242 --effect-end-time 1679393152 --approve-comment Comment --region cn-hangzhou",
     "legacyCli": "aliyun yundun-bastionhost CreateOperationTicket --region cn-hangzhou --ProtocolName SSH --EffectStartTime 1685600242 --InstanceId 'bastionhost-cn-st220aw0000' --IsOneTimeEffect false --ApproveComment Comment --RegionId 'cn-hangzhou' --AssetAccountName root --EffectEndTime 1679393152 --AssetId 2"

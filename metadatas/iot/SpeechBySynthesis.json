@@ -1,5 +1,6 @@
 {
   "name": "SpeechBySynthesis",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "AudioFormat",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "音频格式，仅支持**wav**、**mp3**、**amr**格式。",
+        "en": "The audio format. Only **wav**, **mp3**, and **amr** formats are supported."
+      }
     },
     {
       "name": "DeviceName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备的**DeviceName**。\n如果传入该参数，需同时传入**ProductKey**。",
+        "en": "The **DeviceName** of the device.  \nIf you specify this parameter, you must also specify **ProductKey**."
+      }
     },
     {
       "name": "IotId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备ID，该参数可以通过调用[QuerySpeechDevice](~~280408~~)获取。\n\n>如果传入该参数，则无需传入**ProductKey**和**DeviceName**。**IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。",
+        "en": "The Device ID. You can obtain this parameter by calling [QuerySpeechDevice](~~280408~~).  \n> If you specify this parameter, you do not need to specify **ProductKey** and **DeviceName**. **IotId** is a unique identifier for the device and corresponds one-to-one with the combination of **ProductKey** and **DeviceName**. If you specify both **IotId** and the **ProductKey**/**DeviceName** combination, **IotId** takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。<props=\"china\"><ph>您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。</ph></props>\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无ID值，则无需传入。\n\n></notice>\n\n<props=\"china\">实例的更多信息，请参见[如何获取实例ID](~~267533~~)。</props>",
+        "en": "The instance ID. <props=\"china\"><ph>You can view the **ID** of the current instance on the **Instance Overview** page in the IoT Platform console.</ph></props>  \n\n><notice>  \n- If an ID exists, you must specify it. Otherwise, the invocation fails.  \n- If no ID exists, you do not need to specify this parameter.  \n></notice>  \n\n<props=\"china\">For more information about instances, see [How to Obtain an Instance ID](~~267533~~).</props>"
+      }
     },
     {
       "name": "ProductKey",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备所属的产品**ProductKey**。如果传入该参数，需同时传入**DeviceName**。",
+        "en": "The **ProductKey** of the product to which the device belongs. If you specify this parameter, you must also specify **DeviceName**."
+      }
     },
     {
       "name": "SpeechId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下发给设备的唯一播报ID。\n><notice>\n若不传入则由系统生成，若业务上进行重试播报，需传入重试的播报ID，避免出现重复业务播报。\n></notice>",
+        "en": "A unique playback ID assigned to the device.  \n><notice>  \nIf this parameter is not provided, the system generates one automatically. If your business logic requires a retry of the playback, you must provide the same playback ID used in the original request to avoid duplicate playback.  \n></notice>"
+      }
     },
     {
       "name": "SpeechRate",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播报速度，取值范围：-500~500。",
+        "en": "The playback speed. Valid values range from -500 to 500."
+      }
     },
     {
       "name": "Text",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "语料文本，当语料类型选择为自定义语料时，该参数必选。语料文本支持英文字母、汉字和空格，长度为1~100个字符，一个汉字占两个字符。",
+        "en": "The speech text. This parameter is required if you select custom speech material. The text can contain English letters, Chinese characters, and spaces. The length must be 1 to 100 characters, where each Chinese character counts as two characters."
+      }
     },
     {
       "name": "Voice",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "语料播报声音，由系统预设，例如标准女声、标准男声等。可以选择的声音类型通过[GetSpeechVoice](~~217887~~)进行查询，填入返回参数中`VoiceList`中`Value`的值。",
+        "en": "The voice used for corpus playback is preset by the system, such as Standard Female or Standard Male. You can query the available voice types by calling [GetSpeechVoice](~~217887~~) and use the `Value` field from the `VoiceList` in the response."
+      }
     },
     {
       "name": "Volume",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "音量大小，取值范围：0~100。",
+        "en": "The volume level. Valid values: 0 to 100."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "SpeechBySynthesis",
+    "en": "SpeechBySynthesis"
+  },
+  "descriptions": {
+    "zh": "## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n> RAM用户共享阿里云账号配额。",
+    "en": "## QPS Limit\nThe maximum queries per second (QPS) for this API is 10 per Alibaba Cloud account.  \n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot speech-by-synthesis --voice Siyue --iot-id Q7uOhVRdZRRlDnTLv000000100 --speech-rate 0 --text test --product-key a1BwAGV0000 --device-name test --speech-id 4200001139202111238000000000 --audio-format wav --volume 50 --iot-instance-id iot_instc_pu0000_c0-v6400000000 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot SpeechBySynthesis --region cn-hangzhou --IotId Q7uOhVRdZRRlDnTLv000000100 --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --Volume 50 --Text test --AudioFormat wav --Voice Siyue --SpeechRate 0 --ProductKey a1BwAGV0000 --DeviceName test --SpeechId 4200001139202111238000000000"

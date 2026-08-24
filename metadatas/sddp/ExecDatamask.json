@@ -1,5 +1,6 @@
 {
   "name": "ExecDatamask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,50 @@
       "name": "Data",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定需要脱敏的数据。采用JSON格式的字符串表述，包含以下字段：\n\n- **dataHeaderList**：数据的列名，顺序和需要脱敏的数据一一对应。\n\n- **dataList**：需要脱敏的数据。\n\n- **ruleList** ：敏感类型ID列表，顺序和需要脱敏的数据一一对应。\n                        敏感类型ID是数字，不同的数字代表不同的敏感类型，可通过[DescribeRules](~~410141~~)接口获取。",
+        "en": "The data that you want to mask. The data must be a string in JSON format and include the following fields:\n\n- **dataHeaderList**: The column names of the data. The order of the column names must correspond to the order of the data that you want to mask.\n\n- **dataList**: The data that you want to mask.\n\n- **ruleList**: A list of sensitive data type IDs. The order of the IDs must correspond to the order of the data that you want to mask. Each ID is a number that represents a sensitive data type. You can call the [DescribeRules](~~410141~~) operation to obtain the IDs."
+      }
     },
     {
       "name": "FeatureType",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该参数已废弃。",
+        "en": "This parameter is deprecated."
+      }
     },
     {
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置请求和返回消息的语言类型。默认值为**zh_cn**。取值\n\n- **zh_cn**：简体中文\n- **en_us**：英文（美国）",
+        "en": "The language of the request and response. Default value: **zh\\_cn**. Valid values:\n\n- **zh\\_cn**: Simplified Chinese\n\n- **en\\_us**: English (US)"
+      }
     },
     {
       "name": "TemplateId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定脱敏模板ID。在[数据安全中心控制台](https://yundun.console.aliyun.com/?p=sddp#/dm/dmConfig/cn-zhangjiakou)上新建模板后会生成模板ID，您可以在**数据脱敏**>**脱敏配置**>**脱敏模板**页面获取**模板ID**。\n\n- 若脱敏模板匹配类型是**字段名称**，则取**Data**中的**dataHeaderList**进行匹配。\n- 若脱敏模板匹配类型是**敏感类型**，则取**Data**中的**ruleList**进行匹配。",
+        "en": "The ID of the data masking template. A template ID is generated after you create a template in the [Data Security Center console](https://yundun.console.aliyun.com/?p=sddp#/dm/dmConfig/cn-zhangjiakou). You can find the **Template ID** on the **Data Masking** > **Masking Configuration** > **Masking Template** page.\n\n- If the matching type of the data masking template is **Field Name**, the system matches the data against **dataHeaderList** in **Data**.\n\n- If the matching type of the data masking template is **Sensitive Data Type**, the system matches the data against **ruleList** in **Data**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "对数据进行动态脱敏",
+    "en": "ExecDatamask"
+  },
   "example": {
     "unifiedCli": "aliyun sddp exec-datamask --template-id 1 --data dataHeaderList_:_name_,_age_,_dataList_:_lily_,18_,_lucy_,17_,_ruleList_:_1002,null --feature-type 2 --lang zh_cn --region cn-hangzhou",
     "legacyCli": "aliyun sddp ExecDatamask --region cn-hangzhou --FeatureType 2 --Data 'dataHeaderList_:_name_,_age_,_dataList_:_lily_,18_,_lucy_,17_,_ruleList_:_1002,null' --Lang zh_cn --TemplateId 1"

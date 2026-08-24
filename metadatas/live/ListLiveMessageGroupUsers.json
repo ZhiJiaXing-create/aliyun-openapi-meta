@@ -1,5 +1,6 @@
 {
   "name": "ListLiveMessageGroupUsers",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询的直播互动应用ID。",
+        "en": "The ID of the interactive messaging application to query."
+      }
     },
     {
       "name": "DataCenter",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据中心，需要与[CreateLiveMessageApp](~~2848162~~)中的数据中心一致，当前支持上海（取值为cn-shanghai)、新加坡（取值为ap-southeast-1）。",
+        "en": "The data center. It must be the same as the data center that was specified when you called the [CreateLiveMessageApp](~~2848162~~) operation to create the interactive messaging application. Valid values: cn-shanghai and ap-southeast-1 (Singapore)."
+      }
     },
     {
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询的群组的GroupID。",
+        "en": "The ID of the group to query."
+      }
     },
     {
       "name": "NextPageToken",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询页的起始位置，若为空则默认为首页。",
+        "en": "The starting page number for the query. If you leave this parameter empty, the query starts from the first page."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "一次显示的用户数量，取值范围**[10，50]**。",
+        "en": "The number of entries per page. Valid values: **10 to 50**."
+      }
     },
     {
       "name": "SortType",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "排序方式，按用户加入群组时间先后进行排序。取值：\n\n- 1：正序\n\n- 2：逆序",
+        "en": "The sort order based on the time when the users joined the group. Valid values:\n\n*   1: ascending order\n*   2: descending order"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询群组用户列表",
+    "en": "ListLiveMessageGroupUsers"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口前，您必须已经调用[CreateLiveMessageGroup](~~2848163~~)创建互动消息群组。\n- 对于超级大群（超过2000人的群组），不再提供成员列表查询。并且群成员进出群组通知之间会至少间隔5s，通知中不显示全部进出用户列表，但显示精确群人数。群组一旦升级为超级大群，群成员列表会马上清空，无法再恢复为普通群组，直到所有群成员退出群组（群组关闭），重新开启时才会恢复为普通群组。\n\n## QPS限制\n本接口的单用户QPS限制为50次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "*   Before you call this operation, make sure that you have called the [CreateLiveMessageGroup](~~2848163~~) operation to create an interactive messaging group.\n*   For a super group, which has more than 2,000 users, the user list cannot be queried. In addition, the notifications about users entering or leaving the group are sent at an interval of at least of 5 seconds. These notifications display the accurate number of users in the group for the time being, but do not display the list of all users entering or leaving the group. Once a group is upgraded to a super group, the user list of the group is immediately cleared. The super group cannot be restored to a normal group until all users in the group leave the group (that is, the group is closed). After you reopen the group, it is restored to a normal group.\n\n## [](#qps-)QPS limit\n\nYou can call this operation up to 50 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun live list-live-message-group-users --app-id demo --group-id grouptest --page-size 10 --sort-type 1 --next-page-token 1 --data-center cn-shanghai --region cn-hangzhou",
     "legacyCli": "aliyun live ListLiveMessageGroupUsers --region cn-hangzhou --SortType 1 --DataCenter 'cn-shanghai' --AppId demo --PageSize 10 --NextPageToken 1 --GroupId grouptest"

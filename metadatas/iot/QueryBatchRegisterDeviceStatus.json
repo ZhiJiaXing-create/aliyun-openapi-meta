@@ -1,5 +1,6 @@
 {
   "name": "QueryBatchRegisterDeviceStatus",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ApplyId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的申请批次ID。\n\n申请批次ID在成功调用[BatchCheckDeviceNames](~~69482~~)或[BatchRegisterDevice](~~69473~~)接口的返回结果中。",
+        "en": "The application ID. If the call of the [BatchRegisterDeviceWithApplyId](~~69514~~) or [BatchRegisterDevice](~~69473~~) operation is successful, the application ID is returned."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the ID of the instance on the **Overview** page in the IoT Platform console.\n\n\n**Important**\n\n*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n*   If no **Overview** page or ID is generated for your instance, you do not need configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要查询的设备所属的产品**ProductKey**。",
+        "en": "The ProductKey of the product to which the device belongs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询批量注册设备申请的处理状态和结果",
+    "en": "Query the processing status and result of a batch device registration request"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n批量注册设备时，可调用本接口根据申请批次ID（**ApplyId**），查看设备名称校验结果或注册结果。\n\n使用自定义设备名称批量注册设备时，必须先调用本接口确保自定义设备名称全部校验通过，再调用[BatchRegisterDeviceWithApplyId](~~69514~~)接口根据对应申请批次ID完成设备注册。\n\n> - 如果有校验失败的设备名称，请根据错误信息提示进行修正，然后重新调用[BatchCheckDeviceNames](~~69482~~)接口获取新的申请批次ID（**ApplyId**）后，再次调用**QueryBatchRegisterDeviceStatus**接口确认全部设备名称校验通过。\n- 如果返回的**Status**为**CHECK**，请耐心等待。批量注册设备有一个过程，您可再次调用本接口查看**Status**确认全部设备名称校验通过。\n\n使用自定义设备名称批量注册设备的完整流程，请参见[BatchCheckDeviceNames](~~69482~~)的**使用说明**。\n\n## QPS限制\n\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为30。\n > RAM用户共享阿里云账号配额。",
+    "en": "## How-To  \n\nWhen registering devices in batches, you can call this API with the application batch ID (**ApplyId**) to view the device name validation results or registration results.  \n\nIf you use custom device names for batch registration, you must first call this API to ensure that all custom device names pass validation before invoking the [BatchRegisterDeviceWithApplyId](~~69514~~) API with the corresponding **ApplyId** to complete device registration.  \n\n> - If any device names fail validation, correct them according to the error message, then call the [BatchCheckDeviceNames](~~69482~~) API again to obtain a new **ApplyId**. Afterward, call the **QueryBatchRegisterDeviceStatus** API again to confirm that all device names have passed validation.  \n- If the returned **Status** is **CHECK**, please wait patiently. Batch device registration involves a procedure. You can call this API again later to check the **Status** and confirm that all device names have passed validation.  \n\nFor the complete flow of batch device registration using custom device names, see the **How-To** section of [BatchCheckDeviceNames](~~69482~~).  \n\n## QPS Limit  \n\nThe maximum queries per second (QPS) for this API is 30 per Alibaba Cloud account.  \n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot query-batch-register-device-status --iot-instance-id iot_instc_pu0000_c0-v6400000000 --product-key a1BwAGV0000 --apply-id 1295006 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot QueryBatchRegisterDeviceStatus --region cn-hangzhou --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --ApplyId 1295006 --ProductKey a1BwAGV0000"

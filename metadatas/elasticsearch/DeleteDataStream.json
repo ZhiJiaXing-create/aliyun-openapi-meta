@@ -1,5 +1,6 @@
 {
   "name": "DeleteDataStream",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "DELETE",
   "pathPattern": "/openapi/instances/[InstanceId]/data-streams/[DataStream]",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性。由客户端生成该参数值，要保证在不同请求间唯一，最大不超过64个ASCII字符。",
+        "en": "A client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DataStream",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据流名称。",
+        "en": "The name of the data stream."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除数据流",
+    "en": "Delete a data stream"
+  },
+  "descriptions": {
+    "zh": "> - 删除数据流的同时会删除其对应的后备索引，请谨慎操作。- 索引模板存在关联的数据流时，需要先删除关联该索引模板的数据流，才能删除索引模板。在数据流列表页需要查看数据流详情，才能找到数据流匹配的索引模板。",
+    "en": "> - Deleting a data stream also deletes its backing indexes. Proceed with caution.- When an index template has associated data streams, you must delete the data streams associated with the index template before you can delete the index template. On the data stream list page, view the data stream details to find the index template that matches the data stream."
+  },
   "example": {
     "unifiedCli": "aliyun elasticsearch delete-data-stream --instance-id es-cn-nif24adwc00820000 --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF0000 --data-stream ds-001 --api-version 2017-06-13 --region cn-hangzhou",
     "legacyCli": "aliyun elasticsearch DELETE /openapi/instances/es-cn-nif24adwc00820000/data-streams/ds-001 --region cn-hangzhou --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF0000' --header \"Content-Type=application/json\""

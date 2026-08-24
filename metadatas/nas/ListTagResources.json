@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,72 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始Token。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID列表。\n\n目标资源ID，N的取值范围：1~50。",
+        "en": "The ID of the resource.\n\nThe ID of the destination resource. Valid values of N: 1 to 50."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n- filesystem，表示文件系统。\n- accesspoint，表示接入点。",
+        "en": "The type of the resource. Valid values:\n\n*   filesystem\n*   accesspoint"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签数组。数组长度：1~20。如果数组中有多个标签对象，标签键Key不允许重复。",
+        "en": "The tags of the reserved instance. The array may contain up to 20 tags. If the array contains multiple tags, each tag key is unique."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。\n\n限制：\n\n- 不允许为空和空字符串。 \n- 最多支持128个字符。\n- 不能以`aliyun`或`acs:`开头。\n- 不能包含`http://`和`https://`。",
+            "en": "The key of a tag.\n\nLimits:\n\n*   The tag key cannot be null or an empty string.\n*   The tag value can be up to 128 characters in length.\n*   The tag value cannot start with `aliyun` or `acs:`.\n*   The tag value cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。\n\n限制：\n\n\n- 最多支持128个字符。\n- 不能包含`http://`和`https://`。",
+            "en": "The value of a tag.\n\nLimits:\n\n*   The tag value can be up to 128 characters in length.\n*   The tag value cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询标签的资源",
+    "en": "ListTagResources"
+  },
   "example": {
     "unifiedCli": "aliyun nas list-tag-resources --resource-type filesystem --next-token '无' --resource-id 03e08484f0 --tag Value=filetest Key=nastest --region cn-hangzhou",
     "legacyCli": "aliyun nas ListTagResources --region cn-hangzhou --ResourceId.1 03e08484f0 --Tag.1.Key nastest --NextToken '无' --Tag.1.Value filetest --ResourceType filesystem"

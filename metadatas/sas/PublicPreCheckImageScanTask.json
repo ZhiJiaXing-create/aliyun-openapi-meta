@@ -1,5 +1,6 @@
 {
   "name": "PublicPreCheckImageScanTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "Digests",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像的摘要的SHA256值。多个摘要的SHA256值之间使用半角逗号（,）分隔。",
+        "en": "The SHA-256 value of the image digest. Separate multiple SHA-256 values with commas (,)."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ACR镜像仓实例的ID。多个实例的ID之间使用半角逗号（,）分隔。",
+        "en": "The ID of the Container Registry instance in which the image repository is created. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "RegionIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像的地域ID。多个地域ID之间使用半角逗号（,）分隔。",
+        "en": "The region ID of the image. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "RegistryTypes",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像仓的类型。多个镜像仓的类型之间使用半角逗号（,）分隔。取值：\n\n- **acr**\n- **harbor**\n- **quay**",
+        "en": "The type of the image repository. Separate multiple types with commas (,). Valid values:\n\n*   **acr**\n*   **harbor**\n*   **quay**"
+      }
     },
     {
       "name": "RepoIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像仓的ID。多个镜像仓的ID之间使用半角逗号（,）分隔。",
+        "en": "The ID of the image repository. Separate multiple IDs with commas (,)."
+      }
     },
     {
       "name": "RepoNames",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像仓的名称。多个镜像仓的名称之间使用半角逗号（,）分隔。",
+        "en": "The name of the image repository. Separate multiple names with commas (,)."
+      }
     },
     {
       "name": "RepoNamespaces",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像仓的命名空间。多个命名空间之间使用半角逗号（,）分隔。",
+        "en": "The namespace to which the image repository belongs. Separate multiple namespaces with commas (,)."
+      }
     },
     {
       "name": "SourceIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问源的IP地址。",
+        "en": "The source IP address of the request."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像的标签。多个标签之间使用半角逗号（,）分隔。",
+        "en": "The tag that is added to the image. Separate multiple tags with commas (,)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询容器镜像安全扫描覆盖的镜像数和待消耗的授权数",
+    "en": "PublicPreCheckImageScanTask"
+  },
+  "descriptions": {
+    "zh": "本接口可帮您预检镜像安全扫描待消耗的授权数，以确保您在创建镜像安全扫描任务之前，已知晓镜像安全扫描任务消耗的授权数。如果授权数不足，您需要购买足够的授权数，以避免因授权数不足导致镜像安全扫描任务执行中断。\n\n调用本接口时，如果未设置非必选的请求参数，则查询扫描所有容器镜像覆盖的镜像数和待消耗的授权数。如果设置了非必选的请求参数，则按照所设置的参数，筛选符合条件的容器镜像在进行安全扫描时覆盖的镜像数和待消耗的授权数。",
+    "en": "You can call the PublicPreCheckImageScanTask operation to estimate the quota for container image scan to be consumed by the task. This ensures that you know the quota to be consumed before you perform the task. If the remaining quota for container image scan is less than the quota to be consumed by the task, you must purchase a sufficient quota. This prevents the task from being stopped due to an insufficient quota.\n\nIf you do not specify the optional parameters when you call this operation, the total number of protected images and the quota for container image scan to be consumed by scanning all the protected images are queried. If you specify the optional parameters, the number of images that meet the specified conditions and the quota for container image scan to be consumed by scanning the images are queried."
+  },
   "example": {
     "unifiedCli": "aliyun sas public-pre-check-image-scan-task --source-ip 192.168.XX.XX --registry-types acr --region-ids cn-hangzhou --instance-ids i-uf6j8vq9l4r5ntht0000 --repo-namespaces hanghai-namespace --repo-ids crr-vridcl40000 --repo-names centos --digests 6a5e103187b31a94592a47a5858617f70000 --tags 0.2 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas PublicPreCheckImageScanTask --region cn-hangzhou --RepoIds 'crr-vridcl40000' --Digests 6a5e103187b31a94592a47a5858617f70000 --SourceIp '192.168.XX.XX' --RegionIds 'cn-hangzhou' --RepoNames centos --InstanceIds 'i-uf6j8vq9l4r5ntht0000' --RegistryTypes acr --RepoNamespaces 'hanghai-namespace' --Tags '0.2'"

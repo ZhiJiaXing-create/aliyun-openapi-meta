@@ -1,0 +1,134 @@
+{
+  "name": "SubmitTranscodeJob",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "幂等性校验Key。保证请求幂等性。",
+        "en": "The idempotence key. Ensures request idempotence."
+      }
+    },
+    {
+      "name": "InputGroup",
+      "position": "Query",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "任务输入组。单个输入为转码任务。多个输入为音视频合流任务。",
+        "en": "The input group for the job. A single input creates a transcoding job. Multiple inputs create a media merging job."
+      },
+      "sub_parameters": [
+        {
+          "name": "InputUrl",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "输入流路径：\n- 仅当 type 为 Media 是才生效，让用户可以选择该媒资下的特定文件作为输入。 \n - 系统会检查该媒资下是否存在这个 inputUrl。",
+            "en": "The input stream path:\n\n- This parameter takes effect only when Type is Media. It lets you select a specific file from the media asset as the input.\n\n- The system checks whether the input URL exists in the media asset."
+          }
+        },
+        {
+          "name": "Media",
+          "position": "Query",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "媒体值：\n- type 为 OSS 时，为 URL, 支持 OSS 协议和 HTTP 协议。\n> URL中的 OSS bucket 需要先添加到IMS [存储管理](~~609918~~)后再使用。\n\n- type 为 Media 时，为媒资 ID。",
+            "en": "The media value:\n\n- If Type is OSS, this is a URL that supports the OSS or HTTP protocol.\n\n> You must add the OSS bucket in the URL to IMS [storage management](~~609918~~) before you use it.\n\n- If Type is Media, this is a media asset ID."
+          }
+        },
+        {
+          "name": "Type",
+          "position": "Query",
+          "type": "String",
+          "required": true,
+          "description": {
+            "zh": "媒体对象类型。\n取值： \n- OSS: OSS文件。\n- Media: 媒资 ID。",
+            "en": "The media object type. Valid values:\n\n- OSS: An OSS file.\n\n- Media: A media asset ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Name",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务名字。",
+        "en": "The job name."
+      }
+    },
+    {
+      "name": "OutputGroup",
+      "position": "Query",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "任务输出组。",
+        "en": "The output group for the job."
+      },
+      "sub_parameters": [
+        {
+          "name": "Output",
+          "position": "Query",
+          "type": "Struct",
+          "required": true,
+          "description": {
+            "zh": "输出媒体配置。",
+            "en": "The output media configuration."
+          }
+        },
+        {
+          "name": "ProcessConfig",
+          "position": "Query",
+          "type": "Struct",
+          "required": true,
+          "description": {
+            "zh": "任务处理配置。",
+            "en": "The job processing configuration."
+          }
+        }
+      ]
+    },
+    {
+      "name": "ScheduleConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务调度信息。",
+        "en": "The job scheduling information."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "自定义设置，JSON格式，长度限制为512字节，支持[自定义回调地址配置](~~451631~~)。",
+        "en": "Custom settings in JSON format. The length is limited to 512 bytes. Supports [custom webhook address configuration](~~451631~~)."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交转码任务",
+    "en": "SubmitTranscodeJob"
+  },
+  "descriptions": {
+    "zh": "- <props=\"intl\">该接口将于2025年12月31日下线，请调用[SubmitMediaConvertJob -  提交媒体转码任务](~~2867673~~)。</props>\n- 该接口为[异步接口](~~3027141~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询转码任务](~~441206~~)主动查询任务状态。",
+    "en": "- This operation will be discontinued on December 31, 2025. Use [SubmitMediaConvertJob](~~2867673~~) instead.\n\n- This is an [asynchronous operation](~~3027141~~). After you submit a job, the system returns a job ID. The job is not completed immediately but is queued for asynchronous execution in the background. You will receive the final result through a callback notification. You can also call [QueryTranscodeJob](~~441206~~) to query the job status."
+  }
+}

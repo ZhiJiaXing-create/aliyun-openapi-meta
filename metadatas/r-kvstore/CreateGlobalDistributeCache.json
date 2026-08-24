@@ -1,5 +1,6 @@
 {
   "name": "CreateGlobalDistributeCache",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行时间，取值：\n* **Immediately**：立即执行。\n* **MaintainTime**：在可维护时间段执行，默认值。\n\n> 您可以调用[ModifyInstanceMaintainTime](~~473775~~)接口修改实例的可维护时间段。",
+        "en": "Specifies when to perform the operation. Valid values:\n\n- **Immediately**: Performs the operation immediately.\n\n- **MaintainTime**: Performs the operation during the maintenance window. This is the default value.\n\n> You can call the [ModifyInstanceMaintainTime](~~473775~~) operation to change the maintenance window of the instance."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。\n> 系统参数无需传入。",
+        "en": "The ID of the resource group.\n\n> This is a system parameter. You do not need to specify it."
+      }
     },
     {
       "name": "SeedSubInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待转换的实例ID。",
+        "en": "The ID of the source instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将存量实例转换为分布式实例中第一个子实例",
+    "en": "Convert an existing instance into the first child instance of a distributed instance"
+  },
+  "descriptions": {
+    "zh": "您可以调用本接口指定一个已有的实例转换为分布式实例中第一个子实例，转换完成后，该实例所属的分布式实例即被创建成功。\n待转换的实例需满足下述要求：\n* 待转换的实例为Tair[内存型](~~126164~~)经典版。\n* 待转换的实例为集群架构时，需关闭直连模式，详情请参见[释放直连地址](~~150047~~)。\n\n> 您也可以调用[CreateInstance](~~473757~~)新购一个实例，该实例将作为分布式实例中的第一个子实例，子实例创建完成后，子实例所属的分布式实例即被创建成功。",
+    "en": "This operation converts an existing instance into the first sub-instance of a distributed instance. The conversion also creates the distributed instance. The source instance must meet the following requirements:\n\n- The source instance must be a classic Tair [memory-enhanced](~~126164~~) instance.\n\n- If the source instance uses the cluster architecture, you must disable the direct connection mode. For more information, see [ReleasePublicConnection](~~150047~~).\n\n> Alternatively, you can call the [CreateInstance](~~473757~~) operation to create a new instance to use as the first sub-instance. This action also creates the distributed instance."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore create-global-distribute-cache --seed-sub-instance-id r-bp1zxszhcgatnx0000 --resource-group-id - --effective-time Immediately --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore CreateGlobalDistributeCache --region cn-hangzhou --ResourceGroupId '-' --EffectiveTime Immediately --SeedSubInstanceId 'r-bp1zxszhcgatnx0000'"

@@ -1,0 +1,130 @@
+{
+  "name": "PutObject",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "PUT",
+  "pathPattern": "/[key]",
+  "parameters": [
+    {
+      "name": "body",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "请求体。",
+        "en": "The request body."
+      }
+    },
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object的完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "x-oss-forbid-overwrite",
+      "position": "Header",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "指定PutObject操作时是否覆盖同名Object。 当目标Bucket处于已开启或已暂停的版本控制状态时，**x-oss-forbid-overwrite**请求Header设置无效，即允许覆盖同名Object。\n  - 不指定**x-oss-forbid-overwrite**或者指定**x-oss-forbid-overwrite**为**false**时，表示允许覆盖同名Object。\n  - 指定**x-oss-forbid-overwrite**为**true**时，表示禁止覆盖同名Object。\n\n设置**x-oss-forbid-overwrite**请求Header会导致QPS处理性能下降，如果您有大量的操作需要使用**x-oss-forbid-overwrite**请求Header（QPS>1000），请联系技术支持，避免影响您的业务。\n默认值：**false**",
+        "en": "Specifies whether to overwrite an existing object with the same name when you call the PutObject operation. When the destination bucket is in the enabled or suspended versioning state, the **x-oss-forbid-overwrite** request header is invalid, and existing objects with the same name are overwritten.\n  - If you do not specify **x-oss-forbid-overwrite** or set **x-oss-forbid-overwrite** to **false**, an existing object with the same name is overwritten.\n  - If you set **x-oss-forbid-overwrite** to **true**, an existing object with the same name cannot be overwritten.\n\nSetting the **x-oss-forbid-overwrite** request header decreases the QPS processing performance. If you want to use the **x-oss-forbid-overwrite** request header in a large number of operations (QPS > 1000), contact technical support to avoid impact on your business.\nDefault value: **false**."
+      }
+    },
+    {
+      "name": "x-oss-meta-*",
+      "position": "Header",
+      "type": "Struct",
+      "required": false,
+      "description": {
+        "zh": "使用PutObject接口时，如果配置以**x-oss-meta-***为前缀的参数，则该参数视为元数据，例如`x-oss-meta-location`。一个Object可以有多个类似的参数，但所有的元数据总大小不能超过8 KB。\n\n元数据支持短划线（-）、数字、英文字母（a~z）。英文字符的大写字母会被转成小写字母，不支持下划线（_）在内的其他字符。",
+        "en": "When you call the PutObject operation, if a parameter is prefixed with **x-oss-meta-***, the parameter is considered as user metadata, for example, `x-oss-meta-location`. An object can have multiple similar parameters. However, the total size of all user metadata cannot exceed 8 KB.\n\nUser metadata supports hyphens (-), digits, and lowercase letters (a to z). Uppercase letters are converted to lowercase letters. Other characters, including underscores (_), are not supported."
+      }
+    },
+    {
+      "name": "x-oss-object-acl",
+      "position": "Header",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "指定OSS创建Object时的访问权限。\n\n取值：\n\n- default（默认）：Object遵循所在存储空间的访问权限。\n- private：Object是私有资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户没有权限操作该Object。\n- public-read：Object是公共读资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户只有该Object的读权限。请谨慎使用该权限。\n- public-read-write：Object是公共读写资源。所有用户都有该Object的读写权限。请谨慎使用该权限。\n\n关于访问权限的更多信息，请参见**[读写权限ACL](~~100676~~)**。",
+        "en": "The access control list (ACL) of the object to create.\n\nValid values:\n\n- default: The object inherits the ACL of the bucket.\n- private: The object is a private resource. Only the object owner and authorized users have read and access permissions on the object. Other users do not have permissions to perform operations on the object.\n- public-read: The object is a public-read resource. Only the object owner and authorized users have read and access permissions on the object. Other users have only read permissions on the object. Exercise caution when you set the ACL to this value.\n- public-read-write: The object is a public-read-write resource. All users have read and access permissions on the object. Exercise caution when you set the ACL to this value.\n\nFor more information about ACLs, see **[ACL](~~100676~~)**."
+      }
+    },
+    {
+      "name": "x-oss-server-side-data-encryption",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "创建Object时，指定服务器端加密方式。\n\n取值：**AES256**、**KMS**或**SM4**\n\n指定此选项后，在响应头中会返回此选项，OSS会对上传的Object进行加密编码存储。当下载该Object时，响应头中会包含**x-oss-server-side-encryption**，且该值会被设置成此Object的加密算法。",
+        "en": "Specifies the server-side encryption method when the object is created.\n\nValid values: **AES256**, **KMS**, or **SM4**\n\nIf you specify this header, it is returned in the response. OSS encrypts the uploaded object and stores it. When you download the object, the response contains the **x-oss-server-side-encryption** header, and its value is set to the encryption algorithm of the object."
+      }
+    },
+    {
+      "name": "x-oss-server-side-encryption",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "创建Object时，指定服务器端加密方式。\n\n取值：**AES256**、**KMS****或**SM4****\n\n指定此选项后，在响应头中会返回此选项，OSS会对上传的Object进行加密编码存储。当下载该Object时，响应头中会包含**x-oss-server-side-encryption**，且该值会被设置成此Object的加密算法。",
+        "en": "Specifies the server-side encryption method when the object is created.\n\nValid values: **AES256**, **KMS**, or **SM4**\n\nIf you specify this header, it is returned in the response. OSS encrypts the uploaded object and stores it. When you download the object, the response contains the **x-oss-server-side-encryption** header, and its value is set to the encryption algorithm of the object."
+      }
+    },
+    {
+      "name": "x-oss-server-side-encryption-key-id",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "KMS托管的用户主密钥。\n此选项仅在**x-oss-server-side-encryption**为KMS时有效。",
+        "en": "The ID of the customer master key (CMK) hosted on Key Management Service (KMS).\nThis parameter is valid only when **x-oss-server-side-encryption** is set to KMS."
+      }
+    },
+    {
+      "name": "x-oss-storage-class",
+      "position": "Header",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "指定Object的存储类型。                               对于任意存储类型的Bucket，如果上传Object时指定此参数，则此次上传的Object将存储为指定的类型。例如在IA类型的Bucket中上传Object时，如果指定x-oss-storage-class为Standard，则该Object直接存储为Standard。                              取值：                                 Standard：标准存储                                    IA：低频访问                                    Archive：归档存储                                    ColdArchive：冷归档存储                                    关于存储类型的更多信息，请参见存储类型介绍。",
+        "en": "The storage class of the object. For a bucket of any storage class, if you specify this parameter when you upload an object, the object is stored as the specified storage class. For example, if you specify x-oss-storage-class as Standard when you upload an object to an Infrequent Access (IA) bucket, the object is stored as Standard. Valid values: Standard, IA, Archive, and Cold Archive. For more information about storage classes, see Overview of storage classes."
+      }
+    },
+    {
+      "name": "x-oss-tagging",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定Object的标签，可同时设置多个标签，例如TagA=A&TagB=B。\n> Key和Value需要先进行URL编码，如果某项没有”=“，则看作Value为空字符串。",
+        "en": "The tag of the object. You can configure multiple tags at the same time, for example, TagA=A&TagB=B.\n> The key and value must be URL-encoded. If a tag does not contain an equal sign (=), the tag value is considered an empty string."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "上传文件",
+    "en": "Upload an object"
+  },
+  "descriptions": {
+    "zh": "**注意事项**\n\n- 添加的Object大小不能超过5 GB。\n\n- 默认情况下，如果已存在同名Object且对该Object有访问权限，则新添加的Object将覆盖原有的Object，并返回200 OK。\n\n- OSS没有文件夹的概念，所有资源都是以文件来存储，但您可以通过创建一个以正斜线（/）结尾，大小为0的Object来创建模拟文件夹。\n\n**版本控制**\n\n- 在已开启版本控制的Bucket中，OSS会为新添加的Object自动生成唯一的版本ID，并在响应Header中通过x-oss-version-id形式返回。\n- 在暂停了版本控制的Bucket中，新添加的Object的版本ID为null。OSS会保证同一个Object仅有一个null的版本ID。",
+    "en": "**Before you begin**\n\n- The size of the object to upload cannot exceed 5 GB.\n\n- By default, if an object with the same name already exists and you have access permissions on the object, the newly uploaded object overwrites the existing object, and 200 OK is returned.\n\n- Object Storage Service (OSS) does not use folders. All resources are stored as objects. However, you can create a simulated folder by creating an object whose name ends with a forward slash (/) and whose size is 0.\n\n**Versioning**\n\n- In a versioning-enabled bucket, OSS automatically generates a unique version ID for the newly uploaded object and returns the version ID in the x-oss-version-id response header.\n- In a versioning-suspended bucket, the version ID of the newly uploaded object is null. OSS ensures that only one version with a null version ID exists for the same object."
+  }
+}

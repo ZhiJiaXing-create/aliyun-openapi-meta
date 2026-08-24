@@ -1,5 +1,6 @@
 {
   "name": "SwitchNetwork",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "ClassicExpiredDays",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "经典网络连接地址的保留时间，取值：**14**、**30**、**60**、**120**，单位为天。\n\n> * 当**RetainClassic**取值为**True**，本参数才可用且必须传入。\n> * 完成切换后，您还可以调用[ModifyInstanceNetExpireTime](~~473793~~)修改经典网络连接地址的保留时间。",
+        "en": "The retention period of the classic network endpoint. Valid values: **14**, **30**, **60**, and **120**. Unit: days.\n\n> \n\n*   This parameter is available and required only when the **RetainClassic** parameter is set to **True**.\n\n*   After you complete the switchover operation, you can also call the [ModifyInstanceNetExpireTime](~~473793~~) operation to modify the retention period of the classic network endpoint."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，可调用[DescribeInstances](~~473778~~)获取。",
+        "en": "The ID of the instance. You can call the [DescribeInstances](~~473778~~) operation to query the ID of the instance."
+      }
     },
     {
       "name": "RetainClassic",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "如果实例当前为经典网络，将其切换至专有网络时，是否保留原经典网络连接地址，取值：\n* **True**：保留。\n* **False**：默认值，不保留。\n\n> 当实例的网络类型为经典网络时，本参数才可用。",
+        "en": "Specifies whether to retain the original classic network endpoint after you switch the instance from classic network to VPC. Default value: False. Valid values:\n\n*   **True**: retains the classic network endpoint.\n*   **False**: does not retain the classic network endpoint.\n\n> This parameter is available only when the network type of the instance is classic network."
+      }
     },
     {
       "name": "TargetNetworkType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要切换到的网络类型，取值固定为**VPC**，即专有网络。",
+        "en": "The network type to which you want to switch. If you want to switch to VPC network, Set the value to **VPC**."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要切换到的目标专有网络下的虚拟交换机ID，可调用专有网络VPC的[DescribeVpcs](~~35739~~)获取。\n> 目标虚拟交换机所属的可用区需和本实例相同。",
+        "en": "The ID of the vSwitch that belongs to the VPC to which you want to switch. You can call the [DescribeVpcs](~~35739~~) operation to query the vSwitch ID.\n\n>  The vSwitch and the instance must be deployed in the same zone."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要切换到的目标专有网络ID，可调用专有网络VPC的[DescribeVpcs](~~35739~~)获取。\n\n> * 目标专有网络所属的地域需和本实例相同。\n> * 传入本参数后，您还需要传入**VSwitchId**参数。",
+        "en": "The ID of the VPC to which you want to switch. You can call the [DescribeVpcs](~~35739~~) operation to query the VPC ID.\n\n> \n\n*   The VPC and the instance must be deployed in the same region.\n\n*   After you set this parameter, you must also set the **VSwitchId** parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "切换专有网络VPC或交换机",
+    "en": "SwitchNetwork"
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore switch-network --target-network-type VPC --vpc-id vpc-bp1nme44gek34slfc0000 --vswitch-id vsw-bp1e7clcw529l773d0000 --instance-id r-bp1zxszhcgatnx0000 --retain-classic True --classic-expired-days 30 --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore SwitchNetwork --region cn-hangzhou --RetainClassic True --VpcId 'vpc-bp1nme44gek34slfc0000' --ClassicExpiredDays 30 --TargetNetworkType VPC --InstanceId 'r-bp1zxszhcgatnx0000' --VSwitchId 'vsw-bp1e7clcw529l773d0000'"

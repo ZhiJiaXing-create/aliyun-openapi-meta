@@ -1,5 +1,6 @@
 {
   "name": "PutHybridMonitorMetricData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,30 +10,50 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "监控数据列表。\n\nN的取值范围：1~100。",
+        "en": "The list of monitoring data.\n\nValid values of N: 1 to 100."
+      },
       "sub_parameters": [
         {
           "name": "Labels",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控指标的标签列表。\n\nN的取值范围：1~100。",
+            "en": "The list of labels of the metric.\n\nValid values of N: 1 to 100."
+          }
         },
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "监控指标名称。\n\nN的取值范围：1~100。\n\n格式：由大写字母、小写字母、数字和下划线（_）组成。开头必须为大写字母或小写字母。",
+            "en": "The name of the metric.\n\nValid values of N: 1 to 100.\n\nFormat: The name can contain uppercase letters, lowercase letters, digits, and underscores (_). The name must start with an uppercase letter or a lowercase letter."
+          }
         },
         {
           "name": "TS",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "监控数据上报的时间戳。\n\nN的取值范围：1~100。\n\n单位：毫秒。默认值为当前时间。",
+            "en": "The timestamp when the monitoring data was reported.\n\nValid values of N: 1 to 100.\n\nUnit: milliseconds. Default value: the current time."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "监控指标的取值。\n\nN的取值范围：1~100。\n\n格式：整数或浮点数。",
+            "en": "The value of the metric.\n\nValid values of N: 1 to 100.\n\nFormat: an integer or a floating-point number."
+          }
         }
       ]
     },
@@ -40,9 +61,24 @@
       "name": "Namespace",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指标仓库名称。\n\n关于如何获取指标仓库名称，请参见[DescribeHybridMonitorNamespaceList](~~428880~~)。",
+        "en": "The name of the metric namespace.\n\nFor information about how to obtain the name of a metric namespace, see [DescribeHybridMonitorNamespaceList](~~428880~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "上报监控数据至指标仓库",
+    "en": "Reports monitoring data to a metric namespace"
+  },
+  "descriptions": {
+    "zh": "## 前提条件\n请确保您已开通企业云监控。具体操作，请参见[开通企业云监控](~~250773~~)。\n\n## 使用限制\n单次上报监控数据小于等于1 MB。\n\n## 使用说明\n本文将提供一个示例，将监控指标`CPU_Usage`的监控数据上报至企业云监控的指标仓库`default-aliyun`中。",
+    "en": "## Prerequisites\nMake sure that you have activated Enterprise CloudMonitor. For more information, see [Activate Enterprise CloudMonitor](~~250773~~).\n\n## Limits\nThe size of the monitoring data that you can report at a time cannot exceed 1 MB.\n\n## Usage notes\nThis topic provides an example to show how to report the monitoring data of the `CPU_Usage` metric to the `default-aliyun` metric namespace of Enterprise CloudMonitor."
+  },
   "example": {
     "unifiedCli": "aliyun cms put-hybrid-monitor-metric-data --namespace default-aliyun --metric-list '[{\"Value\":\"90\",\"Labels\":[{\"Value\":\"192.168.XX.XX\",\"Key\":\"IP\"}],\"Name\":\"CPU_Usage\",\"TS\":1640776119473}]' --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun cms PutHybridMonitorMetricData --region cn-hangzhou --MetricList.1.Labels.1.Value '192.168.XX.XX' --MetricList.1.Labels.1.Key IP --MetricList.1.Name CPU_Usage --MetricList.1.TS 1640776119473 --MetricList.1.Value 90 --Namespace 'default-aliyun'"

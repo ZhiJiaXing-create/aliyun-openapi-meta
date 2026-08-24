@@ -1,5 +1,6 @@
 {
   "name": "GenerateSqlFromNL",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/",
@@ -8,51 +9,94 @@
       "name": "DbId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库ID。您可调用[ListDatabases](~~141873~~)接口获取该参数的值。\n\n调用API时，系统将会在该数据库中获取相关信息。",
+        "en": "The database ID. You can call the [ListDatabases](~~141873~~) operation to obtain this ID.\n\nThe API operation uses the schema from this database to generate the SQL statement."
+      }
     },
     {
       "name": "Dialect",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库实例类型。系统默认值为MySQL，将为您生成标准的SQL语句。",
+        "en": "The SQL dialect. If unspecified, the system defaults to `MySQL` and generates a standard SQL statement."
+      }
     },
     {
       "name": "Knowledge",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "知识数据，即额外输入的业务知识。补充的知识可以帮助模型更好地理解、回答问题。",
+        "en": "Supplementary business information to help the model better understand the question."
+      }
     },
     {
       "name": "Level",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据处理级别。默认为基础级别的处理。",
+        "en": "The processing level. The default value is `base`."
+      }
     },
     {
       "name": "Model",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "选用的模型名称，仅可使用通义千问系列的模型。",
+        "en": "The Qwen series model to use."
+      }
     },
     {
       "name": "Question",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "问题描述。",
+        "en": "The natural language question to convert into an SQL statement."
+      }
     },
     {
       "name": "RealLoginUserUid",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实际调用 API 的用户的阿里云账号 UID",
+        "en": "The Alibaba Cloud account ID of the user who calls the operation."
+      }
     },
     {
       "name": "TableNames",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "选用的表名，列表（用逗号分隔），若指定该值，则只会使用选用的表",
+        "en": "A comma-separated list of table names. If specified, the model uses only these tables to generate the SQL statement."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "根据自然语言生成SQL",
+    "en": "Generate SQL from natural language"
+  },
+  "descriptions": {
+    "zh": "返回结果中除了生成的SQL语句外，还包括生成SQL时用到的表、引用的知识点、相似SQL等信息，方便您理解和使用。",
+    "en": "In addition to the generated SQL statement, the result provides other useful information, such as the tables used, related concepts, and similar SQL."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise generate-sql-from-nl --db-id 1000 --knowledge 'state_0代表成功' --question '查询今天的用户访问量' --dialect MySQL --level base --model qwen-plus --table-names users,orders --real-login-user-uid 214004479568670000 --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise GenerateSqlFromNL --region cn-hangzhou --TableNames 'users,orders' --Dialect MySQL --Model 'qwen-plus' --DbId 1000 --RealLoginUserUid 214004479568670000 --Question '查询今天的用户访问量' --Level base --Knowledge 'state_0代表成功'"

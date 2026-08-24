@@ -1,5 +1,6 @@
 {
   "name": "UpdateLiveRecordVodConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,206 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。您可在[流管理](~~197397~~)页面查看AppName。",
+        "en": "The application name. You can view the `AppName` on the [Stream Management](~~197397~~) page."
+      }
     },
     {
       "name": "AutoCompose",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "><notice>当使用按格式配置功能，即传入 RecordFormat 参数时，此参数无效，可不传></notice>\n是否开启自动合并。取值：\n\n- **ON**：开启。如果取值为ON，必须同时设置请求参数ComposeVodTranscodeGroupId。",
+        "en": "><notice>This parameter is ignored if the `RecordFormat` parameter is specified.></notice>\nSpecifies whether to enable automatic composition. Valid values:\n\n- **ON**: Enables automatic composition. If you set this value to ON, you must also specify the `ComposeVodTranscodeGroupId` parameter."
+      }
     },
     {
       "name": "ComposeVodTranscodeGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "><notice>当使用按格式配置功能，即传入 RecordFormat 参数时，此参数无效，可不传></notice>\n对自动合成出来的新视频在点播服务中进行一次转码，所使用的点播转码模板组ID。\n\n> 通过 [查询转码配置列表](~~454928~~) 获取",
+        "en": "><notice>This parameter is ignored if the `RecordFormat` parameter is specified.></notice>\nThe ID of the ApsaraVideo for VOD transcoding template group used to transcode the video after automatic composition.\n\n> You can get the ID by calling the [Query Transcoding Configuration List](~~454928~~) operation."
+      }
     },
     {
       "name": "CycleDuration",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "周期录制时长。单位：秒。默认值为**3600**，取值范围：**300~21600**。",
+        "en": "The duration of each cyclical recording file, in seconds. Default value: **3600**. Valid values: **300** to **21600**."
+      }
+    },
+    {
+      "name": "DelayTime",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "断流拼接时长， 直播断流时长超过设定的拼接时长后，将会生成新文件，断流拼接时长支持 15~21600 秒。",
+        "en": "The maximum duration of a stream interruption, in seconds. If a stream interruption exceeds this duration, the system generates a new file. Valid values: 15 to 21600."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The streaming domain."
+      }
     },
     {
       "name": "OnDemand",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按需录制，取值：\n\n- **0**（默认值）：关闭。\n\n- **1**：通过HTTP回调方式。\n\n- **2**：通过解析推流参数触发录制。\n\n- **7**：手动录制，默认不录制，可以通过[RealTimeRecordCommand](~~2847882~~)接口手动控制录制开启或停止。",
+        "en": "The on-demand recording mode. Valid values:\n\n- **0** (default): Disables on-demand recording.\n\n- **1**: Enables on-demand recording triggered by an HTTP callback.\n\n- **2**: Triggers recording by parsing push streaming parameters.\n\n- **7**: Manual recording. Call the [RealTimeRecordCommand](~~2847882~~) operation to start or stop recording."
+      }
+    },
+    {
+      "name": "RecordFormat",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "按格式配置录制参数列表",
+        "en": "A list of parameters for each recording format."
+      },
+      "sub_parameters": [
+        {
+          "name": "AutoCompose",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "自动合并，设置为 ON 表示开启自动合并。取值：\n\n- ON，开启自动合并\n\n- OFF，关闭自动合并",
+            "en": "Specifies whether to enable automatic composition. Valid values:\n\n- `ON`: Enables automatic composition.\n\n- `OFF`: Disables automatic composition."
+          }
+        },
+        {
+          "name": "Format",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "录制储存格式",
+            "en": "The recording storage format."
+          }
+        },
+        {
+          "name": "ProcessMethod",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "视频处理方式。取值：\n\n- transcode，使用转码模版组处理视频\n\n- workflow，使用工作流处理视频",
+            "en": "The video processing method. Valid values:\n\n- `transcode`: Processes the video by using a transcoding template group.\n\n- `workflow`: Processes the video by using a workflow."
+          }
+        },
+        {
+          "name": "ProcessTemplateId",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "视频处理转码模版组 Id 或工作流模版 Id\n> 此处传入的 Id 必须与 ProcessMethod 传入的视频处理方式对应，即 ProcessMethod 传入 transcode，此处应使用转码模版组 Id\n> -",
+            "en": "The ID of the transcoding template group or workflow.\n\n> ## The ID must match the video processing method specified in ProcessMethod. For example, if ProcessMethod is set to transcode, you must use a transcoding template group ID."
+          }
+        },
+        {
+          "name": "SliceDuration",
+          "position": "Query",
+          "type": "Integer",
+          "required": false,
+          "description": {
+            "zh": "单个切片时长，单位：秒\n><notice>当 RecordFormat.N.Format（格式）设为 m3u8 时，本参数才有效。></notice>\n不填则默认为 30 秒。取值范围：5s~30s。",
+            "en": "The duration of each segment, in seconds.\n><notice>This parameter applies only to the `m3u8` format.></notice>\nThe default value is 30. Valid values: 5 to 30."
+          }
+        },
+        {
+          "name": "Tags",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "视频分类标签",
+            "en": "A tag for video classification."
+          }
+        },
+        {
+          "name": "VideoProcess",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "视频处理源。取值：\n\n- origin(默认值)，处理源视频\n\n- compose，处理合并后视频\n\n如需同时处理源视频和合并后视频，请将两个取值同时传入,以\",\"分隔，如 origin,compose",
+            "en": "The video source to process. Valid values:\n\n- `origin` (default): Processes the source video.\n\n- `compose`: Processes the composed video.\n\nTo process both the source and composed videos, separate the values with a comma. For example, `origin,compose`."
+          }
+        }
+      ]
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播流名称。您可在[流管理](~~197397~~)页面查看StreamName。",
+        "en": "The stream name. You can view the `StreamName` on the [Stream Management](~~197397~~) page."
+      }
+    },
+    {
+      "name": "TranscodeTemplates",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "转码模版组列表",
+        "en": "A list of transcoding templates."
+      }
     },
     {
       "name": "VodTranscodeGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": false,
+      "description": {
+        "zh": "><notice>当使用按格式配置功能，即传入 RecordFormat 参数时，此参数无效，可不传></notice>\n点播转码模板组ID。",
+        "en": "><notice>This parameter is ignored if the `RecordFormat` parameter is specified.></notice> The ID of the ApsaraVideo for VOD transcoding template group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新直播录制转点播配置",
+    "en": "UpdateLiveRecordVodConfig"
+  },
+  "descriptions": {
+    "zh": "本接口的单用户QPS限制为1000次/分钟。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "This operation has a rate limit of 1,000 calls per minute per account. If you exceed this limit, your API calls will be rate-limited, which may interrupt your service."
+  },
   "example": {
     "unifiedCli": "aliyun live update-live-record-vod-config --biz-region-id cn-hangzhou --domain-name example.com --app-name testName --stream-name stream --vod-transcode-group-id e2d796d3bb5fd8049d32bff62f940000 --cycle-duration 300 --auto-compose OFF --compose-vod-transcode-group-id 00000 --on-demand 0 --delay-time 180 --record-format Format=m3u8 AutoCompose=ON VideoProcess=origin SliceDuration=30 ProcessMethod=transcode ProcessTemplateId=e2d796d3bb5fd8049d32bff62f940000 Tags=sports --transcode-templates sd --region cn-hangzhou",
     "legacyCli": "aliyun live UpdateLiveRecordVodConfig --region cn-hangzhou --RecordFormat.1.Format m3u8 --ComposeVodTranscodeGroupId 00000 --RecordFormat.1.VideoProcess origin --RecordFormat.1.ProcessMethod transcode --DomainName 'example.com' --AutoCompose OFF --DelayTime 180 --RecordFormat.1.SliceDuration 30 --AppName testName --VodTranscodeGroupId e2d796d3bb5fd8049d32bff62f940000 --RecordFormat.1.AutoCompose ON --StreamName stream --TranscodeTemplates.1 sd --CycleDuration 300 --RegionId 'cn-hangzhou' --OnDemand 0 --RecordFormat.1.ProcessTemplateId e2d796d3bb5fd8049d32bff62f940000 --RecordFormat.1.Tags sports"

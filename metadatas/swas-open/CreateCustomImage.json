@@ -1,0 +1,132 @@
+{
+  "name": "CreateCustomImage",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The value of **ClientToken** can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
+    },
+    {
+      "name": "DataSnapshotId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "数据盘快照ID。",
+        "en": "The ID of the data disk snapshot."
+      }
+    },
+    {
+      "name": "Description",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "镜像描述信息。",
+        "en": "The description of the custom image."
+      }
+    },
+    {
+      "name": "ImageName",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "自定义镜像名称。长度为2~128个英文或中文字符，必须以大小写字母或中文开头或数字开头，可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。\n默认值：空",
+        "en": "The name of the custom image. The name must be 2 to 128 characters in length, and can contain letters, digits, colons (:), underscores (\\_), and hyphens (-). The name must start with a letter or a digit. This parameter is empty by default."
+      }
+    },
+    {
+      "name": "InstanceId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "指定的轻量应用服务器的实例ID。",
+        "en": "The ID of the simple application server."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[ListRegions](~~189315~~)查询可用地域。",
+        "en": "The region ID of the database. You can call the [ListRegions](~~189315~~) operation to query the most recent region list."
+      }
+    },
+    {
+      "name": "ResourceGroupId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
+    },
+    {
+      "name": "SystemSnapshotId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "系统盘快照ID。",
+        "en": "The ID of the system disk snapshot."
+      }
+    },
+    {
+      "name": "Tag",
+      "position": "Query",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "标签列表，最多包含20个子项。",
+        "en": "The tags that you want to add to the custom image. You can specify up to 20 tags."
+      },
+      "sub_parameters": [
+        {
+          "name": "Key",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "为自定义镜像指定的标签键。N 的取值范围：1~20。\n\n一旦传入该值，则不允许为空字符串。最多支持 64 个字符，不能以 aliyun 和 acs:开头，不能包含 http://或者 https://。",
+            "en": "The key of tag N that you want to add to the custom image. Valid values of N: 1 to 20.\n\nThe tag key cannot be an empty string. The tag key can be up to 64 characters in length and cannot contain http\\:// or https\\://. The tag key cannot start with acs: or aliyun."
+          }
+        },
+        {
+          "name": "Value",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "为自定义镜像指定的标签值。N 的取值范围：1~20。\n\n一旦传入该值，可以为空字符串。最多支持 64 个字符，不能包含 http://或者 https://。",
+            "en": "The value of tag N that you want to add to the custom image. Valid values of N: 1 to 20.\n\nThe tag value can be an empty string. The tag value can be up to 64 characters in length and cannot contain http\\:// or https\\://."
+          }
+        }
+      ]
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自定义镜像",
+    "en": "CreateCustomImage"
+  },
+  "descriptions": {
+    "zh": "自定义镜像是您通过轻量应用服务器的快照创建的镜像。您可以通过已配置好的自定义镜像创建更多包含相同配置的轻量应用服务器，也可以将自定义镜像共享至云服务器ECS，进而通过共享镜像创建ECS实例或更换操作系统。\n关于自定义镜像的更多消息，请参见[自定义镜像概述](~~199375~~)。\n\n创建自定义镜像之前，您需要先创建轻量应用服务器的系统盘快照。具体操作，请参见[CreateSnapshot](~~190452~~)。\n\n> 如果您创建自定义镜像时需要服务器的数据盘数据，请先创建一份服务器的数据盘快照。\n\n创建自定义镜像时，您需要先阅读以下注意事项：\n\n- 创建的自定义镜像所属地域与对应的轻量应用服务器所属地域相同。\n\n- 创建的自定义镜像数量上限为已创建的服务器数量的3倍，但最多不超过15个。\n\n- 只有服务器的系统盘快照可以直接创建自定义镜像。如果您需要自定义镜像中包含服务器的数据盘数据，在创建自定义镜像的过程中，需要手动选择对应的数据盘快照。\n\n- 如果轻量应用服务器到期或者退款后释放，该服务器对应的自定义镜像也会随之释放。\n\n- 重置系统或更换镜像会清除服务器上的磁盘数据，请您根据需要做好数据备份。",
+    "en": "A custom image is created from a snapshot of a simple application server. You can use a custom image to create multiple simple application servers that have the same configurations. You can also share custom images to ECS and use the shared images to create ECS instances or replace the OSs of existing ECS instances. For more information about custom images, see [Overview of custom images](~~199375~~).\n\nYou must create a system disk snapshot of a simple application server before you create a custom image based on the snapshot. For more information, see [CreateSnapshot](~~190452~~).\n\n> If you need the data on the data disk of a simple application server when you create a custom image, create a snapshot for the data disk first.\n\nBefore you create a custom image, take note of the following items:\n\n- The custom image and the corresponding simple application server must reside in the same region.\n\n- The maximum number of custom images that you can create is 3 times the number of simple application servers that you have, but cannot exceed 15.\n\n- You can directly create a custom image only based on the system disk snapshot of a simple application server. If you want a custom image to contain the data on the data disk of the simple application server, you must select a data disk snapshot in addition to a system disk snapshot when you create the custom image.\n\n- If a simple application server is released due to expiration or refunds, the custom images that are created based on the server are also released.\n\n- Resetting the system or changing the image of a simple application server clears the disk data on the server. Back up the data as needed."
+  }
+}

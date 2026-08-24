@@ -1,5 +1,6 @@
 {
   "name": "CreateProtocolService",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，从您的客户端生成一个参数值，确保不同请求间该参数值唯一。\n\nClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。\n\n> 若用户未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~).\n\n> If you do not specify this parameter, the system automatically uses the RequestId of the API request as the ClientToken. The RequestId may differ for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议服务的描述。控制台中显示为“协议服务名称”。\n\n限制：\n\n- 长度为2~128个英文或中文字符。\n- 必须以大小写字母或中文开头，不能以`http://`和`https://`开头。\n- 可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The description of the protocol service. This value is displayed as \"Protocol service name\" in the console.\n\nLimits:\n\n- The description must be 2 to 128 characters in length.\n- The description must start with a letter or Chinese character and cannot start with `http://` or `https://`.\n- The description can contain digits, colons (:), underscores (_), and hyphens (-)."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检。\n\n预检操作会帮助您检查参数有效性、依赖条件等，并不会实际创建实例，也不会产生费用。\n\n取值：\n- true：发送检查请求，不会创建协议服务。检查项包括是否填写了必需参数、请求格式、业务限制依赖条件。如果检查不通过，则返回对应错误。如果检查通过，则返回200 HttpCode，但ProtocolServiceId为空。\n- false（默认）：发送正常请求，通过检查后直接创建实例。",
+        "en": "Specifies whether to perform a dry run for this request.\n\nA dry run checks parameter validity and dependencies without actually creating the instance or incurring charges.\n\nValid values:\n- true: Sends a check request without creating the protocol service. The check items include whether required parameters are specified, the request format, and business limit dependencies. If the check fails, the corresponding error is returned. If the check passes, HTTP status code 200 is returned, but ProtocolServiceId is empty.\n- false (default): Sends a normal request. After the check passes, the instance is directly created."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。",
+        "en": "The file system ID."
+      }
     },
     {
       "name": "ProtocolSpec",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "协议服务的规格。\n\n取值： General（默认值）。",
+        "en": "The specification of the protocol service.\n\nValid values: General (default)."
+      }
     },
     {
       "name": "ProtocolType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "协议服务的协议类型。\n\n取值：NFS（默认值），仅支持NFSv3协议访问。",
+        "en": "The protocol type of the protocol service.\n\nValid values: NFS (default). Only NFSv3 access is supported."
+      }
     },
     {
       "name": "Throughput",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议服务的带宽。\n\n单位：MB/s。",
+        "en": "The bandwidth of the protocol service.\n\nUnit: MB/s."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议服务 VSwitchId。\n\n当文件系统的存储冗余类型为 同城冗余（ZRS）时禁止设置该字段。其他情况，该字段必填。",
+        "en": "The vSwitch ID of the protocol service.\n\nIf the storage redundancy type of the file system is zone-redundant storage (ZRS), do not set this parameter. Otherwise, this parameter is required."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议服务 VpcId，需与文件系统 VPC 保持一致。\n\n当文件系统的存储冗余类型为 同城冗余（ZRS）时禁止设置该字段。其他情况，该字段必填",
+        "en": "The VPC ID of the protocol service. The VPC must be the same as the VPC of the file system.\n\nIf the storage redundancy type of the file system is zone-redundant storage (ZRS), do not set this parameter. Otherwise, this parameter is required."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建协议服务",
+    "en": "Create a protocol service"
+  },
+  "descriptions": {
+    "zh": "- 该接口仅适用于CPFS文件系统。\n-  仅CPFS 2.3.0及以上版本支持协议服务。您可以通过调用[DescribeFileSystems](~~163314~~)接口查询目标文件系统的版本号。\n\n- 协议服务规格\n\n  协议服务包括两种协议类型：通用型和缓存型。缓存型相比通用型，提供热点数据缓存能力。在命中缓存的情况下，缓存型协议服务的带宽可超过CPFS文件系统的带宽，达到协议服务设定的最大带宽值。\n  \n    -   通用型：为CPFS提供NFS协议访问能力和[目录级挂载点](~~427175~~)，用户无需配置POSIX客户端管理集群。该功能免费。\n    -  缓存型：在通用型基础上提供基于LRU策略的服务端内存缓存。当数据缓存于内存中时，CPFS可提供更高的内网带宽。缓存型协议服务分为缓存1型和缓存2型两种协议服务规格，差异点为内网带宽大小和内存缓存大小。\n\n     >  缓存型协议服务为收费服务，正在邀测。有关缓存型协议服务的付费方式，请参见[计费项](~~111858~~)。如果您有任何反馈或疑问，欢迎加入钉钉用户群（钉钉群号：31045006299）与CPFS工程师进行交流讨论。\n\n- 协议类型\n\n  仅支持NFSv3协议。\n\n- 前置条件\n\n  目标 CPFS 文件系统必须创建成功处于 Running 状态。\n\n- 其它\n\n    - 一个CPFS文件系统只能创建一个协议服务。\n\n    - 创建协议服务会消耗指定vSwitch上的IP地址（最多消耗32个IP地址），请确保目标vSwitch IP资源充足。",
+    "en": "- This operation is applicable only to CPFS file systems.\n-  Only CPFS 2.3.0 and later support protocol services. You can call the [DescribeFileSystems](~~163314~~) operation to query the version of the file system.\n\n- Protocol service specifications.\n\n  Protocol services include two Protocol Types: General and Cache. Compared with the General type, the Cache type provides hot spot data caching. When the cache is hit, the bandwidth of the Cache type protocol service can exceed the bandwidth of the CPFS file system and reach the maximum bandwidth configured for the protocol service.\n  \n    -   General: Provides NFS protocol access and [folder-level mount targets](~~427175~~) for CPFS. You do not need to configure a POSIX client cluster management. This feature is free of charge.\n    -  Cache: Provides server-side in-memory caching based on the LRU policy in addition to the General type capabilities. When data is cached in memory, CPFS can provide higher internal network bandwidth. The Cache type protocol service is available in two specifications: Cache L1 and Cache L2, which differ in internal network bandwidth and memory cache size.\n\n     >  The Cache type protocol service is a paid service and is in invitational preview. For information about the billing of the Cache type protocol service, see [Billable items](~~111858~~). If you have any feedback or questions, join the DingTalk user group (group ID: 31045006299) to communicate with CPFS engineers.\n\n- Protocol type.\n\n  Only NFSv3 is supported.\n\n- Prerequisites.\n\n  The CPFS file system must be created and in the Running state.\n\n- Other information.\n\n    - Only one protocol service can be created for each CPFS file system.\n\n    - Creating a protocol service consumes IP addresses on the specified vSwitch (up to 32 IP addresses). Make sure that the target vSwitch has sufficient IP address resources."
+  },
   "example": {
     "unifiedCli": "aliyun nas create-protocol-service --file-system-id cpfs-099394bd928c0000 --protocol-spec General --throughput 8000 --protocol-type NFS --description '此协议服务的描述。' --vpc-id vpc-2vct297b8157bth9z0000 --vswitch-id vsw-2vc3c2lybvdllxyq40000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun nas CreateProtocolService --region cn-hangzhou --Description '此协议服务的描述。' --VpcId 'vpc-2vct297b8157bth9z0000' --ProtocolType NFS --ProtocolSpec General --VSwitchId 'vsw-2vc3c2lybvdllxyq40000' --DryRun false --FileSystemId 'cpfs-099394bd928c0000' --Throughput 8000 --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

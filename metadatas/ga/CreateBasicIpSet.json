@@ -1,5 +1,6 @@
 {
   "name": "CreateBasicIpSet",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AccelerateRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要加速的地域ID。\n\n您可以通过调用[ListAvailableBusiRegions](~~261190~~)接口获取指定的全球加速实例可用的加速地域。",
+        "en": "The ID of the region to be accelerated.\n\nYou can invoke the [ListAvailableBusiRegions](~~261190~~) operation to query the active acceleration regions for the specified Alibaba Cloud Global Accelerator (GA) instance."
+      }
     },
     {
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例ID。",
+        "en": "The instance ID of the basic Alibaba Cloud Global Accelerator (GA) instance."
+      }
     },
     {
       "name": "Bandwidth",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速地域带宽，单位：**Mbps**。\n\n加速地域支持分配的最小带宽为 2Mbps。",
+        "en": "The bandwidth of the acceleration area. Unit: **Mbps**.\n\nThe minimum bandwidth that can be allocated to an acceleration area is 2 Mbps."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of a request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "IspType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速地域公网线路类型。取值：\n- **BGP**（默认值）：BGP（多线）线路\n- **BGP_PRO**：BGP（多线）\\_精品线路\n\n如果您是单线带宽的白名单用户，您还可以选择以下类型：\n- **ChinaTelecom**：中国电信（单线）\n- **ChinaUnicom**：中国联通（单线）\n- **ChinaMobile**：中国移动（单线）\n- **ChinaTelecom_L2**：中国电信（单线）\\_L2\n- **ChinaUnicom_L2**：中国联通（单线）\\_L2\n- **ChinaMobile_L2**：中国移动（单线）\\_L2\n> - 带宽计费方式为**按流量**的基础型全球加速实例需要配置该项。\n> - 基础型全球加速实例的加速地域为中国香港，且绑定了精品加速带宽类型的基础带宽包时，默认为BGP（多线）\\_精品线路。\n> - 加速地域不同，支持的单线线路类型不同。",
+        "en": "The ISP type of the public network in the acceleration region. Valid values:\n- **BGP** (default): BGP (Multi-ISP)\n- **BGP_PRO**: BGP (Multi-ISP) Pro\n\nIf you are a whitelist user of single-ISP bandwidth, you can also select the following types:\n- **ChinaTelecom**: China Telecom (single ISP)\n- **ChinaUnicom**: China Unicom (single ISP)\n- **ChinaMobile**: China Shift (single ISP)\n- **ChinaTelecom_L2**: China Telecom (single ISP)\\_L2\n- **ChinaUnicom_L2**: China Unicom (single ISP)\\_L2\n- **ChinaMobile_L2**: China Shift (single ISP)\\_L2\n> - This parameter is required for basic Alibaba Cloud Global Accelerator (GA) instances that use the **pay-by-traffic** billing method.\n> - If the acceleration region of the basic Alibaba Cloud Global Accelerator (GA) instance is Hong Kong (China) and the instance is attached with a basic bandwidth plan of the BGP (Multi-ISP) Pro type, the default value is BGP (Multi-ISP) Pro.\n> - The supported single-ISP line types vary by acceleration region."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the basic Alibaba Cloud Global Accelerator (GA) instance. Set the value to **ap-southeast-1**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建基础型全球加速实例的加速地域",
+    "en": "Create an acceleration region for a basic global accelerator instance"
+  },
+  "descriptions": {
+    "zh": "调用本接口，请注意以下事项：\n\n- 基础型全球加速实例仅支持添加一个加速地域，且仅支持IPv4地址协议接入。\n- **CreateBasicIpSet**接口属于异步接口，即系统会先返回一个加速地域实例ID，但加速地域未创建完成，系统后台的创建任务仍在进行。您可以调用[GetBasicIpSet](~~362987~~)查询加速地域的状态：\n    - 当加速地域处于**init**状态时，表示加速地域正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当加速地域处于**active**状态时，表示加速地域创建完成。\n- **CreateBasicIpSet**接口不支持在同一个基础型全球加速实例内并发创建加速地域。",
+    "en": "When you invoke this operation, take note of the following items:\n\n- A basic Alibaba Cloud Global Accelerator (GA) instance supports only one acceleration region and supports only the IPv4 protocol.\n- **CreateBasicIpSet** is an asynchronous operation. After a request is sent, the system returns an acceleration region instance ID but the acceleration region is not yet created. The creation node continues to run in the background. You can invoke [GetBasicIpSet](~~362987~~) to query the status of the acceleration region:\n    - If the acceleration region is in the **init** state, the acceleration region is being created. In this state, you can only execute query operations.\n    - If the acceleration region is in the **active** state, the acceleration region is created.\n- The **CreateBasicIpSet** operation does not support concurrent creation of acceleration regions within the same basic Alibaba Cloud Global Accelerator (GA) instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-basic-ip-set --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp17frjjh0udz4qz0000 --accelerate-region-id cn-shanghai --isp-type BGP --bandwidth 2 --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateBasicIpSet --region cn-hangzhou --IspType BGP --Bandwidth 2 --AccelerateRegionId 'cn-shanghai' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp17frjjh0udz4qz0000'"

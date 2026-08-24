@@ -1,5 +1,6 @@
 {
   "name": "ResumeSession",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "PUT",
   "pathPattern": "/2023-03-30/functions/[functionName]/sessions/[sessionId]/resume",
@@ -14,21 +15,44 @@
       "name": "functionName",
       "position": "Path",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Session 的函数名称",
+        "en": "The name of the function associated with the session."
+      }
     },
     {
       "name": "qualifier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要恢复的 SessionID 关联的函数别名或版本信息",
+        "en": "The function alias or version associated with the session ID to resume."
+      }
     },
     {
       "name": "sessionId",
       "position": "Path",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要恢复的会话 ID 值",
+        "en": "The ID of the session to resume."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "恢复会话",
+    "en": "Resume a session"
+  },
+  "descriptions": {
+    "zh": "恢复一个 Paused 状态的会话。系统会根据之前持久化的状态，在一个新的执行环境中快速恢复会话，使其恢复到暂停前的状态。恢复成功后，会话状态重新变为 Active，可继续接受函数调用请求并路由至该恢复后的实例。适用于配置了 HEADER_FIELD 或 GENERATED_COOKIE 亲和类型以及会话隔离的自定义镜像函数。",
+    "en": "Resumes a session that is in the Paused state. The system quickly restores the session in a new execution environment based on the previously persisted state, returning it to the state before it was paused. After the session is successfully resumed, its status changes back to Active, and it can continue to accept function calling requests and route them to the restored instance. This operation applies to custom image functions that have HEADER_FIELD or GENERATED_COOKIE affinity types configured and session isolation enabled."
+  },
   "example": {
     "unifiedCli": "aliyun fc resume-session --function-name my-func --session-id test-sessionid-1 --qualifier aliasName1 --file-system-only true --region cn-hangzhou",
     "legacyCli": "aliyun fc PUT /2023-03-30/functions/my-func/sessions/test-sessionid-1/resume --region cn-hangzhou --qualifier aliasName1 --fileSystemOnly true --header \"Content-Type=application/json\""

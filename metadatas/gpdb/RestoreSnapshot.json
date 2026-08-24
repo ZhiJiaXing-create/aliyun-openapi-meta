@@ -1,0 +1,94 @@
+{
+  "name": "RestoreSnapshot",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "幂等 Token。用于保证重复请求不会重复执行同一操作。",
+        "en": "The idempotency token. Ensures that repeated requests do not execute the same operation more than once."
+      }
+    },
+    {
+      "name": "FinalizeRestore",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否直接完成恢复。不传时默认值为 false。",
+        "en": "Specifies whether to complete the restoration immediately. Default value: false."
+      }
+    },
+    {
+      "name": "ProjectId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Supabase 项目 ID。",
+        "en": "The Supabase project ID."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "地域 ID。用于限定查询或操作所在地域。",
+        "en": "The region ID. Specifies the region in which to query or perform the operation."
+      }
+    },
+    {
+      "name": "RestoredBranchName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "恢复后的分支名称。不传时由后端生成。",
+        "en": "The name of the restored branch. If not specified, the backend generates a name automatically."
+      }
+    },
+    {
+      "name": "RestoredLsn",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "用于恢复的快照 LSN。",
+        "en": "The snapshot LSN used for restoration."
+      }
+    },
+    {
+      "name": "TargetBranchId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "目标分支 ID。不传时由后端按恢复流程选择目标分支。",
+        "en": "The target branch ID. If not specified, the backend selects the target branch based on the restoration process."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "恢复快照",
+    "en": "Restore a snapshot"
+  },
+  "descriptions": {
+    "zh": "该接口用于基于快照 LSN 恢复到目标分支。可以指定恢复分支名称和目标分支，FinalizeRestore 用于控制是否直接完成恢复。",
+    "en": "Restores to a target branch based on a snapshot LSN. You can specify the restored branch name and the target branch. FinalizeRestore controls whether to complete the restoration immediately."
+  },
+  "example": {
+    "unifiedCli": "aliyun gpdb restore-snapshot --biz-region-id cn-hangzhou --project-id spb-xxxx --restored-lsn 0/3522648 --target-branch-id br-main --restored-branch-name restore_preview --finalize-restore false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
+    "legacyCli": "aliyun gpdb RestoreSnapshot --region cn-hangzhou --TargetBranchId 'br-main' --RestoredBranchName restore_preview --FinalizeRestore false --ProjectId 'spb-xxxx' --RestoredLsn '0/3522648' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"
+  }
+}

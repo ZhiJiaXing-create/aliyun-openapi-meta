@@ -1,5 +1,6 @@
 {
   "name": "ModifyNatIpCidrAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会修改NAT IP地址段的信息。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并修改NAT IP地址段的信息。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "NatGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的NAT IP地址段所属的VPC NAT网关实例ID。",
+        "en": "The ID of the Virtual Private Cloud (VPC) NAT gateway to which the NAT CIDR block belongs."
+      }
     },
     {
       "name": "NatIpCidr",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的NAT IP地址段。",
+        "en": "The NAT CIDR block whose name and description you want to modify."
+      }
     },
     {
       "name": "NatIpCidrDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改的NAT IP地址段的描述信息。\n\n长度为2～256个字符，必须以字母或中文开头，但不能以`http://`或`https://`开头。",
+        "en": "The new description of the NAT CIDR block.\n\nThe description must be 2 to 256 characters in length. The description must start with a letter but cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "NatIpCidrName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改的NAT IP地址段的名称。\n\n长度为2～128个字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The new name of the NAT CIDR block.\n\nThe name must be 2 to 128 characters in length, and can contain digits, periods (.), underscores (\\_), and hyphens (-). It must start with a letter."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的NAT IP地址段所属NAT网关实例的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the NAT gateway to which the NAT CIDR block belongs.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改NAT IP地址段的名称和描述",
+    "en": "ModifyNatIpCidrAttribute"
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-nat-ip-cidr-attribute --biz-region-id cn-hangzhou --nat-ip-cidr-name newname --dry-run false --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --nat-ip-cidr-description newtest --nat-gateway-id ngw-gw8v16wgvtq26vh590000 --nat-ip-cidr 172.16.0.0/24 --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyNatIpCidrAttribute --region cn-hangzhou --NatIpCidr '172.16.0.0/24' --DryRun false --NatIpCidrDescription newtest --RegionId 'cn-hangzhou' --NatIpCidrName newname --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --NatGatewayId 'ngw-gw8v16wgvtq26vh590000'"

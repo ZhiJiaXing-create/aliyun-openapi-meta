@@ -1,5 +1,6 @@
 {
   "name": "UpdateListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "后端服务器接收请求的端口范围。",
+        "en": "The range of ports that are used by backend servers to receive requests."
+      },
       "sub_parameters": [
         {
           "name": "FromPort",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器接收请求的起始端口。\n\n>当您的监听协议为HTTP或HTTPS，且监听的端口和后端服务器提供服务的端口不一致时才需填写该项。其中，后端服务器接收请求的起始端口和结束端口需相同。",
+            "en": "The first port in the range of ports that are used by backend servers to receive requests.\n\n> This parameter is required only when you configure an HTTPS or HTTP listener and the listener port is different from the service port of the backend servers. In this case, the first port that is used by the backend servers to receive requests must be the same as the last port."
+          }
         },
         {
           "name": "ToPort",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器接收请求的结束端口。\n\n>当您的监听协议为HTTP或HTTPS，且监听的端口和后端服务器提供服务的端口不一致时才需填写该项。其中，后端服务器接收请求的起始端口和结束端口需相同。",
+            "en": "The last port in the range of ports that are used by backend servers to receive requests.\n\n> This parameter is required only when you configure an HTTPS or HTTP listener and the listener port is different from the service port of the backend servers. In this case, the first port that is used by the backend servers to receive requests must be the same as the last port."
+          }
         }
       ]
     },
@@ -29,12 +42,20 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "SSL证书。",
+        "en": "The SSL certificate."
+      },
       "sub_parameters": [
         {
           "name": "Id",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "SSL证书ID。\n\n>仅HTTPS协议的监听需要配置该项。",
+            "en": "The ID of the SSL certificate.\n\n> This parameter is required only when you configure an HTTPS listener."
+          }
         }
       ]
     },
@@ -42,61 +63,101 @@
       "name": "ClientAffinity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端亲和性。取值：\n\n- **NONE**：不保持客户端亲和性，即不能确保来自同一客户端的连接请求始终定向到同一终端节点。\n\n- **SOURCE_IP**：保持客户端亲和性。即客户端访问有状态的应用程序时，可以将来自同一客户端的所有请求都定向到同一终端节点，而不考虑源端口和协议。",
+        "en": "Indicates whether client affinity is enabled for the listener. Valid values:\n\n- **NONE**: Client affinity is disabled. Requests from the same client may be forwarded to different endpoints.\n\n- **SOURCE\\_IP**: Client affinity is enabled. When a client accesses stateful applications, requests from the same client are forwarded to the same endpoint regardless of the source port or protocol."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监听的描述信息。\n\n描述长度最大为200个字符，不能以`http://`和`https://`开头。",
+        "en": "The description of the listener.\n\nThe description can be up to 200 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "HttpVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HTTP协议的最大版本，取值：\n- **http3**：HTTP/3。\n- **http2**：HTTP/2。\n- **http1.1**：HTTP/1.1。\n> 仅HTTPS监听支持此参数。",
+        "en": "The maximum version of the HTTP protocol. Valid values:\n\n- **http3**\n\n- **http2**\n\n- **http1.1**\n\n> Only HTTPS listeners support this parameter."
+      }
     },
     {
       "name": "IdleTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接空闲超时时间。单位：秒。\n\n- TCP：10-900s，默认900s\n- UDP：10-20s ，默认20s \n- HTTP/HTTPS：1-60秒，默认15s",
+        "en": "The timeout period for idle connections. Unit: seconds.\n\n- TCP: 10-900. Default value: 900. Unit: seconds.\n\n- UDP: 10-20. Default value: 20. Unit: seconds.\n\n- HTTP/HTTPS: 1-60. Default value: 15. Unit: seconds."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听实例ID。",
+        "en": "The ID of the listener."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监听的名称。\n\n名称长度为1~128个字符，以大小写字母或中文开头，可包含数字、半角句号（.）下划线（_）和短划线（-）。",
+        "en": "The name of the listener.\n\nThe name must be 1 to 128 characters in length and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-). The name must start with a letter."
+      }
     },
     {
       "name": "PortRanges",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "用来接收请求并向终端节点进行转发的端口范围。\n\n可配置的监听端口范围为**1**~**65499**。\n\n最多可配置端口数量与监听路由类型和监听协议类型相关，更多信息，请参见[监听端口](~~153216~~)。",
+        "en": "The listener ports that are used to receive requests and forward the requests to endpoints.\n\nValid values: **1** to **65499**.\n\nThe maximum number of ports that can be configured varies based on the routing type and protocol of the listener. For more information, see [Listener overview](~~153216~~)."
+      },
       "sub_parameters": [
         {
           "name": "FromPort",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "用来接收请求并向终端节点进行转发的起始监听端口。\n\n可配置的监听端口范围为**1**~**65499**，且需满足**FromPort**≤**ToPort**。\n\n最多可配置端口数量与监听路由类型和监听协议类型相关，更多信息，请参见[监听端口](~~153216~~)。\n>对于HTTP或HTTPS协议的监听，只支持配置一个监听端口，即起始监听端口和结束监听端口需相同。",
+            "en": "The first port of the listener port range that is used to receive and forward requests to endpoints.\n\nValid values: **1** to **65499**. The **FromPort** value must be smaller than or equal to the **ToPort** value.\n\nThe maximum number of ports that can be configured varies based on the routing type and protocol of the listener. For more information, see [Listener overview](~~153216~~).\n\n> You can configure only one listener port for an HTTP or HTTPS listener. In this case, the first port is the same as the last port."
+          }
         },
         {
           "name": "ToPort",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "用来接收请求并向终端节点进行转发的结束监听端口。\n\n可配置的监听端口范围为**1**~**65499**，且需满足**FromPort**≤**ToPort**。\n\n最多可配置端口数量与监听路由类型和监听协议类型相关，更多信息，请参见[监听端口](~~153216~~)。\n>对于HTTP或HTTPS协议的监听，只支持配置一个监听端口，即起始监听端口和结束监听端口需相同。",
+            "en": "The last port of the listener port range that is used to receive and forward requests to endpoints.\n\nValid values: **1** to **65499**. The **FromPort** value must be smaller than or equal to the **ToPort** value.\n\nThe maximum number of ports that can be configured varies based on the routing type and protocol of the listener. For more information, see [Listener overview](~~153216~~).\n\n> You can configure only one listener port for an HTTP or HTTPS listener. In this case, the first port is the same as the last port."
+          }
         }
       ]
     },
@@ -104,39 +165,74 @@
       "name": "Protocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监听的网络传输协议类型，取值：\n\n- **tcp**：TCP协议。\n\n- **udp**：UDP协议。\n\n- **http**：HTTP协议。\n\n- **https**：HTTPS协议。",
+        "en": "The network transmission protocol that is used by the listener. Valid values:\n\n- **tcp**: TCP\n\n- **udp**: UDP\n\n- **http**: HTTP\n\n- **https**: HTTPS"
+      }
     },
     {
       "name": "ProxyProtocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启保持客户端源IP功能。\n\n- **true**：开启保持客户端源IP功能。开启后，支持后端服务查看客户端的原始IP地址。\n\n- **false**（默认值）：不开启保持客户端源IP功能。\n\n> 该参数后续将不在监听API中配置，建议在终端节点组的相关API中进行配置。关于**ProxyProtocol**，请参见[CreateEndpointGroup](~~153259~~)和[UpdateEndpointGroup](~~153262~~)。",
+        "en": "Specifies whether to preserve source IP addresses of clients.\n\n- **true** This feature allows you to view client IP addresses on backend servers.\n\n- **false** (default)\n\n> This parameter will be discontinued in the API operations that are used to configure listeners. We recommend that you set this parameter when you call API operations to configure endpoint groups. For more information about the **ProxyProtocol** parameter, see [CreateEndpointGroup](~~153259~~) and [UpdateEndpointGroup](~~153262~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the Global Accelerator (GA) instance is deployed. Set the value to **cn-hangzhou**."
+      }
     },
     {
       "name": "RequestTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HTTP/HTTPS的连接请求超时时间。单位：秒。\n\n可选：1-180s，默认60s。\n\n>仅对Protocol（网络传输协议类型）为HTTP或HTTPS的监听有效。如果在超时时间内后端服务器一直没有响应，全球加速将放弃等待，并给客户端返回HTTP 504错误码。",
+        "en": "The timeout period for HTTP or HTTPS requests.\n\nValid values: 1 to 180. Default value: 60. Unit: seconds.\n\n> This parameter takes effect only for HTTP or HTTPS listeners. If the backend server does not respond within the timeout period, GA returns an HTTP 504 error code to the client."
+      }
     },
     {
       "name": "SecurityPolicyId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全策略实例ID。取值：\n\n- **tls_cipher_policy_1_0**\n\n    - 支持的TLS版本：TLSv1.0、TLSv1.1和TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、AES128-GCM-SHA256、AES256-GCM-SHA384、AES128-SHA256、AES256-SHA256、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA、AES128-SHA、AES256-SHA和DES-CBC3-SHA。\n\n- **tls_cipher_policy_1_1**\n\n    - 支持的TLS版本： TLSv1.1和TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、AES128-GCM-SHA256、AES256-GCM-SHA384、AES128-SHA256、AES256-SHA256、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA、AES128-SHA、AES256-SHA和DES-CBC3-SHA。\n\n- **tls_cipher_policy_1_2**\n\n    - 支持的TLS版本：TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、AES128-GCM-SHA256、AES256-GCM-SHA384、AES128-SHA256、AES256-SHA256、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA、AES128-SHA、AES256-SHA和DES-CBC3-SHA。\n\n- **tls_cipher_policy_1_2_strict**\n\n    - 支持的TLS版本：TLSv1.2。\n\n    - 支持的加密算法套件：ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、ECDHE-RSA-AES128-SHA和ECDHE-RSA-AES256-SHA。\n\n- **tls_cipher_policy_1_2_strict_with_1_3**\n\n    - 支持的TLS版本：TLSv1.2及TLSv1.3。\n\n    - 支持的加密算法套件：TLS_AES_128_GCM_SHA256、TLS_AES_256_GCM_SHA384、TLS_CHACHA20_POLY1305_SHA256、TLS_AES_128_CCM_SHA256、TLS_AES_128_CCM_8_SHA256、ECDHE-ECDSA-AES128-GCM-SHA256、ECDHE-ECDSA-AES256-GCM-SHA384、ECDHE-ECDSA-AES128-SHA256、ECDHE-ECDSA-AES256-SHA384、ECDHE-RSA-AES128-GCM-SHA256、ECDHE-RSA-AES256-GCM-SHA384、ECDHE-RSA-AES128-SHA256、ECDHE-RSA-AES256-SHA384、ECDHE-ECDSA-AES128-SHA、ECDHE-ECDSA-AES256-SHA、ECDHE-RSA-AES128-SHA、ECDHE-RSA-AES256-SHA。\n\n> 仅HTTPS监听支持此参数。",
+        "en": "The ID of the security policy. Valid values:\n\n- **tls\\_cipher\\_policy\\_1\\_0**\n\n  - Supported Transport Layer Security (TLS) versions: TLS 1.0, TLS 1.1, and TLS 1.2\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, AES128-GCM-SHA256, AES256-GCM-SHA384, AES128-SHA256, AES256-SHA256, ECDHE-RSA-AES128-SHA, ECDHE-RSA-AES256-SHA, AES128-SHA, AES256-SHA, and DES-CBC3-SHA\n\n- **tls\\_cipher\\_policy\\_1\\_1**\n\n  - Supported TLS versions: TLS 1.1 and TLS 1.2\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, AES128-GCM-SHA256, AES256-GCM-SHA384, AES128-SHA256, AES256-SHA256, ECDHE-RSA-AES128-SHA, ECDHE-RSA-AES256-SHA, AES128-SHA, AES256-SHA, and DES-CBC3-SHA\n\n- **tls\\_cipher\\_policy\\_1\\_2**\n\n  - Supported TLS version: TLS 1.2\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, AES128-GCM-SHA256, AES256-GCM-SHA384, AES128-SHA256, AES256-SHA256, ECDHE-RSA-AES128-SHA, ECDHE-RSA-AES256-SHA, AES128-SHA, AES256-SHA, and DES-CBC3-SHA\n\n- **tls\\_cipher\\_policy\\_1\\_2\\_strict**\n\n  - Supported TLS version: TLS 1.2\n\n  - Supported cipher suites: ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, ECDHE-RSA-AES128-SHA, and ECDHE-RSA-AES256-SHA\n\n- **tls\\_cipher\\_policy\\_1\\_2\\_strict\\_with\\_1\\_3**\n\n  - Supported TLS versions: TLS 1.2 and TLS 1.3\n\n  - Supported cipher suites: TLS\\_AES\\_128\\_GCM\\_SHA256, TLS\\_AES\\_256\\_GCM\\_SHA384, TLS\\_CHACHA20\\_POLY1305\\_SHA256, TLS\\_AES\\_128\\_CCM\\_SHA256, TLS\\_AES\\_128\\_CCM\\_8\\_SHA256, ECDHE-ECDSA-AES128-GCM-SHA256, ECDHE-ECDSA-AES256-GCM-SHA384, ECDHE-ECDSA-AES128-SHA256, ECDHE-ECDSA-AES256-SHA384, ECDHE-RSA-AES128-GCM-SHA256, ECDHE-RSA-AES256-GCM-SHA384, ECDHE-RSA-AES128-SHA256, ECDHE-RSA-AES256-SHA384, ECDHE-ECDSA-AES128-SHA, ECDHE-ECDSA-AES256-SHA, ECDHE-RSA-AES128-SHA, and ECDHE-RSA-AES256-SHA\n\n> This parameter is available only when you create an HTTPS listener."
+      }
     },
     {
       "name": "XForwardedForConfig",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "`XForward`字段配置信息。",
+        "en": "The `XForward` headers."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改监听",
+    "en": "UpdateListener"
+  },
+  "descriptions": {
+    "zh": "本接口用于修改指定监听的协议、端口等信息，使监听配置满足您的业务需求。\n\n在调用本接口时，请注意以下事项：\n\n- **UpdateListener**接口属于异步接口，即系统会先返回一个请求ID，但监听配置并未修改完成，系统后台的修改任务仍在进行。您可以调用[DescribeListener](~~153254~~)查询监听的状态：\n    - 当监听处于**updating**状态时，表示监听配置正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当监听处于**active**状态时，表示监听配置修改完成。\n- **UpdateListener**接口不支持在同一个全球加速实例内并发修改监听配置。",
+    "en": "Modifies the protocol, ports, and other configurations of a listener to meet your business requirements.\n\nWhen you call this operation, take note of the following items:\n\n- **UpdateListener** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. You can call the [DescribeListener](~~153254~~) operation to query the status of a listener.\n\n  - If the listener is in the **updating** state, it indicates that its configurations are being modified. In this case, you can perform only query operations.\n\n  - If the listener is in the **active** state, it indicates that its configurations are modified.\n\n- The **UpdateListener** operation cannot be repeatedly called to modify listener configurations for the same GA instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-listener --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --name Listener --description Listener --client-affinity SOURCE_IP --protocol tcp --listener-id lsr-bp1bpn0kn908w4nbw0000 --proxy-protocol false --port-ranges FromPort=20 ToPort=21 --certificates Id=4490000-cn-hangzhou --backend-ports FromPort=80 ToPort=80 --xforwarded-for-config XForwardedForProtoEnabled=false XForwardedForGaApEnabled=false XForwardedForPortEnabled=false XRealIpEnabled=false XForwardedForGaIdEnabled=false --security-policy-id tls_cipher_policy_1_0 --idle-timeout 900 --request-timeout 60 --http-version http2 --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateListener --region cn-hangzhou --RequestTimeout 60 --PortRanges.1.FromPort 20 --Description Listener --XForwardedForConfig.XForwardedForPortEnabled false --XForwardedForConfig.XRealIpEnabled false --XForwardedForConfig.XForwardedForGaIdEnabled false --ProxyProtocol false --IdleTimeout 900 --XForwardedForConfig.XForwardedForGaApEnabled false --Name Listener --Certificates.1.Id '4490000-cn-hangzhou' --SecurityPolicyId tls_cipher_policy_1_0 --BackendPorts.1.ToPort 80 --PortRanges.1.ToPort 21 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Protocol tcp --HttpVersion http2 --BackendPorts.1.FromPort 80 --XForwardedForConfig.XForwardedForProtoEnabled false --ClientAffinity SOURCE_IP --ListenerId 'lsr-bp1bpn0kn908w4nbw0000' --method POST --force"

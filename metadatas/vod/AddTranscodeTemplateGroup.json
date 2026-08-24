@@ -1,5 +1,6 @@
 {
   "name": "AddTranscodeTemplateGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用ID。默认取值： **app-1000000**。使用说明，请参见[多应用](~~113600~~)。",
+        "en": "The ID of the application. The default value is **`app-1000000`**. For more information, see [Multi-application](~~113600~~)."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码模板组名称。\n\n- 长度不超过128个字节。\n- UTF-8编码。\n> TranscodeTemplateGroupId和Name必须传递一个。",
+        "en": "The name of the transcode template group.\n\n- The name can be up to 128 bytes in length.\n\n- The name must be UTF-8 encoded.\n\n> You must specify either `TranscodeTemplateGroupId` or `Name`."
+      }
     },
     {
       "name": "TranscodeTemplateGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码模板组ID。若指定了转码模板组ID，则可向指定的模板组中添加新的转码模板。\n> TranscodeTemplateGroupId和Name必须传递一个。",
+        "en": "The ID of the transcode template group. If you specify this ID, you can add new transcode templates to the specified group.\n\n> You must specify either `TranscodeTemplateGroupId` or `Name`."
+      }
     },
     {
       "name": "TranscodeTemplateList",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码模板配置信息（JSON字符串）。参数结构详情，请参见[TranscodeTemplate](~~52839~~)。\n>- 该参数不传递，则不会构建转码处理流程，视频上传不会触发转码。\n>- 如果不需要设置Width或者Height属性，则不传相应属性即可，请不要设置为空串，例如：\"Height\":\"\"。",
+        "en": "The configurations of the transcode templates, specified as a JSON string. For more information about the parameter structure, see [TranscodeTemplate](~~52839~~).\n\n> - If you do not specify this parameter, a transcoding workflow is not created, and video uploads do not trigger transcoding.\n>\n> - If you do not need to set the `Width` or `Height` properties, omit them from the request. Do not set them to an empty string, such as `\"Height\":\"\"`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建转码模板组",
+    "en": "AddTranscodeTemplateGroup"
+  },
+  "descriptions": {
+    "zh": "- 被视频点播后台**锁定**的转码模板组不支持自定义操作，您可以调用[GetTranscodeTemplateGroup](~~GetTranscodeTemplateGroup~~)接口查询模板配置，通过返回的响应参数Locked，查看模板组是否被锁定；您可以调用[UpdateTranscodeTemplateGroup](~~UpdateTranscodeTemplateGroup~~)接口将模板解锁后，再进行更改等操作。\n- 由于转码涉及到文件的存储地址，因此如果没有可以正常使用的存储地址，暂不支持添加转码模板组（您可以在**视频点播控制台 > 配置管理 > 媒资管理配置 > 存储管理**中，激活**点播系统bucket**获取可用的存储地址）。\n- **不转码**模板组，不允许追加转码模板配置信息。\n- **TranscodeTemplateGroupId**和**Name**必须传递一个。\n- 支持最多创建20个转码模板组。\n- 一个转码模板组支持最多添加20个转码模板配置。\n- 若需要通过转码生成多码率自适应流地址时，一个转码模板组中支持最多添加10个视频打包模板 ，若超过10个，则只会生成各码流地址，不会生成自适应流地址。\n\n### QPS限制\n本接口的单用户QPS限制为5次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342790~~)。",
+    "en": "- You cannot modify a transcode template group that is **locked** by the ApsaraVideo VOD service. To check if a group is locked, call the [GetTranscodeTemplateGroup](~~GetTranscodeTemplateGroup~~) operation and check the `Locked` parameter in the response. To modify a locked group, you must first call the [UpdateTranscodeTemplateGroup](~~UpdateTranscodeTemplateGroup~~) operation to unlock it.\n\n- You cannot add a transcode template group without a valid storage location, as transcoding requires a storage address. To obtain a usable storage address, go to the **ApsaraVideo VOD console**, navigate to **Configuration Management > Media Asset Management > Storage Management**, and activate the **VOD system bucket**.\n\n- You cannot add transcode templates to a **no transcoding** template group.\n\n- You must specify either **`TranscodeTemplateGroupId`** or **`Name`**.\n\n- You can create a maximum of 20 transcode template groups.\n\n- You can add a maximum of 20 transcode templates to a single transcode template group.\n\n- To generate adaptive streaming URLs, you can add a maximum of 10 video packaging templates to a transcode template group. If you add more than 10 templates, the service generates URLs for individual streams but not an adaptive streaming URL.\n\n### QPS limit\n\nThe QPS limit for this operation is 5 per user. Calls that exceed this limit are rate-limited. For more information, see [QPS limit](~~342790~~)."
+  },
   "example": {
     "unifiedCli": "aliyun vod add-transcode-template-group --name transcodetemplate --transcode-template-list Video_:_Bitrate_:_400_,_Codec_:_H.264_,_Fps_:_30_,_Height_:360,_Width_:640_,_Definition_:_SD_,_Container_:_Format_:_mp4_,_TemplateName_:_testName_,_MuxConfig_:_,_Audio_:_Codec_:_AAC_,_Bitrate_:_64_,_Samplerate_:_44100 --transcode-template-group-id 4c71a339fe52b4fa6f45270000 --app-id app-0000 --region cn-hangzhou",
     "legacyCli": "aliyun vod AddTranscodeTemplateGroup --region cn-hangzhou --AppId 'app-0000' --TranscodeTemplateGroupId 4c71a339fe52b4fa6f45270000 --TranscodeTemplateList 'Video_:_Bitrate_:_400_,_Codec_:_H.264_,_Fps_:_30_,_Height_:360,_Width_:640_,_Definition_:_SD_,_Container_:_Format_:_mp4_,_TemplateName_:_testName_,_MuxConfig_:_,_Audio_:_Codec_:_AAC_,_Bitrate_:_64_,_Samplerate_:_44100' --Name transcodetemplate"

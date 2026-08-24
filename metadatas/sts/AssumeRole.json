@@ -1,5 +1,6 @@
 {
   "name": "AssumeRole",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DurationSeconds",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Token有效期。单位：秒。\n\nToken有效期最小值为900秒，最大值为要扮演角色的`MaxSessionDuration`时间。默认值为3600秒。\n\n您可以通过CreateRole或UpdateRole设置角色最大会话时间`MaxSessionDuration`。更多信息，请参见[CreateRole](~~28710~~)或[UpdateRole](~~28712~~)。",
+        "en": "The validity period of the STS token. Unit: seconds.\n\nMinimum value: 900. Maximum value: the value of the `MaxSessionDuration` parameter. Default value: 3600.\n\nYou can call the CreateRole or UpdateRole operation to configure the `MaxSessionDuration` parameter. For more information, see [CreateRole](~~28710~~) and [UpdateRole](~~28712~~)."
+      }
     },
     {
       "name": "ExternalId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "角色外部ID。\n\n该参数为外部提供的用于表示角色的参数信息，主要功能是防止混淆代理人问题。更多信息，请参见[使用ExternalId防止混淆代理人问题](~~2361741~~)。\n\n长度为2~1224个字符，可包含英文字母、数字和特殊字符`=,.@:/-_`。正则为：`[\\w+=,.@:\\/-]*`。",
+        "en": "The external ID of the RAM role.\n\nThe value of this parameter is provided by an external party and is used to prevent the confused deputy issue. For more information, see [Use external IDs to prevent the confused deputy issue](~~2361741~~).\n\nThe ID must be 2 to 1,224 characters in length, and can contain letters, digits, and the following special characters: `= , . @ : / - _`. The regular expression for this parameter is `[\\w+=,.@:\\/-]*`."
+      }
     },
     {
       "name": "Policy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为STS Token额外添加的一个权限策略，进一步限制STS Token的权限。具体如下：\n\n- 如果指定该权限策略，则STS Token最终的权限策略取RAM角色权限策略与该权限策略的交集。\n- 如果不指定该权限策略，则STS Token最终的权限策略取RAM角色的权限策略。\n\n长度为1~2048个字符。\n\n关于权限策略元素和示例，请参见[权限策略基本元素](~~93738~~)和[权限策略示例库](~~210969~~)。",
+        "en": "The policy that specifies the permissions of the returned STS token. This allows you to implement more fine-grained access control.\n\n- If you specify this parameter, the permissions of the returned STS token are the intersection of the permissions defined in this policy and the permissions granted by the role's policy.\n- If you do not specify this parameter, the returned STS token has all the permissions of the RAM role.\n\nThe value must be 1 to 2,048 characters in length.\n\nFor more information about policy elements and sample policies, see [Policy elements](~~93738~~) and [Overview of sample policies](~~210969~~)."
+      }
     },
     {
       "name": "RoleArn",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要扮演的RAM角色ARN。\n\n该角色是可信实体为阿里云账号类型的RAM角色。更多信息，请参见[创建可信实体为阿里云账号的RAM角色](~~93691~~)或[CreateRole](~~28710~~)。\n\n格式：`acs:ram::<account_id>:role/<role_name>` 。\n\n您可以通过RAM控制台或API查看角色ARN。具体如下：\n\n- RAM控制台：请参见[查看RAM角色的ARN](~~39744~~)。\n- API：请参见[ListRoles](~~28713~~)或[GetRole](~~28711~~)。",
+        "en": "The Alibaba Cloud Resource Name (ARN) of the RAM role.\n\nThe trusted entity of the RAM role is an Alibaba Cloud account. For more information, see [Create a RAM role for a trusted Alibaba Cloud account](~~93691~~) and [CreateRole](~~28710~~).\n\nFormat: `acs:ram::<account_id>:role/<role_name>`.\n\nYou can view the ARNs of RAM roles by using the RAM console or by calling API operations.\n\n- For more information about how to view the ARN of a RAM role in the RAM console, see the \"How do I view the ARN of a RAM role?\" section of the [FAQ about RAM roles and STS tokens](~~39744~~) topic.\n- For more information about how to view the ARN by calling operations, see [ListRoles](~~28713~~) and [GetRole](~~28711~~)."
+      }
     },
     {
       "name": "RoleSessionName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "角色会话名称。\n\n该参数为用户自定义参数。通常设置为调用该API的用户身份，例如：用户名。在操作审计日志中，即使是同一个RAM角色执行的操作，也可以根据不同的`RoleSessionName`来区分实际操作者，以实现用户级别的访问审计。\n\n长度为2~64个字符，可包含英文字母、数字和特殊字符`.@-_`。",
+        "en": "The name of the role session.\n\nThe value is user-defined. In most cases, you can set this parameter to the identity of the user who calls the operation. For example, you can specify a username. You can specify `RoleSessionName` to identify API callers that assume the same RAM role in ActionTrail logs. This allows you to track the users that perform the operations.\n\nThe name must be 2 to 64 characters in length, and can contain letters, digits, and the following special characters: `. @ - _`."
+      }
     },
     {
       "name": "SourceIdentity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源身份信息。\n\n在扮演角色时，可以指定扮演者的源身份（SourceIdentity）作为会话的初始身份标识。 该源身份的值在持续扮演角色的链式会话中将一直存在，中途不可更改，可确保操作的可追溯性和安全性。\n\nSourceIdentity 长度为 2～64 个字符，可包含英文字母、数字、以及特殊字符：`=,.@-_`。正则为：`[\\w+=,.@-]*`。您不能使用以`acs:`、`aliyun:`、`alibabacloud:` 开头的值，这些前缀为阿里云内部使用。",
+        "en": "The source identity information.\n\nWhen a user assumes a role, the source identity of the user can be specified as the initial identity of a session. The specified source identity persists throughout the role session and cannot be changed. This ensures operation traceability and security.\n\nThe value must be 2 to 64 characters in length, and can contain letters, digits, and the following special characters: `=,.@-_`. The regular expression for this parameter is `[\\w+=,.@-]*`. The value cannot start with `acs:`, `aliyun:`, or `alibabacloud:`. These prefixes are internally used within Alibaba Cloud."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取扮演角色的临时身份凭证",
+    "en": "AssumeRole"
+  },
+  "descriptions": {
+    "zh": "### 应用场景\n\n- 临时授权访问：通常情况下，建议您通过服务端调用API，尽可能保证访问密钥不被泄露。但是有些上传文件的场景最好采用客户端直传的形式，避免服务端中转带来的多余开销。此时，可以由服务端下发临时安全令牌（STS Token），客户端通过临时安全令牌（STS Token）进行资源直传。更多信息，请参见[移动应用使用临时安全令牌访问阿里云](~~93744~~)。\n\n- 跨账号访问：当您拥有多个阿里云账号，例如：账号A和账号B，希望实现账号B访问账号A的指定资源。此时，您可以在账号A下创建可信实体为账号B的RAM角色，并授权允许账号B下的某个RAM用户或RAM角色可以扮演该角色，然后通过该角色访问账号A的指定资源。更多信息，请参见[跨阿里云账号访问资源](~~93745~~)。\n\n### 前提条件\n\n该接口不能使用阿里云账号（主账号）调用，只能使用RAM用户或RAM角色调用，请确保已为调用者（RAM用户或RAM角色）授予STS角色扮演权限（AliyunSTSAssumeRoleAccess）。\n\n否则，会报如下错误：\n\n`You are not authorized to do this action. You should be authorized by RAM.`\n\n问题原因和解决方法如下：\n\n- 该调用者缺少允许STS扮演角色的权限策略：请为该调用者添加系统策略（AliyunSTSAssumeRoleAccess）或自定义策略。具体操作，请参见[能否指定RAM用户具体可以扮演哪个RAM角色](~~39744~~)、[为RAM用户授权](~~116146~~)。\n- RAM角色的信任策略不包含调用者，即RAM角色不允许该调用者扮演：请为RAM角色添加允许该调用者扮演的信任策略。具体操作，请参见[修改RAM角色的信任策略](~~116819~~)。\n\n### 最佳实践\n\nSTS Token自颁发后将在一段时间内有效，建议您设置合理的Token有效期，并在有效期内重复使用，以避免业务请求速率上升后，STS Token颁发的速率限制影响到业务。具体速率限制，请参见[STS服务调用次数是否有上限](~~39744~~)。您可以通过请求参数`DurationSeconds`设置Token有效期。\n\n在移动端上传或下载OSS文件等场景下，其访问量较大，即使重复使用STS Token也可能无法满足限流要求。为避免STS的限流成为OSS访问量的瓶颈，您可以尝试OSS的**在URL中包含签名**的方案。更多信息，请参见[在URL中包含签名](~~31952~~)和[服务端签名后直传](~~31926~~)。",
+    "en": "### Prerequisites\n\nYou cannot use an Alibaba Cloud account to call this operation. The requester of this operation can only be a RAM user or RAM role. Make sure that the AliyunSTSAssumeRoleAccess policy is attached to the requester. After this policy is attached to the requester, the requester has the management permissions on STS.\n\nIf you do not attach the AliyunSTSAssumeRoleAccess policy to the requester, the following error message is returned:\n\n`You are not authorized to do this action. You should be authorized by RAM.`\n\nYou can refer to the following information to troubleshoot the error:\n\n- Cause of the error: The policy that is required to assume a RAM role is not attached to the requester. To resolve this issue, attach the AliyunSTSAssumeRoleAccess policy or a custom policy to the requester. For more information, see [Can I specify the RAM role that a RAM user can assume?](~~39744~~) and [Grant permissions to a RAM user](~~116146~~).\n- Cause of the error: The requester is not authorized to assume the RAM role. To resolve this issue, add the requester to the Principal element in the trust policy of the RAM role For more information, see [Edit the trust policy of a RAM role](~~116819~~).\n\n### Best practices\n\nAn STS token is valid for a period of time after it is issued, and the number of STS tokens that can be issued within an interval is also limited. Therefore, we recommend that you configure a proper validity period for an STS token and repeatedly use the token within this period. This prevents frequent issuing of STS tokens from adversely affecting your services if a large number of requests are sent. For more information about the limit, see [Is the number of STS API requests limited?](~~39744~~) You can configure the `DurationSeconds` parameter to specify a validity period for an STS token.\n\nWhen you upload or download Object Storage Service (OSS) objects on mobile devices, a large number of STS API requests are sent. In this case, repeated use of an STS token may not meet your business requirements. To avoid the limit on STS API requests from affecting access to OSS, you can **add a signature to the URL of an OSS object**. For more information, see [Add signatures to URLs](~~31952~~) and [Obtain signature information from the server and upload data to OSS](~~31926~~)."
+  },
   "example": {
     "unifiedCli": "aliyun sts assume-role --duration-seconds 3600 --policy Statement_:_Action_:_0_,_Effect_:_Allow_,_Resource_:_0_,_Version_:_1 --role-arn acs:ram::1234567890120000:role/adminrole --biz-role-session-name alice --biz-external-id abcd1234 --source-identity Alice --region cn-hangzhou",
     "legacyCli": "aliyun sts AssumeRole --region cn-hangzhou --Policy 'Statement_:_Action_:_0_,_Effect_:_Allow_,_Resource_:_0_,_Version_:_1' --SourceIdentity Alice --RoleSessionName alice --ExternalId abcd1234 --DurationSeconds 3600 --RoleArn 'acs:ram::1234567890120000:role/adminrole'"

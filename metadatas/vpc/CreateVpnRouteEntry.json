@@ -1,5 +1,6 @@
 {
   "name": "CreateVpnRouteEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目的路由的描述信息。\n\n描述信息长度为**1**～**100**个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the destination route.\n\nThe description must be **1** to **100** characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建路由。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "NextHop",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由的下一跳。",
+        "en": "The next hop of the destination route."
+      }
     },
     {
       "name": "OverlayMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "隧道协议。仅取值：**Ipsec**（IPsec隧道协议）。",
+        "en": "The tunneling protocol. Set the value to **Ipsec** (IPsec tunneling protocol)."
+      }
     },
     {
       "name": "PublishVpc",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否发布目的路由到VPC中。取值：\n\n- **true**：发布目的路由到VPC中。系统仅会将路由发布至VPC系统路由表中，而不会发布至VPC自定义路由表中。\n\n  如果VPC自定义路由表中需要包含该路由，请您手动添加。具体操作，请参见[CreateRouteEntry](~~448722~~)。\n- **false**：不发布目的路由到VPC中。\n\n  您需要在VPC系统路由表和自定义路由表中手动添加下一跳指向VPN网关实例的目的路由，否则VPC将无法通过IPsec-VPN连接访问该网段下的资源。",
+        "en": "Specifies whether to publish the destination route to the VPC. Valid values:\n\n- **true**: Publishes the destination route to the VPC. The system publishes the route only to the VPC system route table, not to VPC custom route tables.\n\n  If you want the custom route table to contain this route, manually add the route. For more information, see [CreateRouteEntry](~~448722~~).\n- **false**: Does not publish the destination route to the VPC.\n\n  You must manually add a destination route with the next hop pointing to the VPN gateway instance in both the VPC system route table and custom route tables. Otherwise, the VPC cannot access resources in the destination CIDR block through the IPsec-VPN connection."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the VPN gateway instance.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     },
     {
       "name": "RouteDest",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由的目标网段。",
+        "en": "The destination CIDR block of the destination route."
+      }
     },
     {
       "name": "VpnGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VPN网关实例ID。",
+        "en": "The instance ID of the VPN gateway."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目的路由的权重值。\n\n在您使用同一个VPN网关实例搭建主备IPsec-VPN连接的场景中，您可以通过配置目的路由的权重值来指定主链路和备链路，权重值为100的目的路由默认为主链路，权重值为0的目的路由默认为备链路。\n\n您可以通过为IPsec连接配置健康检查来自动探测链路的连通性，在主链路不通的情况下，系统自动将流量切换至备链路进行传输，实现上云链路的高可用。具体操作，请参见[CreateVpnConnection](~~120391~~)。\n\n- **100**：表示当前目的路由关联的IPsec连接为主链路。\n- **0**：表示当前目的路由关联的IPsec连接为备链路。\n\n> - 指定主备链路时，主目的路由和备目的路由的目标网段需相同，下一跳需不同，权重值也需不同。\n> - 对于支持双隧道模式IPsec-VPN连接的VPN网关实例，无需配置该参数。一个双隧道模式IPsec-VPN连接包含两条隧道，两条隧道自动形成主备链路，无需再通过配置该参数指定主备链路。如果您配置了该参数，则该参数配置后不生效。",
+        "en": "The weight of the destination routing entry.\n\nWhen you use the same VPN gateway instance to establish active/standby IPsec-VPN connections, you can specify the active and standby links by configuring the weight of the destination routing entry. A destination routing entry with a weight of 100 is the active link by default, and a destination routing entry with a weight of 0 is the standby link by default.\n\nYou can configure health checks for the IPsec-VPN connection to automatically detect the connectivity of the link. If the active link is unavailable, the system automatically switches traffic to the standby link, ensuring high availability of the cloud connection. For more information, see [CreateVpnConnection](~~120391~~).\n\n- **100**: The IPsec-VPN connection associated with the destination route serves as the active link.\n- **0**: The IPsec-VPN connection associated with the destination route serves as the standby link.\n\n> - When you specify active and standby links, the active and standby destination routes must have the same destination CIDR block, different next hops, and different weights.\n> - For VPN gateway instances that support dual-tunnel pattern IPsec-VPN connections, you do not need to configure this parameter. A dual-tunnel pattern IPsec-VPN connection contains two tunnels that automatically form active/standby links. You do not need to specify active/standby links by configuring this parameter. If you configure this parameter, the parameter settings do not take effect."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建目的路由",
+    "en": "Create a destination route"
+  },
+  "descriptions": {
+    "zh": "### 前提条件\n\n- 创建目的路由前，请确保您已经创建了IPsec连接。具体操作，请参见[CreateVpnConnection](~~2526947~~)。\n- 创建目的路由前，建议您先了解目的路由的匹配原则。更多信息，请参见[配置目的路由](~~112476~~)。\n\n### 使用限制\n\n- 不支持添加目标网段为0.0.0.0/0的目的路由。\n- 请勿添加目标网段为100.64.0.0/10、100.64.0.0/10下的子网段或者包含100.64.0.0/10网段的目的路由，该类路由条目会导致控制台无法显示IPsec连接的状态或者导致IPsec连接协商失败。\n- **CreateVpnRouteEntry**接口属于异步接口，即系统先返回目的路由配置信息，但该目的路由尚未创建成功，系统后台的创建任务仍在进行。您可以调用[DescribeVpnGateway](~~73720~~)查询目的路由的创建状态：\n    - 当VPN网关实例处于**updating**状态时，表示目的路由正在创建中。\n    - 当VPN网关实例处于**active**状态时，表示目的路由创建成功。\n- **CreateVpnRouteEntry**接口不支持在同一VPN网关下并发创建目的路由。",
+    "en": "### Before you begin\n\n- Before you create a destination route, make sure that you have created an IPsec-VPN connection. For more information, see [CreateVpnConnection](~~2526947~~).\n- Before you create a destination route, we recommend that you understand the matching rules of destination routes. For more information, see [Configure destination routes](~~112476~~).\n\n### Limits\n\n- Destination routes with a destination CIDR block of 0.0.0.0/0 are not supported.\n- Do not add destination routes with a destination CIDR block of 100.64.0.0/10, a subnet of 100.64.0.0/10, or a CIDR block that contains 100.64.0.0/10. Such routing entries may cause the console to fail to display the status of IPsec-VPN connections or cause IPsec-VPN connection negotiation to be failed.\n- The **CreateVpnRouteEntry** operation is asynchronous. After you invoke this operation, the system returns the destination route configuration, but the destination route has not been created yet. The background creation node is still in progress. You can invoke [DescribeVpnGateway](~~73720~~) to query the creation status of the destination route:\n    - If the VPN gateway instance is in the **updating** state, the destination route is being created.\n    - If the VPN gateway instance is in the **active** state, the destination route has been created.\n- The **CreateVpnRouteEntry** operation does not support concurrent creation of destination routes for the same VPN gateway."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-vpn-route-entry --biz-region-id cn-hangzhou --client-token d7d24a21-f4ba-4454-9173-b3828dae0000 --vpn-gateway-id vpn-bp1a3kqjiiq9legfx0000 --route-dest 10.0.0.0/24 --next-hop vco-bp15oes1py4i66rmd0000 --weight 0 --publish-vpc true --description mytest --overlay-mode Ipsec --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateVpnRouteEntry --region cn-hangzhou --RouteDest '10.0.0.0/24' --Description mytest --OverlayMode Ipsec --VpnGatewayId 'vpn-bp1a3kqjiiq9legfx0000' --NextHop 'vco-bp15oes1py4i66rmd0000' --DryRun false --PublishVpc true --RegionId 'cn-hangzhou' --ClientToken 'd7d24a21-f4ba-4454-9173-b3828dae0000' --Weight 0"

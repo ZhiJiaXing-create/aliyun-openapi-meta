@@ -1,5 +1,6 @@
 {
   "name": "AddSourcesToTrafficMirrorSession",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会添加镜像源。检查项包括是否填写了必需参数、请求格式和限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后直接添加镜像源。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request syntax, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and sends the request. If the request passes the dry run, the traffic mirror source is added."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像会话的所属地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。\n\n关于流量镜像支持的地域，请参见[流量镜像概述](~~207513~~)。",
+        "en": "The region ID of the traffic mirror session.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list.\n\nFor more information about the regions that support traffic mirroring, see [Traffic mirroring overview](~~207513~~)."
+      }
     },
     {
       "name": "TrafficMirrorSessionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要增加镜像源的镜像会话实例ID。",
+        "en": "The instance ID of the traffic mirror session to which you want to increase traffic mirror sources."
+      }
     },
     {
       "name": "TrafficMirrorSourceIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要增加的镜像源的实例ID，目前支持弹性网卡作为镜像源。其中**N**的默认值为**1**，即一个镜像会话只支持添加一个镜像源。",
+        "en": "The instance ID of the traffic mirror source to increase. Currently, only elastic network interfaces (ENIs) are supported as traffic mirror sources. The default value of **N** is **1**, which indicates that you can add only one traffic mirror source to a traffic mirror session."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为镜像会话增加镜像源",
+    "en": "Add traffic mirror sources to a traffic mirror session"
+  },
+  "descriptions": {
+    "zh": "- **AddSourcesToTrafficMirrorSession**接口属于异步接口，即系统返回一个请求ID，但该镜像源尚未增加成功，系统后台的增加任务仍在进行。您可以调用[ListTrafficMirrorSessions](~~261367~~)查询镜像源的增加状态：\n    - 当镜像会话处于**Modifying**状态时，表示镜像源正在增加中。\n    - 当镜像会话处于**Created**状态时，表示镜像源增加成功。\n- **AddSourcesToTrafficMirrorSession**接口不支持并发为同一个镜像会话增加镜像源。",
+    "en": "- **AddSourcesToTrafficMirrorSession** is an asynchronous operation. After a request is sent, the system returns a request ID. However, the traffic mirror source is not yet added, and the addition task is still running in the background. You can call [ListTrafficMirrorSessions](~~261367~~) to query the status of the traffic mirror source addition:\n    - If the traffic mirror session is in the **Modifying** state, the traffic mirror source is being added.\n    - If the traffic mirror session is in the **Created** state, the traffic mirror source is added.\n- **AddSourcesToTrafficMirrorSession** does not support concurrent requests to add traffic mirror sources to the same traffic mirror session."
+  },
   "example": {
     "unifiedCli": "aliyun vpc add-sources-to-traffic-mirror-session --client-token 0c593ea1-3bea-11e9-b96b-88e9fe630000 --dry-run false --traffic-mirror-session-id tms-j6cla50buc44ap8tu0000 --traffic-mirror-source-ids eni-j6c8znm5l1yt4sox0000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc AddSourcesToTrafficMirrorSession --region cn-hangzhou --DryRun false --TrafficMirrorSourceIds.1 'eni-j6c8znm5l1yt4sox0000' --TrafficMirrorSessionId 'tms-j6cla50buc44ap8tu0000' --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe630000'"

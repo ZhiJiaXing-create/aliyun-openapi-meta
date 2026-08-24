@@ -1,5 +1,6 @@
 {
   "name": "DetachNasFileSystem",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "CreateTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统创建时间。UNIX时间，单位为秒。",
+        "en": "The time when the file system was created. The value must be a UNIX timestamp. Unit: seconds."
+      }
     },
     {
       "name": "CrossAccountRoleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "被当前账号管理的跨账号备份的原账号RAM中创建的角色名。",
+        "en": "The name of the RAM role that is created within the source Alibaba Cloud account and assigned to the current Alibaba Cloud account to authorize the current Alibaba Cloud account to back up and restore data across Alibaba Cloud accounts."
+      }
     },
     {
       "name": "CrossAccountType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨账号备份类型。支持： \n- SELF_ACCOUNT：本账号备份 \n- CROSS_ACCOUNT：跨账号备份",
+        "en": "Specifies whether data is backed up and restored within the same Alibaba Cloud account or across Alibaba Cloud accounts. Valid values:\n\n- SELF\\_ACCOUNT: Data is backed up and restored within the same Alibaba Cloud account.\n\n- CROSS\\_ACCOUNT: Data is backed up and restored across Alibaba Cloud accounts."
+      }
     },
     {
       "name": "CrossAccountUserId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "被当前账号管理的跨账号备份的原账号ID。",
+        "en": "The ID of the source Alibaba Cloud account that authorizes the current Alibaba Cloud account to back up and restore data across Alibaba Cloud accounts."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。",
+        "en": "The ID of the file system."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除内部挂载点",
+    "en": "DetachNasFileSystem"
+  },
+  "descriptions": {
+    "zh": "- 接口正常返回表示已删除内部挂载点。\n- 为阿里云NAS文件系统创建备份计划后，HBR会自动为文件系统创建一个内部挂载点，需要调用此接口删除。此挂载点在NAS文件系统的**状态**中会展示为**此挂载点由阿里云内部服务创建，您暂时无法操作。服务名：HBR备份服务**。",
+    "en": "- If the request is successful, the mount target is deleted.\n\n- After you create a backup plan for an Apsara File Storage NAS file system, HBR automatically creates a mount target for the file system. Call this operation to delete the mount target. In the **Status** column of the mount target of the NAS file system, the following information is displayed: **This mount target is created by an Alibaba Cloud internal service and cannot be operated. Service name: HBR**."
+  },
   "example": {
     "unifiedCli": "aliyun hbr detach-nas-file-system --file-system-id 005494 --create-time 1607436917 --cross-account-type SELF_ACCOUNT --cross-account-user-id 1589754625 --cross-account-role-name BackupRole --region cn-hangzhou",
     "legacyCli": "aliyun hbr DetachNasFileSystem --region cn-hangzhou --CrossAccountUserId 1589754625 --CrossAccountRoleName BackupRole --CreateTime 1607436917 --CrossAccountType SELF_ACCOUNT --FileSystemId 005494"

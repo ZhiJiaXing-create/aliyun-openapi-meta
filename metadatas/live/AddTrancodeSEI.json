@@ -1,5 +1,6 @@
 {
   "name": "AddTrancodeSEI",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。您可在[流管理](~~197397~~)页面查看AppName。",
+        "en": "The AppName of the live stream. View AppNames on the [Stream Management](~~197397~~) page."
+      }
     },
     {
       "name": "Delay",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "接收到命令后的延迟时间。单位： 毫秒。",
+        "en": "The delay in milliseconds before the SEI is inserted after the command is received."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流域名。",
+        "en": "The streaming domain."
+      }
     },
     {
       "name": "Pattern",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "追加到每一个关键帧或每一帧。取值：\n- **keyframe**：关键帧。\n- **frame**：每一帧。",
+        "en": "Specifies the insertion pattern for the SEI.\n\n- **keyframe**: Inserts at every keyframe.\n\n- **frame**: Inserts at every single frame."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Repeat",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "重复次数。-1代表无限。",
+        "en": "The number of times to repeat the insertion. A value of -1 means infinite repetitions."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流名称。\n\n> 必须为源流名称，所有的转码流都会添加上SEI信息。",
+        "en": "The name of the live stream.\n\n> It must be the name of the source stream. This ensures that SEI is inserted into all transcoded streams."
+      }
     },
     {
       "name": "Text",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SEI文本。长度限制：4000字节。",
+        "en": "The SEI text. Length limit: 4000 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加转码 SEI 信息",
+    "en": "AddTrancodeSEI"
+  },
+  "descriptions": {
+    "zh": "先获取播流域名，再调用本接口添加转码SEI信息。其中播流名称必须为源流名称，所有的转码流都会添加上SEI信息。\n\n## QPS限制\n本接口的单用户QPS限制为6000次/分钟。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "First, obtain the streaming domain. Then, call this operation to insert SEI into the transcoded streams. The stream name must be the same as the source stream to ensure that SEI is inserted into all transcoded streams.\n\n## QPS limit\n\nYou can call this operation up to 6,000 times per second per account. Requests that exceed this limit are dropped and you may experience service interruptions."
+  },
   "example": {
     "unifiedCli": "aliyun live add-trancode-sei --biz-region-id cn-hangzhou --domain-name example.com --app-name liveApp0000 --stream-name liveStream0000 --text liveSei0000 --pattern keyframe --repeat -1 --delay 100 --region cn-hangzhou",
     "legacyCli": "aliyun live AddTrancodeSEI --region cn-hangzhou --Pattern keyframe --StreamName liveStream0000 --DomainName 'example.com' --Text liveSei0000 --Repeat '-1' --RegionId 'cn-hangzhou' --Delay 100 --AppName liveApp0000"

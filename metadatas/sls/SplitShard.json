@@ -1,5 +1,6 @@
 {
   "name": "SplitShard",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/logstores/[logstore]/shards/[shard]?action=split",
@@ -8,33 +9,64 @@
       "name": "key",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分裂位置。",
+        "en": "The position where the shard is split."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Logstore名称。",
+        "en": "The name of the Logstore."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Project名称。",
+        "en": "The name of the project."
+      }
     },
     {
       "name": "shard",
       "position": "Path",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Shard ID。",
+        "en": "The ID of the shard."
+      }
     },
     {
       "name": "shardCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Shard分裂个数。",
+        "en": "The number of new shards that are generated after splitting."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "分裂Shard",
+    "en": "SplitShard"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n\n- Host由Project名称和日志服务Endpoint构成，您需要在Host中指定Project。\n- 已创建并获取AccessKey。更多信息，请参见[访问密钥](~~29009~~)。\n\n 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维。RAM用户需具备操作日志服务资源的权限。具体操作，请参见[创建RAM用户及授权](~~47664~~)。\n- 已明确您查询日志所属的Project名称、所属地域、Logstore名称等。如何查询，请参见[管理Project](~~48984~~)和[管理Logstore](~~48990~~)。\n- 每个Shard均有范围，为MD5左闭右开区间`[BeginKey,EndKey)`。Shard状态包括readwrite（读写）和readonly（只读），支持分裂和合并Shard。更多信息，请参见[分区（Shard）](~~28976~~)。\n### 鉴权资源\n下表列出了API对应的授权信息。您可以在RAM权限策略语句的Action元素中添加该信息，用于为RAM用户或RAM角色授予调用此API的权限。\n|动作（Action）  | 授权策略中的资源描述方式（Resource）  |\n| :------------ | :------------ |\n| `log:SplitShard`  | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}`  |",
+    "en": "### Usage notes\n\n- Host consists of a project name and a Simple Log Service endpoint. You must specify a project in Host.\n\n- Each shard has an MD5 hash range, and each range is a left-closed, right-open interval. The interval is in the `[BeginKey,EndKey)` format. A shard can be in the readwrite or readonly state. You can split a shard and merge shards. For more information, see [Shard](~~28976~~)."
+  },
   "example": {
     "unifiedCli": "aliyun sls split-shard --project ali-test-project --logstore logstorename --shard 0 --key ef000000000000000000000000000000 --shard-count 2 --region cn-hangzhou",
     "legacyCli": "aliyun sls POST /logstores/logstorename/shards/0?action=split --project ali-test-project --region cn-hangzhou --shardCount 2 --key ef000000000000000000000000000000 --header \"Content-Type=application/json\""

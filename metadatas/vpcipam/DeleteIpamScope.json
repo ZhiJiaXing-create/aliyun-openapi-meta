@@ -1,5 +1,6 @@
 {
   "name": "DeleteIpamScope",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. Generate a value for this parameter on your client to make sure that the value is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the RequestId of the request as the ClientToken. The RequestId of each request is different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除IPAM作用范围。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks whether the required parameters are specified, the request format is valid, and the service limits are met. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends the request. If the request passes the check, an HTTP 2xx status code is returned and the IPAM scope is deleted."
+      }
     },
     {
       "name": "IpamScopeId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPAM作用范围的实例ID。",
+        "en": "The instance ID of the IPAM scope."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPAM托管地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the IPAM is hosted. Call the [DescribeRegions](~~36063~~) operation to get the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除IPAM作用范围",
+    "en": "DeleteIpamScope"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n\n- 删除IPAM作用范围时，系统默认创建的两个IPAM作用范围无法删除。\n\n- 删除新建的IPAM作用范围前，请确保该IPAM作用范围的地址池已全部删除。您可以调用**DeleteIpamPool**删除地址池。",
+    "en": "### Usage notes\n\n- You cannot delete the two default IPAM scopes that the system automatically creates.\n\n- Before you delete a custom IPAM scope, ensure that all IPAM pools in the scope are deleted. You can call the **DeleteIpamPool** operation to delete an IPAM pool."
+  },
   "example": {
     "unifiedCli": "aliyun vpcipam delete-ipam-scope --biz-region-id cn-hangzhou --ipam-scope-id ipam-scope-glfmcyldpm8lsy0000 --dry-run false --client-token 88144bdb-b190-4813-a3f5-66cc86694162 --region cn-hangzhou",
     "legacyCli": "aliyun vpcipam DeleteIpamScope --region cn-hangzhou --IpamScopeId 'ipam-scope-glfmcyldpm8lsy0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '88144bdb-b190-4813-a3f5-66cc86694162'"

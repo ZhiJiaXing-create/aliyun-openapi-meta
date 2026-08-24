@@ -1,5 +1,6 @@
 {
   "name": "SubmitJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,165 +9,284 @@
       "name": "ArrayRequest",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "队列作业。 \n\n格式X-Y:Z， 最小值X是第一个索引，最大值Y是最后一个索引，Z表示步长，例如2-7:2，表示作业队列包含编号为2、4、6的3个子作业。",
+        "en": "The job array.\n\nFormat: X-Y:Z. The minimum index value X is the first index. The maximum index value Y is the last index. Z is the step size. For example, 2-7:2 indicates that three jobs need to be run and their index values are 2, 4, and 6."
+      }
     },
     {
       "name": "Async",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "采用异步消息链路提交作业。\n\n默认值：false。",
+        "en": "Specifies whether to use an asynchronous link to submit the job.\n\nDefault value: false."
+      }
     },
     {
       "name": "ClockTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "作业最大运行时间，支持三种格式：\n\n- hh:mm:ss\n- mm:ss\n- ss\n\n推荐使用第一种格式。若最大运行时间为12小时，示例：12:00:00。",
+        "en": "The maximum running time of the job. Valid formats:\n\n*   hh:mm:ss\n*   mm:ss\n*   ss\n\nWe recommend that you use the hh:mm:ss format. If the maximum running time is 12 hours, set the value to 12:00:00."
+      }
     },
     {
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。\n\n您可以通过调用[ListClusters](~~87116~~)获取集群ID。",
+        "en": "The command that is used to run the job."
+      }
     },
     {
       "name": "CommandLine",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "执行作业命令。",
+        "en": "The name of the user that runs the job.\n\nYou can call the [ListUsers](~~188572~~) operation to query the users of the cluster."
+      }
     },
     {
       "name": "Cpu",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单个计算节点所需的CPU核数。",
+        "en": "The number of CPU cores required by a single compute node."
+      }
     },
     {
       "name": "Gpu",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单个计算节点使用GPU的数量。\n\n仅支持使用PBS调度器的集群，且集群内计算节点含GPU时该参数生效。",
+        "en": "The maximum GPU usage required by a single compute node.\n\nThe parameter takes effect only when the cluster uses PBS and a compute node is a GPU-accelerated instance."
+      }
     },
     {
       "name": "InputFileUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "上传到OSS的作业文件的URL地址。",
+        "en": "The URL of the job file that is uploaded to an Object Storage Service (OSS) bucket."
+      }
     },
     {
       "name": "JobQueue",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行作业的队列名称。\n\n您可以通过调用[ListQueues](~~92176~~)获取队列名称。",
+        "en": "The name of the queue in which the job is run.\n\nYou can call the [ListQueues](~~92176~~) operation to query the name of the queue."
+      }
     },
     {
       "name": "JobRetry.Count",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务重试次数，取值范围1~10。当前任务重试功能仅适用于PBS集群。\n\n> 若该参数为空，则参数JobRetry.Priority、JobRetry.OnExitCode不生效。",
+        "en": "The number of retries for the job. Valid values: 1 to 10. You can only retry jobs that are run on the PBS clusters.\n\n>  If this parameter is left empty, the JobRetry.Priority and JobRetry.OnExitCode parameters do not take effect."
+      }
     },
     {
       "name": "JobRetry.OnExitCode",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "作业重试条件。退出码为参数值时，触发作业重试。\n\n> 若该参数为空，退出码非0时触发作业重试。",
+        "en": "The retry condition of the job. If the exit code is the value of the parameter, the job retry is triggered.\n\n>  If this parameter is left empty, the job retry is triggered when the exit code is not 0."
+      }
     },
     {
       "name": "JobRetry.Priority",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重试作业优先级，取值范围：0~9，取值越大，优先级越高。\n\n> 若该参数为空，则重试作业优先级=min{原作业优先级+1, 9}",
+        "en": "The priority of the job retry. Valid values: 0 to 9. A larger value indicates a higher priority.\n\n>  If this parameter is left empty, the priority of the job retry is min {Priority of the original job +1, 9}."
+      }
     },
     {
       "name": "Mem",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单个计算节点最大使用内存数，支持GB、MB、KB，单位不区分大小写。",
+        "en": "The maximum memory usage required by a single compute node. Unit: GB, MB, or KB. The unit is case-insensitive."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "作业名称。长度为6~30个字符，必须以英文字母开头，可以包含数字、半角句号（.）。",
+        "en": "job1"
+      }
     },
     {
       "name": "Node",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行作业所需的计算节点数。\n\n> 若该参数为空，则参数Cpu、Task、Thread、Mem、Gpu不生效。",
+        "en": "The number of compute nodes required to run the job.\n\n> If the parameter is not specified, the Cpu, Task, Thread, Mem, and Gpu parameters become invalid."
+      }
     },
     {
       "name": "PackagePath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行作业路径。",
+        "en": "The path that is used to run the job."
+      }
     },
     {
       "name": "PostCmdLine",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "提交作业后执行的命令。",
+        "en": "The command to perform on the job after the job is submitted."
+      }
     },
     {
       "name": "Priority",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "作业优先级，取值范围：0~9，取值越大，优先级越高。\n\n默认值：0",
+        "en": "The priority of the job. Valid values: 0 to 9. A larger value indicates a higher priority.\n\nDefault value: 0."
+      }
     },
     {
       "name": "ReRunable",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否支持重新执行作业。取值范围：\n- true：支持\n- false：不支持",
+        "en": "Specifies whether the job can be rerun. Valid values:\n\n*   true: The job can be rerun.\n*   false: The job cannot be rerun."
+      }
     },
     {
       "name": "RunasUser",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "执行作业的用户名。\n\n您可以通过调用[ListUsers](~~188572~~)获取该集群中的用户名。",
+        "en": "The password that corresponds to the username."
+      }
     },
     {
       "name": "RunasUserPassword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户密码。",
+        "en": "The name of the job. The name must be 6 to 30 characters in length and start with a letter. It can contain letters, digits, and periods (.)."
+      }
     },
     {
       "name": "StderrRedirectPath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "错误输出路径。",
+        "en": "The output file path of stderr."
+      }
     },
     {
       "name": "StdoutRedirectPath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标准输出路径。",
+        "en": "The output file path of stdout."
+      }
     },
     {
       "name": "Task",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单个计算节点创建的进程数。\n\n适用于MPI作业。",
+        "en": "The number of processes created for a single compute node.\n\nThe parameter is applicable to Message Passing Interface (MPI) jobs."
+      }
     },
     {
       "name": "Thread",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单个计算节点创建的线程数。\n\n适用于OpenMP作业。",
+        "en": "The number of threads created for a single compute node.\n\nThe parameter is applicable to OpenMP jobs."
+      }
     },
     {
       "name": "UnzipCmd",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "解压命令。解压OSS下载的文件。取值范围：\n\n- tar xzf：解开gzip格式压缩包\n\n- tar xf：解开tar格式压缩包\n\n- unzip：解开zip格式压缩包",
+        "en": "The command for file decompression. The command that is used to decompress the job files downloaded from an OSS bucket. Valid values:\n\n*   tar xzf: Decompresses GZIP files.\n*   tar xf: Decompresses TAR files.\n*   unzip: Decompresses ZIP files."
+      }
     },
     {
       "name": "Variables",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行作业的环境变量，可以在作业执行文件中访问环境变量。",
+        "en": "The runtime variables passed to the job. They can be accessed by using environment variables in the executable file."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交作业",
+    "en": "SubmitJob"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n在集群提交作业前，请确认上传作业文件（如job.sh）到集群。具体操作，请参见[CreateJobFile](~~159049~~)。",
+    "en": "The ID of the request."
+  },
   "example": {
     "unifiedCli": "aliyun ehpc submit-job --cluster-id ehpc-hz-FYUr320000 --command-line ./LammpsTest/lammps.pbs --runas-user testuser --runas-user-password 120000 --name jobtest --priority 0 --package-path ./Tem --stdout-redirect-path ./LammpsTest --stderr-redirect-path ./LammpsTest --re-runable false --array-request 1-10:2 --variables Name:test1,Value:value1_,_Name:test2,Value:value2 --input-file-url https://ehpc-hangzhou.oss-cn-hangzhou.aliyuncs.com/test-u40000/testlist_ehpc.sh --unzip-cmd tar_xzf --post-cmd-line example.sh --job-queue workq --node 2 --cpu 2 --task 2 --thread 1 --mem 1GB --gpu 1 --clock-time 12:00:00 --job-retry-count 5 --job-retry-priority 1 --job-retry-on-exit-code 1 --async false --api-version 2018-04-12 --region cn-hangzhou",
     "legacyCli": "aliyun ehpc SubmitJob --region cn-hangzhou --Task 2 --Node 2 --Cpu 2 --RunasUserPassword 120000 --RunasUser testuser --Gpu 1 --UnzipCmd tar_xzf --Name jobtest --Variables 'Name:test1,Value:value1_,_Name:test2,Value:value2' --PostCmdLine 'example.sh' --InputFileUrl 'https://ehpc-hangzhou.oss-cn-hangzhou.aliyuncs.com/test-u40000/testlist_ehpc.sh' --Async false --JobRetry.Priority 1 --JobRetry.OnExitCode 1 --ArrayRequest '1-10:2' --ClusterId 'ehpc-hz-FYUr320000' --JobQueue workq --Priority 0 --StderrRedirectPath './LammpsTest' --JobRetry.Count 5 --ClockTime '12:00:00' --Thread 1 --ReRunable false --CommandLine './LammpsTest/lammps.pbs' --Mem 1GB --StdoutRedirectPath './LammpsTest' --PackagePath './Tem'"

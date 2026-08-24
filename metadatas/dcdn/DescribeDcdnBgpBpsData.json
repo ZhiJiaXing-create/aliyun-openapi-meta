@@ -1,5 +1,6 @@
 {
   "name": "DescribeDcdnBgpBpsData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备名称。若指定则返回对应设备的数据,，不指定则为所有设备合并。",
+        "en": "The device name. If you specify a device name, data for that device is returned. If you do not specify a device name, data for all devices is merged and returned."
+      }
     },
     {
       "name": "DevicePort",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备端口。若指定则返回对应设备端口的数据，不指定则为所有端口。该字段必须在指定了**DeviceName**的时候才可以生效。",
+        "en": "The device port. If you specify a port, data for that port is returned. If you do not specify a port, data for all ports is returned. This parameter takes effect only when you specify **DeviceName**."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据结束时间点。日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据粒度，支持300秒和3600秒，默认为300秒即五分钟，但需要和时间跨度综合判定。",
+        "en": "The data granularity in seconds. Valid values are 300 and 3600. The default value is 300 (five minutes). The final granularity also depends on the specified time span."
+      }
     },
     {
       "name": "Isp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的线路，查询多条路线用英文逗号（,）分隔。指定多条线路时进行聚合处理，默认为所有线路.。\n\n可选值：\n- cu：联通。\n- cmi：移动。\n- ct：电信。",
+        "en": "The line to query. To query multiple lines, separate them with commas (,). If you specify multiple lines, the data is aggregated. By default, data for all lines is queried.\n\nValid values:\n\n- cu: China Unicom.\n\n- cmi: China Mobile.\n\n- ct: China Telecom."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据开始时间点。日期格式按照ISO8601表示法，并使用UTC+0时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n最小数据粒度为1小时。\n\n默认读取过去24小时数据。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\nThe minimum data granularity is 1 hour.\n\nBy default, data from the past 24 hours is read."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询BGP带宽数据",
+    "en": "DescribeDcdnBgpBpsData"
+  },
+  "descriptions": {
+    "zh": "- 不指定StartTime和EndTime时，该接口默认读取过去24小时的数据，同时支持按指定的起止时间查询，两者需要同时指定。\n- 指定多条线路时数据聚合处理。\n- 最多可获取最近90天的数据。\n- StartTime和EndTime最大支持31天跨度。\n- 数据跨度72小时内（包含）可以支持5分钟粒度，72小时以上只支持小时粒度。\n- 单用户调用频率：5次/秒。",
+    "en": "- If you do not specify \\`StartTime\\` and \\`EndTime\\`, the operation retrieves data from the past 24 hours by default. You can also specify both \\`StartTime\\` and \\`EndTime\\` to query data for a specific time range.\n\n- If you specify multiple lines, the data is aggregated.\n\n- You can query data from the last 90 days.\n\n- The maximum time span between \\`StartTime\\` and \\`EndTime\\` is 31 days.\n\n- If the time span is 72 hours or less, the data is returned at a 5-minute granularity. If the time span is more than 72 hours, the data is returned at an hourly granularity.\n\n- The maximum call frequency for a single user is 5 calls per second."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn describe-dcdn-bgp-bps-data --isp cu --start-time 2018-11-29T00:00:00Z --end-time 2018-11-30T00:00:00Z --interval 300 --device-name devicename --device-port 123 --region cn-hangzhou",
     "legacyCli": "aliyun dcdn DescribeDcdnBgpBpsData --region cn-hangzhou --EndTime '2018-11-30T00:00:00Z' --Isp cu --StartTime '2018-11-29T00:00:00Z' --DevicePort 123 --Interval 300 --DeviceName devicename"

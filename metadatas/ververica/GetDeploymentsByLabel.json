@@ -1,5 +1,6 @@
 {
   "name": "GetDeploymentsByLabel",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/api/v2/namespaces/[namespace]/deployments/getDeployments/byLabel",
@@ -8,39 +9,74 @@
       "name": "ignoreJobSummary",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否忽略返回结果中的作业摘要信息（如 jobName、status），仅返回 JobId，用于提升性能",
+        "en": "Specifies whether to exclude job summary information, such as jobName and status, from the response. If set to true, the response includes only the JobId. This improves performance."
+      }
     },
     {
       "name": "ignoreResourceSetting",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否忽略资源配置信息（如 parallelism、CU 数量），减少返回数据体积",
+        "en": "Specifies whether to exclude resource configuration information, such as parallelism and the number of CUs, from the response. This reduces the size of the returned data."
+      }
     },
     {
       "name": "labelKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "标签名，用于标签过滤，",
+        "en": "The label key used for filtering."
+      }
     },
     {
       "name": "labelValue",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "标签值，支持多个值用 英文逗号 , 分隔，表示“或”关系",
+        "en": "The label value. You can specify multiple values separated by commas (,) to create an OR condition."
+      }
     },
     {
       "name": "namespace",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "项目空间名称。",
+        "en": "The name of the namespace."
+      }
     },
     {
       "name": "workspace",
       "position": "Header",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作空间ID。",
+        "en": "The ID of the workspace."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通过标签搜索已部署作业",
+    "en": "GetDeploymentsByLabel"
+  },
+  "descriptions": {
+    "zh": "本接口用于通过指定作业标签查询被打标关联的已部署作业列表及其详细信息。支持按 labelKey 和 labelValue 精确匹配。",
+    "en": "Queries a list of deployed jobs and their details by a specified job label. The query performs an exact match on the `labelKey` and `labelValue`."
+  },
   "example": {
     "unifiedCli": "aliyun ververica get-deployments-by-label --workspace a14bd5d90a0000 --namespace default-namespace --label-key key --label-value value --ignore-job-summary true --ignore-resource-setting true --api-version 2022-07-18 --region cn-hangzhou",
     "legacyCli": "aliyun ververica GET /api/v2/namespaces/default-namespace/deployments/getDeployments/byLabel --region cn-hangzhou --labelValue value --labelKey key --ignoreJobSummary true --ignoreResourceSetting true --header \"workspace=a14bd5d90a0000\" --header \"Content-Type=application/json\""

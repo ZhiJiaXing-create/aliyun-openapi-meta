@@ -1,5 +1,6 @@
 {
   "name": "SetDeletionProtection",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,16 +9,34 @@
       "name": "DeletionProtectionDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "删除保护描述。  \n\n> 当EnableDeletionProtection取值为true时该参数有效。",
+        "en": "The description of deletion protection.\n\n> This parameter is available only when EnableDeletionProtection is set to true."
+      }
     },
     {
       "name": "EnableDeletionProtection",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否开启删除保护，取值：\n\n- true：开启删除保护。\n\n- false（默认值）：关闭删除保护。",
+        "en": "Specifies whether to enable deletion protection. Valid values:\n\n- true: enables deletion protection.\n\n- false: disables deletion protection. This is the default value."
+      }
     },
     {
       "name": "KeyId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "密钥的ID。",
+        "en": "The ID of the key."
+      }
+    },
+    {
+      "name": "KmsInstanceId",
       "position": "Query",
       "type": "String",
       "required": false
@@ -26,9 +45,24 @@
       "name": "ProtectedResourceArn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待设置删除保护的CMK ARN。  \n您可以调用[DescribeKey](~~28952~~)接口查看CMK ARN（Arn）。",
+        "en": "The ARN of the CMK for which you want to configure deletion protection.<br>\nYou can call the [DescribeKey](~~28952~~) operation to query the ARN of the CMK.<br><br>"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置删除保护",
+    "en": "SetDeletionProtection"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 当您为CMK开启删除保护后，将无法删除该CMK。如果需要删除CMK，需提前关闭删除保护。  \n\n- 调用SetDeletionProtection接口前，请确保CMK不处于待删除状态。您可以调用[DescribeKey](~~28952~~)接口查看CMK的状态（KeyState）。",
+    "en": "- For more information about the access policy required for a RAM user or RAM role to call this API operation, see [Resource Access Management](~~2767210~~).\n\n- After you enable deletion protection for a CMK, you cannot delete it. To delete the CMK, you must first disable deletion protection.\n\n- Before you call the SetDeletionProtection operation, ensure that the CMK is not in the PendingDeletion state. You can call the [DescribeKey](~~28952~~) operation to query the status of the CMK."
+  },
   "example": {
     "unifiedCli": "aliyun kms set-deletion-protection --protected-resource-arn acs:kms:cn-hangzhou:1232131230000:key/0225f411-b21d-46d1-be5b-93931c820000 --enable-deletion-protection true --deletion-protection-description The_CMK_is_being_used_by_XXX._Deletion_protection_is_set. --key-id key-hzz65f3a68554s6ms0000 --kms-instance-id example-string --region cn-hangzhou",
     "legacyCli": "aliyun kms SetDeletionProtection --region cn-hangzhou --ProtectedResourceArn 'acs:kms:cn-hangzhou:1232131230000:key/0225f411-b21d-46d1-be5b-93931c820000' --DeletionProtectionDescription 'The_CMK_is_being_used_by_XXX._Deletion_protection_is_set.' --KmsInstanceId 'example-string' --EnableDeletionProtection true --KeyId 'key-hzz65f3a68554s6ms0000'"

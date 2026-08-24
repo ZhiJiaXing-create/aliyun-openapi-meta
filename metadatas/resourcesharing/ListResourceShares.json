@@ -1,5 +1,6 @@
 {
   "name": "ListResourceShares",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,71 +9,126 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单次请求返回结果的最大条数。\n\n取值范围：1~100。默认值：20。",
+        "en": "The maximum number of entries to return for a single request.\n\nValid values: 1 to 100. Default value: 20."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当请求的返回结果被截断时，您可以使用`NextToken`再次发起请求，获取从当前截断位置之后的内容。",
+        "en": "The `token` that is used to initiate the next request if the response of the current request is truncated. You can use the token to initiate another request and obtain the remaining records."
+      }
     },
     {
       "name": "PermissionName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享权限名称。具体信息，请参见[权限库](~~465474~~)。",
+        "en": "The information about the permissions. For more information, see [Permission library](~~465474~~)."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "ResourceOwner",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "共享单元归属者。取值：\n\n- Self：查询当前账号的共享单元列表。\n- OtherAccounts：查询其他账号共享给当前账号的共享单元列表。",
+        "en": "The owner of the resource shares. Valid values:\n\n*   Self: the current account\n*   OtherAccounts: an account other than the current account"
+      }
     },
     {
       "name": "ResourceShareIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享单元ID。\n\nN的取值范围：1~5，即每次最多指定5个共享单元。",
+        "en": "The IDs of the resource shares.\n\nValid values of N: 1 to 5. This indicates that a maximum of five resource shares can be specified at a time."
+      }
     },
     {
       "name": "ResourceShareName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享单元名称。",
+        "en": "The name of the resource share."
+      }
     },
     {
       "name": "ResourceShareStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享单元状态。取值：\n\n- Active：已启用。\n- Pending：待确认。\n- Deleting：删除中。\n- Deleted：已删除。\n\n> Deleted状态的共享单元记录，会在48~96小时内被系统自动删除。",
+        "en": "The status of the resource shares. Valid values:\n\n*   Active\n*   Pending\n*   Deleting\n*   Deleted\n\n>  The system automatically deletes the records of resource shares in the Deleted state within 48 hours to 96 hours after you delete the resource shares."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。\n> 最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key.\n\n>  The tag key can be 128 characters in length and cannot start with `acs:` or `aliyun`. The tag key cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。\n> 最多支持 128 个字符，不能以`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value.\n\n>  The tag value can be 128 characters in length and cannot start with `acs:`. The tag value cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询共享单元列表",
+    "en": "ListResourceShares"
+  },
+  "descriptions": {
+    "zh": "本文将提供一个示例，查询当前账号在`cn-hangzhou`地域创建的共享单元列表。返回结果显示，当前账号`151266687691****`创建过以下2个共享单元：\n\n- 共享单元`rs-hX9wC5jO****`，处于已删除`Deleted`状态。\n- 共享单元`rs-PqysnzIj****`，处于已启用`Active`状态。",
+    "en": "This topic provides an example on how to call the API operation to query the resource shares that are created by using the current Alibaba Cloud account in the `cn-hangzhou` region. The response shows that the following resource shares are created within the account `151266687691****`:\n\n*   `rs-hX9wC5jO****`, which is in the `Deleted` state\n*   `rs-PqysnzIj****`, which is in the `Active` state"
+  },
   "example": {
     "unifiedCli": "aliyun resourcesharing list-resource-shares --resource-owner Self --resource-share-name test --resource-share-status Active --max-results 20 --next-token TGlzdFJlc291cm0000 --resource-share-ids rs-PqysnzIj0000 --permission-name AliyunRSDefaultPermissionVSwitch --resource-group-id rg-aekz5nlvlak0000 --tag Value=v1 Key=k1 --region cn-hangzhou",
     "legacyCli": "aliyun resourcesharing ListResourceShares --region cn-hangzhou --ResourceShareName test --Tag.1.Key k1 --NextToken TGlzdFJlc291cm0000 --ResourceGroupId 'rg-aekz5nlvlak0000' --ResourceShareIds.1 'rs-PqysnzIj0000' --PermissionName AliyunRSDefaultPermissionVSwitch --ResourceOwner Self --ResourceShareStatus Active --MaxResults 20 --Tag.1.Value v1"

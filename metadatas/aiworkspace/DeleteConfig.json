@@ -1,5 +1,6 @@
 {
   "name": "DeleteConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "DELETE",
   "pathPattern": "/api/v1/workspaces/[WorkspaceId]/configs/[ConfigKey]",
@@ -8,27 +9,50 @@
       "name": "CategoryName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配置项的分类。目前支持如下分类\n\n- CommonResourceConfig 通用资源配置\n- DLCAutoRecycle DLC自动回收- DLCPriorityConfig DLC 优先级设置\n- DSWPriorityConfig DSW优先级设置\n- QuotaMaximumDuration Quota的DLC任务最大运行时长配置\n- CommonTagConfig 标签设置",
+        "en": "The classification of the configuration item. The following classifications are supported:\n\n- DLCAutoRecycle: The DLC automatic release configuration.\n\n- DLCPriorityConfig: The DLC priority settings.\n\n- DSWPriorityConfig: The DSW priority settings.\n\n- QuotaMaximumDuration: The maximum runtime configuration of a DLC task for a quota.\n\n- CommonTagConfig: The tag settings."
+      }
     },
     {
       "name": "ConfigKey",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "配置项的键。目前支持如下键：\n\n- tempStoragePath 临时存储路径，只有CategoryName为CommonResourceConfig时才允许使用该ConfigKey\n- isAutoRecycle 自动回收配置，只有CategoryName为DLCAutoRecycle时才允许使用该ConfigKey\n- priorityConfig 优先级配置，只有CategoryName为DLCPriorityConfig或者DSWPriorityConfig时才允许使用该ConfigKey\n- quotaMaximumDuration Quota的DLC任务最大运行时长配置，只有CategoryName为QuotaMaximumDuration时才允许使用该ConfigKey\n- predefinedTags 工作空间预置标签，创建的资源必须带上标签",
+        "en": "The key of the configuration item. The following keys are supported:\n\n- tempStoragePath: The temporary storage path. This key is valid only when CategoryName is CommonResourceConfig.\n\n- isAutoRecycle: The automatic release configuration. This key is valid only when CategoryName is DLCAutoRecycle.\n\n- priorityConfig: The priority configuration. This key is valid only when CategoryName is DLCPriorityConfig or DSWPriorityConfig.\n\n- quotaMaximumDuration: The maximum runtime configuration of a DLC task for a quota. This key is valid only when CategoryName is QuotaMaximumDuration.\n\n- predefinedTags: The predefined tags for the workspace. Resources that you create must have these tags."
+      }
     },
     {
       "name": "Labels",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过滤条件，多个条件用逗号分隔，这些条件之间是与的关系。",
+        "en": "The filter conditions. Separate multiple conditions with commas. The conditions are combined with a logical AND."
+      }
     },
     {
       "name": "WorkspaceId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工作空间ID",
+        "en": "The workspace ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除工作空间配置",
+    "en": "DeleteConfig"
+  },
   "example": {
     "unifiedCli": "aliyun aiworkspace delete-config --workspace-id 98000 --config-key tempStoragePath --category-name CommonResourceConfig --labels key1=value_key2=value2 --region cn-hangzhou",
     "legacyCli": "aliyun aiworkspace DELETE /api/v1/workspaces/98000/configs/tempStoragePath --region cn-hangzhou --CategoryName CommonResourceConfig --Labels 'key1=value_key2=value2' --header \"Content-Type=application/json\""

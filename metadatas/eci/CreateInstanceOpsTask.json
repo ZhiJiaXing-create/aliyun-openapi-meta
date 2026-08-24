@@ -1,5 +1,6 @@
 {
   "name": "CreateInstanceOpsTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ContainerGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECI实例ID。",
+        "en": "The ID of the ECI instance."
+      }
     },
     {
       "name": "OpsType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "运维任务类型。取值范围：\n\n- coredump\n- tcpdump",
+        "en": "The type of the O\\&M task. Valid values:\n\n- coredump\n\n- tcpdump"
+      }
     },
     {
       "name": "OpsValue",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "运维任务参数。根据OpsType的取值，可设置相应参数。\n- 当OpsType取值为coredump时，OpsValue取值范围如下：\n    - enable：开启coredump。\n    - disable：关闭coredump。\n- 当OpsType取值为tcpdump时，OpsValue取值为JSON格式的参数字符串，例如`{\"Enable\":true, \"IfDeviceName\":\"eth0\"}`。具体参数如下：\n    - Enable：是否开启tcpdump，必填参数，取值为true表示开启，取值为false表示关闭。\n    - Protocol：网络协议。取值范围为tcp、udp、icmpv4。\n    - SourceIp：源IP地址。\n    - SourceCidr：源IP网段。CIDR格式。如果同时设置了IP和IP网段，在IP网段有效时，将忽略IP设置。\n    - SourcePort：源端口。取值范围为1~65535。\n    - DestIp：目的IP地址。\n    - DestCidr：目的IP网段。CIDR格式。如果同时设置了IP和IP网段，在IP网段有效时，将忽略IP设置。\n    - DestPort：目的端口。取值范围为1~65535。\n    - IfDeviceName：目标网卡。默认为eth0。\n    - Snaplen：数据包抓取长度。默认为65535字节。\n    - Duration：抓取时间。单位为秒。\n    - PacketNum：抓取数据包的目标个数。\n    - FileSize：抓取数据包的目标文件大小。单位为字节。最大为1073741824字节（即1 GB）。",
+        "en": "The parameters for the O\\&M task. The parameters that you can set vary based on the value of OpsType.\n\n- If you set OpsType to coredump, valid values for OpsValue are:\n\n  - enable: Enables coredump.\n\n  - disable: Disables coredump.\n\n- If you set OpsType to tcpdump, set OpsValue to a JSON string of parameters. For example, `{\"Enable\":true, \"IfDeviceName\":\"eth0\"}`. The following parameters are available:\n\n  - Enable: Specifies whether to enable tcpdump. This parameter is required. Set the value to true to enable tcpdump or false to disable it.\n\n  - Protocol: The network protocol. Valid values: tcp, udp, and icmpv4.\n\n  - SourceIp: The source IP address.\n\n  - SourceCidr: The source CIDR block. The value must be in CIDR format. If you specify both an IP address and a CIDR block, the CIDR block takes precedence.\n\n  - SourcePort: The source port. The value must be in the range of 1 to 65535.\n\n  - DestIp: The destination IP address.\n\n  - DestCidr: The destination CIDR block. The value must be in CIDR format. If you specify both an IP address and a CIDR block, the CIDR block takes precedence.\n\n  - DestPort: The destination port. The value must be in the range of 1 to 65535.\n\n  - IfDeviceName: The destination network interface card (NIC). The default value is eth0.\n\n  - Snaplen: The length of the captured packet. The default value is 65535 bytes.\n\n  - Duration: The capture duration. Unit: seconds.\n\n  - PacketNum: The number of packets to capture.\n\n  - FileSize: The size of the object file for the captured packets. Unit: bytes. The maximum value is 1073741824 bytes (1 GB)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建运维任务",
+    "en": "CreateInstanceOpsTask"
+  },
+  "descriptions": {
+    "zh": "##  接口说明\n运维任务支持以下两种：\n\n- coredump：开启coredump后，在容器异常终止时，系统会生成core文件，以便您分析异常，找出问题原因。更多信息，请参见[开启coredump](~~167801~~)。\n- tcpdump：开启tcpdump后，系统将抓取网络数据包，以便您分析报文，定位网络问题。更多信息，请参见[开启tcpdump](~~429749~~)。",
+    "en": "## API description\n\nO\\&M tasks support the following two types:\n\n- coredump: After you enable coredump, the system generates a core file when a container ends abnormally. This file helps you analyze the issue and determine its cause. For more information, see [Enable coredump](~~167801~~).\n\n- tcpdump: After you enable tcpdump, the system captures network packets. This helps you analyze messages and locate network issues. For more information, see [Enable tcpdump](~~429749~~)."
+  },
   "example": {
     "unifiedCli": "aliyun eci create-instance-ops-task --biz-region-id cn-hangzhou --container-group-id eci-bp1dvysdafbh00t70000 --ops-type coredump --ops-value enable --region cn-hangzhou",
     "legacyCli": "aliyun eci CreateInstanceOpsTask --region cn-hangzhou --OpsValue enable --ContainerGroupId 'eci-bp1dvysdafbh00t70000' --RegionId 'cn-hangzhou' --OpsType coredump"

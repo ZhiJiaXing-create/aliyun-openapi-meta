@@ -1,5 +1,6 @@
 {
   "name": "QueryCollectionData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,123 +9,210 @@
       "name": "Collection",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集合名。\n\n> 您可以通过[ListCollections](~~2401503~~)接口查看列表。",
+        "en": "The name of the collection.\n\n> You can call the [ListCollections](~~2401503~~) operation to list available collections."
+      }
     },
     {
       "name": "Content",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于全文检索的内容。即此值为空时，仅使用向量检索；不为空时，使用向量和全文双路检索。\n\n> 和Vector参数不能同时为空。",
+        "en": "The content for full-text search. If this parameter is omitted, only vector search is performed. If this parameter is specified, the system performs a hybrid search of vector search and full-text search.\n\n> You must specify one of the Content and Vector parameters."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。\n\n> 您可以调用[DescribeDBInstances](~~86911~~)接口查看目标地域下所有的AnalyticDB PostgreSQL实例的详情，包括实例ID。",
+        "en": "The ID of the instance.\n\n> You can call the [DescribeDBInstances](~~86911~~) operation to query details for all AnalyticDB for PostgreSQL instances in a region, including their instance IDs."
+      }
     },
     {
       "name": "Filter",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要查询的数据的过滤条件，格式为SQL的WHERE格式。是一个返回布尔值（真或假）的表达式，条件可以是简单的比较运算符，如等于(=)、不等于(<>或!=)、大于(>), 小于(<)、大于等于(>=)、小于等于(<=)，也可以是逻辑运算符（AND, OR, NOT）组合的更复杂的表达式，以及使用IN、BETWEEN、LIKE等关键字的条件。\n\n> \n> - 详细语法可参考：https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-where/",
+        "en": "The filter conditions for data retrieval. It is in the format of a WHERE clause in SQL. This expression returns a boolean value, which can be a simple comparison operator, such as `=`, `<>`, `!=`, `>`, `<`, `>=`, and `<=`, or a more complex expression combined with logical operators, such as `AND`, `OR`, and `NOT`, and keywords such as `IN`, `BETWEEN`, and `LIKE`.\n\n> - For more information about the syntax, see [PostgreSQL WHERE](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-where/)."
+      }
     },
     {
       "name": "HybridSearch",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "双路召回算法，默认为空(即直接将向量和全文的分数比较并排序)。\n\n可选值：\n\n- RRF：倒数排序融合(Reciprocal rank fusion)，有一个参数k控制融合效果，详见HybridSearchArgs配置；\n- Weight：比重排序，采用一个参数alpha控制向量和全文的分数比重，然后再排序，参数详见HybridSearchArgs配置；\n- Cascaded：先全文检索再在其基础上进行向量检索；",
+        "en": "The hybrid search algorithm. If this parameter is empty, the system ranks results by directly comparing the scores from the vector search and the full-text search.\n\nValid values:\n\n- `RRF`: Reciprocal Rank Fusion. This algorithm has a parameter k to control the fusion effect. For more information, see the description of the `HybridSearchArgs` parameter.\n\n- `Weight`: weighted sort. This algorithm uses a parameter alpha to control the score ratio of vector search and full-text search, and then sorts the results. For more information about the parameter, see the `HybridSearchArgs` parameter.\n\n- `Cascaded`: performs a full-text search, and then performs a vector search on the search results."
+      }
     },
     {
       "name": "HybridSearchArgs",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "双路召回的算法参数。目前支持RRF和Weight两种：\n\n- RRF：指定计算分数的算法的`1/(k+rank_i)`中的k常数，范围大于1的正整数，格式为：\n```\n{ \n   \"RRF\": {\n    \"k\": 60\n   }\n}\n```\n\n- Weight: 计算公式`alpha * vector_score + (1-alpha) * text_score`，参数alpha表示向量和全文的检索分数比重，范围为0～1，其中0表示只全文，1表示只向量：\n```\n{ \n   \"Weight\": {\n    \"alpha\": 0.5\n   }\n}\n```",
+        "en": "The parameters for the hybrid search algorithm. The following algorithms are supported: RRF and Weight.\n\n- For RRF, specify the constant k in the scoring algorithm `1/(k+rank_i)`. The value must be a positive integer greater than 1. The format is as follows:\n\n```\n{ \n   \"RRF\": {\n    \"k\": 60\n   }\n}\n```\n\n- For Weight, in the formula `alpha * vector_score + (1-alpha) * text_score`, the alpha parameter indicates the score ratio of the vector search to the full-text search. The value ranges from 0 to 1. 0 indicates that only the full-text search is used, and 1 indicates that only the vector search is used.\n\n```\n{ \n   \"Weight\": {\n    \"alpha\": 0.5\n   }\n}\n```"
+      }
     },
     {
       "name": "IncludeMetadataFields",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认为空，表示要返回的metadata字段，多个字段用逗号分隔。",
+        "en": "This parameter is left empty by default. It specifies the metadata fields to be returned. You can specify multiple fields and separate them with commas (,)."
+      }
     },
     {
       "name": "IncludeSparseValues",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否返回稀疏向量数据。取值说明：\n- **true**：返回稀疏向量数据。\n- **false**：不返稀疏回向量数据。",
+        "en": "Specifies whether to return sparse vector data. Valid values:\n\n- **true**: returns sparse vector data.\n\n- **false**: does not return sparse vector data."
+      }
     },
     {
       "name": "IncludeValues",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否返回稠密向量数据。取值说明：\n- **true**：返回稠密向量数据。\n- **false**：不返回稠密向量数据。",
+        "en": "Specifies whether to return dense vector data. Valid values:\n\n- **true**: returns dense vector data.\n\n- **false**: does not return dense vector data."
+      }
     },
     {
       "name": "Metrics",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检索时的相似度算法。取值说明：\n- **l2**：欧氏距离。\n- **ip**：点积（内积）距离。\n- **cosine**：余弦相似度。\n\n> 此值为空时，则使用构建索引时指定的算法。",
+        "en": "The similarity algorithm for search. Valid values:\n\n- **l2**: the Euclidean distance.\n\n- **ip**: the dot product distance.\n\n- **cosine**: the cosine similarity.\n\n> If this parameter is not specified, the algorithm specified when the index is created is used."
+      }
     },
     {
       "name": "Namespace",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命名空间。\n\n> 您可以通过[ListNamespaces](~~2401502~~)查看列表。",
+        "en": "The name of the namespace.\n\n> You can call the [ListNamespaces](~~2401502~~) operation to list available namespaces."
+      }
     },
     {
       "name": "NamespacePassword",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "命名空间对应的密码。",
+        "en": "The password for the namespace."
+      }
     },
     {
       "name": "Offset",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认为空，表示分页查询时的检索起点。不支持双路召回场景。\n\n范围必须>=0。当此值不为空时，会返回Total表示总的命中数。此参数配合TopK使用，比如要分页20检索chunk_id 0~44的chunks，则要请求3次：\n- Offset=0,TopK=20返回chunk_id 0~19\n- Offset=20,TopK=20返回chunk_id 20~39\n- Offset=30,TopK=20返回chunk_id 40~44",
+        "en": "This parameter is left empty by default. It specifies the start position of a paged query. This parameter is not supported in hybrid search.\n\nThe value must be greater than or equal to 0. When this parameter is not empty, Total in the response indicates the total number of hits. This parameter is used with TopK. For example, if you want to retrieve chunks 0 to 44 with a page size of 20, you must send three requests:\n\n- `Offset=0, TopK=20` returns chunks 0 to 19.\n\n- `Offset=20, TopK=20` returns chunks 20 to 39.\n\n- `Offset=40, TopK=20` returns chunks 40 to 44."
+      }
     },
     {
       "name": "OrderBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认为空，表示排序的依据字段。不支持双路召回场景。\n\n字段必须属于metadata或表里的默认字段比如id，格式支持：\n- 单个字段，如chunk_id；\n- 多个字段，用逗号连接，如block_id, chunk_id；\n- 支持反序，如: block_id DESC, chunk_id DESC；",
+        "en": "This parameter is left empty by default. It specifies the field based on which to sort the results. This parameter is not supported in hybrid search.\n\nThe field must be a metadata field or a default field in the table, such as `id`. The following formats are supported:\n\n- A single field, such as `chunk_id`.\n\n- Multiple fields separated by commas (,), such as `block_id, chunk_id`.\n\n- Descending order, such as `block_id DESC, chunk_id DESC`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在地域ID。",
+        "en": "The region ID of the instance."
+      }
     },
     {
       "name": "RelationalTableFilter",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "使用另外一张关系表实现向量数据过滤（类似Join的功能）。\n\n> 关系表的数据可以通过设置IncludeMetadataFields参数返回。比如rds_table_name.id表示返回关系表的id字段。",
+        "en": "Uses another relational table to filter vector data, which is similar to the JOIN operation.\n\n> The data of the relational table can be returned by setting the IncludeMetadataFields parameter. For example, `rds_table_name.id` indicates that the id field of the relational table is returned."
+      }
     },
     {
       "name": "SparseVector",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "稀疏向量数据列表。",
+        "en": "The sparse vector data."
+      }
     },
     {
       "name": "TopK",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设置返回top结果数量。",
+        "en": "Specifies the number of top results to return."
+      }
     },
     {
       "name": "Vector",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "向量数据，长度和[CreateCollection](~~2401497~~)接口的维度一致。\n> \n> - 当 SparseVector 为空时，只返回稠密向量检索结果。\n> - 当 Vector和SparseVector 均为空时，只返回全文检索结果。",
+        "en": "The vector data. The length of the vector data must be the same as that specified in the [CreateCollection](~~2401497~~) operation.\n\n> - If `SparseVector` is empty, only the dense vector search results are returned.\n>\n> - If both `Vector` and `SparseVector` are empty, only the full-text search results are returned."
+      }
     },
     {
       "name": "WorkspaceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "多数据库实例组成的Workspace的Id。此参数和DBInstanceId参数不能同时为空，当和DBInstanceId同时指定时以此参数为准。",
+        "en": "The ID of the workspace that consists of multiple database instances. You must specify this parameter or the DBInstanceId parameter. If both this parameter and DBInstanceId are specified, this parameter is used."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "召回向量数据",
+    "en": "Recall Vector Data"
+  },
   "example": {
     "unifiedCli": "aliyun gpdb query-collection-data --db-instance-id gp-xxxxxxxxx --collection document --namespace mynamespace --namespace-password testpassword --content hello_world --filter pipeline_id=_1yhpmo0rbn_AND_spu=_10025667796135_AND_dept_id=_226 --topk 10 --vector 1.234 --sparse-vector '{\"Values\":[1.2345],\"Indices\":[1]}' --biz-region-id cn-hangzhou --metrics cosine --include-values true --hybrid-search RRF --hybrid-search-args key=example-string --order-by chunk_id --offset 0 --include-metadata-fields title,content --workspace-id gp-ws-00000 --relational-table-filter Condition=tags_@_ARRAY_art TableName=my_rds_table CollectionMetadataField=doc_id TableField=id --include-sparse-values false --region cn-hangzhou",
     "legacyCli": "aliyun gpdb QueryCollectionData --region cn-hangzhou --OrderBy chunk_id --WorkspaceId 'gp-ws-00000' --HybridSearch RRF --NamespacePassword testpassword --SparseVector '{\"Values\":[1.2345],\"Indices\":[1]}' --Namespace mynamespace --Offset 0 --IncludeValues true --IncludeMetadataFields 'title,content' --TopK 10 --Metrics cosine --DBInstanceId 'gp-xxxxxxxxx' --Filter 'pipeline_id=_1yhpmo0rbn_AND_spu=_10025667796135_AND_dept_id=_226' --Content hello_world --Collection document --RelationalTableFilter '{\"Condition\":\"tags_@_ARRAY_art\",\"TableName\":\"my_rds_table\",\"CollectionMetadataField\":\"doc_id\",\"TableField\":\"id\"}' --RegionId 'cn-hangzhou' --IncludeSparseValues false --Vector '[1.234]' --HybridSearchArgs '{\"key\":\"example-string\"}'"

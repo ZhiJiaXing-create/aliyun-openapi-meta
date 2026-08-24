@@ -1,5 +1,6 @@
 {
   "name": "DeleteIpv6EgressOnlyRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,7 +9,11 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
@@ -20,15 +25,34 @@
       "name": "Ipv6EgressOnlyRuleId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的仅主动出规则ID。",
+        "en": "The ID of the IPv6 egress-only rule that you want to delete."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPv6网关所属的地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the IPv6 gateway. You can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除仅主动出规则",
+    "en": "Delete an iPv6 egress-only rule"
+  },
+  "descriptions": {
+    "zh": "- **DeleteIpv6EgressOnlyRule**接口属于异步接口，即系统返回一个请求ID，但该仅主动出规则尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeIpv6EgressOnlyRules](~~102208~~)接口查询仅主动出规则的删除状态：\n    - 当仅主动出规则处于**Deleting**状态时，表示仅主动出规则正在删除中。\n    - 当查询不到指定的仅主动出规则时，表示仅主动出规则删除成功。\n- **DeleteIpv6EgressOnlyRule**接口不支持并发删除同一个仅主动出规则。",
+    "en": "- **DeleteIpv6EgressOnlyRule** is an asynchronous operation. After you send a request, the system returns a request ID, but the IPv6 egress-only rule is not yet deleted. The deletion task continues to run in the background. You can call the [DescribeIpv6EgressOnlyRules](~~102208~~) operation to query the deletion status of the IPv6 egress-only rule:\n    - If the IPv6 egress-only rule is in the **Deleting** state, the rule is being deleted.\n    - If the specified IPv6 egress-only rule cannot be found, the rule has been deleted.\n- **DeleteIpv6EgressOnlyRule** does not support concurrent deletion of the same IPv6 egress-only rule."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-ipv6-egress-only-rule --biz-region-id cn-hangzhou --ipv6-egress-only-rule-id ipv6py-hp3w98rmlbqp0xxxxxxxx --client-token 123456 --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteIpv6EgressOnlyRule --region cn-hangzhou --Ipv6EgressOnlyRuleId 'ipv6py-hp3w98rmlbqp0xxxxxxxx' --DryRun true --RegionId 'cn-hangzhou' --ClientToken 123456"

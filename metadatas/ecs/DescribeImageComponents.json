@@ -1,5 +1,6 @@
 {
   "name": "DescribeImageComponents",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,83 +9,146 @@
       "name": "ComponentType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "组件类型。\n\n取值范围：\n- Build\n- Test",
+        "en": "The component type.\n\nValid values:\n- Build\n- Test."
+      }
     },
     {
       "name": "ComponentVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "组件版本号，格式为major.minor.patch，均为非负整数，也支持使用通配符“*”来替代其中一位进行模糊匹配版本。\n>仅当指定Name时该参数生效。",
+        "en": "The component version number in the major.minor.patch format. Each part must be a non-negative integer. You can also use the wildcard character (*) to replace one part for fuzzy matching.\n>This parameter takes effect only when Name is specified."
+      }
     },
     {
       "name": "ImageComponentId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待查询的镜像组件ID。N取值范围：1~20",
+        "en": "The ID of the image component to query. Valid values of N: 1 to 20."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时每页行数。取值范围：1~500\n\n默认值：50。",
+        "en": "The maximum number of entries per page for paging. Valid values: 1 to 500.\n\nDefault value: 50."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像组件名称。仅支持精确查找。",
+        "en": "The image component name. Only exact match is supported."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询凭证（Token）。取值为上一次调用该接口返回的`NextToken`参数值，初次调用接口时无需设置该参数。",
+        "en": "The pagination token. Set this parameter to the value of NextToken returned by the previous call. You do not need to set this parameter for the first request."
+      }
     },
     {
       "name": "Owner",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像组件类型。取值范围：\n\n- SELF：您创建的自定义镜像组件。\n- ALIYUN：阿里云提供的系统组件。",
+        "en": "The image component type. Valid values:\n\n- SELF: custom image components that you created.\n- ALIYUN: system components provided by Alibaba Cloud."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。使用该参数过滤资源时，资源数量不能超过1000个。\n\n>不支持默认资源组过滤。",
+        "en": "The resource group ID. If you use this parameter to filter resources, the resource count cannot exceed 1,000.\n\n>Filtering by the default resource group is not supported."
+      }
     },
     {
       "name": "SystemType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "组件支持的操作系统。\n\n取值范围：\n- Linux\n- Windows",
+        "en": "The operating system supported by the component.\n\nValid values:\n- Linux\n- Windows."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。N的取值范围：1~20",
+            "en": "The tag key. Valid values of N: 1 to 20."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。N的取值范围：1~20",
+            "en": "The tag value. Valid values of N: 1 to 20."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询镜像组件的详细信息",
+    "en": "Query image component details"
+  },
+  "descriptions": {
+    "zh": "您可以设置`NextToken`查询凭证（Token），其取值是上一次调用DescribeImageComponents返回的`NextToken`参数值，再通过`MaxResults`设置单页查询的最大条目数进行查询。",
+    "en": "You can set NextToken to the value of NextToken returned by the previous call to DescribeImageComponents, and set MaxResults to specify the maximum number of entries per page."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-image-components --biz-region-id cn-hangzhou --resource-group-id rg-bp67acfmxazb4p0000 --tag Value=TestValue Key=TestKey --name testComponent --next-token AAAAAdDWBF20000 --max-results 50 --owner SELF --image-component-id ic-bp67acfmxazb4p0000 --component-type Build --system-type Linux --component-version 1.0.0 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeImageComponents --region cn-hangzhou --Tag.1.Key TestKey --Owner SELF --ComponentType Build --ResourceGroupId 'rg-bp67acfmxazb4p0000' --NextToken AAAAAdDWBF20000 --MaxResults 50 --Tag.1.Value TestValue --SystemType Linux --ImageComponentId.1 'ic-bp67acfmxazb4p0000' --RegionId 'cn-hangzhou' --Name testComponent --ComponentVersion '1.0.0'"

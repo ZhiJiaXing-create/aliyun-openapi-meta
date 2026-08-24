@@ -1,5 +1,6 @@
 {
   "name": "CreateQuotaAlarm",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,7 +9,11 @@
       "name": "AlarmName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "配额告警名称。",
+        "en": "The name of the quota alert."
+      }
     },
     {
       "name": "OriginalContext",
@@ -20,31 +25,51 @@
       "name": "ProductCode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云产品的缩写名称。\n\n> 关于如何获取云产品的缩写名称，请参见[ListProductQuotas](~~440554~~)中的`ProductCode`。",
+        "en": "The abbreviation of the Alibaba Cloud service name.\n\n> For more information about how to obtain the abbreviation of an Alibaba Cloud service name, see the `ProductCode` parameter in [ListProductQuotas](~~440554~~)."
+      }
     },
     {
       "name": "QuotaActionCode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "配额ID。\n\n> 关于如何获取云产品的配额ID，请参见[ListProductQuotas](~~440554~~)中的`QuotaActionCode`。",
+        "en": "The quota ID.\n\n> For more information about how to obtain the quota ID of an Alibaba Cloud service, see the `QuotaActionCode` parameter in [ListProductQuotas](~~440554~~)."
+      }
     },
     {
       "name": "QuotaDimensions",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "配额维度。\n配额项的属性，维度`Dimensions`+配额ID`QuotaActionCode`确定唯一的配额项。\n> 部分云产品维度必填，可以通过[ListProductQuotaDimensions](~~440553~~)查询云产品支持的配额维度， 返回参数`Requisite`表示该维度是否必填。",
+        "en": "The quota dimensions.\nA quota dimension is an attribute of a quota item. The combination of `Dimensions` and `QuotaActionCode` uniquely identifies a quota item.\n\n> This parameter is required for some Alibaba Cloud services. To query the dimensions that an Alibaba Cloud service supports, call the [ListProductQuotaDimensions](~~440553~~) operation. The `Requisite` parameter in the response indicates whether a dimension is required."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "配额维度的Key。\n\n> `Dimensions.N.Key`和`Dimensions.N.Value`必须同时设置。N的取值范围取决于对应云产品支持的维度个数，可通过[ListProductQuotaDimensions](~~440553~~)查询云产品支持的配额维度，返回数组长度就是N。",
+            "en": "The key of the quota dimension.\n\n> You must specify both `Dimensions.N.Key` and `Dimensions.N.Value`. The value of N indicates the number of dimensions that the Alibaba Cloud service supports. To query the supported dimensions, call the [ListProductQuotaDimensions](~~440553~~) operation. The value of N is the length of the returned array."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "配额维度的Value。\n\n > `Dimensions.N.Key`和`Dimensions.N.Value`必须同时设置。N的取值范围取决于对应云产品支持的维度个数，可通过[ListProductQuotaDimensions](~~440553~~)查询云产品支持的配额维度，返回数组长度就是N。",
+            "en": "The value of the quota dimension.\n\n> You must specify both `Dimensions.N.Key` and `Dimensions.N.Value`. The value of N indicates the number of dimensions that the Alibaba Cloud service supports. To query the supported dimensions, call the [ListProductQuotaDimensions](~~440553~~) operation. The value of N is the length of the returned array."
+          }
         }
       ]
     },
@@ -52,27 +77,54 @@
       "name": "Threshold",
       "position": "Body",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配额告警阈值的数值。取值：\n\n- 当`ThresholdType`选择`used`时，如果配额的已使用量大于等于预设数值，您会收到告警通知。配额告警阈值必须大于配额的已使用量。\n\n- 当`ThresholdType`选择`usable`时，如果配额的剩余可用量小于等于预设数值，您会收到告警通知。配额告警阈值必须小于配额的剩余可用量。\n\n> 该参数与ThresholdPercent必须设置一个。",
+        "en": "The numeric value of the alert threshold. Valid values:\n\n- If you set `ThresholdType` to `used`, an alert is triggered when the used quota is greater than or equal to this value. The threshold must be greater than the current used quota.\n\n- If you set `ThresholdType` to `usable`, an alert is triggered when the available quota is less than or equal to this value. The threshold must be less than the current available quota.\n\n> You must specify either this parameter or ThresholdPercent."
+      }
     },
     {
       "name": "ThresholdPercent",
       "position": "Body",
       "type": "Float",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配额告警阈值的百分比。取值：\n\n- 当`ThresholdType`选择`used`时，如果配额的已使用量大于等于预设百分比，您会收到告警通知。取值范围：（50%, 100%]。\n\n- 当`ThresholdType`选择`usable`时，如果配额的剩余可用量小于等于预设百分比，您会收到告警通知。取值范围：（0%, 50%]。\n\n> 该参数与Threshold必须设置一个。",
+        "en": "The percentage of the alert threshold. Valid values:\n\n- If you set `ThresholdType` to `used`, an alert is triggered when the used quota percentage is greater than or equal to this value. The value must be in the range of (50%, 100%].\n\n- If you set `ThresholdType` to `usable`, an alert is triggered when the available quota percentage is less than or equal to this value. The value must be in the range of (0%, 50%].\n\n> You must specify either this parameter or Threshold."
+      }
     },
     {
       "name": "ThresholdType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配额告警类型。取值：\n\n- used（默认值）：已使用量告警。\n- usable：剩余可用量告警。",
+        "en": "The type of the quota alert. Valid values:\n\n- used (default): an alert for the used quota.\n\n- usable: an alert for the available quota."
+      }
     },
     {
       "name": "WebHook",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配额中心将告警信息通过HTTP协议的POST请求发送到指定公网的URL地址。",
+        "en": "The public URL for receiving alert notifications. Quota Center sends HTTP POST requests to this URL."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建配额用量告警",
+    "en": "CreateQuotaAlarm"
+  },
+  "descriptions": {
+    "zh": "配额告警功能已升级，本API即将废弃，请您使用云监控API [PutResourceMetricRules](~~2513316~~)、[PutMetricRuleTargets](~~2513302~~)对新版配额告警规则进行创建。\n使用API对新版配额告警进行操作的更多信息，请参见[使用API管理新版配额告警](~~2863234~~)。",
+    "en": "This API operation is deprecated because the quota alert feature has been upgraded. Use the Cloud Monitor API operations [PutResourceMetricRules](~~2513316~~) and [PutMetricRuleTargets](~~2513302~~) to create new quota alert rules. For more information, see [Use API operations to manage the new version of quota alerts](~~2863234~~)."
+  },
   "example": {
     "unifiedCli": "aliyun quotas create-quota-alarm --product-code config --quota-action-code q_hvnoqv --alarm-name q_hvnoqv_alarm --threshold-type used --threshold 150.0 --threshold-percent 50.0 --web-hook https://alert.aliyun.com/callback --quota-dimensions Value=cn-hangzhou Key=regionId --original-context example-string --region cn-hangzhou",
     "legacyCli": "aliyun quotas CreateQuotaAlarm --region cn-hangzhou --QuotaActionCode q_hvnoqv --QuotaDimensions.1.Value 'cn-hangzhou' --ThresholdPercent '50.0' --AlarmName q_hvnoqv_alarm --ProductCode config --OriginalContext 'example-string' --WebHook 'https://alert.aliyun.com/callback' --QuotaDimensions.1.Key regionId --ThresholdType used --Threshold '150.0'"

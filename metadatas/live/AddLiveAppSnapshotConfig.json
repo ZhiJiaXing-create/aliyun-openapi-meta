@@ -1,5 +1,6 @@
 {
   "name": "AddLiveAppSnapshotConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。\nAppName名称与推流地址中的AppName名称对应，模板才能生效。不超过255字符，支持数字、大小写字母、短横线（-）、下划线（_），短横线、下划线不能位于首位。也支持取值为单个星号（*）字符，即可匹配所有AppName。",
+        "en": "The name of the application to which the live stream belongs. The value of this parameter must be the same as the application name in the ingest URL. Otherwise, the configuration does not take effect. The name can be up to 255 characters in length and can contain digits, letters, hyphens (-), and underscores (\\_). The name cannot start with a hyphen (-) or underscore (\\_). You can also specify an asterisk (\\*) as the value to match all applications."
+      }
     },
     {
       "name": "Callback",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "截图回调地址。",
+        "en": "The callback URL that is used to receive notifications about snapshot capture."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The main streaming domain."
+      }
     },
     {
       "name": "OssBucket",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储的Bucket名称。\n\n配置完成后，您可以根据配置回调信息，在OSS控制台查找指定的配置内容。OSS Bucket需要提前创建，创建方法请参考[配置OSS](~~84932~~) 。",
+        "en": "The name of the OSS bucket.\n\nAfter the configuration is complete, you can search for specific snapshots in the OSS console based on the callback information. You must create the OSS bucket in advance. For more information, see [Configure OSS](~~84932~~)."
+      }
     },
     {
       "name": "OssEndpoint",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储的Endpoint名称。\n\n配置完成后，您可以根据配置回调信息，在OSS控制台查找指定的配置内容。OSS Endpoint需要提前创建，创建方法请参考[配置OSS](~~84932~~) 。",
+        "en": "The endpoint of the OSS bucket.\n\nAfter the configuration is complete, you can search for specific snapshots in the OSS console based on the callback information. You must configure the OSS endpoint in advance. For more information, see [Configure OSS](~~84932~~)."
+      }
     },
     {
       "name": "OverwriteOssObject",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "覆盖截图存储文件名。每次截图都覆盖此文件。\n\n- 小于256 Byte。\n- 目前仅支持生成JPG图片。\n- 支持变量匹配，包含{AppName}、{StreamName}。",
+        "en": "The naming format of snapshots that are stored in the overwrite mode, which means that a new snapshot overwrites the previous snapshot.\n\n- The name must be less than 256 bytes in length.\n\n- Only JPG images are supported.\n\n- The name can contain variables such as {AppName} and {StreamName}."
+      }
     },
     {
       "name": "SequenceOssObject",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实时截图存储文件名。\n\n每次截图都递增存储，调用[DescribeLiveStreamSnapshotInfo](~~2847902~~)接口可以查询某一段时间的截图文件。\n\n- 小于256 Byte。\n- 目前仅支持生成JPG图片。\n- 支持变量匹配，包含{AppName}、{StreamName}、{UnixTimestamp}、{Sequence}，其中 {UnixTimestamp}、{Sequence} 必填一个。",
+        "en": "The naming format of snapshots that are stored in sequence,\n\nwhich means that a new snapshot does not overwrite the previous snapshot. You can call the [DescribeLiveStreamSnapshotInfo](~~2847902~~) operation to query the snapshots that were captured within a specific time period.\n\n- The name must be less than 256 bytes in length.\n\n- Only JPG images are supported.\n\n- The name can contain variables such as {AppName}, {StreamName}, {UnixTimestamp}, and {Sequence}. The name must contain at least one of the {UnixTimestamp} and {Sequence} variables."
+      }
     },
     {
       "name": "TimeInterval",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "截图周期，每个间隔周期截一次图片。单位：秒。取值范围：**5~3600**。",
+        "en": "The interval at which snapshots are captured. Unit: seconds. Valid values: **5 to 3600**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加直播截图配置",
+    "en": "AddLiveAppSnapshotConfig"
+  },
+  "descriptions": {
+    "zh": "- 请确保在使用该接口前，已充分了解直播截图的收费方式和价格。计费详情，请参见[直播截图费用](~~195286~~)。\n\n- 视频直播截图功能需要将截图文件存放在Bucket中，因此需要开通OSS服务并且拥有至少一个Bucket用于存储这些截图文件。具体操作请参见[配置OSS](~~84932~~)。\n\n\n- 直播截图存储在OSS中，会产生存储费用，在OSS中计费详情请参见[存储费用](~~173534~~)。\n- OSS Bucket必须与播流域名的直播中心同地域，不支持跨地域截图。\n\n## QPS限制\n本接口的单用户QPS限制为30次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Before you call this operation, make sure that you fully understand the billing method and pricing of live stream snapshots in ApsaraVideo Live. For more information, see [Billing of live stream snapshots](~~195286~~).\n\n- Make sure that Object Storage Service (OSS) is activated and a specific bucket is created. This way, ApsaraVideo Live can store live stream snapshots in the bucket. For more information, see [Configure OSS](~~84932~~).\n\n- If you store snapshots in OSS, storage fees are generated. For more information, see [Storage fees](~~173534~~).\n\n- The OSS bucket must reside in the same region as the live center of the streaming domain. Cross-region snapshot capture is not supported.\n\n## [](#qps-)QPS limit\n\nYou can call this operation up to 30 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun live add-live-app-snapshot-config --domain-name example.com --app-name liveApp0000 --time-interval 5 --oss-endpoint cn-oss-0000.aliyuncs.com --oss-bucket liveBucket0000 --overwrite-oss-object AppName_/_StreamName_.jpg --sequence-oss-object snapshot/_AppName_/_StreamName_/_UnixTimestamp_.jpg --callback https://learn.aliyundoc.com --region cn-hangzhou",
     "legacyCli": "aliyun live AddLiveAppSnapshotConfig --region cn-hangzhou --OverwriteOssObject 'AppName_/_StreamName_.jpg' --SequenceOssObject 'snapshot/_AppName_/_StreamName_/_UnixTimestamp_.jpg' --Callback 'https://learn.aliyundoc.com' --TimeInterval 5 --OssEndpoint 'cn-oss-0000.aliyuncs.com' --DomainName 'example.com' --OssBucket liveBucket0000 --AppName liveApp0000"

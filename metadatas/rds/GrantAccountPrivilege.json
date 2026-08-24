@@ -1,5 +1,6 @@
 {
   "name": "GrantAccountPrivilege",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AccountName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "账号名称，可调用[DescribeAccounts](~~610454~~)获取。",
+        "en": "The username of the account."
+      }
     },
     {
       "name": "AccountPrivilege",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "账号权限类型。当填写多个DBName值时，权限类型也需按顺序填写对应数量的值，用英文逗号（,）分隔。\n\n不同数据库引擎支持类型不同，取值：\n> 账号权限详情，请参见[MySQL/MariaDB权限列表](~~146395~~)、[SQL Server权限列表](~~95692~~)、[PostgreSQL权限列表](~~257684~~)。\n<details>\n<summary>RDS MySQL/RDS MariaDB</summary>\n\n- **ReadWrite**：读写\n- **ReadOnly**：只读\n- **DDLOnly**：仅执行DDL\n- **DMLOnly**：只执行DML\n\n</details>\n\n<details>\n<summary>RDS SQL Server</summary>\n\n- **ReadWrite**：读写，赋予权限对应SQL Server中的`db_datawriter`和`db_datareader`数据库角色。\n- **ReadOnly**：只读，赋予权限对应SQL Server中的`db_datareader`数据库角色。\n- **DBOwner**：数据库所有者，赋予权限对应SQL Server中的`db_owner`数据库角色。\n> 数据库级别角色的更多详情信息，请参见[微软官方教程](https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver16)。\n</details>\n\n<details>\n<summary>RDS PostgreSQL</summary>\n\n**DBOwner**：数据库所有者\n> 如需对账号权限进行精细化管理，请参见[PostgreSQL权限管理最佳实践](~~352149~~)。\n</details>",
+        "en": "The permissions that you want to grant to the account. The number of permissions must be the same as the number of databases that you specify for the DBName parameter. You can specify this parameter based on your business requirements. Valid values:\n\n*   **ReadWrite**: read and write permissions\n*   **ReadOnly**: read-only permissions\n*   **DDLOnly**: DDL-only permissions\n*   **DMLOnly**: DML-only permissions\n*   **DBOwner**: database owner permissions\n\n> \n\n*   If the instance runs MySQL or MariaDB, you can set this parameter to **ReadWrite**, **ReadOnly**, **DDLOnly**, or **DMLOnly**.\n\n*   If the instance runs SQL Server, you can set this parameter to **ReadWrite**, **ReadOnly**, or **DBOwner**.\n*   If the instance runs PostgreSQL and uses cloud disks, you can set this parameter to **DBOwner**."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，可调用[DescribeDBInstances](~~610396~~)获取。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要授权访问的数据库名称。如需批量授权多个库，可使用英文逗号（,）分隔多个库名，例如`db1,db2,db3`。",
+        "en": "The name of the database on which you want to grant permissions. Separate multiple database names with commas (,)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "授权账号访问数据库",
+    "en": "Grant Database Access Permissions to an Account"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n- [RDS MySQL修改账号权限](~~96101~~)\n- [RDS SQL Server修改账号权限](~~95692~~)\n- [RDS MariaDB修改账号权限](~~97134~~)\n- [RDS PostgreSQL权限详情](~~257684~~)",
+    "en": "### Supported Engines\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### Related Function Documentation\n><notice>Before using this API, carefully read the function documentation to fully understand the prerequisites and the impact of using this API before performing any operation.></notice>\n\n- [Modify Account Permissions for RDS MySQL](~~96101~~)\n- [Modify Account Permissions for RDS SQL Server](~~95692~~)\n- [Modify Account Permissions for RDS MariaDB](~~97134~~)\n- [Permission Details for RDS PostgreSQL](~~257684~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds grant-account-privilege --db-instance-id rm-uf6wjk50000 --account-name test1 --db-name testDB1 --account-privilege ReadWrite --region cn-hangzhou",
     "legacyCli": "aliyun rds GrantAccountPrivilege --region cn-hangzhou --DBInstanceId 'rm-uf6wjk50000' --AccountPrivilege ReadWrite --DBName testDB1 --AccountName test1"

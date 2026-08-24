@@ -1,5 +1,6 @@
 {
   "name": "CreateHaVip",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HaVip的描述信息。\n\n描述长度为1～255个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the HAVIP.\n\nThe description must be 1 to 255 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "IpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HaVip的IP地址。\n\n指定的IP地址必须为交换机网段中未被占用的IP地址。如果不指定，则从指定的交换机中随机分配一个未被占用的IP地址。",
+        "en": "The IP address of the HAVIP.\n\nThe specified IP address must be an idle IP address in vSwitch CIDR block of the vSwitch. If you do not specify this parameter, an idle IP address is randomly assigned from vSwitch CIDR block of the specified vSwitch."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HaVip的名称。\n\n名称长度为1～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the HAVIP.\n\nThe name must be 1 to 128 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "HaVip所在的地域。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the HAVIP. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HaVip所属的资源组ID。",
+        "en": "The ID of the resource group to which the HAVIP belongs."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源的标签。",
+        "en": "The tags of the resource."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。如需传入该值，则不能输入空字符串。\n\n一个标签键最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the resource. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。如需传入该值，可以输入空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the resource. You can specify up to 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -64,9 +101,24 @@
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "HaVip所属的交换机ID。",
+        "en": "The ID of the vSwitch to which the HAVIP belongs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建高可用虚拟IP（HaVip）",
+    "en": "Create a high-availability virtual IP address (HAVIP)"
+  },
+  "descriptions": {
+    "zh": "**CreateHaVip**接口属于异步接口，即系统会返回HaVip的ID，但该HaVip尚未创建完成，系统后台的创建任务仍在进行。您可以调用[DescribeHaVips](~~114611~~)查询HaVip的创建状态：\n- 当HaVip处于**Creating**状态时，表示HaVip正在创建中。\n- 当HaVip处于**Available**状态时，表示HaVip创建完成。",
+    "en": "**CreateHaVip** is an asynchronous operation. After you invoke this operation, the system returns the HAVIP ID, but the HAVIP is not yet created. The creation node is still running in the background. You can invoke [DescribeHaVips](~~114611~~) to query the creation status of the HAVIP:\n- If the HAVIP is in the **Creating** state, the HAVIP is being created.\n- If the HAVIP is in the **Available** state, the HAVIP is created."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-ha-vip --name test --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --biz-region-id cn-hangzhou --vswitch-id vsw-asdfjlnaue4g0000 --ip-address 192.XX.XX.10 --description This_is_my_HaVip. --resource-group-id rg-acfmxazb4ph6aiy0000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateHaVip --region cn-hangzhou --Tag.1.Key FinanceDept --Description 'This_is_my_HaVip.' --ResourceGroupId 'rg-acfmxazb4ph6aiy0000' --VSwitchId 'vsw-asdfjlnaue4g0000' --Tag.1.Value FinanceJoshua --IpAddress '192.XX.XX.10' --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --Name test"

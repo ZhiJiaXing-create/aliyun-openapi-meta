@@ -1,5 +1,6 @@
 {
   "name": "UpdateGatewayRouteTableEntryAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,110 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网关路由表的描述信息。\n\n长度为2～256个字符，必须以字母或中文开头，但不能以`http://`或`https://`开头。",
+        "en": "The description of the gateway route table.\n\nThe description must be 2 to 256 characters in length and must start with a letter or Chinese character. It cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "DestinationCidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关路由表的路由条目的目标网段。",
+        "en": "The destination CIDR block of the route entry in the gateway route table."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会修改网关路由表。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接修改网关路由表。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: performs a dry run without modifying the gateway route table. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): performs a dry run and sends the request. If the request passes the dry run, an HTTP 2xx status code is returned and the gateway route table is modified."
+      }
     },
     {
       "name": "GatewayRouteTableId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改的网关路由表ID。",
+        "en": "The ID of the gateway route table that you want to modify."
+      }
     },
     {
       "name": "IPv4GatewayRouteTableId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改的网关路由表ID。",
+        "en": "The ID of the gateway route table that you want to modify."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网关路由表的名称。\n\n长度为2～128个字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The name of the gateway route table.\n\nThe name must be 2 to 128 characters in length and must start with a letter or Chinese character. It can contain digits, periods (.), underscores (_), and hyphens (-)."
+      }
     },
     {
       "name": "NextHopId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要修改的下一跳的实例ID。\n\n- 当**NextHopType**取值为**Instance**时，**NextHopId**为ECS实例ID。\n- 当**NextHopType**取值为**NetworkInterface**时，**NextHopId**为弹性网卡实例ID。\n- 当**NextHopType**取值为**Local**时，**NextHopId**为空，表示本地。\n\n> 当路由条目的下一跳类型为**Instance**或**NetworkInterface**时需要修改下一跳，您需要先将**NextHopType**修改为**Local**，然后再将**NextHopType**修改为**Instance**或**NetworkInterface**之后修改具体的**NextHopId**。当下一跳类型为弹性网卡或ECS实例时，不支持直接修改下一跳为其他的弹性网卡或ECS实例。",
+        "en": "The instance ID of the next hop that you want to modify.\n\n- If **NextHopType** is set to **Instance**, set **NextHopId** to the ID of an ECS instance.\n- If **NextHopType** is set to **NetworkInterface**, set **NextHopId** to the ID of an elastic network interface controller (NIC) instance.\n- If **NextHopType** is set to **Local**, leave **NextHopId** empty, which indicates a local next hop.\n\n> If the next hop type of the route is **Instance** or **NetworkInterface** and you want to modify the next hop, you must first change **NextHopType** to **Local**, and then change **NextHopType** to **Instance** or **NetworkInterface** and specify the **NextHopId**. You cannot directly change the next hop from one network interface controller (NIC) or ECS instance to another network interface controller (NIC) or ECS instance when the next hop type is network interface controller (NIC) or ECS instance."
+      }
     },
     {
       "name": "NextHopType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的路由条目下一跳类型。取值：\n\n- **Instance**：ECS实例。\n- **NetworkInterface**：弹性网卡实例。\n\n- **Local**：本地。",
+        "en": "The next hop type of the route that you want to modify. Valid values:\n\n- **Instance**: ECS instance.\n- **NetworkInterface**: elastic network interface controller (NIC) instance.\n\n- **Local**: local."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的网关路由表所在地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the gateway route table that you want to modify.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改网关路由表的下一跳类型和下一跳",
+    "en": "Modify the next hop type and next hop of a gateway route table"
+  },
   "example": {
     "unifiedCli": "aliyun vpc update-gateway-route-table-entry-attribute --biz-region-id cn-hangzhou --ipv4-gateway-route-table-id vtb-5ts0ohchwkp3dydt20000 --gateway-route-table-id vtb-5ts0ohchwkp3dydt20000 --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --destination-cidr-block 47.100.XX.XX/16 --next-hop-type Instance --next-hop-id i-bp18xq9yguxoxe7m0000 --name test --description new --region cn-hangzhou",
     "legacyCli": "aliyun vpc UpdateGatewayRouteTableEntryAttribute --region cn-hangzhou --NextHopType Instance --GatewayRouteTableId 'vtb-5ts0ohchwkp3dydt20000' --Description new --DryRun false --NextHopId 'i-bp18xq9yguxoxe7m0000' --IPv4GatewayRouteTableId 'vtb-5ts0ohchwkp3dydt20000' --RegionId 'cn-hangzhou' --DestinationCidrBlock '47.100.XX.XX/16' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Name test"

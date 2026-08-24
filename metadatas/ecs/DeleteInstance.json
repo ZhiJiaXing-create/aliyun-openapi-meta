@@ -1,5 +1,6 @@
 {
   "name": "DeleteInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- true：发送检查请求，不会释放实例。检查项包括是否填写了必需参数、请求格式、业务限制和 ECS 库存。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- false（默认）：发送正常请求，通过检查后直接删除实例。",
+        "en": "Specifies whether to perform only a dry run. Valid values:\n\n- true: Sends a check request without releasing the instance. The system checks whether the required parameters are specified, the request format is valid, business requirements are met, and ECS resources are sufficient. If the check fails, the corresponding error is returned. If the check succeeds, the error code `DryRunOperation` is returned.\n- false (default): Sends a normal request. After the request passes the check, the instance is directly deleted."
+      }
     },
     {
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制释放**运行中**（`Running`）的实例。\n\n- true：强制释放**运行中**（`Running`）的实例。\n- false：正常释放实例，此时实例必须处于**已停止**（`Stopped`）状态。\n\n默认值：false。\n><warning>强制释放相当于断电，实例内存以及存储中的临时数据都会被擦除，无法恢复。></warning>",
+        "en": "Specifies whether to forcefully release a **running** (`Running`) instance.\n\n- true: Forcefully releases a **running** (`Running`) instance.\n- false: Releases the instance in the normal way. The instance must be in the **Stopped** (`Stopped`) state.\n\nDefault value: false.\n><warning>A forceful release is equivalent to a power-off. Temporary data in the instance memory and storage is erased and cannot be recovered.></warning>."
+      }
     },
     {
       "name": "ForceStop",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "释放**运行中**（`Running`）的实例时的是否采取强制关机策略。仅当`Force=true`时生效。取值范围：\n\n- true：强制关机并释放实例。相当于典型的断电操作，实例会直接进入资源释放流程。\n><warning>强制释放相当于断电，实例内存以及存储中的临时数据都会被擦除，无法恢复。></warning>\n- false：在实例释放前，系统将优先执行标准关机流程，该模式会导致实例释放动作持续几分钟。用户在操作系统关机时，配置一些业务排水动作，从而减少业务系统的噪声。\n\n默认值：true。",
+        "en": "Specifies whether to use the forced shutdown policy when releasing a **running** (`Running`) instance. This parameter takes effect only when `Force=true`. Valid values:\n\n- true: Forcefully shuts down and releases the instance. This is equivalent to a typical power-off operation. The instance directly enters the resource release process.\n><warning>A forceful release is equivalent to a power-off. Temporary data in the instance memory and storage is erased and cannot be recovered.></warning>\n- false: Before the instance is released, the system preferentially performs a standard shutdown process. This mode causes the instance release to take several minutes. You can configure service draining actions during the operating system shutdown to reduce noise in your business systems.\n\nDefault value: true."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "TerminateSubscription",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否释放已到期的包年包月实例。\n\n- true：释放。\n- false：不释放。\n\n默认值：false。",
+        "en": "Specifies whether to release an expired subscription instance.\n\n- true: Releases the instance.\n- false: Does not release the instance.\n\nDefault value: false."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除实例",
+    "en": "Delete an instance"
+  },
+  "descriptions": {
+    "zh": "><warning>\n释放实例后，实例所使用的物理资源会被回收，相关数据全部丢失且不可恢复。\n></warning>\n\n- 云盘的手动快照会被保留并继续计费，您可以通过[DeleteSnapshot](~~2679824~~)删除。\n- 实例上挂载的云盘和自动快照是否被释放取决于创建时的参数设置。释放实例之前，您可以通过[DescribeDisks](~~2679767~~)、[ModifyDiskAttribute](~~2679770~~)查询和修改相关参数设置：\n  - `DeleteWithInstance=false`，云盘会被转换成按量付费云盘而保留下来，否则会随实例被释放。\n  - `DeleteAutoSnapshot=false`，自动快照被保留，否则会随实例被释放。\n- 弹性公网IP（EIP）不会随实例被释放，您可以通过[ReleaseEipAddress](~~448702~~)释放。\n><notice>被安全锁定的实例，即使云盘的`DeleteWithInstance`参数设置为`false`，释放实例时也会忽略这个属性而释放云盘。></notice>",
+    "en": "><warning>\nAfter an instance is released, all physical resources used by the instance are reclaimed. All related data is permanently lost and cannot be recovered.\n></warning>.\n\n- Manual snapshots of disks are retained and continue to incur charges. You can delete them by calling [DeleteSnapshot](~~2679824~~).\n- Whether disks attached to the instance and automatic snapshots are released depends on the parameter settings specified when they were created. Before you release an instance, you can call [DescribeDisks](~~2679767~~) and [ModifyDiskAttribute](~~2679770~~) to query and modify the related parameter settings:\n  - If `DeleteWithInstance=false`, the disk is converted to a pay-as-you-go disk and retained. Otherwise, the disk is released along with the instance.\n  - If `DeleteAutoSnapshot=false`, automatic snapshots are retained. Otherwise, they are released along with the instance.\n- Elastic IP addresses (EIPs) are not released along with the instance. You can call [ReleaseEipAddress](~~448702~~) to release them.\n><notice>For a security-locked instance, even if the `DeleteWithInstance` parameter of a disk is set to `false`, this attribute is ignored and the disk is released along with the instance.></notice>."
+  },
   "example": {
     "unifiedCli": "aliyun ecs delete-instance --instance-id i-bp1g6zv0ce8oghu70000 --biz-force false --force-stop true --terminate-subscription false --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ecs DeleteInstance --region cn-hangzhou --InstanceId 'i-bp1g6zv0ce8oghu70000' --Force false --ForceStop true --TerminateSubscription false --DryRun false"

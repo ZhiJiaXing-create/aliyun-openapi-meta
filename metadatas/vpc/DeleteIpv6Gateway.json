@@ -1,5 +1,6 @@
 {
   "name": "DeleteIpv6Gateway",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：只预检此次请求，不会删除IPsec服务端。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误信息。如果检查通过，则返回`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后直接删除IPsec服务端。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, the IPv6 gateway is deleted."
+      }
     },
     {
       "name": "Ipv6GatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的IPv6网关实例ID。",
+        "en": "The instance ID of the IPv6 gateway that you want to delete."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPv6网关所属的地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the IPv6 gateway. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除IPv6网关",
+    "en": "Delete an iPv6 gateway"
+  },
+  "descriptions": {
+    "zh": "删除IPv6网关前，请先删除仅主动出规则。更多信息，请参见[DeleteIpv6EgressOnlyRule](~~102201~~)。\n\n- **DeleteIpv6Gateway**接口属于异步接口，即系统返回一个请求ID，但该IPv6网关尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeIpv6GatewayAttribute](~~102226~~)查询IPv6网关的删除状态：\n    - 当IPv6网关处于**Deleting**状态时，表示IPv6网关正在删除中。\n    - 当查询不到指定的IPv6网关时，表示IPv6网关删除成功。\n- **DeleteIpv6Gateway**接口不支持并发删除同一个IPv6网关。",
+    "en": "Before you delete an IPv6 gateway, delete the IPv6 egress-only rules first. For more information, see [DeleteIpv6EgressOnlyRule](~~102201~~).\n\n- The **DeleteIpv6Gateway** operation is asynchronous. After a request is sent, the system returns a request ID. However, the IPv6 gateway is not yet deleted. The deletion task is still running in the background. You can call [DescribeIpv6GatewayAttribute](~~102226~~) to query the deletion status of the IPv6 gateway:\n    - If the IPv6 gateway is in the **Deleting** state, the IPv6 gateway is being deleted.\n    - If the specified IPv6 gateway cannot be found, the IPv6 gateway is deleted.\n- The **DeleteIpv6Gateway** operation does not support concurrent deletion of the same IPv6 gateway."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-ipv6-gateway --biz-region-id cn-hangzhou --ipv6-gateway-id ipv6gw-hp3y0l3ln89j80000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteIpv6Gateway --region cn-hangzhou --DryRun false --Ipv6GatewayId 'ipv6gw-hp3y0l3ln89j80000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

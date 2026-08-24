@@ -1,5 +1,6 @@
 {
   "name": "ErasePerson",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "ImageURL",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "图像URL地址。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理（使用viapiutils显式的方案生成URL）](~~155645~~)。",
+        "en": "The URL of the image. We recommend that you use an OSS URL in the Shanghai region. If the file is stored locally or in an OSS bucket outside the Shanghai region, see [File URL processing (generate a URL by using the explicit viapiutils scheme)](~~155645~~)."
+      }
     },
     {
       "name": "UserMask",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "图像对于Mask的URL地址。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理（使用viapiutils显式的方案生成URL）](~~155645~~)。\n\n>Mask图是RGB3通道图，而非Alpha通道透明图。",
+        "en": "The URL of the mask image. We recommend that you use an OSS URL in the Shanghai region. If the file is stored locally or in an OSS bucket outside the Shanghai region, see [File URL processing (generate a URL by using the explicit viapiutils scheme)](~~155645~~).\n\n>The mask image is an RGB 3-channel image, not an alpha channel transparent image."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "图像人体擦除",
+    "en": "Erase human figures from images"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n图像人体擦除能力可以擦除图像中指定区域的人像，并自动填充背景。\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n\n- 旅行照片修复：图像人体擦除可以帮您去除背景中的路人，还您美美的旅行照片。\n- 穿帮镜头后期修复：在影视拍摄过程中，如果在前期拍摄镜头中出现了本不应该出现的人物，可以通过图像人体擦除帮您批量处理修复这些穿帮镜头。\n\n## 特点优势\n\n- 尽量保留原照片内容：通过指定区域Mask，缩小自动填充背景范围，擦除背景人物，降低处理后照片的违和感。人像区域mask，建议使用阿里云视觉智能开放平台提供的人体分割算法来获得，可以得到更好的效果。\n- 自动生成填充被人体遮挡的背景：基于深度学习算法，图像人体擦除可以推理还原出被人体遮挡的背景内容，真实而没有违和感。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[图像生产服务](https://vision.aliyun.com/imageenhan)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_imageenhan_public_cn#/open)。\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/imageenhan/2019-09-30/ErasePerson?lang=JAVA&sdkStyle=dara&params=%7B%22ImageURL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageenhan%2FErasePerson%2FErasePerson1.jpg%22%2C%22UserMask%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageenhan%2FErasePerson%2FErasePerson6.jpg%22%7D&tab=DEMO)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为图像生产（imageenhan）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n\n- 图像格式：JPG、JPEG、BMP、PNG、WEBP、TIF。\n- 图像大小：不超过3 MB。\n- 图像分辨率：大于5×5像素，小于2048×2048像素。\n- URL地址中不能包含中文字符。\n- 图像中指定区域应尽量贴合人形，可以用矩形、多边形、不规则区域表示。需要擦除的区域面积不能超过整体图像的25%。\n\n## 计费说明\n关于图像人体擦除的计费方式及报价，请参见[计费介绍](~~202482~~)。\n\n> 下方调试接口为付费接口。",
+    "en": "## Feature description\nThe image human figure erasure feature can erase human figures from specified regions in an image and automatically fill in the background.\n\n> - You can visit [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for online assistance.\n- To inquire about Alibaba Cloud Vision Intelligence Open Platform visual AI API integration, usage, or other questions, join the DingTalk group (23109592) to contact us.\n\n## Common scenarios\n\n- Travel photo restoration: The image human figure erasure feature helps you remove passersby from the background to restore your travel photos.\n- Post-production fix for unwanted appearances: During the film and television production procedure, if a person who should not appear is captured in a shot, the image human figure erasure feature can help you batch-process and fix these shots.\n\n## Advantages\n\n- Preserve original photo content as much as possible: By specifying a region mask, the automatic background fill range is narrowed to erase background figures and reduce visual inconsistency in the processed photo. For the human figure region mask, use the human body segmentation algorithm provided by Alibaba Cloud Vision Intelligence Open Platform for better results.\n- Automatically generate and fill backgrounds occluded by human figures: Based on deep learning algorithms, the image human figure erasure feature can infer and restore background content occluded by human figures, producing realistic results without visual inconsistency.\n\n## Getting started\n1. Create an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **China Site Registration** in the upper-right corner, and follow the on-screen instructions to complete account registration.\n2. Activate the service: Make sure you have activated [Intelligent Image Production](https://vision.aliyun.com/imageenhan). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_imageenhan_public_cn#/open).\n3. Create an AccessKey: Make sure you have [created an AccessKey](~~175144~~). If you are using a RAM user AccessKey, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Debug online (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/imageenhan/2019-09-30/ErasePerson?lang=JAVA&sdkStyle=dara&params=%7B%22ImageURL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageenhan%2FErasePerson%2FErasePerson1.jpg%22%2C%22UserMask%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Fimageenhan%2FErasePerson%2FErasePerson6.jpg%22%7D&tab=DEMO) to debug the feature online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development integration steps:\n- Select the SDK language you want to use from the [Overview](~~145033~~).\n- Find the SDK package for the AI category Intelligent Image Production (imageenhan) in the corresponding SDK documentation and install it.\n- Modify the sample code provided in the References as needed and invoke the API.\n\n6. Direct invocation from clients: Common client invocation methods for this feature include the following.\n- [Direct invocation from a frontend web application](~~467779~~)\n- [Direct invocation from a mini program](~~467780~~)\n- [Direct invocation from Android](~~467781~~)\n- [Direct invocation from iOS](~~467782~~)\n\n## Input limits\n\n- Image format: JPG, JPEG, BMP, PNG, WEBP, and TIF.\n- Image size: up to 3 MB.\n- Image resolution: greater than 5 × 5 pixels and less than 2048 × 2048 pixels.\n- The URL cannot contain Chinese characters.\n- The specified region in the image should closely fit the human figure and can be represented by a rectangle, polygon, or irregular area. The area to be erased cannot exceed 25% of the total image area.\n\n## Billing description\nFor information about the billable methods and pricing of the image human figure erasure feature, see [Billing overview](~~202482~~).\n\n> The following debug API operation is a paid API operation."
+  },
   "example": {
     "unifiedCli": "aliyun imageenhan erase-person --image-url http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageenhan/ErasePerson/ErasePerson1.jpg --user-mask http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageenhan/ErasePerson/ErasePerson6.jpg --region cn-hangzhou",
     "legacyCli": "aliyun imageenhan ErasePerson --region cn-hangzhou --UserMask 'http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageenhan/ErasePerson/ErasePerson6.jpg' --ImageURL 'http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/imageenhan/ErasePerson/ErasePerson1.jpg'"

@@ -1,5 +1,6 @@
 {
   "name": "OnsTrendGroupOutputTps",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "BeginTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询区间的起始时间戳，单位：毫秒。",
+        "en": "The beginning of the time range to query. This value is a UNIX timestamp in milliseconds."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询区间的终止时间戳，单位：毫秒。",
+        "en": "The end of the time range to query. This value is a UNIX timestamp in milliseconds."
+      }
     },
     {
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询的Group ID。",
+        "en": "The ID of the group to query."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需统计数据的Group ID所对应的实例ID。",
+        "en": "The ID of the instance to which the group belongs."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "采样周期，单位：分钟，取值可为 1、5、10。",
+        "en": "The sampling period. Unit: minutes. Valid values: 1, 5, and 10."
+      }
     },
     {
       "name": "Topic",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询的Topic名称。",
+        "en": "The name of the topic to query."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询的类型。取值说明如下：\n\n- **0**：查询消费消息总量的统计曲线。\n- **1**：查询消费消息TPS的统计曲线。",
+        "en": "The type of information to query. Valid values:\n\n- **0**: The statistical curve of the total number of consumed messages.\n\n- **1**: The statistical curve of the TPS for message consumption."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "统计消息消费数据",
+    "en": "OnsTrendGroupOutputTps"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>线上环境生成消费数据报表时，可以使用本接口查询指定的Group ID在一段时间内的以下统计信息：\n\n- 消费消息总量的统计曲线\n\n- 消费消息TPS的统计曲线\n\n如果应用方消息量比较小，间隔不均匀，此时采用TPS查询可能会导致数据不明显，建议查询消费消息总量。",
+    "en": "><notice>Alibaba Cloud OpenAPI is a control plane API used to manage and query resources of Alibaba Cloud services. You can integrate OpenAPI only on the control plane. Do not use OpenAPI for the core data link of message sending and receiving because this can pose a threat to the link.></notice>When you generate consumption data reports in a production environment, you can use this operation to query the following statistics for a specified group ID over a period of time:\n\n- A statistical curve of the total number of consumed messages\n\n- A statistical curve of the Transaction Per Second (TPS) for message consumption\n\nIf your application has a small and uneven volume of messages, querying by TPS may not return meaningful data. In this case, you can query the total number of consumed messages."
+  },
   "example": {
     "unifiedCli": "aliyun ons ons-trend-group-output-tps --group-id GID_test --topic test --begin-time 1570852800000 --end-time 1570868400000 --type 0 --instance-id MQ_INST_111111111111_DOxxxxxx --period 10 --region cn-hangzhou",
     "legacyCli": "aliyun ons OnsTrendGroupOutputTps --region cn-hangzhou --Type 0 --EndTime 1570868400000 --InstanceId MQ_INST_111111111111_DOxxxxxx --BeginTime 1570852800000 --Period 10 --Topic test --GroupId GID_test"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyFileset",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，从您的客户端生成一个参数值，确保不同的请求间该参数值唯一。\n\nClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。\n\n> 若用户未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How do I ensure the idempotence?](~~25693~~)\n\n>  If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+      }
     },
     {
       "name": "DeletionProtection",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例释放保护属性，指定是否支持通过控制台或API（[DeleteFileset](~~2402263~~)）释放实例。\n\n\n\n-   true：开启实例释放保护。\n-   false：关闭实例释放保护。\n\n> 该属性只能限制手动释放操作，对系统释放操作不生效。",
+        "en": "Specifies whether to enable deletion protection to allow you to release the fileset by using the console or by calling the [DeleteFileset](~~2402263~~) operation. Valid values:\n\n*   true: enables release protection.\n*   false: disables release protection.\n\n> This parameter can protect filesets only against manual releases, but not against automatic releases."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Fileset的描述。",
+        "en": "The fileset description."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次修改请求执行预检。\n\n预检操作会帮助您检查参数有效性、校验库存等，并不会实际修改实例，也不会产生费用。\n\n取值：\n\n- true：发送检查请求，不会修改实例。检查项包括是否填写了必需参数、请求格式、业务限制和NAS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回200 HttpCode。\n- false（默认）：发送正常请求，通过检查后直接修改实例。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request.\n\nDuring the dry run, the system checks whether the request parameters are valid and whether the requested resources are available. During the dry run, no fileset is modified and no fees incurred.\n\nValid values:\n\n*   true: performs only a dry run. The system checks the required parameters, request syntax, service limits, and Apsara File Storage NAS (NAS) inventory data. If the request fails the dry run, an error message is returned. If the request passes the dry run, the HTTP status code 200 is returned.\n*   false (default): performs a dry run and sends the request. If the request passes the dry run, the specified fileset is modified."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。\n\n- CPFS：必须以`cpfs-`开头，例如cpfs-099394bd928c****。\n\n- CPFS智算版：必须以`bmcpfs-`开头，例如bmcpfs-290w65p03ok64ya****。",
+        "en": "The ID of the file system.\n\n*   The IDs of CPFS file systems must start with `cpfs-`. Example: cpfs-099394bd928c\\*\\*\\*\\*.\n*   The IDs of CPFS for LINGJUN file systems must start with `bmcpfs-`. Example: bmcpfs-290w65p03ok64ya\\*\\*\\*\\*."
+      }
     },
     {
       "name": "FsetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Fileset ID。",
+        "en": "The fileset ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改文件集",
+    "en": "ModifyFileset"
+  },
+  "descriptions": {
+    "zh": "仅支持CPFS 2.2.0和CPFS智算版2.7.0及以上版本修改Fileset信息。",
+    "en": "仅支持CPFS 2.2.0和CPFS智算版2.7.0及以上版本修改Fileset信息。"
+  },
   "example": {
     "unifiedCli": "aliyun nas modify-fileset --file-system-id bmcpfs-290w65p03ok64ya0000 --fset-id fset-1902718ea0ae0000 --description test --dry-run false --deletion-protection false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun nas ModifyFileset --region cn-hangzhou --FsetId 'fset-1902718ea0ae0000' --Description test --DryRun false --FileSystemId 'bmcpfs-290w65p03ok64ya0000' --DeletionProtection false --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

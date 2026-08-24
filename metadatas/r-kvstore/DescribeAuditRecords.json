@@ -1,5 +1,6 @@
 {
   "name": "DescribeAuditRecords",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "AccountName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账号名称，默认（不填任何值）表示查询所有账号。",
+        "en": "The username of the account. If you do not specify this parameter, all accounts of the instance are queried."
+      }
     },
     {
       "name": "DatabaseName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例中的Database，默认（不填任何值）表示查询所有DB，取值为0 ~ 255，示例0表示DB 0。",
+        "en": "The name of the database in the instance. If you do not specify this parameter, all databases are queried. Valid values: 0 to 255. 0 specifies database 0."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，必须晚于查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n> 由于审计日志的条目数较多，一般查询的时间范围建议在10分钟以内，最长不超过1天。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n> We recommend that you specify a time range of 10 minutes or less because audit logs contain a great number of entries. Do not specify a time range that is longer than one day."
+      }
     },
     {
       "name": "HostAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端IP，默认（不填任何值）为查询所有地址。",
+        "en": "The IP address of the client. If you do not specify this parameter, this call applies to all clients."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要查询的实例的ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例中的节点ID。传入本参数可查询指定节点的监控信息。\n\n> * 当实例的架构为读写分离或集群架构时，本参数才可用。\n> * 您可以调用[DescribeLogicInstanceTopology](~~473786~~)接口查询节点ID。",
+        "en": "The ID of the node in the instance. You can set this parameter to query the monitoring data of a specified node.\n\n> \n\n*   This parameter is available only for read/write splitting and cluster instances.\n\n*   You can call the [DescribeLogicInstanceTopology](~~473786~~) operation to query node IDs."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前显示的页码。",
+        "en": "The number of the page to return."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页显示的最大记录数。",
+        "en": "The number of entries to return on each page."
+      }
     },
     {
       "name": "QueryKeywords",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "根据指定的命令查询审计日志，默认查询所有执行过的命令。\n\n> 只能传入单个关键词。",
+        "en": "The keyword based on which the audit logs are queried. You can specify a command as a keyword to query logs. By default, all commands are queried.\n\n> You can specify only a single keyword in each call."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例的审计日志",
+    "en": "DescribeAuditRecords"
+  },
+  "descriptions": {
+    "zh": "调用本接口时，实例必须已开启审计日志，详情请参见[ModifyAuditLogConfig](~~473829~~)。",
+    "en": "Before you call this operation, you must enable the audit log feature for the instance. For more information, see [ModifyAuditLogConfig](~~473829~~)."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore describe-audit-records --instance-id r-bp1zxszhcgatnx0000 --node-id r-bp1zxszhcgatnx0000-db-0 --account-name demo --database-name 0 --query-keywords maxclients --host-address 127.0.0.1 --page-size 30 --page-number 1 --start-time 2019-03-24T12:10:00Z --end-time 2019-03-25T12:10:00Z --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore DescribeAuditRecords --region cn-hangzhou --QueryKeywords maxclients --PageSize 30 --EndTime '2019-03-25T12:10:00Z' --InstanceId 'r-bp1zxszhcgatnx0000' --PageNumber 1 --NodeId 'r-bp1zxszhcgatnx0000-db-0' --DatabaseName 0 --StartTime '2019-03-24T12:10:00Z' --HostAddress '127.0.0.1' --AccountName demo"

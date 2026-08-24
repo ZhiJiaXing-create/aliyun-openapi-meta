@@ -1,0 +1,130 @@
+{
+  "name": "AddMediaConnectFlowOutput",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "Cidrs",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "IP白名单，CIDR格式，多个IP段之间用,分割",
+        "en": "The IP address whitelist in CIDR format. Separate multiple CIDR blocks with commas (,)."
+      }
+    },
+    {
+      "name": "FlowId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Flow实例ID",
+        "en": "The flow ID."
+      }
+    },
+    {
+      "name": "OutputName",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输出名称",
+        "en": "The output name."
+      }
+    },
+    {
+      "name": "OutputProtocol",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输出协议",
+        "en": "The output type.\n\nValid values:\n\n- RTMP-PUSH\n\n- SRT-Caller\n\n- RTMP-PULL\n\n- SRT-Listener\n\n- Flow"
+      }
+    },
+    {
+      "name": "OutputToUrl",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "输出地址，当输出类型是RTMP-PUSH/SRT-Caller模式时必填",
+        "en": "The output URL. This parameter is required when OutputProtocol is set to RTMP-PUSH or SRT-Caller."
+      }
+    },
+    {
+      "name": "PairFlowId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "对端Flow实例ID，当输出类型为Flow时必填",
+        "en": "The ID of the destination flow. This parameter is required when OutputProtocol is set to Flow."
+      }
+    },
+    {
+      "name": "PairInputName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "对端Flow的输入名称，当输出类型为Flow时必填",
+        "en": "The source name of the destination flow. This parameter is required when OutputProtocol is set to Flow."
+      }
+    },
+    {
+      "name": "PlayerLimit",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "播放人数上限",
+        "en": "The maximum number of viewers."
+      }
+    },
+    {
+      "name": "SrtLatency",
+      "position": "Query",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "SRT延迟，仅当输入类型是SRT-Listener/SRT-Caller时必填",
+        "en": "The latency for the SRT stream. This parameter is required when the source type is SRT-Listener or SRT-Caller."
+      }
+    },
+    {
+      "name": "SrtPassphrase",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "SRT加密密钥，仅当输入类型是SRT-Listener/SRT-Caller时必填",
+        "en": "The SRT key. This parameter is required when the source type is SRT-Listener or SRT-Caller."
+      }
+    },
+    {
+      "name": "SrtPbkeyLen",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "SRT加密长度，仅当输入类型是SRT-Listener/SRT-Caller时必填",
+        "en": "The encryption key length. This parameter is required when the source type is SRT-Listener or SRT-Caller."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为MediaConnect Flow实例创建Output",
+    "en": "AddMediaConnectFlowOutput"
+  },
+  "descriptions": {
+    "zh": "- 当输入的Flow实例ID不存在时，接口会返回错误。\n- 一个Flow实例最多有4个output。\n- 同一个Flow实例下的输出名称不能重复。\n- 您可以对每个output设置同时播放人数的上限，超过上限后新的播放将失败。每个output最多支持5路播放。\n### 输出类型描述\n- RTMP-PUSH：创建一个RTMP转推类型的输出，Flow会使用RTMP协议将直播流转推到您设置的源站上。\n- RTMP-PULL：创建一个RTMP监听类型的输出，您可以使用RTMP协议从接口返回的URL拉流。\n- SRT-Caller：创建一个SRT转推类型的输出，Flow会使用SRT协议将直播流转推到您设置的源站上。\n- SRT-Listener：创建一个SRT监听类型的输出，您可以使用SRT协议从接口返回的URL拉流。\n- Flow：以下游另一个Flow实例的输入作为输出，需要您同时指定对端Flow的实例ID和输入名称。下游Flow实例的输入类型必须为监听类型，即SRT-Listener/RTMP-PUSH，本实例会将直播流转推到下游Flow。Flow实例之间级联时默认走专线，可用于多个Flow之间的跨区域分发。",
+    "en": "- When the specified flow ID is not available, an error code is returned.\n\n- A flow can have a maximum of four outputs.\n\n- The output names in the same flow cannot be duplicated.\n\n- You can set an upper limit on the number of concurrent viewers for each output. If this limit is exceeded, any new playback requests will fail. Each output supports up to five streams.\n\n### [](#)Output types\n\n- RTMP-PUSH: An output that the MediaConnect flow pushes to the server you specified over the RTMP protocol.\n\n- RTMP-PULL: An output that you can pull using the returned streaming URL over the RTMP protocol.\n\n- SRT-Caller: An output that the MediaConnect flow pushes to the server you specified over the SRT protocol.\n\n- SRT-Listener: An output that you can pull using the returned streaming URL over the SRT protocol.\n\n- Flow: An output that is pushed to the source URL of another MediaConnect flow. The source type of the destination flow must be SRT-Listener or RTMP-PUSH. By default, a dedicated line is used when flows are cascaded. This allows for cross-region distribution among multiple flows."
+  }
+}

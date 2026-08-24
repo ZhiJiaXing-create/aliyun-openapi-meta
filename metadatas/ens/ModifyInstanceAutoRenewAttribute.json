@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceAutoRenewAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,50 @@
       "name": "AutoRenew",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否要自动续费。取值：**True****False**（默认值）。",
+        "en": "Specifies whether to enable the auto-renewal feature. Valid values: **True and False**. Default value: False."
+      }
     },
     {
       "name": "Duration",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置实例自动续费时长。单位：月，取值：1~9、12。如果AutoRenew为true时，该参数必须有值。",
+        "en": "The auto-renewal period of the instance. Unit: months. Valid values: 1 to 9 and 12. This parameter is required if the AutoRenew parameter is set to true."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，多个用分号（;）分隔。",
+        "en": "The IDs of the instances. Separate IDs with semicolons (;)."
+      }
     },
     {
       "name": "RenewalStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置是否不再续费，参数**RenewalStatus**的优先级高于参数**AutoRenew**。如果不传入参数**RenewalStatus**，则默认以参数**AutoRenew**为准。\n- AutoRenewal：设置为自动续费。\n- Normal：取消自动续费。 \n- NotRenewal：不再续费。\n\n传入该值后，系统不再发送到期提醒，只在到期前第三天发送不续费提醒。不再续费的ENS实例可以更改成待续费（Normal）后，再自行续费或设置为自动续费。",
+        "en": "Specifies whether to renew the instance. The **RenewalStatus** parameter has a higher priority than the **AutoRenew** parameter. If you do not specify **RenewalStatus**, the **AutoRenew** parameter is used by default.\n\n- AutoRenewal: Auto-renewal is enabled for the instance.\n\n- Normal: Auto-renewal is disabled for the instance.\n\n- NotRenewal: The instance is not renewed.\n\nThe system no longer sends an expiration notification but sends only a renewal notification three days before the instance expires. To renew the instance, you can change the value of this parameter from NotRenewal to Normal and then manually renew the instance, or change the value of this parameter from NotRenewal to AutoRenewal."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例续费配置",
+    "en": "ModifyInstanceAutoRenewAttribute"
+  },
   "example": {
     "unifiedCli": "aliyun ens modify-instance-auto-renew-attribute --instance-ids i-5ci7l7k1m9m2zmhp4iw3o0000 --auto-renew True --duration 1 --renewal-status AutoRenewal --region cn-hangzhou",
     "legacyCli": "aliyun ens ModifyInstanceAutoRenewAttribute --region cn-hangzhou --AutoRenew True --RenewalStatus AutoRenewal --Duration 1 --InstanceIds 'i-5ci7l7k1m9m2zmhp4iw3o0000'"

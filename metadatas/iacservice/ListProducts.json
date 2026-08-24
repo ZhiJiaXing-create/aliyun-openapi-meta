@@ -1,5 +1,6 @@
 {
   "name": "ListProducts",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "/products",
@@ -8,45 +9,84 @@
       "name": "keyword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索产品关键词支持模糊查询",
+        "en": "The keyword for searching products. Fuzzy match is supported."
+      }
     },
     {
       "name": "maxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页的最大数量，取值范围（0-200），默认100",
+        "en": "The maximum number of results per page. Valid values: 0 to 200. Default value: 100."
+      }
     },
     {
       "name": "nextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页nextToken",
+        "en": "The pagination token."
+      }
     },
     {
       "name": "sort",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方式\n- Normal：默认排序（默认值）\n- Top：热门访问排序",
+        "en": "The sort order. Valid values:\n- Normal: default sorting (default value)\n- Top: sorted by popularity."
+      }
     },
     {
       "name": "status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "状态，Available，Deprecated",
+        "en": "The status. Valid values:\n- Available\n- Deprecated."
+      }
     },
     {
       "name": "supportTerraformer",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否支持Terraformer",
+        "en": "Specifies whether Terraformer is supported."
+      }
     },
     {
       "name": "terraformProviderVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "TerraformProvider版本，为空时默认为最新版本",
+        "en": "The Terraform Provider version. If this parameter is left empty, the latest version is used by default."
+      }
     }
   ],
+  "security": [
+    "Anonymous"
+  ],
+  "title": {
+    "zh": "列举产品列表",
+    "en": "List products"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n\n- **关键词搜索**：通过`keyword`参数进行模糊匹配。\n- **分页查询**：使用`nextToken`进行翻页，通过`maxResults`指定每页返回的最大结果数（默认100，最大200）。\n- **Terraform Provider版本**：可选参数`terraformProviderVersion`用于筛选特定版本的Provider相关产品。\n- **响应结构**包含请求ID、总条目数、当前页数据及分页信息，便于处理查询结果。",
+    "en": "## Operation description\n\n- **Keyword search**: Use the `keyword` parameter for fuzzy matching.\n- **Paged query**: Use `nextToken` for pagination and `maxResults` to specify the maximum number of results per page (default: 100, maximum: 200).\n- **Terraform Provider version**: The optional `terraformProviderVersion` parameter filters products associated with a specific Provider version.\n- **Response structure**: The response contains the request ID, total number of entries, data of the current page, and pagination information for easy processing of query results."
+  },
   "example": {
     "unifiedCli": "aliyun iacservice list-products --next-token eyJ0b2tlbiI6IjEwMjM0NTY3ODkwIn0= --terraform-provider-version 1.227.0 --max-results 100 --keyword ECS --support-terraformer true --status Available --sort Normal --api-version 2021-08-06 --region cn-hangzhou",
     "legacyCli": "aliyun iacservice GET /products --region cn-hangzhou --nextToken 'eyJ0b2tlbiI6IjEwMjM0NTY3ODkwIn0=' --maxResults 100 --sort Normal --terraformProviderVersion '1.227.0' --keyword ECS --supportTerraformer true --status Available --header \"Content-Type=application/json\""

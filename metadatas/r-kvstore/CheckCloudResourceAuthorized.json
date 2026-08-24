@@ -1,5 +1,6 @@
 {
   "name": "CheckCloudResourceAuthorized",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，可调用[DescribeInstances](~~473778~~)获取。",
+        "en": "The ID of the instance. You can call the [DescribeInstances](~~473778~~) operation to query the ID of the instance."
+      }
     },
     {
       "name": "RoleArn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定待授权角色的全局资源描述符ARN（Alibaba Cloud Resource Name）信息，完成该角色的授权后即可使用相关密钥管理服务，格式：`acs:ram::$accountID:role/$roleName` 。\n\n> * `$accountID`：云账号ID。您可以登录阿里云控制台，将鼠标悬停在右上角头像的位置，单击**安全设置**进行查看。\n> * `$roleName`：RAM角色名称，取值固定为：**AliyunRdsInstanceEncryptionDefaultRole**。",
+        "en": "The Alibaba Cloud Resource Name (ARN) of the Resource Access Management (RAM) role that you want to attach to your Tair (Redis OSS-compatible) instance. The ARN must be in the format of `acs:ram::$accountID:role/$roleName`. After the role is attached, your Tair (Redis OSS-compatible) instance can use KMS.\n\n> \n\n*   `$accountID`: the ID of the Alibaba Cloud account. To view the account ID, log on to the Alibaba Cloud console, move the pointer over your profile picture in the upper-right corner of the page, and then click **Security Settings**.\n\n*   `$roleName`: the name of the RAM role. Replace $roleName with **AliyunRdsInstanceEncryptionDefaultRole**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询是否已授权KMS密钥",
+    "en": "CheckCloudResourceAuthorized"
+  },
+  "descriptions": {
+    "zh": "* 关于透明数据加密TDE（Transparent Data Encryption）的详细介绍及注意事项，请参见[开启透明数据加密TDE](~~265913~~)。\n* 调用本接口确认已授权后，您可以调用[ModifyInstanceTDE](~~473859~~)接口开启TDE加密功能。",
+    "en": "*   For information about Transparent Data Encryption (TDE) and the usage notes of TDE, see [Enable TDE](~~265913~~).\n*   If the Tair (Redis OSS-compatible) instance is authorized to use KMS, you can call the [ModifyInstanceTDE](~~473859~~) operation to enable TDE."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore check-cloud-resource-authorized --instance-id r-bp1zxszhcgatnx0000 --role-arn acs:ram::1234567890120000:role/AliyunRdsInstanceEncryptionDefaultRole --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore CheckCloudResourceAuthorized --region cn-hangzhou --InstanceId 'r-bp1zxszhcgatnx0000' --RoleArn 'acs:ram::1234567890120000:role/AliyunRdsInstanceEncryptionDefaultRole'"

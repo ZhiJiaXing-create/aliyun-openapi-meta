@@ -1,5 +1,6 @@
 {
   "name": "UpdatePipeline",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ExtendConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "扩展配置",
+        "en": "Extension configuration"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "修改后的管道名称。支持中英文、数字、中划线（-）等，不能以特殊字符开头，最大长度128字节。",
+        "en": "The new name of the MPS queue. The value can contain letters, digits, and special characters such as hyphens (-) and can be up to 128 bytes in size. The value cannot start with a special character."
+      }
     },
     {
       "name": "NotifyConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云轻量消息队列（原MNS） 配置，即MNS队列或主题信息。更多信息，请参见[NotifyConfig详情](~~29253~~)。",
+        "en": "The Message Service (MNS) configuration, such as the information about the MNS queue or topic. For more information, see the \"NotifyConfig\" section of the [Parameter details](~~29253~~) topic."
+      }
     },
     {
       "name": "PipelineId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要更新的管道ID。可以通过**MPS控制台** > **全局设置** > **管道**获取。",
+        "en": "The ID of the MPS queue that you want to update. To view the MPS queue ID, log on to the **MPS console** and choose **Global Settings** > **Pipelines** in the left-side navigation pane."
+      }
     },
     {
       "name": "Role",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前RAM用户关联的角色。可以通过**RAM控制台** > **身份管理** > **角色**获取。",
+        "en": "The role that is assigned to the current RAM user. To obtain the role, you can log on to the **Resource Access Management (RAM) console** and choose **Identities** > **Roles** in the left-side navigation pane."
+      }
     },
     {
       "name": "State",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "修改后的管道状态。\n\n- **Active**：管道开启。管道内的作业会被媒体转码服务调度转码执行。\n- **Paused**：管道暂停。管道内的作业不再会被媒体转码调度转码执行，并且所有作业状态维持在已提交状态。已经处于转码中的任务将继续转码，不受影响。",
+        "en": "The new state of the MPS queue.\n\n*   **Active**: The MPS queue is active. Jobs in the MPS queue can be scheduled and run by MPS.\n*   **Paused**: The MPS queue is paused. Jobs in the MPS queue cannot be scheduled or run by MPS, and all jobs remain in the Submitted state. Jobs that are running will not be affected."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新管道：名称、状态及通知设定",
+    "en": "Update pipeline: name, status, and notification settings"
+  },
+  "descriptions": {
+    "zh": "- 本接口可以修改指定管道的名称、状态及通知设定。\n- 暂停管道后，如果工作流或其他单任务（如视频审核、视频DNA等）中选择使用状态为已暂停的管道，会导致任务失败无法进行。\n\n<props=\"china\">\n><notice>暂停管道后，不会影响已经提交的任务。如果任务提交后关闭管道，已经进入处理排队的任务将无法取消，会正常执行并收取相应的费用。\n></notice></props>\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "- This API allows you to modify the name, status, and notification settings of a specified MPS queue.  \n- If an MPS queue is paused, any pipeline or individual job (such as automated review or media fingerprint) that uses this paused queue will fail and cannot proceed.\n\n<props=\"china\">\n><notice>Pausing an MPS queue does not affect jobs already submitted. If an MPS queue is shut down after a job is submitted, any job already queued for processing cannot be canceled and will execute normally, incurring the corresponding fee.\n></notice></props>\n\n## Queries per second (QPS) limit  \nThe QPS limit for this API is 100 requests per second per user. If this limit is exceeded, API calls will be rate-limited, which may impact your business operations. Please invoke the API appropriately. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts update-pipeline --pipeline-id d1ce4d3efcb549419193f50f1fcd0000 --name example-pipeline-0000 --state Paused --notify-config Topic_:_example-topic-0000 --role AliyunMTSDefaultRole --extend-config IsBoostNew_:true,_MultiSpeedDowngradePolicy_:_NormalSpeed_,_MaxMultiSpeed_:20 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts UpdatePipeline --region cn-hangzhou --Role AliyunMTSDefaultRole --State Paused --PipelineId d1ce4d3efcb549419193f50f1fcd0000 --NotifyConfig 'Topic_:_example-topic-0000' --ExtendConfig 'IsBoostNew_:true,_MultiSpeedDowngradePolicy_:_NormalSpeed_,_MaxMultiSpeed_:20' --Name 'example-pipeline-0000'"

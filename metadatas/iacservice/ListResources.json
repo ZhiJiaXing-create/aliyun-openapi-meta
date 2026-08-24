@@ -1,5 +1,6 @@
 {
   "name": "ListResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/resources/stateparser",
@@ -8,33 +9,60 @@
       "name": "pageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，默认1。",
+        "en": "The page number. Default value: 1."
+      }
     },
     {
       "name": "pageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页返回的结果数量。默认值：20，最小值：1，最大值：200。",
+        "en": "The number of results per page. Default value: 20. Minimum value: 1. Maximum value: 200."
+      }
     },
     {
       "name": "sourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源来源的类型。取值：\n\n- ExportTaskId：资源导出ID\n\n- TaskId：Module 执行任务Id\n\n- StatePath：资源状态所在的OSS地址",
+        "en": "The type of the resource source. Valid values:\n\n- ExportTaskId: resource export ID\n\n- TaskId: Module execution task ID\n\n- StatePath: the OSS path where the resource state is stored."
+      }
     },
     {
       "name": "sourceValue",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源来源的具体值。\n\n- 当sourceType为ExportTaskId时，格式为ExportTaskId:Version\n\n- 当sourceType为TaskId时，格式为TaskId\n\n- 当sourceType为StatePath时，格式为State文件的下载地址。",
+        "en": "The specific value of the resource source.\n\n- If sourceType is set to ExportTaskId, the format is ExportTaskId:Version.\n\n- If sourceType is set to TaskId, the format is TaskId.\n\n- If sourceType is set to StatePath, the format is the download URL of the State file."
+      }
     },
     {
       "name": "specType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源属性在响应中所遵循的规范。可选值：CloudSpec，Terraform。\n默认值：CloudSpec。",
+        "en": "The specification that resource properties follow in the response. Valid values: CloudSpec, Terraform.\nDefault value: CloudSpec."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取任务的资源列表",
+    "en": "Retrieve the resources of a node"
+  },
   "example": {
     "unifiedCli": "aliyun iacservice list-resources --source-type TaskId --source-value task-235436dsfdgd --spec-type CloudSpec --page-size 20 --page-number 1 --api-version 2021-08-06 --region cn-hangzhou",
     "legacyCli": "aliyun iacservice GET /resources/stateparser --region cn-hangzhou --specType CloudSpec --pageNumber 1 --sourceType TaskId --pageSize 20 --sourceValue 'task-235436dsfdgd' --header \"Content-Type=application/json\""

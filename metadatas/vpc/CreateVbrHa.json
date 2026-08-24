@@ -1,5 +1,6 @@
 {
   "name": "CreateVbrHa",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VBR倒换组的描述信息。\n\n长度为 2～256个字符，必须以字母或中文开头，但不能以`http://` 或`https://`开头。",
+        "en": "The description of the VBR failover group.\n\nThe description must be 2 to 256 characters in length and must start with a letter or a Chinese character. It cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- **true**：发送检查请求，不会启动实例。检查项包括是否填写了必需参数、请求格式、实例状态。如果检查不通过，则返回对应错误。如果检查通过，则返回`DRYRUN.SUCCESS`。\n\n- **false**（默认值）：发送正常请求，通过检查后直接启动实例。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request syntax, and instance status. If the check fails, the corresponding error is returned. If the check succeeds, `DRYRUN.SUCCESS` is returned.\n\n- **false** (default): sends the request. After the request passes the check, the instance is started."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "VBR倒换组名称。",
+        "en": "The name of the VBR failover group."
+      }
     },
     {
       "name": "PeerVbrId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VBR倒换组中另一个VBR的实例ID。",
+        "en": "The instance ID of the other VBR in the VBR failover group."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VBR所属的地域ID。",
+        "en": "The region ID of the VBR."
+      }
     },
     {
       "name": "VbrId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "VBR实例ID。",
+        "en": "The instance ID of the VBR."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建VBR倒换组",
+    "en": "Create a VBR failover group"
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-vbr-ha --description VBRHa --name VBRHa --client-token CBCE910E-D396-4944-80000 --dry-run false --vbr-id vbr-bp1jcg5cmxjbl9xgc0000 --peer-vbr-id vbr-bp12mw1f8k3jgygk90000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateVbrHa --region cn-hangzhou --Description VBRHa --DryRun false --VbrId 'vbr-bp1jcg5cmxjbl9xgc0000' --RegionId 'cn-hangzhou' --ClientToken 'CBCE910E-D396-4944-80000' --PeerVbrId 'vbr-bp12mw1f8k3jgygk90000' --Name VBRHa"

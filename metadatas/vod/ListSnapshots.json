@@ -1,5 +1,6 @@
 {
   "name": "ListSnapshots",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AuthTimeout",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "截图访问地址的过期时间。默认值：**3600**，最小值：**3600**，单位：秒。\n\n- 该参数只有开启了[URL鉴权](~~57007~~)才会生效。\n- 当设置的时间小于**3600秒**时，默认为**3600秒**。\n- 如果返回的是OSS地址，为降低源站安全风险，最大值为**2592000**（即30天）。",
+        "en": "The validity period of the snapshot URL. Default value: **3600**. Minimum value: **3600**. Unit: seconds.\n\n*   This parameter takes effect only when you enable URL signing. For more information, see [Configure URL signing](~~57007~~).\n*   If you specify a value smaller than **3,600 seconds**, **3600** is used by default.\n*   If the snapshot URL is an Object Storage Service (OSS) URL, the maximum value for this parameter is **2592000** (30 days). This reduces risks on the origin."
+      }
     },
     {
       "name": "PageNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "翻页页号。默认值：**1**。",
+        "en": "The page number. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "翻页大小，每页显示条数。默认值：**20**，最大值：**100**。",
+        "en": "The number of entries per page. Default value: **20**. Maximum value: **100**."
+      }
     },
     {
       "name": "SnapshotType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回的截图类型。取值：\n\n- **CoverSnapshot**（默认值）：封面截图。\n- **NormalSnapshot**：普通截图。\n- **SpriteSnapshot**：雪碧截图。\n- **SpriteOriginSnapshot**：雪碧图原始图。\n- **WebVttSnapshot**：WebVtt截图。",
+        "en": "The type of snapshots to return. Valid values:\n\n*   **CoverSnapshot**: thumbnail snapshot\n*   **NormalSnapshot**: regular snapshot\n*   **SpriteSnapshot**: sprite snapshot\n*   **SpriteOriginSnapshot**: sprite source snapshot\n*   **WebVttSnapshot**: WebVTT snapshot"
+      }
     },
     {
       "name": "VideoId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "视频ID。可通过以下方式获取：\n- 可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看视频ID。\n- 调用[CreateUploadVideo](~~CreateUploadVideo~~)接口获取上传地址和凭证时会返回。\n- 调用[SearchMedia](~~SearchMedia~~)接口查询视频时会返回。",
+        "en": "The ID of the video. You can use one of the following methods to obtain the ID:\n\n*   Log on to the [ApsaraVideo VOD console](https://vod.console.aliyun.com). In the left-side navigation pane, choose **Media Files** > **Audio/Video** to view the video ID.\n*   Obtain the video ID from the response to the [CreateUploadVideo](~~CreateUploadVideo~~) operation that you call to obtain the upload URL and credential.\n*   Obtain the video ID from the response to the [SearchMedia](~~SearchMedia~~) operation that you call to query videos."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询视频截图数据",
+    "en": "ListSnapshots"
+  },
+  "descriptions": {
+    "zh": "若一个视频发起过多次视频截图，则本接口仅返回最近一次成功的截图数据。",
+    "en": "If multiple snapshots exist for a video, you can call this operation to query information about the latest snapshot."
+  },
   "example": {
     "unifiedCli": "aliyun vod list-snapshots --video-id d3e680e618708fbf2cae7cc9310000 --snapshot-type CoverSnapshot --auth-timeout 3600 --page-size 20 --page-no 1 --region cn-hangzhou",
     "legacyCli": "aliyun vod ListSnapshots --region cn-hangzhou --VideoId d3e680e618708fbf2cae7cc9310000 --PageSize 20 --PageNo 1 --SnapshotType CoverSnapshot --AuthTimeout 3600"

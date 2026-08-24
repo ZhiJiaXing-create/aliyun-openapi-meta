@@ -1,5 +1,6 @@
 {
   "name": "DeleteMultipartUpload",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "MediaId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "媒体ID，即音/视频ID（VideoId）。可通过以下方式获取：\n- 通过控制台上传的音/视频，可登录[点播控制台](https://vod.console.aliyun.com)，选择**媒资库** > **音/视频**查看音/视频ID。\n- 通过[获取视频上传地址和凭证](~~55407~~)接口获取上传地址和凭证时，音/视频ID为返回参数VideoId的值。\n- 音/视频上传后，可通过[搜索媒体信息](~~86044~~)接口查询音/视频ID，为请求后返回参数VideoId的值。",
+        "en": "The ID of the media file (VideoId). You can use one of the following methods to obtain the ID:\n\n*   After you upload a video in the [ApsaraVideo VOD console](https://vod.console.aliyun.com), you can log on to the ApsaraVideo VOD console and choose **Media Files** > **Audio/Video** to view the ID of the video.\n*   Obtain the value of VideoId from the response to the [CreateUploadVideo](~~55407~~) operation that you called to obtain the upload URL and credential.\n*   Obtain the value of VideoId from the response to the [SearchMedia](~~86044~~) operation that you called to query media information after the audio or video file is uploaded."
+      }
     },
     {
       "name": "MediaType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "媒体类型。取固定值：**video**（音/视频）。",
+        "en": "The type of the media file. Set the value to **video**. video indicates audio and video files."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除上传中的碎片文件",
+    "en": "DeleteMultipartUpload"
+  },
+  "descriptions": {
+    "zh": "- 使用分片上传时，若上传失败则可能会产生碎片文件，一般7天后会自动清除。在上传完成或失败后，可调用本接口手动清除碎片文件。\n- 调用本接口不会删除原始文件和转码后的文件，只会删除上传过程中产生的碎片文件。\n- 调用[删除完整视频](~~52837~~)接口，会删除包含碎片文件等在内的完整视频文件。",
+    "en": "*   During multipart upload, useless parts may be retained if the upload fails. These useless parts are automatically deleted after 7 days. You can call this operation to delete the generated parts after the upload is successful or fails.\n*   This operation does not delete the source file or transcoded file, but deletes only the parts generated during the upload.\n*   If you call the [DeleteVideo](~~52837~~) operation, the entire video file is deleted, including the generated parts."
+  },
   "example": {
     "unifiedCli": "aliyun vod delete-multipart-upload --media-id 61ccbdb06fa3012be4d8083f60000 --media-type video --region cn-hangzhou",
     "legacyCli": "aliyun vod DeleteMultipartUpload --region cn-hangzhou --MediaId 61ccbdb06fa3012be4d8083f60000 --MediaType video"

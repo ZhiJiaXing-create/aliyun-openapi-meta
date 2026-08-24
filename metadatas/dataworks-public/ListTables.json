@@ -1,5 +1,6 @@
 {
   "name": "ListTables",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,51 +9,100 @@
       "name": "Comment",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "注释，模糊匹配。",
+        "en": "The comment. Fuzzy match is supported."
+      }
+    },
+    {
+      "name": "IncludeExtendedProperties",
+      "position": "Query",
+      "type": "Boolean",
       "required": false
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "名称，模糊匹配。",
+        "en": "The name. Fuzzy match is supported."
+      }
     },
     {
       "name": "Order",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方向，默认为Asc，枚举值，当前支持\n- Asc 升序\n- Desc 降序",
+        "en": "The sort order. Default value: Asc. Valid values:\n- Asc: ascending order\n- Desc: descending order"
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页页码，默认为1。",
+        "en": "The page number. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，默认为10，最大为100。",
+        "en": "The page size. Default value: 10. Maximum value: 100."
+      }
     },
     {
       "name": "ParentMetaEntityId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "父层级元数据实体ID，可参考ListDatabases/ListSchemas接口返回结果，以及[元数据实体相关概念说明](~~2880092~~)。\n\n- 可为表所属数据库，`ParentMetaEntityId`格式为`${EntityType}:${实例ID或转义后的URL}:${数据目录标识}:${数据库名称}`，对于不存在的层级空字符占位。\n\n- 也可为表所属数据库模式，`ParentMetaEntityId`格式为`${EntityType}:${实例ID或转义后的URL}:${数据目录标识}:${数据库名称}:${模式名称}`，对于不存在的层级空字符占位\n\n> - 只有数据库类型支持schema（`maxcompute/holo/postgresql/sqlserver/hybriddb_for_postgresql/oracle`，其中maxcompute类型需要开启三层模型)时, `ParentMetaEntityId`才可使用数据库模式，否则只能使用数据库。\n> - 对于maxcompute和dlf类型，实例ID使用空字符占位。对于maxcompute类型，数据库名称即为maxcompute项目名称。\n> - starrocks类型的数据目录标识为目录名称，dlf类型的数据目录标识为目录ID, 其他类型不支持目录层级，可用空字符占位。\n\n几种常用类型ParentMetaEntityId格式参考如下\n\n- `maxcompute-project:::project_name`\n\n- `maxcompute-schema:::project_name:schema_name` (仅项目开启三层模型时)\n\n- `dlf-database::catalog_id:database_name`\n\n- `hms-database:instance_id::database_name`\n\n- `holo-schema:instance_id::database_name:schema_name`\n\n- `mysql-database:(instance_id|encoded_jdbc_url)::database_name`\n\n> 其中  \n> - `instance_id`: 实例ID，对应数据源以实例模式注册时需要提供。\n> - `encoded_jdbc_url`: JDBC连接串的URLEncode编码,对应数据源以连接串方式注册时需要提供。\n> - `catalog_id`: dlf目录ID。\n> - `project_name`: maxcompute项目名称。\n> - `database_name`: 数据库名称。\n> - `schema_name`: schema名称。",
+        "en": "The ID of the parent-level metadata entity. You can obtain this value from the response of the ListDatabases or ListSchemas operation. For more information, see [Metadata entity concepts](~~2880092~~).\n\n- The value can be the database to which the table belongs. The ParentMetaEntityId format is `${EntityType}:${InstanceID or encoded URL}:${DataCatalogIdentifier}:${DatabaseName}`. Use an empty string as a placeholder for levels that do not exist.\n\n- The value can also be the database schema to which the table belongs. The ParentMetaEntityId format is `${EntityType}:${InstanceID or encoded URL}:${DataCatalogIdentifier}:${DatabaseName}:${SchemaName}`. Use an empty string as a placeholder for levels that do not exist.\n\n> - You can set ParentMetaEntityId to a database schema only when the database type supports schemas (`maxcompute/holo/postgresql/sqlserver/hybriddb_for_postgresql/oracle`, and the three-level model must be enabled for the maxcompute type). Otherwise, you can set this parameter only to a database.\n> - For the maxcompute and dlf types, use an empty string as a placeholder for the instance ID. For the maxcompute type, the database name is the MaxCompute project name.\n> - For the starrocks type, the data catalog identifier is the catalog name. For the dlf type, the data catalog identifier is the catalog ID. Other types do not support the catalog level. Use an empty string as a placeholder.\n\nThe following examples show the ParentMetaEntityId formats for common types:\n\n- `maxcompute-project:::project_name`\n\n- `maxcompute-schema:::project_name:schema_name` (only when the three-level model is enabled for the project)\n\n- `dlf-database::catalog_id:database_name`\n\n- `hms-database:instance_id::database_name`\n\n- `holo-schema:instance_id::database_name:schema_name`\n\n- `mysql-database:(instance_id|encoded_jdbc_url)::database_name`\n\n> Where:  \n> - `instance_id`: The instance ID. This value is required when the data source is registered in instance mode.\n> - `encoded_jdbc_url`: The URL-encoded JDBC connection string. This value is required when the data source is registered by using a connection string.\n> - `catalog_id`: The DLF catalog ID.\n> - `project_name`: The MaxCompute project name.\n> - `database_name`: The database name.\n> - `schema_name`: The schema name."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段，默认为CreateTime，枚举值，当前支持\n- CreateTime 创建时间\n- ModifyTime 修改时间\n- Name 名称\n- TableType 表类型",
+        "en": "The field by which to sort the results. Default value: CreateTime. Valid values:\n- CreateTime: creation time\n- ModifyTime: modification time\n- Name: name\n- TableType: table type"
+      }
     },
     {
       "name": "TableTypes",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询的表类型列表，为空时查询所有类型。",
+        "en": "The list of table types to query. If this parameter is left empty, all types are queried."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询数据地图数据表列表",
+    "en": "Query data tables in data map"
+  },
+  "descriptions": {
+    "zh": "1. 需要购买DataWorks基础版及以上版本才能使用。",
+    "en": "1. DataWorks Basic Edition or a higher edition is required."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public list-tables --parent-meta-entity-id maxcompute-project:::project_name --name abc --comment this_is_a_comment --table-types TABLE --sort-by CreateTime --order Asc --page-number 1 --page-size 10 --include-extended-properties true --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public ListTables --region cn-hangzhou --Order Asc --IncludeExtendedProperties true --Comment this_is_a_comment --PageSize 10 --PageNumber 1 --TableTypes TABLE --SortBy CreateTime --ParentMetaEntityId 'maxcompute-project:::project_name' --Name abc"

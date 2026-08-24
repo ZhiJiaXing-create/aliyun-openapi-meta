@@ -1,5 +1,6 @@
 {
   "name": "ListResourcesByTag",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "FuzzyType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询操作。取值：\n\n- EQUAL（默认值）：精确查询绑定了指定标签的资源。\n- NOT：精确查询未绑定指定标签的资源。",
+        "en": "The type of the query. Valid values:\n\n*   EQUAL: exact match for resources to which the specified tag is added. This is the default value.\n*   NOT: exact match for resources to which the specified tag is not added."
+      }
     },
     {
       "name": "IncludeAllTags",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否返回资源上的标签信息。取值：\n\n- False（默认值）：不返回资源上的标签信息。\n- True ：返回资源上所有标签信息。",
+        "en": "Specifies whether to return the information of tags added to the resources. Valid values:\n\n*   False: does not return the information of tags added to the resources. This is the default value.\n*   True: returns the information of all tags added to the resources."
+      }
     },
     {
       "name": "MaxResult",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页时每页显示的数据条数。\n\n默认值：50。最大值：1000。",
+        "en": "The number of entries to return on each page.\n\nDefault value: 50. Maximum value: 1000."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始的Token。",
+        "en": "The token that is used to start the next query."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。\n\n关于地域ID的详情，请参见[服务接入点](~~2330902~~)。",
+        "en": "The region ID.\n\nFor more information about region IDs, see [Endpoints](~~2330902~~)."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，用于查询的过滤条件。取值：\n* FuzzyType=EQUAL时，支持的资源类型请调用[ListSupportResourceTypes](~~2330915~~)获取。\n\n* FuzzyType=NOT时，支持的资源类型请参见下文**支持逻辑非查询的资源类型**。",
+        "en": "The resource type. This parameter specifies a filter condition for the query.\n\n*   If you set the FuzzyType parameter to EQUAL, you can set this parameter to a value obtained from the response of the [ListSupportResourceTypes](~~2330915~~) operation.\n*   If you set the FuzzyType parameter to NOT, you can set this parameter to a resource type provided in **Types of resources that support queries based on the NOT operator**."
+      }
     },
     {
       "name": "TagFilter.Key",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "标签键，用于查询的过滤条件。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+        "en": "The tag key. This parameter specifies a filter condition for the query.\n\nThe tag key can be a maximum of 128 characters in length. It cannot contain `http://` or `https://` and cannot start with `acs:` or `aliyun`."
+      }
     },
     {
       "name": "TagFilter.Value",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签值，用于查询的过滤条件。\n\n最多支持128个字符，不能包含`http://`或者`https://`。",
+        "en": "The tag value. This parameter specifies a filter condition for the query.\n\nThe tag value can be up to 128 characters in length and cannot contain `http://` or `https://`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "基于标签查询资源",
+    "en": "ListResourcesByTag"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n本文将提供一个示例，在华南1（深圳）地域，查询标签键`k1`绑定的VPC实例。返回结果显示，该标签键绑定了2个VPC实例。",
+    "en": "This topic provides an example on how to call the API operation in the China (Shenzhen) region to query virtual private clouds (VPCs) to which the tag key `k1` is added. The response shows that the tag key is added to two VPCs."
+  },
   "example": {
     "unifiedCli": "aliyun tag list-resources-by-tag --biz-region-id cn-hangzhou --next-token caeba0bbb2be03f84eb48b699f0a0000 --max-result 50 --resource-type ALIYUN::VPC::VPC --fuzzy-type EQUAL --tag-filter-value v1 --tag-filter-key k1 --include-all-tags false --region cn-hangzhou",
     "legacyCli": "aliyun tag ListResourcesByTag --region cn-hangzhou --TagFilter.Value v1 --NextToken caeba0bbb2be03f84eb48b699f0a0000 --MaxResult 50 --IncludeAllTags false --ResourceType 'ALIYUN::VPC::VPC' --RegionId 'cn-hangzhou' --FuzzyType EQUAL --TagFilter.Key k1"

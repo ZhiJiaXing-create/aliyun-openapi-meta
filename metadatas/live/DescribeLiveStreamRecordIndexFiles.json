@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveStreamRecordIndexFiles",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "直播流所属应用名称。",
+        "en": "The name of the application to which the live stream belongs."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The streaming domain name."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "结束时间。与StartTime间隔时间不能超过4天。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end time. The interval between EndTime and StartTime cannot exceed 4 days. Format: <i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z (UTC)."
+      }
     },
     {
       "name": "Order",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按创建时间排序。取值：\n\n- **asc**（默认值）：升序。\n- **desc**：降序。",
+        "en": "The order in which entries are sorted by creation time. Valid values:\n\n- **asc** (default): ascending order.\n- **desc**: descending order."
+      }
     },
     {
       "name": "PageNum",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前页码。默认值为**1**。",
+        "en": "The page number. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页大小。取值范围：**5~30**，默认值为**10**。",
+        "en": "The number of entries per page. Valid values: **5 to 30**. Default value: **10**."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "开始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The start time. Format: <i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z (UTC)."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流名称。",
+        "en": "The stream name."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询某个时间段内的所有录制索引文件",
+    "en": "Query all recording index files within a specified time period"
+  },
+  "descriptions": {
+    "zh": "- 创建好的M3U8索引文件的信息在视频直播系统中仅保存6个月，若要查询仅能查询6个月内创建的索引文件的信息。\n - M3U8索引文件存储在OSS中，保存时间由OSS的存储配置决定。\n- 录制默认返回的是HTTP地址，如需HTTPS可以自行配置证书并将HTTP修改成HTTPS。\n\n\n## QPS限制\n\n本接口的单用户QPS限制为15次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Information about created M3U8 index files is retained in the ApsaraVideo Live system for only 6 months. You can query only the information about index files that were created within the last 6 months.\n - M3U8 index files are stored in OSS. The retention period is determined by the storage configuration of OSS.\n- By default, recording returns HTTP URLs. To use HTTPS, configure the certificate and change HTTP to HTTPS.\n\n\n## QPS limit\n\nThe QPS limit on this API is 15 calls per second per user. If this limit is exceeded, API calls are throttled, which may affect your business. Call this API at an appropriate frequency."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-stream-record-index-files --domain-name example.com --app-name liveApp0000 --stream-name liveStream0000 --start-time 2017-12-21T08:00:00Z --end-time 2017-12-22T08:00:00Z --page-num 1 --page-size 10 --order asc --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveStreamRecordIndexFiles --region cn-hangzhou --Order asc --StreamName liveStream0000 --EndTime '2017-12-22T08:00:00Z' --PageNum 1 --PageSize 10 --DomainName 'example.com' --StartTime '2017-12-21T08:00:00Z' --AppName liveApp0000"

@@ -1,5 +1,6 @@
 {
   "name": "ReleaseEipSegmentAddress",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "连续EIP所属的地域ID。可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the contiguous EIPs. You can call [DescribeRegions](~~36063~~) to query the region ID."
+      }
     },
     {
       "name": "SegmentInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要释放的连续EIP组的实例ID。\n\n系统会释放该连续EIP组内的所有EIP。",
+        "en": "The instance ID of the contiguous EIP group to release.\n\nThe system releases all EIPs in the contiguous EIP group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "释放连续EIP",
+    "en": "Release contiguous eIPs"
+  },
+  "descriptions": {
+    "zh": "- **ReleaseEipSegmentAddress**接口会释放连续EIP组内的所有EIP。\n\n- 调用**ReleaseEipSegmentAddress**接口前，请确保：\n\n     - 连续EIP组内EIP处于非绑定状态。解绑云资源，请参见[UnassociateEipAddress](~~2518066~~)。\n\n     - 连续EIP组内EIP未加入共享带宽。将EIP从共享带宽中移除，请参见[RemoveCommonBandwidthPackageIp](~~2518602~~) 。\n\n-  **ReleaseEipSegmentAddress**接口属于异步接口，即系统会先返回一个请求ID，但连续EIP并未完成释放，系统后台的释放任务仍在进行。您可以调用[DescribeEipSegment](~~156063~~)查询连续EIP组的状态： \n    - 当连续EIP组处于**Releasing**状态时，表示连续EIP正在释放中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到该连续EIP组时，表示连续EIP释放完成。\n\n- **ReleaseEipSegmentAddress**接口不支持并发释放同一个连续EIP组。",
+    "en": "- The **ReleaseEipSegmentAddress** operation releases all EIPs in a contiguous EIP group.\n\n- Before you call **ReleaseEipSegmentAddress**, make sure that:\n\n     - All EIPs in the contiguous EIP group are in the unassociated state. To disassociate an EIP from a cloud resource, call [UnassociateEipAddress](~~2518066~~).\n\n     - No EIPs in the contiguous EIP group are added to an Internet Shared Bandwidth instance. To remove an EIP from an Internet Shared Bandwidth instance, call [RemoveCommonBandwidthPackageIp](~~2518602~~).\n\n-  **ReleaseEipSegmentAddress** is an asynchronous operation. After you call this operation, the system returns a request ID, but the contiguous EIPs are not yet released. The release task continues to run in the background. You can call [DescribeEipSegment](~~156063~~) to query the status of the contiguous EIP group: \n    - If the contiguous EIP group is in the **Releasing** state, the contiguous EIPs are being released. In this state, you can only perform query operations.\n    - If the contiguous EIP group cannot be found, the contiguous EIPs are released.\n\n- **ReleaseEipSegmentAddress** does not support concurrent release of the same contiguous EIP group."
+  },
   "example": {
     "unifiedCli": "aliyun vpc release-eip-segment-address --biz-region-id cn-hangzhou --segment-instance-id eipsg-2zett8ba055tbsxme0000 --client-token 02fb3da4-130e-11e9-8e44-001sdfg --region cn-hangzhou",
     "legacyCli": "aliyun vpc ReleaseEipSegmentAddress --region cn-hangzhou --SegmentInstanceId 'eipsg-2zett8ba055tbsxme0000' --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-11e9-8e44-001sdfg'"

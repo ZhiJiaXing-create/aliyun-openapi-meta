@@ -1,5 +1,6 @@
 {
   "name": "ExecuteDataCorrect",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ActionDetail",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行数据变更的参数设置：\n\n```\njson\n\"actionDetail\" : {\n    \"grayType\": \"FIRST\", // 灰度类型： 可选项：\"NONE\",\"FIRST\",\"EACH\"。其中NONE表示无灰度，FIRST表示灰度第一条SQL成功后暂停，EACH表示每条SQL执行成功后暂停。\n    \"startTime\" :\"2021-07-01 00:00:00\", // 设置定时执行的执行时间，若您选择立即执行不需要设置该参数。\n    \"endTime\" : \"2021-07-01 01:00:00\", // 设置定时执行的结束时间，若您选择立即执行不需要设置该参数。\n    \"transaction\" : false,  // 选择是否以事务方式运行。\n    \"backupData\" : true, // 选择是否备份数据。\n    \"readOnlyCheckEnable\": true //是否开启主备检查： 其中true表示开启，false表示不开启\n  }\n```",
+        "en": "Parameters for executing the data change:\n\n```\njson\n\"actionDetail\" : {\n    \"grayType\": \"FIRST\", // Grayscale type. Valid values: \"NONE\", \"FIRST\", and \"EACH\". NONE means no grayscale. FIRST means pause after the first SQL statement runs successfully. EACH means pause after each SQL statement runs successfully.\n    \"startTime\" :\"2021-07-01 00:00:00\", // Start time for scheduled execution. Omit this parameter if you run immediately.\n    \"endTime\" : \"2021-07-01 01:00:00\", // End time for scheduled execution. Omit this parameter if you run immediately.\n    \"transaction\" : false,  // Run in transaction mode.\n    \"backupData\" : true, // Back up data.\n    \"readOnlyCheckEnable\": true // Enable primary/secondary check. Set to true to enable or false to disable.\n  }\n```"
+      }
     },
     {
       "name": "OrderId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "工单ID，可通过调用接口[ListOrders](~~144643~~)获取该参数的值。",
+        "en": "Ticket ID. Call [ListOrders](~~144643~~) to get this value."
+      }
     },
     {
       "name": "RealLoginUserUid",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实际调用API的用户的阿里云账号UID。",
+        "en": "Alibaba Cloud account UID of the user who calls the API."
+      }
     },
     {
       "name": "Tid",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID，可通过调用接口[GetUserActiveTenant](~~198073~~)获取该参数的值。",
+        "en": "Tenant ID. Call [GetUserActiveTenant](~~198073~~) to get this value."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "执行数据变更工单",
+    "en": "ExecuteDataCorrect"
+  },
+  "descriptions": {
+    "zh": "仅管控模式为安全协同的数据库实例可调用此API。",
+    "en": "Only database instances in Security Collaboration control mode support this API."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise execute-data-correct --tid 3000 --order-id 4060000 --action-detail backupData=true readOnlyCheckEnable=true startTime=2021-07-01 00:00:00 grayType=FIRST endTime=2021-07-01 01:00:00 transaction=false --real-login-user-uid 214004479568670000 --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise ExecuteDataCorrect --region cn-hangzhou --ActionDetail '{\"backupData\":true,\"readOnlyCheckEnable\":true,\"startTime\":\"2021-07-01 00:00:00\",\"grayType\":\"FIRST\",\"endTime\":\"2021-07-01 01:00:00\",\"transaction\":false}' --RealLoginUserUid 214004479568670000 --OrderId 4060000 --Tid 3000"

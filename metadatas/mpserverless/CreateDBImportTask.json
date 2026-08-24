@@ -1,0 +1,60 @@
+{
+  "name": "CreateDBImportTask",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "Collection",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "集合名称。",
+        "en": "Collection name."
+      }
+    },
+    {
+      "name": "FileType",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "导入文件类型，可选值为：\n- JSON\n- CSV",
+        "en": "The type of the import file. Valid values:  \n- JSON  \n- CSV"
+      }
+    },
+    {
+      "name": "Mode",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "冲突处理模式，可选值为：\n- INSERT（默认） ：导入出现冲突则忽略。\n- UPSERT：导入出现冲突则使用文件中的内容更新。",
+        "en": "The conflict handling mode. Valid values:  \n- INSERT (default): Ignore the record if a conflict occurs during import.  \n- UPSERT: Update the existing record with the content from the file if a conflict occurs."
+      }
+    },
+    {
+      "name": "SpaceId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "服务空间ID。",
+        "en": "The service space ID."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据库导入任务",
+    "en": "Create a database import job"
+  },
+  "descriptions": {
+    "zh": "创建导入任务成功后，将会返回任务ID、上传文件的地址和鉴权信息。您需要在要求的时间内向给定的地址上传需要导入的文件。上传文件成功之后，您需要调用QueryDBImportTaskStatus接口来触发运行导入任务，并查询数据导入状态。  \n上传文件时，请求方法请使用POST方法，Content-Type指定为`multipart/form-data`。下面是使用curl命令上传文件的一个示例。\n```\ncurl -X POST \\\n-H 'Content-Type: multipart/form-data' \\\n-F 'key=${FileKey}' \\\n-F 'policy=${Policy}' \\\n-F 'OSSAccessKeyId=${AccessKeyId}' \\\n-F 'Signature=${Signature}' \\\n-F 'file=@${FilePath}' \\\n'${Host}'\n```",
+    "en": "After the import job is created successfully, the system returns a job ID, the file upload URL, and authentication information. You must upload the file to be imported to the provided URL within the specified time window. After the file is uploaded successfully, you must invoke the QueryDBImportTaskStatus API to trigger the import job and query the data import status.  \nWhen uploading the file, use the POST method and set the Content-Type header to `multipart/form-data`. Below is a sample curl command for uploading a file:  \n```\ncurl -X POST \\\n-H 'Content-Type: multipart/form-data' \\\n-F 'key=${FileKey}' \\\n-F 'policy=${Policy}' \\\n-F 'OSSAccessKeyId=${AccessKeyId}' \\\n-F 'Signature=${Signature}' \\\n-F 'file=@${FilePath}' \\\n'${Host}'\n```"
+  }
+}

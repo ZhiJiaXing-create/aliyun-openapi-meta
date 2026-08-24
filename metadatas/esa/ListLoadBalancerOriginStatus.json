@@ -1,5 +1,6 @@
 {
   "name": "ListLoadBalancerOriginStatus",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "LoadBalancerIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡器ID，查多个负载均衡器时，ID用逗号拼接，最多一次传100个负载均衡器ID，负载均衡器ID可通过调用[ListLoadBalancers](~~2868897~~)接口获取。",
+        "en": "Load balancer ID. When querying multiple load balancers, separate the IDs with commas. A maximum of 100 load balancer IDs can be passed at once. Load balancer IDs can be obtained by calling the [ListLoadBalancers](~~2868897~~) interface."
+      }
     },
     {
       "name": "PoolType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源地址池类型，负载均衡器下配置了各种源地址池，有默认地址池、兜底地址池、一级region地址池等，只有默认地址池下的源站状态，会影响负载均衡器本身的状态。传default_pool时表示只查负载均衡器下默认源地址池里的源站状态。",
+        "en": "Source address pool type. Various source address pools are configured under the load balancer, including default pools, fallback pools, and primary region pools. Only the status of origins in the default pool affects the status of the load balancer itself. Passing `default_pool` means only querying the status of origins in the default source address pool under the load balancer."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID。",
+        "en": "Site ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询负载均衡器下源站状态",
+    "en": "Query the Status of Origins under Load Balancers"
+  },
+  "descriptions": {
+    "zh": "查询负载均衡器下源站状态，一次可以传多个负载均衡器id，用逗号拼接，是针对配置了监视器的负载均衡器，会探测负载均衡器使用的源地址池下面的各个源站，并记录现在各个源站的状态。\n\n- 健康(healthy)：探测结果为可用。\n- 不健康(unhealthy)：探测结果为不可用。\n- 未知(unknown)：未知，监视器还未进行探测。\n- 未监控(undetected)：源站所属的负载均衡器未绑定监视器。",
+    "en": "Query the status of origins under load balancers. You can pass multiple load balancer IDs at once, separated by commas. This is for load balancers that have monitors configured. It will probe the origins in the source address pools used by the load balancers and record the current status of each origin.\n\n- Healthy(healthy): The probe result is available.\n- Unhealthy(unhealthy): The probe result is unavailable.\n- Unknown(unknown): Unknown, the monitor has not yet probed.\n- Undetected(undetected): The load balancer to which the origin belongs is not bound to a monitor."
+  },
   "example": {
     "unifiedCli": "aliyun esa list-load-balancer-origin-status --site-id 11591017870000 --load-balancer-ids 998740660520000,1008928323600000 --pool-type default_pool --region cn-hangzhou",
     "legacyCli": "aliyun esa ListLoadBalancerOriginStatus --region cn-hangzhou --SiteId 11591017870000 --PoolType default_pool --LoadBalancerIds '998740660520000,1008928323600000'"

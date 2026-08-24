@@ -1,5 +1,6 @@
 {
   "name": "RemoveNodePoolNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "DELETE",
   "pathPattern": "/clusters/[ClusterId]/nodepools/[NodepoolId]/nodes",
@@ -8,45 +9,84 @@
       "name": "ClusterId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "NodepoolId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点池ID。",
+        "en": "The node pool ID."
+      }
     },
     {
       "name": "concurrency",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否并发移除。\n\n- true：节点将并发从伸缩组中被移除。\n\n- false：节点将顺序从伸缩组中被移除。\n\n默认值：false。",
+        "en": "Specifies whether to remove nodes concurrently.\n\n- true: Nodes are concurrently removed from the scaling group.\n\n- false: Nodes are sequentially removed from the scaling group.\n\nDefault value: false."
+      }
     },
     {
       "name": "drain_node",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否排水节点。可选值：\n- true：排水。\n- false：不排水。",
+        "en": "Specifies whether to drain the nodes. Valid values:\n- true: Drain the nodes.\n- false: Do not drain the nodes."
+      }
     },
     {
       "name": "instance_ids",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待移除的实例列表。",
+        "en": "The list of instances to remove."
+      }
     },
     {
       "name": "nodes",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "【该参数已废弃】\n\n移除节点列表。\n\n><danger>该参数已废弃，请使用`instance_ids`代替。</danger>",
+        "en": "[This parameter is deprecated]\n\nThe list of nodes to remove.\n\n><danger>This parameter is deprecated. Use `instance_ids` instead.</danger>."
+      }
     },
     {
       "name": "release_node",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否释放节点。可选值：\n- true：释放。\n- false：不释放。",
+        "en": "Specifies whether to release the nodes. Valid values:\n- true: Release the nodes.\n- false: Do not release the nodes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除节点池节点",
+    "en": "Remove nodes from a node pool"
+  },
+  "descriptions": {
+    "zh": "- 移除节点涉及Pod迁移，可能会影响业务，请在业务低峰期操作。\n- 操作过程中可能存在非预期风险，请提前做好相关的数据备份。\n- 操作过程中，后台会把当前节点设置为不可调度状态。\n-  移除节点仅移除Worker节点，不会移除Master节点。\n - 即使选择了释放节点（即`release_node`为`true`的节点），包年包月的节点也不会释放。需要您在移除节点后，通过[ECS控制台](https://ecs.console.aliyun.com/)操作释放。",
+    "en": "- Removing nodes involves pod migration, which may affect your services. Perform this operation during off-peak hours.\n- Unexpected risks may occur during the operation. Back up your data in advance.\n- During the operation, the nodes being removed are set to the unschedulable state in the background.\n- This operation removes only worker nodes, not master nodes.\n - Even if you choose to release nodes (nodes for which `release_node` is set to `true`), subscription nodes are not released. After removing the nodes, release them in the [ECS console](https://ecs.console.aliyun.com/)."
+  },
   "example": {
     "unifiedCli": "aliyun cs remove-node-pool-nodes --cluster-id c23421cfa74454bc8b37163fd19af0000 --nodepool-id np97de2cfb1ba042398dd8f5504c940000 --release-node true --drain-node true --nodes cn-hangzhou.172.16.xxx.xxx --instance-ids i-bp1c70fqbv1nlu9xxxxx --concurrency false --region cn-hangzhou",
     "legacyCli": "aliyun cs DELETE /clusters/c23421cfa74454bc8b37163fd19af0000/nodepools/np97de2cfb1ba042398dd8f5504c940000/nodes --region cn-hangzhou --release_node true --nodes '[\"cn-hangzhou.172.16.xxx.xxx\"]' --instance_ids '[\"i-bp1c70fqbv1nlu9xxxxx\"]' --drain_node true --concurrency false --header \"Content-Type=application/json\""

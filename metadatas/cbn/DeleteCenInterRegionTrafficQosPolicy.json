@@ -1,5 +1,6 @@
 {
   "name": "DeleteCenInterRegionTrafficQosPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among all requests. The client token can contain only ASCII characters.\n\n> If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** for each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会删除流量调度策略。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后直接删除流量调度策略。",
+        "en": "Specifies whether to perform a dry run. Default value: false. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request syntax, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the DryRunOperation error code is returned.\n\n- **false** (default): performs a dry run and sends the request."
+      }
     },
     {
       "name": "TrafficQosPolicyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量调度策略ID。",
+        "en": "The ID of the QoS policy."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除流量调度策略",
+    "en": "DeleteCenInterRegionTrafficQosPolicy"
+  },
+  "descriptions": {
+    "zh": "- 删除流量调度策略前，需要删除流量调度策略下除默认队列以外的所有队列。具体操作，请参见[DeleteCenInterRegionTrafficQosQueue](~~419062~~)。\n- **DeleteCenInterRegionTrafficQosPolicy**接口属于异步接口，即系统会先返回一个**RequestId**，但该流量调度策略并未删除完成，系统后台的删除任务仍在进行。您可以调用**ListCenInterRegionTrafficQosPolicies**接口查询流量调度策略的状态。 \n\n    - 当流量调度策略处于**Deleting**状态时，表示流量调度策略正在删除中，在该状态下，您只能对流量调度策略执行查询操作，不能执行其他操作。\n    - 当查询不到指定流量调度策略时，表示流量调度策略删除完成。",
+    "en": "- Before you delete a QoS policy, you must delete all queues in the QoS policy except the default queue. For more information, see [DeleteCenInterRegionTrafficQosQueue](~~419062~~).\n\n- **DeleteCenInterRegionTrafficQosPolicy** is an asynchronous operation. After you send a request, the system returns a **request ID** and runs the task in the background. You can call the **ListCenInterRegionTrafficQosPolicies** operation to query the status of a QoS policy.\n\n  - If a QoS policy is in the **Deleting** state, the QoS policy is being deleted. You can query the QoS policy but cannot perform other operations.\n\n  - If a QoS policy cannot be found, the QoS policy is deleted."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-cen-inter-region-traffic-qos-policy --client-token 123e4567-e89b-12d3-a456-4266550000 --dry-run false --traffic-qos-policy-id qos-eczzew0v1kzrb50000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteCenInterRegionTrafficQosPolicy --region cn-hangzhou --DryRun false --ClientToken '123e4567-e89b-12d3-a456-4266550000' --TrafficQosPolicyId 'qos-eczzew0v1kzrb50000'"

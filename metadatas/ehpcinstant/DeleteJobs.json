@@ -1,5 +1,6 @@
 {
   "name": "DeleteJobs",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,35 +9,62 @@
       "name": "ExecutorIds",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Executor ID列表，最大支持100条。",
+        "en": "The list of executor IDs. A maximum of 100 IDs are supported."
+      }
     },
     {
       "name": "JobScheduler",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "作业调度器类型。\n\n- HPC\n\n- K8S\n\n默认值：HPC",
+        "en": "The type of the job scheduler.\n\n*   HPC\n*   K8S\n\nDefault value: HPC"
+      }
     },
     {
       "name": "JobSpec",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "待删除作业信息。",
+        "en": "The information about the job to be deleted."
+      },
       "sub_parameters": [
         {
           "name": "JobId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "待删除的作业ID。    \n您可以调用ListJobs查询作业ID。",
+            "en": "The ID of the job to be deleted.\\\nYou can call the ListJobs operation to query job IDs."
+          }
         },
         {
           "name": "TaskSpec",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "待删除作业的任务详情。",
+            "en": "The task details of the job to be deleted."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除作业",
+    "en": "DeleteJobs"
+  },
   "example": {
     "unifiedCli": "aliyun ehpcinstant delete-jobs --job-spec '[{\"TaskSpec\":[{\"TaskName\":\"task0\",\"ArrayIndex\":[1]}],\"JobId\":\"job-xxxx\"}]' --executor-ids job-xxxx-Task0-1 --job-scheduler HPC --region cn-hangzhou",
     "legacyCli": "aliyun ehpcinstant DeleteJobs --region cn-hangzhou --JobScheduler HPC --ExecutorIds '[\"job-xxxx-Task0-1\"]' --JobSpec '[{\"TaskSpec\":[{\"TaskName\":\"task0\",\"ArrayIndex\":[1]}],\"JobId\":\"job-xxxx\"}]'"

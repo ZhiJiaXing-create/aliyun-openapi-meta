@@ -1,5 +1,6 @@
 {
   "name": "DeleteSslVpnClientCert",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SSL-VPN客户端证书所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the SSL-VPN client certificate. \n\nYou can call [DescribeRegions](~~36063~~) to query the most recent region list."
+      }
     },
     {
       "name": "SslVpnClientCertId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SSL-VPN客户端证书的ID。",
+        "en": "The ID of the SSL-VPN client certificate."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除SSL-VPN客户端证书",
+    "en": "Delete an SSL-VPN client certificate"
+  },
+  "descriptions": {
+    "zh": "- 删除SSL-VPN客户端证书会导致SSL服务端下所有客户端的SSL-VPN连接断开，如果客户端需要继续使用SSL-VPN连接，客户端需重新发起SSL-VPN连接。\n\n  例如SSL服务端下创建了SSL-VPN客户端证书1和SSL-VPN客户端证书2，在删除SSL-VPN客户端证书1后，SSL-VPN客户端证书1和SSL-VPN客户端证书2下关联的所有客户端都会断开SSL-VPN连接。\n\n  - 如果SSL-VPN客户端证书1关联的客户端需要继续使用SSL-VPN连接，客户端需要安装其他证书然后重新发起SSL-VPN连接。\n\n  - 如果SSL-VPN客户端证书2关联的客户端需要继续使用SSL-VPN连接，客户端重新发起SSL-VPN连接即可。\n- **DeleteSslVpnClientCert**接口属于异步接口，即系统返回一个请求ID，但该SSL-VPN客户端证书尚未删除成功，系统后台的删除任务仍在进行。您可以调用[DescribeVpnGateway](~~2794055~~)查询SSL-VPN服务端关联的VPN网关实例的状态，来确认SSL-VPN客户端证书的删除状态：\n    - 当VPN网关实例处于**updating**状态时，表示SSL-VPN客户端证书正在删除中。\n    - 当VPN网关实例处于**active**状态时，表示SSL-VPN客户端证书删除成功。\n- **DeleteSslVpnClientCert**接口不支持在同一VPN网关实例下并发删除SSL-VPN客户端证书。",
+    "en": "- Deleting an SSL-VPN client certificate disconnects all clients under the SSL server from their SSL-VPN connections. If clients need to continue using SSL-VPN connections, they must re-initiate the SSL-VPN connections.\n\n  For example, if SSL-VPN client certificate 1 and SSL-VPN client certificate 2 are created under an SSL server, deleting SSL-VPN client certificate 1 disconnects all clients associated with both SSL-VPN client certificate 1 and SSL-VPN client certificate 2.\n\n  - If clients associated with SSL-VPN client certificate 1 need to continue using SSL-VPN connections, they must install another certificate and then re-initiate the SSL-VPN connections.\n\n  - If clients associated with SSL-VPN client certificate 2 need to continue using SSL-VPN connections, they only need to re-initiate the SSL-VPN connections.\n- The **DeleteSslVpnClientCert** operation is asynchronous. After a request is sent, the system returns a request ID. However, the SSL-VPN client certificate is not immediately deleted. The deletion task runs in the background. You can call [DescribeVpnGateway](~~2794055~~) to query the status of the VPN gateway instance associated with the SSL server to check the deletion status of the SSL-VPN client certificate:\n    - If the VPN gateway instance is in the **updating** state, the SSL-VPN client certificate is being deleted.\n    - If the VPN gateway instance is in the **active** state, the SSL-VPN client certificate is deleted.\n- The **DeleteSslVpnClientCert** operation does not support concurrent deletion of SSL-VPN client certificates under the same VPN gateway instance."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-ssl-vpn-client-cert --biz-region-id cn-hangzhou --client-token 02fb3da4-130e-11e9-8e44-0016e04115b --ssl-vpn-client-cert-id vsc-bp1n8wcf134yl0osr0000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteSslVpnClientCert --region cn-hangzhou --SslVpnClientCertId 'vsc-bp1n8wcf134yl0osr0000' --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-11e9-8e44-0016e04115b'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateCustomRoutingEndpoints",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of a request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "EndpointConfigurations",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "终端节点信息。\n\n您最多可输入20个终端节点信息。",
+        "en": "The endpoint configurations.\n\nYou can specify up to 20 endpoint configurations."
+      },
       "sub_parameters": [
         {
           "name": "Endpoint",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "终端节点交换机（vSwitch）实例ID。",
+            "en": "The instance ID of the endpoint vSwitch."
+          }
         },
         {
           "name": "PolicyConfigurations",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "流量通行目标配置。\n\n每个终端节点下，最多可输入20个通行目标。",
+            "en": "The traffic destination configurations.\n\nYou can specify up to 20 traffic destinations for each endpoint."
+          }
         },
         {
           "name": "TrafficToEndpointPolicy",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务流量通行策略，取值：\n- **DenyAll**（默认值）：拒绝所有访问流量访问指定后端服务。\n- **AllowAll**：允许所有访问流量访问指定后端服务。\n- **AllowCustom**：指定可以接收访问流量的通行目标。\n您需要指定该通信目标的IP地址和端口范围，端口范围输入为空时，表示支持该通行目标的所有端口。",
+            "en": "The traffic policy for the backend service. Valid values:\n- **DenyAll** (default): denies all traffic to the specified backend service.\n- **AllowAll**: allows all traffic to the specified backend service.\n- **AllowCustom**: allows traffic only to specified destinations.\nYou must specify the IP address and port range of the destination. If the port range is left empty, all ports of the destination are supported."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "终端节点后端服务类型。取值：\n\n **PrivateSubNet**（默认值）：私网CIDR。",
+            "en": "The backend service type of the endpoint. Valid values:\n\n **PrivateSubNet** (default): private CIDR block."
+          }
         }
       ]
     },
@@ -46,15 +71,34 @@
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待创建终端节点的终端节点组ID。",
+        "en": "The ID of the endpoint group in which you want to create an endpoint."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the Alibaba Cloud Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自定义路由类型监听的终端节点",
+    "en": "Create endpoints for a custom routing listener"
+  },
+  "descriptions": {
+    "zh": "配置自定义路由类型监听后，全球加速实例能够根据配置的监听端口范围、目标终端节点组协议和端口范围，以及终端节点（交换机vSwitch）的IP地址信息，生成端口映射表，从而确定性地将流量路由到交换机中特定IP地址和端口。\n\n本接口用于创建自定义路由类型监听的终端节点。在调用本接口时，请注意以下事项：\n\n- **CreateCustomRoutingEndpoints**接口属于异步接口，即系统会先返回一个请求ID，但终端节点并未创建完成，系统后台的创建任务仍在进行。您可以通过调用[DescribeCustomRoutingEndpointGroup](~~449373~~)接口查询终端节点组的状态，来确认终端节点是否创建完成： \n    - 当终端节点组处于**updating**状态时，表示终端节点正在创建中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示终端节点创建完成。\n- **CreateCustomRoutingEndpoints**接口不支持在同一个全球加速实例内并发创建自定义路由监听的终端节点。\n### 前提条件\n创建自定义路由类型监听的终端节点前，请确保您已完成以下操作：\n- 已创建标准型全球加速实例。具体操作，请参见[CreateAccelerator](~~206786~~)。\n- 已将带宽包与标准型全球加速实例绑定。具体操作，请参见[BandwidthPackageAddAccelerator](~~153239~~)。\n- 已部署了相关应用，作为全球加速的后端服务接收转发的请求。自定义路由类型监听的后端服务类型仅支持交换机（vSwitch）。\n- 已申请了自定义路由类型监听使用权限并创建了自定义路由类型监听。监听支持选择自定义路由类型的功能邀测中，如需使用，请联系阿里云客户经理。创建自定义路由类型监听，请参见[CreateListener](~~153253~~)。\n- 已创建自定义路由类型监听的终端节点组。具体操作，请参见[CreateCustomRoutingEndpointGroups](~~449363~~)。",
+    "en": "After you configure a custom route type listener, the Alibaba Cloud Global Accelerator (GA) instance generates a port mapping table based on the configured listener port range, the protocol and port range of the destination endpoint group, and the IP address information of the endpoints (vSwitches). This way, traffic is deterministically routed to specific IP addresses and ports in the vSwitches.\n\nThis operation creates endpoints for a custom route type listener. When you invoke this operation, take note of the following items:\n\n- **CreateCustomRoutingEndpoints** is an asynchronous operation. After a request is sent, the system returns a request ID, but the endpoints are not yet created. The creation node continues to run in the background. You can invoke the [DescribeCustomRoutingEndpointGroup](~~449373~~) operation to query the status of the endpoint group to confirm whether the endpoints are created: \n    - If the endpoint group is in the **updating** state, the endpoints are being created. In this state, you can only execute query operations.\n    - If the endpoint group is in the **active** state, the endpoints are created.\n- The **CreateCustomRoutingEndpoints** operation does not support concurrent requests to create endpoints for custom route listeners within the same Alibaba Cloud Global Accelerator (GA) instance.\n### Before you begin\nBefore you create endpoints for a custom route type listener, make sure that the following operations are complete:\n- A standard Global Accelerator instance is created. For more information, see [CreateAccelerator](~~206786~~).\n- A bandwidth plan is attached to the standard Alibaba Cloud Global Accelerator (GA) instance. For more information, see [BandwidthPackageAddAccelerator](~~153239~~).\n- Applications are deployed as backend services of Global Accelerator to accept forwarded requests. Custom route type listeners support only vSwitches as the backend service type.\n- You have obtained the permissions to use custom route type listeners and created a custom route type listener. The custom route type for listeners is in invitational preview. To use this feature, contact your account manager. To create a custom route type listener, see [CreateListener](~~153253~~).\n- An endpoint group for the custom route type listener is created. For more information, see [CreateCustomRoutingEndpointGroups](~~449363~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-custom-routing-endpoints --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-group-id epg-bp1bpn0kn908w4nb0000 --endpoint-configurations '[{\"Type\":\"PrivateSubNet\",\"Endpoint\":\"vsw-test01\",\"PolicyConfigurations\":[{\"Address\":\"10.0.XX.XX\",\"PortRanges\":[{\"FromPort\":80,\"ToPort\":80}]}],\"TrafficToEndpointPolicy\":\"DenyAll\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateCustomRoutingEndpoints --region cn-hangzhou --EndpointConfigurations.1.Endpoint 'vsw-test01' --EndpointGroupId 'epg-bp1bpn0kn908w4nb0000' --EndpointConfigurations.1.PolicyConfigurations.1.PortRanges.1.FromPort 80 --EndpointConfigurations.1.PolicyConfigurations.1.PortRanges.1.ToPort 80 --EndpointConfigurations.1.TrafficToEndpointPolicy DenyAll --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --EndpointConfigurations.1.PolicyConfigurations.1.Address '10.0.XX.XX' --EndpointConfigurations.1.Type PrivateSubNet"

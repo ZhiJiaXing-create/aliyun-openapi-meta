@@ -1,5 +1,6 @@
 {
   "name": "GetKafkaClientIp",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "结束时间。",
+        "en": "End time."
+      }
     },
     {
       "name": "Group",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消费组ID。\n\n\n> 若 Type 为 byGroup 时，必须入参该参数。",
+        "en": "Consumer group ID.\n\n> This parameter is required when Type is set to byGroup."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "Instance ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域 ID。",
+        "en": "The region ID of the instance."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "起始时间。",
+        "en": "Start time."
+      }
     },
     {
       "name": "Topic",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Topic名称。\n> \n>- 若 Type 为 byTopic 时，必须入参该参数。",
+        "en": "Topic name.\n\n> - This parameter is required when Type is set to byTopic."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询客户端 IP 类型。可选择三种方式查询。\n\n- byInstance： 查询实例指定时间范围内的客户端 IP。 \n- byTopic： 查询 Topic 指定时间范围内的客户端 IP。\n- byGroup:  查询 Group 指定时间范围内的客户端 IP。",
+        "en": "The type of client IP query. You can choose from three methods.\n\n- byInstance: Query client IPs for the instance within the specified time range.\n\n- byTopic: Query client IPs for the topic within the specified time range.\n\n- byGroup: Query client IPs for the group within the specified time range."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询 Kafka 客户端IP",
+    "en": "GetKafkaClientIp"
+  },
+  "descriptions": {
+    "zh": "- 统计的IP信息是从客户端通过Kafka的API请求到服务端的采样日志中获取的。\n\n- 统计数量表示服务端在您指定的时间范围内，统计到的同一个IP不同端口的连接个数。\n\n- 如果您的服务端小版本不是最新版本，会导致采样日志不够精确，最终导致统计的IP信息不够精准。因此建议您尽快升级服务端小版本。",
+    "en": "- The IP information is retrieved from the sampling logs of client requests to the server through the Kafka API.\n\n- The count indicates the number of connections from a single IP address using different ports that the server detected within the specified time range.\n\n- If your server is not running the latest minor version, the sampling logs may be inaccurate and provide less precise IP information. We recommend that you upgrade the server to the latest minor version."
+  },
   "example": {
     "unifiedCli": "aliyun alikafka get-kafka-client-ip --biz-region-id cn-hangzhou --instance-id alikafka_post-cn-v0h1fgs20000 --topic topic_name --group group_name --type byInstance --start-time 1716343501000 --end-time 1716343502000 --api-version 2019-09-16 --region cn-hangzhou",
     "legacyCli": "aliyun alikafka GetKafkaClientIp --region cn-hangzhou --Group group_name --Type byInstance --EndTime 1716343502000 --InstanceId 'alikafka_post-cn-v0h1fgs20000' --StartTime 1716343501000 --RegionId 'cn-hangzhou' --Topic topic_name"

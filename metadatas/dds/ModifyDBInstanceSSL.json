@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBInstanceSSL",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "ForceEncryption",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接是否强制开启SSL加密，取值说明：\n\n- **1**：强制开启SSL加密.\n- **0**：不强制开启SSL加密。\n\n> \n> -  SSL强制加密仅适用于云盘版 7.0 及 8.0 实例，且需满足以下内核小版本要求：\n> - - 7.0 版本：内核小版本需为 8.0.13 及以上。\n> - - 8.0 版本：内核小版本需为 9.0.5 及以上。\n\n><warning>启用强制SSL加密后，将无法使用非SSL加密方式连接实例。></warning>",
+        "en": "Specifies whether to forcibly enable SSL encryption for connections. Valid values:\n\n- **1**: Forcibly enable SSL encryption.\n\n- **0**: Do not forcibly enable SSL encryption.\n\n> * Forced SSL encryption is supported only for MongoDB 7.0 and 8.0 instances that use cloud disks and meet the following minor engine version requirements:\n>\n> * - For version 7.0, the minor engine version must be 8.0.13 or later.\n>\n> * - For version 8.0, the minor engine version must be 9.0.5 or later.\n\n><warning>\n\nAfter you enable forced SSL encryption, only SSL connections to the instance are allowed.\n\n></warning>"
+      }
     },
     {
       "name": "SSLAction",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "对SSL功能执行的操作，取值说明：\n- **Open**：开启SSL加密。\n- **Close**：关闭SSL加密。\n- **Update**：更新SSL证书。",
+        "en": "The operation to perform on the SSL feature. Valid values:\n\n- **Open**: Enable SSL encryption.\n\n- **Close**: Disable SSL encryption.\n\n- **Update**: Update the SSL certificate."
+      }
     },
     {
       "name": "SwitchMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改MongoDB实例SSL配置的时间点，取值：\n\n- 0：立刻修改。\n\n- 1：在可运维时间内修改。",
+        "en": "The time to modify the SSL configuration of the MongoDB instance. Valid values:\n\n- 0: Modify immediately.\n\n- 1: Modify within the maintenance window."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改MongoDB实例的SSL链路配置",
+    "en": "ModifyDBInstanceSSL"
+  },
+  "descriptions": {
+    "zh": "调用ModifyDBInstanceSSL接口时，实例必须满足以下条件： \n- 实例状态为运行中。\n- 实例类型为副本集或分片集群实例。\n  - 副本集实例的版本需为3.4及以上版本。\n  - 分片集群实例的存储模式需要为ESSD云盘版。\n\n> 在开通、更新和关闭SSL过程中，实例会重启一次，建议您在业务低峰期操作。",
+    "en": "Before you call the ModifyDBInstanceSSL operation, make sure that the instance meets the following requirements:\n\n- The instance is in the running state.\n\n- The instance is a replica set instance or a sharded cluster instance.\n\n  - The replica set instance is version 3.4 or later.\n\n  - The sharded cluster instance uses enhanced solid-state drives (ESSDs).\n\n> Enabling, updating, or disabling SSL restarts the instance. We recommend that you perform these operations during off-peak hours."
+  },
   "example": {
     "unifiedCli": "aliyun dds modify-db-instance-ssl --db-instance-id dds-bp22350000 --ssl-action Open --switch-mode 0 --force-encryption 0 --region cn-hangzhou",
     "legacyCli": "aliyun dds ModifyDBInstanceSSL --region cn-hangzhou --DBInstanceId 'dds-bp22350000' --ForceEncryption 0 --SwitchMode 0 --SSLAction Open"

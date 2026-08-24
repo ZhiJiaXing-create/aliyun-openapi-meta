@@ -1,5 +1,6 @@
 {
   "name": "AddBackendServers",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,36 +10,60 @@
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "添加的后端服务器列表，每次调用最多可添加20个后端服务器。\n\n> 后端服务器（ENS实例）必须是运行中才可以加入负载均衡实例。",
+        "en": "The list of backend servers that you want to add to the Edge Load Balancer (ELB) instance. You can add up to 20 backend servers at a time.\n\n> Only Edge Node Service (ENS) instances that are in the running state can be added to the ELB instance as backend servers."
+      },
       "sub_parameters": [
         {
           "name": "Ip",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器IP地址。",
+            "en": "The IP address of the backend server."
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "负载均衡实例后端使用的端口。",
+            "en": "The backend port that is used by the ELB instance."
+          }
         },
         {
           "name": "ServerId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "ENS实例ID。",
+            "en": "The ID of the ENS instance."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器类型。取值：\n- **ens**：ENS实例。\n- **eni**：弹性网卡实例。",
+            "en": "The type of the backend server. Valid values:\n\n- **ens**: ENS instance\n\n- **eni**: elastic network interface (ENI)"
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器的权重。默认值：100，取值：**0**~**100**。\n\n> 取值为0，表示不会将请求转发给该后端服务器。",
+            "en": "The weight of the backend server. Default value: 100. Valid values: **0** to **100**.\n\n> The value 0 indicates that requests are not forwarded to the backend server."
+          }
         }
       ]
     },
@@ -46,9 +71,24 @@
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例前端使用的端口。取值：**1**~**65535**。",
+        "en": "The frontend port that is used by the Edge Load Balance (ELB) instance. Valid values: **1** to **65535**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加后端服务器",
+    "en": "AddBackendServers"
+  },
+  "descriptions": {
+    "zh": "- API调用频率：100次/秒。\n- 单用户调用频率：10次/秒。",
+    "en": "- Rate limit: 100 requests per second.\n\n- up to 10 times per second per account."
+  },
   "example": {
     "unifiedCli": "aliyun ens add-backend-servers --load-balancer-id lb-5qzdmxefgrpxd7oz2mefonvtx --backend-servers Type=ens ServerId=i-5uf6dwyzch3wly7900000 Ip=192.168.XXX Port=3309 Weight=100 --region cn-hangzhou",
     "legacyCli": "aliyun ens AddBackendServers --region cn-hangzhou --LoadBalancerId 'lb-5qzdmxefgrpxd7oz2mefonvtx' --BackendServers '[{\"Type\":\"ens\",\"ServerId\":\"i-5uf6dwyzch3wly7900000\",\"Ip\":\"192.168.XXX\",\"Port\":3309,\"Weight\":100}]'"

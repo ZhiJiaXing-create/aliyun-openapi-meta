@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,82 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始Token，用来返回更多结果。\n> 第一次查询不需要提供本参数，如果一次查询没有返回全部结果，则可在后续查询中传入前一次返回的**NextToken**值以继续查询。",
+        "en": "The token used to start the next query to retrieve more results.\n\n> This parameter is not required in the first query. If not all results are returned in one query, you can pass in the **NextToken** value returned in the previous query to perform the query again."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID，您可以调用[DescribeDBInstanceAttribute](~~62010~~)接口查询。",
+        "en": "The region ID of the instance. You can call the [DescribeDBInstanceAttribute](~~62010~~) operation to query the region ID of the instance."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。\n> - **N**表示传入第几个实例ID。例如：**ResourceId.1**表示传入第一个实例ID；**ResourceId.2**表示传入第二个实例ID。\n> - 本参数和**Tag.N.Key**参数两者中必须传入一项。",
+        "en": "The resource IDs. You must specify this parameter or the Tag parameter."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，取值固定为**INSTANCE**。",
+        "en": "The resource type. Set the value to **INSTANCE**."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息列表。",
+        "en": "The tags that are attached to the resources."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的键。\n> - **N**表示传入第几个标签的键。例如：**Tag.1.Key**表示传入第一个标签的键；**Tag.2.Key**表示传入第二个标签的键。\n> - 本参数和**ResourceId.N**参数两者中必须传入一项。",
+            "en": "The key of tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签的值。\n\n> **N**表示传入第几个标签的值。例如：**Tag.1.Value**表示传入第一个标签的值；**Tag.2.Value**表示传入第二个标签的值。",
+            "en": "The value of tag."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例和标签的绑定关系",
+    "en": "ListTagResources"
+  },
   "example": {
     "unifiedCli": "aliyun dds list-tag-resources --biz-region-id cn-hangzhou --resource-type INSTANCE --next-token 212db860000 --resource-id 开发组 --tag Value=4.0_environment Key=Development_group --region cn-hangzhou",
     "legacyCli": "aliyun dds ListTagResources --region cn-hangzhou --ResourceId.1 '开发组' --Tag.1.Key Development_group --NextToken 212db860000 --Tag.1.Value '4.0_environment' --ResourceType INSTANCE --RegionId 'cn-hangzhou'"

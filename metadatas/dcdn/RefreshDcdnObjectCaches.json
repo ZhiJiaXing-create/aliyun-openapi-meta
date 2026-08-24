@@ -1,5 +1,6 @@
 {
   "name": "RefreshDcdnObjectCaches",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当回源内容和源站资源对比一致时，是否刷新对应范围内的资源。默认为false。\n- **true**：刷新对应范围内的全部资源。选择 “刷新全部资源” 时，如果用户请求的内容匹配到了对应范围内的资源，DCDN节点将会直接回源拉取新资源返回给用户，并重新缓存该资源。\n- **false**：刷新对应范围内发生变更的资源。选择 “刷新变更资源” 时，如果用户请求的内容匹配到了对应范围内的资源，DCDN节点将会回源获取资源的 Last-Modified 信息，若与当前缓存资源一致，则直接返回已缓存资源，若不一致，则回源拉取新资源返回给用户，并重新缓存该资源。\n> 此参数生效范围：除文件刷新外的刷新类型",
+        "en": "Specifies whether to refresh all resources within the corresponding scope when the back-to-origin content is consistent with the origin server resources. Default value: false.\n- **true**: Refreshes all resources within the corresponding scope. When \"Refresh All Resources\" is selected, if the requested content matches a resource within the corresponding scope, the DCDN point of presence (POP) retrieves the new resource from the origin server via back-to-origin, returns it to the user, and caches the resource again.\n- **false**: Refreshes only changed resources within the corresponding scope. When \"Refresh Changed Resources\" is selected, if the requested content matches a resource within the corresponding scope, the DCDN point of presence (POP) retrieves the Last-Modified information of the resource from the origin server via back-to-origin. If the information is consistent with the currently cached resource, the cached resource is returned directly. If the information is inconsistent, the new resource is retrieved from the origin server via back-to-origin, returned to the user, and cached again.\n> This parameter takes effect for all refresh types except file refresh."
+      }
     },
     {
       "name": "ObjectPath",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "- 单次提交多个URL或多个目录时，使用换行符分隔。\n- 单次提交的任务中所有URL的域名个数总和需要在10个以内。",
+        "en": "- Separate multiple URLs or directories with line breaks when submitting them in a single request.\n- The total number of domain names across all URLs in a single request must not exceed 10."
+      }
     },
     {
       "name": "ObjectType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "刷新类型。取值范围：\n\n- **File**（默认值）：URL。\n- **Directory**：目录。\n- **Regex**：正则刷新。\n- **IgnoreParams**：去参数刷新。去参数指的是去除请求URL中`?`及`?`之后的参数，去参数刷新指的是用户先通过接口提交去参数后的URL，然后用户提交的待刷新URL将会与已缓存资源的URL进行去参数匹配，如果已缓存资源的URL去参数以后与待刷新URL匹配，那么CDN节点将对缓存资源执行刷新处理。\n\n> - URL刷新和目录刷新的功能说明请参考[刷新和预热资源](~~64936~~)。\n>- 文件刷新将直接删除节点上的资源，当有新请求时回源拉取新资源。其它刷新类型默认只刷新发生变更的资源，需要强制刷新请配置Force参数为true，详见Force参数说明。",
+        "en": "The refresh type. Valid values:\n\n- **File** (default): URL.\n- **Directory**: directory refresh.\n- **Regex**: regular expression-based refresh.\n- **IgnoreParams**: purge by URL with parameters ignored. This refers to removing the `?` and all characters after `?` from the request URL. When you submit a URL with parameters removed through the API, the submitted URL is matched against cached resource URLs after their parameters are also removed. If a cached resource URL matches the submitted URL after parameter removal, the point of presence executes a refresh on the cached resource.\n\n> - For the feature description of URL refresh and directory refresh, see [Refresh and prefetch resources](~~64936~~).\n> - File refresh directly deletes the resource on the point of presence (POP). When a new request is received, the new resource is retrieved from the origin server via back-to-origin. Other refresh types refresh only changed resources by default. To force a refresh, set the Force parameter to true. For more information, see the description of the Force parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "刷新缓存",
+    "en": "Cache purge"
+  },
+  "descriptions": {
+    "zh": "- 请求方式：支持POST请求，参数用form表单显示。\n- 相关接口：刷新预热类接口包含[RefreshDcdnObjectCaches](~~130620~~)刷新接口和[PreloadDcdnObjectCaches](~~130636~~)预热接口。\n- URL刷新配额（每日）：默认情况下，一个账号每日最多可以提交10000条URL刷新和100个目录刷新，目录刷新包含子目录。如果您的阿里云账号的日带宽峰值大于200 Mbps，您可以通过<props=\"china\">[配额管理](~~375348~~)</props><props=\"intl\">[提交工单](https://account.alibabacloud.com/login/login.htm?oauth_callback=https%3A//ticket-intl.console.aliyun.com/%23/ticket/createIndex)</props>申请提升每日配额，阿里云将根据您业务的实际需求进行评估和配置。\n- 每次请求最多支持提交1000条URL刷新或者100个目录刷新。\n- 单个域名每分钟最多支持提交10000条URL刷新。\n- 单用户调用频率：30次/秒。\n\n\n#### 注意事项\n- 提交刷新任务并成功执行后，DCDN节点上对应的缓存资源将会失效，当您再次发起访问请求时，节点会回源站拉取所需资源，并重新缓存在节点上，因此大批量提交刷新任务会清空较多缓存，导致回源带宽和请求突增，增加源站压力。\n- 刷新任务从提交到生效，大约需要5~6分钟，如果文件或者目录配置的缓存过期时间少于5分钟，您无需执行刷新操作，等待文件或者目录缓存超时更新即可。\n- 使用RAM用户来执行刷新或预热操作的，需要先获得授权，请参见[授予RAM用户刷新预热权限](~~445051~~)完成授权。",
+    "en": "- Request method: POST requests are supported. Parameters are displayed in a form.\n- Related operations: The refresh and prefetch operations include the [RefreshDcdnObjectCaches](~~130620~~) refresh operation and the [PreloadDcdnObjectCaches](~~130636~~) prefetch operation.\n- URL refresh quota (daily): By default, each account can submit up to 10,000 URL refresh requests and 100 directory refresh requests per day. Directory refresh includes subdirectories. If the daily peak bandwidth of your Alibaba Cloud account exceeds 200 Mbit/s, you can request a higher daily quota by <props=\"china\">[Quota Management](~~375348~~)</props><props=\"intl\">[submitting a ticket](https://account.alibabacloud.com/login/login.htm?oauth_callback=https%3A//ticket-intl.console.aliyun.com/%23/ticket/createIndex)</props>. Alibaba Cloud will evaluate and configure the quota based on your actual business requirements.\n- Each request supports up to 1,000 URL refresh requests or 100 directory refresh requests.\n- A maximum of 10,000 URL refresh requests can be submitted per minute for a single domain name.\n- Maximum invocation frequency per user: 30 times per second.\n\n#### Considerations\n- After a refresh node is submitted and successfully executed, the cached resources on DCDN points of presence (POPs) are invalidated. When you send an access request again, the point of presence (POP) retrieves the required resources from the origin server via back-to-origin and caches them on the POP again. Submitting a large number of refresh nodes clears a large amount of cache, which causes spikes in back-to-origin bandwidth and requests and increases the load on the origin server.\n- A refresh node takes approximately 5 to 6 minutes to take effect after it is submitted. If the time-to-live (TTL) configured for a file or directory is less than 5 minutes, you do not need to perform a refresh operation. Wait for the file or directory cache to expire and update automatically.\n- To use a Resource Access Management (RAM) user to perform refresh or prefetch operations, obtain authorization first. For more information, see [Grant RAM users the refresh and prefetch permissions](~~445051~~)."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn refresh-dcdn-object-caches --object-path http://example.com/example.txt_http://example.com/example2.txt --object-type File --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun dcdn RefreshDcdnObjectCaches --region cn-hangzhou --ObjectType File --ObjectPath 'http://example.com/example.txt_http://example.com/example2.txt' --Force false"

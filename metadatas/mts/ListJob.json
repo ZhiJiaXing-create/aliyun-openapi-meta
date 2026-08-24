@@ -1,5 +1,6 @@
 {
   "name": "ListJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "EndOfJobCreatedTimeRange",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建转码作业时间的上限。日期格式按照ISO8601标准表示，并需要使用UTC时间。格式为：`YYYY-MM-DDThh:mm:ssZ`。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the `YYYY-MM-DDThh:mm:ssZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "MaximumPageSize",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单页最大可返回媒体工作流执行实例。\n\n- 默认值：**10**。\n- 取值范围：**1~100**。",
+        "en": "The number of entries per page.\n\n*   Default value: **10**.\n*   Valid values: **1 to 100**."
+      }
     },
     {
       "name": "NextPageToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一页标识。第一次请求无需传入，服务会返回，第二次请求传入即可。",
+        "en": "The token that is used to retrieve the next page of the query results. You do not need to specify this parameter for the first request. You must specify the token that is obtained from the previous query as the value of NextPageToken."
+      }
     },
     {
       "name": "PipelineId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "管道ID。可以通过[MPS控制台](https://mps.console.aliyun.com/overview) > **全局设置** > **管道及回调**查询。",
+        "en": "The ID of the MPS queue to which the job is submitted. To obtain the ID of an MPS queue, you can log on to the [MPS console](https://mps.console.aliyun.com/overview) and choose **Global Settings** > **MPS Queue and Callback** in the left-side navigation pane."
+      }
     },
     {
       "name": "StartOfJobCreatedTimeRange",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建转码作业时间范围中的下限值。日期格式按照ISO8601标准表示，并需要使用UTC时间。格式为：`YYYY-MM-DDThh:mm:ssZ`。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the `YYYY-MM-DDThh:mm:ssZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "State",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码任务状态。默认为**All**（所有状态）。可取值：\n\n- **All**：所有状态。\n- **Submitted**：作业已提交。\n- **Transcoding**：转码中。\n- **TranscodeSuccess**：转码成功。\n- **TranscodeFail**：转码失败。\n- **TranscodeCancelled**：转码取消。",
+        "en": "The state of the transcoding job. Default value: **All**. Valid values:\n\n*   **All**\n*   **Submitted**\n*   **Transcoding**\n*   **TranscodeSuccess**\n*   **TranscodeFail**\n*   **TranscodeCancelled**"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "遍历转码作业",
+    "en": "ListJob"
+  },
+  "descriptions": {
+    "zh": "- 本接口返回结果默认按CreationTime降序排列。\n- 本接口最多返回最近90天的任务，小于90天的按实际设置时间返回。\n- 您可以通过设置作业状态、创建时间区间、转码管道等请求参数筛选查询结果。\n- 媒体处理默认同一账号不同地域数据不互通，调用接口前请确认您传入的地域信息与待查询文件地域一致，否则可能导致接口调用失败或信息不一致。\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "*   By default, the returned transcoding jobs are sorted by CreationTime in descending order.\n*   You can call this operation to return transcoding jobs of the last 90 days. The jobs are returned based on the specified time range.\n*   You can filter query results by configuring request parameters such as job status, creation time interval, and ApsaraVideo Media Processing (MPS) queue for transcoding.\n*   By default, MPS does not allow you to access data across regions within the same account. Before you call this operation, make sure that the region that you specify is the same as the region of the transcoding jobs to be queried. Otherwise, this operation may fail to be called, or invalid information may be returned.\n\n### [](#qps)QPS limits\n\nYou can call this API operation up to 100 times per second per account. Requests that exceed this limit are dropped, and you will experience service interruptions. We recommend that you take note of this limit when you call this operation. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts list-job --next-page-token 16f01ad6175e4230ac42bb5182cd0000 --maximum-page-size 10 --state All --start-of-job-created-time-range 2014-01-10T12:00:00Z --end-of-job-created-time-range 2014-01-11T12:00:00Z --pipeline-id 88c6ca184c0e424d5w5b665e2a120000 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts ListJob --region cn-hangzhou --EndOfJobCreatedTimeRange '2014-01-11T12:00:00Z' --NextPageToken 16f01ad6175e4230ac42bb5182cd0000 --State All --StartOfJobCreatedTimeRange '2014-01-10T12:00:00Z' --MaximumPageSize 10 --PipelineId 88c6ca184c0e424d5w5b665e2a120000"

@@ -1,5 +1,6 @@
 {
   "name": "CreateIpamResourceDiscovery",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,65 +9,116 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. Generate a unique parameter value from your client. The client token supports only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会创建自定义类型的资源发现实例。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并创建自定义类型的资源发现实例。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Sends a check request without creating the resource discovery instance. The system checks for required parameters, request format, and service limits. If the check fails, an error is returned. If the check passes, the DryRunOperation error code is returned.\n\n- **false** (default): Sends a normal request. After the request passes the check, an HTTP 2xx status code is returned and the resource discovery instance is created."
+      }
     },
     {
       "name": "IpamResourceDiscoveryDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源发现的描述。",
+        "en": "The description of the resource discovery."
+      }
     },
     {
       "name": "IpamResourceDiscoveryName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源发现的名称。",
+        "en": "The name of the resource discovery."
+      }
     },
     {
       "name": "OperatingRegionList",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源发现的生效地域列表。",
+        "en": "The list of regions where the resource discovery is effective."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "请求地域。\n\n> 创建时的请求地域是资源发现实例的托管地域。",
+        "en": "The request region.\n\n> The request region is the hosted region of the resource discovery instance."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表信息。",
+        "en": "The list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持64个字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-），不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 64 characters in length. It must start with a letter or a Chinese character. It can contain digits, periods (.), underscores (\\_), and hyphens (-). It cannot start with `aliyun` or `acs:`, and it cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。一旦传入该值，可以为空字符串。\n\n最多支持128个字符，不能包含`http://`或者`https://`。",
+            "en": "The tag value. You can specify up to 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自定义类型的资源发现实例",
+    "en": "CreateIpamResourceDiscovery"
+  },
+  "descriptions": {
+    "zh": "- 每个阿里云账号（主账号）在每个地域只支持拥有1个资源发现实例。\n\n- 该接口只支持创建自定义类型的资源发现实例。",
+    "en": "- Each Alibaba Cloud account can have only one resource discovery instance in each region.\n\n- This operation creates only resource discovery instances of a custom type."
+  },
   "example": {
     "unifiedCli": "aliyun vpcipam create-ipam-resource-discovery --biz-region-id cn-hangzhou --ipam-resource-discovery-name name --ipam-resource-discovery-description description --operating-region-list cn-hangzhou --resource-group-id rg-aek2sermdd60000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpcipam CreateIpamResourceDiscovery --region cn-hangzhou --OperatingRegionList.1 'cn-hangzhou' --Tag.1.Key FinanceDept --ResourceGroupId 'rg-aek2sermdd60000' --Tag.1.Value FinanceJoshua --DryRun false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --IpamResourceDiscoveryDescription description --IpamResourceDiscoveryName name"

@@ -1,5 +1,6 @@
 {
   "name": "AllocateReadWriteSplittingConnection",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ConnectionStringPrefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "只读地址前缀名，不可重复，由小写字母和中划线组成，需以字母开头，长度不超过30个字符。\n\n> 默认以“实例名+rw”字符串组成前缀。",
+        "en": "The prefix of the read-only routing endpoint. The prefix must be unique. It can be up to 30 characters in length and can contain lowercase letters and hyphens (-). It must start with a lowercase letter.\n\n>  The default prefix consists of the name of the primary instance followed by the letters rw."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主实例ID。可调用DescribeDBInstances获取。",
+        "en": "The primary instance ID. You can call the DescribeDBInstances operation to query the primary instance ID."
+      }
     },
     {
       "name": "DistributionType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "读权重分配模式，取值：\n\n- **Standard**：按规格权重自动分配\n- **Custom**：自定义分配权重",
+        "en": "The method that is used to assign read weights. Valid values:\n\n*   **Standard**: The system automatically assigns read weights to the primary and read-only instances based on the specifications of these instances.\n*   **Custom**: You must manually assign a read weight to each instance."
+      }
     },
     {
       "name": "MaxDelayTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "延迟阈值，范围是0~7200，单位：秒，默认为30。\n\n> 当只读实例延迟超过该阈值时，读取流量不发往该实例。",
+        "en": "The threshold of the latency that is allowed on the read-only instances. Valid values: 0 to 7200. Default value: 30. Unit: seconds.\n\n>  If the latency on a read-only instance exceeds the specified threshold, ApsaraDB RDS does not forward read requests to the read-only instance."
+      }
     },
     {
       "name": "NetType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "只读地址的网络类型，取值：\n\n- **Internet**：外网\n- **Intranet**：内网\n\n> 默认为内网，且内网类型与主实例保持一致。",
+        "en": "The network type of the read-only routing endpoint. Valid values:\n\n*   **Internet**\n*   **Intranet**\n\n>  The default value is Intranet. Make sure that the network type of the read-only routing endpoint is the same as that of the primary instance."
+      }
     },
     {
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "只读地址端口，取值为1000~5999，默认为1433。",
+        "en": "The port that is associated with the read-only routing endpoint. Valid values: 1000 to 5999. Default value: 1433."
+      }
     },
     {
       "name": "Weight",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "读权重分配，即传入主实例和只读实例的读请求比例。以100进行递增，最大值为10000。\n\n* RDS实例格式：`{\"<只读实例ID>\":<权重>,\"master\":<权重>,\"slave\":<权重>}`\n* MyBASE实例格式：`[{\"instanceName\":\"<主实例ID>\",\"weight\":<权重>,\"role\":\"master\"},{\"instanceName\":\"<主实例ID>\",\"weight\":<权重>,\"role\":\"slave\"},{\"instanceName\":\"<只读实例ID>\",\"weight\":<权重>,\"role\":\"master\"}]`\n\n> - 当**DistributionType**为**Custom**时，必须传入该参数。\n> - 当**DisrtibutionType**为**Standard**时，传入该参数无效。",
+        "en": "The read weights of the primary instance and its read-only instances. The read weight is increased in increments of 100. The maximum value is 10000.\n\n*   For ApsaraDB RDS instances, the value of this parameter is in the following format: `{\"<ID of the read-only instance >\":<Weight>,\"master\":<Weight>,\"slave\":<Weight>}`.\n*   For ApsaraDB MyBase instances, the value of this parameter is in the following format: `[{\"instanceName\":\"<Primary instance ID>\",\"weight\":<Weight>,\"role\":\"master\"},{\"instanceName\":\"<Primary instance ID>\",\"weight\":<Weight>,\"role\":\"slave\"},{\"instanceName\":\"<Read-only instance ID>\",\"weight\":<Weight>,\"role\":\"master\"}]`\n\n> \n\n*   This parameter must be specified when **DistributionType** is set to **Custom**.\n\n*   If **DistributionType** is set to **Standard**, this parameter is invalid."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "申请只读地址",
+    "en": "AllocateReadWriteSplittingConnection"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS SQL Server\n\n### 功能描述\n对拥有只读实例的SQL Server主实例，可以创建统一只读地址。创建该地址后，不影响原主实例、只读实例的已有访问地址，以及正常的内外网申请。\n\n### 前体条件\n调用该接口时，实例必须满足以下条件，否则将操作失败：\n- MySQL实例使用的是共享代理。\n- 实例状态为运行中。\n- 实例拥有只读实例。\n- 实例没有正在执行的DTS迁移任务。\n- 实例为如下版本：\n    - SQL Server集群版。\n    - MySQL 5.7高可用版（本地SSD盘）\n    - MySQL 5.6",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   SQL Server\n\n### [](#)Feature description\n\nIf read-only instances are attached to a primary ApsaraDB RDS for SQL Server instance, you can call this operation to apply for a unified read-only routing endpoint for the primary instance. After you apply for a read-only routing endpoint for a primary instance, the existing endpoints of the primary instance and its read-only instances remain valid. In addition, you can still apply for internal and public endpoints.\n\n### [](#)Prerequisites\n\nBefore you call this operation, make sure that the following requirements are met:\n\n*   The shared proxy feature is enabled for your ApsaraDB RDS for MySQL instance.\n\n*   The instance is in the Running state.\n\n*   Read-only instances are attached to the primary instance.\n\n*   The instance does not have an ongoing Data Transmission Service (DTS) migration task.\n\n*   The instance runs one of the following database versions and RDS editions:\n\n    *   SQL Server on RDS Cluster Edition\n    *   MySQL 5.7 on RDS High-availability Edition (with local disks)\n    *   MySQL 5.6"
+  },
   "example": {
     "unifiedCli": "aliyun rds allocate-read-write-splitting-connection --db-instance-id rm-uf6wjk50000 --connection-string-prefix rr-m5e0000-rw.mysql.rds.aliyuncs.com --port 1433 --max-delay-time 30 --net-type Intranet --distribution-type Standard --weight rm-bp10000_:_800,_master_:_400,_slave_:_400 --region cn-hangzhou",
     "legacyCli": "aliyun rds AllocateReadWriteSplittingConnection --region cn-hangzhou --MaxDelayTime 30 --DBInstanceId 'rm-uf6wjk50000' --Port 1433 --ConnectionStringPrefix 'rr-m5e0000-rw.mysql.rds.aliyuncs.com' --NetType Intranet --Weight 'rm-bp10000_:_800,_master_:_400,_slave_:_400' --DistributionType Standard"

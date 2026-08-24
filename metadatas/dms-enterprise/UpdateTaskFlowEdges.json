@@ -1,5 +1,6 @@
 {
   "name": "UpdateTaskFlowEdges",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "DagId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务流ID，可通过调用接口[ListTaskFlow](~~424565~~)或[ListLhTaskFlowAndScenario](~~426672~~)获取该参数的值。",
+        "en": "The task flow ID. You can call the [ListTaskFlow](~~424565~~) or [ListLhTaskFlowAndScenario](~~426672~~) operation to query the task flow ID."
+      }
     },
     {
       "name": "Edges",
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "更新后的任务流边列表。",
+        "en": "The list of updated task flow edges."
+      },
       "sub_parameters": [
         {
           "name": "Id",
           "position": "Query",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "任务流边ID。",
+            "en": "The ID of the task flow edge."
+          }
         },
         {
           "name": "NodeEnd",
           "position": "Query",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "边的终点节点ID。",
+            "en": "The ID of the end node of the edge."
+          }
         },
         {
           "name": "NodeFrom",
           "position": "Query",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "边的起点节点ID。",
+            "en": "The ID of the start node of the edge."
+          }
         }
       ]
     },
@@ -40,9 +61,24 @@
       "name": "Tid",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID。\n> 取自系统右上角头像处悬停展示的租户ID信息，详情请参见[查看租户信息](~~181330~~)。",
+        "en": "The tenant ID.\n\n> To view the tenant ID, move the pointer over the profile picture in the upper-right corner of the Data Management (DMS) console. For more information, see [Manage DMS tenants](~~181330~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新指定任务流边的起始节点",
+    "en": "UpdateTaskFlowEdges"
+  },
+  "descriptions": {
+    "zh": "### 注意事项\n更新的边需要满足以下限制，否则将无法成功更新：\n1. 指定的边存在于DagId指定的任务流DAG图中。 \n2. 指定的边端点存在于DagId指定的任务流DAG图中。 \n3. 更新后，DAG图不出现环。",
+    "en": "###\n\nThe edges can be updated only when the following conditions are met:\n\n1.  The specified edge exists in the directed acyclic graph (DAG) of the task flow specified by DagId.\n2.  The specified edge nodes exist in the DAG of the task flow specified by DagId.\n3.  After the update, rings do not exist in the DAG."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise update-task-flow-edges --tid 3000 --dag-id 15000 --edges NodeFrom=44000 NodeEnd=44000 Id=24000 --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise UpdateTaskFlowEdges --region cn-hangzhou --Edges '[{\"NodeFrom\":44000,\"NodeEnd\":44000,\"Id\":24000}]' --Tid 3000 --DagId 15000"

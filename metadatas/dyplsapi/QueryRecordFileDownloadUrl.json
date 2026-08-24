@@ -1,0 +1,60 @@
+{
+  "name": "QueryRecordFileDownloadUrl",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "CallId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "呼叫记录ID，用于标识一条通话记录。\n\n获取方式如下：\n- 在控制台[呼叫记录查询](https://dyplsnext.console.aliyun.com/call)页面进行查询，获取**呼叫记录ID**。\n- 在**录音状态报告**回执消息中查看**call_id**字段。",
+        "en": "The ID of the call record. Log on to the [Phone Number Protection console](https://dypls.console.aliyun.com/dypls.htm#/account) and view **Call Record ID** on the **Call Record Query** page."
+      }
+    },
+    {
+      "name": "CallTime",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "呼叫记录中的呼叫发起时间。\n\n获取方式如下：\n\n- 在控制台[呼叫记录查询](https://dyplsnext.console.aliyun.com/call)页面进行查询，获取**呼叫时间**列的**呼叫发起**时间。\n- 在**录音状态报告**回执消息中查看**call_time**字段。\n\n> **CallTime**不支持传入时间戳格式的参数。",
+        "en": "The call initiation time in the call record. Log on to the [Phone Number Protection console](https://dypls.console.aliyun.com/dypls.htm#/account). View **Call Initiated At** on the **Call Record Query** page, or view the call_time field in the Call Detail Record (CDR) receipt."
+      }
+    },
+    {
+      "name": "PoolKey",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "号码池Key。\n\n在号码隐私保护控制台，[号码池管理](https://dyplsnext.console.aliyun.com/number-pool)页面获取**号码池Key**。\n\n> 当**ProductType**为空时必填。",
+        "en": "The key of the phone number pool. Log on to the [Phone Number Protection console](https://dypls.console.aliyun.com/dypls.htm#/account) and view the key of the phone number pool on the **Number Pool Management** page.\n\n>  This parameter is required when **ProductType** is left empty."
+      }
+    },
+    {
+      "name": "ProductType",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "产品类型。取值：\n- **AXB_170**。\n- **AXN_170**。\n- **AXN_95**。\n- **AXN\\_EXTENSION\\_REUSE**。\n\n> - 适用于原阿里大于客户，阿里云用户可忽略。\n> - 当**PoolKey**为空时必填。",
+        "en": "The product type. Valid values:\n\n*   **AXB\\_170**.\n*   **AXN\\_170**.\n*   **AXN\\_95**.\n*   **AXN_EXTENSION_REUSE**\n\n> \n\n*   This parameter is applicable to the original key accounts of Alibaba Cloud. This parameter can be ignored for Alibaba Cloud users.\n\n*   This parameter is required when **PoolKey** is left empty."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取录音文件的下载链接",
+    "en": "QueryRecordFileDownloadUrl"
+  },
+  "descriptions": {
+    "zh": "- 如果在绑定关系中开启了录音功能，该绑定关系产生的所有通话均会被录音，可以通过此接口获取录音文件的下载链接，下载录音文件。\n\n- 您可以使用此接口获取录音文件的下载链接进行录音文件下载，也可以在控制台[呼叫记录查询](https://dyplsnext.console.aliyun.com/call)页面查询呼叫记录，单击**录音文件操作**列的**下载**下拉项，单击**录音音频**进行录音文件下载。\n\n- 在使用此接口前，建议您先明确需要获取的录音文件对应的呼叫记录。\n您可以在控制台[呼叫记录查询](https://dyplsnext.console.aliyun.com/call)页面进行查询，获取呼叫记录ID、呼叫发起时间等信息，或者参考[回执消息简介与配置流程](https://help.aliyun.com/zh/pnp/developer-reference/introduction-to-receipt-messages-and-receipt-message-configurations?spm=a2c4g.11186623.0.0.7b2d7fcbozUnoz)，订阅**回执消息类型**为**录音状态报告**（SecretRecording）的消息，该报告消息中的结果字段可以作为此接口的入参。\n\n### QPS 限制\n本接口的单用户QPS限制为 3000 次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。\n\n### PoolKey和ProductType限制\nPoolKey和ProductType参数请至少填写一个，若两个参数都不填，调用接口时会报错。建议原阿里大于用户填ProductType参数，阿里云用户填PoolKey参数。\n\n### 获取录音文件步骤：\n1. 在更新或绑定关系接口中选择入参需要录音。\n2. 在控制台中订阅录音消息回执。\n3. 录音消息回执返回后调用QueryRecordFileDownloadUrl接口下载录音。\n\n> - URL链接的有效期为2小时。获取下载链接后请尽快下载录音文件。\n> - 录音文件的存储周期是30天，仅支持下载30天内通话记录的录音文件。",
+    "en": "If the recording feature is enabled for a binding, all calls made by the bound phone numbers are recorded. You can obtain the download URL of a recording file by calling the QueryRecordFileDownloadUrl operation and download the recording file.\n\n>  We recommend that you subscribe to [the recording status report SecretRecording](~~109198~~). The values of the response parameters in SecretRecording can be used as the values of the request parameters for downloading a recording file.\n\n### [](#)Procedure for obtaining a recording file\n\n1.  Specify the request parameter in an update or binding operation to enable the recording feature.\n2.  Subscribe to recording message receipts in the Phone Number Protection console.\n3.  After a recording message receipt is returned, call the QueryRecordFileDownloadUrl operation to obtain the download URL of the recording file, and download the recording file.\n\n> \n\n*   A download URL is valid for 2 hours. Download the recording file as soon as possible after obtaining a download URL.\n\n*   The storage period of recording files is 30 days. You can download only the recording files of calls recorded in the last 30 days."
+  }
+}

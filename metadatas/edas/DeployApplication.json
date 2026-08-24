@@ -1,5 +1,6 @@
 {
   "name": "DeployApplication",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/pop/v5/changeorder/co_deploy",
@@ -8,93 +9,164 @@
       "name": "AppEnv",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "部署环境变量，格式必须符合`{\"name\":\"x\",\"value\":\"y\"},{\"name\":\"x2\",\"value\":\"y2\"} `，`key`固定为`name`和`value`。",
+        "en": "The environment variables of the application. Specify each environment variable by using two key-value pairs. Example: `{\"name\":\"x\",\"value\":\"y\"},{\"name\":\"x2\",\"value\":\"y2\"}`. The `keys` of the two key-value pairs are `name` and `value`."
+      }
     },
     {
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID。可通过查询ListApplication接口获取，请参见[ListApplication](~~423162~~)。",
+        "en": "The ID of the application. You can call the ListApplication operation to query the application ID. For more information, see [ListApplication](~~423162~~)."
+      }
     },
     {
       "name": "Batch",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每组批次。\n\n- 当指定了应用分组的GroupId为具体的某个应用分组ID时，表示向指定应用分组部署。此时可指定的最小批次数为1，最大批次数为该应用分组下正常状态的ECS实例数最大值，实际分批数结果范围：\\[1，指定的分批数\\] （指定的分批数=指定的分组下面ECS总数）。\n- 当指定了应用分组的GroupId为all时，表示向所有应用分组部署，此时可指定的最小批次数为1，最大批次数为正常状态的ECS数量最多的分组下的ECS实例数。",
+        "en": "The number of batches per instance group.\n\n- If you specify an ID when you set the GroupId parameter, the application is deployed to the specified instance group. The minimum number of batches that can be specified is 1. The maximum number of batches is the maximum number of ECS instances in the Normal state in the instance group. The actual value falls in the range of \\[1, specified number]. The specified number of batches equals the number of ECS instances in the specified instance group.\n\n- If you set the GroupId parameter to all, the application is deployed to all instance groups. The minimum number of batches that can be specified is 1. The maximum number of batches is the number of ECS instances in the instance group that has the largest number of ECS instances in the Normal state."
+      }
     },
     {
       "name": "BatchWaitTime",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批等待时间，单位：分钟。\n- 默认为0，表示不等待。\n- 最大为5。\n\n当实际批次数较多时，需要设置一个合理值，否则会导致本次应用部署的变更持续时间比较长。",
+        "en": "The wait time between deployment batches for the application. Unit: minutes.\n\n- Default value: 0. If no wait time between deployment batches is needed, set this parameter to 0.\n\n- Maximum value: 5.\n\nIf many deployment batches are needed, we recommend that you specify a small value for this parameter. Otherwise, the application deployment is time-consuming."
+      }
     },
     {
       "name": "BuildPackId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "EDAS-Container构建包号。\n\n- 如果部署时不需要更改EDAS-Container版本，则该参数可不设置。\n- 如果需要在本次部署时，更新目标应用的EDAS-Container版本，则需要设置。\n\n有以下两种获取方式：\n\n- 可通过查询容器版本列表接口ListBuildPack获取，请参见[ListBuildPack](~~149391~~)。\n- 在[容器版本说明](~~92614~~)表格中的**构建包序号**列获取。例如`59`表示`EDAS-Container 3.5.8 版本`。",
+        "en": "The build package number of EDAS Container.\n\n- You do not need to set the parameter if you do not need to change the EDAS Container version during the deployment.\n\n- Set the parameter if you need to update the EDAS Container version of the application during the deployment.\n\nYou can query the build package number by using one of the following methods:\n\n- Call the ListBuildPack operation. For more information, see [ListBuildPack](~~149391~~).\n\n- Obtain the value in the **Build package number** column of the [Release notes for EDAS Container](~~92614~~) topic. For example, `59` indicates `EDAS Container 3.5.8`."
+      }
     },
     {
       "name": "ComponentIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用组件ID，参数不适用于HSF应用。可通过查询组件列表接口ListComponents接口获取，请参见[ListComponents](~~423223~~)。\n\n- 当创建应用时已经设置，则本次部署不需要再设置。\n- 如果在本次部署时需要更新目标应用的应用组件版本则需要设置。\n\n常用的应用组件ID及含义如下：\n\n- 4：表示Apache Tomcat 7.0.91\n- 7：表示Apache Tomcat 8.5.42\n- 5：表示OpenJDK 1.8.x\n- 6：表示OpenJDK 1.7.x \n\n更多信息，请参见[InsertApplication](~~423185~~)接口的常见应用的主要参数说明。",
+        "en": "The IDs of the components used by the application. The parameter is not applicable to High-Speed Framework (HSF) applications. You can call the ListComponents operation to query the component IDs. For more information, see [ListComponents](~~423223~~).\n\n- If you have specified the component IDs when you create the application, you do not need to set the parameter when you deploy the application.\n\n- Set the parameter if you need to update the component versions for the application during the deployment.\n\nValid values for common application components:\n\n- 4: Apache Tomcat 7.0.91\n\n- 7: Apache Tomcat 8.5.42\n\n- 5: OpenJDK 1.8.x\n\n- 6: OpenJDK 1.7.x\n\nFor more information, see the Common application parameters section of the [InsertApplication](~~423185~~) topic."
+      }
     },
     {
       "name": "DeployType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "部署类型。包含`URL`和`image`（废弃参数值），其中只有Swarm集群应用支持镜像（`image`）部署。",
+        "en": "The deployment mode of the application. Valid values: `url` and `image`. The image value is deprecated. You can deploy an application to a Swarm cluster only by using an image.\\`\\`"
+      }
     },
     {
       "name": "Desc",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用部署描述信息。",
+        "en": "The description of the application deployment."
+      }
     },
     {
       "name": "Gray",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否为金丝雀发布。\n\n- true：金丝雀发布。\n\n    - 灰度发布时，必须指定灰度发布的分组ID，即GroupId。\n\n    - 灰度发布作为一个批次发布。\n\n    - 灰度结束后，正常发布，分组批次由Batch控制。\n\n- false：非金丝雀发布（单批或分批发布）。",
+        "en": "Specifies whether canary release is selected as the deployment method. Valid values:\n\n- true: Canary release is selected.\n\n  - To implement a canary release, specify the GroupId parameter, which specifies the ID of the instance group for the canary release.\n\n  - Canary release can be selected as the deployment method for only one batch.\n\n  - After the canary release is complete, the application is released in regular mode. The Batch parameter specifies the number of batches.\n\n- false: Single-batch release or phased release is selected."
+      }
     },
     {
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "部署分组ID。可通过查询ListDeployGroup接口获取，请参见[ListDeployGroup](~~423184~~)。\n\n<note>如果要部署到所有分组，参数设置为`all`。</note>",
+        "en": "The ID of the instance group to which the application is deployed. You can call the ListDeployGroup operation to query the ID of the instance group. For more information, see [ListDeployGroup](~~423184~~).\n\nSet the parameter to `all` if you want to deploy the application to all instance groups."
+      }
     },
     {
       "name": "ImageUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "**（废弃参数）**Swarm集群应用部署时可指定的应用镜像URL，推荐使用阿里云镜像仓库地址。",
+        "en": "The URL of the application image that is used to deploy the application in a Swarm cluster. We recommend that you use an image that is stored in Alibaba Cloud Container Registry. This parameter is deprecated."
+      }
     },
     {
       "name": "PackageVersion",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "部署的应用部署包版本，最长64个字符，建议使用时间戳。",
+        "en": "The version of the application deployment package. The value can be up to 64 characters in length. We recommend that you use a timestamp."
+      }
     },
     {
       "name": "ReleaseType",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批方式。\n- 0为自动。\n- 1为各批次间需要手动确认。可在控制台目标应用的变更流程详情中单击**继续下一批**，也可通过调用ContinuePipeline继续下一批（由于使用API部署，建议使用自动分批），请参见[ContinuePipeline](~~126990~~)。",
+        "en": "The mode in which the deployment batches are triggered. Valid values:\n\n- 0: automatic.\n\n- 1: You must manually trigger the next batch. You can manually click **Proceed to Next Batch** in the console or call the ContinuePipeline operation to proceed to the next batch. We recommend that you choose the automatic mode when you call an API operation to deploy the application. For more information, see [ContinuePipeline](~~126990~~)."
+      }
     },
     {
       "name": "TrafficControlStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "灰度发布策略内容，请参见[DeployK8sApplication](~~423212~~)。",
+        "en": "The canary release policy. For more information about canary release policies, see [DeployK8sApplication](~~423212~~)."
+      }
     },
     {
       "name": "WarUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用部署包（WAR或JAR）的URL地址。**DeployType**为`url`时必填，建议使用OSS存储的应用部署包路径。",
+        "en": "The URL of the application deployment package. The package can be a WAR or JAR package. This parameter is required if you set the **DeployType** parameter to `url`. We recommend that you specify the URL of an application deployment package that is stored in an Object Storage Service (OSS) bucket."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "用于向 ECS 集群部署应用",
+    "en": "DeployApplication"
+  },
+  "descriptions": {
+    "zh": ">  如果需要在导入EDAS的容器服务K8s集群部署应用，请使用EDAS提供的DeployK8sApplication接口，更多信息，请参见[DeployK8sApplication](~~149420~~)。",
+    "en": "> To deploy an application in a Container Service for Kubernetes (ACK) cluster that is imported into Enterprise Distributed Application Service (EDAS), call the DeployK8sApplication operation provided by EDAS. For more information, see [](~~149420~~)DeployK8sApplication."
+  },
   "example": {
     "unifiedCli": "aliyun edas deploy-application --app-id 3616cdca-00000000000000000000 --package-version 1.0 --desc Deploy_by_edas_pop_api --deploy-type URL --war-url https://edas.oss-cn-hangzhou.aliyuncs.com/demo/hello-edas.war --image-url registry.cn-hangzhou.aliyuncs.com/mw/testapp:latest --group-id all --batch 1 --batch-wait-time 0 --app-env name_:_env_name_1_,_value_:_env_value_1_,_name_:_env_name_2_,_value_:_env_value_2 --build-pack-id 59 --component-ids 7 --release-type 0 --gray true --traffic-control-strategy http_:_rules_:_conditionType_:_percent_,_percent_:10 --region cn-hangzhou",
     "legacyCli": "aliyun edas POST /pop/v5/changeorder/co_deploy --region cn-hangzhou --DeployType URL --ReleaseType 0 --Gray true --AppEnv 'name_:_env_name_1_,_value_:_env_value_1_,_name_:_env_name_2_,_value_:_env_value_2' --WarUrl 'https://edas.oss-cn-hangzhou.aliyuncs.com/demo/hello-edas.war' --ImageUrl 'registry.cn-hangzhou.aliyuncs.com/mw/testapp:latest' --PackageVersion '1.0' --BuildPackId 59 --GroupId all --Desc Deploy_by_edas_pop_api --ComponentIds 7 --AppId '3616cdca-00000000000000000000' --Batch 1 --TrafficControlStrategy 'http_:_rules_:_conditionType_:_percent_,_percent_:10' --BatchWaitTime 0 --header \"Content-Type=application/json\""

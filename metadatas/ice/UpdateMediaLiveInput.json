@@ -1,0 +1,142 @@
+{
+  "name": "UpdateMediaLiveInput",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "InputId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输入ID。",
+        "en": "The ID of the input."
+      }
+    },
+    {
+      "name": "InputSettings",
+      "position": "Query",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "输入设置。最多2个，对应主输入和备输入。",
+        "en": "The input settings. An input can have up to two sources: primary and backup sources."
+      },
+      "sub_parameters": [
+        {
+          "name": "FlowId",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "MediaConnect Flow的Flow ID，Type为MEDIA_CONNECT时必填。",
+            "en": "The ID of the flow from MediaConnect. This parameter is required when Type is set to MEDIA\\_CONNECT."
+          }
+        },
+        {
+          "name": "FlowOutputName",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "MediaConnect Flow的输出名称，Type为MEDIA_CONNECT时必填。",
+            "en": "The output name of the MediaConnect flow. This parameter is required when Type is set to MEDIA\\_CONNECT."
+          }
+        },
+        {
+          "name": "SourceUrl",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "拉流的流地址，Type为PULL类型时必填。",
+            "en": "The source URL from which the stream is pulled. This parameter is required for PULL inputs."
+          }
+        },
+        {
+          "name": "SrtLatency",
+          "position": "Query",
+          "type": "Integer",
+          "required": false,
+          "description": {
+            "zh": "SRT流的延迟，单位ms。取值范围[100, 10000]。Type为SRT_PUSH，SRT_PULL时选填。",
+            "en": "Latency of the SRT stream, in ms. Valid range: \\[100, 10000]. Optional when Type is SRT\\_PUSH or SRT\\_PULL."
+          }
+        },
+        {
+          "name": "SrtMaxBitrate",
+          "position": "Query",
+          "type": "Integer",
+          "required": false,
+          "description": {
+            "zh": "SRT流的最大码率，单位bps。取值范围[100, 100000000]。Type为SRT_PUSH，SRT_PULL时选填。",
+            "en": "Maximum bitrate of the SRT stream, in bps. Valid range: \\[100, 100000000]. Optional when Type is SRT\\_PUSH or SRT\\_PULL."
+          }
+        },
+        {
+          "name": "SrtPassphrase",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "SRT加密配置，SRT流的密码，由10~79个ASCII编码可见的字符组成。Type为SRT_PUSH，SRT_PULL时选填。\n\n如果加密配置不为空，则所有 SRT 客户端必须使用正确的密码才能发布或播放，否则 SRT 连接将被拒绝。",
+            "en": "The SRT encryption configuration. The password for the SRT stream must consist of 10 to 79 visible ASCII characters. Optional when Type is SRT\\_PUSH or SRT\\_PULL.\n\nIf the encryption configuration is not empty, all SRT clients must use the correct password to publish or playback streams. Otherwise, the SRT connection will be denied."
+          }
+        },
+        {
+          "name": "SrtPbKeyLen",
+          "position": "Query",
+          "type": "Integer",
+          "required": false,
+          "description": {
+            "zh": "SRT加密配置，SRT流的密钥长度。可选值：0, 16, 24, 32。Type为SRT_PUSH，SRT_PULL时选填。",
+            "en": "Encryption configuration for SRT—the key length of the SRT stream. Valid values: 0, 16, 24, 32. Optional when Type is SRT\\_PUSH or SRT\\_PULL."
+          }
+        },
+        {
+          "name": "StreamName",
+          "position": "Query",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "推流的流名称，Type为PUSH类型时必填。长度限制英文255字符。",
+            "en": "The name of the pushed stream. This parameter is required for PUSH inputs. It can be up to 255 characters in length."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Name",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输入实例名称。支持英文+数字+英文短划线(-)、下划线(_)。长度限制英文64字符。",
+        "en": "The name of the input. Letters, digits, hyphens (-), and underscores (\\_) are supported. It can be up to 64 characters in length."
+      }
+    },
+    {
+      "name": "SecurityGroupIds",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "要绑定的安全组ID列表，Type为PUSH类型时必填。",
+        "en": "The IDs of the security groups to be associated with the input. This parameter is required for PUSH inputs."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新媒体直播输入",
+    "en": "Update a media live input"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口更新媒体直播输入。\n- 仅当媒体直播输入未绑定到媒体直播频道时，允许更新输入，不允许更新已经绑定了频道的输入。\n\n## QPS 限制\n本接口的单用户 QPS 限制为 50 次/秒。超过限制，API 调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- Invoke this API to update a media live input.\n\n- You can update an input only when it is not attached to any media live channel. Inputs that are already attached to a channel cannot be updated.\n\n## Queries per second (QPS) limit\n\nThe QPS limit for this API is 50 queries per second per user. If the limit is exceeded, Rate Limiting will be applied to your API calls, which may impact your business. Make sure to call this API appropriately."
+  }
+}

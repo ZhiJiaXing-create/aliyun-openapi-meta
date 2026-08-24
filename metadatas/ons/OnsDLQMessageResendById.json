@@ -1,5 +1,6 @@
 {
   "name": "OnsDLQMessageResendById",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "GroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需查询的消费端Group ID。",
+        "en": "The group ID of the consumer to query."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需查询消息所对应的实例ID。",
+        "en": "The ID of the instance that contains the message to query."
+      }
     },
     {
       "name": "MsgId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需查询的消息的ID，即Message ID。",
+        "en": "The ID of the message to query. This is the message ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重发指定的死信消息",
+    "en": "OnsDLQMessageResendById"
+  },
+  "descriptions": {
+    "zh": "><notice>阿里云提供的OpenAPI属于管控类API，用于管理和查询阿里云服务的相关资源。仅推荐在管控链路集成，消息收发的核心数据链路中严禁依赖OpenAPI实现，否则可能会导致链路产生风险。></notice>\n\n- 死信消息已达最大重试次数，若重发后再次消费失败，则死信队列中将增加一条Message ID相同的消息，可通过控制台死信队列的查询页面或者管控API查看该结果。您可通过同一Message ID的消息出现次数判断重发后依然消费失败的次数。\n- 由于死信消息是经过重试逻辑依然消费失败的消息，通常意味着消费逻辑可能存在问题，故请先查明多次消费失败的原因，再调用本接口重新发送。\n- 当前消息队列RocketMQ版不管理死信重发的状态，重发后消费成功的消息不会从死信队列中移除。需自行管理、判断消息是否需要重发。避免多次无意义地重发，从而造成重复消费。",
+    "en": "><notice>\n\nThe OpenAPI provided by Alibaba Cloud is a management API. You can use it to manage and query resources of Alibaba Cloud services. Integrate OpenAPI for management purposes only. Do not use OpenAPI for core data links that send and receive messages. This practice can introduce threats to your data links.\n\n></notice>\n\n- If a dead-letter message that has reached the maximum number of retries fails to be consumed after being resent, a new message with the same message ID is added to the dead-letter queue. You can check the result on the dead-letter queue query page in the console or by calling a management API. The number of times a message with the same message ID appears indicates the number of failed consumption attempts after the message was resent.\n\n- A dead-letter message is a message that failed to be consumed after multiple retries. This usually indicates an issue with the consumption logic. You must identify the cause of the repeated consumption failures before you call this operation to resend the message.\n\n- Message Queue for Apache RocketMQ does not track the status of resent dead-letter messages. Messages that are successfully consumed after being resent are not removed from the dead-letter queue. You must determine whether a message needs to be resent. Avoid resending messages unnecessarily to prevent duplicate consumption."
+  },
   "example": {
     "unifiedCli": "aliyun ons ons-dlq-message-resend-by-id --msg-id 0BC16699343051CD9F1D798E77340000 --group-id GID_test_group_id --instance-id MQ_INST_1880770869020000_BXSuW61e --region cn-hangzhou",
     "legacyCli": "aliyun ons OnsDLQMessageResendById --region cn-hangzhou --InstanceId MQ_INST_1880770869020000_BXSuW61e --MsgId 0BC16699343051CD9F1D798E77340000 --GroupId GID_test_group_id"

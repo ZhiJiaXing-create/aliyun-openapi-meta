@@ -1,5 +1,6 @@
 {
   "name": "CreateReplicationJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,49 +9,81 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。您可以从客户端生成一个不超过64个ASCII字符的参数值，并将值赋予ClientToken，保证重试请求的幂等性。更多详情，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "A client token to ensure the idempotence of the request. Generate a string of up to 64 ASCII characters and assign it to this parameter. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "ContainerNamespace",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Docker的命名空间。关于Docker容器镜像详情请参见[容器镜像服务](~~60744~~)。",
+        "en": "The namespace of the Docker container. For more information, see [Container Registry](~~60744~~)."
+      }
     },
     {
       "name": "ContainerRepository",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Docker的镜像仓库。关于Docker容器镜像详情请参见[容器镜像服务](~~60744~~)。",
+        "en": "The image repository for the Docker container. For more information, see [Container Registry](~~60744~~)."
+      }
     },
     {
       "name": "ContainerTag",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Docker的镜像标签。关于Docker容器镜像详情请参见[容器镜像服务](~~60744~~)。",
+        "en": "The image tag for the Docker container. For more information, see [Container Registry](~~60744~~)."
+      }
     },
     {
       "name": "DataDisk",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "数据盘信息列表。",
+        "en": "The list of data disks."
+      },
       "sub_parameters": [
         {
           "name": "Index",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "目标阿里云服务器ECS的数据盘顺序。初始值为1。取值范围：1~16\n\n\n>您只能为迁移源中存在的数据盘创建目标数据盘。",
+            "en": "The sequence number of the data disk on the destination ECS instance. The sequence starts from 1. Valid values: 1 to 16.\n\n> You can create a destination data disk only for a data disk that exists on the migration source."
+          }
         },
         {
           "name": "Part",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "分区列表。",
+            "en": "The list of partitions."
+          }
         },
         {
           "name": "Size",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "目标阿里云服务器ECS的数据盘大小，单位为GiB。取值范围：20~32768。\n>该参数取值需要大于迁移源数据盘实际占用大小。例如，源数据盘大小为500 GiB，实际占用100 GiB，则该参数取值需大于100 GiB。",
+            "en": "The size of the data disk on the destination ECS instance. Unit: GiB. Valid values: 20 to 32768.\n\n> The value must be greater than the used space of the source data disk. For example, if the source data disk is 500 GiB and 100 GiB of space is used, set this parameter to a value greater than 100."
+          }
         }
       ]
     },
@@ -58,145 +91,241 @@
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务描述。\n\n长度应为2~128个英文或中文字符，必须以大小字母或中文开头，不能以`http://`和`https://`开头，可以包含数字、半角冒号（:）、下划线（_）或者连字符（-）。",
+        "en": "The description of the migration task.\n\nThe description must be 2 to 128 characters in length. It must start with a letter or a Chinese character. It cannot start with `http://` or `https://`. It can contain digits, colons (:), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "Disks",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "磁盘信息。",
+        "en": "The disk information."
+      }
     },
     {
       "name": "Frequency",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增量迁移任务运行的时间间隔，单位：小时。取值范围：1~168。\n\n`RunOnce`参数值为false时，该参数为必填参数。\n\n默认值：无。",
+        "en": "The interval at which an incremental migration task is run. Unit: hours. Valid values: 1 to 168.\n\nThis parameter is required if you set the `RunOnce` parameter to \\`false\\`.\n\nDefault value: None."
+      }
     },
     {
       "name": "ImageName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务交付的目标阿里云镜像名称。目标镜像的名称需满足以下要求：\n\n- 同一阿里云地域下，镜像名称必须唯一。\n- 长度为2~128个英文或中文字符，必须以大小字母或中文开头，不能以`http://`和`https://`开头，可以包含数字、半角冒号（:）、下划线（_）或者连字符（-）。\n\n>迁移任务运行过程中，若当前地域已经存在相同名称的镜像，则系统默认给镜像名称添加迁移任务ID（JobId）作为后缀，如：ImageName_j-2zexxxxxxxxxxxxx。",
+        "en": "The name of the destination Alibaba Cloud image. The name must meet the following requirements:\n\n- The image name must be unique in the same Alibaba Cloud region.\n\n- The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character. It cannot start with `http://` or `https://`. It can contain digits, colons (:), underscores (\\_), and hyphens (-).\n\n> If an image with the same name already exists in the current region when the migration task is running, the system adds the migration task ID (JobId) to the image name as a suffix. For example: \\`ImageName\\_j-2zexxxxxxxxxxxxx\\`."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标实例ID。",
+        "en": "The ID of the destination instance."
+      }
     },
     {
       "name": "InstanceRamRole",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例RAM角色名称。",
+        "en": "The name of the RAM role for the instance."
+      }
     },
     {
       "name": "InstanceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "中转实例的实例规格。\n\n调用[DescribeInstanceTypes](~~25620~~)可查询云服务器ECS提供的实例规格。\n\n- 指定该参数后，系统会选择该实例规格创建中转实例。若该实例规格库存不足，则迁移任务创建失败。\n- 不指定该参数时，系统默认会按照一定顺序选择实例规格来创建中转实例，详情请参见[SMC\n FAQ 中转实例规格有哪些](~~121707~~)。",
+        "en": "The instance type of the intermediate instance.\n\nYou can call the [DescribeInstanceTypes](~~25620~~) operation to query the instance types provided by ECS.\n\n- If you specify this parameter, the system creates an intermediate instance of the specified instance type. If the specified instance type is out of stock, the migration task fails to be created.\n\n- If you do not specify this parameter, the system selects an instance type in a specific order to create the intermediate instance. For more information, see the \"What instance types are used for intermediate instances?\" section in [SMC FAQ](~~121707~~)."
+      }
     },
     {
       "name": "JobType",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务的类型。取值范围：\n\n- 0：服务器迁移。\n- 1：操作系统迁移。\n- 2：跨可用区迁移。\n- 3：VMware无代理迁移。",
+        "en": "The type of the migration task. Valid values:\n\n- 0: Server migration.\n\n- 1: Operating system migration.\n\n- 2: Cross-zone migration.\n\n- 3: Agentless migration for VMware."
+      }
     },
     {
       "name": "LaunchTemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板ID。",
+        "en": "The ID of the launch template."
+      }
     },
     {
       "name": "LaunchTemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板的版本。",
+        "en": "The version of the launch template."
+      }
     },
     {
       "name": "LicenseType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "许可证类型。取值范围：\n\n- 空值：无许可证。\n- BYOL：自带许可。\n\n更多信息，请参见[SMC FAQ](~~121707~~)。",
+        "en": "The license type. Valid values:\n\n- Leave this parameter empty to indicate no license.\n\n- BYOL: Bring Your Own License (BYOL).\n\nFor more information, see [SMC FAQ](~~121707~~)."
+      }
     },
     {
       "name": "MaxNumberOfImageToKeep",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增量迁移任务默认保留的最大镜像数。取值范围：1~10。\n\n`RunOnce`参数值为false时，该参数为必填参数。\n\n默认值：无。",
+        "en": "The maximum number of images to retain for an incremental migration task. Valid values: 1 to 10.\n\nThis parameter is required if you set the `RunOnce` parameter to \\`false\\`.\n\nDefault value: None."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务名。迁移任务的名称需满足以下要求：\n\n- 任务名称必须唯一。\n- 长度为2~128个英文或中文字符，必须以大小字母或中文开头，不能以`http://`和`https://`开头，可以包含数字、半角冒号（:）、下划线（_）或者连字符（-）。",
+        "en": "The name of the migration task. The name must meet the following requirements:\n\n- The name must be unique.\n\n- The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character. It cannot start with `http://` or `https://`. It can contain digits, colons (:), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "NetMode",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据传输网络模式。取值范围：\n\n- 0：表示公网传输模式。此时要求您的源服务器能够访问公网，迁云数据从公网传输。\n- 2：表示内网传输模式，选用此模式必须设置VSwitchId参数（VpcId参数可以不设置，服务内部可以通过接口反查出来）。\n\n默认值：0。",
+        "en": "The network mode for data transmission. Valid values:\n\n- 0: Internet. Data is transmitted over the Internet. The source server must be able to access the Internet.\n\n- 2: Internal network. If you select this mode, you must set the VSwitchId parameter. The VpcId parameter is optional because the service can automatically query the VPC ID.\n\nDefault value: 0."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "迁移源要迁入的目标阿里云地域ID。\n\n例如，您需要迁移源服务器至杭州，则相应的阿里云地域ID为`cn-hangzhou`。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The ID of the destination Alibaba Cloud region.\n\nFor example, if you want to migrate a source server to the China (Hangzhou) region, set this parameter to `cn-hangzhou`. You can call the [DescribeRegions](~~25609~~) operation to query the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "ReplicationParameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "复制驱动器的参数信息。参数信息为JSON格式键值对，键值固定。最大长度：2048个字符。\n\n复制驱动器是指，复制源服务器数据到中转实例时所使用的工具。不同复制驱动器支持参数可能不同。复制驱动器SMT目前支持以下参数：\n- bandwidth_limit：传输速度带宽限制。\n- compress_level：传输压缩率。\n- checksum：是否开启checksum校验。\n\n复制驱动器的取值，请参见[DescribeSourceServers](~~121818~~)的返回参数`SourceServers.ReplicationDriver`。",
+        "en": "The parameters for the replication driver. The parameters are a JSON key-value pair. The keys are fixed. The value can be up to 2,048 characters in length.\n\nThe replication driver is the tool used to copy data from the source server to the intermediate instance. The supported parameters vary based on the replication driver. The SMT replication driver supports the following parameters:\n\n- bandwidth\\_limit: The bandwidth limit for data transmission.\n\n- compress\\_level: The compression ratio for data transmission.\n\n- checksum: Specifies whether to enable checksum verification.\n\nTo obtain the value of the replication driver, see the `SourceServers.ReplicationDriver` response parameter in [DescribeSourceServers](~~121818~~)."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "RunOnce",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建一次性迁移任务还是增量迁移任务。取值范围：\n\n- true（默认值）：一次性迁移任务。任务创建后，仅执行一次。\n\n- false：增量迁移任务。任务创建后，按照您设置的`Frequency`参数值周期性自动执行。使用增量迁移任务，可在业务不暂停的情况下，同步源服务器的增量数据至阿里云，并为源服务器生成任务运行时刻的全量数据镜像。\n\n> 该参数值只能在创建迁移任务时指定。参数值一经指定，则无法更改。",
+        "en": "Specifies whether to create a one-time migration task or an incremental migration task. Valid values:\n\n- true (default): One-time migration task. The task is executed only once after it is created.\n\n- false: Incremental migration task. After the task is created, it is automatically executed at the interval specified by the `Frequency` parameter. An incremental migration task lets you synchronize incremental data from a source server to Alibaba Cloud without interrupting your services and generate a full data image of the source server at the time the task is running.\n\n> You can specify this parameter only when you create a migration task. You cannot change the value after the task is created."
+      }
     },
     {
       "name": "ScheduledStartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务的执行时间。该参数值的设置需满足以下要求：\n\n- 遵循ISO8601标准，并需要使用UTC+0时间，格式为YYYY-MM-DDThh:mm:ssZ。例如，2018-01-01T12:00:00Z，表示北京时间2018年01月01日20点00分00秒。\n- 该参数值必须晚于当前时间，并且需要设置在30天以内。\n\n>如果该参数值为空，则SMC不会启动迁移任务，需要您调用[StartReplicationJob](~~121823~~)启动任务。",
+        "en": "The time when you want to start the migration task. The time must meet the following requirements:\n\n- The time must follow the ISO 8601 standard and be in UTC. The format is YYYY-MM-DDThh:mm:ssZ. For example, 2018-01-01T12:00:00Z specifies 20:00:00 on January 1, 2018 (UTC+8).\n\n- The time must be later than the current time and within 30 days.\n\n> If you leave this parameter empty, the migration task is not automatically started. You must call the [StartReplicationJob](~~121823~~) operation to start the task."
+      }
     },
     {
       "name": "SourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "迁移源ID。",
+        "en": "The ID of the migration source."
+      }
     },
     {
       "name": "SystemDiskPart",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "系统盘分区信息。",
+        "en": "The information about the system disk partitions."
+      },
       "sub_parameters": [
         {
           "name": "Block",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "系统盘分区N是否开启块复制。取值范围：\n- true。\n- false。\n\n默认值：true。",
+            "en": "Specifies whether to enable block replication for system disk partition N. Valid values:\n\n- true\n\n- false\n\nDefault value: \\`true\\`."
+          }
         },
         {
           "name": "Device",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "目标系统盘分区N设备标识。N的实际取值请参考迁移源的分区设备标识。\n> 当`SystemDiskPart.N.SizeBytes`不为空时，该参数也不能为空。",
+            "en": "The device ID of system disk partition N. The value of N must be the same as the value of N in the device ID of the source partition.\n\n> This parameter cannot be empty if `SystemDiskPart.N.SizeBytes` is not empty."
+          }
         },
         {
           "name": "SizeBytes",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "系统盘分区N大小。单位：Byte。默认为源系统盘分区大小。\n> - 分区空间大小不能超过系统盘空间大小，并且在系统盘下所有分区空间大小之和不能超过系统盘空间大小。\n- 当`SystemDiskPart.N.Device`不为空时，该参数也不能为空。",
+            "en": "The size of system disk partition N. Unit: bytes. Default value: the size of the source system disk partition.\n\n> - The partition size cannot exceed the system disk size. The total size of all partitions on the system disk cannot exceed the system disk size.\n\n- This parameter cannot be empty if `SystemDiskPart.N.Device` is not empty."
+          }
         }
       ]
     },
@@ -204,25 +333,41 @@
       "name": "SystemDiskSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标阿里云服务器ECS的系统盘大小，单位为GiB。取值范围：20~2048。\n\n> 该参数取值需要大于迁移源系统盘实际占用大小，例如，源系统盘大小为500 GiB，实际占用100 GiB，则该参数取值需大于100 GiB。",
+        "en": "The system disk size of the destination Elastic Compute Service (ECS) instance. Unit: GiB. Valid values: 20 to 2048.\n\n> The value must be greater than the used space of the source system disk. For example, if the source system disk is 500 GiB and 100 GiB of space is used, set this parameter to a value greater than 100."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "迁移任务的标签键。N的取值范围：1~20\n\n一旦传入该值，则不允许为空字符串。最多支持128个字符，不能以`aliyun`、`acs:`、`http://`或者`https://`开头。",
+            "en": "The key of tag N for the migration task. Valid values of N: 1 to 20.\n\nThe tag key cannot be an empty string. It can be up to 128 characters in length. It cannot start with `aliyun`, `acs:`, `http://`, or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "迁移任务的标签值。N的取值范围：1~20。\n\n一旦传入该值，可以为空字符串。最多支持128个字符，不能以`aliyun`、`acs:`、`http://`或者`https://`开头。",
+            "en": "The value of tag N for the migration task. Valid values of N: 1 to 20.\n\nThe tag value can be an empty string. It can be up to 128 characters in length. It cannot start with `aliyun`, `acs:`, `http://`, or `https://`."
+          }
         }
       ]
     },
@@ -230,27 +375,54 @@
       "name": "TargetType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务交付的目标类型。取值范围：\n- Image：迁移成功后，SMC为您的迁移源生成阿里云镜像。\n- ContainerImage：迁移成功后，SMC为您的迁移源生成Docker容器镜像。\n- TargetInstance：迁移成功后，SMC将您的迁移源直接迁移至目标实例。当您设置该参数值时，您需要同时指定`InstanceId`参数。",
+        "en": "The type of the migration target. Valid values:\n\n- Image: SMC generates an Alibaba Cloud image from the migration source.\n\n- ContainerImage: SMC generates a Docker container image from the migration source.\n\n- TargetInstance: SMC migrates the source server to a destination instance. If you set this parameter to TargetInstance, you must also specify the `InstanceId` parameter."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定VPC下的虚拟交换机ID。\n\n使用VPC内网迁移时，该参数为必填参数。",
+        "en": "The ID of the virtual switch in the specified VPC.\n\nThis parameter is required for migrations over a VPC internal network."
+      }
     },
     {
       "name": "ValidTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移任务的过期时间。取值范围：迁移任务创建时间+7天~迁移任务创建时间+90天。\n\n- 过期时间须遵循ISO8601标准，并需要使用UTC+0时间，格式为YYYY-MM-DDThh:mm:ssZ。例如，2018-01-01T12:00:00Z，表示北京时间2018年01月01日20点00分00秒。\n- 过期时间设置为空，表示任务无限期有效。\n- 任务到期后会被标记为过期状态，保存7天，7天后系统会自动清理。\n\n默认值：迁移任务创建时间+30天（表示迁移任务的默认有效期为创建后30天）。",
+        "en": "The time when the migration task expires. The value must be between 7 and 90 days after the task is created.\n\n- The time must follow the ISO 8601 standard and be in UTC. The format is YYYY-MM-DDThh:mm:ssZ. For example, 2018-01-01T12:00:00Z specifies 20:00:00 on January 1, 2018 (UTC+8).\n\n- If you leave this parameter empty, the task does not expire.\n\n- After a task expires, it is marked as \\`Expired\\`. Expired tasks are retained for 7 days and then automatically deleted.\n\nDefault value: 30 days after the task is created."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "已配置高速通道服务或者VPN网关的VPC ID。",
+        "en": "The ID of the VPC that is configured with an Express Connect circuit or a VPN Gateway."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个迁移任务",
+    "en": "CreateReplicationJob"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n\n- 您只能为在线（Available）状态的迁移源创建迁移任务。\n- 每个迁移源仅能关联一个未完成状态的迁移任务。未完成状态包括Ready（未开始）、Running（运行中）、Stopped（已暂停）、Waiting（等待中）、InError（出错）和Expired（已过期）。\n- 每个阿里云账号可创建1000个迁移任务。\n- 迁移目标类型为镜像时，需指定ImageName、SystemDiskSize、DataDisk参数。\n- 使用VPC内网迁移时，VSwitchId参数为必填，VpcId参数为可选。\n- 支持迁移源的迁移目标为Docker容器镜像，实现低成本容器化应用迁移。",
+    "en": "## Description\n\n- You can create migration tasks only for source servers that are in the Available state.\n\n- A source server can be associated with only one migration task in an incomplete state, such as Ready, Running, Stopped, Waiting, InError, or Expired.\n\n- Each Alibaba Cloud account can create up to 1,000 migration tasks.\n\n- If the migration target is an image, the ImageName, SystemDiskSize, and DataDisk parameters are required.\n\n- For migrations over a VPC internal network, the VSwitchId parameter is required and the VpcId parameter is optional.\n\n- You can migrate a source server to a Docker container image for low-cost application containerization."
+  },
   "example": {
     "unifiedCli": "aliyun smc create-replication-job --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --name testMigrationTaskName --description This_is_a_migration_task --source-id s-bp1e2fsl57knvuug0000 --target-type Image --scheduled-start-time 2019-06-04T13:35:00Z --valid-time 2019-06-04T13:35:00Z --image-name testAliCloudImageName --instance-id i-bp1f1dvfto1sigz50000 --system-disk-size 80 --vpc-id vpc-bp1vwnn14rqpyiczj0000 --vswitch-id vsw-bp1ddbrxdlrcbim460000 --replication-parameters bandwidth_limit_:0,_compress_level_:1,_checksum_:true --net-mode 0 --run-once true --frequency 12 --max-number-of-image-to-keep 10 --instance-type ecs.c6.large --launch-template-id lt-bp16jovvln1cgaaq0000 --launch-template-version 1 --instance-ram-role SMCAdmin --container-namespace testNamespace --container-repository testRepository --container-tag CentOS:v1 --license-type BYOL --data-disk '[{\"Part\":[{\"Device\":\"0_1\",\"Block\":true,\"SizeBytes\":254803968}],\"Size\":100,\"Index\":1}]' --tag Value=TestValue Key=TestKey --system-disk-part Device=0_1 Block=true SizeBytes=254803968 --job-type 0 --resource-group-id rg-acfmw3ty5y70000 --disks '{\"Data\":[{\"LVM\":true,\"Size\":80,\"Part\":[{\"Path\":\"/home/date\",\"Block\":true,\"SizeBytes\":21474836480}],\"DiskId\":\"d-2ze8hyowhdgd6ou2m5z6\"}],\"System\":{\"LVM\":true,\"Size\":100,\"Part\":[{\"Path\":\"/boot\",\"Block\":true,\"SizeBytes\":254803968}]}}' --region cn-hangzhou",
     "legacyCli": "aliyun smc CreateReplicationJob --region cn-hangzhou --ResourceGroupId 'rg-acfmw3ty5y70000' --SystemDiskPart.1.SizeBytes 254803968 --Disks.Data.1.DiskId 'd-2ze8hyowhdgd6ou2m5z6' --ContainerTag 'CentOS:v1' --Disks.System.Part.1.SizeBytes 254803968 --Name testMigrationTaskName --ValidTime '2019-06-04T13:35:00Z' --MaxNumberOfImageToKeep 10 --SystemDiskPart.1.Device 0_1 --RunOnce true --DataDisk.1.Index 1 --InstanceRamRole SMCAdmin --Tag.1.Key TestKey --InstanceId 'i-bp1f1dvfto1sigz50000' --VSwitchId 'vsw-bp1ddbrxdlrcbim460000' --LaunchTemplateId 'lt-bp16jovvln1cgaaq0000' --VpcId 'vpc-bp1vwnn14rqpyiczj0000' --Tag.1.Value TestValue --LaunchTemplateVersion 1 --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Disks.Data.1.LVM true --Description This_is_a_migration_task --DataDisk.1.Part.1.Device 0_1 --SystemDiskSize 80 --NetMode 0 --SourceId 's-bp1e2fsl57knvuug0000' --LicenseType BYOL --DataDisk.1.Part.1.SizeBytes 254803968 --ContainerRepository testRepository --TargetType Image --Disks.Data.1.Size 80 --InstanceType 'ecs.c6.large' --Disks.System.Part.1.Path '/boot' --Disks.Data.1.Part.1.Block true --DataDisk.1.Size 100 --Disks.System.LVM true --Disks.Data.1.Part.1.Path '/home/date' --Disks.Data.1.Part.1.SizeBytes 21474836480 --Disks.System.Part.1.Block true --ReplicationParameters 'bandwidth_limit_:0,_compress_level_:1,_checksum_:true' --Disks.System.Size 100 --ImageName testAliCloudImageName --SystemDiskPart.1.Block true --JobType 0 --ContainerNamespace testNamespace --DataDisk.1.Part.1.Block true --Frequency 12 --RegionId 'cn-hangzhou' --ScheduledStartTime '2019-06-04T13:35:00Z' --method POST --force"

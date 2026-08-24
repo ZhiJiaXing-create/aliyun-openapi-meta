@@ -1,5 +1,6 @@
 {
   "name": "AddUserVpcAuthorization",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AuthChannel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "授权渠道。取值：\n\n- AUTH_CODE：验证码授权。\n- RESOURCE_DIRECTORY: 资源目录授权。\n\n默认：AUTH_CODE。",
+        "en": "The authorization channel. Valid values:\n\n- AUTH\\_CODE: authorization by verification code.\n\n- RESOURCE\\_DIRECTORY: authorization by Resource Directory.\n\nDefault: AUTH\\_CODE."
+      }
     },
     {
       "name": "AuthCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "验证码。\n\n> - “授权渠道（AuthChannel）”为空或为“验证码授权（AUTH_CODE）”传指定验证码。  \n> - 其他情况传随机6位数即可。例123456。",
+        "en": "The verification code.\n\n> - If AuthChannel is empty or set to AUTH\\_CODE, specify the verification code.\n>\n> - In other cases, you can enter a random 6-digit number, such as 123456."
+      }
     },
     {
       "name": "AuthType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "授权类型。取值：\n\n- NORMAL：普通授权。\n- CLOUD_PRODUCT：云产品授权。",
+        "en": "The authorization type. Valid values:\n\n- NORMAL: standard authorization.\n\n- CLOUD\\_PRODUCT: cloud product authorization."
+      }
     },
     {
       "name": "AuthorizedUserId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "授权资源的所属用户主账号ID。\n>跨账号设置生效范围，只支持主账号， 不支持RAM子账号使用。只支持站内账号之间关联，例如中国站账号之间，或者是国际站账号之间。不支持跨站关联，比如中国站账号和国际站账号之间。",
+        "en": "The ID of the Alibaba Cloud account that owns the authorized resources.\n\n> Only Alibaba Cloud accounts are supported. RAM users are not supported. You can associate accounts only if they are on the same site, such as the China site (aliyun.com) or the international site (alibabacloud.com). Cross-site association is not supported."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新增跨账号VPC授权",
+    "en": "AddUserVpcAuthorization"
+  },
+  "descriptions": {
+    "zh": "#### **使用限制**\n- 跨账号设置生效范围，只支持主账号， 不支持RAM子账号使用。只支持站内账号之间关联，例如中国站账号之间，或者是国际站账号之间。不支持跨站关联，比如中国站账号和国际站账号之间。\n- 针对使用验证码授权的场景，目前没有提供发送验证码的API。\n#### **注意事项**\n当跨账号设置生效范围时，计费统计将以内置权威域名日常管理所在的账号做结算。",
+    "en": "#### **Limits**\n\n- Cross-account authorization is supported only for Alibaba Cloud accounts. RAM users are not supported. You can only associate accounts that are on the same site, such as two accounts on the China site (aliyun.com) or two accounts on the international site (alibabacloud.com). You cannot associate an account on the China site with an account on the international site.\n\n- An API is not provided to send verification codes for authorization.\n\n#### **Notes**\n\nWhen you configure cross-account authorization, billing is settled based on the account that manages the built-in authoritative domain name."
+  },
   "example": {
     "unifiedCli": "aliyun pvtz add-user-vpc-authorization --authorized-user-id 1413397765610000 --auth-code 123456 --auth-type NORMAL --auth-channel AUTH_CODE --region cn-hangzhou",
     "legacyCli": "aliyun pvtz AddUserVpcAuthorization --region cn-hangzhou --AuthCode 123456 --AuthChannel AUTH_CODE --AuthorizedUserId 1413397765610000 --AuthType NORMAL"

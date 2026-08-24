@@ -1,5 +1,6 @@
 {
   "name": "UpdateTopicConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,60 @@
       "name": "Config",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Topic配置字的key。\n\n- 目前预留实例仅支持Local存储引擎的Topic，云存储引擎的Topic不支持修改。\n- 支持Serverless实例修改Topic配置。\n\n- 预留实例的`local topic`支持的key为retention.ms、max.message.bytes、message.timestamp.type、message.timestamp.difference.max.ms。\n\n- Serverless实例支持的key为retention.hours、max.message.bytes、message.timestamp.type、message.timestamp.difference.max.ms。",
+        "en": "The key of the topic configuration.\n\n- You can modify the configurations only for topics that use the local storage engine on reserved instances. You cannot modify the configurations for topics that use the cloud storage engine.\n\n- You can modify the configurations of topics for Serverless instances.\n\n- For `local topics` on reserved instances, the supported keys are \\`retention.ms\\`, \\`max.message.bytes\\`, \\`message.timestamp.type\\`, and \\`message.timestamp.difference.max.ms\\`.\n\n- For Serverless instances, the supported keys are \\`retention.hours\\`, \\`max.message.bytes\\`, \\`message.timestamp.type\\`, and \\`message.timestamp.difference.max.ms\\`."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例的地域ID。",
+        "en": "The region ID of the instance."
+      }
     },
     {
       "name": "Topic",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Topic名称。",
+        "en": "The topic name."
+      }
     },
     {
       "name": "Value",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Topic配置字的value。\n- Serverless 实例支持的配置如下：\n   -  `retention.hours`表示消息保留时长，取值类型为String，取值限制为24~8760。\n  - `max.message.bytes`表示发送消息最大大小，取值类型为String，取值限制为1048576~10485760。\n  - `message.timestamp.type`指定消息时间戳的类型。CreateTime 表示生产者在发送消息的指定时间戳，未指定时为消息在客户端的创建时间，而 LogAppendTime 表示消息在服务端的落盘时间。可选值为：CreateTime 或 LogAppendTime。\n  - `message.timestamp.difference.max.ms`表示服务端接收消息时的时间戳与消息中指定的时间戳之间允许的最大正负差值。当 message.timestamp.type 为 CreateTime 时，如果时间戳差异超过此阈值，**消息将被拒绝**。而当 message.timestamp.type 为 LogAppendTime 时，此配置将不生效。\n\n- 预留实例支持的配置如下：\n   -  `retention.ms`表示消息保留时长，取值类型为String，取值限制为 3600000~31536000000。\n    - `max.message.bytes`表示发送消息最大大小，取值类型为String，取值限制为1048576~10485760。\n  - `message.timestamp.type` 指定消息时间戳的类型。CreateTime 表示生产者在发送消息的指定时间戳，未指定时为消息在客户端的创建时间，而 LogAppendTime 表示消息在服务端的落盘时间。可选值为：CreateTime 或 LogAppendTime。\n  - `message.timestamp.difference.max.ms` 表示服务端接收消息时的时间戳与消息中指定的时间戳之间允许的最大正负差值。当 message.timestamp.type 为 CreateTime 时，如果时间戳差异超过此阈值，**消息将被拒绝**。而当 message.timestamp.type 为 LogAppendTime 时，此配置将不生效。",
+        "en": "The value of the topic configuration.\n\n- The following configurations are supported for Serverless instances:\n\n  - `retention.hours` specifies the message retention period. The value must be a string. The value must be in the range of 24 to 8,760.\n\n  - `max.message.bytes` specifies the maximum message size. The value must be a string. The value must be in the range of 1,048,576 to 10,485,760.\n\n  - `message.timestamp.type` specifies the message timestamp type. \\`CreateTime\\` indicates the timestamp that is specified by the producer when the message is sent. If no timestamp is specified, the time when the message is created on the client is used. \\`LogAppendTime\\` indicates the time when the message is stored on the server. Valid values: \\`CreateTime\\` and \\`LogAppendTime\\`.\n\n  - `message.timestamp.difference.max.ms` specifies the maximum allowed difference between the timestamp of the server that receives the message and the timestamp specified in the message. If \\`message.timestamp.type\\` is set to \\`CreateTime\\` and the time difference exceeds this threshold, **the message is rejected**. This configuration does not take effect if \\`message.timestamp.type\\` is set to \\`LogAppendTime\\`.\n\n- The following configurations are supported for reserved instances:\n\n  - `retention.ms` specifies the message retention period. The value must be a string. The value must be in the range of 3,600,000 to 31,536,000,000.\n\n  - `max.message.bytes` specifies the maximum message size. The value must be a string. The value must be in the range of 1,048,576 to 10,485,760.\n\n  - `message.timestamp.type` specifies the message timestamp type. \\`CreateTime\\` indicates the timestamp that is specified by the producer when the message is sent. If no timestamp is specified, the time when the message is created on the client is used. \\`LogAppendTime\\` indicates the time when the message is stored on the server. Valid values: \\`CreateTime\\` and \\`LogAppendTime\\`.\n\n  - `message.timestamp.difference.max.ms` specifies the maximum allowed difference between the timestamp of the server that receives the message and the timestamp specified in the message. If \\`message.timestamp.type\\` is set to \\`CreateTime\\` and the time difference exceeds this threshold, **the message is rejected**. This configuration does not take effect if \\`message.timestamp.type\\` is set to \\`LogAppendTime\\`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改Topic配置",
+    "en": "UpdateTopicConfig"
+  },
   "example": {
     "unifiedCli": "aliyun alikafka update-topic-config --biz-region-id cn-hangzhou --instance-id alikafka_post-cn-v0h1fgs20000 --topic dqc_test2 --config retention.ms --value 3600000 --api-version 2019-09-16 --region cn-hangzhou",
     "legacyCli": "aliyun alikafka UpdateTopicConfig --region cn-hangzhou --InstanceId 'alikafka_post-cn-v0h1fgs20000' --Config 'retention.ms' --Value 3600000 --RegionId 'cn-hangzhou' --Topic dqc_test2"

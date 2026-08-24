@@ -1,5 +1,6 @@
 {
   "name": "UpgradeServiceInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。",
+        "en": "A client-generated token that ensures the idempotence of the request. The token must be unique for each request. It can contain only ASCII characters and must be no more than 64 characters long."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检，包括权限、实例状态校验等。可能的值：\n\n- true：发送请求，不创建服务实例。\n\n- false：发送请求，检查通过后创建服务实例。",
+        "en": "Specifies whether to perform a dry run. A dry run checks for issues such as permissions and the instance status. Valid values:\n\n- true: Sends the request without upgrading the service instance.\n\n- false: Sends the request and upgrades the service instance after the check is passed."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "升级时所需参数，用于新版本服务有新增参数时。",
+        "en": "The parameters required for the upgrade. This is used when new parameters are added to the new service version."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ServiceInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务实例ID。",
+        "en": "The service instance ID."
+      }
     },
     {
       "name": "ServiceVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要升级到的服务版本。",
+        "en": "The service version to upgrade to."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "升级服务实例版本",
+    "en": "UpgradeServiceInstance"
+  },
   "example": {
     "unifiedCli": "aliyun computenest upgrade-service-instance --biz-region-id cn-hangzhou --service-instance-id si-d6ab3a63ccbb4bxxxxxx --service-version 2 --parameters RegionId_:_cn-hangzhou_,_InstanceType_:_ecs.g5.large --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun computenest UpgradeServiceInstance --region cn-hangzhou --Parameters 'RegionId_:_cn-hangzhou_,_InstanceType_:_ecs.g5.large' --ServiceInstanceId 'si-d6ab3a63ccbb4bxxxxxx' --DryRun true --ServiceVersion 2 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

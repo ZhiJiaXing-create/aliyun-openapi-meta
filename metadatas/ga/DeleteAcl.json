@@ -1,5 +1,6 @@
 {
   "name": "DeleteAcl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AclId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "访问控制策略组ID。",
+        "en": "The ID of the access control policy group."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of a request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** value as the **ClientToken** value. The **RequestId** value is different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the Alibaba Cloud Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除访问控制",
+    "en": "Delete an ACL"
+  },
+  "descriptions": {
+    "zh": "**DeleteAcl**接口属于异步接口，即系统会先返回一个请求ID，但访问控制策略组并未删除完成，系统后台的删除任务仍在进行。您可以调用[GetAcl](~~258292~~)查询访问控制策略组的状态：\n- 当访问控制策略组处于**deleting**状态时，表示访问控制策略组正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n- 当查询不到该访问控制策略组时，表示访问控制策略组删除完成。",
+    "en": "**DeleteAcl** is an asynchronous operation. After a request is sent, the system returns a request ID, but the access control policy group is not immediately deleted. The deletion node continues to run in the background. You can invoke [GetAcl](~~258292~~) to query the status of the access control policy group:\n- If the access control policy group is in the **deleting** state, the access control policy group is being deleted. In this state, you can only execute query operations and cannot execute other operations.\n- If the access control policy group cannot be found, the access control policy group is deleted."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-acl --biz-region-id cn-hangzhou --acl-id nacl-hp34s2h0xx1ht4nwo0000 --client-token 02fb3da40000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteAcl --region cn-hangzhou --AclId 'nacl-hp34s2h0xx1ht4nwo0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken 02fb3da40000"

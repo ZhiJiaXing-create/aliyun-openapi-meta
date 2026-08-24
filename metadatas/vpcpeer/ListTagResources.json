@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,59 +9,106 @@
       "name": "Category",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签类型。\n- All(默认值)\n\n- Custom\n\n- System",
+        "en": "The type of the tag.\n\n- All (default)\n\n- Custom\n\n- System"
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批次查询时每次显示的条目数。取值范围：**1**~**50**，默认值：**50**。",
+        "en": "The number of entries to return on each page. Valid values: **1** to **50**. Default value: **50**."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否拥有下一次查询的令牌（Token）。取值：\n\n- 第一次查询和没有下一次查询时，均无需填写。\n\n- 如果有下一次查询，取值为上一次API调用返回的**NextToken**值。",
+        "en": "The token that is used to start the next query. Valid values:\n\n- If this is the first query or no subsequent query is to be sent, do not specify this parameter.\n\n- To retrieve the next page of results, set this parameter to the **NextToken** value returned from the previous call."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the resource is deployed. See [DescribeRegions](~~36063~~)."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID。最多支持20个资源ID。",
+        "en": "The IDs of the resources. You can specify up to 20 resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：**PeerConnection**，VPC对等连接。",
+        "en": "The resource type. Valid value: **PeerConnection**. This value specifies a VPC peering connection."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持20个标签键。一旦传入该值，则不允许为空字符串。\n\n一个标签键最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n> 参数**ResourceId.N**或**Tag.N**（**Tag.N.Key**与**Tag.N.Value**）至少输入一个。",
+            "en": "The tag key of the resource. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nA tag key can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`.\n\n> You must specify at least **ResourceId.N** or **Tag.N** (which consists of **Tag.N.Key** and **Tag.N.Value**)."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持20个标签值。一旦传入该值，可以为空字符串。\n\n\n一个标签值最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。\n\n> 参数**ResourceId.N**或**Tag.N**（**Tag.N.Key**与**Tag.N.Value**）至少输入一个。",
+            "en": "The tag value of the resource. You can specify up to 20 tag values. The tag value can be an empty string.\n\nA tag value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`.\n\n> You must specify at least **ResourceId.N** or **Tag.N** (which consists of **Tag.N.Key** and **Tag.N.Value**)."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询对等连接已经绑定的标签列表",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "- 请求中至少指定参数**ResourceId.N**或**Tag.N**（**Tag.N.Key**与**Tag.N.Value**），以确定检索对象。\n- **Tag.N**是资源的标签，由一个键值对组成。仅指定**Tag.N.Key**时，则返回该标签键关联的所有标签值。仅指定**Tag.N.Value**会报错。\n- 如果您同时指定**Tag.N**和**ResourceId.N**筛选标签，则**ResourceId.N**必须满足所有输入的标签键值对。\n- 如果您同时指定多个标签键值对，返回结果为同时包含被指定的多个键值对的资源。",
+    "en": "- You must specify at least **ResourceId.N** or **Tag.N**, which consists of **Tag.N.Key** and **Tag.N.Value**, to identify the resources that you want to query.\n\n- **Tag.N** is a resource tag that consists of a key-value pair. If you specify only **Tag.N.Key**, all tag values associated with the tag key are returned. Specifying only **Tag.N.Value** returns an error.\n\n- If you specify both **Tag.N** and **ResourceId.N**, only resources that have all the specified tags and match the specified resource IDs are returned.\n\n- If you specify multiple tag key-value pairs, only the resources that have all the specified tags are returned."
+  },
   "example": {
     "unifiedCli": "aliyun vpcpeer list-tag-resources --resource-type PeerConnection --resource-id pcc-bp16qjewdsunr41m10000 --tag Value=FinanceJoshua Key=FinanceDept --max-results 50 --next-token FFmyTO70tTpLG6I3FmYAXGKPd0000 --biz-region-id cn-hangzhou --category All --region cn-hangzhou",
     "legacyCli": "aliyun vpcpeer ListTagResources --region cn-hangzhou --ResourceId.1 'pcc-bp16qjewdsunr41m10000' --Tag.1.Key FinanceDept --Category All --NextToken FFmyTO70tTpLG6I3FmYAXGKPd0000 --MaxResults 50 --Tag.1.Value FinanceJoshua --ResourceType PeerConnection --RegionId 'cn-hangzhou'"

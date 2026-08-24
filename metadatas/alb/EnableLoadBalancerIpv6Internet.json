@@ -1,5 +1,6 @@
 {
   "name": "EnableLoadBalancerIpv6Internet",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会开启负载均衡ALB的IPv6公网。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false**(default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用型负载均衡实例的ID。",
+        "en": "The ALB instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "开启负载均衡IPv6公网",
+    "en": "EnableLoadBalancerIpv6Internet"
+  },
+  "descriptions": {
+    "zh": "### 前提条件\n\n已创建双栈ALB实例，调用[CreateLoadBalancer](~~214358~~)接口将**AddressIpVersion**设置为**DualStack**。\n\n> **AddressIpVersion**设置为**DualStack**时：\n> - **AddressType**设置为**Internet**表示ALB实例拥有IPv4公网和IPv6私网访问能力。\n> - **AddressType**设置为**Intranet**表示ALB实例拥有IPv4私网和IPv6私网访问能力。\n\n### 使用说明\n- 变更成功后，**Ipv6AddressType**类型将变为**Internet**，ALB实例IPv6地址即具备公网能力，后续该ALB实例下变配或者弹性产生的新的弹性网卡ENI（Elastic Network Interface）也会自动开启公网能力，您可以通过调用[GetLoadBalancerAttribute](~~214362~~)接口查看**Ipv6AddressType**的取值。\n\n- **EnableLoadBalancerIpv6Internet**接口属于异步接口，即系统返回一个请求ID，但该ALB实例的IPv6私网尚未变更为IPv6公网，系统后台的变更任务仍在进行。您可以调用[GetLoadBalancerAttribute](~~214362~~)查询ALB实例IPv6网络的变更状态：\n\n    - 当应用型负载均衡处于**Configuring**状态时，表示ALB实例的IPv6私网正在变更为IPv6公网。\n\n    - 当应用型负载均衡处于**Active**状态时，表示ALB实例的IPv6私网变更IPv6公网成功。",
+    "en": "### Prerequisites\n\nAn ALB instance is created and IPv4/IPv6 dual stack is enabled for the instance. You can call the [CreateLoadBalancer](~~214358~~) operation and set **AddressIpVersion** to **DualStack** to create a dual-stack ALB instance.\n\n> If you set **AddressIpVersion** to **DualStack**:\n\n*   If you set **AddressType** to **Internet**, the ALB instance uses a public IPv4 IP address and a private IPv6 address.\n\n*   If you set **AddressType** to **Intranet**, the ALB instance uses a private IPv4 IP address and a private IPv6 address.\n\n### Description\n\n*   After the EnableLoadBalancerIpv6Internet operation is called, the value of **Ipv6AddressType** is changed to **Internet** and the type of the IPv6 address of the ALB instance is changed from private to public. If you upgrade the instance or the instance scales elastic network interfaces (ENIs) along with workloads, public IPv6 addresses are automatically enabled for the instance and the new ENIs. You can call the [GetLoadBalancerAttribute](~~214362~~) operation to query the value of **Ipv6AddressType**.\n\n*   **EnableLoadBalancerIpv6Internet** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetLoadBalancerAttribute](~~214362~~) operation to query the status of the task.\n\n    *   If the ALB instance is in the **Configuring** state, the network type of the IPv6 address that is used by the ALB instance is being changed.\n    *   If the ALB instance is in the **Active** state, the network type of the IPv6 address that is used by the ALB instance is changed."
+  },
   "example": {
     "unifiedCli": "aliyun alb enable-load-balancer-ipv6-internet --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --dry-run false --load-balancer-id alb-o2cvudgo6rlqz70000 --region cn-hangzhou",
     "legacyCli": "aliyun alb EnableLoadBalancerIpv6Internet --region cn-hangzhou --DryRun false --LoadBalancerId 'alb-o2cvudgo6rlqz70000' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898'"

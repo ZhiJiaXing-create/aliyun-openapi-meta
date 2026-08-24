@@ -1,5 +1,6 @@
 {
   "name": "CreateJobMonitorRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "DelayRuleTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "触发告警的阈值。\n\n- 当**Type**取值为**delay**时，单位为秒且需为整数，可根据业务需要设置阈值，建议设置10秒以上，避免因网络、数据库负载等原因导致的延迟波动。\n\n- 当**Type**取值为**full_timeout**时，单位为小时且需为整数。\n\n> 当**Type**取值为**delay**或**full_timeout**且**State**取值为**Y**时，本参数必须传入。",
+        "en": "The threshold for triggering an alert.\n\n- If **Type** is set to **delay**, the unit is seconds and the value must be an integer. Set the threshold based on your business requirements. A value of 10 or greater is recommended to avoid alert fluctuations caused by network issues or database loads.\n\n- If **Type** is set to **full_timeout**, the unit is hours and the value must be an integer.\n\n> This parameter is required when **Type** is set to **delay** or **full_timeout** and **State** is set to **Y**."
+      }
     },
     {
       "name": "DtsJobId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "迁移、同步或订阅任务ID，可通过调用[DescribeDtsJobs](~~209702~~)获取。",
+        "en": "The ID of the data migration, data synchronization, or change tracking task. You can call [DescribeDtsJobs](~~209702~~) to obtain the task ID."
+      }
     },
     {
       "name": "NoticeValue",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "告警阈值。",
+        "en": "The alert threshold."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增量校验任务的统计周期，单位为分钟。\n\n> 当前支持取值为1分钟、5分钟、10分钟和30分钟。",
+        "en": "The statistical period of the incremental verification task. Unit: minutes.\n\n> Valid values: 1, 5, 10, and 30."
+      }
     },
     {
       "name": "Phone",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "告警的联系人手机号码，多个手机号码以英文逗号（,）分隔。\n>-  本参数目前只支持中国站，仅支持中国内地手机号码，且最多传入10个手机号码。\n- 国际站不支持手机告警，仅支持[通过云监控平台为DTS任务设置报警规则](~~175876~~)。",
+        "en": "The mobile phone numbers of alert contacts, separated by commas (,).\n>-  This parameter is supported only on the China site (aliyun.com) and only for the Chinese mainland mobile phone numbers. A maximum of 10 mobile phone numbers can be specified.\n- The international site does not support SMS-based alerting. You can only [set alert rules for DTS tasks through the CloudMonitor monitoring platform](~~175876~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DTS实例所属的地域，详情请参见[支持的地域列表](~~141033~~)。",
+        "en": "The region in which the DTS instance resides. For more information, see [List of supported regions](~~141033~~)."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "State",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否启用告警规则，取值：\n\n- **Y**：启用。\n- **N**：不启用。\n\n默认值：**Y**",
+        "en": "Specifies whether to enable the alert rule. Valid values:\n\n- **Y**: Enable the alert rule.\n- **N**: Disable the alert rule.\n\nDefault value: **Y**."
+      }
     },
     {
       "name": "Times",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增量校验任务的周期数。",
+        "en": "The number of statistical periods for the incremental verification task."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "监控项的类型，取值：\n- **delay**：**延迟**监控项。\n- **error**：**迁移状态**监控项。\n- **full_timeout**：**全量运行耗时**监控项。\n\n默认值：**error**；需手动填入。",
+        "en": "The type of the alert metric. Valid values:\n- **delay**: the **Latency** metric.\n- **error**: the **Migration Status** metric.\n- **full_timeout**: the **Full Migration Duration** metric.\n\nDefault value: **error**. This parameter must be manually specified."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建或修改任务告警规则",
+    "en": "Create or modify a task alert rule"
+  },
+  "descriptions": {
+    "zh": "DTS目前支持的监控项为**延迟**、**迁移状态**和**全量运行耗时**：\n\n- **延迟**：监控增量数据迁移延迟信息，当迁移延迟、同步延迟或订阅延迟的时间超过设定值时（单位为秒），触发告警规则。\n- **迁移状态**：监控任务的状态，当任务的状态为**异常**或**恢复**时，触发告警规则。\n- **全量运行耗时**：全量运行的耗时，超过设定值时（单位为小时），触发告警规则。",
+    "en": "DTS currently supports the following alert metrics: **Latency**, **Migration Status**, and **Full Migration Duration**:\n\n- **Latency**: Monitors incremental data migration latency. An alert is triggered when the migration latency, synchronization latency, or change tracking latency exceeds the specified threshold (in seconds).\n- **Migration Status**: Monitors the task status. An alert is triggered when the task status is **Error** or **Recovered**.\n- **Full Migration Duration**: Monitors the duration of full data migration. An alert is triggered when the duration exceeds the specified threshold (in hours)."
+  },
   "example": {
     "unifiedCli": "aliyun dts create-job-monitor-rule --dts-job-id i03e3zty16i0000 --type delay --state Y --phone 13612340000,13712340000 --delay-rule-time 11 --biz-region-id cn-hangzhou --period 5 --times 2 --notice-value 2 --resource-group-id rg-acfmzawhxxc0000 --api-version 2020-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun dts CreateJobMonitorRule --region cn-hangzhou --Type delay --DtsJobId i03e3zty16i0000 --ResourceGroupId 'rg-acfmzawhxxc0000' --State Y --Phone '13612340000,13712340000' --Times 2 --Period 5 --NoticeValue 2 --DelayRuleTime 11 --RegionId 'cn-hangzhou'"

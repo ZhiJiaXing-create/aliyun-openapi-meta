@@ -1,5 +1,6 @@
 {
   "name": "DescribePrice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "DataDisk.1.Size",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据盘大小，单位GB。如果此字段不为空，则以此段为准。",
+        "en": "The size of the data disk. Unit: GB. If you specify this parameter, this parameter takes precedence over the Size property in DataDisks."
+      }
     },
     {
       "name": "DataDisks",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "如果DataDisk.1.Size为空且本字段不为空时的则以本字段为准。",
+        "en": "If you leave DataDisk.1.Size empty, the value that you specified for this parameter is used."
+      },
       "sub_parameters": [
         {
           "name": "Category",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "磁盘类型",
+            "en": "The category of the disk."
+          }
         },
         {
           "name": "Size",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘大小，单位：GB。",
+            "en": "The size of the data disk. Unit: GB."
+          }
         }
       ]
     },
@@ -34,45 +51,80 @@
       "name": "EnsRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "节点ID。",
+        "en": "The ID of the ENS node."
+      }
     },
     {
       "name": "InstanceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例规格。",
+        "en": "The specifications of instances."
+      }
     },
     {
       "name": "InternetChargeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ENS带宽计费方式。取值：\n\n- BandwidthByDay：日峰值带宽。\n- 95BandwidthByMonth：月95峰值带宽。\n- PayByBandwidth4thMonth：月第四峰值带宽。\n- PayByBandwidth：固定规格带宽。",
+        "en": "The bandwidth metering method of the instance. Valid values:\n\n- BandwidthByDay: Pay by daily peak bandwidth\n\n- 95BandwidthByMonth: Pay by monthly 95th percentile bandwidth\n\n- PayByBandwidth4thMonth: Pay by monthly fourth peak bandwidth\n\n- PayByBandwidth: Pay by fixed bandwidth"
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "购买资源的时长。\n\n- 如果不指定PeriodUnit，则默认按月购买。目前只支持按Days和Month。\n- 如果PeriodUnit为Day时，Period仅可以3。\n- 如果PeriodUnit为Month时，则Period可以为1-9,12。",
+        "en": "The subscription duration of the instance.\n\n- If you leave the PeriodUnit parameter empty, the instance is purchased on a monthly basis. Valid values: Day and Month.\n\n- If you set PeriodUnit to Day, you can set Period only to 3.\n\n- If you set PeriodUnit to Month, you can set Period to a number from 1 to 9, or set Period to 12."
+      }
     },
     {
       "name": "PeriodUnit",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询云服务器ENS不同计费周期的价格。取值范围：\n\n- Month（默认）：按月计费的价格单位。\n- Day：按天计费的价格单位。",
+        "en": "The billing cycle of the ENS instance. Valid values:\n\n- Month (default):\n\n- Day"
+      }
     },
     {
       "name": "Quantity",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数量。",
+        "en": "The number of instances."
+      }
     },
     {
       "name": "SystemDisk.Size",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "系统盘大小，单位：GB",
+        "en": "The size of the system disk. Unit: GB."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询ENS实例价格",
+    "en": "DescribePrice"
+  },
   "example": {
     "unifiedCli": "aliyun ens describe-price --instance-type ens.sn1.tiny --ens-region-id cn-shanghai-unicom --period 1 --system-disk-size 20 --quantity 1 --data-disk-1-size 50 --internet-charge-type 95BandwidthByMonth --data-disks Category=cloud_efficiency Size=50 --period-unit Month --region cn-hangzhou",
     "legacyCli": "aliyun ens DescribePrice --region cn-hangzhou --DataDisk.1.Size 50 --DataDisks '[{\"Category\":\"cloud_efficiency\",\"Size\":50}]' --Period 1 --Quantity 1 --InstanceType 'ens.sn1.tiny' --EnsRegionId 'cn-shanghai-unicom' --SystemDisk.Size 20 --InternetChargeType 95BandwidthByMonth --PeriodUnit Month"

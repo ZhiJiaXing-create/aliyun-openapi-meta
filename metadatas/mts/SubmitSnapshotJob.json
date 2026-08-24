@@ -1,5 +1,6 @@
 {
   "name": "SubmitSnapshotJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Input",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "作业输入。详细说明请参见[Input详情](~~29253#section-f3p-d24-y2b~~)。\n\n> - 在媒体处理API中，Object必须经过[URL Encoding](~~423796~~)（基于UTF-8编码）后使用。\n   - OSS的地域需要与当前MPS所在地域保持一致。",
+        "en": "The job input. For more information, see [Input](~~29253#section-f3p-d24-y2b~~).\n\n> - In ApsaraVideo for Media Processing (MPS) APIs, you must [URL-encode](~~423796~~) the value of `Object` in UTF-8.\n\n- The OSS region must be the same as the MPS region."
+      }
     },
     {
       "name": "PipelineId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "管道ID，详细说明，请参见[基本概念](~~29197~~)。\n\n- 可选值：可以通过[MPS控制台](https://mps.console.aliyun.com/overview) > **全局设置** > **管道**查询和创建管道。\n- 如果需要异步通知，请为管道绑定MNS消息，具体请参见<props=\"china\">[接收消息通知](https://help.aliyun.com/document_detail/42618.html)</props><props=\"intl\">[接收消息通知](https://www.alibabacloud.com/help/zh/apsaravideo-for-media-processing/latest/receive-message-notifications)</props>。",
+        "en": "The ID of the MPS queue. For more information, see [Basic concepts](~~29197~~).\n\n- You can view or create MPS queues in the [MPS console](https://mps.console.aliyun.com/overview) by choosing **Global Settings** > **Pipelines**.\n\n- To receive asynchronous notifications, you must bind a Message Service (MNS) queue to the MPS queue. For more information, see <props=\"china\">[Receive message notifications](https://help.aliyun.com/document_detail/42618.html)</props><props=\"intl\">[Receive message notifications](https://www.alibabacloud.com/help/zh/apsaravideo-for-media-processing/latest/receive-message-notifications)</props>."
+      }
     },
     {
       "name": "SnapshotConfig",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "截图配置。详细说明，请参见[SnapshotConfig参数详情](~~29253#section-zh2-324-y2b~~)。",
+        "en": "The snapshot configurations. For more information, see [SnapshotConfig](~~29253#section-zh2-324-y2b~~)."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据。支持中英文、数字、短划线（-），不能以特殊字符开头，最大长度1024个字节。",
+        "en": "The custom data. The value can contain letters, digits, and hyphens (-), but cannot start with a special character. The value can be up to 1,024 bytes in length."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交截图作业",
+    "en": "Submit a snapshot job"
+  },
+  "descriptions": {
+    "zh": "- 输入单个文件大小最大支持100 GB，超过可能导致执行失败。\n- 请确认文件已成功上传至OSS后再提交截图作业，否则会导致执行失败。您可通过配置OSS回调消息确认文件上传状态。\n- 截图作业分为同步和异步模式。\n    - 同步模式仅支持单张截图，会在接口返回时生成图片。\n    - [异步模式](~~3027615~~)不保证时效性，在提交截图作业后，任务会添加到管道中排队，被调度执行。所以在接口返回时，不保证截图已经生成。执行完成后需要调用[查询截图作业结果](~~602858~~)接口轮询执行结果，或通过为管道绑定MNS消息接收执行结果，具体请参见<props=\"china\">[接收消息通知](https://help.aliyun.com/document_detail/42618.html)</props><props=\"intl\">[接收消息通知](https://www.alibabacloud.com/help/zh/apsaravideo-for-media-processing/latest/receive-message-notifications)</props>。\n    - 只要设置了**Interval**和**Num**中的任何一个参数，就表示使用异步模式。\n\n- 目前仅支持生成JPG格式图片。\n- 更多截图常见问题，请参见[截图常见问题](~~60805~~)。\n\n## QPS限制\n本接口的单用户QPS限制为50次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "- The maximum size for a single input file is 100 GB. Exceeding this limit may cause the job to fail.\n\n- Before you submit a snapshot job, ensure the file has been successfully uploaded to OSS. Otherwise, the job may fail. You can configure OSS callbacks to confirm the file upload status.\n\n- Snapshot jobs support both synchronous and asynchronous modes.\n\n  - Synchronous mode supports only a single snapshot and generates the image when the API call returns.\n\n  - [Asynchronous mode](~~3027615~~) does not guarantee immediate processing. After you submit a snapshot job, it enters a pipeline, where it is queued and scheduled for execution. Therefore, the snapshot is not guaranteed to be generated when the API call returns. After the job is complete, you can poll for the results by calling the [Query snapshot job results](~~602858~~) API or receive message notifications by binding MNS to the pipeline. For more information, see <props=\"china\">[Receive message notifications](https://help.aliyun.com/document_detail/42618.html)</props><props=\"intl\">[Receive message notifications](https://www.alibabacloud.com/help/zh/apsaravideo-for-media-processing/latest/receive-message-notifications)</props>.\n\n  - Specifying either the **Interval** or **Num** parameter triggers asynchronous mode.\n\n- Currently, only images in JPG format are supported.\n\n- For more information about common snapshot issues, see [Snapshot FAQ](~~60805~~).\n\n## QPS limit\n\nThe QPS limit for this API is 50 requests per second per user. API calls that exceed this limit are subject to throttling, which may impact your business. Please call this API at a reasonable rate. For more information, see [QPS limit](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-snapshot-job --input Bucket_:_example-bucket_,_Location_:_example-location_,_Object_:_example%2Ftest.flv --snapshot-config OutputFile_:_Bucket_:_example-001_,_Location_:_example-location_,_Object_:_Count_.jpg_,_Time_:_5_,_Num_:_10_,_Interval_:_20 --user-data testid-001 --pipeline-id dd3dae411e704030b921e52698e50000 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitSnapshotJob --region cn-hangzhou --SnapshotConfig 'OutputFile_:_Bucket_:_example-001_,_Location_:_example-location_,_Object_:_Count_.jpg_,_Time_:_5_,_Num_:_10_,_Interval_:_20' --Input 'Bucket_:_example-bucket_,_Location_:_example-location_,_Object_:_example%2Ftest.flv' --UserData 'testid-001' --PipelineId dd3dae411e704030b921e52698e50000"

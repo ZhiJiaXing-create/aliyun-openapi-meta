@@ -1,5 +1,6 @@
 {
   "name": "DeleteIpv4Gateway",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会删除IPv4网关。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接删除IPv4网关。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run, without performing the actual request. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "InternetMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "选择删除IPv4网关后VPC的公网模式，取值：\n\n- **private**：默认值，删除IPv4网关后，VPC将变成纯私网VPC，不具备公网访问能力。\n- **public**：删除IPv4网关后，VPC公网访问不再受IPv4网关集中控制，公网IP绑定实例后缺省可以直接访问公网。",
+        "en": "Select the public network mode of the VPC after deleting the IPv4 gateway. The values are:\n- **private**: Default value, after deleting the IPv4 gateway, the VPC will become a pure private VPC without public network access capability. \n- **public**: After deleting the IPv4 gateway, the VPC's public network access is no longer centrally controlled by the IPv4 gateway, and instances with public IPs bound can access the public network by default."
+      }
     },
     {
       "name": "Ipv4GatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的IPv4网关的实例ID。",
+        "en": "The ID of the IPv4 gateway that you want to delete."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要删除的IPv4网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the IPv4 gateway that you want to delete.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除IPv4网关",
+    "en": "DeleteIpv4Gateway"
+  },
+  "descriptions": {
+    "zh": "- 删除IPv4网关实例前，请确保已解绑IPv4网关实例关联的路由表。\n\n- **DeleteIpv4Gateway**接口属于异步接口，即系统会先返回一个**RequestId**，但该IPv4网关实例并未删除完成，系统后台的删除任务仍在进行。您可以调用[GetIpv4GatewayAttribute](~~407670~~)查询IPv4网关实例的状态。\n\n    - 当IPv4网关实例处于**Deleting**状态时，表示正在删除中。\n\n    - 当IPv4网关实例无法被查询到时，表示删除完成。\n\n- **DeleteIpv4Gateway**接口不支持并发删除同一个IPv4网关实例。",
+    "en": "### [](#)Description\n\n*   Before you delete an IPv4 gateway, make sure that no route tables are associated with the IPv4 gateway.\n\n*   **DeleteIpv4Gateway** is an asynchronous operation. After a request is sent, the system returns a **request ID** and runs the task in the background. You can call the [GetIpv4GatewayAttribute](~~407670~~) operation to query the status of the task.\n\n    *   If the IPv4 gateway is in the **Deleting** state, the IPv4 gateway is being deleted.\n    *   If the IPv4 gateway cannot be queried, the IPv4 gateway is deleted.\n\n*   After you call the **DeleteIpv4Gateway** operation to delete an IPv4 gateway, you cannot call the operation again to delete the IPv4 gateway until the deletion task is complete."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-ipv4-gateway --ipv4-gateway-id ipv4gw-5tsnc6s4ogsedtp3k0000 --internet-mode public --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteIpv4Gateway --region cn-hangzhou --Ipv4GatewayId 'ipv4gw-5tsnc6s4ogsedtp3k0000' --DryRun false --RegionId 'cn-hangzhou' --InternetMode public --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

@@ -1,5 +1,6 @@
 {
   "name": "UploadUserCertificate",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,71 +9,126 @@
       "name": "Cert",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "非国密证书，PEM格式证书内容。",
+        "en": "The content of a non-SM certificate in PEM format."
+      }
     },
     {
       "name": "EncryptCert",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "国密证书，PEM格式加密证书内容。当Cert和Key不为空时，此字段无效。",
+        "en": "The content of the SM encryption certificate in PEM format. This parameter is invalid if Cert and Key are not empty."
+      }
     },
     {
       "name": "EncryptPrivateKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "国密证书，PEM格式加密证书私钥内容。当Cert和Key不为空时，此字段无效。",
+        "en": "The content of the private key of the SM encryption certificate in PEM format. This parameter is invalid if Cert and Key are not empty."
+      }
     },
     {
       "name": "Key",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "非国密证书 ，PEM格式证书的私钥内容。",
+        "en": "The private key of a non-SM certificate in PEM format."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自定义的证书名称。支持的最大字符长度：63。支持所有字符类型，包括字母、数字、下划线等。\n> 同一个用户下的证书名称不能重复。",
+        "en": "The custom name of the certificate. The name can be up to 63 characters long and can contain letters, digits, and underscores (\\_).\n\n> Certificate names must be unique for each user."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源分组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "SignCert",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "国密证书，PEM格式签名证书内容。当Cert和Key不为空时，此字段无效。",
+        "en": "The content of the SM signing certificate in PEM format. This parameter is invalid if Cert and Key are not empty."
+      }
     },
     {
       "name": "SignPrivateKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "国密证书，PEM格式签名证书私钥内容。当Cert和Key不为空时，此字段无效。",
+        "en": "The content of the private key of the SM signing certificate in PEM format. This parameter is invalid if Cert and Key are not empty."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "Tag列表。",
+        "en": "A list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "上传证书",
+    "en": "UploadUserCertificate"
+  },
+  "descriptions": {
+    "zh": "本接口的单用户QPS限制为100次/秒。超过限制，API调用将会被限流，这可能影响您的业务，请合理调用。",
+    "en": "The queries per second (QPS) limit for this operation is 100 for each user. If you exceed this limit, API calls are throttled. This may affect your business. Plan your calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun cas upload-user-certificate --name cert-1 --cert -----BEGIN_CERTIFICATE-----_MIIF......_-----END_CERTIFICATE----- --key -----BEGIN_CERTIFICATE-----_MIICDzCCAbagAw0000_-----END_CERTIFICATE----- --encrypt-cert -----BEGIN_CERTIFICATE-----_MIICDzCCA000_-----END_CERTIFICATE----- --encrypt-private-key -----BEGIN_EC_PRIVATE_KEY-----_MHcCAQEEI0000_-----END_EC_PRIVATE_KEY----- --sign-cert -----BEGIN_CERTIFICATE-----_MIICDzCCAbagAw0000_-----END_CERTIFICATE----- --sign-private-key -----BEGIN_EC_PRIVATE_KEY-----_MHcCAQEEILR0000_-----END_EC_PRIVATE_KEY----- --resource-group-id rg-ae0000vty --tags Value=1 Key=testKey --api-version 2020-04-07 --region cn-hangzhou",
     "legacyCli": "aliyun cas UploadUserCertificate --region cn-hangzhou --SignCert '-----BEGIN_CERTIFICATE-----_MIICDzCCAbagAw0000_-----END_CERTIFICATE-----' --Tags.1.Value 1 --ResourceGroupId 'rg-ae0000vty' --Tags.1.Key testKey --EncryptCert '-----BEGIN_CERTIFICATE-----_MIICDzCCA000_-----END_CERTIFICATE-----' --SignPrivateKey '-----BEGIN_EC_PRIVATE_KEY-----_MHcCAQEEILR0000_-----END_EC_PRIVATE_KEY-----' --Cert '-----BEGIN_CERTIFICATE-----_MIIF......_-----END_CERTIFICATE-----' --EncryptPrivateKey '-----BEGIN_EC_PRIVATE_KEY-----_MHcCAQEEI0000_-----END_EC_PRIVATE_KEY-----' --Key '-----BEGIN_CERTIFICATE-----_MIICDzCCAbagAw0000_-----END_CERTIFICATE-----' --Name 'cert-1'"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceClockOptions",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "幂等参数",
+        "en": "The client token that is used to ensure the idempotence of the request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围：\n\n- true：发送检查请求，不会查询资源状况。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n- false：发送正常请求，通过检查后返回2XX的HTTP状态码并直接查询资源状况。\n\n默认值：false。",
+        "en": "Specifies whether to perform only a dry run. Valid values:\n\n- true: performs only a dry run. The system checks the request for potential issues, including invalid AccessKey pairs, unauthorized Resource Access Management (RAM) users, and missing parameter values. Otherwise, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- false: performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed.\n\nDefault value: false."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "PtpStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "PTP 状态值。取值范围：\n\n- enabled：打开 PTP。\n\n- disabled：关闭 PTP。\n\n默认值：disabled。",
+        "en": "PTP status value. Valid values:\n\n- enabled\n\n- disabled\n\nDefault value: disabled."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECS实例所在的地域。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the instance. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例时钟选项",
+    "en": "ModifyInstanceClockOptions"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，您需要注意：\n\n-  当前接口是异步接口。调用后返回异步任务ID。通查查询异步任务结果来判断是否执行完成。\n\n-  修改 PtpStatus，需要对应的规格支持设置该参数。具体支持的实例规格，可以查询实例规格列表（[DescribeInstanceTypes](~~25620~~)）。",
+    "en": "When you call this operation, note that:\n\n- This is an asynchronous operation. The ID of the asynchronous task is returned after the call. Query the asynchronous task result to determine whether the execution is complete.\n\n- To modify the PtpStatus parameter, you must specify the parameter. The instance types that are supported. You can query the instance type list ([DescribeInstanceTypes](~~25620~~) )."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-instance-clock-options --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --instance-id i-bp67acfmxazb4ph0000 --ptp-status enabled --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyInstanceClockOptions --region cn-hangzhou --InstanceId 'i-bp67acfmxazb4ph0000' --DryRun false --PtpStatus enabled --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

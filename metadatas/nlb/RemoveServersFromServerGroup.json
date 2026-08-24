@@ -1,5 +1,6 @@
 {
   "name": "RemoveServersFromServerGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,59 +9,102 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nYou can use the client to generate the token. Ensure that the token is unique among different requests. Only ASCII characters are allowed.\n\n>  If you do not set this parameter, the value of **RequestId** is used.**** The value of **RequestId** is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会移除服务器。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: validates the request without performing the operation. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the validation, the corresponding error message is returned. If the request passes the validation, the `DryRunOperation` error code is returned.\n*   **false** (default): validates the request and performs the operation. If the request passes the validation, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The ID of the region where the NLB instance is deployed.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组ID。",
+        "en": "The server group ID."
+      }
     },
     {
       "name": "Servers",
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "后端服务器列表，单次调用最多支持传入200个服务器。",
+        "en": "The backend servers. You can specify up to 200 backend servers in each call."
+      },
       "sub_parameters": [
         {
           "name": "Port",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器使用的端口。端口范围**0**~**65535**，不填则默认传入端口值**0**。",
+            "en": "The port that is used by the backend server. Valid values: **0** to **65535**. If you do not set this parameter, the default value **0** is used."
+          }
         },
         {
           "name": "ServerId",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "后端服务器ID。\n\n- 当服务器组为**Instance**类型时，该参数为**Ecs**、**Eni**、**Eci**的资源ID。\n\n- 当服务器组为**Ip**类型时，该参数为IP地址。",
+            "en": "The backend server ID.\n\n*   If the server group is of the **Instance** type, set this parameter to the IDs of servers of the **Ecs**, **Eni**, or **Eci** type.\n*   If the server group is of the **Ip** type, set ServerId to IP addresses."
+          }
         },
         {
           "name": "ServerIp",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "服务器IP地址。当服务器组为**Ip**类型时，必须指定IP地址。",
+            "en": "The IP addresses of the server. If the server group type is **Ip**, set the ServerId parameter to IP addresses."
+          }
         },
         {
           "name": "ServerType",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "后端服务器类型，取值：\n\n- **Ecs**：ECS实例。\n- **Eni**：ENI弹性网卡实例。\n- **Eci**：ECI弹性容器。\n- **Ip**：Ip地址。",
+            "en": "The type of the backend server. Valid values:\n\n*   **Ecs**: the Elastic Compute Service (ECS) instance\n*   **Eni**: the elastic network interface (ENI)\n*   **Eci**: the elastic container instance\n*   **Ip**: the IP address"
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除后端服务器",
+    "en": "RemoveServersFromServerGroup"
+  },
   "example": {
     "unifiedCli": "aliyun nlb remove-servers-from-server-group --server-group-id sgp-atstuj3rtoptyui0000 --servers ServerType=Ecs ServerId=i-bp67acfmxazb4p0000 ServerIp=192.168.6.6 Port=443 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun nlb RemoveServersFromServerGroup --region cn-hangzhou --Servers.1.ServerType Ecs --Servers.1.ServerId 'i-bp67acfmxazb4p0000' --DryRun false --Servers.1.Port 443 --ServerGroupId 'sgp-atstuj3rtoptyui0000' --Servers.1.ServerIp '192.168.6.6' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

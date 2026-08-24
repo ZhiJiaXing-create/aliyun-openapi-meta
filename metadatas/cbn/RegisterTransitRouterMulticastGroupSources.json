@@ -1,5 +1,6 @@
 {
   "name": "RegisterTransitRouterMulticastGroupSources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "A client token to ensure the idempotence of the request.\n\nGenerate a unique value from your client. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the request ID as the client token. The request ID is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会创建组播源。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接创建组播源。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends the request. If the request passes the check, a multicast source is created."
+      }
     },
     {
       "name": "GroupIpAddress",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "组播源所属的组播组的IP地址。取值范围：**224.0.1.0**~**239.255.255.254**。\n><notice>224.0.0.0～224.0.0.127为系统保留地址，不支持作为组播组IP地址。></notice>\n如果当前组播域下不存在您指定的组播组，系统将自动为您创建新的组播组。",
+        "en": "The IP address of the multicast group to which the multicast source belongs. Valid values range from **224.0.1.0** to **239.255.255.254**.\n\n><notice>\n\nThe IP addresses from 224.0.0.0 to 224.0.0.127 are system reserved IP addresses. They cannot be used as multicast group IP addresses.\n\n></notice>\n\nIf the specified multicast group does not exist in the multicast domain, the system automatically creates the multicast group."
+      }
     },
     {
       "name": "NetworkInterfaceIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性网卡ID列表。",
+        "en": "A list of ENI IDs."
+      }
     },
     {
       "name": "TransitRouterMulticastDomainId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "组播源所属的组播域ID。",
+        "en": "The ID of the multicast domain to which the multicast source belongs."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性网卡所属的VPC实例ID。\n\n- 如果弹性网卡所属阿里云账号和您当前登录的阿里云账号为相同账号，本参数可不填。\n- 如果弹性网卡所属阿里云账号和您当前登录的阿里云账号为不同账号，本参数必填。",
+        "en": "The ID of the VPC to which the ENI belongs.\n\n- If the ENI belongs to your Alibaba Cloud account, this parameter is optional.\n\n- If the ENI belongs to a different Alibaba Cloud account, this parameter is required."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建组播源",
+    "en": "RegisterTransitRouterMulticastGroupSources"
+  },
+  "descriptions": {
+    "zh": "- 当前仅支持将弹性网卡ENI（Elastic Network Interface）指定为组播源。\n- `RegisterTransitRouterMulticastGroupSources`接口属于异步接口，即系统会先返回一个**RequestId**，但组播源未完全创建成功，系统后台的创建任务仍在进行。您可以调用`ListTransitRouterMulticastGroups`接口查询组播源的状态。 \n   \n    - 当组播源处于**Registering**状态时，表示组播源正在被创建，在该状态下，您只能对组播源执行查询操作，不能执行其他操作。\n    - 当组播源处于**Registered**状态时，表示组播源已被成功创建。\n\n### 前提条件\n\n在调用`RegisterTransitRouterMulticastGroupSources`接口创建组播源前，请确保弹性网卡所在的交换机已被关联至组播域。具体操作，请参见[AssociateTransitRouterMulticastDomain](~~429778~~)。",
+    "en": "- You can specify only an Elastic Network Interface (ENI) as a multicast source.\n\n- `RegisterTransitRouterMulticastGroupSources` is an asynchronous operation. After you send a request, the system returns a **RequestId**. The multicast source is created in the background and is not immediately available. You can call the `ListTransitRouterMulticastGroups` operation to query the status of the multicast source.\n\n  - If a multicast source is in the **Registering** status, the multicast source is being created. In this status, you can only query the multicast source.\n\n  - If a multicast source is in the **Registered** status, the multicast source is created.\n\n### Prerequisites\n\nBefore you call `RegisterTransitRouterMulticastGroupSources`, ensure that the vSwitch to which the ENI belongs is associated with the multicast domain. For more information, see [AssociateTransitRouterMulticastDomain](~~429778~~)."
+  },
   "example": {
     "unifiedCli": "aliyun cbn register-transit-router-multicast-group-sources --client-token 123e4567-e89b-12d3-a456-42660000 --transit-router-multicast-domain-id tr-mcast-domain-5mjb5gjb6dgu980000 --group-ip-address 239.XX.XX.2 --network-interface-ids eni-p0w92o2wupc3c05t0000 --dry-run false --vpc-id vpc-wz9fusm6zq8uy7cfa0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn RegisterTransitRouterMulticastGroupSources --region cn-hangzhou --VpcId 'vpc-wz9fusm6zq8uy7cfa0000' --TransitRouterMulticastDomainId 'tr-mcast-domain-5mjb5gjb6dgu980000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-42660000' --NetworkInterfaceIds.1 'eni-p0w92o2wupc3c05t0000' --GroupIpAddress '239.XX.XX.2'"

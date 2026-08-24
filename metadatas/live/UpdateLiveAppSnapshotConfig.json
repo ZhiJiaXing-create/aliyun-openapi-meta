@@ -1,5 +1,6 @@
 {
   "name": "UpdateLiveAppSnapshotConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。",
+        "en": "The name of the application to which the live stream belongs."
+      }
     },
     {
       "name": "Callback",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "截图回调地址。",
+        "en": "The callback URL that is used to receive notifications about snapshot capture."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The main streaming domain."
+      }
     },
     {
       "name": "OssBucket",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OSS存储Bucket名称。",
+        "en": "The name of the OSS bucket."
+      }
     },
     {
       "name": "OssEndpoint",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OSS存储的Endpoint名称。",
+        "en": "The endpoint of the OSS bucket."
+      }
     },
     {
       "name": "OverwriteOssObject",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "覆盖截图存储文件名。每次截图都覆盖此文件。\n\n- 小于256 Byte。\n- 目前仅支持生成JPG图片。\n- 支持变量匹配，包含 {AppName}、{StreamName}。\n- 传入短划线（-），表示删除此字段。",
+        "en": "The naming format of snapshots that are stored in the overwrite mode, which means that a new snapshot overwrites the previous snapshot.\n\n- The name must be less than 256 bytes in length.\n\n- Only JPG images are supported.\n\n- The name can contain variables such as {AppName} and {StreamName}.\n\n- A value of hyphen (-) indicates that this parameter is deleted."
+      }
     },
     {
       "name": "SequenceOssObject",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实时截图存储文件名。每次截图都递增存储，调用[DescribeLiveStreamSnapshotInfo](~~2847902~~)接口，可以查询某一段时间的文件。\n\n- 小于256 Byte。\n- 目前仅支持生成JPG图片。\n- 支持变量匹配，包含 {AppName}、{StreamName}、{UnixTimestamp}、{Sequence}，其中 {UnixTimestamp}、{Sequence} 必填一个。\n- 传入短划线（-），表示删除此字段。",
+        "en": "The naming format of snapshots that are stored in sequence, which means that a new snapshot does not overwrite the previous snapshot. You can call the [DescribeLiveStreamSnapshotInfo](~~2847902~~) operation to query the snapshots that were captured within a specific time period.\n\n- The name must be less than 256 bytes in length.\n\n- Only JPG images are supported.\n\n- The name can contain variables such as {AppName}, {StreamName}, {UnixTimestamp}, and {Sequence}. The name must contain at least one of the {UnixTimestamp} and {Sequence} variables.\n\n- A value of hyphen (-) indicates that this parameter is deleted."
+      }
     },
     {
       "name": "TimeInterval",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "截图周期。取值范围：**5~3600**。单位：秒。",
+        "en": "The interval at which snapshots are captured. Valid values: **5 to 3600**. Unit: seconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新直播截图配置",
+    "en": "UpdateLiveAppSnapshotConfig"
+  },
+  "descriptions": {
+    "zh": "调用本接口更新播流下的截图配置。输出内容保存到OSS中，重新推流后生效。\n\n## QPS限制\n本接口的单用户QPS限制为30次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "You can call this operation to modify a snapshot configuration of a streaming domain. The captured snapshots are stored in OSS. The modification takes effect after you restart stream ingest.\n\n## [](#qps-)QPS limit\n\nYou can call this operation up to 30 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun live update-live-app-snapshot-config --domain-name example.com --app-name liveApp0000 --time-interval 5 --oss-endpoint cn-oss-0000.aliyuncs.com --oss-bucket liveBucket0000 --overwrite-oss-object liveApp0000_/_liveStream0000_.jpg --sequence-oss-object snapshot/_liveApp0000_/_liveStream0000_/_UnixTimestamp0000_.jpg --callback https://learn.aliyundoc.com --region cn-hangzhou",
     "legacyCli": "aliyun live UpdateLiveAppSnapshotConfig --region cn-hangzhou --OverwriteOssObject 'liveApp0000_/_liveStream0000_.jpg' --SequenceOssObject 'snapshot/_liveApp0000_/_liveStream0000_/_UnixTimestamp0000_.jpg' --Callback 'https://learn.aliyundoc.com' --TimeInterval 5 --OssEndpoint 'cn-oss-0000.aliyuncs.com' --DomainName 'example.com' --OssBucket liveBucket0000 --AppName liveApp0000"

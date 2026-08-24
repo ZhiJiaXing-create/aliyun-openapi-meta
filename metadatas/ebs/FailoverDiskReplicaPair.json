@@ -1,5 +1,6 @@
 {
   "name": "FailoverDiskReplicaPair",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系中从盘所属的地域ID。您可以调用[DescribeDiskReplicaPairs](~~354206~~)查询异步复制关系中从盘的地域信息。\n\n> 必须在从盘所属地域下启用故障切换功能。",
+        "en": "The region ID of the secondary disk in the replication pair. You can call the [DescribeDiskReplicaPairs](~~354206~~) operation to query region IDs of secondary disks in replication pairs.\n\n>  The failover feature must be enabled for the region where the secondary disk is located."
+      }
     },
     {
       "name": "ReplicaPairId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系的ID。",
+        "en": "The ID of the replication pair."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "启用云盘异步复制故障切换",
+    "en": "FailoverDiskReplicaPair"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 异步复制功能支持的地域请参见[云盘异步复制概述](~~314563~~)。\n- 异步复制关系不能处于**失效**（`invalid`）或**已删除**（`deleted`）状态。\n- 故障切换完成后，异步复制关系处于**故障切换完成**（`failovered`）状态。",
+    "en": "## [](#)Usage notes\n\n*   For information about the regions in which async replication is available, see [Overview](~~314563~~).\n*   The replication pair for which you want to enable failover cannot be in the **Invalid** (`invalid`) or **Deleted** (`deleted`) state.\n*   After a failover is performed, the replication pair enters the **Failovered** (`failovered`) state."
+  },
   "example": {
     "unifiedCli": "aliyun ebs failover-disk-replica-pair --biz-region-id cn-hangzhou --replica-pair-id pair-cn-dsa0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ebs FailoverDiskReplicaPair --region cn-hangzhou --RegionId 'cn-hangzhou' --ReplicaPairId 'pair-cn-dsa0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

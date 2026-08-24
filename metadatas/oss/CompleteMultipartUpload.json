@@ -1,0 +1,90 @@
+{
+  "name": "CompleteMultipartUpload",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "/[key]",
+  "parameters": [
+    {
+      "name": "body",
+      "position": "Body",
+      "type": "Struct",
+      "required": false,
+      "description": {
+        "zh": "保存CompleteMultipartUpload请求内容的请求体。",
+        "en": "The request body that contains the CompleteMultipartUpload request content."
+      }
+    },
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "encoding-type",
+      "position": "Query",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "指定对返回的Key进行编码，目前只支持URL编码。\n\n\nKey使用UTF-8字符，但XML 1.0标准不支持解析一些控制字符，例如ASCII码值从0到10的字符。当Key中包含XML 1.0标准不支持的控制字符时，您可以通过指定Encoding-type对返回的Key进行编码。\n\n默认值：无\n\n有效值：url",
+        "en": "Specifies the encoding type for the returned key. Currently, only URL encoding is supported.\n\n\nKeys use UTF-8 characters, but XML 1.0 does not support parsing certain control characters, such as characters with ASCII values from 0 to 10. If a key contains control characters that are not supported by XML 1.0, you can specify encoding-type to encode the returned key.\n\nDefault value: null.\n\nValid values: url."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "uploadId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "此次MultipartUpload事件的唯一标识。",
+        "en": "The unique identifier of this multipart upload event."
+      }
+    },
+    {
+      "name": "x-oss-complete-all",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定是否列举当前UploadId已上传的所有Part。\n\n- 如果指定了x-oss-complete-all:yes，则OSS会列举当前UploadId已上传的所有Part，然后按照PartNumber的序号排序并执行CompleteMultipartUpload操作。执行CompleteMultipartUpload过程中无法检测正在上传或者漏传的Part，因此用户需要自己确保Part的完整性。\n- 如果指定了x-oss-complete-all:yes，则不允许继续指定body，否则报错。\n- 如果指定了x-oss-complete-all:yes，response的格式保持不变。",
+        "en": "Specifies whether to list all parts that have been uploaded for the current UploadId.\n\n- If x-oss-complete-all:yes is specified, OSS lists all parts that have been uploaded for the current UploadId, sorts them by PartNumber in ascending order, and then performs the CompleteMultipartUpload operation. During the CompleteMultipartUpload process, parts that are being uploaded or missing parts cannot be detected. Therefore, you must ensure the completeness of the parts.\n- If x-oss-complete-all:yes is specified, you cannot specify a request body. Otherwise, an error is returned.\n- If x-oss-complete-all:yes is specified, the response format remains unchanged."
+      }
+    },
+    {
+      "name": "x-oss-forbid-overwrite",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定CompleteMultipartUpload操作时是否覆盖同名Object。\n\n- 不指定x-oss-forbid-overwrite或者指定x-oss-forbid-overwrite为false时，表示允许覆盖同名Object。\n- 指定x-oss-forbid-overwrite为true时，表示禁止覆盖同名Object。\n\n> \n- 当目标Bucket的版本控制状态为“开启”或“暂停”时，x-oss-forbid-overwrite请求Header设置无效，即允许覆盖同名Object。\n- 设置x-oss-forbid-overwrite请求Header会导致QPS处理性能下降，如果您有大量的操作需要使用x-oss-forbid-overwrite请求Header（QPS > 1000），请工单联系我们进行确认，避免影响您的业务。",
+        "en": "Specifies whether to overwrite an existing object with the same name when the CompleteMultipartUpload operation is called.\n\n- If x-oss-forbid-overwrite is not specified or is set to false, an existing object with the same name is overwritten.\n- If x-oss-forbid-overwrite is set to true, an existing object with the same name is not overwritten.\n\n> \n- If versioning is enabled or suspended for the destination bucket, the x-oss-forbid-overwrite request header is ignored, and an existing object with the same name is overwritten.\n- Setting the x-oss-forbid-overwrite request header decreases the QPS processing performance. If you need to use the x-oss-forbid-overwrite request header frequently (QPS > 1000), submit a ticket to confirm and avoid impact on your business."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "完成整个文件的分片上传",
+    "en": "Complete a multipart upload for an entire file"
+  },
+  "descriptions": {
+    "zh": "**注意事项**\n\n\n调用CompleteMultipartUpload操作时，用户必须提供所有有效的Part列表（包括PartNumber和ETag）。OSS收到用户提交的Part列表后，会逐一验证每个Part的有效性。当所有的Part验证通过后，OSS将把这些Part组合成一个完整的Object。\n- 确认Part的大小：CompleteMultipartUpload时会确认除最后一个Part以外所有Part的大小是否都大于或等于100 KB，并检查用户提交的Part列表中的每一个PartNumber和ETag。所以在上传Part时，客户端除了需要记录Part号码外，还需要记录每次上传Part成功后服务器返回的ETag值。\n\n- 处理请求：由于OSS处理CompleteMultipartUpload请求时会持续一定的时间。在这段时间内，如果客户端与OSS之间连接中断，OSS仍会继续该请求。\n\n- PartNumber：服务端在调用CompleteMultipartUpload接口时会对PartNumber做校验。\nPartNumber取值为1~10000。PartNumber可以不连续，但必须升序排列。例如第一个Part的PartNumber是1，第二个Part的PartNumber可以是5。\n\n- UploadId：同一个Object可以同时拥有不同的UploadId，当Complete一个UploadId后，此UploadId将无效，但该Object的其他UploadId不受影响。\n\n- x-oss-server-side-encryption请求头：如果调用InitiateMultipartUpload接口时，指定了x-oss-server-side-encryption请求头，则在CompleteMultipartUpload的响应头中返回x-oss-server-side-encryption，其值表示该Object的服务器端加密算法。\n\n**版本控制**\n\n在开启版本控制的情况下，调用CompleteMultipartUpload接口来完成整个文件的MultipartUpload，OSS会为整个文件生成唯一的版本ID，并在响应header中以x-oss-version-id的形式返回。",
+    "en": "**Before you begin**.\n\nWhen you call the CompleteMultipartUpload operation, you must provide a list of all valid parts (including PartNumber and ETag). After OSS receives the part list, it verifies the validity of each part. After all parts pass verification, OSS combines these parts into a complete object.\n- Confirm part sizes: When CompleteMultipartUpload is called, OSS verifies that all parts except the last part are greater than or equal to 100 KB in size, and checks each PartNumber and ETag in the part list submitted by the user. Therefore, when uploading parts, the client must record not only the part number but also the ETag value returned by the server after each successful part upload.\n\n- Request processing: Because OSS takes a certain amount of time to process a CompleteMultipartUpload request, if the connection between the client and OSS is interrupted during this period, OSS continues to process the request.\n\n- PartNumber: The server validates PartNumber when the CompleteMultipartUpload operation is called.\nValid values of PartNumber: 1 to 10000. PartNumber values do not need to be consecutive but must be in ascending order. For example, the PartNumber of the first part is 1, and the PartNumber of the second part can be 5.\n\n- UploadId: The same object can have multiple UploadId values at the same time. After a specific UploadId is completed, that UploadId becomes invalid, but other UploadId values of the object are not affected.\n\n- x-oss-server-side-encryption request header: If the x-oss-server-side-encryption request header is specified when the InitiateMultipartUpload operation is called, the x-oss-server-side-encryption header is returned in the CompleteMultipartUpload response. The value indicates the server-side encryption algorithm of the object.\n\n**Versioning**.\n\nIf versioning is enabled for the bucket, calling the CompleteMultipartUpload operation to complete the multipart upload causes OSS to generate a unique version ID for the object and return it in the x-oss-version-id response header."
+  }
+}

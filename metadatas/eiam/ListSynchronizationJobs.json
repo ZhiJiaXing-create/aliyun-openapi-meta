@@ -1,5 +1,6 @@
 {
   "name": "ListSynchronizationJobs",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,75 +9,134 @@
       "name": "Direction",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步任务方向，取值可选范围：\n\n- ingress：入方向\n\n- egress：出方向",
+        "en": "Synchronization job direction. Valid values:\n\n- ingress: inbound\n\n- egress: outbound"
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步结束时间，Unix时间戳格式，单位为毫秒。",
+        "en": "Synchronization end time in Unix timestamp format, in milliseconds."
+      }
     },
     {
       "name": "Filters",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过滤参数",
+        "en": "Filter parameters"
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "Instance ID."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时每页行数，最大值100。",
+        "en": "Number of rows per page for paginated queries. Maximum value: 100."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询下一页凭证（Token），如果没有下一页时，该参数不再返回。",
+        "en": "Token for querying the next page. This parameter is not returned when there are no more pages."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "列表页码，从1开始。",
+        "en": "Page number, starting from 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "列表大小，最大值100。",
+        "en": "Page size. Maximum value: 100."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步开始时间，Unix时间戳格式，单位为毫秒。",
+        "en": "Synchronization start time in Unix timestamp format, in milliseconds."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步任务状态，取值可选范围：\n\n- pending：初始状态\n\n- running：运行中\n\n- failed：失败\n\n- partial_success：部分成功\n\n- success：成功",
+        "en": "Synchronization job status. Valid values:\n\n- pending: initial state\n\n- running: running\n\n- failed: failed\n\n- partial_success: partially succeeded\n\n- success: succeeded"
+      }
     },
     {
       "name": "TargetIds",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步目标ID列表。[idp_111XXXX,idp_222XXXX]",
+        "en": "List of synchronization target IDs. [idp_111XXXX,idp_222XXXX]"
+      }
     },
     {
       "name": "TargetType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步目标类型，取值可选范围：\n\n- identity_provider：身份提供方\n\n- application：应用",
+        "en": "Synchronization target type. Valid values:\n\n- identity_provider: identity provider\n\n- application: application"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "列表查询同步任务信息",
+    "en": "List Synchronization Jobs"
+  },
+  "descriptions": {
+    "zh": "支持以下两种方式查看返回数据：\n\n- 方式一：分页查询首页时，仅需设置MaxResults以限制返回信息的条目数，返回结果中的NextToken将作为查询后续页的凭证。查询后续页时，将NextToken参数设置为上一次返回结果中获取到的NextToken作为查询凭证，并设置MaxResults限制返回条目数。如果没有下一页时，NextToken不再返回。MaxResults最大值为100。\n\n- 方式二：通过PageSize设置单页返回的条目数，再通过PageNumber设置页码。\n\n以上两种方式只能任选其中之一。当返回的条目数较多时，推荐使用方式一。如果设置了MaxResults或NextToken参数，则请求参数PageSize和PageNumber将失效。",
+    "en": "The following two methods are supported for viewing returned data:\n\n- Method 1: When querying the first page, you only need to set MaxResults to limit the number of entries returned. The NextToken in the response serves as the credential for querying subsequent pages. When querying subsequent pages, set the NextToken parameter to the NextToken value obtained from the previous response as the query credential, and set MaxResults to limit the number of entries returned. If there are no more pages, NextToken is no longer returned. The maximum value of MaxResults is 100.\n\n- Method 2: Set the number of entries returned per page using PageSize, and set the page number using PageNumber.\n\nYou can only choose one of the above two methods. When a large number of entries are returned, Method 1 is recommended. If the MaxResults or NextToken parameter is set, the PageSize and PageNumber request parameters become invalid."
+  },
   "example": {
     "unifiedCli": "aliyun eiam list-synchronization-jobs --instance-id idaas_ue2jvisn35ea5lmthk267xxxxx --page-number 1 --page-size 10 --next-token NTxxxxxexample --max-results 20 --target-type identity_provider --target-ids idp_my664lwkhpicbyzirog3xxxxx --start-time 1649830226000 --end-time 1649830226000 --direction ingress --status running --filters '[{\"Values\":[\"example-string\"],\"Key\":\"qps\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun eiam ListSynchronizationJobs --region cn-hangzhou --Status running --Filters.1.Key qps --PageSize 10 --NextToken NTxxxxxexample --EndTime 1649830226000 --InstanceId idaas_ue2jvisn35ea5lmthk267xxxxx --TargetIds.1 idp_my664lwkhpicbyzirog3xxxxx --MaxResults 20 --StartTime 1649830226000 --Direction ingress --PageNumber 1 --TargetType identity_provider --Filters.1.Values.1 'example-string' --method POST --force"

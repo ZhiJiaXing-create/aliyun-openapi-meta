@@ -1,5 +1,6 @@
 {
   "name": "DescribeVirtualNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多详情，请参阅[如何保证幂等性](~~25693~~)。",
+        "en": "The status of the virtual node. Valid values:\n\n- Pending\n\n- Ready\n\n- Failed"
+      }
     },
     {
       "name": "Limit",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "限制本次查询返回的资源数量。默认返回20个，最大不能超过20个。\n\n> 返回结果可能小于指定的数量，但不会多于指定的数量。",
+        "en": "The list of tags that are attached to the virtual node."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始的Token，NextToken为空表示没有下一个。\n\n首次查询时无需设置该参数，后续查询的Token从返回结果中获取。",
+        "en": "The number of entries to return on each page. Default value: 20. Maximum value: 20.\n\n> The response might contain fewer entries than the specified number."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The token that is used to retrieve the next page of results. You do not need to specify this parameter for the first request. You can obtain the token from the \\`NextToken\\` parameter in the response to the previous request.\n\nYou do not need to set this parameter for the first query. For subsequent queries, you can obtain the token from the response."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "虚拟节点状态。取值范围：\n\n- Pending\n- Ready\n- Failed",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "虚拟节点绑定的标签列表。",
+        "en": "The tags that are attached to the virtual node."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     },
@@ -64,15 +101,30 @@
       "name": "VirtualNodeIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "虚拟节点ID序列。最多20个，字符串需按照JSON格式传入。",
+        "en": "A client token to ensure the idempotence of the request. Generate a value from your client to make sure that the value is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "VirtualNodeName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "虚拟节点名称。",
+        "en": "The IDs of the virtual nodes. You can specify up to 20 IDs. The value must be a JSON-formatted string."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量查询虚拟节点信息",
+    "en": "DescribeVirtualNodes"
+  },
   "example": {
     "unifiedCli": "aliyun eci describe-virtual-nodes --biz-region-id cn-hangzhou --virtual-node-name testNode --virtual-node-ids vnd-2ze960zkdqrldeaw0000_,_vnd-3ebzcviqbwt25dsz0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --status Ready --resource-group-id rg-uf66jeqopgqa9hdn0000 --next-token d78f2dd8-5979-42fe-0000-b16db43be5bc --limit 20 --tag Value=test Key=name --region cn-hangzhou",
     "legacyCli": "aliyun eci DescribeVirtualNodes --region cn-hangzhou --Status Ready --Tag.1.Key name --VirtualNodeIds 'vnd-2ze960zkdqrldeaw0000_,_vnd-3ebzcviqbwt25dsz0000' --ResourceGroupId 'rg-uf66jeqopgqa9hdn0000' --NextToken 'd78f2dd8-5979-42fe-0000-b16db43be5bc' --Tag.1.Value test --RegionId 'cn-hangzhou' --Limit 20 --ClientToken '123e4567-e89b-12d3-a456-426655440000' --VirtualNodeName testNode"

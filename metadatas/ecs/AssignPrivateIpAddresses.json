@@ -1,5 +1,6 @@
 {
   "name": "AssignPrivateIpAddresses",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. The **ClientToken** value can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "Ipv4Prefix",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为弹性网卡指定一个或多个IPv4前缀。N的取值范围：1~10。\n> 如果您需要为弹性网卡设置IPv4前缀，则必须设置Ipv4Prefix.N或者Ipv4PrefixCount的其中一个，但不能同时设置这两个参数。",
+        "en": "One or more IPv4 prefixes to allocate to the network interface controller (NIC). Valid values of N: 1 to 10.\n> To configure IPv4 prefixes for the ENI, you must specify either the Ipv4Prefix.N parameter or the Ipv4PrefixCount parameter, but not both."
+      }
     },
     {
       "name": "Ipv4PrefixCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为弹性网卡指定随机生成的IPv4前缀数量。取值范围：1~10。\n> 如果您需要为弹性网卡设置IPv4前缀，则必须设置Ipv4Prefix.N或者Ipv4PrefixCount的其中一个，但不能同时设置这两个参数。",
+        "en": "The number of randomly generated IPv4 prefixes to allocate to the network interface controller (NIC). Valid values: 1 to 10.\n> To configure IPv4 prefixes for the ENI, you must specify either the Ipv4Prefix.N parameter or the Ipv4PrefixCount parameter, but not both."
+      }
     },
     {
       "name": "NetworkInterfaceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "弹性网卡ID。",
+        "en": "The ID of the network interface controller (NIC)."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "从弹性网卡所属交换机的空闲IP地址中选择一个或多个辅助私网IP地址。N的取值范围：\n\n- 弹性网卡处于可用（`Available`）状态：1~32。\n- 弹性网卡处于已附加（`InUse`）状态：受到实例规格限制，更多信息，请参见[实例规格族](~~25378~~)。\n\n分配辅助私网IP地址时，您不能同时指定`PrivateIpAddress.N`和`SecondaryPrivateIpAddressCount`。",
+        "en": "One or more secondary private IP addresses selected from the available IP addresses of the vSwitch to which the network interface controller (NIC) belongs. Valid values of N:\n\n- When the ENI is in the Available (`Available`) state: 1 to 32.\n- When the ENI is in the `InUse` state: limited by the instance type. For more information, see [Instance families](~~25378~~).\n\nWhen you allocate secondary private IP addresses, you cannot specify both PrivateIpAddress.N and SecondaryPrivateIpAddressCount."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "弹性网卡所属的地域。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the network interface controller (NIC). You can call [DescribeRegions](~~25609~~) to query the most recent list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "SecondaryPrivateIpAddressCount",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定私网IP地址数量，自动从交换机的空闲IP地址中分配IP地址。\n\n分配辅助私网IP地址时，您不能同时指定`PrivateIpAddress.N`和`SecondaryPrivateIpAddressCount`。",
+        "en": "The number of private IP addresses to be automatically assigned from the available IP addresses of the vSwitch.\n\nWhen you assign secondary private IP addresses, you cannot specify both PrivateIpAddress.N and SecondaryPrivateIpAddressCount."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为弹性网卡分配辅助私有IP地址",
+    "en": "Assign secondary private IP addresses to an ENI"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 仅支持可用（Available）或者已附加（InUse）状态下的弹性网卡。\n- 操作主网卡时，网卡附加的实例必须处于运行中（Running）或者已停止（Stopped）状态。\n- 网卡处于可用（Available）状态时，最多可以分配49个辅助私网IP地址。一旦挂载到实例上，网卡能分配的辅助私网IP地址数将受到实例规格限制。更多详情，请参见[实例规格族](~~25378~~)。\n- 成功调用该接口后，您可以从返回结果中获取已分配的辅助私网IP地址信息。",
+    "en": "## Operation description\n\n- Only ENIs in the Available or InUse state are supported.\n- When you operate a primary ENI, the instance to which the ENI is attached must be in the Running or Stopped state.\n- When an ENI is in the Available state, you can allocate up to 49 secondary private IP addresses to it. After the ENI is attached to an instance, the number of secondary private IP addresses that can be allocated is limited by the instance type. For more information, see [Instance families](~~25378~~).\n- After you call this operation, you can obtain the allocated secondary private IP address information from the response."
+  },
   "example": {
     "unifiedCli": "aliyun ecs assign-private-ip-addresses --biz-region-id cn-hangzhou --network-interface-id eni-bp67acfmxazb4p0000 --secondary-private-ip-address-count 1 --client-token 123e4567-e89b-12d3-a456-426655440000 --private-ip-address 10.1.00.00 --ipv4-prefix 192.168.00.00/28 --ipv4-prefix-count 1 --region cn-hangzhou",
     "legacyCli": "aliyun ecs AssignPrivateIpAddresses --region cn-hangzhou --PrivateIpAddress.1 '10.1.00.00' --SecondaryPrivateIpAddressCount 1 --Ipv4PrefixCount 1 --Ipv4Prefix.1 '192.168.00.00/28' --RegionId 'cn-hangzhou' --NetworkInterfaceId 'eni-bp67acfmxazb4p0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

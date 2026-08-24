@@ -1,5 +1,6 @@
 {
   "name": "CreateQueue",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,69 +9,120 @@
       "name": "AutoDeleteState",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动删除。取值：\n\n- true：是。如果订阅该Queue的最后一个消费端取消订阅后，那么该Queue将会自动删除。\n- false：否。",
+        "en": "Specifies whether to automatically delete the queue. Valid values:\n\n- true: The queue is automatically deleted after the last consumer unsubscribes from it.\n\n- false: The queue is not automatically deleted."
+      }
     },
     {
       "name": "AutoExpireState",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Queue的自动过期时间。如果Queue在指定时间内没有被访问，则会被自动删除。\n\n单位为毫秒。\n> 该参数对应的功能需要开通后才能使用。如需使用，请<props=\"china\">[提交工单](https://selfservice.console.aliyun.com/ticket/createIndex)</props><props=\"intl\">[提交工单](https://ticket-intl.console.aliyun.com/#/ticket/createIndex)</props>开通。",
+        "en": "The auto-expiration time for the queue. The queue is automatically deleted if it is not accessed within the specified time period.\n\nUnit: milliseconds.\n\n> This feature must be enabled before you can use this parameter. To enable the feature, <props=\"china\">[submit a ticket](https://selfservice.console.aliyun.com/ticket/createIndex)</props><props=\"intl\">[submit a ticket](https://ticket-intl.console.aliyun.com/#/ticket/createIndex)</props>."
+      }
     },
     {
       "name": "DeadLetterExchange",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "死信Exchange。该类Exchange是用来接收被拒绝的消息。\n\n如果消费端拒绝一个不重新发送的消息，那么消息队列RabbitMQ版将会把消息路由到指定的死信Exchange，该Exchange再将消息路由到绑定的Queue进行存储。",
+        "en": "The dead-letter exchange. This type of exchange is used to receive rejected messages.\n\nIf a consumer rejects a message and the message is not requeued, ApsaraMQ for RabbitMQ routes the message to the specified dead-letter exchange. The dead-letter exchange then routes the message to a bound queue for storage."
+      }
     },
     {
       "name": "DeadLetterRoutingKey",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "死信Routing Key。\n只能包含字⺟、数字、短划线（-）、下划线（_）、半角句号（.）、井号（#）、正斜线（/）、at符号（@），⻓度限制1~255字符。",
+        "en": "The dead-letter routing key.\nThe key can contain only letters, digits, hyphens (-), underscores (\\_), periods (.), number signs (#), forward slashes (/), and at signs (@). The key must be 1 to 255 characters in length."
+      }
     },
     {
       "name": "ExclusiveState",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否为排他性Exchange。取值：\n\n- true：是。只能被声明该排他性Exchange的Connection使用。该Connection断开后该排他性Exchange自动删除。\n- false：否。",
+        "en": "Specifies whether the queue is an exclusive queue. Valid values:\n\n- true: The queue is an exclusive queue. An exclusive queue can be used only by the connection that declares it. The queue is automatically deleted after the connection is closed.\n\n- false: The queue is not an exclusive queue."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待创建Queue所属的云消息队列 RabbitMQ 版实例ID。",
+        "en": "The ID of the ApsaraMQ for RabbitMQ instance to which the queue belongs."
+      }
     },
     {
       "name": "MaxLength",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前版本不支持该参数。\n\nQueue中消息的最大数量。如果超出该数量，则先到达该Queue的消息将会被删除。",
+        "en": "This parameter is not supported in the current version.\n\nThe maximum number of messages that can be stored in the queue. If this limit is exceeded, the earliest messages in the queue are deleted."
+      }
     },
     {
       "name": "MaximumPriority",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "队列优先级，推荐取值范围（1~10）。\n> 该参数为消息优先级对应参数，仅独享实例支持，开通消息优先级功能后才能使用。如需使用，请<props=\"china\">[提交工单](https://selfservice.console.aliyun.com/ticket/createIndex)</props><props=\"intl\">[提交工单](https://ticket-intl.console.aliyun.com/#/ticket/createIndex)</props>开通。",
+        "en": "The priority of the queue. The recommended value is an integer from 1 to 10.\n\n> This parameter is used for message priority. It is supported only by dedicated instances and can be used only after the message priority feature is enabled. To enable the feature, <props=\"china\">[submit a ticket](https://selfservice.console.aliyun.com/ticket/createIndex)</props><props=\"intl\">[submit a ticket](https://ticket-intl.console.aliyun.com/#/ticket/createIndex)</props>."
+      }
     },
     {
       "name": "MessageTTL",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息在Queue中的有效期。\n\n- 某条消息在Queue中的留存时间超过配置的消息存活时间时，则该消息过期。\n\n- 消息存活时间的值必须为非负整型数，最大为1天。单位为毫秒。例如，某条消息的存活时间的值是1000，则代表该消息最多会在Queue中存活1秒。",
+        "en": "The time to live (TTL) of a message in the queue.\n\n- A message expires if its retention time in the queue exceeds the configured TTL.\n\n- The message TTL must be a non-negative integer. The maximum value is 1 day. The unit is milliseconds. For example, if the value is 1000, the message can be stored in the queue for a maximum of 1 second."
+      }
     },
     {
       "name": "QueueName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待创建的Queue的名称。\n\n- Queue名称只能包含字母、数字、短划线（-）、下划线（_）、半角句号（.）、井号（#）、正斜线（/）、at符号（@），长度限制1~255字符。\n\n- Queue创建后，名称无法修改，只能删除后重建。",
+        "en": "The name of the queue to create.\n\n- The queue name can contain only letters, digits, hyphens (-), underscores (\\_), periods (.), number signs (#), forward slashes (/), and at signs (@). The name must be 1 to 255 characters in length.\n\n- After a queue is created, its name cannot be changed. To change the name, delete the queue and create a new one."
+      }
     },
     {
       "name": "VirtualHost",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待创建Queue所属的Vhost名称。\n只能包含字⺟、数字、短划线（-）、下划线（_）、半角句号（.）、井号（#）、正斜线（/）、at符号（@），⻓度限制1~255字符。",
+        "en": "The name of the vhost to which the queue belongs.\nThe name can contain only letters, digits, hyphens (-), underscores (\\_), periods (.), number signs (#), forward slashes (/), and at signs (@). The name must be 1 to 255 characters in length."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建Queue",
+    "en": "CreateQueue"
+  },
   "example": {
     "unifiedCli": "aliyun amqp-open create-queue --instance-id amqp-cn-v0h1kb9nu000 --virtual-host test --queue-name DemoQueue --auto-delete-state false --exclusive-state false --message-ttl 1000 --auto-expire-state 10000 --max-length 1000 --dead-letter-exchange DLExchange --dead-letter-routing-key test.dl --maximum-priority 10 --region cn-hangzhou",
     "legacyCli": "aliyun amqp-open CreateQueue --region cn-hangzhou --DeadLetterExchange DLExchange --MaximumPriority 10 --InstanceId 'amqp-cn-v0h1kb9nu000' --ExclusiveState false --DeadLetterRoutingKey 'test.dl' --VirtualHost test --AutoDeleteState false --MaxLength 1000 --QueueName DemoQueue --MessageTTL 1000 --AutoExpireState 10000"

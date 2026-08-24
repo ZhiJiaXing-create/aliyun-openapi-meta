@@ -1,5 +1,6 @@
 {
   "name": "SubmitTraceAbJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "CallBack",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务结果回调URL，目前仅支持HTTP地址。",
+        "en": "The URL for receiving callback notifications. Currently, only HTTP URLs are supported."
+      }
     },
     {
       "name": "CipherBase64ed",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "base64后的加密密钥。",
+        "en": "The Base64-encoded encryption key."
+      }
     },
     {
       "name": "Input",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "溯源水印ab流处理视频输入OSS地址。OSS的地域需要与当前MPS所在地域保持一致。\n\n\n> 提交视频溯源水印ab流作业目前仅支持3分钟及以上视频，视频时间过短会导致接口调用失败或无输出。",
+        "en": "The Object Storage Service (OSS) location of the input video. The region of the OSS bucket must be the same as the region where you use Media Processing Service (MPS).\n\n>"
+      }
     },
     {
       "name": "Level",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印级别，取值0/1/2，表示嵌入通道，0u，1uv，2yuv。",
+        "en": "The watermark level. This parameter specifies the color channels for embedding the watermark. Valid values: 0 (U channel), 1 (UV channels), and 2 (YUV channels)."
+      }
     },
     {
       "name": "Output",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "溯源水印ab流处理输出OSS地址。需要注意的是，配置的是输出目录Dir。",
+        "en": "The Object Storage Service (OSS) location for the job output. You must specify the output directory by using the `Dir` parameter."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印嵌入开始时间。单位：秒。",
+        "en": "The start time for embedding the watermark, in seconds."
+      }
     },
     {
       "name": "TotalTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "水印嵌入总时间。单位：秒。",
+        "en": "The total duration for embedding the watermark, in seconds."
+      }
     },
     {
       "name": "Url",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可公网访问的视频URL链接。填写后优先将其作为任务输入，其次再考虑Input输入。",
+        "en": "A publicly accessible URL of the video. This URL overrides the `Input` parameter."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，最大长度1024个字节。",
+        "en": "The custom user data. The maximum length is 1,024 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交视频溯源水印ab流作业",
+    "en": "Submit Video Tracing Watermark AB Stream Job"
+  },
+  "descriptions": {
+    "zh": "- 提交视频溯源水印ab流作业目前仅支持3分钟及以上视频，视频时间过短会导致接口调用失败或无输出。\n\n- 目前数字水印相关接口只支持华东2（上海）、华北2（北京）地域使用。\n\n- 该接口为[异步接口](~~3027615~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询视频溯源水印ab流作业](~~2834788~~)主动查询任务状态。",
+    "en": "- You can submit a video tracing watermark A/B stream job only for videos that are 3 minutes or longer. Processing shorter videos may cause the operation to fail or produce no output.\n\n- Digital watermark-related operations are currently available only in the China (Shanghai) and China (Beijing) regions.\n\n- This is an [asynchronous operation](~~3027615~~). After submission, the system returns a job ID and processes the job in the background. A callback notification delivers the final result. You can also call the [QueryTraceAbJob](~~2834788~~) operation to query the job status."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-trace-ab-job --input Bucket_:_ivison-test_,_Location_:_oss-cn-shanghai_,_Object_:_test.mp4 --biz-output Bucket_:_ivison-test_,_Location_:_oss-cn-shanghai_,_Dir_:_out/ --start-time 0 --total-time 360 --level 2 --call-back http://example.com/callback --url http://www.example.com/video/test.mp4 --user-data 123 --cipher-base64-ed Qh6OdgIMcliQSI1fReOw0000 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitTraceAbJob --region cn-hangzhou --Input 'Bucket_:_ivison-test_,_Location_:_oss-cn-shanghai_,_Object_:_test.mp4' --CallBack 'http://example.com/callback' --CipherBase64ed Qh6OdgIMcliQSI1fReOw0000 --UserData 123 --Output 'Bucket_:_ivison-test_,_Location_:_oss-cn-shanghai_,_Dir_:_out/' --StartTime 0 --TotalTime 360 --Level 2 --Url 'http://www.example.com/video/test.mp4'"

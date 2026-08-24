@@ -1,5 +1,6 @@
 {
   "name": "AddServiceSource",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,73 +9,121 @@
       "name": "AcceptLanguage",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "支持的语言。包括以下取值：\n\n- 中文：zh-CN（默认值）。\n- 英文：en-US。\n- 日文：ja。",
+        "en": "The language of the response. Valid values:\n\n*   zh-CN (default): Chinese\n*   en-US: English\n*   ja: Japanese"
+      }
     },
     {
       "name": "Address",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问地址（必填）：\n* 容器服务：对应容器服务集群ID\n* MSE Nacos：实例内网访问地址\n* MSE ZooKeeper：实例内网访问地址\n* SAE 注册中心：命名空间TID\n* EDAS 注册中心：微服务空间Namespace",
+        "en": "Specifies whether to monitor Ingress classes."
+      }
     },
     {
       "name": "GatewayUniqueId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关唯一ID。",
+        "en": "Specifies whether to update the Ingress status."
+      }
     },
     {
       "name": "GroupList",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务分组列表。",
+        "en": "The data structure."
+      }
     },
     {
       "name": "IngressOptionsRequest",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Ingress配置（服务来源类型为K8s时使用）。",
+        "en": "The list of service groups."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "名称。\n\n\n> 不同来源类型描述。\n- 类型为K8s时入参为名称。\n- 类型为NACOS时入参为实例ID。",
+        "en": "The namespace whose resources you want to monitor."
+      }
     },
     {
       "name": "PathList",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务根路径数组。",
+        "en": "The HTTP status code returned."
+      }
     },
     {
       "name": "Source",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务来源类型：\n- 容器服务：K8S\n- MSE Nacos：MSE\n- MSE ZooKeeper：MSE_ZK\n- SAE 注册中心：SAE\n- EDAS 注册中心：EDAS",
+        "en": "The service source.\n\n*   K8s: ACK cluster\n*   NACOS: MSE Nacos instance"
+      }
     },
     {
       "name": "ToAuthorizeSecurityGroups",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "待授权安全组列表，用于在创建来源时打通后端服务的安全组限制",
+        "en": "The list of security groups to be authorized. You can specify security groups to allow backend services to access data sources that you create."
+      },
       "sub_parameters": [
         {
           "name": "Description",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "授权记录描述。",
+            "en": "The description of the authorization record."
+          }
         },
         {
           "name": "PortRange",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全组的授权端口范围，可多选，使用,分隔。",
+            "en": "The authorized port range of the security group. You can select multiple port ranges. Separate each port range with a comma (,)."
+          }
         },
         {
           "name": "SecurityGroupId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "安全组ID。",
+            "en": "The ID of the security group."
+          }
         }
       ]
     },
@@ -82,9 +131,20 @@
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务注册类型，按来源类型填写对应的值：\n- 容器服务：K8S\n- MSE Nacos：NACOS\n- MSE ZooKeeper：ZOOKEEPER\n- SAE 注册中心：NACOS\n- EDAS 注册中心：NACOS",
+        "en": "The type of the service source.\n\n*   K8s: Container Service for Kubernetes (ACK) cluster\n*   NACOS: Nacos instance"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建服务来源",
+    "en": "AddServiceSource"
+  },
   "example": {
     "unifiedCli": "aliyun mse add-service-source --type NACOS --source MSE --address mse-00000000-nacos-ans.mse.aliyuncs.com:8848 --name nacos --gateway-unique-id gw-c70622ff52fe49beb29bea9a6f520000 --ingress-option-srequest IngressClass=com.test.xxx EnableStatus=true WatchNamespace=default EnableIngress=true --to-authorize-security-groups PortRange=8080/8080,9000/10000 Description=rule_for_xxx SecurityGroupId=sg-bp1acepclex0vmi10000 --group-list NACOS --path-list /test --accept-language zh-CN --region cn-hangzhou",
     "legacyCli": "aliyun mse AddServiceSource --region cn-hangzhou --IngressOptionsRequest '{\"IngressClass\":\"com.test.xxx\",\"EnableStatus\":true,\"WatchNamespace\":\"default\",\"EnableIngress\":true}' --GatewayUniqueId 'gw-c70622ff52fe49beb29bea9a6f520000' --Type NACOS --Address 'mse-00000000-nacos-ans.mse.aliyuncs.com:8848' --GroupList '[\"NACOS\"]' --PathList '[\"/test\"]' --AcceptLanguage 'zh-CN' --ToAuthorizeSecurityGroups '[{\"PortRange\":\"8080/8080,9000/10000\",\"Description\":\"rule_for_xxx\",\"SecurityGroupId\":\"sg-bp1acepclex0vmi10000\"}]' --Source MSE --Name nacos"

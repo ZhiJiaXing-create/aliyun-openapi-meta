@@ -1,5 +1,6 @@
 {
   "name": "DetachFromPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,30 +10,50 @@
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "防护对象列表。",
+        "en": "A list of protected objects."
+      },
       "sub_parameters": [
         {
           "name": "Ip",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "防护对象的IP地址。",
+            "en": "The IP address of the protected object."
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "防护对象的端口。",
+            "en": "The port of the protected object."
+          }
         },
         {
           "name": "PortRange",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "防护对象的端口范围。\n> 仅端口防护策略支持。",
+            "en": "The port range of the protected object.\n\n> This parameter is supported only by port-specific mitigation policies."
+          }
         },
         {
           "name": "Protocol",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "防护对象的协议类型，取值：\n\n- **tcp**：表示传输控制协议。\n- **udp**：表示用户数据报协议。",
+            "en": "The protocol type of the protected object. Valid values:\n\n- **tcp**: Transmission Control Protocol.\n\n- **udp**: User Datagram Protocol."
+          }
         }
       ]
     },
@@ -40,15 +61,30 @@
       "name": "PolicyType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "策略类型。取值\n- **default**：表示默认防护策略\n- **l3**：表示IP防护策略\n- **l4**：表示端口防护策略",
+        "en": "The type of the policy. Valid values:\n\n- **default**: The default mitigation policy.\n\n- **l3**: An IP address-specific mitigation policy.\n\n- **l4**: A port-specific mitigation policy."
+      }
     },
     {
       "name": "PortVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "端口防护策略版本，取值：\n\n- **不填**：解绑默认 surf 防护引擎策略。\n- **2**：解绑新版 stream 防护引擎策略。\n> 仅端口防护策略支持。",
+        "en": "The version of the port-specific mitigation policy. Valid values:\n\n- If you do not specify this parameter, the default Surf deep packet inspection (DPI) engine policy is detached.\n\n- If you set this parameter to **2**, the new Stream DPI engine policy is detached.\n\n> This parameter is supported only by port-specific mitigation policies."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "防护对象取消关联防护策略",
+    "en": "DetachFromPolicy"
+  },
   "example": {
     "unifiedCli": "aliyun ddosbgp detach-from-policy --policy-type l3 --ip-port-protocol-list PortRange=80-90 Ip=47.118.172.000 Port=80 Protocol=tcp --port-version 2 --api-version 2018-07-20 --region cn-hangzhou",
     "legacyCli": "aliyun ddosbgp DetachFromPolicy --region cn-hangzhou --PolicyType l3 --IpPortProtocolList '[{\"PortRange\":\"80-90\",\"Ip\":\"47.118.172.000\",\"Port\":80,\"Protocol\":\"tcp\"}]' --PortVersion 2"

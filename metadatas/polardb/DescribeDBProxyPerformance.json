@@ -1,5 +1,6 @@
 {
   "name": "DescribeDBProxyPerformance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The ID of cluster."
+      }
     },
     {
       "name": "DBEndpointId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库代理连接地址ID。支持集群地址与自定义地址的查询，不支持主地址的查询。不传则默认查询集群地址。",
+        "en": "The ID of the endpoint."
+      }
     },
     {
       "name": "DBNodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库实例节点ID。用于查询Proxy在不同DB节点上的指标，支持指标为PolarProxy\\_DBConns、PolarProxy\\_DBQps、PolarProxy\\_DBActionOps。",
+        "en": "The ID of the node in the cluster. This parameter can be used to query the performance metrics of PolarProxy on different nodes. The following metrics are supported: PolarProxy\\_DBConns, PolarProxy\\_DBQps, and PolarProxy\\_DBActionOps."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间。格式为`yyyy-MM-ddTHH:mmZ`（UTC时间）。",
+        "en": "The end of the time range to query. Specify the time in the `yyyy-MM-ddTHH:mmZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "性能数据粒度。取值范围如下：\n\n- 5\n- 30\n- 60\n- 600\n- 1800\n- 3600\n- 86400",
+        "en": "The interval at which performance data is collected. Valid values: 5, 30, 60, 600, 1800, 3600, 86400, in seconds."
+      }
     },
     {
       "name": "Key",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询的性能指标，多个值间用英文逗号（,）分隔，详细参数请参见[性能参数表](~~141787~~)。",
+        "en": "The performance metrics that you want to query. Separate multiple indicators with commas (,). For more information, see [Performance parameters](~~141787~~)."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间。格式为`yyyy-MM-ddTHH:mmZ`（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the `yyyy-MM-ddTHH:mmZ` format. The time must be in UTC."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "特殊指标，目前仅支持tair（PolarTair架构）。",
+        "en": "Special metric. Set the value to tair, which indicates the PolarTair architecture."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询PolarDB代理层（PolarProxy）的性能数据",
+    "en": "DescribeDBProxyPerformance"
+  },
+  "descriptions": {
+    "zh": "> 该接口仅适用于PolarDB MySQL版。",
+    "en": "> This operation is applicable only to PolarDB for MySQL clusters."
+  },
   "example": {
     "unifiedCli": "aliyun polardb describe-db-proxy-performance --db-cluster-id pc-0000000000000000 --db-endpoint-id pe-0000000000000000 --interval 60 --type tair --key PolarProxy_CpuUsage --start-time 2020-09-23T01:01Z --end-time 2020-09-24T02:08Z --db-node-id pi-0000000000000000 --region cn-hangzhou",
     "legacyCli": "aliyun polardb DescribeDBProxyPerformance --region cn-hangzhou --Type tair --DBEndpointId 'pe-0000000000000000' --EndTime '2020-09-24T02:08Z' --DBClusterId 'pc-0000000000000000' --StartTime '2020-09-23T01:01Z' --DBNodeId 'pi-0000000000000000' --Key PolarProxy_CpuUsage --Interval 60"

@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a unique token for each request from your client. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each request may be different."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要创建并绑定标签的资源所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the resource is located.\n\nFor more information, see [DescribeRegions](~~36063~~)."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID，最多支持输入20个资源ID。",
+        "en": "The ID of the resource. You can specify up to 20 resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：**PeerConnection**，表示VPC对等连接。",
+        "en": "The resource type. Set the value to **PeerConnection**."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签信息。",
+        "en": "The tag details."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。至少输入1个标签键，最多支持输入20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key. You must specify 1 to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。至少输入1个标签值，最多支持输入20个标签值。一旦传入该值，可以为空字符串。\n\n最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value. You must specify 1 to 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为指定的VPC对等连接统一创建并绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "标签是您为实例分配的标记，每个标签都由一对键值对（Key-Value）组成。标签的使用说明如下： \n- 一个实例上的每条标签的标签键（Key）必须唯一。\n- 不支持未绑定实例的空标签存在，标签必须绑定在实例上。\n- 不同地域下的标签信息不互通。 \n\n    例如在华东1（杭州）地域创建的标签在华东2（上海）地域不可见。\n\n- 同账号同地域下，不同VPC对等连接的实例标签信息互通。 \n\n       例如在同账号同地域下，VPC对等连接实例绑定了某个标签，那么您可以在其他VPC对等连接实例的编辑标签页面，直接选择将该标签绑定到实例上，而无需手动输入标签的键值信息。您可以修改标签的键和值，也可以随时删除实例的标签。如果删除实例，绑定实例的所有标签也会被删除。\n\n- 单个实例最多可绑定20条标签。绑定标签前，阿里云会校验资源已有标签数量。超过限制值后返回报错信息。",
+    "en": "A tag is a mark that you assign to a resource. Each tag consists of a key-value pair. Take note the following:\n\n- Each tag key must be unique for a resource.\n\n- You cannot create unattached tags.\n\n- Tags are region-specific.\n\n  For example, tags that you create in the China (Hangzhou) region are not visible in the China (Shanghai) region.\n\n- Within the same account and region, tags are shared across different VPC peering connections.\n\n  ```\n   For example, if you attach a tag to a VPC peering connection in your account and region, you can attach the same tag to other VPC peering connections without re-entering the key-value pair. You can modify the key and value of a tag, or delete a tag from an instance at any time. If you delete an instance, all tags attached to it are also deleted.\n  ```\n\n- You can attach a maximum of 20 tags to an instance. Before attaching a tag, the system verifies the number of existing tags on the resource. If this limit is exceeded, an error message is returned."
+  },
   "example": {
     "unifiedCli": "aliyun vpcpeer tag-resources --resource-id pcc-bp16qjewdsunr41m10000 --tag Value=FinanceJoshua Key=FinanceDept --resource-type PeerConnection --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun vpcpeer TagResources --region cn-hangzhou --ResourceId.1 'pcc-bp16qjewdsunr41m10000' --Tag.1.Key FinanceDept --Tag.1.Value FinanceJoshua --ResourceType PeerConnection --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

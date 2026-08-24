@@ -1,5 +1,6 @@
 {
   "name": "DescribeDcdnDomainOriginTrafficData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速域名，多个域名用半角逗号（,）分隔，默认查询所有加速域名。",
+        "en": "The accelerated domain name. You can specify multiple domain names and separate them with commas (,). If you do not specify this parameter, data for all accelerated domain names is queried."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据结束时间点。日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需晚于起始时间。",
+        "en": "The end of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询数据的时间粒度，单位为秒。\n\n根据单次查询的最大时间跨度不同，该参数支持300（5分钟）、3600（1小时）和86400（1天）取值，具体请参见**使用说明**中支持查询的时间粒度。",
+        "en": "The time granularity of the data to query, in seconds.\n\nValid values: 300 (5 minutes), 3600 (1 hour), and 86400 (1 day). The supported value depends on the maximum time span of a single query. For more information, see the table that describes supported time granularities."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点。日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询回源流量监控数据",
+    "en": "DescribeDcdnDomainOriginTrafficData"
+  },
+  "descriptions": {
+    "zh": "- 单用户调用频率：100次/秒。\n- 如果您不指定**StartTime**和**EndTime**时，默认读取过去24小时的数据；指定**StartTime**和**EndTime**时，按指定的起止时间查询。\n\n**支持查询的时间粒度**\n\n根据单次查询的最大时间跨度不同，请求参数Interval支持不同的查询数据时间粒度，对应的可查询历史数据时间范围和数据延迟如下：\n\n| 时间粒度         | 单次查询的最大时间跨度           | 可查询历史数据时间范围   | 数据延迟 |\n| -------------- | -------------- | ------|-----|\n| 5分钟       | 3天        | 93天  | 15分钟 |\n| 1小时       | 31天       |   186天  | 一般延迟3-4小时 |\n| 1天  | 366天       |    366天  | 一般延迟4小时，不超过24小时 |",
+    "en": "- A single user can call this operation up to 100 times per second.\n\n- If you do not specify the **StartTime** and **EndTime** parameters, data from the last 24 hours is returned. If you specify **StartTime** and **EndTime**, data in the specified time range is returned.\n\n**Supported time granularities**\n\nThe time granularity that you can use to query data varies based on the maximum time range that you can specify in a single query. The following table describes the time granularity, maximum time range, time range of historical data that can be queried, and data latency.\n\n| Time granularity | Maximum time span per query | Queryable time range for historical data | Data latency                                 |\n| ---------------- | --------------------------- | ---------------------------------------- | -------------------------------------------- |\n| 5 minutes        | 3 days                      | 93 days                                  | 15 minutes                                   |\n| 1 hour           | 31 days                     | 186 days                                 | Typically 3 to 4 hours                       |\n| 1 day            | 366 days                    | 366 days                                 | Typically 4 hours, but no more than 24 hours |"
+  },
   "example": {
     "unifiedCli": "aliyun dcdn describe-dcdn-domain-origin-traffic-data --domain-name example.com --start-time 2017-12-10T20:00:00Z --end-time 2017-12-10T21:00:00Z --interval 300 --region cn-hangzhou",
     "legacyCli": "aliyun dcdn DescribeDcdnDomainOriginTrafficData --region cn-hangzhou --EndTime '2017-12-10T21:00:00Z' --DomainName 'example.com' --StartTime '2017-12-10T20:00:00Z' --Interval 300"

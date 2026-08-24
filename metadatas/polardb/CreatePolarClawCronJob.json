@@ -1,0 +1,174 @@
+{
+  "name": "CreatePolarClawCronJob",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AgentId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定执行Agent",
+        "en": "The ID of the agent that executes the task."
+      }
+    },
+    {
+      "name": "ApplicationId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "应用ID",
+        "en": "The application ID."
+      }
+    },
+    {
+      "name": "DeleteAfterRun",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "首次执行后自动删除，默认false",
+        "en": "Specifies whether to automatically delete the job after its first execution. This is useful for one-time tasks. Default: `false`."
+      }
+    },
+    {
+      "name": "Delivery",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "结果投递配置",
+        "en": "The configuration for delivering task execution results."
+      }
+    },
+    {
+      "name": "Description",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务描述",
+        "en": "A description of the task."
+      }
+    },
+    {
+      "name": "Enabled",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否启用，默认true",
+        "en": "Specifies whether the cron job is enabled. Default: `true`."
+      }
+    },
+    {
+      "name": "FailureAlert",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "失败告警配置",
+        "en": "The failure alert configuration."
+      }
+    },
+    {
+      "name": "Name",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "任务唯一名称",
+        "en": "The unique name of the task."
+      }
+    },
+    {
+      "name": "Payload",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "执行载荷配置",
+        "en": "The execution payload configuration."
+      }
+    },
+    {
+      "name": "Restart",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "创建后是否重启网关，默认true",
+        "en": "Specifies whether to restart the gateway upon job creation. Default: `true`."
+      }
+    },
+    {
+      "name": "RunImmediately",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否创建后立即执行一次，默认false",
+        "en": "Specifies whether to run the job once immediately upon creation. Default: `false`."
+      }
+    },
+    {
+      "name": "Schedule",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "调度配置",
+        "en": "The schedule configuration."
+      }
+    },
+    {
+      "name": "SessionKey",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "会话路由键",
+        "en": "The session routing key, which determines the conversation session for the task."
+      }
+    },
+    {
+      "name": "SessionTarget",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "会话目标：main/isolated/current",
+        "en": "The session target. Valid values are `main`, `isolated`, and `current`."
+      }
+    },
+    {
+      "name": "WakeMode",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "唤醒模式：now/next-heartbeat",
+        "en": "The wake mode for the agent. Valid values are `now` and `next-heartbeat`."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建定时任务",
+    "en": "CreatePolarClawCronJob"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n\n通过此API，用户可以定义并创建一个新的定时任务（Cron Job），该任务将根据给定的时间表定期触发，并携带特定的消息或指令。支持自定义任务的执行频率、时区设置以及失败后的警报机制等高级选项。此外，还可以配置消息的内容、目标渠道及接收者等详细信息。",
+    "en": "## Request\n\nUse this API to create a cron job. You can configure the job's payload, execution frequency, timezone, target channel, recipients, and a failure alert mechanism."
+  },
+  "example": {
+    "unifiedCli": "aliyun polardb create-polar-claw-cron-job --application-id pa-00000000000000 --name daily-report --schedule Expr=0_9_0_0_0 Tz=Asia/Shanghai Kind=cron --session-target main --wake-mode now --payload '{\"Message\":\"Generate_the_daily_report.\",\"Kind\":\"agentTurn\"}' --agent-id main --session-key agent:main:feishu:direct:000 --description Daily_report_generation --enabled true --delete-after-run false --delivery Mode=announce Channel=telegram --failure-alert Channel=telegram After=3 --run-immediately false --restart true --region cn-hangzhou",
+    "legacyCli": "aliyun polardb CreatePolarClawCronJob --region cn-hangzhou --Description Daily_report_generation --Enabled true --WakeMode now --Restart true --Name 'daily-report' --RunImmediately false --SessionKey 'agent:main:feishu:direct:000' --DeleteAfterRun false --Schedule '{\"Expr\":\"0_9_0_0_0\",\"Tz\":\"Asia/Shanghai\",\"Kind\":\"cron\"}' --SessionTarget main --Payload '{\"Message\":\"Generate_the_daily_report.\",\"Kind\":\"agentTurn\"}' --AgentId main --Delivery '{\"Mode\":\"announce\",\"Channel\":\"telegram\"}' --FailureAlert '{\"Channel\":\"telegram\",\"After\":3}' --ApplicationId 'pa-00000000000000'"
+  }
+}

@@ -1,5 +1,6 @@
 {
   "name": "ModifySnatEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may differ for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会修改SNAT条目。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回2xx HTTP状态码并修改SNAT条目。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run without modifying the SNAT entry. The system checks the required parameters, request format, and service limits. If the check fails, the corresponding error is returned. If the check succeeds, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and sends the request. After the check succeeds, a 2xx HTTP status code is returned and the SNAT entry is modified."
+      }
     },
     {
       "name": "EipAffinity",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否打开IP亲和性。取值：\n\n- **0**：关闭IP亲和性。\n\n- **1**：打开IP亲和性。\n\n> 打开IP亲和性开关后，如果SNAT条目绑定多个EIP或NAT IP，同一个客户端将使用相同的EIP或NAT IP进行访问，否则客户端将从绑定的EIP或NAT IP中随机选取进行访问。",
+        "en": "Specifies whether to enable EIP affinity. Valid values:\n\n- **0**: disables EIP affinity.\n\n- **1**: enables EIP affinity.\n\n> After you enable EIP affinity, if the SNAT entry is associated with multiple EIPs or NAT IP addresses, the same client uses the same EIP or NAT IP address for access. Otherwise, the client randomly selects an EIP or NAT IP address from the associated ones for access."
+      }
     },
     {
       "name": "NetworkInterfaceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性网卡ID。\n\n> 会将弹性网卡的 IPv4 地址集作为 SNAT 地址。",
+        "en": "The ID of the elastic network interfaces (ENIs).\n\n> The IPv4 addresses of the network interface controller (NIC) are used as the SNAT addresses."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "NAT网关所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the NAT gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     },
     {
       "name": "SnatEntryId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的SNAT条目的ID。",
+        "en": "The ID of the SNAT entry that you want to modify."
+      }
     },
     {
       "name": "SnatEntryName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SNAT条目的名称。\n\n长度为2~128个字符，必须以字母或中文开头，但不能以`http://`或`https://`开头。",
+        "en": "The name of the SNAT entry.\n\nThe name must be 2 to 128 characters in length and must start with a letter or a Chinese character. It cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "SnatIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "- 为公网NAT网关修改SNAT条目时，该参数为SNAT条目中的EIP，多个EIP之间用半角逗号（,）隔开。\n \n> 指定多个EIP配置SNAT IP地址池时，业务连接会通过哈希算法分配到多个EIP，由于每个连接的流量不同，可能会出现多EIP业务流量不均匀的情况，建议您将每个EIP都加入到同一个共享带宽中以避免单EIP带宽达到上限导致业务受损。\n\n- 为VPC NAT网关修改SNAT条目时，该参数为SNAT条目中的NAT IP地址,多个NAT IP地址之间用半角逗号（,）隔开。\n\n- 参数 SnatIp 和参数 NetworkInterfaceId 不能都输入。",
+        "en": "- When you modify an SNAT entry for an Internet NAT gateway, this parameter specifies the EIPs in the SNAT entry. Separate multiple EIPs with commas (,).\n \n> When you specify multiple EIPs to allocate an SNAT IP IPAM pool, service traffic is distributed across the EIPs by using a hash algorithm. Because traffic varies across connections, service traffic may be unevenly distributed across the EIPs. Add all EIPs to the same Internet Shared Bandwidth instance to prevent service interruptions caused by bandwidth throttling on a single EIP.\n\n- When you modify an SNAT entry for a VPC NAT gateway, this parameter specifies the NAT IP addresses in the SNAT entry. Separate multiple NAT IP addresses with commas (,).\n\n- The SnatIp and NetworkInterfaceId parameters cannot be specified at the same time."
+      }
     },
     {
       "name": "SnatTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SNAT条目所在的SNAT表的ID。",
+        "en": "The ID of the SNAT table to which the SNAT entry belongs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改指定的SNAT条目",
+    "en": "Modify a specified SNAT entry"
+  },
+  "descriptions": {
+    "zh": "**ModifySnatEntry**接口属于异步接口，即系统会先返回一个请求ID，但SNAT条目并未修改完成，系统后台的修改任务仍在进行。您可以调用[DescribeSnatTableEntries](~~42677~~)查询SNAT条目的状态：\n\n- 当SNAT条目处于**Pending**状态时，表示SNAT条目正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n- 当SNAT条目处于**Available**状态时，表示SNAT条目修改完成。\n\n> 如果SNAT表中有SNAT条目的状态为**Pending**时，无法修改该SNAT表中的SNAT条目。\n\n\n**ModifySnatEntry**接口在同一个SNAT条目实例下不支持并发修改指定的SNAT条目。",
+    "en": "**ModifySnatEntry** is an asynchronous operation. After you send a request, the system returns a request ID, but the SNAT entry has not been modified yet. The modification task is still running in the background. You can call [DescribeSnatTableEntries](~~42677~~) to query the status of the SNAT entry:\n\n- If the SNAT entry is in the **Pending** state, the SNAT entry is being modified. In this state, you can only perform query operations and cannot perform other operations.\n\n- If the SNAT entry is in the **Available** state, the SNAT entry has been modified.\n\n> If any SNAT entry in an SNAT table is in the **Pending** state, you cannot modify SNAT entries in the SNAT table.\n\n\nThe **ModifySnatEntry** operation does not support concurrent modifications of a specified SNAT entry within the same SNAT entry instance."
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-snat-entry --biz-region-id cn-hangzhou --snat-table-id stb-8vbczigrhop8x5u3t0000 --snat-entry-id snat-bp1vcgcf8tm0plqcg0000 --snat-ip 47.98.XX.XX --snat-entry-name SnatEntry-1 --client-token 02fb3da4-130e-11e9-8e44-0010000 --eip-affinity 1 --network-interface-id eni-gw8g131ef2dnbu3k0000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifySnatEntry --region cn-hangzhou --EipAffinity 1 --SnatEntryName 'SnatEntry-1' --DryRun false --SnatEntryId 'snat-bp1vcgcf8tm0plqcg0000' --RegionId 'cn-hangzhou' --SnatIp '47.98.XX.XX' --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --NetworkInterfaceId 'eni-gw8g131ef2dnbu3k0000' --SnatTableId 'stb-8vbczigrhop8x5u3t0000'"

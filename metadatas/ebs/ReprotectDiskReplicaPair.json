@@ -1,5 +1,6 @@
 {
   "name": "ReprotectDiskReplicaPair",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系中从盘所属的地域ID。您可以调用[DescribeDiskReplicaPairs](~~354206~~)查询异步复制关系中从盘的地域信息。\n\n> 必须在从盘所属地域下启用反向复制功能。",
+        "en": "The region ID of the secondary disk in the replication pair. You can call the [DescribeDiskReplicaPairs](~~354206~~) operation to query region IDs of secondary disks in replication pairs.\n\n>  The reverse replication feature must be enabled from the region where the secondary disk is located."
+      }
     },
     {
       "name": "ReplicaPairId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系的ID。",
+        "en": "The ID of the replication pair."
+      }
     },
     {
       "name": "ReverseReplicate",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "反向复制开关：false代表恢复原方向，true代表反向复制。默认值是true。",
+        "en": "Specifies whether to enable the reverse replication sub-feature. Valid values: true and false. Default value: true."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "启用云盘反向异步复制",
+    "en": "ReprotectDiskReplicaPair"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 异步复制功能支持的地域请参见[云盘异步复制概述](~~314563~~)。\n- 异步复制关系必须处于**故障切换完成**（`failovered`）状态。您可以调用[FailoverDiskReplicaPair](~~354358~~)启用故障切换功能。\n- 异步复制关系中，主盘必须从所属的ECS实例上卸载，即处于未挂载的状态。您可以调用[DetachDisk](~~25516~~)卸载云盘。\n- 启用反向复制功能后，您还需要重新调用[StartDiskReplicaPair](~~354205~~)启动异步复制功能，才可以将原从盘的数据复制到原主盘当中。\n- 通过设置ReverseReplicate参数为false，您可以进行取消**故障切换完成**（`failovered`）状态，恢复原来的复制方向。",
+    "en": "## [](#)Usage notes\n\n*   For information about the regions in which async replication is available, see [Overview](~~314563~~).\n*   The replication pair for which you want to enable reverse replication must be in the **Failovered** (`failovered`) state. You can call the [FailoverDiskReplicaPair](~~354358~~) operation to enable failover.\n*   The primary disk must be detached from its associated Elastic Compute Service (ECS) instance and is in the Unattached state. You can call the [DetachDisk](~~25516~~) operation to detach the disk.\n*   After you enable reverse replication, you must call the [StartDiskReplicaPair](~~354205~~) operation again to activate the replication pair before data can be replicated from the original secondary disk to the original primary disk.\n*   You can set the ReverseReplicate parameter to false to cancel the **Failovered** (`failovered`) state and restore the original replication direction."
+  },
   "example": {
     "unifiedCli": "aliyun ebs reprotect-disk-replica-pair --biz-region-id cn-hangzhou --replica-pair-id pair-cn-dsa0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --reverse-replicate true --region cn-hangzhou",
     "legacyCli": "aliyun ebs ReprotectDiskReplicaPair --region cn-hangzhou --ReverseReplicate true --RegionId 'cn-hangzhou' --ReplicaPairId 'pair-cn-dsa0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

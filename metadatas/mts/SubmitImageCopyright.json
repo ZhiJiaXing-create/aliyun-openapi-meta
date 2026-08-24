@@ -1,5 +1,6 @@
 {
   "name": "SubmitImageCopyright",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Message",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "水印信息",
+        "en": "The content of the watermark."
+      }
     },
     {
       "name": "Output",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "水印图片输出OSS地址。\n\n> OSS的地域需要与当前MPS所在地域保持一致。",
+        "en": "The OSS location for the output transparent image watermark.\n\n> The OSS bucket must be in the same region where MPS is activated."
+      }
     },
     {
       "name": "Params",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "水印参数。参数说明：\n\n- width：输出图像的宽。\n- height：输出图像的高。\n- afa：水印图片透明度，取值范围0~255。\n- type：水印类型，取值范围0（算法类型0，适用于游戏类的渲染）和1（算法类型1，适用于通用APP的渲染）。\n- version：水印版本，当前取值仅支持0。",
+        "en": "The watermark parameters, provided as a JSON string. This string contains the following fields:\n\n- `width`: The width of the output image.\n\n- `height`: The height of the output image.\n\n- `afa`: The transparency level of the watermark. Valid values: 0 to 255.\n\n- `type`: The watermark algorithm. Valid values: `0` (for game rendering) and `1` (for general application rendering).\n\n- `version`: The watermark version. Currently, only the value `0` is supported."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交图片透明图水印",
+    "en": "Submit Transparent Image Watermark"
+  },
+  "descriptions": {
+    "zh": "- 本接口目前支持的是透明图水印，是一张带有暗水印信息的透明图片，可以将该图片放置在一些页面中最顶端显示，可以对抗截图等攻击。需要填写Params、Output和Message三个参数。\n\n- 本接口目前仅支持华东2（上海）地域使用。\n\n- 该接口为[异步接口](~~3027615~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知。",
+    "en": "- This operation generates a transparent image with a hidden watermark. You can overlay this image on your page content to protect it from unauthorized screenshots. The `Params`, `Output`, and `Message` parameters are required.\n\n- This operation is available only in the China (Shanghai) region.\n\n- This is an [asynchronous API](~~3027615~~). After you submit a job, the API returns a job ID and queues the job for background processing. The service sends a callback notification with the final result."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-image-copyright --biz-output Bucket_:_abc-test_,_Location_:_oss-cn-shanghai_,_Object_:_out.jpeg --message T-Head_Semiconductor --params width_:2999,_height_:2999,_afa_:_3,_type_:1,_version_:0 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitImageCopyright --region cn-hangzhou --Message 'T-Head_Semiconductor' --Output 'Bucket_:_abc-test_,_Location_:_oss-cn-shanghai_,_Object_:_out.jpeg' --Params 'width_:2999,_height_:2999,_afa_:_3,_type_:1,_version_:0'"

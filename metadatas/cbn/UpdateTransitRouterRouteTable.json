@@ -1,5 +1,6 @@
 {
   "name": "UpdateTransitRouterRouteTable",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client to make sure that the value is unique among different requests. The ClientToken can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认值）：发送正常请求，通过检查后直接修改路由表的名称和描述信息。\n- **true**：发送检查请求，只进行校验，不会路由表的名称和描述信息。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。",
+        "en": "Specifies whether to perform a dry run. The dry run checks permissions and the status of the instance. Valid values:\n\n- **false** (default): Sends a normal request. After the request passes the check, the name and description of the route table are modified.\n\n- **true**: Sends a check request. The system checks the required parameters and the request format. If the check fails, the corresponding error is returned. If the check succeeds, the error code `DryRunOperation` is returned."
+      }
     },
     {
       "name": "RouteTableOptions",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由表功能选项。",
+        "en": "The features of the route table."
+      }
     },
     {
       "name": "TransitRouterRouteTableDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由表的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
+        "en": "The description of the route table.\n\nThe description can be empty or 1 to 256 characters in length. It cannot start with http\\:// or https\\://."
+      }
     },
     {
       "name": "TransitRouterRouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "企业版转发路由器路由表ID。",
+        "en": "The ID of the route table for the Enterprise Edition transit router."
+      }
     },
     {
       "name": "TransitRouterRouteTableName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由表的名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
+        "en": "The name of the route table.\n\nThe name can be empty or 1 to 128 characters in length. It cannot start with http\\:// or https\\://."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改企业版转发路由器路由表的名称和描述信息",
+    "en": "UpdateTransitRouterRouteTable"
+  },
   "example": {
     "unifiedCli": "aliyun cbn update-transit-router-route-table --transit-router-route-table-id vtb-bp1dudbh2d5na6b500000 --transit-router-route-table-name testname --transit-router-route-table-description testdesc --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --route-table-options MultiRegionECMP=disable --region cn-hangzhou",
     "legacyCli": "aliyun cbn UpdateTransitRouterRouteTable --region cn-hangzhou --TransitRouterRouteTableId 'vtb-bp1dudbh2d5na6b500000' --TransitRouterRouteTableDescription testdesc --DryRun false --TransitRouterRouteTableName testname --RouteTableOptions.MultiRegionECMP disable --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --method POST --force"

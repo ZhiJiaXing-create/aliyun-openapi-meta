@@ -1,5 +1,6 @@
 {
   "name": "UnassociateNetworkAcl",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nThe client generates the value. The value must be unique among different requests and cannot exceed 64 ASCII characters in length.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否检测此次请求。取值：\n* **true**：发送检查请求。\n* **false**（默认值）：发送正常请求。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n* **true**: performs a dry run. The system checks the request for potential issues without performing the actual operation.\n* **false** (default): performs the actual request."
+      }
     },
     {
       "name": "NetworkAclId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要解绑关联资源的网络ACL的ID。",
+        "en": "The ID of the network ACL to disassociate from the associated resources."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络ACL所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the network ACL.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "Resource",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "关联资源的信息。",
+        "en": "The information about the associated resources."
+      },
       "sub_parameters": [
         {
           "name": "ResourceId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "要解绑的关联资源的ID。",
+            "en": "The ID of the associated resource to disassociate."
+          }
         },
         {
           "name": "ResourceType",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "要解绑的关联资源类型。取值：**VSwitch**，交换机。\n\n**N**的取值为0~29，即最多可以解绑30个资源。",
+            "en": "The type of the associated resource to disassociate. Set the value to **VSwitch**.\n\nValid values of **N**: **0** to **29**. You can disassociate up to 30 resources at a time."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解除网络ACL与交换机的绑定",
+    "en": "Disassociate a network ACL from a vSwitch"
+  },
+  "descriptions": {
+    "zh": "- **UnassociateNetworkAcl**接口属于异步接口，即系统返回一个请求ID，但该网络ACL与交换机尚未解绑成功，系统后台的解绑任务仍在进行。您可以调用[DescribeNetworkAclAttributes](~~116542~~)查询网络ACL与交换机的解绑状态：\n    - 当网络ACL与交换机处于**UNBINDING**状态时，表示网络ACL与交换机正在解绑中。\n    - 当查询不到相应绑定记录时，表示网络ACL与交换机解绑成功。\n- **UnassociateNetworkAcl**接口不支持针对同一个网络ACL并发解绑交换机。",
+    "en": "- **UnassociateNetworkAcl** is an asynchronous operation. After you send a request, the system returns a request ID, but the network ACL is not yet disassociated from the vSwitch. The disassociation task continues to run in the background. You can call [DescribeNetworkAclAttributes](~~116542~~) to query the disassociation status of the network ACL and the vSwitch:\n    - If the network ACL and the vSwitch are in the **UNBINDING** state, the disassociation is in progress.\n    - If no corresponding bindingrecord is found, the network ACL is disassociated from the vSwitch.\n- You cannot concurrently disassociate vSwitches from the same network ACL by calling the **UnassociateNetworkAcl** operation."
+  },
   "example": {
     "unifiedCli": "aliyun vpc unassociate-network-acl --resource ResourceId=vsw-bp1de348lntdw0000 ResourceType=VSwitch --network-acl-id nacl-a2do9e413e0sp0000 --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc UnassociateNetworkAcl --region cn-hangzhou --Resource.1.ResourceId 'vsw-bp1de348lntdw0000' --NetworkAclId 'nacl-a2do9e413e0sp0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Resource.1.ResourceType VSwitch"

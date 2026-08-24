@@ -1,5 +1,6 @@
 {
   "name": "StopDiskReplicaPair",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系中主盘或从盘所属的地域ID。您可以调用[DescribeDiskReplicaPairs](~~354206~~)查询存量异步复制关系的地域信息。",
+        "en": "The region ID of the primary or secondary disk in the replication pair. You can call the [DescribeDiskReplicaPairs](~~354206~~) operation to query the region information of replication pairs."
+      }
     },
     {
       "name": "ReplicaPairId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系的ID。",
+        "en": "The ID of the replication pair."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "停止云盘异步复制",
+    "en": "StopDiskReplicaPair"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 异步复制功能支持的地域请参见[云盘异步复制概述](~~314563~~)。\n- 只能停止处于**初始同步中**（`initial_syncing`）、**同步中**（`syncing`）、**单次同步中**（`manual_syncing`）或者**正常**（`normal`）状态的异步复制关系。异步复制停止后，将处于已停止（`stopped`）状态，此时从盘中数据将自动回滚到最近一次完成的异步复制后的数据（即最后一次正在进行中的异步复制对应的数据将丢失）。",
+    "en": "## [](#)Usage notes\n\n*   For information about the regions in which async replication is available, see [Overview](~~314563~~).\n*   Only replication pairs that are in the **Initial Syncing** (`initial_syncing`), **Syncing** (`syncing`), **One-time Syncing** (`manual_syncing`), or **Normal** (`normal`) state can be stopped. When a replication pair is stopped, it enters the Stopped (`stopped`) state. The secondary disk rolls back to the point in time when the last async replication was complete and drops all the data that is being replicated from the primary disk."
+  },
   "example": {
     "unifiedCli": "aliyun ebs stop-disk-replica-pair --biz-region-id cn-hangzhou --replica-pair-id pair-cn-dsa0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ebs StopDiskReplicaPair --region cn-hangzhou --RegionId 'cn-hangzhou' --ReplicaPairId 'pair-cn-dsa0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

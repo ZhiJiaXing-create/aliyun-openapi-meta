@@ -1,5 +1,6 @@
 {
   "name": "DeleteLoadBalancer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,50 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nYou can generate a token by using your client. The token must be unique across requests and contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会删除应用型负载均衡实例。检查项包括是否填写了必需参数、请求格式和业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回`HTTP 2xx`状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run to check the request's validity without deleting the Application Load Balancer instance. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. After the request passes the check, an `HTTP 2xx` status code is returned and the instance is deleted."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用型负载均衡实例ID。",
+        "en": "The ID of the Application Load Balancer instance."
+      }
+    },
+    {
+      "name": "RetainResourceType",
+      "position": "Query",
+      "type": "Array",
+      "required": false
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除负载均衡实例",
+    "en": "DeleteLoadBalancer"
+  },
+  "descriptions": {
+    "zh": "**DeleteLoadBalancer**接口属于异步接口，即系统返回一个请求ID，但该应用型负载均衡实例尚未删除成功，系统后台的删除任务仍在进行。您可以调用[GetLoadBalancerAttribute](~~214362~~)查询应用型负载均衡实例的删除状态：\n- 当应用型负载均衡实例处于**Deleting**状态时，表示应用型负载均衡实例正在删除中。\n- 当查询不到指定的应用型负载均衡实例时，表示应用型负载均衡实例删除成功。",
+    "en": "**DeleteLoadBalancer** is an asynchronous operation. After you send a request, the system returns a request ID, but the instance is not deleted immediately. The system deletes the instance in the background. You can call [GetLoadBalancerAttribute](~~214362~~) to check the deletion status of the Application Load Balancer instance:\n\n- If the Application Load Balancer instance is in the **Deleting** state, the instance is being deleted.\n\n- If the Application Load Balancer instance cannot be found, the instance has been deleted."
+  },
   "example": {
     "unifiedCli": "aliyun alb delete-load-balancer --load-balancer-id alb-o9ulmq5hgn68jk0000 --client-token 5A2CFF0E-5718-45B5-9D4D-70B3FF3898 --dry-run true --retain-resource-type eip --region cn-hangzhou",
     "legacyCli": "aliyun alb DeleteLoadBalancer --region cn-hangzhou --DryRun true --LoadBalancerId 'alb-o9ulmq5hgn68jk0000' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3FF3898' --RetainResourceType.1 eip --method POST --force"

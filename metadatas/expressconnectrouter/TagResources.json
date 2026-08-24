@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,47 +9,82 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端 Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken 只支持 ASCII 字符。\n\n> 若您未指定，则系统自动使用 API 请求的 **RequestId** 作为 **ClientToken** 标识。每次 API 请求的 **RequestId** 不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client to ensure uniqueness across different requests. ClientToken supports only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会修改服务资源。\n- **false**（默认值）：发送正常请求。",
+        "en": "Specifies whether to perform only a dry run. Valid values:\n\n- **true**: performs a dry run without modifying EPS resources.\n- **false** (default): sends a normal request."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Body",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源的实例 ID 列表。\n\n最多支持添加20个资源。",
+        "en": "The list of resource instance IDs.\n\nYou can specify up to 20 resources."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。支持的类型包括：\n- **EXPRESSCONNECTROUTER**：专线网关ECR实例。\n- **EXPRESSCONNECTROUTERVPCASSOCIATION**：ECR与VPC的关联关系。\n- **EXPRESSCONNECTROUTERTRASSOCIATION**：ECR与TR的关联关系。\n- **ECRFLOWLOG**：ECR流日志。",
+        "en": "The resource type. Valid values:\n- **EXPRESSCONNECTROUTER**: an Express Connect Router (ECR) instance.\n- **EXPRESSCONNECTROUTERVPCASSOCIATION**: an associate relationship between an ECR and a VPC.\n- **EXPRESSCONNECTROUTERTRASSOCIATION**: an associate relationship between an ECR and a transit router.\n- **ECRFLOWLOG**: an ECR flow log."
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "要进行绑定的标签列表。",
+        "en": "The list of tags to bind."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https:// `。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key of the resource.\n\nThis parameter cannot be an empty string once specified. The tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nYou can specify up to 20 tag keys in a single call."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。一旦输入该值，可以为空字符串。\n\n一次调用最多支持添加20个标签值。",
+            "en": "The tag value. The tag value can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`. Once specified, the value can be an empty string.\n\nYou can specify up to 20 tag values in a single call."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "专线网关绑定标签",
+    "en": "Bind tags to an express connect router"
+  },
   "example": {
     "unifiedCli": "aliyun expressconnectrouter tag-resources --resource-id ecr-897j0jooxyr1aq0000 --tag Value=TestValue Key=TestKey --resource-type EXPRESSCONNECTROUTER --dry-run false --client-token 02fb3da4-130e-11e9-8e44-000000 --region cn-hangzhou",
     "legacyCli": "aliyun expressconnectrouter TagResources --region cn-hangzhou --ResourceId.1 'ecr-897j0jooxyr1aq0000' --Tag.1.Key TestKey --Tag.1.Value TestValue --DryRun false --ResourceType EXPRESSCONNECTROUTER --ClientToken '02fb3da4-130e-11e9-8e44-000000'"

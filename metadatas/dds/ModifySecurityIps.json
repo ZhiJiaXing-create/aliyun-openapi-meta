@@ -1,5 +1,6 @@
 {
   "name": "ModifySecurityIps",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,60 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "ModifyMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改方式，取值：\n- **Cover**：覆盖原白名单。\n- **Append**：追加白名单，有重复IP时报错。\n- **Extend**：追加白名单，有重复IP时合并。\n- **Delete**：删除该白名单。\n\n\n默认取值为**Cover**。",
+        "en": "The method that is used to modify the IP address whitelist. Valid values:\n\n- **Cover**: overwrites the original IP address whitelist.\n\n- **Append**: appends data to the IP address whitelist.\n\n- **Delete**: deletes the IP address whitelist.\n\nDefault value: **Cover**."
+      }
     },
     {
       "name": "SecurityIpGroupAttribute",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "白名单分组属性。支持大写字母、小写字母、数字，长度最大为120个字符。\n\n默认为空字符串。",
+        "en": "The attribute of the IP address whitelist. It can contain a maximum of 120 characters in length and can contain uppercase letters, lowercase letters, and digits.\n\nThis parameter is empty by default."
+      }
     },
     {
       "name": "SecurityIpGroupName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "进行修改的IP白名单所属分组名称，默认为**default**分组。",
+        "en": "The name of the IP address whitelist that you want to modify. Default value: **default**."
+      }
     },
     {
       "name": "SecurityIps",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IP白名单分组下的IP列表，多个IP地址请以半角逗号（,）隔开，不可重复，最多1000个。支持如下两种格式：\n- IP地址形式，例如：127.0.0.1。\n- CIDR形式，例如：127.0.0.1/24（无类域间路由，24表示了地址中前缀的长度，范围为1~32）。",
+        "en": "The IP addresses in the IP address whitelist. Separate multiple IP addresses with commas (,). You can add a maximum of 1,000 different IP addresses to the IP address whitelist. The entries in the IP address whitelist must be in one of the following formats:\n\n- IP addresses, such as 127.0.0.1.\n\n- CIDR blocks, such as 127.0.0.1/24. In this example, 24 indicates that the prefix of each IP address in the IP address whitelist is 24 bits in length. You can replace 24 with a value within the range of 1 to 32."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置可以访问实例的 IP 白名单地址",
+    "en": "ModifySecurityIps"
+  },
   "example": {
     "unifiedCli": "aliyun dds modify-security-ips --db-instance-id dds-bp00000 --security-ips 127.0.0.1/24,127.0.0.1 --modify-mode Append --security-ip-group-name allowserver --security-ip-group-attribute test --region cn-hangzhou",
     "legacyCli": "aliyun dds ModifySecurityIps --region cn-hangzhou --SecurityIpGroupAttribute test --SecurityIps '127.0.0.1/24,127.0.0.1' --DBInstanceId 'dds-bp00000' --ModifyMode Append --SecurityIpGroupName allowserver"

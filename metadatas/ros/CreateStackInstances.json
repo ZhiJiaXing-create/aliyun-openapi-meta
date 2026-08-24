@@ -1,5 +1,6 @@
 {
   "name": "CreateStackInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "AccountIds",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "使用自助管理权限模式部署资源栈的目标账号ID列表。最多支持添加50个目标账号ID。\n\n>您必须且仅能指定 `AccountIds`和`DeploymentTargets`其中一个参数。",
+        "en": "The IDs of the destination accounts where you want to create stacks using self-managed permissions. You can specify up to 50 account IDs.\n\n> You can specify only one of the `AccountIds` and `DeploymentTargets` parameters."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求的幂等性。该值由客户端生成，并且必须是全局唯一的。   \n长度不超过64个字符，可包含英文字母、数字、短划线（-）和下划线（_）。  \n更多信息，请参见[如何保证幂等性](~~134212~~)。",
+        "en": "A client token that is used to ensure the idempotence of the request. The client generates the token, which must be globally unique.<br>The token can be up to 64 characters in length and can contain letters, digits, hyphens (-), and underscores (\\_).<br>For more information, see [How to ensure idempotence](~~134212~~)."
+      }
     },
     {
       "name": "DeploymentOptions",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "使用服务管理权限模式部署资源栈的部署选项列表。最多支持1个部署选项。",
+        "en": "The deployment options for deploying stacks in service-managed permission mode. You can specify up to one deployment option."
+      }
     },
     {
       "name": "DeploymentTargets",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "使用服务管理权限模式部署资源栈的部署目标。\n>您必须且仅能指定 `AccountIds`和`DeploymentTargets`其中一个参数。",
+        "en": "The deployment targets for deploying stacks in service-managed permission mode.\n\n> You can specify only one of the `AccountIds` and `DeploymentTargets` parameters."
+      }
     },
     {
       "name": "DisableRollback",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当创建资源栈失败时，是否禁用回滚策略。\n\n取值：  \n\n- true：禁用回滚，即在创建资源栈失败时不进行回滚。\n  \n- false（默认值）：不禁用回滚，即在创建资源栈失败时进行回滚。",
+        "en": "Indicates whether to disable rollback when a stack fails to be created.\n\nValid values:\n\n- true: Disables rollback.\n\n- false (default): Enables rollback."
+      }
     },
     {
       "name": "OperationDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建资源栈的操作描述。\n\n长度为1~256个字符。",
+        "en": "The description of the operation to create the stacks.\n\nThe description must be 1 to 256 characters in length."
+      }
     },
     {
       "name": "OperationPreferences",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建资源栈的操作设置。\n\n包含以下参数：\n\n- {\"FailureToleranceCount\": N}\n\n  容错数。每个地域中资源栈可以失败的账号数，超过该数字将停止该地域中的操作。如果停止了一个地域中的操作，此操作在其他地域中不继续执行。\n\n  N的取值范围：0~20。\n  \n  若不指定FailureToleranceCount，则默认为0。 \n\n- {\"FailureTolerancePercentage\": N}\n\n    容错百分比。每个地域中资源栈可以失败的账号数占总账号数的百分比，超过该百分比将停止该地域中的操作。\n  \n    N的取值范围：0~100。百分比不是整数时，ROS会向下取整。\n\n    若不指定FailureTolerancePercentage，则默认为0。\n\n-  {\"MaxConcurrentCount\": N}\n\n   最大并发账号数。每个地域中可同时部署资源栈的账号数。\n\n   N的取值范围：1~20。\n\n   若不指定MaxConcurrentCount，则默认为1。\n\n- {\"MaxConcurrentPercentage\": N}\n\n   最大并发账号百分比。每个地域中可同时部署资源栈的账号数占总账号数的百分比。\n  \n   取值范围：1~100。百分比不是整数时，ROS会向下取整。\n\n   若不指定MaxConcurrentPercentage，则默认为1。\n\n- {\"RegionConcurrencyType\": N}  \n部署资源栈的地域级别并发类型。取值：      \n  - SEQUENTIAL（默认值）：根据地域顺序依次在指定的每个地域部署，同一时间只在一个地域部署。\n  - PARALLEL：在所有指定地域内并行部署。\n\n多个参数之间用半角逗号（,）分隔。\n\n> - 不能同时指定MaxConcurrentCount和MaxConcurrentPercentage。  \n> - 不能同时指定FailureToleranceCount和FailureTolerancePercentage。",
+        "en": "The preferences for the operation.\n\nThe following parameters are available:\n\n- {\"FailureToleranceCount\": N}\n\n  The number of accounts per region in which the operation can fail. If the number of failed operations in a region exceeds this value, Resource Orchestration Service (ROS) stops the operation in that region. If the operation is stopped in a region, the operation is not performed in other regions.\n\n  The value of N can be an integer from 0 to 20.\n\n  If you do not specify this parameter, the default value is 0.\n\n- {\"FailureTolerancePercentage\": N}\n\n  The percentage of accounts per region in which the operation can fail, relative to the total number of accounts. If the percentage of failed operations in a region exceeds this value, ROS stops the operation in that region.\n\n  The value of N can be an integer from 0 to 100. If the percentage is not an integer, ROS rounds down the value.\n\n  If you do not specify this parameter, the default value is 0.\n\n- {\"MaxConcurrentCount\": N}\n\n  The maximum number of accounts in each region where stacks can be deployed at the same time.\n\n  The value of N can be an integer from 1 to 20.\n\n  If you do not specify this parameter, the default value is 1.\n\n- {\"MaxConcurrentPercentage\": N}\n\n  The percentage of accounts in each region where stacks can be deployed at the same time, relative to the total number of accounts.\n\n  The value of N can be an integer from 1 to 100. If the percentage is not an integer, ROS rounds down the value.\n\n  If you do not specify this parameter, the default value is 1.\n\n- {\"RegionConcurrencyType\": N}<br>The concurrency type of deployment regions. Valid values:\n\n  - SEQUENTIAL (default): Deploys stacks in the specified regions one by one. Stacks are deployed in only one region at a time.\n\n  - PARALLEL: Deploys stacks in all specified regions at the same time.\n\nSeparate multiple parameters with commas (,).\n\n> - You cannot specify MaxConcurrentCount and MaxConcurrentPercentage at the same time.\n>\n> - You cannot specify FailureToleranceCount and FailureTolerancePercentage at the same time."
+      }
     },
     {
       "name": "ParameterOverrides",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "覆盖参数列表。",
+        "en": "A list of parameters that overwrite the template parameters."
+      },
       "sub_parameters": [
         {
           "name": "ParameterKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "覆盖参数的名称。如果未指定参数名称，ROS将使用创建资源栈组时所指定的模板参数名称。\n\nN最大值为200。  \n\n> - ParameterOverrides为可选参数。  \n> - 如果需要指定ParameterOverrides，则ParameterOverrides.N.ParameterKey和ParameterOverrides.N.ParameterValue必须同时指定。",
+            "en": "The name of the parameter to overwrite. If you do not specify this parameter, ROS uses the parameter name that was specified when the stack group was created.\n\nYou can specify up to 200 parameters.\n\n> - ParameterOverrides is optional.\n>\n> - If you specify ParameterOverrides, you must specify both ParameterOverrides.N.ParameterKey and ParameterOverrides.N.ParameterValue."
+          }
         },
         {
           "name": "ParameterValue",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "覆盖参数的值。如果未指定参数的值，ROS将使用创建资源栈组时所指定的模板参数的值。\n\nN最大值为200。  \n\n> - ParameterOverrides为可选参数。  \n> - 如果需要指定ParameterOverrides，则ParameterOverrides.N.ParameterKey和ParameterOverrides.N.ParameterValue必须同时指定。",
+            "en": "The value of the parameter to overwrite. If you do not specify this parameter, ROS uses the parameter value that was specified when the stack group was created.\n\nYou can specify up to 200 parameters.\n\n> - ParameterOverrides is optional.\n>\n> - If you specify ParameterOverrides, you must specify both ParameterOverrides.N.ParameterKey and ParameterOverrides.N.ParameterValue."
+          }
         }
       ]
     },
@@ -70,27 +111,54 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈组所属的地域ID。\n\n您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the stack group.\n\nYou can call the [DescribeRegions](~~131035~~) operation to query the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "RegionIds",
       "position": "Query",
       "type": "Json",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标执行地域列表。最多支持添加20个地域。",
+        "en": "The IDs of the destination regions. You can specify up to 20 region IDs."
+      }
     },
     {
       "name": "StackGroupName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈组名称。名称在单个地域内唯一。   \n长度不超过255个字符，必须以数字或英文字母开头，可包含数字、英文字母、短划线（-）和下划线（_）。",
+        "en": "The name of the stack group. The name must be unique within a region.<br>The name can be up to 255 characters in length. It must start with a letter or a digit and can contain letters, digits, hyphens (-), and underscores (\\_)."
+      }
     },
     {
       "name": "TimeoutInMinutes",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建资源栈的超时时间。  \n\n- 默认值：60。\n\n- 单位：分钟。",
+        "en": "The timeout period for creating the stacks.\n\n- Default value: 60.\n\n- Unit: minutes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在指定账号和地域下创建资源栈实例",
+    "en": "CreateStackInstances"
+  },
+  "descriptions": {
+    "zh": "### 前提条件\n请确保您已经创建了资源栈组。具体操作，请参见[CreateStackGroup](~~151333~~)。\n\n### 应用场景\n#### 跨账号创建资源栈 \n当某企业需要在多个账号下创建相同的资源时，为提高部署效率，管理员账号可以在创建资源栈组时，选择添加多个目标账号，部署一个地域，从而在同一地域下的不同账号中创建多个资源栈，实现在多个账号下创建相同的资源。\n#### 跨地域创建资源栈\n当某企业需要在多个地域下创建相同的资源时，为提高部署效率，管理员账号可以在创建资源栈组时，选择添加一个目标账号，部署多个地域，从而在同一账号下的不同地域中创建多个资源栈，实现在多个地域下创建相同的资源。\n#### 跨账号、跨地域创建资源栈\n当某企业需要在多个账号下的多个地域中创建相同的资源，为提高部署效率，管理员账号可以在创建资源栈组时，选择添加多个目标账号，部署多个地域，从而在不同账号的不同地域下创建多个资源栈，实现在多个账号下的多个地域中创建相同的资源。\n\n本文将提供一个示例，为杭州地域已有的自助管理权限模式的资源栈组`MyStackGroup`，在杭州地域和北京地域的阿里云账号`151266687691****`和`141261387191****`中创建资源栈。",
+    "en": "### Prerequisites\n\nEnsure that a stack group is created. For more information, see [CreateStackGroup](~~151333~~).\n\n### Scenarios\n\n#### Create stacks across accounts\n\nTo create identical resources in multiple accounts, an administrator account can create a stack group, add multiple destination accounts, and deploy resources in a single region. This process creates multiple stacks in different accounts within the same region, improving deployment efficiency.\n\n#### Create stacks across regions\n\nTo create identical resources in multiple regions, an administrator account can create a stack group, add a destination account, and deploy resources in multiple regions. This process creates multiple stacks in different regions within the same account, improving deployment efficiency.\n\n#### Create stacks across accounts and regions\n\nTo create identical resources in multiple accounts across multiple regions, an administrator account can create a stack group, add multiple destination accounts, and deploy resources in multiple regions. This process creates multiple stacks in different accounts across different regions, improving deployment efficiency.\n\nThis topic provides an example of creating stacks in the China (Hangzhou) and China (Beijing) regions in the Alibaba Cloud accounts `151266687691****` and `141261387191****`. The example uses a stack group named `MyStackGroup` that is created in the China (Hangzhou) region and uses self-managed permissions."
+  },
   "example": {
     "unifiedCli": "aliyun ros create-stack-instances --biz-region-id cn-hangzhou --stack-group-name MyStackGroup --account-ids 1512666876910000 --region-ids cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --operation-description Create_stack_instances_in_hangzhou_and_beijing --operation-preferences MaxConcurrentCount=2 FailureToleranceCount=1 --timeout-in-minutes 10 --disable-rollback false --parameter-overrides ParameterValue=1 ParameterKey=Amount --deployment-targets '{\"RdFolderId\":\"fd-4PvlVLOL8v\"}' --deployment-options example-string --region cn-hangzhou",
     "legacyCli": "aliyun ros CreateStackInstances --region cn-hangzhou --DeploymentOptions.1 'example-string' --ParameterOverrides.1.ParameterValue 1 --AccountIds '[\"1512666876910000\"]' --RegionIds '[\"cn-hangzhou\"]' --StackGroupName MyStackGroup --DeploymentTargets '{\"RdFolderId\":\"fd-4PvlVLOL8v\"}' --OperationDescription Create_stack_instances_in_hangzhou_and_beijing --OperationPreferences '{\"MaxConcurrentCount\":2,\"FailureToleranceCount\":1}' --ParameterOverrides.1.ParameterKey Amount --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DisableRollback false --TimeoutInMinutes 10"

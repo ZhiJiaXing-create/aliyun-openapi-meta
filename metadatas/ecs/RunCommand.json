@@ -1,5 +1,6 @@
 {
   "name": "RunCommand",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,121 +9,201 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "A client-generated token that is used to ensure the idempotence of the request. You must make sure that the token is unique among different requests. The `ClientToken` parameter can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "CommandContent",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "命令内容。命令内容可以是明文内容或Base64编码后的内容。您需要注意：\n\n- 若保存命令，命令内容在Base64编码后的大小不能超过18 KB；若不保存命令，命令内容在Base64编码后的大小不能超过24 KB。您可通过`KeepCommand`设置是否保留命令。\n- 如果您的命令内容是Base64编码后的内容，则必须设置`ContentEncoding=Base64`。\n- 指定参数`EnableParameter=true`可在命令内容中启用自定义参数功能：\n    - 用`{{}}`包含的方式定义自定义参数，在`{{}}`内参数名前后的空格以及换行符会被忽略。\n    - 自定义参数个数不能超过20个。\n    - 自定义参数名允许a-zA-Z0-9-_的组合，不支持acs::前缀指定非内置环境参数，不支持其余字符，参数名不区分大小写。\n    - 单个自定义参数名不能超过64字节。\n\n- 您可以指定内置环境参数作为自定义参数，执行命令时无需手动对参数赋值，云助手将为您自动替换为环境中对应的值。支持指定以下内置环境参数：\n    - `{{ACS::RegionId}}`：地域ID。\n    - `{{ACS::AccountId}}`：阿里云主账号UID。\n    - `{{ACS::InstanceId}}`：实例ID。命令下发到多个实例时，如需指定`{{ACS::InstanceId}}`作为内置环境参数，需确保云助手Agent不低于以下版本：\n        - Linux：2.2.3.309\n        - Windows：2.1.3.309\n    - `{{ACS::InstanceName}}`：实例名称。命令下发到多个实例时，如需指定`{{ACS::InstanceName}}`作为内置环境参数，需确保云助手Agent不低于以下版本：\n        - Linux：2.2.3.344\n        - Windows：2.1.3.344\n    - `{{ACS::InvokeId}}`：命令执行ID。如需指定`{{ACS::InvokeId}}`作为内置环境参数，需确保云助手Agent不低于以下版本：\n        - Linux：2.2.3.309\n        - Windows：2.1.3.309\n    - `{{ACS::CommandId}}`：命令ID。通过调用本接口执行命令时，如需指定`{{ACS::CommandId}}`作为内置环境参数，需确保云助手Agent不低于以下版本： \n        - Linux：2.2.3.309\n        - Windows：2.1.3.309",
+        "en": "The command content, which can be in plaintext or Base64-encoded. Note the following:\n\n- The size of the Base64-encoded command content is limited to 18 KB if `KeepCommand` is `true`, or 24 KB if `KeepCommand` is `false`.\n\n- If the command content is Base64-encoded, you must set `ContentEncoding` to `Base64`.\n\n- Set `EnableParameter` to `true` to enable the custom parameter feature in the command content.\n\n  - Define custom parameters by using the `{{}}` format. Spaces and line breaks before and after the parameter names within `{{}}` are ignored.\n\n  - You can define up to 20 custom parameters.\n\n  - A custom parameter name can contain only letters, digits, underscores (\\_), and hyphens (-). The name is case-insensitive and cannot start with `acs::`, which is reserved for built-in environment parameters.\n\n  - A custom parameter name can be up to 64 bytes long.\n\n- You can use built-in environment parameters, which Cloud Assistant automatically replaces with their corresponding values at runtime. The following built-in environment parameters are supported:\n\n  - `{{ACS::RegionId}}`: the region ID.\n\n  - `{{ACS::AccountId}}`: the UID of the Alibaba Cloud account.\n\n  - `{{ACS::InstanceId}}`: the instance ID. To use this parameter on multiple instances, the required Cloud Assistant Agent version is 2.2.3.309 or later for Linux instances, or 2.1.3.309 or later for Windows instances.\n\n    - Linux: 2.2.3.309\n\n    - Windows: 2.1.3.309\n\n  - `{{ACS::InstanceName}}`: the instance name. To use this parameter on multiple instances, the required Cloud Assistant Agent version is 2.2.3.344 or later for Linux instances, or 2.1.3.344 or later for Windows instances.\n\n    - Linux: 2.2.3.344\n\n    - Windows: 2.1.3.344\n\n  - `{{ACS::InvokeId}}`: the invocation ID. To use this parameter, the required Cloud Assistant Agent version is 2.2.3.309 or later for Linux instances, or 2.1.3.309 or later for Windows instances.\n\n    - Linux: 2.2.3.309\n\n    - Windows: 2.1.3.309\n\n  - `{{ACS::CommandId}}`: the command ID. To use this parameter, the required Cloud Assistant Agent version is 2.2.3.309 or later for Linux instances, or 2.1.3.309 or later for Windows instances.\n\n    - Linux: 2.2.3.309\n\n    - Windows: 2.1.3.309"
+      }
     },
     {
       "name": "ContainerId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容器ID。仅支持64位16进制字符串，允许存在`docker://`、`containerd://`或者`cri-o://`前缀来明确指定的容器运行。\n\n注意事项：\n- 如果指定了该参数，云助手将在实例的指定容器内执行脚本。\n- 如果指定了该参数，仅支持在云助手Agent版本不低于2.2.3.344的Linux实例内运行。\n- 如果指定了该参数，已指定的`Username`参数和`WorkingDir`参数将不会生效。仅支持通过容器默认用户在容器的默认工作目录下执行命令。详细信息，请参见[使用云助手在容器内执行命令](~~456641~~)。\n> 在Linux容器中只支持执行Shell脚本，不支持在脚本开头使用类似`#!/usr/bin/python`命令的形式指定脚本内容的解释器。详细信息，请参见[使用云助手在容器内执行命令](~~456641~~)。",
+        "en": "The ID of the container. The ID must be a 64-bit hexadecimal string. You can add the `docker://`, `containerd://`, or `cri-o://` prefix to explicitly specify the container runtime.\n\nNotes:\n\n- If you specify this parameter, Cloud Assistant runs the script in the specified container of the instance.\n\n- This parameter is supported only on Linux instances with Cloud Assistant Agent version 2.2.3.344 or later.\n\n- If you specify this parameter, the specified `Username` and `WorkingDir` parameters are ignored. The command is run only by the default user in the default working directory of the container. For more information, see [Run commands in a container by using Cloud Assistant](~~456641~~).\n\n> In Linux containers, you can run only Shell scripts. You cannot use commands such as `#!/usr/bin/python` at the beginning of a script to specify an interpreter. For more information, see [Run commands in a container by using Cloud Assistant](~~456641~~)."
+      }
     },
     {
       "name": "ContainerName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容器名称。\n\n注意事项：\n- 如果指定了该参数，云助手将在实例的指定容器内执行脚本。\n- 如果指定了该参数，仅支持在云助手Agent版本不低于2.2.3.344的Linux实例内运行。\n- 如果指定了该参数，已指定的`Username`参数和`WorkingDir`参数将不会生效。仅支持通过容器默认用户在容器的默认工作目录下执行命令。详细信息，请参见[使用云助手在容器内执行命令](~~456641~~)。\n> 在Linux容器中只支持执行Shell脚本，不支持在脚本开头使用类似`#!/usr/bin/python`命令的形式指定脚本内容的解释器。详细信息，请参见[使用云助手在容器内执行命令](~~456641~~)。",
+        "en": "The name of the container.\n\nNotes:\n\n- If you specify this parameter, Cloud Assistant runs the script in the specified container of the instance.\n\n- This parameter is supported only on Linux instances with Cloud Assistant Agent version 2.2.3.344 or later.\n\n- If you specify this parameter, the specified `Username` and `WorkingDir` parameters are ignored. The command is run only by the default user in the default working directory of the container. For more information, see [Run commands in a container by using Cloud Assistant](~~456641~~).\n\n> In Linux containers, you can run only Shell scripts. You cannot use commands such as `#!/usr/bin/python` at the beginning of a script to specify an interpreter. For more information, see [Run commands in a container by using Cloud Assistant](~~456641~~)."
+      }
     },
     {
       "name": "ContentEncoding",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令内容（`CommandContent`）的编码方式。取值范围（不区分大小写）：\n\n- PlainText：不编码，采用明文传输。\n- Base64：Base64编码。\n\n默认值：PlainText，乱填或错填该取值会当作PlainText处理。",
+        "en": "The encoding mode of the command content (`CommandContent`). Valid values (case-insensitive):\n\n- `PlainText`: The command content is not encoded and is transmitted in plaintext.\n\n- `Base64`: The command content is Base64-encoded.\n\nDefault value: `PlainText`. If you specify an invalid value, the value is automatically set to `PlainText`."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令描述。支持全字符集，长度不得超过512个字符。",
+        "en": "The description of the command. It can be up to 512 characters long and supports all character sets."
+      }
     },
     {
       "name": "EnableParameter",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令中是否包含自定义参数。\n\n默认值：false。",
+        "en": "Specifies whether to use custom parameters in the command.\n\nDefault value: false."
+      }
     },
     {
       "name": "Frequency",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定时执行命令的执行时间。目前支持三种定时执行方式：固定时间间隔执行（基于Rate表达式）、仅在指定时间执行一次、基于时钟定时执行（基于Cron表达式）。\n\n- 固定时间间隔执行：基于Rate表达式，按照设置的时间间隔执行命令。时间间隔支持按秒（s） 、分钟（m） 、小时（h）和天（d）来选择，适用于在固定时间间隔执行任务的场景。格式为`rate(<执行间隔数值><执行间隔单位>)`，如5分钟执行一次，格式为`rate(5m)`。使用固定时间间隔执行有以下限制：\n    - 设置的时间间隔不大于7天、不小于60秒，且需大于定时任务的超时时间。\n    - 执行间隔只基于固定频率，与任务实际执行需要的时间无关。例如设置每5分钟执行一次命令，任务需要2分钟执行完成，则在任务完成3分钟后继续执行下一轮。\n    - 创建任务时不会立即执行。例如设置每5分钟执行一次命令，创建任务时不会立即执行一次命令，而是在任务创建完成后的5分钟后开始执行。\n\n- 仅在指定时间执行一次：按照设置的时区和执行时间点执行一次命令。格式为`at(yyyy-MM-dd HH:mm:ss <时区>)`，即`at(年-月-日 时:分:秒 <时区>)`。如果不指定时区，默认为UTC时区。时区支持以下三种形式：\n    - 时区全称：  如`Asia/Shanghai`（中国/上海时间）、`America/Los_Angeles`（美国/洛杉矶时间）等。\n    - 时区相对于格林威治时间的偏移量：  如`GMT+8:00`（东八区）、`GMT-7:00`（西七区）等。使用GMT格式时，小时位不支持添加前导零。\n    - 时区缩写：  仅支持UTC（协调世界时间）。\n\n  如果指定在中国/上海时间2022年06月06日13时15分30秒执行一次，格式为：`at(2022-06-06 13:15:30 Asia/Shanghai)`；如果指定在西七区2022年06月06日13时15分30秒执行一次，格式为：`at(2022-06-06 13:15:30 GMT-7:00)`。\n\n- 基于时钟定时执行（基于Cron表达式）：基于Cron表达式，按照设置的定时任务执行命令。格式为`<秒> <分钟> <小时> <日期> <月份> <星期> <年份（可选）> <时区>`，即`<Cron表达式> <时区>`。在指定的时区下，根据Cron表达式推算定时任务执行时间并执行。若不指定时区，默认为执行定时任务实例的系统内部时区。关于Cron表达式的更多信息，请参见[Cron表达式](~~64769~~)。时区支持以下三种形式：\n    - 时区全称：  如`Asia/Shanghai`（中国/上海时间）、`America/Los_Angeles`（美国/洛杉矶时间）等。\n    - 时区相对于格林威治时间的偏移量：  如`GMT+8:00`（东八区）、`GMT-7:00`（西七区）等。使用GMT格式时，小时位不支持添加前导零。\n    - 时区缩写：  仅支持UTC（协调世界时间）。\n  例如，在中国/上海时间，2022年每天上午10:15执行一次命令，格式为`0 15 10 ? * * 2022 Asia/Shanghai`；在东八区时间，2022年每天上午10:00到11:30每隔半小时执行，格式为`0 0/30 10-11 * * ? 2022 GMT+8:00`；在UTC时间，从2022年开始，每隔两年的10月每天下午14:00到下午14:55时间段内每隔5分钟执行，格式为`0 0/5 14 * 10 ? 2022/2 UTC`。\n\n    >设置的最小时间间隔需大于或等于定时任务的超时时间，且不小于10 秒。",
+        "en": "The schedule for the command. You can specify a rate expression, an at expression for one-time execution, or a cron expression.\n\n- **Fixed-interval execution**: Runs the command at fixed intervals defined by a rate expression. You can specify the interval in seconds (s), minutes (m), hours (h), or days (d). This method is suitable for tasks that must be run at fixed intervals. The format is `rate(<value><unit>)`. For example, to run a command every 5 minutes, use `rate(5m)`. The following limits apply to this method:\n\n  - The interval must be in the range of 60 seconds to 7 days, and must be longer than the timeout of the scheduled task.\n\n  - The interval is fixed and starts from the beginning of the previous execution, not from its completion.\n\n  - The task does not immediately run after it is created. For example, if you set an interval of 5 minutes, the first run starts 5 minutes after the task is created.\n\n- **One-time execution**: Run the command once at a specified time and in a specified time zone. The format is `at(yyyy-MM-dd HH:mm:ss <time_zone>)`. If you do not specify a time zone, UTC is used by default. The following time zone formats are supported:\n\n  - Full time zone name, such as `Asia/Shanghai` or `America/Los_Angeles`.\n\n  - Offset from GMT, such as `GMT+8:00` or `GMT-7:00`. When you use the GMT format, you cannot add a leading zero to the hour.\n\n  - Time zone abbreviation. Only `UTC` is supported.\n\n  Example 1: To run a task at 13:15:30 on June 6, 2022 in the `Asia/Shanghai` time zone, use `at(2022-06-06 13:15:30 Asia/Shanghai)`. Example 2: To run a task at 13:15:30 on June 6, 2022 in the `GMT-7:00` time zone, use `at(2022-06-06 13:15:30 GMT-7:00)`.\n\n- **Scheduled execution based on a cron expression**: Runs the command on a schedule defined by a cron expression. The format is `<second> <minute> <hour> <day_of_month> <month> <day_of_week> <year (optional)> <time_zone>`, or `<cron_expression> <time_zone>`. The task is run based on the cron expression in the specified time zone. If you do not specify a time zone, the system time zone of the instance where the task is run is used by default. For more information about cron expressions, see [Cron expressions](~~64769~~). The following time zone formats are supported:\n\n  - Full time zone name, such as `Asia/Shanghai` or `America/Los_Angeles`.\n\n  - Offset from GMT, such as `GMT+8:00` or `GMT-7:00`. When you use the GMT format, you cannot add a leading zero to the hour.\n\n  - Time zone abbreviation. Only `UTC` is supported.\n    For example, to run a command at 10:15 every day in 2022 in the `Asia/Shanghai` time zone, use `0 15 10 ? * * 2022 Asia/Shanghai`. To run a command every 30 minutes from 10:00 to 11:30 every day in 2022 in the `GMT+8:00` time zone, use `0 0/30 10-11 * * ? 2022 GMT+8:00`. To run a command every 5 minutes from 14:00 to 14:55 every day in October of every two years starting from 2022 in `UTC`, use `0 0/5 14 * 10 ? 2022/2 UTC`.\n\n  > The minimum interval must be greater than or equal to the timeout of the scheduled task, and cannot be less than 10 seconds."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ECS实例ID数组，数组长度：1~100。\n\n若指定了多台实例后，其中某台实例不满足执行条件时，您需要重新选择。\n\n您也可以在配额中心申请提升配额（配额名称为命令执行支持实例上限数）。",
+        "en": "The IDs of the ECS instances on which to run the command. You can specify from 1 to 100 instance IDs.\n\nIf any specified instance does not meet the execution requirements, the entire operation fails.\n\nYou can apply for a quota increase in Quota Center. The quota is named Maximum number of instances supported per command execution."
+      }
     },
     {
       "name": "KeepCommand",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行完该命令后，是否保留下来。取值范围：\n\n- true：保留。可以通过InvokeCommand再次执行。会占用云助手命令的保有量配额。\n- false：不保留。执行完成后自动删除，不占用云助手命令的保有量配额。\n\n默认值：false。",
+        "en": "Specifies whether to save the command after it is run. Valid values:\n\n- `true`: Saves the command. You can then re-run it by calling InvokeCommand. Saved commands count towards your Cloud Assistant command quota.\n\n- `false`: Does not save the command. The command is deleted after execution and does not count towards your quota.\n\nDefault value: false."
+      }
     },
     {
       "name": "Launcher",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "脚本执行的引导程序。长度不能超过 1 KB。",
+        "en": "The launcher that is used to run the script. The value can be up to 1 KB in length."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令名称。支持全字符集，长度不得超过128个字符。",
+        "en": "The name of the command. It can be up to 128 characters long and supports all character sets."
+      }
     },
     {
       "name": "OssOutputDelivery",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令执行Output OSS投递配置。\n\n- 格式：oss://${BucketName}/${Prefix}，${BucketName}为待投递到的OSS Bucket名称，${Prefix}为待投递到的目录前缀。",
+        "en": "The OSS delivery configuration for the command output.\n\n- Format: oss\\://${BucketName}/${Prefix}, where ${BucketName} is the name of the destination OSS bucket and ${Prefix} is the destination prefix."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令中包含自定义参数时，执行命令时传入的自定义参数的键值对。例如，命令内容为`echo {{name}}`，则可以通过`Parameter`参数传入键值对`{\"name\":\"Jack\"}`。自定义参数将自动替换变量值`name`，得到一条新的命令，实际执行的是`echo Jack`。\n\n自定义参数的个数范围为0~10，且您需要注意：\n\n- 键不允许为空字符串，最多支持64个字符。\n- 值允许为空字符串。\n- 自定义参数与原始命令内容在Base64编码后，若保存命令，命令内容在Base64编码后的大小不能超过18 KB；若不保存命令，命令内容在Base64编码后的大小不能超过24 KB。您可通过`KeepCommand`设置是否保留命令。\n- 设置的自定义参数名集合必须为创建命令时定义的参数集的子集。对于未传入的参数，您可以使用空字符串代替。\n\n默认值为空，表示取消设置该参数从而禁用自定义参数。",
+        "en": "The key-value pairs for custom parameters. For example, if `CommandContent` is `echo {{name}}`, setting `Parameters` to `{\"name\":\"Jack\"}` results in the command `echo Jack` being run.\n\nYou can specify 0 to 10 key-value pairs. Note the following:\n\n- The key cannot be an empty string and can be up to 64 characters in length.\n\n- The value can be an empty string.\n\n- After Base64 encoding, the total size of the custom parameters and the original command content is limited to 18 KB if `KeepCommand` is `true`, or 24 KB if `KeepCommand` is `false`.\n\n- The set of custom parameter names that you specify must be a subset of the parameters defined in `CommandContent`. The value of an omitted parameter defaults to an empty string.\n\nBy default, this parameter is empty, which indicates that no custom parameters are used."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The ID of the region. You can call the [DescribeRegions](~~25609~~) operation to query the latest Alibaba Cloud regions."
+      }
     },
     {
       "name": "RepeatMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置命令执行的方式。取值范围：\n\n- Once：立即执行命令。\n- Period：定时执行命令。当该参数取值为`Period`时，必须同时指定`Frequency`参数。\n- NextRebootOnly：当实例下一次启动时，自动执行命令。\n- EveryReboot：实例每一次启动都将自动执行命令。\n- DryRun：只预检此次请求，命令执行不会实际生效，检查项包括请求参数、实例执行环境、云助手Agent运行状态等。\n\n默认值：\n- 当不指定`Frequency`参数时，默认值为`Once`。\n- 当指定`Frequency`参数时，无论是否已设置了该参数值，都将按照`Period`处理。\n\n注意事项：\n- 您可以调用[StopInvocation](~~64838~~)停止待执行的命令或定时执行的命令。\n- 当该参数取值`Period`或者`EveryReboot`时，您可以调用[DescribeInvocationResults](~~64845~~)，然后指定`IncludeHistory=true`查看命令定时执行的历史记录。",
+        "en": "The execution mode of the command. Valid values:\n\n- `Once`: The command is immediately run.\n\n- `Period`: Runs the command as a scheduled task. This mode requires the `Frequency` parameter.\n\n- `NextRebootOnly`: The command is automatically run the next time the instance starts.\n\n- `EveryReboot`: The command is automatically run every time the instance starts.\n\n- `DryRun`: Performs a dry run to check parameters and the environment without actually running the command.\n\nDefault value:\n\n- If the `Frequency` parameter is not specified, the default value is `Once`.\n\n- If `Frequency` is specified, this parameter is automatically set to `Period`.\n\nNotes:\n\n- You can call the [StopInvocation](~~64838~~) operation to stop pending or scheduled commands.\n\n- If you set this parameter to `Period` or `EveryReboot`, you can call the [DescribeInvocationResults](~~64845~~) operation and set `IncludeHistory=true` to query the historical execution records of the scheduled command."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令执行的资源组ID，当指定该参数时：\n\n- 当InstanceId对应的ECS实例属于非默认资源组时，该ECS实例必须属于该资源组。\n\n- 支持通过指定该参数筛选出对应的命令执行结果（通过调用[DescribeInvocations](~~64840~~)或[DescribeInvocationResults](~~64845~~)）。",
+        "en": "The ID of the resource group for the command execution. When you specify this parameter, the following rules apply:\n\n- If an ECS instance specified by `InstanceId` is in a non-default resource group, it must belong to the resource group specified by this parameter.\n\n- You can use this parameter to filter command execution results when you call the [DescribeInvocations](~~64840~~) or [DescribeInvocationResults](~~64845~~) operation."
+      }
     },
     {
       "name": "ResourceTag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "用于筛选实例的标签数组，数组长度：0~20。可以在不指定InstanceId的情况下，向具有相同标签的实例批量执行命令。",
+        "en": "Tags used to filter instances for command execution. This allows you to run the command on all instances with matching tags, as an alternative to specifying instance IDs. The array can contain 0 to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "用于筛选实例的标签键。\n\n注意事项：\n\n- 与参数InstanceId冲突，不能同时指定。\n\n- 一旦传入该值，则不允许为空字符串。\n\n- 标签下的实例数量不能超过InstanceId.N的数量限制；如果实例数量超出限制，建议通过添加批次标签等方式控制实例数量，例如batch: b1。\n\n- 最多支持64个字符，不能以aliyun或acs:开头，不能包含http://或https://。",
+            "en": "The tag key that is used to filter instances.\n\nNotes:\n\n- You cannot specify both this parameter and the InstanceId parameter.\n\n- The tag key cannot be an empty string.\n\n- The number of instances matching the specified tag cannot exceed the per-execution instance limit (100 by default). If the number of matching instances exceeds this limit, you can use additional tags, such as `batch:b1`, to refine the selection.\n\n- The value can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It also cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "用于筛选实例的标签值。\n\n注意事项：\n- 该值可以为空字符串。\n- 最多支持128个字符，不能包含http://或https://。",
+            "en": "The tag value that is used to filter instances.\n\nNotes:\n\n- The value can be an empty string.\n\n- The value can be up to 128 characters in length and cannot contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -131,18 +212,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签对数组，数组长度：0~20。",
+        "en": "An array of tag pairs. The array can contain 0 to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "命令执行的标签键。一旦传入该值，则不允许为空字符串。\n\n使用一个标签过滤资源，查询到该标签下的资源数量不能超过1000个。使用多个标签过滤资源，查询到同时绑定了多个标签的资源数量不能超过1000个。如果资源数量超过1000个，您需要使用[ListTagResources](~~110425~~)接口进行查询。\n\n最多支持64个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。",
+            "en": "The tag key for the command execution. The key cannot be an empty string.\n\nThe key can be up to 64 characters long and cannot start with `aliyun` or `acs:`. It also cannot contain `http://` or `https://`.\n\nThe value can be up to 64 characters long and cannot start with `aliyun` or `acs:` or contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "命令执行的标签值。该值可以为空字符串。\n\n最多支持128个字符，不能包含`http://`或`https://`。",
+            "en": "The tag value for the command execution. The value can be an empty string.\n\nThe value can be up to 128 characters long and cannot contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -150,45 +243,84 @@
       "name": "TerminationMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "停止任务（手动停止或执行超时打断）时的模式。可能值：\n- Process：停止当前脚本进程。\n- ProcessTree：停止当前进程树（脚本进程以及它创建的所有子进程的集合）。",
+        "en": "The mode for stopping the task when it is manually stopped or times out. Valid values:\n\n- `Process`: Stops the current script process.\n\n- `ProcessTree`: Stops the current process tree. A process tree includes the current script process and all of its subprocesses."
+      }
     },
     {
       "name": "Timed",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": ">该参数已废弃，传入该参数不会生效。",
+        "en": "> This parameter is deprecated and no longer has any effect."
+      }
     },
     {
       "name": "Timeout",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行命令的超时时间，单位：秒。\n\n当因为进程原因、缺失模块、缺失云助手Agent等原因无法运行命令时，会出现超时现象。超时后，会强制终止命令进程。\n\n默认值：60。",
+        "en": "The command execution timeout, in seconds.\n\nA timeout forcibly terminates the command process if the command fails to run due to exceptions, such as a process conflict, a missing module, or a disabled Cloud Assistant Agent.\n\nDefault value: 60."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "命令类型。取值范围：\n\n- RunBatScript：适用于Windows实例的Bat命令。\n- RunPowerShellScript：适用于Windows实例的PowerShell命令。\n- RunShellScript：适用于Linux实例的Shell命令。",
+        "en": "The type of the command. Valid values:\n\n- `RunBatScript`: Bat commands for Windows instances.\n\n- `RunPowerShellScript`: PowerShell commands for Windows instances.\n\n- `RunShellScript`: Shell commands for Linux instances."
+      }
     },
     {
       "name": "Username",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "在ECS实例中执行命令的用户名称。长度不得超过255个字符。\n\n- Linux系统的ECS实例，默认以root用户执行命令。\n- Windows系统的ECS实例，默认以System用户执行命令。\n\n您也可以指定实例中已存在的其他用户执行命令，以普通用户执行云助手命令更加安全。更多信息，请参见[设置普通用户执行云助手命令](~~203771~~)。",
+        "en": "The name of the user that runs the command on the ECS instance. The name can be up to 255 characters in length.\n\n- Default on Linux: `root`.\n\n- Default on Windows: `System`.\n\nYou can specify another existing user on the instance to run the command. Running Cloud Assistant commands as a standard user is more secure. For more information, see [Run Cloud Assistant commands as a standard user](~~203771~~)."
+      }
     },
     {
       "name": "WindowsPasswordName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "在Windows实例中执行命令的用户的密码名称。长度不得超过255个字符。\n\n当您希望以非默认用户（System）在Windows实例中执行命令时，需要同时传入`Username`和该参数。为降低密码泄露的风险，需要将密码明文托管在系统运维管理的参数仓库中，此处仅传入密码的名称。更多信息，请参见[加密参数](~~186828~~)以及[设置普通用户执行云助手命令](~~203771~~)。\n\n> 当您使用Linux实例的root用户或Windows实例的System用户执行命令时，不需要传递该参数。",
+        "en": "The name of the password of the user that runs the command on a Windows instance. The name can be up to 255 characters in length.\n\nTo run a command as a non-default user on a Windows instance, you must specify both `Username` and `WindowsPasswordName`. To reduce the risk of password leaks, we recommend storing the password in OOS Parameter Store and providing the parameter name here. For more information, see [Encryption parameters](~~186828~~) and [Run Cloud Assistant commands as a standard user](~~203771~~).\n\n> You do not need to specify this parameter when you run a command as the `root` user on a Linux instance or as the `System` user on a Windows instance."
+      }
     },
     {
       "name": "WorkingDir",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令在ECS实例中的运行目录。长度不得超过200个字符。\n\n默认值：\n\n- Linux系统实例默认在管理员（root用户）的home目录下，即`/root`。\n- Windows系统实例默认在云助手Agent进程所在目录，例如`C:\\Windows\\System32`。",
+        "en": "The working directory for the command on the instance. The path can be up to 200 characters long.\n\nDefault values:\n\n- For Linux instances, the default is the home directory of the `root` user (`/root`).\n\n- For Windows instances, the default is the directory of the Cloud Assistant Agent process, such as `C:\\Windows\\System32`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建并执行云助手命令",
+    "en": "Create and execute a Cloud Assistant command"
+  },
+  "descriptions": {
+    "zh": "该接口为异步接口，当前请求发送成功后，您可以通过返回的命令ID或命令执行ID调用[DescribeInvocations](~~2679916~~)或者[DescribeInvocationResults](~~2679916~~)查询执行结果。\n\n### 使用须知\n- 目标实例的状态为运行中（`Running`），您可以调用[DescribeInstances](~~25506~~)查询。\n- 目标实例已经预先安装[云助手Agent](~~64921~~)，您可以通过[InstallCloudAssistant](~~2679925~~)进行安装，并通过[DescribeCloudAssistantStatus](~~2679924~~)查询安装状态。\n  > 2017年12月01日之后使用公共镜像创建的ECS实例，默认预装了云助手Agent。\n- 执行PowerShell类型的命令时，您需要确保目标ECS实例的Windows操作系统已经配置了PowerShell模块。\n\n### 注意事项\n- 在单一地域下，最多可以保有500～50,000条云助手命令，您也可以申请提升配额，请参见[配额管理](~~184116~~)。\n- 云助手Agent版本需要不低于以下对应的版本才能支持定时任务的新特性（固定时间间隔执行、仅在指定时间执行一次、基于Cron表达式定时执行时指定年份或时区）。如果结果返回`ClientNeedUpgrade`错误码，请参见[升级或禁止升级云助手Agent](~~134383~~)，将客户端更新至最新版本。\n\n      - Linux：2.2.3.282。\n      - Windows：2.1.3.282。\n\n- 当您基于Cron表达式执行定时任务且指定了时区，时钟定时执行时间设置基准为您指定的时区；当您没有指定时区时，时钟定时执行时间设置基准为ECS实例内的系统时区，且执行时间以实例的系统时间为准。请确保ECS实例的时间或者时区与您预期的时间一致。关于时区的更多信息，请参见[设置Linux实例时区和NTP服务](~~92803~~)或[设置Windows实例NTP服务](~~51890~~)。\n\n### 使用建议\n- **超时设置**：您可以通过指定参数`Timeout`为命令设置在ECS实例中执行时最大的超时时间，命令执行超时后，云助手Agent会强制终止进程。\n    - 单次执行超时后，命令的执行状态（[InvokeRecordStatus](~~64845~~)）变为执行失败（Failed）。\n    - 定时执行的超时时间对每一次执行记录均有效，上次执行超时不影响下一次执行。某次执行超时后，执行状态（[InvokeRecordStatus](~~64845~~)）变为执行失败（Failed）。\n- **执行失败**：命令可能会因为目标实例的状态异常、网络异常或云助手Agent异常而出现无法执行的情况，无法执行时不会生成执行信息。更多信息，请参见[执行失败常见错误及修复建议](~~87029~~)。\n- **自定义参数**：`EnableParameter=true`时会启用自定义参数功能。在设置`CommandContent`时可以通过`{{parameter}}`的形式表示自定义参数，并在运行命令时，传入自定义参数键值对。",
+    "en": "This is an asynchronous API. After a successful request, you can call [DescribeInvocations](~~2679916~~) or [DescribeInvocationResults](~~2679916~~) with the returned command ID or invocation ID to query the execution results.\n\n### Usage notes\n\n- The target instance must be in the `Running` state. You can call [DescribeInstances](~~25506~~) to query the instance status.\n\n- The Cloud Assistant Agent must be pre-installed on the target instance. Otherwise, call [InstallCloudAssistant](~~64921~~) to install it and then call [DescribeCloudAssistantStatus](~~2679925~~) to query its installation status.\n\n  > By default, the Cloud Assistant Agent is pre-installed on ECS instances that are created from public images after December 1, 2017.\n\n- When running PowerShell commands, make sure the PowerShell module is configured on the instance's Windows operating system.\n\n### Precautions\n\n- You can retain 500 to 50,000 Cloud Assistant commands in a single region. To request a higher quota, see [Quota Management](~~184116~~).\n\n- To use new features for scheduled tasks, such as running tasks at fixed intervals, running a task only once at a specified time, or specifying a year or time zone for cron expression-based tasks, the Cloud Assistant Agent must be one of the following versions or later. If the `ClientNeedUpgrade` error code is returned, see [Upgrade or stop upgrading Cloud Assistant Agent](~~134383~~) to update the agent to the latest version.\n\n  ```\n  - Linux: 2.2.3.282\n  - Windows: 2.1.3.282\n  ```\n\n- When you run a scheduled task based on a cron expression and specify a time zone, the task runs in the specified time zone. If you do not specify a time zone, the task runs in the system time zone of the ECS instance, and the execution time depends on the instance's system clock. Ensure that the time and time zone of your ECS instance are set as expected. For more information about time zones, see [Set the time zone and NTP service for a Linux instance](~~92803~~) or [Set the NTP service for a Windows instance](~~51890~~).\n\n### Recommendations\n\n- **Timeout settings**: You can specify the `Timeout` parameter to set the maximum execution timeout for a command on an ECS instance. If the command execution times out, the Cloud Assistant Agent forcibly terminates the process.\n\n  - If a one-time execution times out, its execution status ([InvokeRecordStatus](~~64845~~)) becomes Failed.\n\n  - For a scheduled task, the timeout period applies to each execution. A timeout in one execution does not affect the next. If an execution times out, its execution status ([InvokeRecordStatus](~~64845~~)) becomes Failed.\n\n- **Execution failures**: A command can fail due to an abnormal instance state, network problems, or an unresponsive Cloud Assistant Agent. In these cases, no execution information is generated. For more information, see [Common errors and suggestions for fixing execution failures](~~87029~~).\n\n- **Custom parameters**: To use custom parameters, set `EnableParameter` to `true`. You can then define parameters in `CommandContent` using the `{{parameter}}` format and pass their corresponding key-value pairs when you run the command."
+  },
   "example": {
     "unifiedCli": "aliyun ecs run-command --biz-region-id cn-hangzhou --resource-group-id rg-bp67acfmxazb4p0000 --name testName --description testDescription --type RunShellScript --command-content ZWNobyAxMjM= --working-dir /home/user --timeout 3600 --enable-parameter false --repeat-mode Once --timed true --frequency 0_0/20_0_0_0_0 --parameters accessKey=LTAI0000000000000 name=Jack --keep-command false --content-encoding Base64 --username test --windows-password-name axtSecretPassword --instance-id i-bp185dy2o3o6neg0000 --tag Value=TestValue Key=TestKey --container-id ab141ddfbacfe02d9dbc25966ed971536124527097398d419a6746873fea0000 --container-name test-container --client-token 123e4567-e89b-12d3-a456-426655440000 --oss-output-delivery oss://testBucket/testPrefix --resource-tag Value=TestValue Key=TestKey --termination-mode ProcessTree --launcher python3_-u_ACS::ScriptFileName_Ext_.py --region cn-hangzhou",
     "legacyCli": "aliyun ecs RunCommand --region cn-hangzhou --OssOutputDelivery 'oss://testBucket/testPrefix' --Description testDescription --ResourceGroupId 'rg-bp67acfmxazb4p0000' --Timed true --ContentEncoding Base64 --Name testName --RepeatMode Once --ContainerId ab141ddfbacfe02d9dbc25966ed971536124527097398d419a6746873fea0000 --ContainerName 'test-container' --ResourceTag.1.Value TestValue --Tag.1.Key TestKey --Parameters '{\"accessKey\":\"LTAI0000000000000\",\"name\":\"Jack\"}' --Timeout 3600 --WindowsPasswordName axtSecretPassword --ResourceTag.1.Key TestKey --CommandContent 'ZWNobyAxMjM=' --WorkingDir '/home/user' --Type RunShellScript --Username test --Tag.1.Value TestValue --Frequency '0_0/20_0_0_0_0' --Launcher 'python3_-u_ACS::ScriptFileName_Ext_.py' --EnableParameter false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-bp185dy2o3o6neg0000' --KeepCommand false --TerminationMode ProcessTree"

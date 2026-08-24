@@ -1,5 +1,6 @@
 {
   "name": "CreateEnterpriseSnapshotPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,85 +9,141 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "Ensures the idempotence of the request. Generate a parameter value from your client that is unique across different requests. ClientToken supports only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "CrossRegionCopyInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "快照复制信息。",
+        "en": "The snapshot replication information."
+      }
     },
     {
       "name": "Desc",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述信息。",
+        "en": "The description."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "快照策略名称。",
+        "en": "The Policy Name."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用DescribeRegions查询异步复制功能支持的地域信息。",
+        "en": "The region ID. You can call DescribeRegions to query the regions that support asynchronous replication."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "RetainRule",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "保留规则。",
+        "en": "The retention rule."
+      }
     },
     {
       "name": "Schedule",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "调度规则。",
+        "en": "The schedule rule."
+      }
     },
     {
       "name": "SpecialRetainRules",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "特殊保留规则。",
+        "en": "The special retention rules."
+      }
     },
     {
       "name": "State",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "状态。取值范围：\n\n- DISABLED\n- ENABLED",
+        "en": "The status. Valid values:\n\n- DISABLED\n- ENABLED"
+      }
     },
     {
       "name": "StorageRule",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "高级快照特性。",
+        "en": "The advanced snapshot feature."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签键值对。n的取值范围为 [1, 20]。",
+        "en": "The tag key-value pairs. Valid values of n: 1 to 20."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "资源的标签键。",
+            "en": "The tag key of the resource."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "资源的标签值。",
+            "en": "The tag value of the resource."
+          }
         }
       ]
     },
@@ -94,9 +151,20 @@
       "name": "TargetType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "类型。取值范围：\n\n- DISK",
+        "en": "The type. Valid values:\n\n- DISK"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建企业级快照策略",
+    "en": "Create an enterprise-level snapshot policy"
+  },
   "example": {
     "unifiedCli": "aliyun ebs create-enterprise-snapshot-policy --biz-region-id cn-hangzhou --name xx --target-type DISK --state ENABLED --desc xxx --schedule CronExpression=0_0_0/24_0_0_0 --retain-rule Number=10 TimeInterval=14 TimeUnit=DAYS --storage-rule EnableImmediateAccess=false --cross-region-copy-info '{\"Enabled\":false,\"Regions\":[{\"RetainDays\":7,\"RegionId\":\"cn-hangzhou\"}]}' --tag Value=tag-value Key=tag-key --resource-group-id xxx --client-token 123e4567-e89b-12d3-a456-426655440000 --special-retain-rules '{\"Enabled\":true,\"Rules\":[{\"SpecialPeriodUnit\":\"WEEKS\",\"TimeInterval\":14,\"TimeUnit\":\"WEEKS\"}]}' --region cn-hangzhou",
     "legacyCli": "aliyun ebs CreateEnterpriseSnapshotPolicy --region cn-hangzhou --Tag.1.Key 'tag-key' --StorageRule '{\"EnableImmediateAccess\":false}' --ResourceGroupId xxx --SpecialRetainRules '{\"Enabled\":true,\"Rules\":[{\"SpecialPeriodUnit\":\"WEEKS\",\"TimeInterval\":14,\"TimeUnit\":\"WEEKS\"}]}' --CrossRegionCopyInfo '{\"Enabled\":false,\"Regions\":[{\"RetainDays\":7,\"RegionId\":\"cn-hangzhou\"}]}' --RetainRule '{\"Number\":10,\"TimeInterval\":14,\"TimeUnit\":\"DAYS\"}' --Name xx --Desc xxx --State ENABLED --Schedule '{\"CronExpression\":\"0_0_0/24_0_0_0\"}' --Tag.1.Value 'tag-value' --TargetType DISK --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

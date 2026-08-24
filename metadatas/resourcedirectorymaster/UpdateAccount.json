@@ -1,5 +1,6 @@
 {
   "name": "UpdateAccount",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AccountId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "成员ID。",
+        "en": "The Alibaba Cloud account ID of the member."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- true：发送检查请求，不会修改成员信息。检查项包括成员状态是否可以修改、成员是否具有安全信息等。如果检查不通过，则返回对应错误码。\n- false（默认）：发送正常请求，通过检查后直接修改成员。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   true: performs only a dry run. The system checks items such as whether the member status can be modified and whether security information is configured for the member. If the request does not pass the dry run, an error code is returned.\n*   false (default): performs a dry run and performs the actual request."
+      }
     },
     {
       "name": "NewAccountType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新的成员类型。取值：\n\n- ResourceAccount：将指定的云账号切换为资源账号。\n- CloudAccount：将指定的资源账号切换为云账号。\n\n> `NewDisplayName`与`NewAccountType`任选其一设置，不能同时设置。",
+        "en": "The new type of the member. Valid values:\n\n*   ResourceAccount: resource account\n*   CloudAccount: cloud account\n\n> You can specify either `NewDisplayName` or `NewAccountType`."
+      }
     },
     {
       "name": "NewDisplayName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新的成员名称。\n> `NewDisplayName`与`NewAccountType`任选其一设置，不能同时设置。",
+        "en": "The new display name of the member.\n\n> You can specify either `NewDisplayName` or `NewAccountType`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改成员",
+    "en": "UpdateAccount"
+  },
+  "descriptions": {
+    "zh": "### 前提条件\n\n- 为确保系统可以记录到管理操作的具体操作者，请使用管理账号下具有资源目录管理权限（AliyunResourceDirectoryFullAccess）的RAM用户或RAM角色调用本API。\n- 资源账号切换为云账号时需要满足的条件，请参见[资源账号切换为云账号](~~111233~~)。\n- 云账号切换为资源账号时需要满足的条件，请参见[云账号切换为资源账号](~~209980~~)。",
+    "en": "*   To ensure that the system can record the operators of management operations, you must use a RAM user or RAM role to which the AliyunResourceDirectoryFullAccess policy is attached within the management account of your resource directory to call this operation.\n*   Before you switch the type of a member from resource account to cloud account, make sure that specific conditions are met. For more information about the conditions, see [Switch a resource account to a cloud account](~~111233~~).\n*   Before you switch the type of a member from cloud account to resource account, make sure that specific conditions are met. For more information about the conditions, see [Switch a cloud account to a resource account](~~209980~~)."
+  },
   "example": {
     "unifiedCli": "aliyun resourcedirectorymaster update-account --new-display-name admin --new-account-type ResourceAccount --account-id 123233440000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun resourcedirectorymaster UpdateAccount --region cn-hangzhou --NewDisplayName admin --AccountId 123233440000 --NewAccountType ResourceAccount --DryRun false"

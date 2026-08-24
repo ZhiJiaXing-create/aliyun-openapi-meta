@@ -1,5 +1,6 @@
 {
   "name": "RemoveInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "DecreaseDesiredCapacity",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否修改期望实例数。取值范围：\n\n- true：从伸缩组删除ECS实例后，期望实例数也减少相应台数。\n- false：从伸缩组删除ECS实例后，期望实例数不会变化。\n\n默认值：true。",
+        "en": "Specifies whether to modify the expected number of instances. Valid values:\n\n- true: After ECS instances are removed from the scaling group, the expected number of instances is decreased by the corresponding number.\n- false: After ECS instances are removed from the scaling group, the expected number of instances remains unchanged.\n\nDefault value: true."
+      }
     },
     {
       "name": "IgnoreInvalidInstance",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "从伸缩组删除一批实例时，是否忽略其中无效的实例。取值范围：\n\n- true：从伸缩组中删除一批实例时会忽略无效实例。\n  \n  如果一批实例中存在无效实例（例如实例状态为`加入中`），并且有效的实例被成功删除时，伸缩活动执行状态显示为`警告`状态，您可以从伸缩活动详情查看无效的实例。\n- false：从伸缩组中删除一批实例时不会忽略无效实例。\n\n  如果一批实例中存在无效的实例，则返回结果会报错。\n\n默认值：false。",
+        "en": "Specifies whether to ignore invalid instances when you delete a batch of instances from the scaling group. Valid values:\n\n- true: Invalid instances are ignored when a batch of instances is deleted from the scaling group.\n  \n  If a batch of instances contains invalid instances (for example, instances whose instance status is `Pending`), the valid instances are successfully deleted, and the scaling activity execute status is displayed as `Warning`. You can view the invalid instances in the scaling activity details.\n- false: Invalid instances are not ignored when a batch of instances is deleted from the scaling group.\n\n  If a batch of instances contains invalid instances, an error is returned.\n\nDefault value: false."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除ECS实例的ID。",
+        "en": "The ID of the ECS instance to be removed."
+      }
     },
     {
       "name": "LifecycleHookContext",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期挂钩上下文信息。",
+        "en": "The context information of the lifecycle hook."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "RemovePolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定被删除ECS实例的动作。取值范围：\n\n- recycle：ECS实例触发了节省停机效果。\n\n    >仅在`ScalingPolicy`为`recycle`时生效。\n\n- release：ECS实例被释放。\n\n  CreateScalingGroup的`ScalingPolicy`参数指定伸缩组的回收模式，但实例被删除时的具体动作，由RemoveInstances的`RemovePolicy`参数决定。例如：\n\n    - `ScalingPolicy`为`recycle`，且`RemovePolicy`为`recycle`，ECS实例触发了节省停机效果。\n    - `ScalingPolicy`为`recycle`，且`RemovePolicy`为`release`，ECS实例被释放。\n    - `ScalingPolicy`为`release`，且`RemovePolicy`为`recycle`，ECS实例被释放。\n    - `ScalingPolicy`为`release`，且`RemovePolicy`为`release`，ECS实例被释放。\n\n默认值：release。",
+        "en": "The action to take on the ECS instances that are removed. Valid values:\n\n- recycle: The ECS instance enters the economy mode.\n\n    > This value takes effect only when `ScalingPolicy` is set to `recycle`.\n\n- release: The ECS instance is released.\n\n  The `ScalingPolicy` parameter of CreateScalingGroup specifies the reclaim mode of the scaling group, but the specific action taken when an instance is removed is determined by the `RemovePolicy` parameter of RemoveInstances. Examples:\n\n    - If `ScalingPolicy` is set to `recycle` and `RemovePolicy` is set to `recycle`, the ECS instance enters the economy mode.\n    - If `ScalingPolicy` is set to `recycle` and `RemovePolicy` is set to `release`, the ECS instance is released.\n    - If `ScalingPolicy` is set to `release` and `RemovePolicy` is set to `recycle`, the ECS instance is released.\n    - If `ScalingPolicy` is set to `release` and `RemovePolicy` is set to `release`, the ECS instance is released.\n\nDefault value: release."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     },
     {
       "name": "StopInstanceTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "缩容流程中等待ECS实例停机成功的超时时间，单位为秒。\n取值范围：30~240。\n\n> - 该参数值默认从伸缩组继承，您也可以在调用RemoveInstances时重新设置。\n- 该参数仅在 RemovePolicy = release 模式下的缩容流程里生效。  \n- 如果设置了该参数，系统会最长等待StopInstanceTimeout时间将实例停机成功，超时后无论实例是否成功停机都会继续缩容。  \n- 如果没有设置该参数，系统会长时间等待实例停机成功，只有实例停机成功后才继续缩容，停机失败时，缩容流程会回滚，缩容失败。",
+        "en": "The timeout period for waiting for an ECS instance to be stopped during the scale-in process. Unit: seconds.\nValid values: 30 to 240.\n\n> - By default, this parameter value is inherited from the scaling group. You can also reset this value when you call RemoveInstances.\n- This parameter takes effect only in scale-in processes where RemovePolicy is set to release.  \n- If this parameter is specified, the system waits up to the StopInstanceTimeout period for the instance to stop. After the timeout period elapses, the scale-in process continues regardless of whether the instance is stopped.  \n- If this parameter is not specified, the system waits until the instance is stopped before continuing the scale-in process. If the instance fails to stop, the scale-in process is rolled back and the scale-in fails."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "从一个伸缩组删除一台或多台ECS实例",
+    "en": "Remove one or more ECS instances from a scaling group"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 调用本接口前请确保满足以下条件：\n\n    - 伸缩组处于启用（Active）状态。\n\n    - 伸缩组中没有正在执行的伸缩活动。\n\n当伸缩组没有执行中的伸缩活动时，该接口可以绕过冷却时间（DefaultCooldown）直接执行。\n\n- 如果一台ECS实例由弹性伸缩自动创建，或者您手动添加但已托管给伸缩组，从伸缩组删除该ECS实例时，ECS实例触发了节省停机效果或者被释放。\n\n- 如果一台ECS实例由您手动添加且未托管给伸缩组，从伸缩组删除该ECS实例时，ECS实例不会被停止或者释放。\n\n- 如果当前伸缩组的实例数（TotalCapacity）减去该接口指定的实例数小于伸缩组内最小实例数（MinSize），则调用失败。\n\n调用该接口返回成功，只是表示弹性伸缩服务接受了该接口调用的请求，伸缩活动可以执行，但不代表伸缩活动能够执行成功。您需要通过返回的`ScalingActivityId`查看该伸缩活动的执行状态。",
+    "en": "## Operation description\n\n- Before you invoke this operation, make sure that the following conditions are met:\n\n    - The scaling group is in the enable (Active) state.\n\n    - No scaling activity is being executed in the scaling group.\n\nIf no scaling activity is being executed in the scaling group, this operation can bypass the cooldown time (DefaultCooldown) and be executed immediately.\n\n- If an ECS instance is automatically created by Auto Scaling through automatic creation, or is manually added but has been entrusted to the scaling group, the ECS instance triggers the economy mode or is released when it is deleted from the scaling group.\n\n- If an ECS instance is manually added and has not been entrusted to the scaling group, the ECS instance is not stopped or released when it is deleted from the scaling group.\n\n- If the current number of instances (TotalCapacity) in the scaling group minus the number of instances specified in this operation is less than the minimum number of instances (MinSize) in the scaling group, the invocation is failed.\n\nA successful response only indicates that Auto Scaling accepted the request. The scaling activity can be executed, but a successful response does not guarantee that the scaling activity will succeed. You can check the execution status of the scaling activity based on the returned `ScalingActivityId`."
+  },
   "example": {
     "unifiedCli": "aliyun ess remove-instances --scaling-group-id asg-bp18p2yfxow2dloq0000 --remove-policy release --decrease-desired-capacity true --ignore-invalid-instance false --instance-id i-28wt40000 --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --stop-instance-timeout 60 --lifecycle-hook-context '{\"IgnoredLifecycleHookIds\":[\"ash-bp14zolna43z266bq000\"],\"LifecycleHookResult\":\"example-string\",\"DisableLifecycleHook\":false}' --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess RemoveInstances --region cn-hangzhou --RemovePolicy release --LifecycleHookContext '{\"IgnoredLifecycleHookIds\":[\"ash-bp14zolna43z266bq000\"],\"LifecycleHookResult\":\"example-string\",\"DisableLifecycleHook\":false}' --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --IgnoreInvalidInstance false --DecreaseDesiredCapacity true --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-28wt40000' --StopInstanceTimeout 60"

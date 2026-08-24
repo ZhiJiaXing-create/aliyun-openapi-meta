@@ -1,5 +1,6 @@
 {
   "name": "QueryQuotaMetric",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "/api/v1/observations/quota/[metric]",
@@ -8,33 +9,60 @@
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求体参数",
+        "en": "The request body."
+      }
     },
     {
       "name": "endTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询时间范围：结束时间。",
+        "en": "The end of the time range to query."
+      }
     },
     {
       "name": "metric",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "观测指标名称。仅支持cpu和memory",
+        "en": "The name of the metric. Valid values: cpu and memory."
+      }
     },
     {
       "name": "startTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询时间范围：开始时间。",
+        "en": "The start of the time range to query."
+      }
     },
     {
       "name": "strategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据聚合策略。默认max。仅支持max和avg。\n\n数据的采集频率是1分钟。当查询的时间范围较大时，数据展示的自适应步长会超过1分钟，此时指标会进行聚合。该参数即指定数据的聚合逻辑。",
+        "en": "The aggregation strategy for the data. The default value is max. Valid values: max and avg.\n\nData is collected at one-minute intervals. If you query a long time range, the system may use an interval longer than one minute and aggregate the data. This parameter specifies how the data is aggregated."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "计算资源消耗信息",
+    "en": "QueryQuotaMetric"
+  },
   "example": {
     "unifiedCli": "aliyun maxcompute query-quota-metric --start-time 1735534322 --end-time 1735536322 --metric cpu --strategy max --nickname os_sns_p --sub-quota-nickname os_sns --interval 60 --sub-metric example-string --region cn-hangzhou",
     "legacyCli": "aliyun maxcompute POST /api/v1/observations/quota/cpu --region cn-hangzhou --startTime 1735534322 --endTime 1735536322 --strategy max --header \"Content-Type=application/json\" --body {\"subMetric\":\"example-string\",\"nickname\":\"os_sns_p\",\"interval\":60,\"subQuotaNickname\":\"os_sns\"}"

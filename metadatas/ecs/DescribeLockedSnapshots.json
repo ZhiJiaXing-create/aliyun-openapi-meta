@@ -1,5 +1,6 @@
 {
   "name": "DescribeLockedSnapshots",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围： \n- true：发送检查请求，不会实际执行。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。 \n- false（默认）：发送正常请求，通过检查后直接执行请求。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- true: performs a dry run without performing the actual operation. The system checks for required parameters, the request format, and business constraints. If the request fails the dry run, an error message is returned. If the request passes the dry run, the DryRunOperation error code is returned.\n\n- false (default): performs a dry run and performs the actual operation if the request passes the dry run."
+      }
     },
     {
       "name": "LockStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "锁定状态。取值范围： \n- compliance-cooloff：快照以合规模式锁定，但仍处于冷静期内。快照无法被删除，但具备相应 RAM 权限的用户可以解锁快照、延长或缩短冷静期、延长或缩短锁定时长。 \n- compliance：快照以合规模式锁定，且冷静期已结束。快照无法被解锁或删除，但具备相应 RAM 权限的用户可以延长锁定时长。 \n- expired：快照曾被锁定，但锁定时长已结束，锁定已过期。快照当前未锁定，可以被删除。",
+        "en": "The lock status. Valid values:\n\n- compliance-cooloff: The snapshot is locked in compliance mode and is within its cool-off period. The snapshot cannot be deleted. Users with the required RAM permissions can unlock the snapshot, extend or shorten the cool-off period, and extend or shorten the lock duration.\n\n- compliance: The snapshot is locked in compliance mode and the cool-off period has ended. The snapshot cannot be unlocked or deleted. Users with the required RAM permissions can extend the lock duration.\n\n- expired: The lock on the snapshot has expired. The snapshot is no longer locked and can be deleted."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时每页行数。最大值为 100。 \n\n默认值： \n- 当不设置值或设置的值小于 10 时，默认值为 10。 \n- 当设置的值大于 100 时，默认值为 100。",
+        "en": "The number of entries per page. Maximum value: 100.\n\nDefault value:\n\n- If you do not specify this parameter or you specify a value smaller than 10, the default value is 10.\n\n- If you specify a value larger than 100, the value is capped at 100."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询凭证（Token），取值为上一次 API 调用返回的`NextToken`参数值。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results. It is the `NextToken` value from a previous response."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域 ID。您可以调用 [DescribeRegions](https://help.aliyun.com/zh/ecs/developer-reference/api-ecs-2014-05-26-describeregions?spm=a2c4g.11186623.0.i2) 查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call [DescribeRegions](https://help.aliyun.com/zh/ecs/developer-reference/api-ecs-2014-05-26-describeregions?spm=a2c4g.11186623.0.i2) to view the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "SnapshotIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "快照 ID 数组。数组长度：1~100。",
+        "en": "An array of one to 100 snapshot IDs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询快照锁定信息",
+    "en": "DescribeLockedSnapshots"
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-locked-snapshots --biz-region-id cn-hangzhou --snapshot-ids s-bp67acfmxazb4p0000 --lock-status compliance-cooloff --next-token caeba0bbb2be03f84eb48b699f0a0000 --max-results 10 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeLockedSnapshots --region cn-hangzhou --NextToken caeba0bbb2be03f84eb48b699f0a0000 --LockStatus 'compliance-cooloff' --MaxResults 10 --DryRun false --RegionId 'cn-hangzhou' --SnapshotIds.1 's-bp67acfmxazb4p0000'"

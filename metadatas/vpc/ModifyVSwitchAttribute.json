@@ -1,5 +1,6 @@
 {
   "name": "ModifyVSwitchAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机要修改的描述信息。  \n\n描述长度为1～256个字符，不能以`http://`或`https://`开头。",
+        "en": "The new description for the vSwitch.\n\nThe description must be 1 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "EnableIPv6",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机是否开启IPv6。取值：\n\n- **true**：开启IPv6。需所属VPC已开启IPv6，并同时传入Ipv6CidrBlock为交换机分配IPv6网段。\n- **false**（默认值）：关闭。为交换机关闭IPv6时，需确保IPv6地址未被使用，且不可同时传入Ipv6CidrBlock。",
+        "en": "Specifies whether to enable the IPv6 feature for the vSwitch. Valid values:\n\n*   **true**: enables the IPv6 feature.\n*   **false**: disables the IPv6 feature. This is the default value."
+      }
     },
     {
       "name": "Ipv6CidrBlock",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机IPv6网段的最后8比特位，取值：**0**~**255**。\n\n仅交换机所属VPC已开启IPv6时，您可以传入此参数为交换机分配IPv6网段。IPv6网段分配后，无法修改为其他网段。需确保与所属VPC下其他交换机的网段不重叠。",
+        "en": "The last eight bits of the IPv6 CIDR block of the vSwitch. Valid values: **0** to **255**.\n\nYou can set this parameter only when the IPv6 feature is enabled for the virtual private cloud (VPC) to which the vSwitch belongs."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机所属的地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the vSwitch is deployed. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "交换机的ID。",
+        "en": "The ID of the vSwitch."
+      }
     },
     {
       "name": "VSwitchName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机要修改的名称。\n\n名称长度为1～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The new name for the vSwitch.\n\nThe name must be 1 to 128 characters in length, and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "VpcIpv6CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机所在VPC的IPv6网段。\n当交换机所属VPC具有多个IPv6网段时，您可以传入此参数指定交换机所属的IPv6网段范围。如不指定，将选择VPC开启IPv6时分配的 IPv6 网段。",
+        "en": "The IPv6 CIDR block of the VPC to which the vSwitch belongs.\n\nYou can set this parameter only when the IPv6 feature is enabled for the VPC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改指定交换机的配置信息",
+    "en": "ModifyVSwitchAttribute"
+  },
+  "descriptions": {
+    "zh": "- **ModifyVSwitchAttribute**接口属于异步接口，即系统会返回一个请求ID，但该交换机的配置信息尚未修改成功，系统后台的修改任务仍在进行。您可以调用[DescribeVSwitchAttributes](~~94567~~)查询交换机的修改状态：\n    - 当交换机的状态处于**Pending**状态时，表示交换机的配置信息正在修改中。\n    - 当交换机状态处于**Available**状态时，表示交换机可用。\n- **ModifyVSwitchAttribute**接口不支持并发修改同一个交换机的配置信息。",
+    "en": "- **ModifyVSwitchAttribute**接口属于异步接口，即系统会返回一个请求ID，但该交换机的配置信息尚未修改成功，系统后台的修改任务仍在进行。您可以调用[DescribeVSwitchAttributes](~~94567~~)查询交换机的修改状态：\n    - 当交换机的状态处于**Pending**状态时，表示交换机的配置信息正在修改中。\n    - 当交换机状态处于**Available**状态时，表示交换机可用。\n- **ModifyVSwitchAttribute**接口不支持并发修改同一个交换机的配置信息。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-vswitch-attribute --vswitch-id vsw-25nacdfvue40000 --vswitch-name VSwitch-1 --biz-region-id cn-hangzhou --description This_is_my_vswitch. --ipv6-cidr-block 10 --enable-ipv6 false --vpc-ipv6-cidr-block 2408:XXXX:312:3e00::/56 --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyVSwitchAttribute --region cn-hangzhou --Description 'This_is_my_vswitch.' --VSwitchId 'vsw-25nacdfvue40000' --VSwitchName 'VSwitch-1' --RegionId 'cn-hangzhou' --VpcIpv6CidrBlock '2408:XXXX:312:3e00::/56' --Ipv6CidrBlock 10 --EnableIPv6 false"

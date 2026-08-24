@@ -1,5 +1,6 @@
 {
   "name": "UpdateAnycastEipAddressAssociations",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "AnycastId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Anycast EIP实例ID。",
+        "en": "The ID of the Anycast EIP instance."
+      }
     },
     {
       "name": "AssociationMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "绑定模式，取值：\n\n- **Default**：默认模式，将要绑定的云资源实例设置为默认源站。\n\n- **Normal**：普通模式，要绑定的云资源实例设置为普通源站。",
+        "en": "The association mode. Valid values:\n\n- **Default**: In this mode, the cloud resource instance to be associated is set as the default origin server.\n\n- **Normal**: In this mode, the cloud resource instance to be associated is set as a normal origin server."
+      }
     },
     {
       "name": "BindInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要绑定的云资源实例ID。",
+        "en": "The ID of the cloud resource instance to be associated."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nThe client generates the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会更新绑定关系。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: sends a check request and does not update the association. The system checks whether the required parameters are specified, the request format, and the service limits. If the check fails, the corresponding error is returned. If the check succeeds, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. After the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "PopLocationAddList",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要新增的关联接入区域和接入点列表。",
+        "en": "The list of access areas and access points to be added."
+      }
     },
     {
       "name": "PopLocationDeleteList",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待删除的关联接入区域和接入点列表。",
+        "en": "The list of access areas and access points to be deleted."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新实例绑定信息",
+    "en": "UpdateAnycastEipAddressAssociations"
+  },
   "example": {
     "unifiedCli": "aliyun eipanycast update-anycast-eip-address-associations --bind-instance-id lb-d7oxbixhxv1uupnon0000 --anycast-id aeip-bp1ix34fralt4ykf30000 --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --pop-location-add-list PopLocation=us-west-1-pop --pop-location-delete-list PopLocation=eu-west-1-pop --association-mode Default --region cn-hangzhou",
     "legacyCli": "aliyun eipanycast UpdateAnycastEipAddressAssociations --region cn-hangzhou --BindInstanceId 'lb-d7oxbixhxv1uupnon0000' --PopLocationAddList.1.PopLocation 'us-west-1-pop' --AnycastId 'aeip-bp1ix34fralt4ykf30000' --DryRun false --AssociationMode Default --ClientToken '02fb3da4-130e-11e9-8e44-0010000' --PopLocationDeleteList.1.PopLocation 'eu-west-1-pop' --method POST --force"

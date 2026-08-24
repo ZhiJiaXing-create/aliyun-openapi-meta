@@ -1,5 +1,6 @@
 {
   "name": "PrintByTemplate",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DeviceName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备名称。",
+        "en": "The DeviceName of the device."
+      }
     },
     {
       "name": "HistoryPrintTopic",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否下发历史的Topic给打印设备。\n\n- false（默认）：下发设备的Topic格式为**/ext/rrpc/+/{pk}/{dn}/user/print**\n- true：下发设备的Topic格式为**/ext/rrpc/+/{pk}/{dn}/print**",
+        "en": "Specifies whether to send the historical topic to the printer.\n\n*   false (default): The topic that is sent to the printer is in the \\*\\*/ext/rrpc/+/{pk}/{dn}/user/print\\*\\* format.\n*   true: The topic that is sent to the printer is in the \\*\\*/ext/rrpc/+/{pk}/{dn}/print\\*\\* format."
+      }
     },
     {
       "name": "IotId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备ID。\n> 如果传入该参数，则无需传入**ProductKey**和**DeviceName**。**IotId**作为设备唯一标识符，和**ProductKey**与**DeviceName**组合是一一对应的关系。如果您同时传入**IotId**和**ProductKey**与**DeviceName**组合，则以**IotId**为准。",
+        "en": "The device ID.\n\n> If you specify this parameter, you do not need to specify the **ProductKey** and **DeviceName** parameters. **IotId** specifies a globally unique identifier (GUID) of the device, which corresponds to a combination of **ProductKey** and **DeviceName**. If you specify the **IotId**, **ProductKey**, and **DeviceName** parameters, the value of the **IotId** parameter takes precedence."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。\n\n<props=\"china\">您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。若有ID值，必须传入该ID值，否则调用会失败。</props>\n\n<props=\"china\">\n> 如果公共实例没有ID值，请参见[如何获取实例ID](~~267533~~)。</props>\n\n<props=\"intl\">无需传入此参数。</props>",
+        "en": "The instance ID.\n\nYou do not need to specify this parameter."
+      }
     },
     {
       "name": "ParamsJsonString",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "打印参数，您可以在寄雁传书服务控制台获取打印参数的模板，然后在模板中填入本次需要动态打印的内容。",
+        "en": "The template parameters. You can obtain the template of receipts in the Letter Sending Service console, and configure parameters in the template to create a custom receipt that you want to print."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品的唯一标识。\n\n> 如果传入**ProductKey**，则必须同时传入**DeviceName**。",
+        "en": "The unique identifier of the product to which the device belongs.\n\n> If you specify the **ProductKey** parameter, you must also specify the **DeviceName** parameter."
+      }
     },
     {
       "name": "TemplateBizCode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "模板标识，您可以在寄雁传书服务的控制台获取模板标识。",
+        "en": "The template identifier. You can obtain the template identifier in the Letter Sending Service console."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "PrintByTemplate",
+    "en": "PrintByTemplate"
+  },
+  "descriptions": {
+    "zh": "## 限制说明\n\n调用该接口打印小票时，必须已经在寄雁传书控制台创建小票打印模板，否则将调用失败。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为50。\n> RAM用户共享阿里云账号配额。",
+    "en": "## Limits\n\nBefore you call this operation, a receipt template must be available in the Letter Sending Service console. Otherwise, the request fails.\n\n## QPS limits\n\nYou can call this API operation up to 50 times per second per account.\n\n> The RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot print-by-template --params-json-string 'orderTable_:_number_:_1_,_price_:_33.00_,_name_:_糖醋排骨_,_orderTime_:_2021-01-25_10:20:00_,_address_:_地址：浙江省杭州市西湖区阿里云飞天园区_,_phone_:_1300000000_,_price_:_0_74.00_,_distributionFee_:_5.00_,_shopName_:_XX食品商店_,_title_:_XX外卖单_,_status_:_--已在线支付--' --iot-id 4de2c36700008c585e599200 --iot-instance-id iot_instc_pu0000_c0-v6400000000 --template-biz-code test --product-key a1BwAGV0000 --device-name light --history-print-topic true --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot PrintByTemplate --region cn-hangzhou --IotId 4de2c36700008c585e599200 --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --ParamsJsonString 'orderTable_:_number_:_1_,_price_:_33.00_,_name_:_糖醋排骨_,_orderTime_:_2021-01-25_10:20:00_,_address_:_地址：浙江省杭州市西湖区阿里云飞天园区_,_phone_:_1300000000_,_price_:_0_74.00_,_distributionFee_:_5.00_,_shopName_:_XX食品商店_,_title_:_XX外卖单_,_status_:_--已在线支付--' --HistoryPrintTopic true --ProductKey a1BwAGV0000 --TemplateBizCode test --DeviceName light"

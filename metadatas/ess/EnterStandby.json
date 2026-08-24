@@ -1,5 +1,6 @@
 {
   "name": "EnterStandby",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Async",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否采用异步任务方式执行。取值范围：\n- true：异步任务执行方式。\n- false：同步执行方式。\n\n默认值： false。",
+        "en": "Specifies whether to use an asynchronous task. Valid values:\n- true: The request is processed asynchronously.\n- false: The request is processed synchronously.\n\nDefault value: false."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求之间该参数值唯一。\n\n只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECS实例或ECI实例的ID。",
+        "en": "The ID of the ECS instance or elastic container instance."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将伸缩组内的ECS实例设置为备用状态",
+    "en": "Set ECS instances in a scaling group to the standby state"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 如果伸缩组关联了负载均衡实例，会把负载均衡中对应的实例权重设置为0。\n\n- 当实例处于备用状态时，如果您需要移出伸缩组并释放实例，则可以正常手动将该实例移出伸缩组并释放。\n\n- 对于伸缩组数量变化或监控任务触发的自动缩容的伸缩活动，不会移出处于备用状态的实例。\n\n- 当实例处于备用状态时，实例如果处于非健康状态（例如停止中、重启中等），实例的健康检查状态不会被更新，并且不会触发移出不健康实例的伸缩活动，只有实例退出备用状态后才会重新更新健康检查状态。",
+    "en": "## Operation description\n\n- If the scaling group is associated with a load balancing instance, the weight of the corresponding instance in the load balancing instance is set to 0.\n\n- When an instance is in the standby state, you can manually remove and release the instance from the scaling group as Normal.\n\n- For scaling activities triggered by changes in the number of instances in the scaling group or by monitoring nodes for automatic scale-in, instances in the standby state are not removed.\n\n- When an instance is in the standby state, if the instance enters an unhealthy state (for example, stopping or restarting), the health check status of the instance is not updated, and no scaling activity is triggered to remove the unhealthy instance. The health check status is updated only after the instance exits the standby state."
+  },
   "example": {
     "unifiedCli": "aliyun ess enter-standby --scaling-group-id asg-bp1fo0dbtsbmqa9h0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --instance-id i-28wt40000 --async false --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess EnterStandby --region cn-hangzhou --ScalingGroupId 'asg-bp1fo0dbtsbmqa9h0000' --Async false --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-28wt40000'"

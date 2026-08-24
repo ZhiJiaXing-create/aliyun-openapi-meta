@@ -1,5 +1,6 @@
 {
   "name": "UpdateUserGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,27 +9,50 @@
       "name": "Attributes",
       "position": "Body",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户组属性集合。最大总数3000个。多个用户组属性之间是或的关系，按照合集生效。",
+        "en": "The set of user group attributes. The maximum total number is 3000. Multiple user group attributes have an OR relationship and take effect as a union."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户组描述。长度为1~128个字符，支持中文和大小写英文字母，可包含数字、半角句号（.）、下划线（_）、短划线（-）和空格。",
+        "en": "The description of the user group. The description must be 1 to 128 characters in length, and can contain Chinese characters, uppercase and lowercase letters, digits, periods (.), underscores (_), hyphens (-), and spaces."
+      }
     },
     {
       "name": "ModifyType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户组的修改类型。取值：\n- **Cover**（默认）：使用**Attributes**参数的值覆盖原用户组属性集合。\n- **Append**：在用户组属性集合中分别增加**Attributes**参数中输入的值。",
+        "en": "The modification type of the user group. Valid values:\n- **Cover** (default): overwrites the original user group attribute set with the value of the **Attributes** parameter.\n- **Append**: separately appends the values entered in the **Attributes** parameter to the user group attribute set."
+      }
     },
     {
       "name": "UserGroupId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用户组ID。取值来源：\n- [ListUserGroups](~~ListUserGroups~~)：批量查询用户组。\n- [CreateUserGroup](~~CreateUserGroup~~)：创建用户组。",
+        "en": "The ID of the user group. Value sources:\n- [ListUserGroups](~~ListUserGroups~~): queries user groups in batches.\n- [CreateUserGroup](~~CreateUserGroup~~): creates a user group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改用户组",
+    "en": "Modify a user group"
+  },
   "example": {
     "unifiedCli": "aliyun csas update-user-group --user-group-id usergroup-6f1ef2fc56b60000 --description '这是一条用户组' --attributes Relation=Equal IdpId=12 UserGroupType=department Value=OU=部门1,OU=SASE钉钉 --modify-type Cover --region cn-hangzhou",
     "legacyCli": "aliyun csas UpdateUserGroup --region cn-hangzhou --Attributes.1.Relation Equal --ModifyType Cover --Description '这是一条用户组' --UserGroupId 'usergroup-6f1ef2fc56b60000' --Attributes.1.Value 'OU=部门1,OU=SASE钉钉' --Attributes.1.IdpId 12 --Attributes.1.UserGroupType department --method POST --force"

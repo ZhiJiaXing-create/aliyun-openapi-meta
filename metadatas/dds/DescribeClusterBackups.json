@@ -1,5 +1,6 @@
 {
   "name": "DescribeClusterBackups",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群备份ID。",
+        "en": "The ID of the cluster backup."
+      }
     },
     {
       "name": "BackupJobId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份任务ID。",
+        "en": "The ID of the backup job."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "DestRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "异地备份所在地域。\n\n> 查询异地备份时，该参数必填。",
+        "en": "The region where the geo-redundant backup resides.\n\n> This parameter is required when you query geo-redundant backups."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询结束时间，必须晚于查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。\n> 当传入BackupId时，此参数无效。",
+        "en": "The end of the time range to query. The end time must be later than the start time. Specify the time in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in UTC.\n\n> This parameter is invalid if you specify the BackupId parameter."
+      }
     },
     {
       "name": "IsOnlyGetClusterBackUp",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否查询集群备份下的子节点信息。取值说明：\n- **true**：只返回集群备份基本信息，不返回全量的子节点的备份信息。\n- **false**（默认 ）：返回全量的子节点的备份信息。",
+        "en": "Specifies whether to query the information about the child nodes in the cluster backup. Valid values:\n\n- **true**: Returns only the basic information about the cluster backup, not the backup information about all child nodes.\n\n- **false** (Default): Returns the backup information about all child nodes."
+      }
     },
     {
       "name": "PageNo",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页页号。默认值为**1**，取值范围为正整数。",
+        "en": "The number of the page to return. The value must be a positive integer. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值：\n\n- **30**（默认值）\n- **50**\n- **100**",
+        "en": "The number of entries to return on each page. Valid values:\n\n- **30** (Default)\n\n- **50**\n\n- **100**"
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "SrcRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所在地域。\n\n> - 查询已释放实例的备份集列表式，该参数必填。\n> - 查询异地备份时，该参数必填。",
+        "en": "The region where the instance resides.\n\n> - This parameter is required when you query the backup sets of a released instance.\n>\n> - This parameter is required when you query geo-redundant backups."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。\n> 当传入BackupId时，此参数无效。",
+        "en": "The beginning of the time range to query. Specify the time in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in Coordinated Universal Time (UTC).\n\n> This parameter is invalid if you specify the BackupId parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询集群备份集列表",
+    "en": "DescribeClusterBackups"
+  },
+  "descriptions": {
+    "zh": "2023年10月19日前新建的云盘版分片集群实例，在调用前本接口前，需要调用 \n[TransferClusterBackup](~~2587931~~) 接口，完成分片备份到集群备份的转换。\n\n2023年10月19日之后新建的云盘版分片集群实例，默认使用集群备份。",
+    "en": "For sharded cluster instances that use cloud disks and were created before October 19, 2023, you must first call the [TransferClusterBackup](~~2587931~~) operation to convert shard backups to cluster backups.\n\nSharded cluster instances that use cloud disks and were created after October 19, 2023 use cluster backups by default."
+  },
   "example": {
     "unifiedCli": "aliyun dds describe-cluster-backups --db-instance-id dds-bp16cb1627710000 --backup-id 56640000 --page-no 1 --page-size 30 --start-time 2019-03-13T12:11Z --end-time 2019-03-14T13:10Z --is-only-get-cluster-back-up true --src-region cn-hangzhou --dest-region cn-shanghai --resource-group-id rg-xxxx --backup-job-id 775051 --region cn-hangzhou",
     "legacyCli": "aliyun dds DescribeClusterBackups --region cn-hangzhou --IsOnlyGetClusterBackUp true --SrcRegion 'cn-hangzhou' --PageSize 30 --EndTime '2019-03-14T13:10Z' --ResourceGroupId 'rg-xxxx' --DBInstanceId 'dds-bp16cb1627710000' --StartTime '2019-03-13T12:11Z' --BackupId 56640000 --PageNo 1 --BackupJobId 775051 --DestRegion 'cn-shanghai'"

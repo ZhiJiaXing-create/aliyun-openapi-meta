@@ -1,5 +1,6 @@
 {
   "name": "CreateLoadBalancer",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AddressIpVersion",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议版本。取值：\n\n- **Ipv4**（默认值）：Ipv4类型。",
+        "en": "The IP version. Valid values:\n\n*   **Ipv4** (default): IPv4"
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建实例。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "LoadBalancerName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网关型负载均衡实例名称。\n\n长度为2~128个英文或中文字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-）。",
+        "en": "The GWLB instance name.\n\nThe name must be 2 to 128 characters in length, and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-). The name must start with a letter."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags that are added to the instance."
+      }
     },
     {
       "name": "VpcId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专有网络VPC ID。",
+        "en": "The virtual private cloud (VPC) ID."
+      }
     },
     {
       "name": "ZoneMappings",
       "position": "Body",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "可用区及交换机映射列表。至少需要添加一个可用区，最多支持添加20个可用区。若当前地域支持2个及以上的可用区，建议添加2个及以上可用区。",
+        "en": "The mappings between zones and vSwitches. You must specify at least one zone. You can specify at most 20 zones. If the region supports two or more zones, specify at least two zones."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建负载均衡实例",
+    "en": "CreateLoadBalancer"
+  },
+  "descriptions": {
+    "zh": "**请确保在使用该接口前，已充分了解网关型负载均衡产品的收费方式和[价格](~~2806160~~)**。\n- 创建网关型负载均衡实例时会自动为用户创建AliyunServiceRoleForGwlb SLR 角色。\n- **CreateLoadBalancer**接口属于异步接口，即系统返回一个实例 ID，但该网关型负载均衡实例尚未创建成功，系统后台的创建任务仍在进行。您可以调用[GetLoadBalancerAttribute](~~2853555~~)查询网关型负载均衡实例的创建状态：\n  - 当网关型负载均衡实例处于**Provisioning**状态时，表示网关型负载均衡实例正在创建中。\n  - 当网关型负载均衡实例处于**Active**状态时，表示网关型负载均衡实例创建成功。",
+    "en": "**Ensure that you fully understand the billing methods and [pricing](~~2806160~~) of GWLB before calling this operation.**\n\n*   When you create a GWLB instance, the service-linked role AliyunServiceRoleForGwlb is automatically created.\n\n*   **CreateLoadBalancer** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetLoadBalancerAttribute](~~2853555~~) operation to query the status of a GWLB instance.\n\n    *   If the GWLB instance is in the **Provisioning** state, the GWLB instance is being created.\n    *   If the GWLB instance is in the **Active** state, the GWLB instance is created."
+  },
   "example": {
     "unifiedCli": "aliyun gwlb create-load-balancer --address-ip-version Ipv4 --load-balancer-name testGwlbName --vpc-id vpc-uf6qcgpv22ttrnnjh0000 --zone-mappings ZoneId=cn-hangzhou-a VSwitchId=vsw-2f0eb0200000 --tag Value=testTagValue Key=testTagKey --resource-group-id rg-acfmwbufq6q30000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun gwlb CreateLoadBalancer --region cn-hangzhou --LoadBalancerName testGwlbName --Tag.1.Key testTagKey --AddressIpVersion Ipv4 --VpcId 'vpc-uf6qcgpv22ttrnnjh0000' --ResourceGroupId 'rg-acfmwbufq6q30000' --Tag.1.Value testTagValue --ZoneMappings.1.ZoneId 'cn-hangzhou-a' --DryRun false --ZoneMappings.1.VSwitchId 'vsw-2f0eb0200000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --method POST --force"

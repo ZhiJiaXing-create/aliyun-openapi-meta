@@ -1,5 +1,6 @@
 {
   "name": "PutWebtracking",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/logstores/[logstoreName]/track",
@@ -8,21 +9,44 @@
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "请求消息体。",
+        "en": "The request body."
+      }
     },
     {
       "name": "logstoreName",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Logstore名称。",
+        "en": "The name of the Logstore."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Project名称。",
+        "en": "The name of the project."
+      }
     }
   ],
+  "security": [
+    "Anonymous"
+  ],
+  "title": {
+    "zh": "通过WebTracking批量写入日志",
+    "en": "PutWebtracking"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n\n- 已明确您查询日志所属的Project名称、所属地域、Logstore名称等。如何查询，请参见[管理Project](~~48984~~)和[管理Logstore](~~48990~~)。\n\n- 适用于在网页或者客户端采集日志的场景。\n- 使用Web Tracking采集日志时，单个请求只能写入一条日志。更多信息，请参见[使用Web Tracking采集日志](~~31752~~)。\n- 针对日志量较大的场景，可以调用PutWebTracking接口将多条日志合并为一次请求。\n- 使用PutWebTracking接口写入日志时，需要先为Logstore打开Web Tracking开关。更多信息，请参见[使用Web Tracking采集日志](~~31752~~)。\n- 该接口不支持同时写入多个Topic的日志数据。\n- 使用该接口则表示该Logstore打开互联网匿名写入权限，没有经过有效鉴权（不需要AccessKey），可能产生脏数据。",
+    "en": "### [](#)Usage notes\n\n- The information that is required to query logs is obtained. The information includes the name of the project to which the logs belong, the region of the project, and the name of the Logstore to which the logs belong. For more information, see [Manage a project](~~48984~~) and [Manage a Logstore](~~48990~~).\n\n- Use this operation to collect logs from web pages or clients.\n\n- If you use web tracking to collect logs and you do not call this operation, you can send only one log to Simple Log Service in a request. For more information, see [Use web tracking to collect logs](~~31752~~).\n\n- If you want to collect a large amount of log data, you can call this operation to send multiple logs to Simple Log Service in one request.\n\n- Before you can call this operation to send logs to a Logstore, you must enable web tracking for the Logstore. For more information, see [Use web tracking to collect logs](~~31752~~).\n\n- You cannot call this operation to send the logs of multiple topics to Simple Log Service at a time.\n\n- If you call this operation, anonymous users from the Internet are granted the write permissions on the Logstore. This may generate dirty data because AccessKey pair-based authentication is not performed."
+  },
   "example": {
     "unifiedCli": "aliyun sls put-webtracking --project ali-test-project --logstore-name ali-test-logstore --topic topic --source source --logs '[\"example-string\"]' --tags key=example-string --region cn-hangzhou",
     "legacyCli": "aliyun sls POST /logstores/ali-test-logstore/track --project ali-test-project --region cn-hangzhou --header \"Content-Type=application/json\" --body {\"__tags__\":{\"key\":\"example-string\"},\"__topic__\":\"topic\",\"__source__\":\"source\",\"__logs__\":[\"example-string\"]}"

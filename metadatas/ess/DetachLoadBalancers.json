@@ -1,5 +1,6 @@
 {
   "name": "DetachLoadBalancers",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "Async",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "移除负载均衡实例时，是否采用异步调用的方式。异步调用能保证操作的事务性，即所有操作都执行成功或者某个操作失败时所有操作的执行结果都不生效，建议您采用异步调用。\n\n取值范围：\n\n- true：异步调用。请求将返回伸缩活动的ID。\n\n- false：同步调用。\n\n默认值：false。",
+        "en": "Specifies whether to use asynchronous invocation when removing load balancing instances. Asynchronous invocation ensures the transactional nature of the operation, which means that either all operations execute successfully or none of the operations take effect if one fails. Use asynchronous invocation.\n\nValid values:\n\n- true: Asynchronous invocation. The request returns the ID of the scaling activity.\n\n- false: Synchronous call.\n\nDefault value: false."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。\n\n只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "ForceDetach",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否移除负载均衡实例后端服务器中属于当前伸缩组的ECS实例。取值范围：\n\n- true：移除ECS实例。\n\n- false：不移除ECS实例。\n\n默认值：false。",
+        "en": "Specifies whether to remove ECS instances that belong to the current scaling group from the backend servers of the load balancing instance after the load balancing instance is removed. Valid values:\n\n- true: Removes the ECS instances.\n\n- false: Does not remove the ECS instances.\n\nDefault value: false."
+      }
     },
     {
       "name": "LoadBalancer",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例的ID，单次最多支持移除5台负载均衡实例。",
+        "en": "The ID of the load balancing instance. You can remove up to five load balancing instances at a time."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除一个或多个负载均衡实例",
+    "en": "Remove one or more load balancing instances"
+  },
   "example": {
     "unifiedCli": "aliyun ess detach-load-balancers --scaling-group-id asg-bp1ffogfdauy0jw00000 --force-detach false --client-token 123e4567-e89b-12d3-a456-426655440000 --async false --load-balancer lb-2zeur05gfs0000 --biz-region-id cn-hangzhou --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess DetachLoadBalancers --region cn-hangzhou --LoadBalancer.1 'lb-2zeur05gfs0000' --ScalingGroupId 'asg-bp1ffogfdauy0jw00000' --Async false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ForceDetach false"

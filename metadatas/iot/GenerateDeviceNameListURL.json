@@ -1,5 +1,6 @@
 {
   "name": "GenerateDeviceNameListURL",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,9 +9,24 @@
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must specify the ID for this parameter. Otherwise, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to configure this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "生成设备文件上传到OSS的详细信息",
+    "en": "GenerateDeviceNameListURL"
+  },
+  "descriptions": {
+    "zh": "## 设备列表文件要求\n\n- 设备列表文件包含设备DeviceName，以换行分隔，每行一个DeviceName。支持CSV格式，文件大小不能超过5 MB。\n\n- 单个设备列表文件最多可包含升级包对应产品下的10,000个设备，否则使用该文件创建静态升级批次时将报错。\n\n## 使用说明\n该接口与其他接口结合使用完成设备列表文件上传。上传设备列表文件的步骤：\n\n1. 调用本接口生成设备列表文件上传到对象存储（OSS）的信息。\n本接口的返回参数包含：\n    调用OSS [PostObject](~~31988~~)上传设备列表文件的请求参数：**Key**、**AccessKeyId**、**Signature**和**Policy**。\n\n2. 请在本接口返回结果后的1分钟之内，使用[OSS SDK](~~52834~~)调用[PostObject](~~31988~~)接口上传设备列表文件。上传文件的代码示例，请参见下文返回参数的用途章节。\n\n    > 本接口返回的参数信息有效期为1分钟，请在1分钟内上传设备列表文件。\n\n3. 设备列表上传完成后，请在60分钟内，调用物联网平台API [CreateOTAStaticUpgradeJob](~~147496~~)创建静态升级批次。\n    如果上传了设备列表，但未调用CreateOTAStaticUpgradeJob创建静态升级批次，上传的文件将被系统定期自动清理。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n\n   > RAM用户共享阿里云账号配额。",
+    "en": "This operation can be used with other operations to upload a device list file. Procedure:\n\n1. Call this operation to generate the information of a device list file that you want to upload to OSS.  \n\nThe response parameters of this API operation include:\n\nThe following request parameters of the OSS [PostObject](/help/en/object-storage-service/latest/postobject) operation that is used to upload the device list file: **Key**, **AccessKeyId**, **Signature**, and **Policy**.  \n\n2. Use an [OSS SDK](/help/en/object-storage-service/latest/sdk-code-samples-overview) to call the [PostObject](/help/en/object-storage-service/latest/postobject) operation to upload the device list file within 1 minute after a response is returned. For more information about sample code, see the \"Usage of response parameters\" section in this topic.  \n\n>  The parameter information that is returned by this operation is valid for 1 minute. You must upload the device list file within 1 minute.  3. After you upload the device list file, call the [CreateOTAStaticUpgradeJob](/help/en/iot-platform/latest/e1qtmo) operation of IoT Platform to create a static update batch within 60 minutes.  \n\nIf you upload device list files but you do not call the CreateOTAStaticUpgradeJob operation to create a static update batch, the system automatically deletes the uploaded files. The system deletes files on a regular basis.  \n\n\n## QPS limits\n\nEach Alibaba Cloud account can run up to 10 queries per second (QPS). \n\n>  The RAM users of an Alibaba Cloud account share the quota of the Alibaba Cloud account. \n\n\n## Requirements\n\n*   A device list file contains the names of devices. Separate multiple device names with line feeds. Each line contains only one device name. A device list file must be in the CSV format. The maximum size of a device list file is 5 MB.\n*   Each device list file can contain up to 10,000 names for the devices in a product that is related to an update package. If the number of device names in a device list file exceeds the limit, an error occurs when you use the file to create a static update batch."
+  },
   "example": {
     "unifiedCli": "aliyun iot generate-device-name-list-url --iot-instance-id iot-cn-0pp1n8t0000 --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot GenerateDeviceNameListURL --region cn-hangzhou --IotInstanceId 'iot-cn-0pp1n8t0000'"

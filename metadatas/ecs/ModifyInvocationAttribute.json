@@ -1,5 +1,6 @@
 {
   "name": "ModifyInvocationAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "Ensures the idempotence of the request. Generate a unique parameter value from your client to guarantee uniqueness across different requests. **ClientToken** supports only ASCII characters and cannot exceed 64 characters. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "CommandContent",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待修改后的命令内容。命令内容可以是明文内容或Base64编码后的内容。您需要注意：\n\n- 若创建待修改任务时选择了保存命令，命令内容在Base64编码后的大小不能超过18 KB；若选择了不保存命令，命令内容在Base64编码后的大小不能超过24 KB。\n- 如果您的命令内容是Base64编码后的内容，则必须设置`ContentEncoding=Base64`。\n- 指定参数`EnableParameter=true`可在命令内容中启用自定义参数功能：\n    - 用`{{}}`包含的方式定义自定义参数，在`{{}}`内参数名前后的空格以及换行符会被忽略。\n    - 自定义参数个数不能超过20个。\n    - 自定义参数名允许a-zA-Z0-9-_的组合，不支持acs::前缀指定非内置环境参数，不支持其余字符，参数名不区分大小写。\n    - 单个自定义参数名不能超过64字节。\n\n- 您可以指定内置环境参数作为自定义参数，执行命令时无需手动对参数赋值，云助手将为您自动替换为环境中对应的值。支持指定以下内置环境参数：\n    - `{{ACS::RegionId}}`：地域ID。\n    - `{{ACS::AccountId}}`：阿里云主账号UID。\n    - `{{ACS::InstanceId}}`：实例ID。命令下发到多个实例时，如需指定`{{ACS::InstanceId}}`作为内置环境参数，需确保云助手Agent不低于以下版本：\n        - Linux：2.2.3.309\n        - Windows：2.1.3.309\n    - `{{ACS::InstanceName}}`：实例名称。命令下发到多个实例时，如需指定`{{ACS::InstanceName}}`作为内置环境参数，需确保云助手Agent不低于以下版本：\n        - Linux：2.2.3.344\n        - Windows：2.1.3.344\n    - `{{ACS::InvokeId}}`：命令执行ID。如需指定`{{ACS::InvokeId}}`作为内置环境参数，需确保云助手Agent不低于以下版本：\n        - Linux：2.2.3.309\n        - Windows：2.1.3.309\n    - `{{ACS::CommandId}}`：命令ID。通过调用本接口执行命令时，如需指定`{{ACS::CommandId}}`作为内置环境参数，需确保云助手Agent不低于以下版本： \n        - Linux：2.2.3.309\n        - Windows：2.1.3.309",
+        "en": "The content of the command after modification. The command content can be plaintext or Base64-encoded. Take note of the following items:\n\n- You can specify whether to retain the command after the command is run when you created the command. If you specified to retain the command, the Base64-encoded command content cannot exceed 18 KB in size. If you specified not to retain the command, the Base64-encoded command content cannot exceed 24 KB in size.\n\n- If the command content is Base64-encoded, set `ContentEncoding` to Base64.\n\n- If you set `EnableParameter` to true, the custom parameter feature is enabled and you can configure custom parameters based on the following rules:\n\n  - You can define custom parameters in the `{{}}` format. Within `{{}}`, the spaces and line feeds before and after the parameter names are ignored.\n\n  - The number of custom parameters cannot exceed 20.\n\n  - A custom parameter name can contain letters, digits, underscores (\\_), and hyphens (-). The name is case-insensitive. The ACS:: prefix cannot be used to specify non-built-in environment parameters.\n\n  - Each custom parameter name cannot exceed 64 bytes in length.\n\n- You can specify built-in environment parameters as custom parameters. Then, when you run the command, these parameters are automatically specified by Cloud Assistant. You can specify the following built-in environment parameters:\n\n  - `{{ACS::RegionId}}`: the region ID.\n\n  - `{{ACS::AccountId}}`: the UID of the Alibaba Cloud account.\n\n  - `{{ACS::InstanceId}}`: the instance ID. If you want to specify `{{ACS::InstanceId}}` as a built-in environment variable, make sure that the Cloud Assistant Agent version is not earlier than the following ones:\n\n    - Linux: 2.2.3.309\n\n    - Windows: 2.1.3.309\n\n  - `{{ACS::InstanceName}}`: the instance name. When the command is run on multiple instances, if you want to specify `{{ACS::InstanceName}}` as a built-in environment variable, make sure that the Cloud Assistant Agent version is not earlier than the following ones:\n\n    - Linux: 2.2.3.344\n\n    - Windows: 2.1.3.344\n\n  - `{{ACS::InvokeId}}`: the ID of the task. If you want to specify `{{ACS::InvokeId}}` as a built-in environment parameter, make sure that the Cloud Assistant Agent version is not earlier than the following ones:\n\n    - Linux: 2.2.3.309\n\n    - Windows: 2.1.3.309\n\n  - `{{ACS::CommandId}}`: the command ID. If you want to specify `{{ACS::CommandId}}` as a built-in environment parameter, make sure that the Cloud Assistant Agent version is not earlier than the following ones:\n\n    - Linux: 2.2.3.309\n\n    - Windows: 2.1.3.309"
+      }
     },
     {
       "name": "ContentEncoding",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令内容（`CommandContent`）的编码方式。取值范围（不区分大小写）：\n\n- PlainText：不编码，采用明文传输。\n- Base64：Base64编码。\n\n默认值：PlainText，填写错误时会当作PlainText处理。",
+        "en": "The encoding mode of the command content that is specified by `CommandContent`. Valid values (case-insensitive):\n\n- PlainText: The command content is not encoded.\n\n- Base64: The command content is encoded in Base64.\n\nDefault value: PlainText. If the value is invalid, the PlainText mode is used."
+      }
     },
     {
       "name": "EnableParameter",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改命令中是否包含自定义参数。\n- 当您启用自定义参数或修改自定义参数`Parameters`时，该参数需设置为`true`。\n- 当您不修改自定义参数`Parameters`时，不设置该参数或设置为`false`。",
+        "en": "Specifies whether to include custom parameters in the command.\n\n- If you want to enable the custom parameter feature, or configure `Parameters` to modify the custom parameters in the command, set EnableParameter to `true`.\n\n- If you do not want to configure `Parameters` to modify the custom parameters in the command, leave EnableParameter empty or set it to `false`."
+      }
     },
     {
       "name": "Frequency",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待修改的定时执行频率。仅当`RepeatMode`为`Period`时生效。目前支持三种定时执行方式：固定时间间隔执行（基于Rate表达式）、仅在指定时间执行一次、基于时钟定时执行（基于Cron表达式）。\n\n- 固定时间间隔执行：基于Rate表达式，按照设置的时间间隔执行命令。时间间隔支持按秒（s） 、分钟（m） 、小时（h）和天（d）来选择，适用于在固定时间间隔执行任务的场景。格式为`rate(<执行间隔数值><执行间隔单位>)`，如5分钟执行一次，格式为`rate(5m)`。使用固定时间间隔执行有以下限制：\n    - 设置的时间间隔不大于7天、不小于60秒，且需大于创建定时任务时指定的超时时间。\n    - 执行间隔只基于固定频率，与任务实际执行需要的时间无关。例如设置每5分钟执行一次命令，任务需要2分钟执行完成，则在任务完成3分钟后继续执行下一轮。\n    - 按照任务的创建时间（参见`DescribeInvocations`返回的[CreationTime](~~64840~~)，请注意不是修改时间）及修改后的执行间隔计算下一次执行时间。\n\n- 仅在指定时间执行一次：按照设置的时区和执行时间点执行一次命令。格式为`at(yyyy-MM-dd HH:mm:ss <时区>)`，即`at(年-月-日 时:分:秒 <时区>)`。如果不指定时区，默认为UTC时区。时区支持以下三种形式：\n    - 时区全称：  如`Asia/Shanghai`（中国/上海时间）、`America/Los_Angeles`（美国/洛杉矶时间）等。\n    - 时区相对于格林威治时间的偏移量：  如`GMT+8:00`（东八区）、`GMT-7:00`（西七区）等。使用GMT格式时，小时位不支持添加前导零。\n    - 时区缩写：  仅支持UTC（协调世界时间）。\n\n  如果指定在中国/上海时间2022年06月06日13时15分30秒执行一次，格式为：`at(2022-06-06 13:15:30 Asia/Shanghai)`；如果指定在西七区2022年06月06日13时15分30秒执行一次，格式为：`at(2022-06-06 13:15:30 GMT-7:00)`。\n\n- 基于时钟定时执行（基于Cron表达式）：基于Cron表达式，按照设置的定时任务执行命令。格式为`<秒> <分钟> <小时> <日期> <月份> <星期> <年份（可选）> <时区>`，即`<Cron表达式> <时区>`。在指定的时区下，根据Cron表达式推算定时任务执行时间并执行。若不指定时区，默认为执行定时任务实例的系统内部时区。关于Cron表达式的更多信息，请参见[Cron表达式](~~64769~~)。时区支持以下三种形式：\n    - 时区全称：  如`Asia/Shanghai`（中国/上海时间）、`America/Los_Angeles`（美国/洛杉矶时间）等。\n    - 时区相对于格林威治时间的偏移量：  如`GMT+8:00`（东八区）、`GMT-7:00`（西七区）等。使用GMT格式时，小时位不支持添加前导零。\n    - 时区缩写：  仅支持UTC（协调世界时间）。\n  例如，在中国/上海时间，2022年每天上午10:15执行一次命令，格式为`0 15 10 ? * * 2022 Asia/Shanghai`；在东八区时间，2022年每天上午10:00到11:30每隔半小时执行，格式为`0 0/30 10-11 * * ? 2022 GMT+8:00`；在UTC时间，从2022年开始，每隔两年的10月每天下午14:00到下午14:55时间段内每隔5分钟执行，格式为`0 0/5 14 * 10 ? 2022/2 UTC`。\n\n    >设置的最小时间间隔需大于或等于创建定时任务时指定的超时时间，且不小于 10 秒。",
+        "en": "The frequency at which to run the command. This parameter takes effect only when `RepeatMode` is set to `Period`. You can configure a command to run at a fixed interval based on a rate expression, run only once at a specific point in time, or run at designated points in time based on a cron expression.\n\n- To run the command at a fixed interval, use a rate expression to specify the interval. You can specify the interval in seconds, minutes, hours, or days. This option is suitable for scenarios in which tasks need to be executed at a fixed interval. Specify the interval in the following format: `rate(<Execution interval value> <Execution interval unit>)`. For example, specify `rate(5m)` to run the command every 5 minutes. Take note of the following limits when you specify an interval:\n\n  - The specified interval must be in the range of 60 seconds to 7 days and must be longer than the timeout period specified when you created the scheduled task.\n\n  - The interval is the amount of time that elapses between two consecutive executions. The interval is irrelevant to the amount of time that is required to run the command once. For example, you set the interval to 5 minutes and the command requires 2 minutes to run once. Each time the command running is complete, the system waits 3 minutes instead of 5 minutes before the system runs the command again.\n\n  - The point in time at which the command is run the next time is calculated based on the creation time of the task (the [CreationTime](~~64840~~) value returned by the `DescribeInvocations` operation) and the modified execution interval.\n\n- To run a command only once at a specific time, specify a point in time and a time zone. Specify the point in time in the `at(yyyy-MM-dd HH:mm:ss <Time zone>)` format, which indicates `at(Year-Month-Day Hours:Minutes:Seconds <Time zone>)`. If you do not specify a time zone, the Coordinated Universal Time (UTC) time zone is used by default. You can specify a time zone in the following forms:\n\n  - The time zone name. Examples: `Asia/Shanghai` and `America/Los_Angeles`.\n\n  - The time offset from GMT. Examples: `GMT+8:00` (UTC+8) and `GMT-7:00` (UTC-7). If you use the GMT format, you cannot add leading zeros to the hour value.\n\n  - The time zone abbreviation. Only UTC is supported.\n\n  For example, to configure a command to run only once at 13:15:30 on June 6, 2022 (Shanghai time), set the time to `at(2022-06-06 13:15:30 Asia/Shanghai)`. To configure a command to run only once at 13:15:30 on June 6, 2022 (UTC-7), set the time to `at(2022-06-06 13:15:30 GMT-7:00)`.\n\n- To run a command at designated points in time, use a cron expression to define the schedule. Specify a schedule in the `<Cron expression> <Time zone>` format. The cron expression is in the `<Seconds> <Minutes> <Hours> <Day of the month> <Month> <Day of the week> <Year (optional)>` format. The system calculates the execution times of the command based on the specified cron expression and time zone and runs the command as scheduled. If you do not specify a time zone, the system time zones of the instances on which you want to run the command are used by default. For information about cron expressions, see [Cron expressions](~~64769~~). You can specify the time zone in the following forms:\n\n  - The time zone name. Examples: `Asia/Shanghai` and `America/Los_Angeles`.\n\n  - The time offset from GMT. Examples: `GMT+8:00` (UTC+8) and `GMT-7:00` (UTC-7). If you use the GMT format, you cannot add leading zeros to the hour value.\n\n  - The time zone abbreviation. Only UTC is supported. For example, to configure a command to run at 10:15:00 every day in 2022 (Shanghai time), set the schedule to `0 15 10 ? * * 2022 Asia/Shanghai`. To configure a command to run every half an hour from 10:00:00 to 11:30:00 every day in 2022 (UTC+8), set the schedule to `0 0/30 10-11 * * ? 2022 GMT+8:00`. To configure a command to run every 5 minutes from 14:00:00 to 14:55:00 every October every two years from 2022 in UTC, set the schedule to `0 0/5 14 * 10 ? 2022/2 UTC`.\n\n  \\*\\*\n\n  **Note** The minimum interval must be 10 seconds or longer and cannot be shorter than the timeout period of scheduled executions."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待加入任务的ECS实例ID或托管实例ID。",
+        "en": "The IDs of the ECS instances or managed instances that you want to add to the scheduled command task."
+      }
     },
     {
       "name": "InvokeId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待修改任务的命令执行ID。",
+        "en": "The execution ID of the command."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命令中包含自定义参数时，修改执行命令时传入的自定义参数的键值对。\n\n自定义参数的个数范围为0~10，且您需要注意：\n\n- 键不允许为空字符串，最多支持64个字符。\n- 值允许为空字符串。\n- 自定义参数与原始命令内容在Base64编码后，若创建待修改任务时选择了保存命令，命令内容在Base64编码后的大小不能超过 18 KB；若选择了不保存命令，命令内容在Base64编码后的大小不能超过 24 KB。\n- 设置的自定义参数名集合必须为创建命令时定义的参数集的子集。对于未传入的参数，您可以使用空字符串代替。\n\n默认值为空，表示不涉及自定义参数键值对的修改。",
+        "en": "The key-value pairs of the custom parameters that are passed in if custom parameters are included in the command.\n\nYou can specify 0 to 10 custom parameters. Take note of the following items:\n\n- The key of a custom parameter can be up to 64 characters in length and cannot be an empty string.\n\n- The value of a custom parameter can be an empty string.\n\n- If you specified to retain the command when you create the command task, the total size of the custom parameters and original command content that are encoded in Base64 cannot exceed 18 KB. If you specified not to retain the command when you create the command task, the total size of the custom parameters and original command content that are encoded in Base64 cannot exceed 24 KB.\n\n- The custom parameter names that are specified by Parameters must be included in the custom parameter names that you specified when you created the command. You can use empty strings to represent the parameters that are not passed in.\n\nThis parameter is empty by default, which indicates not to modify the key-value pairs of the custom parameters."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改云助手命令的执行属性",
+    "en": "ModifyInvocationAttribute"
+  },
+  "descriptions": {
+    "zh": "- 支持修改以下执行方式的任务（参见[DescribeInvocations](~~2679916~~)返回的`RepeatMode`值）：\n    - Period：周期执行。\n    - NextRebootOnly：当实例下一次启动时，自动执行命令。\n    - EveryReboot：实例每一次启动都将自动执行命令。\n- 支持修改以下状态的任务（参见[DescribeInvocations](~~2679916~~)返回的`InvocationStatus`值）：\n    - Pending：系统正在校验或发送命令。存在至少一台实例的命令执行状态为Pending，则总执行状态为Pending。\n    - Running：命令正在实例上运行。存在至少一台实例的命令执行状态为Running，则总执行状态为Running。\n    - Scheduled：定时执行的命令已发送，等待运行。存在至少一台实例的命令执行状态为Scheduled，则总执行状态为Scheduled。\n    - Stopping：正在停止任务。存在至少一台实例的命令执行状态为Stopping，则总执行状态为Stopping。\n- 修改定时任务执行信息（包括命令内容、自定义参数、执行频率）前，已执行的ECS实例或托管实例的云助手Agent版本需要高于以下对应的版本。\n    - Linux：2.2.3.541\n    - Windows：2.1.3.541\n    - 如果调用结果返回`InvalidOperation.CloudAssistantVersionUnsupported`错误码，请将云助手Agent更新至最新版本。\n- 当您执行一个云助手公共命令时，无法修改命令内容`CommandContent`。\n- 当您修改了命令内容`CommandContent`，且调用[InvokeCommand](~~64841~~)或调用[RunCommand](~~141751~~)时设置`KeepCommand`为`true`创建任务，将会新增一条命令并长期保留，并占用云助手命令配额；在一个地域下，您最多可以保有500～50,000条云助手命令。您也可以申请提升配额，关于如何查询及提升配额，请参见[配额管理](~~184116~~)。",
+    "en": "- Supports modifying tasks with the following execution modes (refer to the `RepeatMode` value returned by [DescribeInvocations](~~2679916~~)):\n\n  - Period: Execute periodically.\n\n  - NextRebootOnly: Automatically execute the command the next time the instance starts.\n\n  - EveryReboot: Automatically execute the command every time the instance starts.\n\n- Supports modifying tasks in the following statuses (refer to the `InvocationStatus` value returned by [DescribeInvocations](~~2679916~~)):\n\n  - Pending: The system is validating or sending the command. If at least one instance has a command execution status of Pending, the overall execution status is Pending.\n\n  - Running: The command is running on an instance. If at least one instance has a command execution status of Running, the overall execution status is Running.\n\n  - Scheduled: The scheduled command has been sent and is waiting to run. If at least one instance has a command execution status of Scheduled, the overall execution status is Scheduled.\n\n  - Stopping: The task is being stopped. If at least one instance has a command execution status of Stopping, the overall execution status is Stopping.\n\n- Before modifying the execution information of a scheduled task (including command content, Custom Parameters, and execution frequency), the Cloud Assistant Agent version on the involved ECS instances or managed instances must be higher than the following versions:\n\n  - Linux: 2.2.3.541\n\n  - Windows: 2.1.3.541\n\n  - If the response returns the error code `InvalidOperation.CloudAssistantVersionUnsupported`, update the Cloud Assistant Agent to the latest version.\n\n- When you execute a Cloud Assistant public command, you cannot modify the `CommandContent`.\n\n- If you modify the `CommandContent` and create a task by invoking [InvokeCommand](~~64841~~) or [RunCommand](~~141751~~) with `KeepCommand` set to `true`, a new command will be created and retained permanently, consuming your Cloud Assistant command quota. In each Region, you can retain between 500 and 50,000 Cloud Assistant commands. You can request a quota increase. For more information about how to query and increase your quota, see [Quota Management](~~184116~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-invocation-attribute --biz-region-id cn-hangzhou --instance-id i-bp1i7gg30r52z2em0000 --invoke-id t-hz0jdfwd9f0000 --command-content ZWNobyAxMjM= --enable-parameter false --parameters accessKey=LTAI0000000000000 name=Jack --frequency 0_0/20_0_0_0_0 --content-encoding PlainText --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyInvocationAttribute --region cn-hangzhou --CommandContent 'ZWNobyAxMjM=' --Parameters '{\"accessKey\":\"LTAI0000000000000\",\"name\":\"Jack\"}' --Frequency '0_0/20_0_0_0_0' --EnableParameter false --RegionId 'cn-hangzhou' --ContentEncoding PlainText --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-bp1i7gg30r52z2em0000' --InvokeId 't-hz0jdfwd9f0000'"

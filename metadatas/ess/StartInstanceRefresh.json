@@ -1,5 +1,6 @@
 {
   "name": "StartInstanceRefresh",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,19 +9,31 @@
       "name": "CheckpointPauseTime",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当进入刷新任务检查点时，暂停的时长。\n- 单位：分钟\n- 取值范围 : 1～ 2880\n - 默认值：60。",
+        "en": "The duration for which the task is paused when a checkpoint is reached.\n- Unit: minutes.\n- Valid values: 1 to 2880.\n- Default value: 60."
+      }
     },
     {
       "name": "Checkpoints",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "刷新任务检查点：指定在实例刷新过程中，当新实例占比达到设定值时自动暂停任务CheckpointPauseTime分钟。",
+        "en": "The checkpoints for the refresh task. When the percentage of new instances reaches the specified value, the task is automatically paused for the duration specified by CheckpointPauseTime."
+      },
       "sub_parameters": [
         {
           "name": "Percentage",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "伸缩组中新实例占总实例的占比，到达该占比时任务自动暂停。取值范围：1 ～100 （%）。\n\n> 需要从小到大设置，且最后一个进度百分比需要为100。",
+            "en": "The percentage of new instances to total instances in the scaling group at which the task is automatically paused. Valid values: 1 to 100 (%).\n\n> The values must be specified in ascending order, and the last percentage value must be 100."
+          }
         }
       ]
     },
@@ -28,45 +41,94 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25965~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25965~~)."
+      }
     },
     {
       "name": "DesiredConfiguration",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例刷新的期望配置。\n\n> - ScalingConfigurationId 、ImageId、LaunchTemplateId、Containers 不可以同时设置，且必须要设置一个。\n- 刷新任务会跳过伸缩组中与期望配置匹配的实例。",
+        "en": "The desired configuration for the instance refresh.\n\n> - You cannot specify ScalingConfigurationId, ImageId, LaunchTemplateId, and Containers at the same time. You must specify one of them.\n- The refresh task skips instances in the scaling group that already match the desired configuration."
+      }
     },
     {
       "name": "MaxHealthyPercentage",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例刷新期间，伸缩组中实例可以超出伸缩组容量的比例。取值范围 100～200。 默认值：120。\n\n> 当MinHealthyPercentage = MaxHealthyPercentage = 100时，每次会刷新1个实例。",
+        "en": "The maximum percentage by which the number of instances in the scaling group can exceed the scaling group capacity during the instance refresh. Valid values: 100 to 200. Default value: 120.\n\n> If you set both MinHealthyPercentage and MaxHealthyPercentage to 100, one instance is refreshed at a time."
+      }
     },
     {
       "name": "MinHealthyPercentage",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例刷新期间，保持伸缩组中正常提供服务占伸缩组容量的比例。取值范围 0～100。 默认值：80。",
+        "en": "The minimum percentage of instances that must remain in service in the scaling group during the instance refresh. Valid values: 0 to 100. Default value: 80."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组所属的地域ID。",
+        "en": "The region ID of the scaling group."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组ID。",
+        "en": "The ID of the scaling group."
+      }
     },
     {
       "name": "SkipMatching",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否跳过和期望配置匹配的实例。\n\n> 系统会根据期望伸缩配置的 ID 界定是否匹配，不会对比具体的配置项。\n\n取值范围：\n\n- true：跳过。当启动实例刷新任务时，系统会检查每个实例的配置。对于已经使用期望配置创建的实例，不执行刷新操作。\n- false：不跳过。在启动实例刷新任务后，刷新任务启动时所有伸缩组中的实例。\n\n默认值：true。",
+        "en": "Specifies whether to skip instances that match the desired configuration.\n\n> The system determines whether an instance matches based on the ID of the desired scaling configuration, not by comparing specific configuration items.\n\nValid values:\n\n- true: Instances that were already created with the desired configuration are skipped.\n- false: All instances in the scaling group are refreshed when the instance refresh task starts.\n\nDefault value: true."
+      }
+    },
+    {
+      "name": "Strategy",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "实例刷新任务的运行策略，取值范围：\n\n* Rolling：实例刷新任务通过创建新实例，释放旧实例的方式进行实例刷新。\n* ReplaceSystemDisk：在原有实例基础上更新系统盘，通过指定 DesiredConfiguration.image 更新实例系统盘。\n\n默认值：Rolling。",
+        "en": "The execution strategy for the instance refresh task. Valid values:\n\n* Rolling: refreshes instances by creating new instances and releasing old instances.\n* ReplaceSystemDisk: updates the system cloud disk of existing instances by specifying DesiredConfiguration.image.\n\nDefault value: Rolling."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "StartInstanceRefresh",
+    "en": "StartInstanceRefresh"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n- 伸缩组同时刻只能有一个正在运行中的实例刷新任务。\n- 目前该功能仅支持扩容策略为**优先级策略**的ECS伸缩组。**使用vCPU个数计算伸缩组容量**的伸缩组和实例回收模式为**停机回收模式**、**强制停机回收模式**的伸缩组不支持该功能。\n- 实例刷新期间，可以进行正常扩缩容，但扩容时会以实例刷新的期望配置进行扩容。\n- 伸缩组手动添加的实例、处于备用状态、保护状态的实例会被实例刷新任务忽略，不参与实例刷新。",
+    "en": "## Operation description\n- A scaling group can have only one instance refresh task running at a time.\n- This feature supports only ECS scaling groups whose scale-out policy is set to **Priority Policy**. Scaling groups that use **vCPU-based capacity calculation** and scaling groups whose instance recycle pattern is set to **Shutdown and Reclaim Mode** or **Forced Shutdown and Reclaim Mode** do not support this feature.\n- During an instance refresh, normal scale-out and scale-in operations can be performed. However, scale-out operations use the desired configuration of the instance refresh task.\n- Instances that are manually added to the scaling group, instances in the standby state, and instances in the protection status are ignored by the instance refresh task and do not participate in the instance refresh."
+  },
   "example": {
     "unifiedCli": "aliyun ess start-instance-refresh --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --scaling-group-id asg-bp18p2yfxow2dloq0000 --min-healthy-percentage 80 --max-healthy-percentage 100 --desired-configuration '{\"LaunchTemplateOverrides\":[\"ecs.g7.2xlarge\"],\"ImageId\":\"m-2ze8cqacj7opnf000\",\"LaunchTemplateVersion\":\"8\",\"Containers\":[{\"EnvironmentVars\":[{\"FieldRefFieldPath\":\"fieldPath\",\"Value\":\"/usr/local/bin\",\"Key\":\"PATH\"}],\"Args\":[\"100\"],\"Commands\":[\"sleep\"],\"Image\":\"registry-vpc.cn-hangzhou.aliyuncs.com/eci_open/nginx:latest\",\"Name\":\"nginx\"}],\"LaunchTemplateId\":\"lt-2ze2qli30u000\",\"ScalingConfigurationId\":\"asc-2zed7lqn4ts40000\"}' --skip-matching true --checkpoints Percentage=20 --checkpoint-pause-time 10 --strategy Rolling --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess StartInstanceRefresh --region cn-hangzhou --DesiredConfiguration.LaunchTemplateId 'lt-2ze2qli30u000' --DesiredConfiguration.Containers.1.EnvironmentVars.1.FieldRefFieldPath fieldPath --ScalingGroupId 'asg-bp18p2yfxow2dloq0000' --Checkpoints.1.Percentage 20 --DesiredConfiguration.LaunchTemplateOverrides.1 'ecs.g7.2xlarge' --DesiredConfiguration.Containers.1.Args.1 100 --DesiredConfiguration.Containers.1.Image 'registry-vpc.cn-hangzhou.aliyuncs.com/eci_open/nginx:latest' --DesiredConfiguration.Containers.1.EnvironmentVars.1.Value '/usr/local/bin' --MinHealthyPercentage 80 --SkipMatching true --DesiredConfiguration.Containers.1.EnvironmentVars.1.Key PATH --DesiredConfiguration.LaunchTemplateVersion 8 --Strategy Rolling --CheckpointPauseTime 10 --RegionId 'cn-hangzhou' --MaxHealthyPercentage 100 --DesiredConfiguration.Containers.1.Commands.1 sleep --DesiredConfiguration.ScalingConfigurationId 'asc-2zed7lqn4ts40000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DesiredConfiguration.ImageId 'm-2ze8cqacj7opnf000' --DesiredConfiguration.Containers.1.Name nginx --method POST --force"

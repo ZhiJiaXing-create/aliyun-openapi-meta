@@ -1,0 +1,80 @@
+{
+  "name": "SendBatchSms",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "OutId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "外部流水扩展字段，长度小于256的字符串。\n\n> 无特殊需要可忽略此字段。",
+        "en": "An external business ID. It must be a string of fewer than 256 characters.\n\n> You can leave this parameter empty if you have no special requirements."
+      }
+    },
+    {
+      "name": "PhoneNumberJson",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "接收短信的手机号码。手机号码格式：\n\n* 国内短信：+/+86/0086/86或无任何前缀的手机号码，例如1590000\\*\\*\\*\\*。\n* 国际/港澳台消息：国际区号+号码，例如852000012\\*\\*\\*\\*。\n\n> 时效要求高的短信，如验证码类型短信，请使用[SendSms](~~419273~~)接口单条发送。",
+        "en": "The recipient phone numbers. Format:\n\n- For domestic SMS: Phone numbers with or without a country code such as `+`, `+86`, `0086`, or `86`. Example: `1590000****`.\n\n- For international SMS: The country code followed by the phone number. Example: `852000012****`.\n\n> For time-sensitive messages like verification codes, use the [SendSms](~~419273~~) operation to send messages individually."
+      }
+    },
+    {
+      "name": "SignNameJson",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "短信签名名称，签名数量需与手机号码数量一致。\n\n您可以通过[QuerySmsSignList](~~419282~~)接口查询当前账号已申请的签名或在[短信服务控制台](https://dysms.console.aliyun.com/domestic/text/sign)查看已审核通过的签名，必须使用审核通过的签名发送短信。\n\n> \n> - 系统会根据您选择的签名执行短信发送任务。",
+        "en": "The signature names. The number of signatures must match the number of phone numbers.\n\nYou can call the [QuerySmsSignList](~~419282~~) operation or check the [Short Message Service console](https://dysms.console.aliyun.com/domestic/text/sign) to find approved signatures. You must use an approved signature.\n\n> - The system uses the selected signature to send SMS messages."
+      }
+    },
+    {
+      "name": "SmsUpExtendCodeJson",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "上行短信扩展码，JSON数组格式。\n\n> 无特殊需要可忽略此字段。",
+        "en": "A JSON array of MO SMS extension codes.\n\n> You can leave this parameter empty if you have no special requirements."
+      }
+    },
+    {
+      "name": "TemplateCode",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "短信模板Code。国内短信模板和国际短信模板不可以混用。\n\n您可以通过[QuerySmsTemplateList](~~419288~~)接口查询当前账号已申请的模板或在[短信服务控制台](https://dysms.console.aliyun.com/domestic/text/template)查看模板列表，必须使用已审核通过的模板Code发送短信。",
+        "en": "The message template code. You cannot use templates for domestic SMS and international SMS interchangeably.\n\nYou can call the [QuerySmsTemplateList](~~419288~~) operation or check the [Short Message Service console](https://dysms.console.aliyun.com/domestic/text/template) to find approved template codes. You must use an approved template code."
+      }
+    },
+    {
+      "name": "TemplateParamJson",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "短信模板变量对应的实际值。当您选择的模板内含有变量时，此参数必填。\n\n> - 模板变量值的个数必须与手机号码、签名的个数相同、内容一一对应，表示向指定手机号码中发对应签名的短信，且短信模板中的变量参数替换为对应的值。\n> - 如果JSON中需要带换行符，请参照标准的JSON协议处理。",
+        "en": "The actual values for the template variables. This parameter is required if the template contains variables.\n\n> - The number of template variable sets must match the number of phone numbers and signatures. The elements in the PhoneNumberJson, SignNameJson, and TemplateParamJson arrays must correspond by index to ensure each message is sent with the correct signature and variable values.\n>\n> - If you need to include a line break in the JSON string, follow the standard JSON format."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量发送短信",
+    "en": "SendBatchSms"
+  },
+  "descriptions": {
+    "zh": "### 基本信息\n- 本接口主要用于向多个手机号发送短信，支持发送不同签名、同一模板、不同模板变量的短信，单次调用最多支持 100 个手机号。\n- [服务接入点](~~419270~~) (Endpoint)：全局接入点域名为`dysmsapi.aliyuncs.com`。请参见[服务接入点](~~419270~~) ，根据您的使用地域，选择对应的接入点地址。\n### 快速调用\n- 推荐您通过 SDK 调用 API。 如果您需要了解如何使用 ，请参见[首次调用API](~~2841024~~)。\n- 如果您需要使用控制台发送短信，请参见[群发短信](~~108266~~)。\n-  如果您需要自定义封装API调用，请参见[V3版本请求体&签名机制](~~2593177~~)\n### 注意事项\n- 国内短信服务超时时间建议设置为≥1S；发生超时失败的情况时，建议查看回执状态后再判断是否重试。超时和重试的相关设置，请参见[超时机制](~~262079~~)、[重试机制](~~262080~~)。\n- 国内短信、国际短信及多媒体短信目前均不支持幂等的能力，请您做好幂等控制，防止因多次重试而导致的重复操作问题。\n- 发送短信为计费接口，国内短信按照运营商回执状态计费，调用SendBatchSms提交成功但运营商回执失败的短信不计费，计费详情请参见[计费概述](~~44340~~)。\n<warning>批量发送短信接口出于系统容量设计需要，送达终端可能存在一定的延迟，若对短信送达时效有要求，例如验证码短信，告警短信等，请使用单条发送接口SendSms\n</warning>\n### QPS 限制\n本接口的单用户 QPS 限制为 5000/秒。超过限制，API 调用将会被限流，请合理使用。",
+    "en": "### Basic information\n\n- You can send messages to a maximum of 100 phone numbers in a single call.\n\n- The global [endpoint](~~419270~~) is `dysmsapi.aliyuncs.com`. For a list of region-specific endpoints, see [Endpoints](~~419270~~).\n\n### API calls\n\n- We recommend calling this operation using an SDK. For more information, see [Make your first API call](~~2841024~~).\n\n- To send messages from the console, see [Send group messages](~~108266~~).\n\n- To build your own API requests, see [V3 request body and signature mechanism](~~2593177~~).\n\n### Usage notes\n\n- For domestic SMS, we recommend setting the timeout period to 1 second or longer. If a timeout occurs, check the delivery receipt status before you retry the request. For more information about timeout and retry settings, see [timeout mechanism](~~262079~~) and [retry mechanism](~~262080~~).\n\n- This operation does not support idempotence for domestic SMS, international SMS, or Multimedia Messaging Service (MMS) messages. You must implement your own idempotence controls to prevent duplicate operations caused by multiple retries.\n\n- This is a billable operation. For domestic SMS, you are charged based on the delivery receipt status from the carrier. You are not charged for messages that are successfully submitted but fail carrier delivery. For more information, see [Billing overview](~~44340~~).\n\n\n  ><warning>\n\n  Batch message delivery may be delayed due to system capacity limits. For time-sensitive messages, such as verification codes or alert notifications, use the SendSms operation to send messages individually.\n\n  ></warning>\n\n### QPS limit\n\nThe Queries Per Second (QPS) limit for a single user is 5,000. Calls that exceed this limit are throttled. Plan your usage accordingly."
+  }
+}

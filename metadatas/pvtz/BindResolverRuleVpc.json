@@ -1,5 +1,6 @@
 {
   "name": "BindResolverRuleVpc",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回值语言，取值：\n\n- zh：中文。\n\n- en：英文。\n\n默认值：en",
+        "en": "The language of the response. Valid values:\n\n- zh: Chinese.\n\n- en: English.\n\nDefault value: en."
+      }
     },
     {
       "name": "RuleId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发规则ID。",
+        "en": "The forwarding rule ID."
+      }
     },
     {
       "name": "Vpc",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "关联VPC列表。",
+        "en": "The VPCs to associate."
+      },
       "sub_parameters": [
         {
           "name": "RegionId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "出站VPC所在地域ID。",
+            "en": "The region ID of the outbound VPC."
+          }
         },
         {
           "name": "VpcId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "专有网络ID（VPC ID）。",
+            "en": "The VPC ID."
+          }
         },
         {
           "name": "VpcType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "VPC类型。取值：\n\n- STANDARD：标准VPC。\n\n- EDS：无影工作区VPC。",
+            "en": "The VPC type. Valid values:\n\n- STANDARD: standard VPC.\n\n- EDS: Elastic Desktop Service workspace VPC."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "转发规则关联VPC",
+    "en": "BindResolverRuleVpc"
+  },
+  "descriptions": {
+    "zh": "><notice>本接口采用全量覆盖机制，调用时会清除所有未包含在本次请求中的原有 VPC 绑定关系。如需新增 VPC，请务必将存量 VPC ID 一并传入。></notice>",
+    "en": "><notice>\n\nThis operation performs a full replacement. Any existing VPC associations not included in your request will be removed. To add a new VPC, you must include the IDs of all VPCs that should remain associated.\n\n></notice>"
+  },
   "example": {
     "unifiedCli": "aliyun pvtz bind-resolver-rule-vpc --lang en --rule-id hr0000 --vpc VpcType=STANDARD VpcId=vpc-f8zvrvr1payllgz380000 RegionId=cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun pvtz BindResolverRuleVpc --region cn-hangzhou --Vpc.1.VpcType STANDARD --Vpc.1.VpcId 'vpc-f8zvrvr1payllgz380000' --RuleId hr0000 --Lang en --Vpc.1.RegionId 'cn-hangzhou'"

@@ -1,5 +1,6 @@
 {
   "name": "ListTransitRouterMulticastDomains",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,49 +9,81 @@
       "name": "CenId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云企业网实例ID。",
+        "en": "The ID of the CEN instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token that is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批次查询时每次显示的条目数。默认值：**20**。",
+        "en": "The number of entries per page. Default value: **20**."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否拥有下一次查询的令牌（Token）。取值：\n- 第一次查询和没有下一次查询时，均无需填写。\n- 如果有下一次查询，取值为上一次API调用返回的NextToken值。",
+        "en": "The token that is used for the next query. Valid values:\n\n- If this is your first query or no next query is to be sent, leave this parameter empty.\n\n- If a next query is to be sent, set the value to the NextToken value returned from the last call."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转发路由器实例所属地域ID。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
+        "en": "The ID of the region where the transit router is deployed.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to obtain the region ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签信息。\n\n一次最多支持输入20个标签信息。",
+        "en": "The tags.\n\nYou can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。\n\n一旦传入该值，则不允许为空字符串。最多支持64个字符，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https://`。\n\n一次最多支持输入20个标签的标签键。",
+            "en": "The tag key.\n\nThe tag key cannot be an empty string. The tag key can be up to 64 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`.\n\nYou can specify up to 20 tag keys."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。\n\n标签值可以为空或输入不超过128个字符的字符串，不能以`aliyun`或者`acs:`开头，不能包含`http://`或者`https://`。\n\n每一个标签键对应一个标签值，一次最多支持输入20个标签键对应的标签值。",
+            "en": "The tag value.\n\nThe tag value can be an empty string or a string of up to 128 characters. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`.\n\nEach tag key must have a corresponding tag value. You can specify up to 20 tag values."
+          }
         }
       ]
     },
@@ -58,15 +91,34 @@
       "name": "TransitRouterId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转发路由器实例ID。",
+        "en": "The ID of the transit router."
+      }
     },
     {
       "name": "TransitRouterMulticastDomainId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "组播域ID。",
+        "en": "The ID of the multicast domain."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询组播域的信息",
+    "en": "ListTransitRouterMulticastDomains"
+  },
+  "descriptions": {
+    "zh": "- RegionId必须和CenId组合使用，不能单独使用，否则将不会显示组播域的信息。 但TransitRouterId和TransitRouterMulticastDomainId可以单独使用。\n- 调用接口时请确保输入的参数值无误。如果您输入的参数有误调用接口后仍然会返回**RequestId**，但不会显示组播域的详细信息。",
+    "en": "- You must specify both RegionId and CenId. If you specify only RegionId, no information about multicast domains is returned. You can also specify TransitRouterId or TransitRouterMulticastDomainId individually.\n\n- Ensure that you specify valid parameter values. If you specify an invalid parameter, the system returns a **RequestId** but does not return the details of the multicast domain."
+  },
   "example": {
     "unifiedCli": "aliyun cbn list-transit-router-multicast-domains --client-token 123e4567-e89b-12d3-a456-426655440000 --cen-id cen-a7syd349kne38g0000 --transit-router-id tr-p0wr9p28r92d598y60000 --transit-router-multicast-domain-id tr-mcast-domain-3r3bvbypxqheej0000 --biz-region-id cn-hangzhou --max-results 20 --next-token FFmyTO70tTpLG6I3FmYAXGKPd0000 --tag Value=TagValue Key=TagKey --region cn-hangzhou",
     "legacyCli": "aliyun cbn ListTransitRouterMulticastDomains --region cn-hangzhou --Tag.1.Key TagKey --NextToken FFmyTO70tTpLG6I3FmYAXGKPd0000 --TransitRouterMulticastDomainId 'tr-mcast-domain-3r3bvbypxqheej0000' --MaxResults 20 --Tag.1.Value TagValue --CenId 'cen-a7syd349kne38g0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --TransitRouterId 'tr-p0wr9p28r92d598y60000'"

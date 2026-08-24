@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始的Token。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "标签所属的地域ID。您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the tag. You can call the [DescribeRegions](~~131035~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源ID。",
+        "en": "The IDs of the resources."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n\n- stack：资源栈。  \n\n- stackgroup：资源栈组。\n\n- template：模板。\n\n- templatescratch：资源场景。",
+        "en": "The type of the resource. Valid values:\n\n- stack: stack\n\n- stackgroup: stack group\n\n- template: template\n\n- templatescratch: scenario"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源的标签。最多支持指定20个标签。",
+        "en": "The tags of the resources. You can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持指定20个标签键。如果指定该值，则不允许为空字符串。  \n长度不超过128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the resource. You can specify up to 20 tag keys. The tag key cannot be an empty string.<br>\nThe tag key can be up to 128 characters in length and cannot contain `http://` or `https://`. The tag key cannot start with `aliyun` or `acs:`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持指定20个标签值。如果指定该值，可以为空字符串。  \n长度不超过128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the resource. You can specify up to 20 tag values. The tag value can be an empty string.<br>\nThe tag value can be up to 128 characters in length, and cannot contain `http://` or `https://`. The tag value cannot start with `aliyun` or `acs:`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询资源已经绑定的标签",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n\n- 请求中至少指定ResourceId或者Tag（Key与Value）其中一个参数，以确定查询对象。\n\n- 同时指定ResourceId和Tag时，返回结果中仅包含同时满足这两个条件的ROS资源。\n\n  \n本文将提供一个示例，为您查询杭州地域ID为`6bc589b5-9c02-4944-8fc3-f3624234****`的资源栈已经绑定的标签。",
+    "en": "###\n\n- To specify the query object, specify ResourceId or Tag in the request. Tag consists of Key and Value.\n\n- If you specify Tag and ResourceId, ROS resources that match both the parameters are returned.\n\nThis topic provides an example on how to query the tags that are added to a stack. In this example, the stack ID is `6bc589b5-9c02-4944-8fc3-f3624234****`. The stack is deployed in the China (Hangzhou) region."
+  },
   "example": {
     "unifiedCli": "aliyun ros list-tag-resources --biz-region-id cn-hangzhou --resource-type stack --next-token caeba0bbb2be03f84eb48b699f000000 --resource-id 6bc589b5-9c02-4944-8fc3-f36242340000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun ros ListTagResources --region cn-hangzhou --ResourceId.1 '6bc589b5-9c02-4944-8fc3-f36242340000' --Tag.1.Key FinanceDept --NextToken caeba0bbb2be03f84eb48b699f000000 --Tag.1.Value FinanceJoshua --ResourceType stack --RegionId 'cn-hangzhou'"

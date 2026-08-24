@@ -1,0 +1,344 @@
+{
+  "name": "SubmitVideoAnalysisTask",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "/[workspaceId]/quanmiao/lightapp/videoAnalysis/submitVideoAnalysisTask",
+  "parameters": [
+    {
+      "name": "addDocumentParam",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定数据集后：视频理解结果作为meta信息和视频一起上传到妙搜",
+        "en": "Parameters for uploading the video and its analysis results as metadata to a Miaosou dataset."
+      }
+    },
+    {
+      "name": "autoRoleRecognitionVideoUrl",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "自动识别功能单独的视频地址Url",
+        "en": "A separate video URL to use for automatic character recognition."
+      }
+    },
+    {
+      "name": "deduplicationId",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "排重字段：可以根据业务需要和业务场景定义自己的业务唯一标识，当前字段重复的数据，系统会保证至少72h内不允许重复提交",
+        "en": "A custom unique identifier for request deduplication. The system rejects requests that have the same `deduplicationId` as a request submitted within the last 72 hours."
+      }
+    },
+    {
+      "name": "excludeGenerateOptions",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "排除的生成步骤：\n\n- videoCaption：视频语音识别",
+        "en": "Steps to exclude from the generation process.\n\n- `videoCaption`: Video speech recognition (ASR)"
+      }
+    },
+    {
+      "name": "faceIdentitySimilarityMinScore",
+      "position": "Body",
+      "type": "Float",
+      "required": false,
+      "description": {
+        "zh": "人物识别相似度阈值：0~1",
+        "en": "The similarity threshold for character recognition. The value must be between 0 and 1, inclusive."
+      }
+    },
+    {
+      "name": "frameSampleMethod",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "抽帧方式",
+        "en": "The frame sampling method."
+      }
+    },
+    {
+      "name": "generateOptions",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "视频理解生成任务选项。",
+        "en": "The video understanding tasks to perform."
+      }
+    },
+    {
+      "name": "language",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "语言，可传参数\n- chinese：中文（默认）\n- french：法语\n- english：英语\n- japanese：日语\n- chineseEnglishFreely：中英文自由说\n- arabic：阿拉伯语\n- korean：韩语\n- malay：马来语\n- thai：泰语\n- portuguese：葡萄牙语\n- spanish：西班牙语\n- indonesian：印尼语\n- vietnamese：越南语",
+        "en": "The language of the video. Valid values:\n\n- `chinese`: Chinese (default)\n\n- `french`: French\n\n- `english`: English\n\n- `japanese`: Japanese\n\n- `chineseEnglishFreely`: Mixed Chinese and English\n\n- `arabic`: Arabic\n\n- `korean`: Korean\n\n- `malay`: Malay\n\n- `thai`: Thai\n\n- `portuguese`: Portuguese\n\n- `spanish`: Spanish\n\n- `indonesian`: Indonesian\n\n- `vietnamese`: Vietnamese"
+      }
+    },
+    {
+      "name": "modelCustomPromptTemplate",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频总结依赖的大模型prompt模版：必须同时包含{videoAsrText} 和 {videoAnalysisText}变量，{videoAsrText}是视频的ASR文本信息，{videoAnalysisText}是视频的各个子镜头的VL视觉信息（视觉语言分析结果）。",
+        "en": "A custom prompt template for the large model used for video summarization. The template must include both the `{videoAsrText}` and `{videoAnalysisText}` variables. `{videoAsrText}` represents the ASR text from the video, and `{videoAnalysisText}` represents the vision-language (VL) analysis results for each shot in the video."
+      }
+    },
+    {
+      "name": "modelCustomPromptTemplateId",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频总结依赖的大模型prompt模版唯一标识：\n\n- PlotDetail：剧情详解（默认）；\n- Summary：内容概述；\n- ExtractVideoTag：提取标签；\n- ExplosivePointAnalysis：爆点分析；\n- MultiTask：多类任务；\n\n如果modelCustomPromptTemplate未传，则会取模版唯一标识对应的默认prompt，modelCustomPromptTemplate优先级高于modelCustomPromptTemplateId。",
+        "en": "The ID of the prompt template for video summarization. Valid values:\n\n- `PlotDetail`: Detailed plot analysis (default).\n\n- `Summary`: Content summary.\n\n- `ExtractVideoTag`: Tag extraction.\n\n- `ExplosivePointAnalysis`: Viral content analysis.\n\n- `MultiTask`: Multiple tasks.\n\nThe `modelCustomPromptTemplate` parameter takes precedence over this parameter. If only an ID is provided, the system uses the default prompt associated with that ID."
+      }
+    },
+    {
+      "name": "modelId",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频总结（文本加工）依赖的大模型唯一标识，\n\n**如果文本加工阶段想跑多任务**，可以走textProcessTasks字段，如果传入了textProcessTasks，则当前字段和当前字段对应的prompt模版id，prompt模版将不再生效。\n\n- quanmiao-llm-max\n- quanmiao-llm-max-thinking\n- quanmiao-llm-plus\n- quanmiao-llm-turbo",
+        "en": "The unique identifier for the large model used for video summarization (text processing).\n\n**To run multiple text processing tasks, use the `textProcessTasks` parameter.** If `textProcessTasks` is specified, the system ignores this parameter, `modelCustomPromptTemplateId`, and `modelCustomPromptTemplate`.\n\n- `quanmiao-llm-max`\n\n- `quanmiao-llm-max-thinking`\n\n- `quanmiao-llm-plus`\n\n- `quanmiao-llm-turbo`"
+      }
+    },
+    {
+      "name": "snapshotInterval",
+      "position": "Body",
+      "type": "Double",
+      "required": false,
+      "description": {
+        "zh": "抽帧间隔：X秒一帧，取值范围[1, 10]，间隔越大模型能提取到的信息越少，耗时越长，成本越高，默认已是最佳实践，一般无需修改，如果要修改，请根据视频时长来定，建议[1~3]。\n建议使用：当前字段优先级高于frameSampleMethod.interval，一般场景可以使用frameSampleMethod字段自定义（userdefined）模式下的interval，区别在于frameSampleMethod自定义模式interval取值需要在指定的视频时长对应抽帧间隔范围内。",
+        "en": "The frame sampling interval, in seconds. The value must be between 1 and 10, inclusive. A larger interval means fewer frames are extracted, which can reduce accuracy but also decrease processing time and cost. The default setting is optimized and recommended for most use cases. If you adjust it, a value between 1 and 3 is recommended.\nNote: This parameter has a higher priority than `frameSampleMethod.interval`. For typical scenarios, you can use the `interval` parameter within the `userdefined` mode of the `frameSampleMethod` object. The key difference is that the interval in `frameSampleMethod`'s custom mode must be within a specific range corresponding to the video's duration."
+      }
+    },
+    {
+      "name": "splitInterval",
+      "position": "Body",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "视频分镜最小间隔：单位秒，取值范围[1, 150]，默认根据视频长度取推荐值",
+        "en": "The minimum shot split interval, in seconds. The value must be an integer between 1 and 150, inclusive. If not specified, the system calculates an optimal interval based on the video's duration."
+      }
+    },
+    {
+      "name": "splitType",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "分镜类型：minDuration(限制分镜最小时长),\n    fixDuration(按照固定时长分镜)，默认采用minDuration模式",
+        "en": "The shot split method. Valid values are `minDuration` (ensures each shot meets a minimum duration) and `fixDuration` (splits the video into fixed-duration shots). The duration is set by `splitInterval`. Default: `minDuration`."
+      }
+    },
+    {
+      "name": "textProcessTasks",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "视频总结(文本加工)任务列表:最多支持3个",
+        "en": "A list of video summarization (text processing) tasks. You can specify up to three tasks."
+      },
+      "sub_parameters": [
+        {
+          "name": "modelCustomPromptTemplate",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "视频总结依赖的大模型prompt模版：必须同时包含{videoAsrText} 和 {videoAnalysisText}变量，{videoAsrText}是视频的ASR文本信息，{videoAnalysisText}是视频的各个子镜头的VL视觉信息（视觉语言分析结果）。",
+            "en": "A custom prompt template for the large model used for video summarization. The template must include both the `{videoAsrText}` and `{videoAnalysisText}` variables. `{videoAsrText}` represents the ASR text from the video, and `{videoAnalysisText}` represents the vision-language (VL) analysis results for each shot in the video."
+          }
+        },
+        {
+          "name": "modelCustomPromptTemplateId",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "视频总结依赖的大模型prompt模版唯一标识：\n\n- PlotDetail：剧情详解（默认）；\n- Summary：内容概述；\n- ExtractVideoTag：提取标签；\n- ExplosivePointAnalysis：爆点分析；\n- MultiTask：多类任务；\n\n如果modelCustomPromptTemplate未传，则会取模版唯一标识对应的默认prompt，modelCustomPromptTemplate优先级高于modelCustomPromptTemplateId。",
+            "en": "The ID of the prompt template for video summarization. Valid values:\n\n- `PlotDetail`: Detailed plot analysis (default).\n\n- `Summary`: Content summary.\n\n- `ExtractVideoTag`: Tag extraction.\n\n- `ExplosivePointAnalysis`: Viral content analysis.\n\n- `MultiTask`: Multiple tasks.\n\nThe `modelCustomPromptTemplate` parameter takes precedence over this parameter. If only an ID is provided, the system uses the default prompt associated with that ID."
+          }
+        },
+        {
+          "name": "modelId",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "视频总结依赖的大模型唯一标识，支持的模型\n\n- qwen-max-latest\n- qwen-max\n- qwen-plus-latest\n- qwen-plus\n- qwen2.5-7b-instruct-1m\n- deepseek-r1",
+            "en": "The ID of the large model for video summarization. Supported models:\n\n- `qwen-max-latest`\n\n- `qwen-max`\n\n- `qwen-plus-latest`\n\n- `qwen-plus`\n\n- `qwen2.5-7b-instruct-1m`\n\n- `deepseek-r1`"
+          }
+        }
+      ]
+    },
+    {
+      "name": "videoCaptionInfo",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "字幕（asr）信息",
+        "en": "Information about the captions (ASR)."
+      }
+    },
+    {
+      "name": "videoExtraInfo",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "和视频相关的补充文字资料：您可以自定义扩展文本素材，应用到生成中，需要手动调整 prompt 模版，增加{videoExtraInfo}变量，传入的内容可以是视频摘要、视频简介或视频 ASR 转录信息。",
+        "en": "Supplementary text about the video, such as a summary, description, or ASR transcript. To use this text, you must include the `{videoExtraInfo}` variable in the prompt template."
+      }
+    },
+    {
+      "name": "videoModelCustomPromptTemplate",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频vl任务prompt模版：必须包含{videoAsrText}变量，{videoAsrText}是视频的ASR文本信息，默认取页面看到的默认值。",
+        "en": "The prompt template for the video vision-language (VL) task. This template must include the `{videoAsrText}` variable, which represents the Automatic Speech Recognition (ASR) text from the video. If this parameter is not specified, the system uses a default template."
+      }
+    },
+    {
+      "name": "videoModelId",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频vl任务模型唯一标识，支持的模型：\n- quanmiao-vl-turbo\n- quanmiao-vl-plus\n- quanmiao-vl-max-thinking\n- quanmiao-vl-max\n- Qwen-VL-Post",
+        "en": "The unique identifier for the model used in the video vision-language (VL) task. Supported models:\n\n- `quanmiao-vl-turbo`\n\n- `quanmiao-vl-plus`\n\n- `quanmiao-vl-max-thinking`\n\n- `quanmiao-vl-max`\n\n- `Qwen-VL-Post`"
+      }
+    },
+    {
+      "name": "videoRoles",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "识别视频中的人物身份列表",
+        "en": "A list of characters to recognize in the video."
+      },
+      "sub_parameters": [
+        {
+          "name": "isAutoRecognition",
+          "position": "FormData",
+          "type": "Boolean",
+          "required": false,
+          "description": {
+            "zh": "自动识别是否使用的是自动识别单独的视频地址（是：则人脸图片无法使用时间与视频帧用时间对应，因为可能是不同的视频）",
+            "en": "Specifies whether to use a separate video URL for automatic recognition. If `true`, the timestamps of face images may not align with the main video frames, as they can come from different videos."
+          }
+        },
+        {
+          "name": "roleInfo",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "人物信息描述",
+            "en": "A description of the character."
+          }
+        },
+        {
+          "name": "roleName",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "人物名称",
+            "en": "The character's name."
+          }
+        },
+        {
+          "name": "timeIntervals",
+          "position": "FormData",
+          "type": "RepeatList",
+          "required": false,
+          "description": {
+            "zh": "角色出场时间段列表",
+            "en": "A list of time intervals for the character's appearances."
+          }
+        },
+        {
+          "name": "urls",
+          "position": "FormData",
+          "type": "RepeatList",
+          "required": false,
+          "description": {
+            "zh": "人物头像地址",
+            "en": "A list of URLs for the character's avatar images."
+          }
+        }
+      ]
+    },
+    {
+      "name": "videoShotFaceIdentityCount",
+      "position": "Body",
+      "type": "Integer",
+      "required": false,
+      "description": {
+        "zh": "人物匹配时，单镜头(分镜)，参与匹配的抽帧（图片）数量：[1~5]",
+        "en": "The number of frames (images) per shot to be used for character matching. The value must be an integer between 1 and 5, inclusive."
+      }
+    },
+    {
+      "name": "videoUrl",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "视频url",
+        "en": "The video URL."
+      }
+    },
+    {
+      "name": "videoUrls",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "多视频url",
+        "en": "A list of video URLs. The videos are concatenated and processed as a single video. This feature is suitable for short video clips."
+      }
+    },
+    {
+      "name": "workspaceId",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "阿里云百炼业务空间唯一标识：[获取workspaceId](~~2782167~~)",
+        "en": "The workspace ID in Alibaba Cloud Model Studio. [Get workspaceId](~~2782167~~)"
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "视频理解-提交异步任务",
+    "en": "Video Understanding - Submit Asynchronous Job"
+  },
+  "descriptions": {
+    "zh": "### 异步任务说明\n\n区别于在线同步接口，提交异步任务后实时返回，无需等待执行结束。任务由后台异步调度（排队、并行），结果可通过\"获取异步任务状态和结果\"接口查询。\n\n### 接口调用说明\n\n- 支持绝大部分开发语言 SDK 方式接入\n- 可在 [OpenAPI 门户]() 直接调试和使用\n- 也可前往 [轻应用-影视传媒视频理解控制台](https://bailian.console.aliyun.com/#/app/app-market/quanmiao/video-comprehend)，切换到\"API\"页签查看调用 Demo\n\n### 并发说明\n\n| 项目 | 说明 |\n|------|------|\n| 默认并发 | 2 并发（异步任务运行并发，非接口调用并发） |\n| 可调上限 | 通过 `UpdateVideoAnalysisConfig` 配置接口可调整至 30 |\n| 更高并发 | 业务量大可联系客服或运营申请更多并发 |\n| 排队机制 | 并发数 = 后台同时运行的任务数，超过并发数的任务自动后台排队 |\n\n### 角色识别说明\n\n- 通过 API 接口实现\"识别视频中的人物身份\"\n- **默认可识别**：16 个人物，每个角色 1 张图片\n- **放宽限制**：如需进一步放宽，请加入钉钉群 `116015001424` 联系产研\n- **超时风险**：一个视频理解任务中做太多次人物角色匹配，存在超时风险\n\n### 调度轮询最佳实践\n\n因接口调用并发有限制，建议如下：\n\n- **扩并发**：扩的是异步处理任务的并发，非提交任务接口的并发\n- **提交任务**：理论串行即可。任务多时可适当 2~3 个并发提交\n- **结果轮询**：任务按提交顺序调度，只需周期轮询最早未完成的 top n（n == 异步任务并发数）即可。更多任务状态只会是排队中，轮询意义不大\n\n### Agent 集成\n\nAgent 可通过 Skill 直接使用视频理解能力：\n\n- **Skill 名称**：`alibabacloud-bailian-videoanalysis`\n- **Skill 地址**：[https://skills.aliyun.com/skills/alibabacloud-bailian-videoanalysis](https://skills.aliyun.com/skills/alibabacloud-bailian-videoanalysis)",
+    "en": "### Asynchronous tasks\n\nUnlike synchronous APIs, this API returns a response immediately after you submit an asynchronous task. The system schedules background tasks using a queuing mechanism and parallel processing. You can check the task status and retrieve the results by calling the \"Get asynchronous task status and results\" API.\n\n### API calls\n\n- You can call the API by using SDKs for most major programming languages.\n\n- You can debug and use the API directly in [OpenAPI Explorer]().\n\n- You can also go to the [Bailian - Film and Television Media Video Analysis Console](https://bailian.console.aliyun.com/#/app/app-market/quanmiao/video-comprehend), switch to the API tab, and view a call demo.\n\n### Concurrency\n\n| Item                   | Description                                                                                                                     |\n| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- |\n| Default concurrency    | 2\\. This is the concurrency limit for running asynchronous tasks, not for API calls.                                            |\n| Adjustable upper limit | You can increase the limit to 30 by calling the `UpdateVideoAnalysisConfig` API.                                                |\n| Higher concurrency     | If your business requires higher throughput, contact support to request a limit increase.                                       |\n| Queuing mechanism      | This limit defines the number of tasks that can run simultaneously. Tasks submitted beyond this limit are automatically queued. |\n\n### Role recognition\n\n- Use the API to identify people in a video.\n\n- **Default recognition limit**: Up to 16 people, with one image per role.\n\n- **Increase the limit**: To request a higher limit, join the DingTalk group with ID `116015001424` and contact the product R\\&D team.\n\n- **Timeout risk**: Too many role-matching operations in a single video analysis task can increase the risk of a timeout.\n\n### Scheduling and polling best practices\n\nBecause API call concurrency is limited, we recommend the following:\n\n- **Concurrency scaling**: The adjustable concurrency limit applies to the number of asynchronous tasks processed simultaneously, not the task submission rate.\n\n- **Task submission**: Typically, submitting tasks serially is sufficient. If you have a large number of tasks, you can submit them with a concurrency of 2 to 3.\n\n- **Polling for results**: Tasks are processed in the order they are submitted. Therefore, only poll for the status of the N oldest incomplete tasks, where N equals your asynchronous task concurrency limit. Polling for other tasks is inefficient because they are still in the queue.\n\n### Agent integration\n\nAgents can use video analysis capabilities directly through a Skill:\n\n- **Skill name**: `alibabacloud-bailian-videoanalysis`\n\n- **Skill address**: <https://skills.aliyun.com/skills/alibabacloud-bailian-videoanalysis>"
+  }
+}

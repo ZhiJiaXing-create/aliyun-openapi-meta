@@ -1,5 +1,6 @@
 {
   "name": "DeleteCustomRoutingEndpointTrafficPolicies",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "EndpointId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待删除流量通行目标的终端节点ID。\n\n> 该参数为必选。",
+        "en": "The ID of the endpoint for which you want to delete traffic destinations.\n\n>  This parameter is required."
+      }
     },
     {
       "name": "PolicyIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量通行目标ID列表。\n\n您最多可输入9000个流量通行目标ID。",
+        "en": "The IDs of the traffic destinations.\n\nYou can specify the IDs of up to 9,000 traffic destinations."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除终端节点流量通行目标",
+    "en": "DeleteCustomRoutingEndpointTrafficPolicies"
+  },
+  "descriptions": {
+    "zh": "- **DeleteCustomRoutingEndpointTrafficPolicies**接口属于异步接口，即系统会先返回一个请求ID，但终端节点流量通行目标并未删除完成，系统后台的删除任务仍在进行。您可以通过调用[DescribeCustomRoutingEndpointGroup](~~449373~~)查询自定义路由类型监听的终端节点组的状态，来确认终端节点流量通行目标是否完成删除。\n    - 当终端节点组处于**updating**状态时，表示终端节点流量通行目标正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态，且通过[DescribeCustomRoutingEndPointTrafficPolicy](~~449392~~)查询不到要删除的终端节点流量通行目标时，表示终端节点流量通行目标删除完成。\n\n- **DeleteCustomRoutingEndpointTrafficPolicies**接口不支持在同一个全球加速实例内并发删除终端节点流量通行目标。",
+    "en": "*   **DeleteCustomRoutingEndpointTrafficPolicies** is an asynchronous operation. After you send a request, the system returns a request ID and runs the task in the background. You can call the [DescribeCustomRoutingEndpointGroup](~~449373~~) operation to query the status of an endpoint group to check whether the traffic destinations are deleted.\n\n    *   If the endpoint group is in the **updating** state, the traffic destinations are being deleted. In this case, you can perform only query operations.\n    *   If the endpoint group is in the **active** state and the traffic destinations that you want to delete cannot be queried by calling the [DescribeCustomRoutingEndPointTrafficPolicy](~~449392~~) operation, the traffic destinations are deleted.\n\n*   The **DeleteCustomRoutingEndpointTrafficPolicies** operation cannot be repeatedly called for the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-custom-routing-endpoint-traffic-policies --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-id ep-2zewuzypq5e6r3pfh0000 --policy-ids ply-bptest20000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteCustomRoutingEndpointTrafficPolicies --region cn-hangzhou --EndpointId 'ep-2zewuzypq5e6r3pfh0000' --PolicyIds.1 'ply-bptest20000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

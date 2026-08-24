@@ -1,5 +1,6 @@
 {
   "name": "DescribeErrorLogRecords",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n> 当本参数传入的是分片集群实例ID时，还需要传入**NodeId**参数。",
+        "en": "The ID of the instance.\n\n> If you set this parameter to the ID of a sharded cluster instance, you must also specify the **NodeId** parameter."
+      }
     },
     {
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名。",
+        "en": "The name of the database."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间，必须晚于查询开始时间，且与查询开始时间间隔时长不能大于一天。格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. The end time must be later than the start time and within 24 hours from the start time. Specify the time in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "LogicalOperator",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "关键字搜索的逻辑操作， 默认值为and。",
+        "en": "The logical relationship between multiple keywords. Valid values:\n\n- **or**\n\n- **and** (default value)"
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分片集群实例中Mongos节点ID或Shard节点ID。\n\n> 当**DBInstanceId**参数传入的是分片集群实例ID时，本参数才可用。",
+        "en": "The ID of the mongos node or shard node whose error logs you want to query in the instance. If the instance is a sharded cluster instance, you must specify this parameter.\n\n> This parameter is valid only when **DBInstanceId** is set to the ID of a sharded cluster instance."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，取值为大于0且不超过Integer数据类型的最大值，默认值为**1**。",
+        "en": "The number of the page to return. The value must be an integer that is greater than 0. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值范围：**30**~**100**。",
+        "en": "The number of entries to return on each page. Valid values: **30** to **100**."
+      }
     },
     {
       "name": "QueryKeywords",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询关键字，多个关键字以空格分隔，不超过10个关键字。",
+        "en": "The keywords used for query. You can enter up to 10 keywords at a time. If you enter multiple keywords, separate the keywords with spaces."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。资源组详情请参见[查看资源组基本信息](~~151181~~)。",
+        "en": "The ID of the resource group. For more information, see [View basic information of a resource group](~~151181~~)."
+      }
     },
     {
       "name": "RoleType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例中节点的角色。取值：\n- **primary**：主节点。\n- **secondary**：从节点。\n\n> 当**NodeId**参数传入的是Mongos节点ID时，本参数取值只能为**primary**。",
+        "en": "The role of the node whose error logs you want to query in the instance. Valid values:\n\n- **primary**\n\n- **secondary**\n\n> If you set the **NodeId** parameter to the ID of a mongos node, the RoleType parameter must be set to **primary**."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the *yyyy-MM-dd*T*HH:mm*Z format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实例的错误日志",
+    "en": "DescribeErrorLogRecords"
+  },
+  "descriptions": {
+    "zh": "- 本接口适用于规格类型为**通用型本地盘版**和**独享型本地盘版**实例。\n- 本接口限制每分钟调用30次，如超过这个限制会被限流，请勿高频调用。如需高频调用，请使用Logstore，详情请参见[管理Logstore](~~48990~~)。",
+    "en": "- This operation is applicable only to **general-purpose local-disk** and **dedicated local-disk** instances.\n\n- You can call this operation up to 30 times per minute. To call this operation at a higher frequency, use a Logstore. For more information, see [Manage a Logstore](~~48990~~)."
+  },
   "example": {
     "unifiedCli": "aliyun dds describe-error-log-records --db-instance-id dds-bp12c5b040dc0000 --node-id d-bp128a0034360000 --role-type primary --start-time 2019-01-01T12:10Z --end-time 2019-01-02T12:10Z --db-name mongodbtest --page-size 30 --page-number 1 --resource-group-id rg-acfmyiu4ekp0000 --query-keywords test_test1 --logical-operator and --region cn-hangzhou",
     "legacyCli": "aliyun dds DescribeErrorLogRecords --region cn-hangzhou --EndTime '2019-01-02T12:10Z' --PageSize 30 --ResourceGroupId 'rg-acfmyiu4ekp0000' --QueryKeywords test_test1 --DBInstanceId 'dds-bp12c5b040dc0000' --PageNumber 1 --RoleType primary --LogicalOperator and --NodeId 'd-bp128a0034360000' --StartTime '2019-01-01T12:10Z' --DBName mongodbtest"

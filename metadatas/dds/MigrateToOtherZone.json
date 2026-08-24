@@ -1,5 +1,6 @@
 {
   "name": "MigrateToOtherZone",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移可用区的生效时间，取值：\n- **Immediately**（默认值）：立即生效。\n- **MaintainTime**：在实例的可运维时间段内生效。",
+        "en": "The time when the instance is migrated to the destination zone. Valid values:\n\n- **Immediately** (default): The instance is migrated immediately.\n\n- **MaintainTime**: The instance is migrated during its maintenance window."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 如果实例的网络类型为专有网络，您还需要传入**VSwitchId**参数。",
+        "en": "The ID of the instance.\n\n> If the network type of the instance is VPC, you must specify the **Vswitch** parameter ."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移的目标可用区虚拟交换机ID。\n\n> 当实例的网络类型为专有网络时，本参数才可用且必须传入。",
+        "en": "The ID of the vSwitch in the destination zone.\n\n> This parameter is valid and required only when the network type of the instance is VPC."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "迁移的目标可用区ID。\n\n> - 迁移的目标可用区必须和当前实例的可用区处于同一地域。\n> - 您可以通过调用[DescribeRegions](~~61933~~)接口查询可用区ID。",
+        "en": "The ID of the destination zone to which you want to migrate the ApsaraDB for MongoDB instance.\n\n> - The destination and source zones must be in one region.\n>\n> - You can call [DescribeRegions](~~61933~~) to query the zone IDs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "迁移实例到其他可用区",
+    "en": "MigrateToOtherZone"
+  },
+  "descriptions": {
+    "zh": "- 本接口适用于副本集实例，暂不支持单节点实例和分片集群实例。\n- 实例未开启透明数据加密TDE功能。\n- 迁移的目标可用区和当前实例的可用区处于同一地域。\n- 专有网络的实例在操作迁移可用区之前，请确保目标可用区已创建相应的虚拟交换机，如需创建请参见[创建虚拟交换机](~~65387~~)。",
+    "en": "This operation is applicable only to replica set instances, but not to standalone instances or sharded cluster instances.\n\n> If you have applied for a public endpoint of the instance, you must first call the [ReleasePublicNetworkAddress](~~67604~~) operation to release the public endpoint."
+  },
   "example": {
     "unifiedCli": "aliyun dds migrate-to-other-zone --instance-id dds-bp26580000 --zone-id cn-hangzhou-b --effective-time Immediately --vswitch-id vsw-bp67ac0000 --region cn-hangzhou",
     "legacyCli": "aliyun dds MigrateToOtherZone --region cn-hangzhou --ZoneId 'cn-hangzhou-b' --InstanceId 'dds-bp26580000' --EffectiveTime Immediately --VSwitchId 'vsw-bp67ac0000'"

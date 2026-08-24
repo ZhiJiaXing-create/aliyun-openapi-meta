@@ -1,5 +1,6 @@
 {
   "name": "CreateForwardEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,100 @@
       "name": "ExternalIp",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "提供公网访问的弹性公网IP地址。",
+        "en": "The elastic IP address (EIP) that is used to access the Internet."
+      }
     },
     {
       "name": "ExternalPort",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要进行端口转发的外部端口或端口段。\n- 输入的端口范围需要在1~65535之间。\n- 如果需要在端口段内转发，请在输入时以正斜线（/）隔开起始端口，例如10/20。\n- 如果ExternalPort设置为端口段，则InternalPort也需要设置为端口段，且端口段的端口个数相同，例如ExternalPort设置为10/20，InternalPort设置为80/90。",
+        "en": "The external port or port range that is used for port forwarding.\n\n- Valid values: 1 to 65535.\n\n- To specify a port range, separate the first port and the last port with a forward slash (/), such as 10/20.\n\n- If you set ExternalPort to a port range, you must also set InternalPort to a port range. The number of ports in the port ranges must be the same. For example, if you set ExternalPort to 10/20, you can set InternalPort to 80/90."
+      }
     },
     {
       "name": "ForwardEntryName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DNAT规则的名称。长度为2~128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the DNAT entry. The name must be 2 to 128 characters in length. The name cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "HealthCheckPort",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DNAT的探测端口，需要在内网端口范围内。默认值为空。",
+        "en": "The probe port. The port must be within the internal port range. By default, this parameter is left empty."
+      }
     },
     {
       "name": "InternalIp",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "通过DNAT条目进行公网通信的实例的私网IP地址。",
+        "en": "The private IP address of the instance that uses the DNAT entry for Internet communication."
+      }
     },
     {
       "name": "InternalPort",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "进行端口转发的内部端口或端口段。\n\n- 输入的端口范围需要在1~65535之间。\n- 如果需要在端口段内转发，请在输入时以正斜线（/）隔开起始端口，例如10/20。",
+        "en": "The internal port or port range that is used for port forwarding.\n\n- Valid values: 1 to 65535.\n\n- To specify a port range, separate the first port and the last port with a forward slash (/), such as 10/20."
+      }
     },
     {
       "name": "IpProtocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "协议类型，取值： \n\n- **TCP**：转发TCP协议的报文。   \n\n- **UDP**：转发UDP协议的报文。   \n\n- **Any**（默认）：转发所有协议的报文。",
+        "en": "The protocol. Valid values:\n\n- **TCP**: forwards TCP packets.\n\n- **UDP**: forwards UDP packets.\n\n- **Any** (default): forwards all packets."
+      }
     },
     {
       "name": "NatGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "NAT网关的ID。",
+        "en": "The ID of the Network Address Translation (NAT) gateway."
+      }
     },
     {
       "name": "StandbyExternalIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "提供公网访问的备用弹性公网IP地址，需要选择绑定在NAT上的备用弹性IP。DNAT创建成功后，备用公网IP会生效。",
+        "en": "The secondary EIP that is used to access the Internet. You need to select a secondary EIP that is bound to NAT. After the DNAT entry is created, the secondary EIP takes effect."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加DNAT条目",
+    "en": "CreateForwardEntry"
+  },
   "example": {
     "unifiedCli": "aliyun ens create-forward-entry --nat-gateway-id nat-5t7nh1cfm6kxiszlttr380000 --external-ip 121.XXX.XXX.28 --external-port 22 --internal-ip 10.0.XXX.XXX --internal-port 22 --forward-entry-name test0 --ip-protocol Any --health-check-port 80 --standby-external-ip 101.XXX.XXX.4 --region cn-hangzhou",
     "legacyCli": "aliyun ens CreateForwardEntry --region cn-hangzhou --ExternalPort 22 --ExternalIp '121.XXX.XXX.28' --IpProtocol Any --StandbyExternalIp '101.XXX.XXX.4' --InternalPort 22 --HealthCheckPort 80 --NatGatewayId 'nat-5t7nh1cfm6kxiszlttr380000' --ForwardEntryName test0 --InternalIp '10.0.XXX.XXX'"

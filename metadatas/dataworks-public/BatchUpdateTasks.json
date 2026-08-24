@@ -1,5 +1,6 @@
 {
   "name": "BatchUpdateTasks",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,95 +9,166 @@
       "name": "Comment",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备注信息。",
+        "en": "The remarks."
+      }
     },
     {
       "name": "Tasks",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "任务列表。",
+        "en": "The list of tasks."
+      },
       "sub_parameters": [
         {
           "name": "DataSource",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "关联数据源信息。",
+            "en": "Associated data source information."
+          }
         },
         {
           "name": "Description",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "描述信息。",
+            "en": "The description."
+          }
         },
         {
           "name": "EnvType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "项目环境。\n- Prod：生产\n- Dev：开发",
+            "en": "The project environment.\n\n- Prod: Production\n\n- Dev: Development"
+          }
         },
         {
           "name": "Id",
           "position": "FormData",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "任务ID。",
+            "en": "The task ID."
+          }
         },
         {
           "name": "Name",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "名称。",
+            "en": "The name."
+          }
         },
         {
           "name": "Owner",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务的责任人的账号ID。",
+            "en": "The account ID of the task owner."
+          }
         },
         {
           "name": "RerunInterval",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "重试时间间隔，单位秒。",
+            "en": "The retry interval in seconds."
+          }
         },
         {
           "name": "RerunMode",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务是否允许重跑的配置。\n- AllDenied：失败或成功都不可重跑\n- FailureAllowed：只有失败可重跑\n- AllAllowed：失败或成功均可重跑",
+            "en": "The rerun mode. Valid values:\n\n- AllDenied: The task cannot be rerun.\n\n- FailureAllowed: The task can be rerun only after it fails.\n\n- AllAllowed: The task can always be rerun."
+          }
         },
         {
           "name": "RerunTimes",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "重试次数，当任务设置为可重跑时生效。",
+            "en": "The number of retry attempts. Takes effect when the task is configured to allow reruns."
+          }
         },
         {
           "name": "RuntimeResource",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "运行环境配置，如资源组信息。",
+            "en": "Runtime environment configurations, such as resource group information."
+          }
         },
         {
           "name": "Tags",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务标签列表。",
+            "en": "The list of task tags."
+          }
         },
         {
           "name": "Timeout",
           "position": "FormData",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务执行超时时间，单位秒。取值应大于3600。",
+            "en": "The task execution timeout in seconds. The value should be greater than 3600."
+          }
         },
         {
           "name": "Trigger",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务触发方式。",
+            "en": "The task trigger configurations."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量更新任务",
+    "en": "BatchUpdateTasks"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用。",
+    "en": "DataWorks Basic Edition or higher is required."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public batch-update-tasks --tasks '[{\"Owner\":\"1000\",\"Description\":\"test\",\"RerunTimes\":3,\"RerunInterval\":60,\"Timeout\":3600,\"EnvType\":\"Prod\",\"Name\":\"SQL_node\",\"RuntimeResource\":{\"Cu\":\"0.25\",\"ResourceGroupId\":\"S_res_group_524258031846018_1684XXXXXXXXX\",\"Image\":\"i-xxxxxx\"},\"DataSource\":{\"Name\":\"odps_test\"},\"Trigger\":{\"Recurrence\":\"Normal\",\"Type\":\"Scheduler\",\"EndTime\":\"9999-01-01_00:00:00\",\"StartTime\":\"1970-01-01_00:00:00\",\"Cron\":\"00_00_00_0_0_0\"},\"RerunMode\":\"AllAllowed\",\"Id\":1234,\"Tags\":[{\"Value\":\"value1\",\"Key\":\"key1\"}]}]' --comment this_is_a_comment --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public BatchUpdateTasks --region cn-hangzhou --Comment this_is_a_comment --Tasks '[{\"Owner\":\"1000\",\"Description\":\"test\",\"RerunTimes\":3,\"RerunInterval\":60,\"Timeout\":3600,\"EnvType\":\"Prod\",\"Name\":\"SQL_node\",\"RuntimeResource\":{\"Cu\":\"0.25\",\"ResourceGroupId\":\"S_res_group_524258031846018_1684XXXXXXXXX\",\"Image\":\"i-xxxxxx\"},\"DataSource\":{\"Name\":\"odps_test\"},\"Trigger\":{\"Recurrence\":\"Normal\",\"Type\":\"Scheduler\",\"EndTime\":\"9999-01-01_00:00:00\",\"StartTime\":\"1970-01-01_00:00:00\",\"Cron\":\"00_00_00_0_0_0\"},\"RerunMode\":\"AllAllowed\",\"Id\":1234,\"Tags\":[{\"Value\":\"value1\",\"Key\":\"key1\"}]}]'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateSecurityPolicy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "Ciphers",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "支持的加密套件列表",
+        "en": "The supported cipher suites."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length.\n\n> If you do not specify this parameter, the system automatically uses the RequestId as the ClientToken. The RequestId of each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会创建资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP_2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, the request format, and business limits. If the request fails the check, an error message is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. After the request passes the check, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "SecurityPolicyName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "安全策略名称。\n\n长度为2~128个英文或中文字符，必须以字母、中文或数字开头，可包含数字、半角句号（.）、下划线（_）、短划线（-）和空格。",
+        "en": "The name of the security policy.\n\nThe name must be 2 to 128 characters in length, and can contain letters, digits, Chinese characters, periods (.), underscores (\\_), hyphens (-), and spaces. The name must start with a letter, a Chinese character, or a digit."
+      }
     },
     {
       "name": "TLSVersions",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "支持的TLS协议版本列表",
+        "en": "The TLS protocol versions that are supported."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签。",
+        "en": "The tags."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自定义安全策略",
+    "en": "CreateSecurityPolicy"
+  },
   "example": {
     "unifiedCli": "aliyun alb create-security-policy --client-token 593B0448-D13E-4C56-AC0D-FDF0F000000 --dry-run true --tls-versions TLSv1.0 --resource-group-id rg-atstuj3rtop0000 --security-policy-name test-secrity --ciphers ECDHE-ECDSA-AES128-SHA --tag Value=product Key=env --region cn-hangzhou",
     "legacyCli": "aliyun alb CreateSecurityPolicy --region cn-hangzhou --Ciphers.1 'ECDHE-ECDSA-AES128-SHA' --Tag.1.Key env --ResourceGroupId 'rg-atstuj3rtop0000' --TLSVersions.1 'TLSv1.0' --Tag.1.Value product --DryRun true --SecurityPolicyName 'test-secrity' --ClientToken '593B0448-D13E-4C56-AC0D-FDF0F000000' --method POST --force"

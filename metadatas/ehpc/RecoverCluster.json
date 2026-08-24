@@ -1,5 +1,6 @@
 {
   "name": "RecoverCluster",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AccountType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账户服务类型。取值范围：\n- nis\n- ldap\n\n默认值：nis",
+        "en": "The service type of the domain account. Valid values:\n\n*   nis\n*   ldap\n\nDefault value: nis."
+      }
     },
     {
       "name": "ClientVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群所使用的客户端版本号，默认为最新版本。\n\n您可以调用[ListCurrentClientVersion](~~87223~~)查询当前最新客户端版本号。",
+        "en": "The version of the E-HPC client. The default value is the latest version of the client.\n\nYou can call the [ListCurrentClientVersion](~~87223~~) operation to query the latest version of the E-HPC client."
+      }
     },
     {
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定重置并修复的集群ID。并且，集群状态必须为exception（异常）时才能修复。\n\n您可以通过调用[ListClusters](~~87116~~)获取集群ID及集群状态。",
+        "en": "The cluster ID. The cluster must be in the Exception state.\n\nYou can call the [ListClusters](~~87116~~) operation to query the ID and status of a cluster."
+      }
     },
     {
       "name": "ImageId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像ID。\n\n您可以通过[ListImages](~~87213~~)和[ListCustomImages](~~87215~~)查询E-HPC可安装的镜像。",
+        "en": "The image ID.\n\nYou can call the [ListImages](~~87213~~) and [ListCustomImages](~~87215~~) operations to query the images that are supported by E-HPC."
+      }
     },
     {
       "name": "ImageOwnerAlias",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像类型。取值范围：\n- system：公共镜像\n- self：自定义镜像\n- others：共享镜像\n\n默认值：system",
+        "en": "The type of the image. Valid values:\n\n*   system: public image\n*   self: custom image\n*   others: shared image\n\nDefault value: system."
+      }
     },
     {
       "name": "OsTag",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "操作系统镜像标签。\n\n您可以通过[ListImages](~~87213~~)和[ListCustomImages](~~87215~~)查询E-HPC支持的镜像标签。",
+        "en": "The tag of the system image.\n\nYou can call the [ListImages](~~87213~~) and [ListCustomImages](~~87215~~) operations to query the image tags supported by Elastic High Performance Computing (E-HPC)."
+      }
     },
     {
       "name": "SchedulerType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度服务器类型。取值范围：\n- pbs\n- slurm\n- opengridscheduler\n- deadline\n\n默认值：pbs",
+        "en": "The type of the scheduler. Valid values:\n\n*   pbs\n*   slurm\n*   opengridscheduler\n*   deadline\n\nDefault value: pbs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重置并修复集群",
+    "en": "RecoverCluster"
+  },
+  "descriptions": {
+    "zh": "仅当集群状态为exception（异常）时，才能调用该接口重置并修复集群。您可以通过调用[ListClusters](~~87116~~)获取集群ID及集群状态。\n建议您操作前导出所有作业数据。重置并修复集群会有以下影响：\n- 集群所有节点执行更换系统盘的操作，按创建集群时的配置重新配置系统盘。\n- 集群所有节点的系统盘和数据盘的数据将会丢失，包括用户信息、作业信息、调度器队列信息、自动伸缩队列配置信息，但文件存储NAS上的数据仍然保留。\n- 集群自建队列被清除，节点实例继续保留，并全部迁移到集群默认队列中。",
+    "en": "You can call the operation to reset and restore a cluster only when the cluster is in the Exception state. You can call the [ListClusters](~~87116~~) operation to query the ID and status of a cluster. We recommend that you export all job data before you restore a cluster. When you reset and restore a cluster, take note of the following impacts:\n\n*   The system disks of all nodes are changed. By default, new system disks are configured based on the settings that you specified when the cluster was created.\n*   The data on the system disks and data disks of all cluster nodes is lost. The data includes user information, job information, scheduler queue information, and configuration data of auto-scaling queues. However, the data on File Storage NAS file systems is retained.\n*   The self-managed queues in the cluster are deleted. All nodes are retained and migrated to the default queue of the cluster."
+  },
   "example": {
     "unifiedCli": "aliyun ehpc recover-cluster --cluster-id ehpc-hz-FYUr320000 --os-tag CentOS_7.2_64 --account-type nis --scheduler-type pbs --image-owner-alias system --image-id m-bp18133n0335yq0000 --client-version 1.0.76 --api-version 2018-04-12 --region cn-hangzhou",
     "legacyCli": "aliyun ehpc RecoverCluster --region cn-hangzhou --ImageOwnerAlias system --ClusterId 'ehpc-hz-FYUr320000' --OsTag 'CentOS_7.2_64' --ImageId 'm-bp18133n0335yq0000' --SchedulerType pbs --ClientVersion '1.0.76' --AccountType nis"

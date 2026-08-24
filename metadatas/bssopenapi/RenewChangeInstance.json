@@ -1,5 +1,6 @@
 {
   "name": "RenewChangeInstance",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性。",
+        "en": "Ensures the idempotence of the request."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "Parameter",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "模块列表",
+        "en": "Module list"
+      },
       "sub_parameters": [
         {
           "name": "Code",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个模块属性code配置，n的取值范围为（1~100），如有多个模块属性参数，按照n=1,2,3…n的形式拼接多个参数。",
+            "en": "The code configuration for the Nth module property. The value of N can be an integer from 1 to 100. If you have multiple module properties, create a separate parameter for each by setting n to 1, 2, 3, and so on."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个模块属性value配置，n的取值范围为（1~100）。",
+            "en": "The value configuration for the nth module property. The value of n ranges from 1 to 100."
+          }
         }
       ]
     },
@@ -40,21 +61,40 @@
       "name": "ProductCode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "产品代码，可通过接口**QueryProductList**查询产品代码，或查看**阿里云产品Code速查手册**。",
+        "en": "The product code. To obtain it, call **QueryProductList**."
+      }
     },
     {
       "name": "ProductType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品类型",
+        "en": "Product type"
+      }
     },
     {
       "name": "RenewPeriod",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预付费续费时长，单位：月。取值：\n- 1~9。\n- 12。\n- 24。\n- 36。",
+        "en": "The subscription renewal duration, in months. Valid values:\n\n- 1-9\n\n- 12\n\n- 24\n\n- 36"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "续费变配服务",
+    "en": "RenewChangeInstance"
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi renew-change-instance --product-code rds --product-type rds --instance-id rm-skjdhaskjdh --parameter Value=disk Code=Bandwidth --client-token JASIOFKVNVIXXXXXX --renew-period 2 --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi RenewChangeInstance --region cn-hangzhou --Parameter.1.Value disk --ProductCode rds --InstanceId 'rm-skjdhaskjdh' --ProductType rds --RenewPeriod 2 --ClientToken JASIOFKVNVIXXXXXX --Parameter.1.Code Bandwidth"

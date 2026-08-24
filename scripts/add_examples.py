@@ -34,7 +34,7 @@ EXAMPLE_API_URL = (
 )
 
 # Directories to update
-TARGET_DIRS = ["metadatas", "zh-CN", "en-US"]
+TARGET_DIRS = ["metadatas"]
 
 CONCURRENCY = 8
 REQUEST_TIMEOUT = 10

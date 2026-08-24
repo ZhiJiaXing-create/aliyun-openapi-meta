@@ -1,5 +1,6 @@
 {
   "name": "CreateListener",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建监听。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, the request format, and the service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends the request. If the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "ListenerDescription",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义监听描述。\n\n长度限制为2~256个字符，支持中文和英文字母，可包含数字、半角逗号（,）、半角句号（.）、半角分号（;）、正斜线（/）、at（@）、下划线（_）和短划线（-）。",
+        "en": "The description of the listener.\n\nThe description must be 2 to 256 characters in length. It can contain Chinese characters, letters, digits, commas (,), periods (.), semicolons (;), forward slashes (/), at signs (@), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关型负载均衡实例的ID。",
+        "en": "The ID of the GWLB instance."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组 ID。",
+        "en": "The server group ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签列表。一次调用最多支持添加20个标签。",
+        "en": "The tags. You can specify up to 20 tags in each call."
+      }
     },
     {
       "name": "TcpIdleTimeout",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "TCP连接空闲超时时间。\n\n取值范围：**60**-**6000** 秒。\n\n默认值：**350** 秒。",
+        "en": "The timeout period of an idle TCP connection.\n\nValid values: **60** to **6000** seconds.\n\nDefault value: **350** seconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建监听",
+    "en": "CreateListener"
+  },
+  "descriptions": {
+    "zh": "**CreateListener** 接口属于异步接口，即系统返回一个请求 ID，但该监听尚未创建成功，系统后台的创建任务仍在进行。您可以调用[GetListenerAttribute](~~2853569~~)查询监听的创建状态：\n\n- 当监听处于 **Provisioning** 状态时，表示监听正在创建中。\n\n- 当监听处于 **Running** 状态时，表示监听创建成功。",
+    "en": "The **CreateListener** operation is asynchronous. After you send a request, the system returns a request ID. The listener is created in the background. You can call the [GetListenerAttribute](~~2853569~~) operation to query the creation status of the listener:\n\n- If a listener is in the **Provisioning** state, the listener is being created.\n\n- If a listener is in the **Running** state, the listener is created."
+  },
   "example": {
     "unifiedCli": "aliyun gwlb create-listener --load-balancer-id gwlb-te609d6696632f700000 --listener-description listener-description --server-group-id sgp-ckh01px70dszof0000 --tcp-idle-timeout 350 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --tag Value=testValue Key=testKey --region cn-hangzhou",
     "legacyCli": "aliyun gwlb CreateListener --region cn-hangzhou --Tag.1.Key testKey --TcpIdleTimeout 350 --ListenerDescription 'listener-description' --Tag.1.Value testValue --DryRun false --ServerGroupId 'sgp-ckh01px70dszof0000' --LoadBalancerId 'gwlb-te609d6696632f700000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --method POST --force"

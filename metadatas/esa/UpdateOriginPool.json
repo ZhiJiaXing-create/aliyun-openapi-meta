@@ -1,5 +1,6 @@
 {
   "name": "UpdateOriginPool",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "Enabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源地址池是否启用：\n\n- true: 启用；\n- false：不启用。",
+        "en": "Specifies whether the origin address pool is enabled. Valid values:\n\n- true: Enabled.\n- false: Not enabled."
+      }
     },
     {
       "name": "Id",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源地址池ID，可通过调用[ListOriginPools](~~ListOriginPools~~)接口获取。",
+        "en": "The origin address pool ID. You can call the [ListOriginPools](~~ListOriginPools~~) operation to obtain the ID."
+      }
     },
     {
       "name": "Origins",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "源地址池里添加的源站信息，多个源站使用数组传值。",
+        "en": "The origin server information added to the origin address pool. Use an array to pass multiple origin servers."
+      },
       "sub_parameters": [
         {
           "name": "Address",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站地址，如：www.example.com。",
+            "en": "The addresses of the origin server, such as www.example.com."
+          }
         },
         {
           "name": "AuthConf",
           "position": "Query",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "鉴权信息，源站为OSS或者S3等源站需要鉴权时，需要传鉴权相关配置信息。",
+            "en": "The authentication information. This parameter is required when the origin server is OSS, S3, or another origin server that requires authentication."
+          }
         },
         {
           "name": "Enabled",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站是否启用：\n\n- true: 启用；\n- false：不启用。",
+            "en": "Specifies whether the origin server is enabled. Valid values:\n\n- true: Enabled.\n- false: Not enabled."
+          }
         },
         {
           "name": "Header",
           "position": "Query",
           "type": "Any",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "回源时带的请求头，只支持Host。",
+            "en": "The request header included in back-to-origin requests. Only Host is supported."
+          }
         },
         {
           "name": "IpVersionPolicy",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "回源请求使用的 IP 协议版本：\n- round_robin：默认策略，随机轮询 IPv4 或 IPv6 源站\n- ipv4_first：优先使用 IPv4 源站\n- ipv6_first：优先使用 IPv6 源站\n- follow：优先跟随客户端使用的 IP 版本",
+            "en": "The IP protocol version used for back-to-origin requests. Valid values:\n- round_robin: default policy. Randomly polls IPv4 or IPv6 origin servers.\n- ipv4_first: preferentially uses IPv4 origin servers.\n- ipv6_first: preferentially uses IPv6 origin servers.\n- follow: preferentially follows the IP version used by the client."
+          }
         },
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站名称，一个源地址下源站名称唯一。",
+            "en": "The origin server name. The name must be unique within an origin address pool."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源站类型：\n\n- ip_domain: ip或域名类型源站；\n- OSS：OSS地址源站；\n- S3：AWS S3源站。",
+            "en": "The origin server type. Valid values:\n\n- ip_domain: an IP address or domain name-based origin server.\n- OSS: an OSS address-based origin server.\n- S3: an AWS S3 origin server."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "权重，0-100的整数。",
+            "en": "The weight. The value is an integer from 0 to 100."
+          }
         }
       ]
     },
@@ -76,9 +121,20 @@
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~ListSites~~)接口获取。",
+        "en": "The site ID. You can call the [ListSites](~~ListSites~~) operation to obtain the ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改单个源地址池",
+    "en": "Modify a single origin address pool"
+  },
   "example": {
     "unifiedCli": "aliyun esa update-origin-pool --id 1038520525196928 --enabled true --origins '[{\"Type\":\"OSS\",\"Address\":\"www.example.com\",\"Header\":\"Host_:_example.com\",\"Enabled\":true,\"AuthConf\":{\"SecretKey\":\"yourAccessKeySecret\",\"Version\":\"v2\",\"Region\":\"us-east-1\",\"AuthType\":\"public\",\"AccessKey\":\"yourAccessKeyID\"},\"Weight\":50,\"IpVersionPolicy\":\"round_robin\",\"Name\":\"origin1\"}]' --site-id 216558609793952 --region cn-hangzhou",
     "legacyCli": "aliyun esa UpdateOriginPool --region cn-hangzhou --Origins '[{\"Type\":\"OSS\",\"Address\":\"www.example.com\",\"Header\":\"Host_:_example.com\",\"Enabled\":true,\"AuthConf\":{\"SecretKey\":\"yourAccessKeySecret\",\"Version\":\"v2\",\"Region\":\"us-east-1\",\"AuthType\":\"public\",\"AccessKey\":\"yourAccessKeyID\"},\"Weight\":50,\"IpVersionPolicy\":\"round_robin\",\"Name\":\"origin1\"}]' --SiteId 216558609793952 --Enabled true --Id 1038520525196928"

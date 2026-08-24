@@ -1,5 +1,6 @@
 {
   "name": "ModifyImageSharePermission",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,83 @@
       "name": "AddAccount",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "授权共享镜像的阿里云账号ID。N的取值范围：1~10，若一次提交超过10个阿里云账号，系统将只处理前10个，忽略多余的账号。",
+        "en": "The IDs of the Alibaba Cloud accounts with which to share the image. You can specify up to 10 account IDs. If you specify more than 10 account IDs in a request, only the first 10 are processed."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "en": "Specifies whether to perform a dry run. A dry run checks for request parameter validity and permissions. If the request is valid, the `DryRunOperation` error code is returned. Otherwise, an error is returned. If the request is valid, no fee is incurred and no resource is created. Set the value to `true` to perform a dry run. Default value: `false`."
+      }
     },
     {
       "name": "ImageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "被共享的自定义镜像ID。\n\n><notice>不再支持共享使用服务密钥加密的镜像，仅支持共享使用用户主密钥 CMK 加密的镜像，使用服务密钥加密的镜像在共享时将会报错。></notice>",
+        "en": "The ID of the custom image.\n\n><notice>\n\nYou can no longer share images that are encrypted by using a service key. You can share only images that are encrypted by using a customer managed key (CMK). If you attempt to share an image that is encrypted by using a service key, the request fails.\n\n></notice>"
+      }
     },
     {
       "name": "IsPublic",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否发布或下架社区镜像。取值范围：\n\n- true：发布该镜像为社区镜像。\n- false：下架该镜像为普通镜像，若该镜像本身是普通镜像，则不做改变。\n\n默认值：false。",
+        "en": "Specifies whether to publish or unpublish the community image. Valid values:\n\n- true: publishes the image as a community image.\n\n- false: unpublishes the community image. The image becomes a custom image. If the image is a custom image, this setting has no effect.\n\nDefault value: false."
+      }
     },
     {
       "name": "LaunchPermission",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": ">该参数正在邀测中，暂不支持使用。",
+        "en": "> This parameter is in invitational preview and is not publicly available."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自定义镜像所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the custom image. You can call [DescribeRegions](~~25609~~) to view the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "RemoveAccount",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "删除镜像共享的阿里云账号ID。N的取值范围：1~10，若一次提交超过10个阿里云账号，系统将只处理前10个，忽略多余的账号。",
+        "en": "The IDs of the Alibaba Cloud accounts from which to unshare the image. You can specify up to 10 account IDs. If you specify more than 10 account IDs in a request, only the first 10 are processed."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "管理镜像共享权限",
+    "en": "ModifyImageSharePermission"
+  },
+  "descriptions": {
+    "zh": "调用该接口前，请您仔细阅读[共享自定义镜像](~~25463~~)。\n\n调用该接口时，请注意以下共享规则：\n\n- **共享限制**：只能共享自己账号下创建的自定义镜像，每份镜像最多可共享给 50 个阿里云账号，每份镜像一次最多共享给10个阿里云账号。\n\n- **实例影响**：使用共享镜像创建ECS实例（[RunInstances](~~63440~~)）后，一旦自定义镜像拥有者解除了镜像共享关系，或者删除了自定义镜像（[DeleteImage](~~25537~~)），该实例将无法初始化系统盘（[ReInitDisk](~~25519~~)）。\n\n><notice>云服务器 ECS 共享加密镜像规则变更：仅支持共享使用用户主密钥 CMK 加密的镜像，不再支持共享使用服务密钥加密的镜像，使用服务密钥加密的镜像在共享时将会报错。如果您保有服务密钥加密的镜像且计划共享给他人使用，请通过复制镜像（CopyImage），将镜像密钥改为用户主密钥CMK。\n></notice>\n\n发布或下架社区镜像，您需要注意：\n\n- **责任与协议**：社区镜像由其所有者负责质量和迭代更新，阿里云仅提供平台支持。发布前请确保您已了解并签署社区镜像协议，否则不允许发布，社区镜像详情见[发布社区镜像](~~208370~~)。\n\n- **加密限制**：加密镜像不可发布为社区镜像。\n\n- **公开性**：社区镜像完全公开，在镜像所属地域下，所有阿里云账号均可使用。\n\n- **功能限制**：社区镜像不支持共享、导出或复制。\n\n- **下架影响**：社区镜像下架后，将不再对其他阿里云账号公开，但已共享的镜像关系会继续保持。",
+    "en": "Before calling this operation, read [Share custom images](~~25463~~).\n\nWhen you call this operation, note the following sharing rules:\n\n- **Sharing limits**: You can only share custom images created in your account. An image can be shared with up to 50 Alibaba Cloud accounts, with a limit of 10 accounts per request.\n\n- **Impact on instances**: After an ECS instance is created from a shared custom image by calling [RunInstances](~~63440~~), its system disk cannot be re-initialized by calling [ReInitDisk](~~25519~~) if the image owner later unshares the image or deletes it by calling [DeleteImage](~~25537~~).\n\n><notice>\n\nThe rules for sharing encrypted images on ECS have changed: you can share only images that are encrypted with a customer master key (CMK), not images that are encrypted with a service key. If you attempt to share an image that is encrypted with a service key, the request fails. To share such an image, you must use CopyImage to create a copy that is encrypted with a CMK.\n\n></notice>\n\nNote the following when you publish or unpublish a community image:\n\n- **Responsibilities and agreement**: As the image owner, you are responsible for the quality and version updates of the community image. Alibaba Cloud provides only platform support. You must read and agree to the Community Image Agreement before you can publish the image. For more information, see [Publish a community image](~~208370~~).\n\n- **Encryption limits**: You cannot publish encrypted images as community images.\n\n- **Visibility**: Community images are public to all Alibaba Cloud accounts within the image's region.\n\n- **Feature limitations**: You cannot share, export, or copy community images.\n\n- **Impact of unpublishing**: When a community image is unpublished, it becomes private. However, any accounts that you previously shared the image with directly retain access."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-image-share-permission --biz-region-id cn-hangzhou --image-id m-bp18ygjuqnwhechc0000 --launch-permission hide --add-account 1234567890 --remove-account 1234567890 --is-public false --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyImageSharePermission --region cn-hangzhou --AddAccount.1 1234567890 --RemoveAccount.1 1234567890 --IsPublic false --ImageId 'm-bp18ygjuqnwhechc0000' --DryRun true --RegionId 'cn-hangzhou' --LaunchPermission hide"

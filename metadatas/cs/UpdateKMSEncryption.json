@@ -1,5 +1,6 @@
 {
   "name": "UpdateKMSEncryption",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "PUT",
   "pathPattern": "/clusters/[ClusterId]/kms",
@@ -8,15 +9,34 @@
       "name": "ClusterId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求体参数。",
+        "en": "The request body parameters."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新 Secret 落盘加密功能配置",
+    "en": "Update secret encryption at rest configuration"
+  },
+  "descriptions": {
+    "zh": "* 开启或关闭落盘加密功能的过程中以及成功开启该功能后，请勿使用 KMS 控制台或 OpenAPI 禁用或删除该功能所使用的 KMS 密钥，否则会导致集群 API Server 不可用，继而无法正常获取 Secret 和 ServiceAccount 等对象，影响业务应用的正常运行。更多信息，请参见[使用阿里云KMS进行Secret的落盘加密](~~177372~~)。\n* 调用该 API 的用户或角色需要额外被授予所需的集群 RBAC 权限（需要被授予运维人员或管理员权限），否则将返回“ForbiddenUpdateKMSState”错误码。\n* 成功调用该 API 后，集群状态将被变更为“更新中”，待变更完成后集群状态将恢复为“运行中”。针对同一个集群的变更完成后，需要间隔 5 分钟以上才能再次调用该 API，否则将返回“409”状态码。",
+    "en": "* While enabling or disabling encryption at rest and after the feature is enabled, do not disable or delete the KMS key used by this feature in the KMS console or through OpenAPI. Otherwise, the cluster API Server becomes unavailable, which prevents normal retrieval of objects such as Secrets and ServiceAccounts and affects the normal operation of business applications. For more information, see [Encrypt Secrets at rest by using China KMS](~~177372~~).\n* The user or role that calls this API operation must be granted additional cluster RBAC permissions (O&M engineer or administrator permissions). Otherwise, the ForbiddenUpdateKMSState error code is returned.\n* After this API operation is successfully called, the cluster status changes to updating. After the update is complete, the cluster status changes back to running. After a change is complete for a cluster, wait at least 5 minutes before calling this API operation again. Otherwise, HTTP status code 409 is returned."
+  },
   "example": {
     "unifiedCli": "aliyun cs update-kms-encryption --cluster-id c4fe1e3a721544000 --kms-key-id key-abc000 --disable-encryption false --region cn-hangzhou",
     "legacyCli": "aliyun cs PUT /clusters/c4fe1e3a721544000/kms --region cn-hangzhou --header \"Content-Type=application/json\" --body {\"disable_encryption\":false,\"kms_key_id\":\"key-abc000\"}"

@@ -1,5 +1,6 @@
 {
   "name": "ListApplications",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,46 +9,84 @@
       "name": "ApplicationCreationType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用创建类型（为空时默认查询user_custom用户创建类型的应用，查询所有类型应用传：all）。",
+        "en": "The application creation type. If this parameter is left empty, applications of the user_custom type are queried by default. To query applications of all types, set this parameter to all."
+      }
     },
     {
       "name": "ApplicationIdentityType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用身份类型（为空时默认查询application类型，查询所有身份类型传：all）。",
+        "en": "The application identity type. If this parameter is left empty, applications of the application type are queried by default. To query applications of all identity types, set this parameter to all."
+      }
     },
     {
       "name": "ApplicationIds",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用ID列表。",
+        "en": "The list of application IDs."
+      }
     },
     {
       "name": "ApplicationName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用名称，只支持左模糊匹配。",
+        "en": "The application name. Only left fuzzy match is supported."
+      }
     },
     {
       "name": "AuthorizationType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用访问授权类型，取值可选范围：\n- authorize\\_required：需要显式授权才可访问。\n- default\\_all：默认所有成员具备访问权限。",
+        "en": "The application access authorization type. Valid values:\n- authorize\\_required: Explicit authorization is required for access.\n- default\\_all: All members have access permissions by default."
+      }
     },
     {
       "name": "CustomFields",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "扩展字段列表。",
+        "en": "The list of custom fields."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "M2MClientStatus",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用于判断是否启用了M2M Client身份",
+        "en": "Specifies whether the M2M Client identity is enabled."
+      }
+    },
+    {
+      "name": "ManagedServiceCode",
       "position": "Query",
       "type": "String",
       "required": false
@@ -56,35 +95,68 @@
       "name": "PageNumber",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "列表页码。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "列表大小。",
+        "en": "The page size."
+      }
     },
     {
       "name": "ResourceServerStatus",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用于判断是否启用了ResourceServer能力",
+        "en": "Specifies whether the ResourceServer capability is enabled."
+      }
+    },
+    {
+      "name": "ServiceManaged",
+      "position": "Query",
+      "type": "Boolean",
       "required": false
     },
     {
       "name": "SsoType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SSO类型检索条件（多个类型支持以英文逗号分隔传参，示例：oauth2/m2m,oidc+oauth2/m2m）",
+        "en": "The SSO type filter condition. Multiple types can be separated by commas, such as oauth2/m2m,oidc+oauth2/m2m."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用状态，取值可选范围：\n- enabled：启用中。\n- disabled：禁用中。",
+        "en": "The application status. Valid values:\n- enabled: Enabled.\n- disabled: Disabled."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "列表查询EIAM应用",
+    "en": "List EIAM applications"
+  },
   "example": {
     "unifiedCli": "aliyun eiam list-applications --instance-id idaas_ue2jvisn35ea5lmthk267xxxxx --page-number 1 --page-size 20 --application-ids app_mkv7rgt4d7i4u7zqtzev2mxxxx --application-name Ram_Account_SSO --authorization-type authorize_required --status enabled --m2m-client-status enabled --resource-server-status enabled --sso-type oauth2/m2m --application-creation-type system_init --application-identity-type application --custom-fields FieldValue=x-claw FieldName=agent_type --region cn-hangzhou",
-    "legacyCli": "aliyun eiam ListApplications --region cn-hangzhou --Status enabled --ApplicationName Ram_Account_SSO --PageSize 20 --InstanceId idaas_ue2jvisn35ea5lmthk267xxxxx --SsoType 'oauth2/m2m' --CustomFields.1.FieldValue 'x-claw' --CustomFields.1.FieldName agent_type --ResourceServerStatus enabled --ApplicationIdentityType application --PageNumber 1 --ApplicationIds.1 app_mkv7rgt4d7i4u7zqtzev2mxxxx --AuthorizationType authorize_required --M2MClientStatus enabled --ApplicationCreationType system_init --method POST --force"
+    "legacyCli": "aliyun eiam ListApplications --region cn-hangzhou --Status enabled --ApplicationName Ram_Account_SSO --PageSize 20 --ServiceManaged true --InstanceId idaas_ue2jvisn35ea5lmthk267xxxxx --SsoType 'oauth2/m2m' --CustomFields.1.FieldValue 'x-claw' --ManagedServiceCode 'example-string' --CustomFields.1.FieldName agent_type --ResourceServerStatus enabled --ApplicationIdentityType application --PageNumber 1 --ApplicationIds.1 app_mkv7rgt4d7i4u7zqtzev2mxxxx --AuthorizationType authorize_required --M2MClientStatus enabled --ApplicationCreationType system_init --method POST --force"
   }
 }

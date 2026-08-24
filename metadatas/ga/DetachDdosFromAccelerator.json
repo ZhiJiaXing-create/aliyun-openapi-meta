@@ -1,5 +1,6 @@
 {
   "name": "DetachDdosFromAccelerator",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The ID of the Global Accelerator instance."
+      }
     },
     {
       "name": "DdosConfigList",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "与全球加速实例绑定的DDoS高防实例列表。",
+        "en": "A list of Anti-DDoS Pro or Anti-DDoS Premium instances that are associated with the Global Accelerator instance."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会将高防实例解绑。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回HTTP 2xx状态码。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接创建终端节点组。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the system returns an HTTP 2xx status code.\n\n- **false** (default): sends a normal request. After the request passes the check, an HTTP 2xx status code is returned and the instance is detached."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the Global Accelerator instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将DDoS高防实例与全球加速实例解绑",
+    "en": "DetachDdosFromAccelerator"
+  },
+  "descriptions": {
+    "zh": "- **DetachDdosFromAccelerator**接口属于异步接口，即系统会先返回一个请求ID，但DDoS高防实例与全球加速实例并未解绑完成，系统后台的解绑任务仍在进行。您可以调用[DescribeAccelerator](~~153235~~)或[ListAccelerators](~~153236~~)查询全球加速实例的状态：\n    - 当全球加速实例处于**configuring**状态时，表示DDoS高防实例与全球加速实例正在解绑中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当全球加速实例处于**active**状态时，表示DDoS高防实例与全球加速实例解绑完成。\n- **DetachDdosFromAccelerator**接口不支持并发解绑同一个全球加速实例的DDoS高防实例。",
+    "en": "- **DetachDdosFromAccelerator** is an asynchronous operation. After you send a request, the system returns a request ID and performs the operation in the background. The Anti-DDoS Pro or Anti-DDoS Premium instance is not immediately detached. You can call [DescribeAccelerator](~~153235~~) or [ListAccelerators](~~153236~~) to query the state of the Global Accelerator instance:\n\n  - If the Global Accelerator instance is in the **configuring** state, the Anti-DDoS Pro or Anti-DDoS Premium instance is being detached. In this state, you can only perform query operations.\n\n  - If the Global Accelerator instance is in the **active** state, the Anti-DDoS Pro or Anti-DDoS Premium instance is detached.\n\n- The **DetachDdosFromAccelerator** operation does not support concurrent requests to detach Anti-DDoS instances from the same Global Accelerator instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga detach-ddos-from-accelerator --accelerator-id ga-bp1odcab8tmno0hdq0000 --biz-region-id cn-hangzhou --ddos-config-list DdosId=ddosDip-cn-pj64b8cz101 DdosRegionId=ap-southeast-1 --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun ga DetachDdosFromAccelerator --region cn-hangzhou --DdosConfigList.1.DdosId 'ddosDip-cn-pj64b8cz101' --DryRun true --RegionId 'cn-hangzhou' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --DdosConfigList.1.DdosRegionId 'ap-southeast-1' --method POST --force"

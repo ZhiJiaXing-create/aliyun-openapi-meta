@@ -1,5 +1,6 @@
 {
   "name": "BatchAddThingTopo",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,65 +9,116 @@
       "name": "GwDeviceName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关设备的名称。",
+        "en": "The name of the gateway."
+      }
     },
     {
       "name": "GwProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关设备所属的产品的ProductKey。",
+        "en": "The key of the product to which the gateway belongs."
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. On the **Overview** page in the IoT Platform console, you can view the ID of the instance.\n\n>*   If your instance has an ID, you must specify this parameter. Otherwise, the call fails.\n>*   If no **Overview** page or instance ID appears in the IoT Platform console, ignore this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "TopoAddItem",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "添加的的设备拓扑关系列表。",
+        "en": "The list of device topology relationships to be added."
+      },
       "sub_parameters": [
         {
           "name": "ClientId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "设备端ID，可使用设备的SN码或MAC地址。非必选参数。如果传入该参数，则需包含到签名计算中。",
+            "en": "The client ID of the sub-device. The ID can be the serial number (SN) or media access control (MAC) address of the device. This parameter is optional.\n\n> If this parameter is included in the value of the **TopoAddItem.N.Sign** parameter, you must specify this parameter."
+          }
         },
         {
           "name": "DeviceName",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "要接入网关的子设备名称。",
+            "en": "The name of each sub-device."
+          }
         },
         {
           "name": "ProductKey",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "要接入网关的子设备所属的产品ProductKey。",
+            "en": "The key of the product to which the sub-device belongs."
+          }
         },
         {
           "name": "Sign",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "添加拓扑关系的签名。\n根据签名计算方式**SignMethod(deviceSecret,content)**，计算出的结果作为Sign的取值。\n\n其中，**content**是将所有提交给服务器的子设备参数（Sign、SignMethod除外），按照英文字母升序，依次排序拼接（无拼接符号）的结果。\n\n例如，如果传入的设备参数为**ClientId=868575026974305、DeviceName=868575026974305、ProductKey=a1PB5fp1234、SignMethod=hmacmd5，且deviceSecret=1234**，那么签名计算为`hmacmd5(1234, clientId868575026974305deviceName868575026974305productKeya1PB5fpX1234)`；签名计算结果为`C1C1606D61884C5F16C9EA6622E5****`。\n> 示例中的**ClientId**为设备的客户端ID，您可自定义。",
+            "en": "The signature of the sub-device.\n\nSet the Sign parameter to the result of the **SignMethod(deviceSecret,content)** function.\n\nTo obtain the **content** parameter, sort all sub-device parameters that are submitted to the server, except the Sign and SignMethod parameters, in alphabetical order. Then, concatenate the parameters and values in sequence. No concatenation symbol is required to separate these parameters and values.\n\nFor example, you want to specify the following parameters for a sub-device: **ClientId=868575026974305, DeviceName=868575026974305, ProductKey=a1PB5fp1234, SignMethod=hmacmd5, timestamp=1646277090411, and deviceSecret=1234**. In this case, the signature function is `hmacmd5(1234, clientId868575026974305deviceName868575026974305productKeya1PB5fp1234timestamp1646277090411)`, and the calculation result is `3BA0DFA4C477B40C007D84D30D6466CC`.\n\n>  In the preceding example, **ClientId** indicates the client ID of the sub-device. You can specify a custom client ID.\n\nFor more information about how to calculate the signature value, see [How do I obtain MQTT parameters for authentication?](~~292635~~). The signature value is the calculated value of the passwd parameter."
+          }
         },
         {
           "name": "SignMethod",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "签名方法。支持**hmacSha1**、**hmacSha256**、**hmacMd5**和**Sha256**（大小写不敏感）。",
+            "en": "The signature algorithm. Valid values: **hmacSha1**, **hmacSha256**, **hmacMd5**, and **Sha256**. The value is not case-sensitive."
+          }
         },
         {
           "name": "Timestamp",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "UTC时间戳。非必选。如果传入该参数，则需包含到签名计算中。",
+            "en": "The timestamp in UTC. This parameter is optional.\n\n> If this parameter is included in the value of the **TopoAddItem.N.Sign** parameter, you must specify this parameter."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "BatchAddThingTopo",
+    "en": "BatchAddThingTopo"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n\n- 单次调用最多可为一个网关添加10个子设备。\n\n- 接口调用者必须是网关的所有者（Owner）。\n\n- 单个阿里云账号调用该接口的QPS限流为5。\n\n- 如果传入的子设备已存在拓扑关系，则会将子设备原有的网关替换为当前网关。\n\n- 任意一个子设备与网关的拓扑关系建立失败时，系统回滚，传入的所有子设备与当前网关建立拓扑关系失败。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n> RAM用户共享阿里云账号配额。",
+    "en": "## How-To\n\n- You can add up to 10 sub-devices to a gateway in a single API call.\n\n- The API caller must be the owner of the gateway.\n\n- Each Alibaba Cloud account is limited to 5 queries per second (QPS) when calling this API.\n\n- If a sub-device passed in already has an existing topology relationship, its original gateway will be replaced with the current gateway.\n\n- If the topology relationship between any sub-device and the gateway fails to be established, the system performs a rollback, and the topology relationships between all passed-in sub-devices and the current gateway fail to be established.\n\n## QPS Limit\nEach Alibaba Cloud account can send a maximum of 10 requests per second (QPS) to this API.  \n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot batch-add-thing-topo --iot-instance-id iot_instc_pu0000_c0-v6400000000 --gw-product-key a1vL7cp0000 --gw-device-name gateway --topo-add-item ClientId=a1BwAGV0000device1 Sign=C1C1606D61884C5F16C9EA6622E50000 SignMethod=hmacMd5 Timestamp=1579335899000 ProductKey=a1BwAGV0000 DeviceName=light --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot BatchAddThingTopo --region cn-hangzhou --GwProductKey a1vL7cp0000 --GwDeviceName gateway --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --TopoAddItem.1.Timestamp 1579335899000 --TopoAddItem.1.ProductKey a1BwAGV0000 --TopoAddItem.1.SignMethod hmacMd5 --TopoAddItem.1.DeviceName light --TopoAddItem.1.Sign C1C1606D61884C5F16C9EA6622E50000 --TopoAddItem.1.ClientId a1BwAGV0000device1"

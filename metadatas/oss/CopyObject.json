@@ -1,0 +1,190 @@
+{
+  "name": "CopyObject",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "PUT",
+  "pathPattern": "/[key]",
+  "parameters": [
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "x-oss-copy-source",
+      "position": "Header",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "指定拷贝的源地址。\n默认值：无",
+        "en": "The path of the source object.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-match",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果源Object的ETag值和您提供的ETag相等，则执行拷贝操作，并返回200 OK。\n默认值：无",
+        "en": "If the ETag value of the source object matches the ETag value that you specify, the copy operation is performed and 200 OK is returned.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-modified-since",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果源Object在用户指定的时间以后被修改过，则执行拷贝操作。\n默认值：无",
+        "en": "If the source object has been modified after the specified time, the copy operation is performed.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-none-match",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果源Object的ETag值和您提供的ETag不相等，则执行拷贝操作，并返回200 OK。\n默认值：无",
+        "en": "If the ETag value of the source object does not match the ETag value that you specify, the copy operation is performed and 200 OK is returned.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-copy-source-if-unmodified-since",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "如果指定的时间等于或者晚于文件实际修改时间，则正常拷贝文件，并返回200 OK。\n默认值：无",
+        "en": "If the specified time is the same as or later than the actual modification time of the object, the object is copied as expected and 200 OK is returned.\nDefault value: null."
+      }
+    },
+    {
+      "name": "x-oss-forbid-overwrite",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定CopyObject操作时是否覆盖同名目标Object。当目标Bucket处于已开启或已暂停版本控制状态时，**x-oss-forbid-overwrite**请求Header设置无效，即允许覆盖同名Object。\n  - 未指定**x-oss-forbid-overwrite**或者指定**x-oss-forbid-overwrite**为**false**时，表示允许覆盖同名目标Object。\n  - 指定**x-oss-forbid-overwrite**为**true**时，表示禁止覆盖同名Object。\n\n设置**x-oss-forbid-overwrite**请求Header会导致QPS处理性能下降，如果您有大量的操作需要使用x-**x-oss-forbid-overwrite**请求Header（QPS>1000），请联系技术支持，避免影响您的业务。\n默认值：false",
+        "en": "Specifies whether to overwrite the destination object with the same name during the CopyObject operation. When the destination bucket is in the enabled or suspended versioning state, the **x-oss-forbid-overwrite** request header is invalid, and the object with the same name can be overwritten.\n  - If **x-oss-forbid-overwrite** is not specified or is set to **false**, the destination object with the same name can be overwritten.\n  - If **x-oss-forbid-overwrite** is set to **true**, the object with the same name cannot be overwritten.\n\nSetting the **x-oss-forbid-overwrite** request header decreases the QPS processing performance. If you need to use the **x-oss-forbid-overwrite** request header for a large number of operations (QPS > 1000), contact technical support to avoid impact on your business.\nDefault value: false."
+      }
+    },
+    {
+      "name": "x-oss-meta-*",
+      "position": "Header",
+      "type": "Struct",
+      "required": false,
+      "description": {
+        "zh": "如果配置以x-oss-meta-*为前缀的参数，则该参数视为元数据。\n元数据大小限制：一个Object可以包含多个元数据，但所有的元数据总大小不能超过8 KB。\n元数据命名规则：支持短划线（-）、数字、英文字母（a~z）。英文字符的大写字母会被转成小写字母，不支持下划线（_）在内的其他字符。",
+        "en": "If a parameter is prefixed with x-oss-meta-*, the parameter is considered as user metadata.\nSize limit: An object can contain multiple metadata entries, but the total size of all metadata cannot exceed 8 KB.\nNaming conventions: Hyphens (-), digits, and lowercase letters (a to z) are supported. Uppercase letters are converted to lowercase letters. Other characters, including underscores (_), are not supported."
+      }
+    },
+    {
+      "name": "x-oss-metadata-directive",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定如何设置目标Object的元信息。\n  - **COPY**（默认值）：复制源Object的元数据到目标Object。\nOSS不会复制源Object的**x-oss-server-side-encryption**属性配置到目标Object。目标Object的服务器端加密编码方式取决于当前拷贝操作是否指定了**x-oss-server-side-encryption**。\n  - **REPLACE**：忽略源Object的元数据，直接采用请求中指定的元数据。\n\n> 如果拷贝操作的源Object地址和目标Object地址相同，且未开启版本控制时，则无论x-oss-metadata-directive为何值，都会忽略源Object的元数据，目标Object将直接采用请求中指定的元数据。",
+        "en": "Specifies how to set the metadata of the destination object.\n  - **COPY** (default): The metadata of the source object is copied to the destination object.\nOSS does not copy the **x-oss-server-side-encryption** configuration of the source object to the destination object. The server-side encryption method of the destination object is determined by whether **x-oss-server-side-encryption** is specified in the current copy operation.\n  - **REPLACE**: The metadata of the source object is ignored, and the metadata specified in the request is used.\n\n> If the source object path and the destination object path are the same and versioning is not enabled, the metadata of the source object is ignored regardless of the value of x-oss-metadata-directive. The destination object uses the metadata specified in the request."
+      }
+    },
+    {
+      "name": "x-oss-object-acl",
+      "position": "Header",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "指定OSS创建目标Object时的访问权限。\n\n取值：\n\n- default（默认）：Object遵循所在存储空间的访问权限。\n- private：Object是私有资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户没有权限操作该Object。\n- public-read：Object是公共读资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户只有该Object的读权限。请谨慎使用该权限。\n- public-read-write：Object是公共读写资源。所有用户都有该Object的读写权限。请谨慎使用该权限。\n\n关于访问权限的更多信息，请参见**[读写权限ACL](~~100676~~)**。",
+        "en": "The access control list (ACL) of the destination object that is created by OSS.\n\nValid values:\n\n- default: The object inherits the ACL of the bucket.\n- private: The object is a private resource. Only the object owner and authorized users have read and access permissions on the object. Other users do not have permissions to perform operations on the object.\n- public-read: The object is a public-read resource. Only the object owner and authorized users have read and access permissions on the object. Other users have only read permissions on the object. Exercise caution when you set this ACL.\n- public-read-write: The object is a public-read-write resource. All users have read and access permissions on the object. Exercise caution when you set this ACL.\n\nFor more information about ACLs, see **[ACL](~~100676~~)**."
+      }
+    },
+    {
+      "name": "x-oss-server-side-data-encryption",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定Object的加密算法。如果未指定此选项，表明Object使用AES256加密算法。此选项仅当x-oss-server-side-encryption为KMS时有效。",
+        "en": "Specifies the encryption algorithm of the object. If this parameter is not specified, the object is encrypted by using AES256. This parameter is valid only when x-oss-server-side-encryption is set to KMS."
+      }
+    },
+    {
+      "name": "x-oss-server-side-encryption",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定OSS创建目标Object时，服务器端熵编码加密算法 。\n取值：**AES256**、**KMS**\n您只有购买了KMS套件，才能使用KMS加密算法，否则OSS会返回KmsServiceNotEnabled错误。\n  - 如果拷贝操作中未指定**x-oss-server-side-encryption**，则无论源Object是否进行过服务器端加密编码，拷贝后的目标Object均不进行服务器端加密编码。\n  - 如果拷贝操作中指定了**x-oss-server-side-encryption**，则无论源Object是否进行过服务器端加密编码，拷贝后的目标Object均会进行服务器端加密编码。并且拷贝操作的响应头中会包含**x-oss-server-side-encryption**，值为目标Object的加密算法。\n在目标Object被下载时，响应头中也会包含**x-oss-server-side-encryption**，值为该Object的加密算法。",
+        "en": "Specifies the server-side encryption algorithm that is used when OSS creates the destination object.\nValid values: **AES256**, **KMS**.\nYou must purchase a KMS suite to use the KMS encryption algorithm. Otherwise, OSS returns the KmsServiceNotEnabled error.\n  - If **x-oss-server-side-encryption** is not specified in the copy operation, the destination object is not server-side encrypted regardless of whether the source object is server-side encrypted.\n  - If **x-oss-server-side-encryption** is specified in the copy operation, the destination object is server-side encrypted regardless of whether the source object is server-side encrypted. The response header of the copy operation contains **x-oss-server-side-encryption**, whose value indicates the encryption algorithm of the destination object.\nWhen the destination object is downloaded, the response header also contains **x-oss-server-side-encryption**, whose value indicates the encryption algorithm of the object."
+      }
+    },
+    {
+      "name": "x-oss-server-side-encryption-key-id",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "表示KMS托管的用户主密钥。\n该参数仅在**x-oss-server-side-encryption**为KMS时有效。",
+        "en": "The ID of the customer master key (CMK) hosted by Key Management Service (KMS).\nThis parameter is valid only when **x-oss-server-side-encryption** is set to KMS."
+      }
+    },
+    {
+      "name": "x-oss-storage-class",
+      "position": "Header",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "指定Object的存储类型。\n对于任意存储类型Bucket，如果上传Object时指定该值，则此次上传的Object将存储为指定的类型。例如在IA类型的Bucket中上传Object时，如果指定**x-oss-storage-class**为Standard，则该Object直接存储为Standard类型。\n\n取值：\n- Standard：标准存储\n- IA：低频访问\n- Archive：归档存储\n- ColdArchive：冷归档存储\n\n关于存储类型的更多信息，请参见**[存储类型介绍](~~51374~~)**。",
+        "en": "The storage class of the object.\nFor a bucket of any storage class, if you specify this parameter when you upload an object, the object is stored as the specified storage class. For example, if you specify **x-oss-storage-class** as Standard when you upload an object to an IA bucket, the object is stored as Standard.\n\nValid values:\n- Standard\n- IA: Infrequent Access\n- Archive\n- ColdArchive: Cold Archive\n\nFor more information about storage classes, see **[Overview of storage classes](~~51374~~)**."
+      }
+    },
+    {
+      "name": "x-oss-tagging",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定Object的对象标签，可同时设置多个标签，例如TagA=A&TagB=B。\n> Key和Value需要先进行URL编码，如果某项没有“=”，则看作Value为空字符串。",
+        "en": "Settings for object tagging of the object. You can configure multiple tags at the same time, for example, TagA=A&TagB=B.\n> The key and value must be URL-encoded. If a tag does not contain an equal sign (=), the tag value is considered an empty string."
+      }
+    },
+    {
+      "name": "x-oss-tagging-directive",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定如何设置目标Object的对象标签。取值如下：\n  - **Copy**（默认值）：复制源Object的对象标签到目标 Object。\n  - **Replace**：忽略源Object的对象标签，直接采用请求中指定的对象标签。",
+        "en": "Specifies how to set the object tagging of the destination object. Valid values:\n  - **Copy** (default): The object tagging of the source object is copied to the destination object.\n  - **Replace**: The object tagging of the source object is ignored, and the tags specified in the request are used."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "拷贝文件",
+    "en": "Copy an object"
+  },
+  "descriptions": {
+    "zh": "**版本控制**\n\n- `x-oss-copy-source`默认拷贝Object的当前版本，您可以在x-oss-copy-source中加入versionId来拷贝指定的Object版本。拷贝Object时，如果源Object的对应版本为删除标记，则返回404表示该Object不存在。\n- 如果需要恢复Object的早期版本为当前版本，您只需将Object的早期版本拷贝到同一个Bucket中，OSS会将该Object对应早期版本置为当前版本。\n- 如果目标Bucket已开启版本控制，OSS将会为新拷贝的Object自动生成唯一的版本ID，此版本ID将会在响应Header中的x-oss-version-id返回。如果目标Bucket未开启或者暂停了版本控制，OSS将会为新拷贝的Object自动生成version ID为null的版本，且会覆盖原有versionId为null的版本。\n\n**使用限制**\n\n- 使用CopyObject接口时，Object的大小限制说明如下：\n\n    - 如果源Bucket和目标Bucket相同，则Object的大小无限制。\n\n    - 如果源Bucket和目标Bucket不同，则建议拷贝小于1 GB的Object。当您需要拷贝大于1 GB的Object时，请使用[UploadPartCopy](~~31994~~)接口。\n  \n     使用CopyObject或UploadPartCopy接口均要求对源Object有读权限。\n\n- 在非版本控制的Bucket中，当调用CopyObject接口拷贝文件时，如果源Object与目标Object为同一个Object，则OSS只修改源Object的元数据，不拷贝源Object的内容。\n- 在版本控制的Bucket中，不支持拷贝通过追加上传方式生成的Object。\n- 如果源Object为软链接，则只拷贝软链接，无法拷贝软链接指向的文件内容。\n\n**计量计费**\n\n- 调用一次CopyObject接口会对源Object和目标Object所在的Bucket各增加一次Get请求次数。\n- 调用CopyObject接口会对目标Object所在的Bucket增加相应的存储量。\n- 调用CopyObject接口更改Object存储类型会涉及数据覆盖。例如低频访问IA创建后10天内被覆盖为标准存储Standard，则会产生20天的低频访问不足规定时长容量费用。关于存储费用的更多信息，请参见**[存储费用](~~173534~~)**。",
+    "en": "**Versioning**.\n\n- By default, `x-oss-copy-source` copies the current version of the object. You can add versionId to x-oss-copy-source to copy a specific object version. If the corresponding version of the source object is a delete marker, 404 is returned, indicating that the object does not exist.\n- To restore an earlier version of an object as the current version, copy the earlier version of the object to the same bucket. OSS then sets the earlier version as the current version.\n- If versioning is enabled for the destination bucket, OSS automatically generates a unique version ID for the copied object. The version ID is returned in the x-oss-version-id response header. If versioning is not enabled or is suspended for the destination bucket, OSS generates a version with a version ID of null for the copied object and overwrites the existing version whose version ID is null.\n\n**Limits**.\n\n- When you use the CopyObject operation, the object size limits are as follows:\n\n    - If the source bucket and the destination bucket are the same, no size limit applies.\n\n    - If the source bucket and the destination bucket are different, copy objects smaller than 1 GB. To copy objects larger than 1 GB, use the [UploadPartCopy](~~31994~~) operation.\n  \n     Both the CopyObject and UploadPartCopy operations require read permissions on the source object.\n\n- In a bucket with versioning disabled, if the source object and the destination object are the same file when you invoke the CopyObject operation, OSS modifies only the metadata of the source object without copying the content of the source object.\n- In a bucket with versioning enabled, objects created by using append upload cannot be copied.\n- If the source object is a symbolic link, only the symbolic link is copied. The content of the file to which the symbolic link points is not copied.\n\n**Billing**.\n\n- Each call to the CopyObject operation adds one GET request to both the bucket that contains the source object and the bucket that contains the destination object.\n- Calling the CopyObject operation increases the storage usage of the bucket that contains the destination object.\n- Calling the CopyObject operation to change the storage class of an object involves data overwriting. For example, if an Infrequent Access (IA) object is overwritten as Standard within 10 days after it is created, early deletion fees for 20 days of IA storage are incurred. For more information about storage fees, see **[Storage fees](~~173534~~)**."
+  }
+}

@@ -1,5 +1,6 @@
 {
   "name": "ModifySecurityIps",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DBInstanceIPArrayAttribute",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "白名单分组属性。\n\n- （默认值）不传该参数时，表示普通分组。\n- 设置为`hidden`时，表示系统默认用于DMS、DTS和DAS等服务的分组。这些分组不在控制台显示，删除或修改后会导致DMS、DTS和DAS等服务无法访问RDS，请谨慎操作。",
+        "en": "The attribute of the IP address whitelist. By default, this parameter is empty.\n\n> The IP address whitelists that have the hidden attribute are not displayed in the ApsaraDB RDS console. These IP address whitelists are used to access Alibaba Cloud services, such as Data Transmission Service (DTS)."
+      }
     },
     {
       "name": "DBInstanceIPArrayName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "待修改白名单的分组名称（默认为Default）。指定分组不存在时，自动新增该分组。\n\n>单个实例最多支持200个白名单分组。",
+        "en": "The name of the IP address whitelist that you want to modify. Default value: **Default**.\n\n> A maximum of 200 IP address whitelists can be configured for each instance."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标实例ID。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "FreshWhiteListReadins",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "白名单同步只读实例列表。\n\n- 仅适用于创建了只读实例的RDS PostgreSQL实例。\n- 当有多个只读实例时，用英文逗号（,）分隔。",
+        "en": "The read-only instances to which you want to synchronize the IP address whitelist.\n\n*   This parameter applies only to ApsaraDB RDS for PostgreSQL instances.\n*   If the instance is attached with a read-only instance, you can use this parameter to synchronize the IP address whitelist to the read-only instance. If the instance is attached with multiple read-only instances, separate the read-only instances with commas (,).\n*   If the instance is not attached with a read-only instance, leave this parameter empty."
+      }
     },
     {
       "name": "ModifyMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "修改方式，取值：\n* **Cover**（默认值）：**覆盖**，使用**SecurityIps**参数的值覆盖原IP白名单。\n* **Append**：**追加**，在原IP白名单中增加**SecurityIps**参数中输入的IP地址。\n* **Delete**：**删除**，在原IP白名单中删除**SecurityIps**参数中输入的IP地址。至少需要保留一个IP地址。",
+        "en": "The method that is used to modify the whitelist. Valid values:\n\n*   **Cover**: Use the IP addresses and CIDR blocks that are specified in the **SecurityIps** parameter to overwrite the existing IP addresses and CIDR blocks in the IP address whitelist.\n*   **Append**: Add the IP addresses and CIDR blocks that are specified in the **SecurityIps** parameter to the IP address whitelist.\n*   **Delete**: Delete the IP addresses and CIDR blocks that are specified in the **SecurityIps** parameter from the IP address whitelist. You must retain at least one IP address or CIDR block.\n\nDefault value: **Cover**."
+      }
     },
     {
       "name": "SecurityIPType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP地址类型。取值固定为IPv4，暂不支持IPv6。",
+        "en": "The IP address type. The value is fixed as IPv4."
+      }
     },
     {
       "name": "SecurityIps",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IP白名单。修改IP白名单前，请调用[DescribeDBInstanceIPArrayList](~~610518~~)接口查询实例IP已有白名单信息。\n\n<details>\n<summary>配置规则</summary>\n\n- 支持IP地址格式（如10.23.XX.XX）或者IP地址段格式（CIDR格式，如10.23.XX.XX/24）。\n\n- 多个IP地址或IP地址段以英文逗号（,）分隔，且逗号前后不能有空格。\n\n- 单个实例最多添加1000个IP地址或IP地址段。如果IP地址较多，建议将零散的IP地址合并为IP地址段，例如10.23.XX.XX/24。\n</details>",
+        "en": "The IP addresses in an IP address whitelist. Separate multiple IP addresses with commas (,). Each IP address in the IP address whitelist must be unique. The entries in the IP address whitelist must be in one of the following formats:\n\n*   IP addresses, such as 10.23.XX.XX.\n*   CIDR blocks, such as 10.23.XX.XX/24. In this example, 24 indicates that the prefix of each IP address in the IP address whitelist is 24 bits in length. You can replace 24 with a value within the range of 1 to 32.\n\n> A maximum of 1,000 IP addresses or CIDR blocks can be added for each instance. If you want to add a large number of IP addresses, we recommend that you merge them into CIDR blocks, such as 10.23.XX.XX/24."
+      }
     },
     {
       "name": "WhitelistNetworkType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "白名单的网络类型，取值：\n\n* **MIX**（默认值）：通用模式\n* **Classic**：高安全白名单模式下的经典网络\n* **VPC**：高安全白名单模式下的专有网络\n\n> * RDS PostgreSQL云盘版实例固定为通用模式（MIX），如果配置为其他模式，则会自动转换为通用模式。\n> * 仅RDS MySQL 5.1、5.5、5.6、5.7高性能本地盘，RDS PostgreSQL 9.4、10高性能本地盘支持高安全白名单模式。",
+        "en": "The network type of the IP address whitelist. Valid values:\n\n*   **Classic**: classic network in enhanced whitelist mode\n*   **VPC**: virtual private cloud (VPC) network type in enhanced whitelist mode.\n*   **MIX**: standard whitelist mode\n\nDefault value: **MIX**.\n\n> \n\n*   In standard whitelist mode, IP addresses and CIDR blocks are added only to the default IP address whitelist. In enhanced whitelist mode, IP addresses and CIDR blocks are added to the IP address whitelists of the classic network type and the VPC network type.\n\n*   If your RDS instance runs PostgreSQL and uses cloud disks, set this parameter to MIX. If you set it to another value, the system automatically changes the value to MIX."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改RDS实例IP白名单",
+    "en": "ModifySecurityIps"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n- [RDS MySQL设置IP白名单](~~96118~~)\n- [RDS PostgreSQL设置IP白名单](~~43187~~)\n- [RDS SQL Server设置IP白名单](~~43186~~)\n- [RDS MariaDB设置IP白名单](~~90336~~)",
+    "en": "### Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   SQL Server\n*   MariaDB\n\n### References\n\n> Before you call this operation, read the following documentation and make sure that you fully understand the prerequisites and impacts of this operation.\n\n*   [Configure an IP address whitelist for an ApsaraDB RDS for MySQL instance](~~96118~~)\n*   [Configure an IP address whitelist for an ApsaraDB RDS for PostgreSQL instance](~~43187~~)\n*   [Configure an IP address whitelist for an ApsaraDB RDS for SQL Server instance](~~43186~~)\n*   [Configure an IP address whitelist for an ApsaraDB RDS for MariaDB instance](~~90336~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds modify-security-ips --db-instance-id pgm-bp18n0c8zt450000 --security-ips 10.23.XX.XX --db-instance-ip-array-name test --db-instance-ip-array-attribute hidden --security-ip-type IPv4 --whitelist-network-type MIX --modify-mode Cover --fresh-white-list-readins pgr-bp17yuz4dn3d0000,pgr-bp1vn2ph54u10000 --region cn-hangzhou",
     "legacyCli": "aliyun rds ModifySecurityIps --region cn-hangzhou --SecurityIps '10.23.XX.XX' --DBInstanceIPArrayAttribute hidden --SecurityIPType IPv4 --DBInstanceId 'pgm-bp18n0c8zt450000' --WhitelistNetworkType MIX --DBInstanceIPArrayName test --FreshWhiteListReadins 'pgr-bp17yuz4dn3d0000,pgr-bp1vn2ph54u10000' --ModifyMode Cover"

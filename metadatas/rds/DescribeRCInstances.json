@@ -1,5 +1,6 @@
 {
   "name": "DescribeRCInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -11,10 +12,20 @@
       "required": false
     },
     {
-      "name": "HostIp",
+      "name": "DescriptionForFuzzy",
       "position": "Query",
       "type": "String",
       "required": false
+    },
+    {
+      "name": "HostIp",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "按实例主机IP查询。",
+        "en": "Query by instance host IP address."
+      }
     },
     {
       "name": "ImageId",
@@ -26,63 +37,110 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。此参数用于查询单个实例。\n\n> 如果未指定实例ID（**InstanceId**与**InstanceIds**均为传入参数值），则将返回目标地域内所有RDS Custom实例的详细信息。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。\n\n此参数用于同时查询多个实例。实例ID间使用英文逗号（,）分割，且最多支持100个ID。输入格式为：`[\"实例ID1\",\"实例ID2\"]`。\n\n> 当**InstanceIds**和**instanceId**同时传入参数时，以**InstanceIds**的值为准。",
+        "en": "Instance ID.\n\nThis parameter is used to query multiple instances simultaneously. Separate instance IDs with English commas (,), and up to 100 IDs are supported. The input format is: `[\"instance ID 1\",\"instance ID 2\"]`.\n\n> When both **InstanceIds** and **instanceId** are provided, the value of **InstanceIds** takes precedence."
+      }
     },
     {
       "name": "InstanceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例名称",
+        "en": "Instance Name"
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例状态列表的页码。\n\n起始值：1；默认值：1。",
+        "en": "The page number.\n\nPage starts from page 1.\n\nDefault value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时设置的每页行数。\n\n最大值：100；默认值：10。",
+        "en": "The number of entries per page.\n\nMaximum value: 100.\n\nDefault value: 10."
+      }
     },
     {
       "name": "PublicIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按实例公网IP查询。",
+        "en": "Query by instance public IP address."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID，必填参数。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例状态。取值范围：\n\n- **Pending**：创建中。\n- **Running**：运行中。\n- **Starting**：启动中。\n- **Stopping**：暂停中。\n- **Stopped**：已暂停。",
+        "en": "Instance status. Valid values:  \n\n- **Pending**: Creation in progress.  \n- **Running**: Running.  \n- **Starting**: Starting.  \n- **Stopping**: Pausing.  \n- **Stopped**: Paused."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按指定标签查询。输入格式为：`{\"TagKey（标签建）\":\"TagValue（标签值）\"}`。",
+        "en": "Query by specified tag. The input format is: `{\"TagKey\":\"TagValue\"}`."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "专有网络VPC的ID。",
+        "en": "The virtual private cloud (VPC) ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询RDS Custom实例列表信息",
+    "en": "Query the list of RDS Custom instances"
+  },
   "example": {
     "unifiedCli": "aliyun rds describe-rc-instances --vpc-id vpc-uf6f7l4fg900000 --page-size 10 --page-number 1 --biz-region-id cn-hangzhou --instance-id rc-i2p26bde8bckf1410000 --tag testRC_:_test01 --public-ip 121.89.XX.XX --host-ip 172.16.XX.XX --instance-ids rc-i2p26bde8bckf1410000_,_rc-l1753m982otq2s2m0000 --status Running --instance-name k8s-node --image-id example-string --description example-string --description-for-fuzzy example-string --region cn-hangzhou",
     "legacyCli": "aliyun rds DescribeRCInstances --region cn-hangzhou --HostIp '172.16.XX.XX' --Status Running --Description 'example-string' --PageSize 10 --InstanceId 'rc-i2p26bde8bckf1410000' --PublicIp '121.89.XX.XX' --DescriptionForFuzzy 'example-string' --InstanceName 'k8s-node' --VpcId 'vpc-uf6f7l4fg900000' --PageNumber 1 --ImageId 'example-string' --RegionId 'cn-hangzhou' --Tag 'testRC_:_test01' --InstanceIds 'rc-i2p26bde8bckf1410000_,_rc-l1753m982otq2s2m0000'"

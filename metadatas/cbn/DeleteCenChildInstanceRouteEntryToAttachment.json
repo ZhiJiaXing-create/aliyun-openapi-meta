@@ -1,5 +1,6 @@
 {
   "name": "DeleteCenChildInstanceRouteEntryToAttachment",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "CenId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云企业网实例ID。",
+        "en": "The ID of the Cloud Enterprise Network (CEN) instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token from your client to make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "DestinationCidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由条目的目标网段。",
+        "en": "The destination CIDR block of the route entry."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认值）：发送正常请求，通过检查后直接删除网络实例的路由条目。\n- **true**：发送检查请求，只进行校验，不会删除网络实例的路由条目。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。\n\n> 当前参数暂不生效。",
+        "en": "Specifies whether to perform a dry run. A dry run checks for potential issues, including permissions and instance status. Valid values:\n\n- **false** (default): Sends a normal request. The route entry of the network instance is deleted after the request passes the check.\n\n- **true**: Sends a check request. The system checks the required parameters and the request format. If the check fails, an error message is returned. If the check succeeds, the corresponding request ID is returned. The route entry of the network instance is not deleted.\n\n> This parameter is not in effect."
+      }
     },
     {
       "name": "RouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络实例的路由表ID。",
+        "en": "The ID of the route table that belongs to the network instance."
+      }
     },
     {
       "name": "TransitRouterAttachmentId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络实例连接ID。",
+        "en": "The ID of the network instance connection."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除企业版转发路由器连接的网络实例的路由条目",
+    "en": "DeleteCenChildInstanceRouteEntryToAttachment"
+  },
+  "descriptions": {
+    "zh": "- 仅支持删除专有网络VPC（Virtual Private Cloud）实例和边界路由器VBR（Virtual Border Router）实例中下一跳为**转发路由器连接**（即网络实例连接）的路由条目。\n- **DeleteCenChildInstanceRouteEntryToAttachment**接口属于异步接口，即系统会先返回一个**RequestId**，但该路由条目并未删除完成，系统后台的删除任务仍在进行。您可以调用专有网络的**DescribeRouteEntryList**接口查询路由条目的状态。 \n    - 当路由条目处于**Deleting**状态时，表示路由条目正在删除中。在该状态下，您只能对路由条目执行查询操作，不能执行其他操作。\n    - 当查询不到指定的路由条目时，表示路由条目删除完成。",
+    "en": "- You can delete route entries from Virtual Private Cloud (VPC) instances and virtual border router (VBR) instances only if the next hop of the route entry is a **transit router connection** (a network instance connection).\n\n- **DeleteCenChildInstanceRouteEntryToAttachment** is an asynchronous operation. After you send a request, the system returns a **RequestId**, but the route entry is still being deleted in the background. You can call the **DescribeRouteEntryList** operation for VPC to query the status of the route entry.\n\n  - If a route entry is in the **Deleting** state, it is being deleted. During this time, you can only query the route entry and cannot perform other operations on it.\n\n  - If you cannot find the specified route entry, it has been deleted."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-cen-child-instance-route-entry-to-attachment --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --cen-id cen-wgcl0ik5o8jakq0000 --transit-router-attachment-id tr-attach-r1qhupkc19iadz0000 --route-table-id vtb-bp1osd9opvegfpowc0000 --destination-cidr-block 10.0.1.0/24 --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteCenChildInstanceRouteEntryToAttachment --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-r1qhupkc19iadz0000' --RouteTableId 'vtb-bp1osd9opvegfpowc0000' --DryRun false --CenId 'cen-wgcl0ik5o8jakq0000' --DestinationCidrBlock '10.0.1.0/24' --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

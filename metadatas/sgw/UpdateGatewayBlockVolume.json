@@ -1,5 +1,6 @@
 {
   "name": "UpdateGatewayBlockVolume",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ChapEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "块卷是否启用iSCSI访问的CHAP认证，目前支持CHAP入站验证。取值范围如下：\n\n- false（默认）：否\n\n- true：是",
+        "en": "Specifies whether to enable Challenge-Handshake Authentication Protocol (CHAP) authentication for the iSCSI volume. Inbound CHAP is supported. Valid values:\n\n- false (default): CHAP authentication is disabled.\n- true: CHAP authentication is enabled."
+      }
     },
     {
       "name": "ChapInPassword",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "块卷启用iSCSI访问CHAP认证时，入站验证的密码。长度限制12~16个字符，可以包含英文字母，数字，或者符号\"!\"、\"@\"、\"#\"、\"$\"、\"%\"、\"^\"、\"&\"、\"*\"。\n>未开启Chap认证时该参数无效。",
+        "en": "The password for inbound CHAP authentication when CHAP authentication is enabled for the iSCSI volume. The password must be 12 to 16 characters in length and can contain letters, digits, and the following special characters: !, @, #, $, %, ^, &, and \\*.\n\n> This parameter is invalid when CHAP authentication is disabled."
+      }
     },
     {
       "name": "ChapInUser",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "块卷启用iSCSI访问CHAP认证时，入站验证的用户名。长度限制1~32个字符，包含英文字母和数字。\n>未开启Chap认证时该参数无效。",
+        "en": "The username for inbound CHAP authentication when CHAP authentication is enabled for the iSCSI volume. The username must be 1 to 32 characters in length and can contain letters and digits.\n\n> This parameter is invalid when CHAP authentication is disabled."
+      }
     },
     {
       "name": "GatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关ID。",
+        "en": "The ID of the gateway."
+      }
     },
     {
       "name": "IndexId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "索引ID。可以通过DescribeGatewayBlockVolumes接口获取。",
+        "en": "The index ID. You can call the DescribeGatewayBlockVolumes operation to query the index ID."
+      }
     },
     {
       "name": "Size",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "块卷的容量大小，单位为GB。取值范围为1~262144，默认值为100。\n>启用恢复情况下，该参数无效。",
+        "en": "The size of the block volume. Unit: GB. Valid values: 1 to 262144. Default value: 100.\n\n> This parameter is invalid when recovery is enabled."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新块卷",
+    "en": "UpdateGatewayBlockVolume"
+  },
+  "descriptions": {
+    "zh": "使用该接口时，需要注意如下事项：\n\n- 您已经创建部署完成块网关，并已经完成一个块卷的配置。\n\n- 该更新接口会更新块卷对应的所有暴露参数，如果您不想更新某个参数，请调用时务必传入该参数原值，否则该块卷参数会被设置成默认值。",
+    "en": "Before you call this operation, note the following:\n\n- You have created and deployed an iSCSI gateway and configured a block volume.\n- This operation updates all exposed parameters of the block volume. If you do not want to update a specific parameter, you must specify its initial value in the request. Otherwise, the parameter is reset to its default value."
+  },
   "example": {
     "unifiedCli": "aliyun sgw update-gateway-block-volume --gateway-id gw-000eg44nmxbsfwbvq000 --index-id NFSalex000 --size 100 --chap-enabled false --chap-in-user user --chap-in-password ChapInPassword --region cn-hangzhou",
     "legacyCli": "aliyun sgw UpdateGatewayBlockVolume --region cn-hangzhou --IndexId NFSalex000 --ChapInPassword ChapInPassword --Size 100 --ChapEnabled false --GatewayId 'gw-000eg44nmxbsfwbvq000' --ChapInUser user"

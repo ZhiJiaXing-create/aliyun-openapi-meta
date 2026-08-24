@@ -1,0 +1,80 @@
+{
+  "name": "PutSymlink",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "PUT",
+  "pathPattern": "/[key]?symlink",
+  "parameters": [
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object的完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "x-oss-forbid-overwrite",
+      "position": "Header",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定PutSymlink操作时是否覆盖同名Object。\n  - 不指定**x-oss-forbid-overwrite**或者指定**x-oss-forbid-overwrite**为**false**时，表示允许覆盖同名Object。\n  - 指定**x-oss-forbid-overwrite**为**true**时，表示禁止覆盖同名Object。\n\n设置**x-oss-forbid-overwrite**请求Header会导致QPS处理性能下降，如果您有大量的操作需要使用**x-oss-forbid-overwrite**请求Header（QPS>1000），请联系技术支持，避免影响您的业务。\n> 当目标Bucket处于已开启或已暂停版本控制状态时，**x-oss-forbid-overwrite**请求Header设置无效，即允许覆盖同名Object。",
+        "en": "Specifies whether to overwrite an existing object with the same name when you call the PutSymlink operation.\n  - If you do not specify **x-oss-forbid-overwrite** or set **x-oss-forbid-overwrite** to **false**, an existing object with the same name is overwritten.\n  - If you set **x-oss-forbid-overwrite** to **true**, an existing object with the same name is not overwritten.\n\nSetting the **x-oss-forbid-overwrite** request header decreases the QPS processing performance. If you need to use the **x-oss-forbid-overwrite** request header in a large number of operations (QPS > 1,000), contact technical support to avoid impacts on your business.\n> If versioning is enabled or suspended for the destination bucket, the **x-oss-forbid-overwrite** request header does not take effect. In this case, an existing object with the same name is overwritten."
+      }
+    },
+    {
+      "name": "x-oss-object-acl",
+      "position": "Header",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "指定OSS创建Object时的访问权限。\n\n取值：\n\n- default（默认）：Object遵循所在存储空间的访问权限。\n- private：Object是私有资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户没有权限操作该Object。\n- public-read：Object是公共读资源。只有Object的拥有者和授权用户有该Object的读写权限，其他用户只有该Object的读权限。请谨慎使用该权限。\n- public-read-write：Object是公共读写资源。所有用户都有该Object的读写权限。请谨慎使用该权限。\n\n关于访问权限的更多信息，请参见**[读写权限ACL](~~100676~~)**。",
+        "en": "The access control list (ACL) of the object that OSS creates.\n\nValid values:\n\n- default: The object inherits the ACL of the bucket in which the object is stored.\n- private: The object is a private resource. Only the object owner and authorized users have read and access permissions on the object. Other users do not have permissions to perform operations on the object.\n- public-read: The object is a public-read resource. Only the object owner and authorized users have read and access permissions on the object. Other users have only read permissions on the object. Exercise caution when you set the ACL to this value.\n- public-read-write: The object is a public-read-write resource. All users have read and access permissions on the object. Exercise caution when you set the ACL to this value.\n\nFor more information about ACLs, see **[ACL](~~100676~~)**."
+      }
+    },
+    {
+      "name": "x-oss-storage-class",
+      "position": "Header",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "指定Object的存储类型。\n对于任意存储类型的Bucket，如果上传Object时指定此参数，则此次上传的Object将存储为指定的类型。例如在IA类型的Bucket中上传Object时，如果指定**x-oss-storage-class**为Standard，则该Object直接存储为Standard。\n\n取值：\n- Standard：标准存储\n- IA：低频访问\n- Archive：归档存储\n\nIA与Archive类型的单个Object大小如果不足64 KB，则会按64 KB计量计费。建议在使用PutSymlink接口时不要将Object的存储类型指定为IA或Archive。\n关于存储类型的更多信息，请参见**[存储类型介绍](~~51374~~)**。",
+        "en": "The storage class of the object.\nIf you specify this parameter when you upload an object to a bucket of any storage class, the object is stored as the specified storage class. For example, if you specify **x-oss-storage-class** as Standard when you upload an object to an Infrequent Access (IA) bucket, the object is stored as Standard.\n\nValid values:\n- Standard\n- IA: Infrequent Access\n- Archive\n\nIf the size of an object of the IA or Archive storage class is smaller than 64 KB, the object is billed for 64 KB. We recommend that you do not set the storage class of an object to IA or Archive when you call the PutSymlink operation.\nFor more information about storage classes, see **[Overview of storage classes](~~51374~~)**."
+      }
+    },
+    {
+      "name": "x-oss-symlink-target",
+      "position": "Header",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "软链接指向的目标文件。\n合法值：命名规范同Object\n  - TargetObjectName同ObjectName一样，需要对其进行URL编码。\n  - 软链接的目标文件类型不能为软链接。",
+        "en": "The target object to which the symbolic link points.\nValid values: The naming conventions are the same as those for objects.\n  - Similar to ObjectName, TargetObjectName must be URL-encoded.\n  - The type of the target object cannot be a symbolic link."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建OSS目标文件的软链接",
+    "en": "Create a symbolic link for an OSS target object"
+  },
+  "descriptions": {
+    "zh": "**注意事项**\n\n- 使用PutSymlink接口创建软链接时不会检查目标文件是否存在、目标文件类型是否合法以及目标文件是否有访问权限。\n- Symlink自身的访问权限（ACL）以及目标文件的ACL检查仅会在GetObject等需要访问目标文件的API中进行。\n- 使用PutSymlink接口时，携带以x-oss-meta-为前缀的参数，则被视为user meta，例如x-oss-meta-location。一个Object可以有多个类似的参数，但所有的user meta总大小不能超过8 KB。\n- 默认情况下，如果试图添加的文件已经存在，并且有访问权限，则新添加的文件将覆盖原来的文件，成功添加后将返回200 OK。\n\n**版本控制**\n\n您可以通过TargetObject创建的软链接指向TargetObject的当前版本。\n软链接本身也可以有多个版本，每个不同的版本可以指向不同的TargetObject，版本ID由OSS自动生成，在响应Header中返回x-oss-version-id。",
+    "en": "**Before you begin**.\n\n- The PutSymlink operation does not check whether the target object exists, whether the target object type is valid, or whether you access permissions to access the target object.\n- The access control list (ACL) of the symlink itself and the ACL of the target object are checked only when an API operation such as GetObject that requires access to the target object is called.\n- If you specify parameters prefixed with x-oss-meta- when you call the PutSymlink operation, the parameters are considered user metadata. For example, x-oss-meta-location. An object can have multiple user metadata parameters, but the total size of all user metadata cannot exceed 8 KB.\n- By default, if the object that you want to add already exists and you access permissions to access the object, the new object overwrites the existing object. After the object is added, 200 OK is returned.\n\n**Versioning**.\n\nYou can create a symlink for a TargetObject. The symlink points to the current version of the TargetObject.\nA symlink can also have multiple versions. Each version can point to a different TargetObject. The version ID is automatically generated by OSS and returned in the x-oss-version-id response header."
+  }
+}

@@ -1,5 +1,6 @@
 {
   "name": "ModifyCustomerGatewayAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AuthKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本地数据中心网关设备BGP路由协议的认证密钥。\n\n密钥长度为1~64个字符，只支持ASCII字符，不支持空格、中文和半角问号（?）。",
+        "en": "The authentication key of the BGP route routing protocol for the on-premises data center gateway device.\n\nThe key must be 1 to 64 characters in length and can contain only ASCII characters. It cannot contain spaces, Chinese characters, or half-width question marks (?)."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may differ for each API request."
+      }
     },
     {
       "name": "CustomerGatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用户网关的实例ID。",
+        "en": "The instance ID of the customer gateway."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户网关的描述信息。  \n\n描述信息长度为1～100个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the customer gateway.  \n\nThe description must be 1 to 100 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户网关的名称。  \n\n名称长度为1～100个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the customer gateway.  \n\nThe name must be 1 to 100 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用户网关所属的地域ID。 \n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the customer gateway. \n\nYou can call the [DescribeRegions](~~36063~~) operation to query region IDs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改用户网关的名称和描述信息",
+    "en": "Modify the name and description of a customer gateway"
+  },
+  "descriptions": {
+    "zh": "- 调用**ModifyCustomerGatewayAttribute**接口时，如果参数**AuthKey**不为空时，该接口为异步接口，即系统先返回用户网关的信息，但该用户网关的配置尚未修改成功，系统后台的修改任务仍在进行。您可以调用[DescribeVpnGateway](~~73720~~)查询用户网关的配置的修改状态：\n    - 当VPN网关实例处于**updating**状态时，表示用户网关的配置正在修改中。\n    - 当VPN网关实例处于**active**状态时，表示用户网关的配置修改成功。\n- 调用**ModifyCustomerGatewayAttribute**接口时，如果参数**AuthKey**为空时，该接口为同步接口。\n\n- **ModifyCustomerGatewayAttribute**接口不支持并发修改同一个用户网关的配置。",
+    "en": "- When you call the **ModifyCustomerGatewayAttribute** operation, if the **AuthKey** parameter is not empty, this operation is asynchronous. The system returns the customer gateway information first, but the configuration has not been modified yet because the modification task is still running in the background. You can call [DescribeVpnGateway](~~73720~~) to query the modification status of the customer gateway configuration:\n    - If the VPN gateway instance is in the **updating** state, the customer gateway configuration is being modified.\n    - If the VPN gateway instance is in the **active** state, the customer gateway configuration has been modified.\n- When you call the **ModifyCustomerGatewayAttribute** operation, if the **AuthKey** parameter is empty, this operation is synchronous.\n\n- The **ModifyCustomerGatewayAttribute** operation does not support concurrent modifications to the configuration of the same customer gateway."
+  },
   "example": {
     "unifiedCli": "aliyun vpc modify-customer-gateway-attribute --biz-region-id cn-hangzhou --client-token 02fb3da4-130e-11e9-8e440000 --customer-gateway-id cgw-bp1pvpl9r9adju6l50000 --name nametest --description desctest --auth-key AuthKey0000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc ModifyCustomerGatewayAttribute --region cn-hangzhou --Description desctest --CustomerGatewayId 'cgw-bp1pvpl9r9adju6l50000' --AuthKey AuthKey0000 --RegionId 'cn-hangzhou' --ClientToken '02fb3da4-130e-11e9-8e440000' --Name nametest"

@@ -1,5 +1,6 @@
 {
   "name": "UntagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "All",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否删除实例的全部标签。取值：\n* **true**\n* **false**\n\n默认值：**false**。\n>未传入**TagKey.N**时该参数有效。",
+        "en": "Specifies whether to delete all tags of the instance. Valid values:\n\n*   **true**\n*   **false**\n\nDefault value: **false**.\n\n> This parameter is valid if parameters that contain **TagKey.N** are not specified."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID，可以通过接口DescribeRegions查看可用的地域ID。",
+        "en": "The region ID. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID列表。可以同时对N个实例解绑标签，N的取值范围：**1**~**50**。",
+        "en": "The instance ID. You can remove tags from N instances at a time. Valid values of N: **1** to **50**."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型定义。取值：\n\n- **INSTANCE**：普通RDS实例。\n- **CUSTOM**：RDS Custom实例。\n- **CUSTOMDEPLOYMENTSET**：RDS Custom部署集。\n- **CUSTOMDISK**：RDS Custom云盘。\n- **CUSTOMSNAPSHOT**：RDS Custom快照。",
+        "en": "The type of the resource. Set the value to **INSTANCE**."
+      }
     },
     {
       "name": "TagKey",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签键列表。可以同时删除N个标签键，N的取值范围：**1**~**20**。不允许传入空字符串。",
+        "en": "The list of tag keys. You can delete N tag keys at a time. Valid values of N: **1** to **20**. The value of this parameter cannot be an empty string."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解绑标签",
+    "en": "UntagResources"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS PostgreSQL\n- RDS SQL Server\n- RDS MariaDB\n\n### 注意事项\n* 每次解绑的标签数量不能超过20个。\n* 标签从一个实例解绑后，如果没有绑定到其它实例，则该标签自动被删除。",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n*   PostgreSQL\n*   SQL Server\n*   MariaDB\n\n### [](#)Usage notes\n\n*   You can remove up to 20 tags at a time.\n*   If a tag is removed from an instance and is not added to other instances, the tag is automatically deleted."
+  },
   "example": {
     "unifiedCli": "aliyun rds untag-resources --biz-region-id cn-hangzhou --resource-type INSTANCE --all false --resource-id rm-uf6wjk50000 --tag-key key1 --region cn-hangzhou",
     "legacyCli": "aliyun rds UntagResources --region cn-hangzhou --All false --ResourceId.1 'rm-uf6wjk50000' --TagKey.1 key1 --ResourceType INSTANCE --RegionId 'cn-hangzhou'"

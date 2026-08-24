@@ -1,5 +1,6 @@
 {
   "name": "DeleteRouteTargetGroup",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,41 +9,82 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may differ for each API request."
+      }
+    },
+    {
+      "name": "ForceDelete",
+      "position": "Query",
+      "type": "Boolean",
       "required": false
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要修改的资源组所属的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the resource group resides.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     },
     {
       "name": "RouteTargetGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由目标组实例ID。",
+        "en": "The routing target group instance ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源的标签。",
+        "en": "The tags of the resource."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。如需传入该值，则不能输入空字符串。\n\n一个标签键最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the resource. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。如需传入该值，可以输入空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the resource. You can specify up to 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除路由目标组",
+    "en": "Delete a route target group"
+  },
+  "descriptions": {
+    "zh": "- **DeleteRouteTargetGroup**接口属于异步接口，即系统会返回一个请求ID，但该路由目标组尚未删除成功，系统后台的删除任务仍在进行。您可以调用ListRouteTargetGroup查询路由目标组的删除状态：\n    - 当路由目标组处于**Deleting**状态时，表示路由目标组正在删除中。\n    - 当查询不到指定的路由目标组时，表示路由目标组删除成功。",
+    "en": "- **DeleteRouteTargetGroup** is an asynchronous operation. After you send a request, the system returns a request ID, but the route target group is not yet deleted. The deletion task continues to run in the background. You can call ListRouteTargetGroup to query the deletion status of the route target group:\n    - If the route target group is in the **Deleting** state, the route target group is being deleted.\n    - If the specified route target group cannot be found, the route target group is deleted."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-route-target-group --route-target-group-id rtg-xxxx --biz-region-id cn-hangzhou --client-token d7d24a21-f4ba-4454-9173-b30000 --tag Value=FinanceJoshua Key=FinanceDept --force-delete true --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteRouteTargetGroup --region cn-hangzhou --Tag.1.Key FinanceDept --Tag.1.Value FinanceJoshua --RouteTargetGroupId 'rtg-xxxx' --ForceDelete true --RegionId 'cn-hangzhou' --ClientToken 'd7d24a21-f4ba-4454-9173-b30000'"

@@ -1,5 +1,6 @@
 {
   "name": "ResetDisk",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DiskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待回滚的云盘ID。",
+        "en": "The ID of the cloud disk that you want to roll back."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否预检本次请求。取值范围：\n\n- true：发送检查请求，不会直接回滚云盘。检查项包括是否填写了必选参数、请求格式和资源状态限制。如果检查不通过，则返回对应错误信息。如果检查通过，则返回错误码`DryRunOperation`。\n- false：发送正常请求，通过检查后直接发起云盘回滚操作。\n\n默认值：false。",
+        "en": "Specifies whether to check the validity of the request without actually making the request. Valid values:\n\n- true: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and resource state limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- false: performs a dry run and performs the actual request. If the request passes the dry run, the rollback operation is performed.\n\nDefault value: false"
+      }
     },
     {
       "name": "SnapshotId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要回滚的云盘某一阶段的历史快照ID。",
+        "en": "The ID of the snapshot that you want to use to roll back the cloud disk."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "使用快照回滚云盘",
+    "en": "ResetDisk"
+  },
+  "descriptions": {
+    "zh": "调用该接口前，请您仔细阅读[使用快照回滚云盘](~~25450~~)。\n\n调用该接口时，您需要注意：\n\n- 云盘的状态必须为使用中（`In_use`）或空闲（`Available`）的状态。  \n- 云盘挂载的实例的状态必须为已停止（`Stopped`）。您可以调用[StopInstances](~~155372~~)停止实例。  \n- 指定的参数`SnapshotId`必须是由`DiskId`创建的历史快照。  \n- 通过[DescribeInstances](~~25506~~)查询ECS实例信息时，如果返回数据中包含`{\"OperationLocks\": {\"LockReason\" : \"security\"}}`，则禁止一切操作。",
+    "en": "Before you call this operation, read [Roll back a disk by using a snapshot](~~25450~~).\n\nTake note of the following items:\n\n- The cloud disk that you want to roll back must be in the In Use (`In_use`) or Unattached (`Available`) state.\n\n- The instance to which the cloud disk is attached must be in the `Stopped` state. You can call the [StopInstances](~~155372~~) operation to stop the instance.\n\n- The snapshot specified by `SnapshotId` must be created from the disk specified by `DiskId`.\n\n- If the response contains `{\"OperationLocks\": {\"LockReason\" : \"security\"}}` when you query information about an instance by calling the [DescribeInstances](~~25506~~) operation, the instance is locked for security reasons and no operations can be performed on the instance."
+  },
   "example": {
     "unifiedCli": "aliyun ecs reset-disk --disk-id d-bp199lyny9b30000 --snapshot-id s-bp199lyny9b30000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ecs ResetDisk --region cn-hangzhou --SnapshotId 's-bp199lyny9b30000' --DryRun false --DiskId 'd-bp199lyny9b30000'"

@@ -1,5 +1,6 @@
 {
   "name": "SearchRecursionZones",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "Direction",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方向\nasc:升序\ndesc:降序",
+        "en": "The sort order. Valid values: `asc`: ascending. `desc`: descending."
+      }
     },
     {
       "name": "EffectiveScopes",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "生效范围列表",
+        "en": "The list of effective scopes."
+      },
       "sub_parameters": [
         {
           "name": "EffectiveType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生效范围类型\naccount: 账户",
+            "en": "The type of the effective scope. Valid value: `account`."
+          }
         },
         {
           "name": "Scope",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生效范围列表，与生效类型对应 account类型对应递归解析用户的accountid列表",
+            "en": "A list of scope values that correspond to the specified `EffectiveType`. For example, if `EffectiveType` is set to `account`, this parameter contains a list of account IDs for users that use recursive resolution."
+          }
         }
       ]
     },
@@ -34,45 +51,84 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分批次查询时每次显示的条目数。取值范围：**1**~**100**，默认值为**20**。",
+        "en": "The maximum number of entries to return. Valid values: **1** to **100**. Default value: **20**."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始Token。",
+        "en": "The token to retrieve the next page of results."
+      }
     },
     {
       "name": "OrderBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段，结果按哪个字段进行排序\nUpdateTime：修改时间\nRecordCount：解析记录条数",
+        "en": "The sort field. Valid values: `UpdateTime`: the update time of the zone. `RecordCount`: the number of DNS records."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "当前页数，起始值为**1**，默认为**1**。",
+        "en": "The page number. Pages start at **1**. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "分页查询时设置的每页行数，最大值100，默认为20。",
+        "en": "The number of entries to return per page. Valid values: 1 to 100. Default value: 20."
+      }
     },
     {
       "name": "Remark",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地址池备注，支持对输入的备注进行模糊搜索。",
+        "en": "The remark for the zone. Fuzzy search is supported."
+      }
     },
     {
       "name": "ZoneName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "域名（Zone）名称。",
+        "en": "The name of the zone."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "搜索HTTPDNS内置权威域名zone",
+    "en": "SearchRecursionZones"
+  },
+  "descriptions": {
+    "zh": "- 请求中至少指定参数ResourceId.N或Tag.N（Tag.N.Key与Tag.N.Value），以确定检索对象。\n- Tag.N是资源的标签，由一个键值对组成。仅指定Tag.N.Key时，则返回该标签键关联的所有标签值。仅指定Tag.N.Value会报错。\n- 如果您同时指定Tag.N和ResourceId.N筛选标签，则ResourceId.N必须满足所有输入的标签键值对。\n- 如果您同时指定多个标签键值对，返回结果为同时包含被指定的多个键值对的资源。",
+    "en": "- To retrieve resources, you must specify at least `ResourceId.N` or `Tag.N` (`Tag.N.Key` and `Tag.N.Value`) in the request.\n\n- `Tag.N` is a resource tag that consists of a key-value pair. If you specify only `Tag.N.Key`, all tag values associated with that key are returned. If you specify only `Tag.N.Value`, an error is returned.\n\n- If you specify both `Tag.N` and `ResourceId.N`, the operation returns only the resources that are identified by `ResourceId.N` and match all the specified tag key-value pairs.\n\n- If you specify multiple tag key-value pairs, only resources that match all of them are returned."
+  },
   "example": {
     "unifiedCli": "aliyun alidns search-recursion-zones --zone-name cheng.suow.cc --remark test --page-number 1 --page-size 5 --effective-scopes '[{\"EffectiveType\":\"account\",\"Scope\":[\"20003\"]}]' --order-by default --direction asc --max-results 50 --next-token 4698691 --region cn-hangzhou",
     "legacyCli": "aliyun alidns SearchRecursionZones --region cn-hangzhou --OrderBy default --ZoneName 'cheng.suow.cc' --PageSize 5 --NextToken 4698691 --PageNumber 1 --EffectiveScopes '[{\"EffectiveType\":\"account\",\"Scope\":[\"20003\"]}]' --MaxResults 50 --Direction asc --Remark test"

@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveStreamMetricDetailData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用名称，查询指定应用流粒度的数据。\n\n>指定StreamName时，必须指定AppName。",
+        "en": "The application name. Specify this parameter to query stream-level data for a specific application.\n\n> If you specify StreamName, you must also specify AppName."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "- 需要查询的加速域名。仅支持单个域名查询，传多个域名将报错。\n- 不指定AppName和StreamName时，按域名返回所有流粒度的数据。\n- 域名为空时，查询用户下的所有加速域名的聚合数据\n- DomainName不为空且AppName为all和StreamName为all时，返回指定加速域名下的聚合数据。\n- 传入DomainName时，请保证传入域名为直播域名，同时调用本接口的用户拥有传入域名的操作权限。",
+        "en": "- The accelerated domain name to query. Only a single domain name can be queried at a time. An error is returned if multiple domain names are specified.\n- If AppName and StreamName are not specified, stream-level data for all streams under the domain name is returned.\n- If the domain name is left empty, aggregate data for all accelerated domain names under the account is returned.\n- If DomainName is specified and both AppName and StreamName are set to all, aggregate data for the specified accelerated domain name is returned.\n- When you specify DomainName, make sure the domain name is a live streaming domain and the user calling this operation has the required permissions on the domain name."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "结束时间需大于起始时间，不能相差超过1天；日期格式按照ISO8601表示法，并使用UTC时间。格式为：YYYY-MM-DDThh:mm:ssZ。",
+        "en": "The end of the time range to query. The end time must be later than the start time, and the difference cannot exceed 1 day. Specify the time in the ISO 8601 standard in the YYYY-MM-DDThh:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "NextPageToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询token，每次查询最多返回5000行数据，当要查询的数据超过5000行时，响应数据会提供下次查询数据的起始索引。请求时传入该token，将从上一次查询结束的下一行继续查询未获取的数据。",
+        "en": "The paged query token. A maximum of 5,000 rows of data can be returned per query. If the data to query exceeds 5,000 rows, the response includes the starting index for the next paging request. Pass this token in the request to continue querying data from where the previous query ended."
+      }
     },
     {
       "name": "Protocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流协议名，目前支持：**flv**、**hls**、**rtmp**、**rts**和**p2p**。\n\n支持查询多个协议的数据，不同协议之间用英文逗号（,）分隔。但多个协议的数据不会聚合，按照流的粒度输出。\n\n> **rts**选项可查询artc协议的超低延时直播流。\n> - 使用rts可能需要额外统计xxx_AliRTS-opu转码流。原因：Web端播超低延时直播时，会生成流名后加上_AliRTS-opus后缀的转码流进行自动转码，产生转码流数据。详细请参见[rts亚秒延时自动转码](~~2948703~~)。",
+        "en": "The stream protocol. Valid values: **flv**, **hls**, **rtmp**, **rts**, and **p2p**.\n\nYou can query data for multiple protocols by separating them with commas (,). Data for multiple protocols is not aggregated and is output at the stream level.\n\n> The **rts** option queries Real-Time Streaming (RTS) streams that use the ARTC protocol.\n> - When using rts, you may need to additionally collect statistics for the xxx_AliRTS-opus transcoding stream. This is because when playing an RTS stream on the web, a transcoding stream with the _AliRTS-opus suffix appended to the stream name is automatically generated. For more information, see [RTS sub-second latency automatic transcoding](~~2948703~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "获取数据起始时间点，日期格式按照ISO8601表示法，并使用UTC时间。格式为：YYYY-MM-DDThh:mm:ssZ。",
+        "en": "The start of the time range to query. Specify the time in the ISO 8601 standard in the YYYY-MM-DDThh:mm:ssZ format. The time must be in UTC."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流名称，按照设置的AppName指定StreamName，返回流粒度的数据。\n\n> 指定StreamName时，必须指定AppName。",
+        "en": "The stream name. Specify this parameter together with AppName to return stream-level data.\n\n> If you specify StreamName, you must also specify AppName."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询指定域名流粒度批量数据",
+    "en": "Query stream-level batch data for a specified domain name"
+  },
+  "descriptions": {
+    "zh": "若指定域名第一次使用此接口进行流粒度数据的查询，需先<props=\"china\">[提交工单](https://workorder.console.aliyun.com/console.htm#/ticket/add?productCode=live&commonQuestionId=4545&isSmart=true&iatraceid=1608439120675-2a5c48de0b84805313c708&channel=selfservice)</props><props=\"intl\">[提交工单](https://workorder-intl.console.aliyun.com/?spm=5176.12818093.nav-right.dticket.6cb216d07otFWR#/ticket/createIndex)</props>进行后端配置后方可使用。\n请在工单中提供如下信息：\n- 需要查询的域名。\n- 对应域名下最高并发直播流数。\n- 每个直播流最高并发在线人数。\n- 对应客户端请求包含的协议类型。\n\n><notice>当前接口将于2025年9月31号不再进行维护，请及时切换到新版流粒度接口[DescribeLiveUserStreamMetricData](~~2948552~~)，新版流粒度接口无需后台配置即可使用。></notice>\n\n\n## 使用限制\n- 默认不支持HLS的在线人数统计。\n\n- 仅支持单个域名查询。\n\n- 数据最大查询跨度：24小时。\n\n- 数据最小查询粒度：1分钟。\n\n- 数据最大查询范围：31天。\n\n## QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "If this is the first time you use this operation to query stream-level data for a specified domain name, <props=\"china\">[submit a ticket](https://workorder.console.aliyun.com/console.htm#/ticket/add?productCode=live&commonQuestionId=4545&isSmart=true&iatraceid=1608439120675-2a5c48de0b84805313c708&channel=selfservice)</props><props=\"intl\">[submit a ticket](https://workorder-intl.console.aliyun.com/?spm=5176.12818093.nav-right.dticket.6cb216d07otFWR#/ticket/createIndex)</props> to request backend configuration before using this operation.\nProvide the following information in the ticket:\n- The domain name to query.\n- The maximum number of concurrent live streams under the domain name.\n- The maximum number of concurrent viewers per live stream.\n- The protocol types included in client requests.\n\n><notice>This operation will no longer be maintained after September 31, 2025. Switch to the new stream-level operation [DescribeLiveUserStreamMetricData](~~2948552~~) promptly. The new stream-level operation does not require backend configuration.></notice>.\n\n## Before you begin\n- Online viewer counting for HLS is not supported by default.\n\n- Only a single domain name can be queried at a time.\n\n- Maximum large query time span: 24 hours.\n\n- Minimum query granularity: 1 minute.\n\n- Maximum query range: 31 days.\n\n## Rate limit\nThe single-user QPS limit for this operation is 10 calls per second. If this limit is exceeded, the API call is throttled, which may affect your business. Call this operation appropriately."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-stream-metric-detail-data --biz-region-id cn-hangzhou --domain-name example.com --start-time 2015-12-10T20:00:00Z --end-time 2015-12-10T21:00:00Z --app-name liveApp0000 --stream-name liveStream0000 --protocol flv --next-page-token UjsM9x3aVcJi9a0-ArwJUTTC67CIBKLw00000 --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveStreamMetricDetailData --region cn-hangzhou --StreamName liveStream0000 --EndTime '2015-12-10T21:00:00Z' --DomainName 'example.com' --NextPageToken 'UjsM9x3aVcJi9a0-ArwJUTTC67CIBKLw00000' --StartTime '2015-12-10T20:00:00Z' --RegionId 'cn-hangzhou' --Protocol flv --AppName liveApp0000"

@@ -1,5 +1,6 @@
 {
   "name": "DeleteTransitRouterRouteTable",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a token from your client to ensure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次删除请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接删除自定义路由表。\n- **true**：发送检查请求，只进行校验，不会删除自定义路由表。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。",
+        "en": "Specifies whether to perform a dry run. A dry run checks for issues such as permissions and instance status. Valid values:\n\n- **false** (default): Sends a normal request. The custom route table is deleted after the request passes the check.\n\n- **true**: Sends a check request. The system checks the required parameters, request format, and permissions. If the check fails, an error message is returned. If the check succeeds, the `DryRunOperation` error code is returned. The custom route table is not deleted."
+      }
     },
     {
       "name": "TransitRouterRouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自定义路由表ID。",
+        "en": "The ID of the custom route table."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除企业版转发路由器的自定义路由表",
+    "en": "DeleteTransitRouterRouteTable"
+  },
+  "descriptions": {
+    "zh": "- 企业版转发路由器的默认路由表不支持删除。\n- **DeleteTransitRouterRouteTable**接口属于异步接口，即系统会先返回一个**RequestId**，但自定义路由表并未删除完成，系统后台的删除任务仍在进行。您可以调用**ListTransitRouterRouteTables**接口查询自定义路由表的状态。 \n\n    - 当自定义路由表处于Deleting状态时，表示自定义路由表正在删除中。在该状态下，您只能对自定义路由表执行查询操作，不能执行其他操作。\n    - 当查询不到指定自定义路由表时，表示该自定义路由表删除完成。",
+    "en": "- You cannot delete the default route table of an Enterprise Edition transit router.\n\n- **DeleteTransitRouterRouteTable** is an asynchronous operation. After you send a request, the system returns a **RequestId**. The custom route table is not deleted immediately because the system deletes the route table in the background. You can call the **ListTransitRouterRouteTables** operation to query the status of the custom route table.\n\n  - If a custom route table is in the Deleting state, the route table is being deleted. In this state, you can only query the route table. You cannot perform other operations.\n\n  - If the specified custom route table cannot be found, the route table has been deleted."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-transit-router-route-table --client-token 02fb3da4-130e-11e9-8e44-0010000 --dry-run false --transit-router-route-table-id vtb-bp1xbcgpgcz9axl9m0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteTransitRouterRouteTable --region cn-hangzhou --TransitRouterRouteTableId 'vtb-bp1xbcgpgcz9axl9m0000' --DryRun false --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateOIDCProvider",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端ID。由外部IdP提供。多个之间用半角逗号（,）分隔。\n\n格式：允许英文字母、数字、特殊字符`.-_:/`，不能以特殊字符`.-_:/`开头。\n\n长度：单个客户端ID最大128个字符。",
+        "en": "The ID of the client, which is provided by the external IdP. If you want to specify multiple client IDs, separate the client IDs with commas (,).\n\nThe client ID can contain letters, digits, and special characters and cannot start with the special characters. The special characters are `periods (.), hyphens (-), underscores (_), colons (:), and forward slashes (/)`.\\`\\`\n\nThe client ID can be up to 128 characters in length."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OIDC身份提供商的描述。\n\n长度：最大256个字符。",
+        "en": "The description of the OIDC IdP.\n\nThe description can be up to 256 characters in length."
+      }
     },
     {
       "name": "Fingerprints",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HTTPS CA证书的验证指纹。由外部IdP提供。多个之间用半角逗号（,）分隔。\n\n\n格式：允许英文字母和数字。\n\n长度：单个验证指纹最大128个字符。",
+        "en": "The fingerprint of the HTTPS CA certificate, which is provided by the external IdP. If you want to specify multiple fingerprints, separate the fingerprints with commas (,).\n\nThe fingerprint can contain letters and digits.\n\nThe fingerprint can be up to 128 characters in length."
+      }
     },
     {
       "name": "IssuanceLimitTime",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "允许外部IdP颁发ID Token的最早签发时间。ID Token中的iat字段如果距离当前时间大于这个值则请求会被拒绝。\n单位：小时。取值范围：1~168。",
+        "en": "The earliest time when an external IdP can issue an ID token. If the value of the iat field in the ID token is later than the current time, the request is rejected. Unit: hours. Valid values: 1 to 168."
+      }
     },
     {
       "name": "IssuerUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "颁发者URL。由外部IdP提供。同一个阿里云账号下必须唯一。\n\n格式：该URL必须以`https`开头，符合标准URL格式，不允许带有query参数（以`?`标识）、fragment片段（以`#`标识）和登录信息（以`@`标识）。\n\n长度：最大255个字符。",
+        "en": "The URL of the issuer, which is provided by the external IdP. The URL of the issuer must be unique within an Alibaba Cloud account.\n\nThe URL of the issuer must start with `https` and be in the valid URL format. The URL cannot contain query parameters that follow a question mark (`?`) or logon information that is identified by at signs (`@`). The URL cannot be a fragment URL that contains number signs (`#`).\n\nThe URL can be up to 255 characters in length."
+      }
     },
     {
       "name": "OIDCProviderName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "OIDC身份提供商的名称。\n\n格式：允许英文字母、数字、特殊字符`.-_`，不能以特殊字符`.-_`开头或结尾。\n\n长度：最大128个字符。",
+        "en": "The name of the OIDC IdP.\n\nThe name can contain letters, digits, and special characters and cannot start or end with the special characters. The special characters are `periods, (.), hyphens (-), and underscores (_)`.\\`\\`\n\nThe name can be up to 128 characters in length."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建OIDC身份供应商",
+    "en": "CreateOIDCProvider"
+  },
+  "descriptions": {
+    "zh": "### 前提条件\n调用前，请提前从外部IdP（例如：Google G Suite或Okta等）获取颁发者URL、HTTPS CA证书的验证指纹和客户端ID等信息。\n\n### 使用限制\n\n- 一个阿里云账号中可创建的OIDC身份提供商最大个数：100个。\n- 一个OIDC身份提供商中的客户端ID最大个数：50个。\n- 一个OIDC身份提供商中的验证指纹最大个数：5个。\n\n### 使用说明\n\n本文将提供一个示例，创建一个名为`TestOIDCProvider`的身份提供商，配置外部IdP与阿里云的信任关系。",
+    "en": "### [](#)Prerequisites\n\nBefore you call this operation, make sure that the information such as the URL of the issuer, the fingerprints of HTTPS certificate authority (CA) certificates, and the client IDs are obtained from an external IdP, such as Google Workspace or Okta.\n\n### [](#)Limits\n\n- You can create a maximum of 100 OIDC IdPs in an Alibaba Cloud account.\n\n- You can add a maximum of 50 client IDs to an OIDC IdP.\n\n- You can add a maximum of five fingerprints to an OIDC IdP.\n\n### [](#)Operation description\n\nThis topic provides an example on how to create an IdP named `TestOIDCProvider` to configure a trust relationship between the external IdP and Alibaba Cloud."
+  },
   "example": {
     "unifiedCli": "aliyun ims create-oidc-provider --oidc-provider-name TestOIDCProvider --issuer-url https://xxxxxx.example.com --description This_is_an_OIDC_Provider. --client-ids 4984697434547170000 --fingerprints 902ef2deeb3c5b13ea4c3d5193629309e2310000 --issuance-limit-time 6 --region cn-hangzhou",
     "legacyCli": "aliyun ims CreateOIDCProvider --region cn-hangzhou --OIDCProviderName TestOIDCProvider --Description 'This_is_an_OIDC_Provider.' --IssuerUrl 'https://xxxxxx.example.com' --Fingerprints 902ef2deeb3c5b13ea4c3d5193629309e2310000 --IssuanceLimitTime 6 --ClientIds 4984697434547170000"

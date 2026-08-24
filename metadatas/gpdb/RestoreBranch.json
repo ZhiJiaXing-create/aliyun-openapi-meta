@@ -1,0 +1,104 @@
+{
+  "name": "RestoreBranch",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "BranchId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "分支 ID，用于唯一标识一个 Supabase 分支。",
+        "en": "The branch ID that uniquely identifies a Supabase branch."
+      }
+    },
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "客户端幂等令牌，用于保证重试请求的幂等性。",
+        "en": "The client idempotency token that ensures the idempotence of retry requests."
+      }
+    },
+    {
+      "name": "PreserveUnderName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "备份分支名称。指定后恢复前自动创建备份分支。",
+        "en": "The backup branch name. If specified, automatic creation of a backup branch is performed before recovery."
+      }
+    },
+    {
+      "name": "ProjectId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "主分支对应的 Supabase 项目 ID。",
+        "en": "The Supabase project ID associated with the primary branch."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "地域 ID。创建主分支时必须指定，创建子分支时默认继承主分支所在地域。",
+        "en": "The region ID. This parameter is required when you create a primary branch. When you create a sub-branch, the region is inherited from the primary branch by default."
+      }
+    },
+    {
+      "name": "SourceBranchId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "恢复来源分支 ID。",
+        "en": "The ID of the source branch from which to recover."
+      }
+    },
+    {
+      "name": "SourceBranchLsn",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "恢复来源分支的 LSN。",
+        "en": "The LSN of the source branch to recover to."
+      }
+    },
+    {
+      "name": "SourceBranchTimestamp",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "恢复来源分支的时间点，需在可恢复窗口内。",
+        "en": "The point in time of the source branch to recover to. The value must be within the recoverable time window."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "恢复分支",
+    "en": "Recover a branch"
+  },
+  "descriptions": {
+    "zh": "该接口用于将目标分支恢复到来源分支的指定时间点或 LSN。恢复前可指定备份分支名称以保留原目标分支。",
+    "en": "Recovers a target branch to a specified point in time or LSN of the source branch. Before recovery, you can specify a backup branch name to preserve the original target branch."
+  },
+  "example": {
+    "unifiedCli": "aliyun gpdb restore-branch --biz-region-id cn-hangzhou --project-id spb-xxxx --branch-id br-xxxx --source-branch-id br-main --source-branch-timestamp 2026-04-08T09:11:12Z --source-branch-lsn 0/3522648 --preserve-under-name backup-main --client-token 123e4567-e89b-12d3-a456-426614174000 --region cn-hangzhou",
+    "legacyCli": "aliyun gpdb RestoreBranch --region cn-hangzhou --SourceBranchTimestamp '2026-04-08T09:11:12Z' --SourceBranchId 'br-main' --ProjectId 'spb-xxxx' --RegionId 'cn-hangzhou' --BranchId 'br-xxxx' --PreserveUnderName 'backup-main' --ClientToken '123e4567-e89b-12d3-a456-426614174000' --SourceBranchLsn '0/3522648'"
+  }
+}

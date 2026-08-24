@@ -1,0 +1,110 @@
+{
+  "name": "SubmitIProductionJob",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "FunctionName",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "需要使用的算法功能名称。取值：\n\n- **Cover**：智能封面\n- **VideoClip**：视频摘要\n- **VideoDelogo**：视频去图标\n- **VideoDetext**：视频去字幕\n- **CaptionExtraction**：字幕提取\n- **VideoGreenScreenMatting**：绿幕抠图\n- **FaceBeauty**：视频美颜\n- **VideoH2V**：视频横转竖\n- **MusicSegmentDetect**：副歌检测\n- **AudioBeatDetection**：节奏检测\n- **AudioQualityAssessment**：音质检测\n- **SpeechDenoise**：语音降噪\n- **AudioMixing**：音频混音\n- **MusicDemix**：声伴分离",
+        "en": "The name of the algorithm function. Valid values:\n\n- **Cover**: Generates a smart cover.\n\n- **VideoClip**: Creates a video summary.\n\n- **VideoDelogo**: Removes logos from a video.\n\n- **VideoDetext**: Removes text from a video.\n\n- **CaptionExtraction**: Extracts captions from a video.\n\n- **VideoGreenScreenMatting**: Performs green screen keying for a video.\n\n- **FaceBeauty**: Applies beauty filters to faces in a video.\n\n- **VideoH2V**: Converts a horizontal video to a vertical video.\n\n- **MusicSegmentDetect**: Detects chorus segments in music.\n\n- **AudioBeatDetection**: Detects the beat of an audio track.\n\n- **AudioQualityAssessment**: Assesses audio quality.\n\n- **SpeechDenoise**: Reduces noise in speech audio.\n\n- **AudioMixing**: Mixes audio tracks.\n\n- **MusicDemix**: Separates vocals from accompaniment in music."
+      }
+    },
+    {
+      "name": "Input",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输入媒体，支持OSS或媒资ID。\n\n不同算法功能Input输入的文件要求不同，详见下方补充说明。",
+        "en": "The input media asset. You can specify an OSS file or a media asset ID.\n\nThe requirements for input files vary by algorithm function. For more information, see the supplementary instructions."
+      }
+    },
+    {
+      "name": "JobParams",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "算法作业参数，JSON对象，不同算法对应参数内容不同。详见补充说明。",
+        "en": "The algorithm job parameters, specified as a JSON-formatted string. The content of the JSON object varies by algorithm function. For more information, see the supplementary instructions."
+      }
+    },
+    {
+      "name": "ModelId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "算法模型 ID。如果为空，则选择对应功能的默认模型（此参数保持为空即可，一般无需传入，直接使用默认模型）。\n\n当前有以下算法功能存在非默认模型可供选择：\n* VideoDetext\n  * ModelId = algo-video-detext-new，效果更好的字幕擦除算法，速度比默认算法慢，费用比默认算法高",
+        "en": "The ID of the algorithm model. If you do not specify this parameter, the system uses the default model for the selected function. We recommend leaving this parameter empty unless you need to use a specific alternative model.\n\nThe following function offers an alternative model:\n\n- `VideoDetext`\n\n  - Set `ModelId` to `algo-video-detext-new` to use an advanced subtitle removal algorithm. This model provides higher quality results but is slower and more expensive than the default model."
+      }
+    },
+    {
+      "name": "Name",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务名称，长度不超过100字符。",
+        "en": "The name of the job, which can be up to 100 characters long."
+      }
+    },
+    {
+      "name": "Output",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输出媒体，支持OSS或媒资ID。\n\n不同算法功能Output输出的文件不同，详见下方补充说明。",
+        "en": "The output destination. You can specify an OSS file path or a media asset ID.\n\nThe output files vary by algorithm function. For more information, see the supplementary instructions."
+      }
+    },
+    {
+      "name": "ScheduleConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "任务调度配置信息",
+        "en": "The configuration for job scheduling."
+      }
+    },
+    {
+      "name": "TemplateId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "模板ID",
+        "en": "The ID of the template."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，获取结果时原样返回。长度不超过256字符。",
+        "en": "Custom user data. The system passes this data through and returns it as-is in the callback or response. The length cannot exceed 256 characters."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交智能生产任务",
+    "en": "Submit an Intelligent Production Job"
+  },
+  "descriptions": {
+    "zh": "该接口为[异步接口](~~3027141~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询智能生产任务](~~441215~~)主动查询任务状态。",
+    "en": "This is an [asynchronous API](~~3027141~~). When you submit a task, the API returns a task ID and queues the task for asynchronous processing. The final result is delivered via a callback. You can also query the task status by calling [QuerySmartProductionTask](~~441215~~)."
+  }
+}

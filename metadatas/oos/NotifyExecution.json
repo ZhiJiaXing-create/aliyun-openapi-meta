@@ -1,5 +1,6 @@
 {
   "name": "NotifyExecution",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "ExecutionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "执行ID",
+        "en": "The ID of the execution."
+      }
     },
     {
       "name": "ExecutionStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "适用于CompleteExecution",
+        "en": "The state of the terminated execution. This parameter is valid if you set the NotifyType parameter to CompleteExecution."
+      }
     },
     {
       "name": "LoopItem",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Loop子节点对应Item数据",
+        "en": "The items of the child node in the loop task."
+      }
     },
     {
       "name": "NotifyNote",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于说明的message",
+        "en": "The description for the notification."
+      }
     },
     {
       "name": "NotifyType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "通知类型。取值范围：\n- **ExecuteTask** - 指定某个任务执行的开始，适用于Debug模式。可能需配合Parameters参数。\n- **CancelTask** - 取消当前的任务执行，适用于Debug模式。\n- **CompleteExecution** - 手动终止一个Debug模式下的执行。可配合**ExecutionStatus**参数指定被终止执行的状态。\n- **Approve**- 同意，适用于批准待审批的执行。如已知晓高危操作的任务执行风险，并准许其执行。\n- **Reject** - 拒绝，适用于驳回待审批的执行。如不准许高危操作的任务执行。\n- **RetryTask**- 失重试已经执行失败的任务，适用于失败暂停模式。\n- **SkipTask** - 跳过已经执行失败的任务，适用于失败暂停模式。",
+        "en": "The type of the notification. Valid values:\n\n*   **ExecuteTask**: starts to run a specific task. This value is used if you perform debugging in the Debug mode. If you set this parameter to ExecuteTask, you also need to set the Parameters parameter.\n*   **CancelTask**: cancels a current task. This value is used if you perform debugging in the Debug mode.\n*   **CompleteExecution**: manually terminates an execution if you perform debugging in the Debug mode. You can specify the state of the terminated execution by using the **ExecutionStatus** parameter.\n*   **Approve**: approves an execution. For example, you are aware of the risks of an operation task and agree to approve the execution.\n*   **Reject**: rejects an execution. For example, you want to reject the execution of a high-risk operation task.\n*   **RetryTask**: retries a failed task whose execution mode is Suspend upon Failure.\n*   **SkipTask**: skips a failed task whose execution mode is Suspend upon Failure."
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "适用于ExecuteTask",
+        "en": "The parameters of the subsequent task. This parameter is valid if you set the NotifyType parameter to ExecuteTask."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID",
+        "en": "The ID of the region in which the execution resides."
+      }
     },
     {
       "name": "TaskExecutionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务执行ID",
+        "en": "The execution ID of the task."
+      }
     },
     {
       "name": "TaskExecutionIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务执行的ID列表。",
+        "en": "The execution IDs of the tasks."
+      }
     },
     {
       "name": "TaskName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一步要执行的Task Name",
+        "en": "The name of the subsequent task."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通知执行如何运行",
+    "en": "NotifyExecution"
+  },
+  "descriptions": {
+    "zh": "有以下情况可以被通知：\n\n- 特殊任务执行等待审批时，即模板中有Approve任务，模板执行到Approve对应的任务时，执行切换为等待中状态，可通过该API确认是否继续执行。\n- Debug模式下调试时，执行创建后或完成一个任务执行后，用该API指定接下来进行的任务执行。\n- 高风险操作类任务执行等待审批时，可通过该API确认是否继续执行。",
+    "en": "You can call this operation to notify an execution in the following scenarios:\n\n*   If a template contains a special task, such as an approval task, the Operation Orchestration Service (OOS) execution engine sets the execution state to Waiting when the approval task is being run. You can call this operation to specify whether to continue the execution.\n*   If you perform debugging in the debug mode, you can call this operation to notify the execution of the subsequent operations after the execution is created or a task is complete.\n*   If a high-risk operation task waits for approval, you can call this operation to specify whether to continue the execution."
+  },
   "example": {
     "unifiedCli": "aliyun oos notify-execution --biz-region-id cn-hangzhou --execution-id exec-xxx --notify-type Approve --notify-note Description --task-name describeInstance --task-execution-id task-exec-xxx --execution-status Success --parameters example-string --loop-item i-xxx --task-execution-ids exec-79c321c11003a97c_,_exec-79c321c11003aqw97cz --region cn-hangzhou",
     "legacyCli": "aliyun oos NotifyExecution --region cn-hangzhou --NotifyType Approve --Parameters 'example-string' --LoopItem 'i-xxx' --NotifyNote Description --TaskName describeInstance --ExecutionStatus Success --TaskExecutionIds 'exec-79c321c11003a97c_,_exec-79c321c11003aqw97cz' --RegionId 'cn-hangzhou' --TaskExecutionId 'task-exec-xxx' --ExecutionId 'exec-xxx'"

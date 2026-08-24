@@ -1,5 +1,6 @@
 {
   "name": "GetContextLogs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "/logstores/[logstore]?type=context_log",
@@ -8,39 +9,74 @@
       "name": "back_lines",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定起始日志往前（上文）的日志条数，取值范围为`(0,100]`。",
+        "en": "The number of logs that you want to obtain and are generated before the generation time of the start log. Valid values: `(0,100]`."
+      }
     },
     {
       "name": "forward_lines",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定起始日志往后（下文）的日志条数，取值范围为`(0,100]`。",
+        "en": "The number of logs that you want to obtain and are generated after the generation time of the start log. Valid values: `(0,100]`."
+      }
     },
     {
       "name": "logstore",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Logstore名称。",
+        "en": "The name of the Logstore."
+      }
     },
     {
       "name": "pack_id",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "起始日志所属的LogGroup的唯一身份标识。",
+        "en": "The unique identifier of the log group to which the start log belongs."
+      }
     },
     {
       "name": "pack_meta",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "起始日志在对应LogGroup内的唯一上下文结构标识。",
+        "en": "The unique context identifier of the start log in the log group."
+      }
     },
     {
       "name": "project",
       "position": "Host",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Project名称。",
+        "en": "The name of the project."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询上下文日志",
+    "en": "GetContextLogs"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n- 上下文查询的时间范围为起始日志的前后一天。\n- Host由Project名称和日志服务Endpoint构成，您需要在Host中指定Project。\n- 已创建并获取AccessKey。更多信息，请参见[访问密钥](~~29009~~)。\n\n 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维。RAM用户需具备操作日志服务资源的权限。具体操作，请参见[创建RAM用户及授权](~~47664~~)。\n- 已明确您查询日志所属的Project名称、所属地域、Logstore名称等。如何查询，请参见[管理Project](~~48984~~)和[管理Logstore](~~48990~~)。\n- 查询日志前，已配置索引。具体操作，请参见[创建索引](~~90732~~)。\n- pack\\_id和pack\\_meta字段属于内部字段，在执行查询前，您需要在日志服务控制台通过浏览器的调试功能获取字段值。\n### 鉴权资源\n下表列出了API对应的授权信息。您可以在RAM权限策略语句的Action元素中添加该信息，用于为RAM用户或RAM角色授予调用此API的权限。\n|动作（Action）  | 授权策略中的资源描述方式（Resource）  |\n| :------------ | :------------ |\n| `log:GetLogStoreContextLogs`  | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}`  |",
+    "en": "### Usage notes\n\n- You can specify a log as the start log. The time range of a contextual query is one day before and one day after the generation time of the start log.\n\n- Host consists of a project name and a Simple Log Service endpoint. You must specify a project in Host.\n\n- An AccessKey pair is created and obtained. For more information, see [AccessKey pair](~~29009~~).\n\nThe AccessKey pair of an Alibaba Cloud account has permissions on all API operations. Using these credentials to perform operations in Simple Log Service is a high-risk operation. We recommend that you use a Resource Access Management (RAM) user to call API operations or perform routine O\\&M. To create a RAM user, log on to the RAM console. Make sure that the RAM user has the management permissions on Simple Log Service resources. For more information, see [Create a RAM user and authorize the RAM user to access Simple Log Service](~~47664~~).\n\n- The information that is required to query logs is obtained. The information includes the name of the project to which the logs belong, the region of the project, and the name of the Logstore to which the logs belong. For more information, see [Manage a project](~~48984~~) and [Manage a Logstore](~~48990~~).\n\n- Indexes are configured before you query logs. For more information, see [Create indexes](~~90732~~).\n\n- The values of the pack\\_id and pack\\_meta fields are obtained before you query logs. The fields are internal fields, and you can obtain the values by using the debugging feature of your browser in the Simple Log Service console.\n\n### Authentication resources\n\nThe following table describes the authorization information that is required for this operation. You can add the information to the Action element of a RAM policy statement to grant a RAM user or a RAM role the permissions to call this operation.\n\n| Action                       | Resource                                                                           |\n| :--------------------------- | :--------------------------------------------------------------------------------- |\n| `log:GetLogStoreContextLogs` | `acs:log:{#regionId}:{#accountId}:project/{#ProjectName}/logstore/{#LogstoreName}` |"
+  },
   "example": {
     "unifiedCli": "aliyun sls get-context-logs --project ali-test-project --logstore test-logstore --pack-id 85C897C740352DC6-808 --pack-meta 2_MTY1NTcwNTUzODY5MTY0MDk1Mg==_3_0 --back-lines 10 --forward-lines 10 --region cn-hangzhou",
     "legacyCli": "aliyun sls GET /logstores/test-logstore?type=context_log --project ali-test-project --region cn-hangzhou --pack_id '85C897C740352DC6-808' --pack_meta '2_MTY1NTcwNTUzODY5MTY0MDk1Mg==_3_0' --forward_lines 10 --back_lines 10 --header \"Content-Type=application/json\""

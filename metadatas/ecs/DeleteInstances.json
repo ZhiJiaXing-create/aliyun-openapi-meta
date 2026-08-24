@@ -1,5 +1,6 @@
 {
   "name": "DeleteInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. The **ClientToken** value can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。\n\n- true：发送检查请求，不会查询资源状况。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码DRYRUN.SUCCESS。\n- false：发送正常请求，通过检查后返回2XX HTTP状态码并直接查询资源状况。\n\n默认值：false。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request.\n\n- true: sends a check request without querying resource status. The check items include whether your AccessKey pair is valid, whether Resource Access Management (RAM) user authorization is granted, and whether the required parameters are specified. If the check fails, the corresponding error is returned. If the check succeeds, the DRYRUN.SUCCESS error code is returned.\n- false: sends a Normal request. After the check succeeds, a 2xx HTTP status code is returned and the resource status is queried directly.\n\nDefault value: false."
+      }
     },
     {
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否强制释放**运行中**（`Running`）的ECS实例。\n\n- true：强制释放**运行中**（`Running`）的实例。\n- false：正常释放实例，此时实例必须处于**已停止**（`Stopped`）状态。\n\n默认值：false。\n><warning>强制释放相当于断电，实例内存以及存储中的临时数据都会被擦除，无法恢复。></warning>",
+        "en": "Specifies whether to forcefully release an instance that is in the **Running** (`Running`) state.\n\n- true: forcefully releases ECS instance that is in the **Running** (`Running`) state.\n- false: releases ECS instance only when it is in the **Stopped** (`Stopped`) state.\n\nDefault value: false.\n><warning>Forceful release is equivalent to powering off ECS instance. All in-memory data and temporary data in the storage are erased and cannot be recovered.></warning>."
+      }
     },
     {
       "name": "ForceStop",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "释放**运行中**（`Running`）的实例时的是否采取强制关机策略。仅当`Force=true`时生效。取值范围：\n\n- true：强制关机并释放实例。相当于典型的断电操作，实例会直接进入资源释放流程。\n><warning>强制释放相当于断电，实例内存以及存储中的临时数据都会被擦除，无法恢复。></warning>\n- false：在实例释放前，系统将优先执行标准关机流程，该模式会导致实例释放动作持续几分钟。用户在操作系统关机时，配置一些业务排水动作，从而减少业务系统的噪声。\n\n默认值：true。",
+        "en": "Specifies whether to forcefully shut down the instance before release when the instance is in the **Running** (`Running`) state. This parameter takes effect only when `Force=true`. Valid values:\n\n- true: forcefully shuts down and releases the instance. This is equivalent to a power-off operation. The instance directly enters the resource release process.\n><warning>Forceful release is equivalent to powering off the instance. All in-memory data and temporary data in the storage are erased and cannot be recovered.></warning>\n- false: performs a standard shutdown before releasing the instance. This mode causes the release process to take several minutes. You can configure service draining actions during the operating system shutdown to reduce noise in your business systems.\n\nDefault value: true."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID数组。数组长度：1~100。",
+        "en": "The instance ID array. Array length: 1 to 100."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the instances. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "TerminateSubscription",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否释放已到期的包年包月实例。\n\n- true：释放。\n- false：不释放。\n\n默认值：false。",
+        "en": "Specifies whether to release an expired subscription instance.\n\n- true: releases the instance.\n- false: does not release the instance.\n\nDefault value: false."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量删除实例",
+    "en": "Batch delete instances"
+  },
+  "descriptions": {
+    "zh": "><warning>\n释放实例后，实例所使用的物理资源会被回收，相关数据全部丢失且不可恢复。\n></warning>\n\n- 云盘的手动快照会被保留并继续计费，您可以通过[DeleteSnapshot](~~2679824~~)删除。\n- 实例上挂载的云盘和自动快照是否被释放取决于创建时的参数设置。释放实例之前，您可以通过[DescribeDisks](~~2679767~~)、[ModifyDiskAttribute](~~2679770~~)查询和修改相关参数设置：\n  - `DeleteWithInstance=false`，云盘会被转换成按量付费云盘而保留下来，否则会随实例被释放。\n  - `DeleteAutoSnapshot=false`，自动快照被保留，否则会随实例被释放。\n- 弹性公网IP（EIP）不会随实例被释放，您可以通过[ReleaseEipAddress](~~448702~~)释放。\n><notice>被安全锁定的实例，即使云盘的`DeleteWithInstance`参数设置为`false`，释放实例时也会忽略这个属性而释放云盘。></notice>",
+    "en": "><warning>\nAfter an instance is released, all physical resources used by the instance are reclaimed. All related data is permanently lost and cannot be recovered.\n></warning>.\n\n- Manual snapshots of cloud disks are retained and continue to incur charges. You can call [DeleteSnapshot](~~2679824~~) to delete them.\n- Whether cloud disks and automatic snapshots attached to the instance are released depends on the parameter settings specified when they were created. Before you release an instance, you can call [DescribeDisks](~~2679767~~) and [ModifyDiskAttribute](~~2679770~~) to query and modify the related parameter settings:\n  - If `DeleteWithInstance=false`, the cloud disk is converted to a pay-as-you-go cloud disk and retained. Otherwise, the cloud disk is released along with the instance.\n  - If `DeleteAutoSnapshot=false`, the automatic snapshots are retained. Otherwise, the automatic snapshots are released along with the instance.\n- Elastic IP addresses (EIPs) are not released along with the instance. You can call [ReleaseEipAddress](~~448702~~) to release them.\n><notice>For security-locked instances, even if the `DeleteWithInstance` parameter of a cloud disk is set to `false`, this attribute is ignored and the cloud disk is released along with the instance.></notice>."
+  },
   "example": {
     "unifiedCli": "aliyun ecs delete-instances --dry-run false --biz-force false --force-stop true --terminate-subscription false --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --instance-id i-bp1g6zv0ce8oghu70000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DeleteInstances --region cn-hangzhou --Force false --DryRun false --ForceStop true --TerminateSubscription false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --InstanceId.1 'i-bp1g6zv0ce8oghu70000'"

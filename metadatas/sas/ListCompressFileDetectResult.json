@@ -1,5 +1,6 @@
 {
   "name": "ListCompressFileDetectResult",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "CurrentPage",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "分页查询时，显示的当前页的页码。默认值为1。",
+        "en": "The page number. Default value: 1."
+      }
     },
     {
       "name": "HashKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "文件唯一标识。",
+        "en": "The unique identifier for the file."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "分页查询时，显示的每页数据的最大条数。默认值为20。",
+        "en": "The number of entries per page. Default value: 20."
+      }
     },
     {
       "name": "SourceIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "访问源IP地址。",
+        "en": "The source IP address of the request."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取压缩包内文件检测结果列表",
+    "en": "ListCompressFileDetectResult"
+  },
+  "descriptions": {
+    "zh": "推送过检测并且被识别为压缩包的文件才能通过此接口获取文件检测结果列表，检测结果将保留5小时，5小时内可重复查询。推送检测请参考接口CreateFileDetect。获压缩包文件本身检测结果请参考接口GetFileDetectResult。\n\n文件检测相关接口均包含 HashKey 参数，表示文件唯一标识。\n\n在恶意文件检测场景下（Type 为 0），仅支持传入文件完整内容的 MD5 或 SHA-256，请在调用接口前计算该值。\n\n在 Skill 压缩包检测场景下（Type 为 6），请通过 CreateFileDetect 接口的返回值获取。\n\n注意，一次检测的推送和查询接口必须使用同一个 HashKey，否则无法正确推送检测和查询结果。",
+    "en": "Use this API to retrieve detection results for files within a compressed file that has been submitted for detection. The system retains detection results for 5 hours, during which you can query them multiple times. To submit a file for detection, use the `CreateFileDetect` API. To retrieve the detection result for the compressed file itself, use the `GetFileDetectResult` API.\n\nAll file detection APIs include the `HashKey` parameter, which is the unique file identifier.\n\nFor malicious file detection (when `Type` is `0`), you must provide the MD5 or SHA-256 hash of the complete file content. Calculate this value before you call the API.\n\nFor Skill compressed file detection (when `Type` is `6`), obtain the `HashKey` from the return value of the `CreateFileDetect` API.\n\nNote: You must use the same `HashKey` for the submission and query requests for a single detection. Otherwise, you cannot correctly submit the file for detection or retrieve its results."
+  },
   "example": {
     "unifiedCli": "aliyun sas list-compress-file-detect-result --source-ip 27.9.XX.XX --hash-key 0a212417e65c26ff133cfff28f6c0000 --current-page 1 --page-size 20 --api-version 2018-12-03 --region cn-hangzhou",
     "legacyCli": "aliyun sas ListCompressFileDetectResult --region cn-hangzhou --SourceIp '27.9.XX.XX' --PageSize 20 --CurrentPage 1 --HashKey 0a212417e65c26ff133cfff28f6c0000"

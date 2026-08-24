@@ -1,5 +1,6 @@
 {
   "name": "DescribeCdnUserBillPrediction",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Area",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计费大区。取值：\n\n- **CN**：中国内地。\n- **OverSeas**：全球（不包含中国内地）。\n- **AP1**：亚太1区。\n- **AP2**：亚太2区。\n- **AP3**：亚太3区。\n- **NA**：北美。\n- **SA**：南美。\n- **EU**：欧洲。\n- **MEAA**：中东、非洲。\n\n默认按用户当前计费模式决定，如果是海外分大区则为**CN**，**OverSeas**，否则为**CN**，**AP1**，**AP2**，**AP3**，**NA**，**SA**，**EU**或**MEAA**。\n\n> 各区域包含的具体国家地区，请参见[计费概述](~~142221~~)。",
+        "en": "The billable region. Valid values:\n\n- **CN**: the Chinese mainland\n\n- **OverSeas**: outside the Chinese mainland\n\n- **AP1**: Asia Pacific 1\n\n- **AP2**: Asia Pacific 2\n\n- **AP3**: Asia Pacific 3\n\n- **NA**: North America\n\n- **SA**: South America\n\n- **EU**: Europe\n\n- **MEAA**: Middle East and Africa\n\nBy default, the value of this parameter is determined by the metering method that is currently used. Regions inside and outside the Chinese mainland are classified into the **CN** and **OverSeas** billable regions. Billable regions inside the Chinese mainland include **CN**. Billable regions outside the Chinese mainland include **AP1**, **AP2**, **AP3**, **NA**, **SA**, **EU**, and **MEAA**.\n\n> For more information about billable regions, see [Billable regions](~~142221~~)."
+      }
     },
     {
       "name": "Dimension",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取计费类型的维度，flow表示流量带宽。",
+        "en": "The billable item. A value of flow specifies bandwidth."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认为当前时间, 日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end time of the estimation. The default value is the current time. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认为月初第一天的零点整, 日期格式按照ISO8601表示法，并使用UTC时间，格式为：yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The start time of the estimation. The default value is 00:00 on the first day of the current month. Specify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询预测用量",
+    "en": "DescribeCdnUserBillPrediction"
+  },
+  "descriptions": {
+    "zh": "用于预测用户当月的用量数据，按用户月初第一天的计费模式计算，只支持月度计费模式的预测，只支持用户粒度。 起始时间为月初1号0点，结束时间为当前时间前两个小时。\n\n- 月95：开始时间至结束时间内，去掉最高5%点后的最高点，为预测值。 \n- 月均日峰值：每日峰值带宽求和/时间天数，不计算当天的数据。 \n- 月第四日峰值：请求时间内，第四高的峰值为预测值，如果请求时间小于4天，返回预测值为0。 \n- 月均日95：每日日95峰值求和/时间天数，不计算当天的数据。 \n- 夜间半价95：开始时间至结束时间内，去掉最高5%点后的最高点，为预测值。\n\n> 单用户调用频率：1次/秒。",
+    "en": "Estimates resource usage of the current month based on the metering method that is specified on the first day of the current month. This operation estimates resource usage only of the current month within your Alibaba Cloud account. The time range used for the estimation starts at 00:00 on the first day of the current month and ends 2 hours earlier than the current time.\n\n- Pay by monthly 95th percentile: The top 5% values between the start time and end time are excluded. The estimated value is the highest value among the remaining values.\n\n- Pay by average daily peak bandwidth per month: Estimated value = Sum of daily peak bandwidth values/Number of days. The current day is excluded.\n\n- Pay by 4th peak bandwidth per month: The estimated value is the 4th peak bandwidth value between the start time and end time. If the time range is less than four days, the estimated value is 0.\n\n- Pay by average daily 95th percentile bandwidth per month: Estimated value = Sum of daily 95th percentile bandwidth values/Number of days. The current day is excluded.\n\n- Pay by 95th percentile bandwidth with 50% off from 00:00 to 08:00: The top 5% values between the start time and end time are excluded. The estimated value is the highest value among the remaining values.\n\n> Each account can call this operation only once per second."
+  },
   "example": {
     "unifiedCli": "aliyun cdn describe-cdn-user-bill-prediction --start-time 2018-09-30T16:00:00Z --end-time 2018-10-25T10:00:00Z --dimension flow --area CN,OverSeas --region cn-hangzhou",
     "legacyCli": "aliyun cdn DescribeCdnUserBillPrediction --region cn-hangzhou --Area 'CN,OverSeas' --EndTime '2018-10-25T10:00:00Z' --StartTime '2018-09-30T16:00:00Z' --Dimension flow"

@@ -1,5 +1,6 @@
 {
   "name": "LockSnapshot",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken 只支持 ASCII 字符，且不能超过 64 个字符。更多信息，请参见[如何保证幂等性](https://help.aliyun.com/zh/ecs/developer-reference/how-to-ensure-idempotence?spm=a2c4g.11186623.0.0.2a29d467Bh2sO5)。",
+        "en": "A unique, case-sensitive token that you provide to ensure the idempotence of the request. The token can contain only ASCII characters and must not exceed 64 characters in length. For more information, see [How to ensure idempotence](https://help.aliyun.com/zh/ecs/developer-reference/how-to-ensure-idempotence?spm=a2c4g.11186623.0.0.2a29d467Bh2sO5)."
+      }
     },
     {
       "name": "CoolOffPeriod",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "冷静期。合规模式下可以设置冷静期或者跳过冷静期直接锁定快照。 \n\n冷静期内，具备相应 RAM 权限的用户可以解锁快照、延长或缩短冷静期、延长或缩短锁定时长，冷静期内快照不允许删除。 \n\n冷静期结束后，仅支持延长锁定时长。 \n\n单位：小时。 \n\n取值范围：0~72。取值为 0 表示跳过冷静期直接锁定快照。 \n\n如果快照已进入合规模式锁定期，延长锁定时长该参数需要填 0。",
+        "en": "The cool-off period. In compliance mode, you can specify a cool-off period or set this parameter to 0 to lock the snapshot immediately.\n\nDuring the cool-off period, users with the required RAM permissions can unlock the snapshot, extend or shorten the cool-off period, and extend or shorten the lock duration. The snapshot cannot be deleted during the cool-off period.\n\nAfter the cool-off period ends, you can only extend the lock duration.\n\nUnit: hours.\n\nValid values: 0 to 72. A value of 0 indicates that the cool-off period is skipped and the snapshot is locked immediately.\n\nIf a snapshot is already locked in compliance mode, you must set this parameter to 0 to extend its lock duration."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值范围： \n- true：发送检查请求，不会实际执行。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。 \n- false（默认）：发送正常请求，通过检查后直接执行请求。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- `true`: Performs a dry run to check the request without executing it. The system checks for required parameters, request format, business constraints, and permissions. If the check passes, the `DryRunOperation` error code is returned. If the check fails, a corresponding error is returned.\n\n- `false` (default): Checks the request and, if the checks pass, executes the operation."
+      }
     },
     {
       "name": "LockDuration",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "锁定时长。锁定时长结束后快照锁定会自动过期。 \n\n单位：天。 \n\n取值范围：1~36500。",
+        "en": "The number of days to lock the snapshot. The lock automatically expires at the end of this period.\n\nUnit: days.\n\nValid values: 1 to 36500."
+      }
     },
     {
       "name": "LockMode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "锁定模式。取值范围： \n- compliance：以合规模式锁定快照。以合规模式锁定的快照无法被任何用户解锁，只有在锁定时长到期后才能被删除。用户不能缩短锁定时长，但具备相应 RAM 权限的用户可以随时延长锁定时长。以合规模式锁定快照时，可以选择性地指定冷静期。",
+        "en": "The lock mode. Valid value:\n\n- `compliance`: Locks the snapshot in compliance mode. A snapshot locked in compliance mode cannot be unlocked by any user and can be deleted only after its lock duration expires. You cannot shorten the lock duration. However, users with the required RAM permissions can extend the lock duration at any time. When you lock a snapshot in compliance mode, you can optionally specify a cool-off period."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域 ID。您可以调用 [DescribeRegions](https://help.aliyun.com/zh/ecs/developer-reference/api-ecs-2014-05-26-describeregions?spm=a2c4g.11186623.0.i2) 查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call [DescribeRegions](https://help.aliyun.com/zh/ecs/developer-reference/api-ecs-2014-05-26-describeregions?spm=a2c4g.11186623.0.i2) to get the latest list of Alibaba Cloud regions."
+      }
     },
     {
       "name": "SnapshotId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "快照 ID。",
+        "en": "The snapshot ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "锁定快照",
+    "en": "LockSnapshot"
+  },
+  "descriptions": {
+    "zh": "您还可以使用该接口重新配置已锁定快照，可配置项取决于锁定模式和锁定状态：\n- 如果快照以合规模式锁定，且处于冷静期，支持延长或缩短冷静期、延长或缩短锁定时长。\n- 如果快照以合规模式锁定，且冷静期已过，仅支持延长锁定时长。\n> 在冷静期内重新配置已锁定快照，系统将视为重新锁定操作，所有锁定参数将全部重置，而非单项调整。",
+    "en": "This operation also lets you reconfigure a locked snapshot. The available settings depend on the lock mode and lock state:\n\n- If a snapshot is locked in compliance mode and is in its cooldown period, you can extend or shorten the cooldown period and the lock duration.\n\n- If a snapshot is locked in compliance mode and its cooldown period has passed, you can only extend the lock duration.\n\n> Reconfiguring a locked snapshot during its cooldown period constitutes a new relock operation, which resets all lock parameters instead of adjusting them individually."
+  },
   "example": {
     "unifiedCli": "aliyun ecs lock-snapshot --biz-region-id cn-hangzhou --snapshot-id s-9dp2qojdpdfmgfmf0000 --lock-mode compliance --lock-duration 1 --cool-off-period 3 --dry-run false --client-token 5EC38E7D-389F-1925-ABE2-D7925A8F0000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs LockSnapshot --region cn-hangzhou --SnapshotId 's-9dp2qojdpdfmgfmf0000' --CoolOffPeriod 3 --DryRun false --LockDuration 1 --RegionId 'cn-hangzhou' --LockMode compliance --ClientToken '5EC38E7D-389F-1925-ABE2-D7925A8F0000'"

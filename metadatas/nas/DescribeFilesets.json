@@ -1,5 +1,6 @@
 {
   "name": "DescribeFilesets",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。\n\n- CPFS：必须以`cpfs-`开头，例如cpfs-099394bd928c****。\n\n- CPFS智算版：必须以`bmcpfs-`开头，例如bmcpfs-290w65p03ok64ya****。",
+        "en": "The file system ID.\n\n- CPFS: The ID must start with `cpfs-`, such as cpfs-099394bd928c****.\n\n- CPFS for Lingjun: The ID must start with `bmcpfs-`, such as bmcpfs-290w65p03ok64ya****."
+      }
     },
     {
       "name": "Filters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "待查询Fileset的筛选键信息。",
+        "en": "The filter key information for the filesets to query."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "筛选键的名称。取值：\n\n- FsetIds：根据Fileset ID筛选。\n- FileSystemPath：根据Fileset在CPFS文件系统中的路径筛选。\n- Description：根据Fileset的描述筛选。\n- QuotaExists: 根据Quota是否存在进行筛选。\n> 仅CPFS智算版2.7.0及以上版本支持QuotaExists参数进行筛选。",
+            "en": "The name of the filter key. Valid values:\n\n- FsetIds: filters by fileset ID.\n- FileSystemPath: filters by the path of the fileset in the CPFS file system.\n- Description: filters by the description of the fileset.\n- QuotaExists: filters by whether a quota exists.\n> Only CPFS for Lingjun 2.7.0 and later support filtering by the QuotaExists parameter."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "筛选键的值。该参数不支持通配符。\n\n- 当Key取值为FsetIds时，Value取值为Fileset ID。可以是一个或一组Fileset ID，Fileset ID最多可设置10个，多个值使用英文逗号分隔。例如，`fset-1902718ea0ae****`或`fset-1902718ea0ae****,fset-3212718ea0ae****`。\n- 当Key取值为FileSystemPath时，Value取值为Fileset在CPFS文件系统中的路径或路径的一部分。长度为2~1024个英文或中文字符。请您使用UTF-8编码。\n- 当Key取值为Description时，Value取值为Fileset的描述或描述的一部分。\n- 当Key取值为QuotaExists时，Value取值为true或false，不填写则返回所有的Fileset。",
+            "en": "The value of the filter key. Wildcards are not supported for this parameter.\n\n- If Key is set to FsetIds, Value is set to a fileset ID. You can specify one or more fileset IDs, up to 10. Separate multiple values with commas (,). Example: `fset-1902718ea0ae****` or `fset-1902718ea0ae****,fset-3212718ea0ae****`.\n- If Key is set to FileSystemPath, Value is set to the full path or a partial path of the fileset in the CPFS file system. The value must be 2 to 1,024 characters in length and encoded in UTF-8.\n- If Key is set to Description, Value is set to the full description or a partial description of the fileset.\n- If Key is set to QuotaExists, Value is set to true or false. If you leave this parameter empty, all filesets are returned."
+          }
         }
       ]
     },
@@ -34,27 +51,54 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每次查询结果的个数。\n\n取值范围：10~100。默认值：20。",
+        "en": "The number of results per query.\n\nValid values: 10 to 100. Default value: 20."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当请求的返回结果被截断时，您可以使用NextToken再次发起请求，获取从当前截断位置之后的内容。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results. If the response is truncated, you can use this token in the next request to retrieve the remaining results."
+      }
     },
     {
       "name": "OrderByField",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段。\n\n- FileCountLimit：配额文件数量限制。\n- SizeLimit：配额容量限制。\n- FileCountUsage：文件数量使用量。\n- SpaceUsage：容量使用量。",
+        "en": "The field by which to sort the results.\n\n- FileCountLimit: the quota file count limit.\n- SizeLimit: the quota capacity limit.\n- FileCountUsage: the file count usage.\n- SpaceUsage: the capacity usage."
+      }
     },
     {
       "name": "SortOrder",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方式。\n\n- asc（默认值）： 升序，指定排序按照从小到大的顺序进行。\n- desc：降序， 指定排序按照从大到小的顺序进行。\n> 当填写OrderByField参数后，此字段生效。",
+        "en": "The sort order. Valid values:\n\n- asc (default): ascending order, which sorts results from smallest to largest.\n- desc: descending order, which sorts results from largest to smallest.\n> This parameter takes effect only when the OrderByField parameter is specified."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询文件集列表",
+    "en": "Query filesets"
+  },
+  "descriptions": {
+    "zh": "- 仅CPFS 2.2.0和CPFS智算版2.7.0及以上版本支持Fileset。您可以在控制台文件系统详情页面查看版本信息。\n\n- 筛选键（Filters）中，FsetIds需要做全字匹配，FileSystemPath、Description支持模糊匹配。\n- 支持组合查询。",
+    "en": "- Only CPFS 2.2.0 and later and CPFS for Lingjun 2.7.0 and later support filesets. You can view the version information on the file system details page in the console.\n\n- In the filter keys (Filters), FsetIds requires an exact match, while FileSystemPath and Description support fuzzy match.\n- Combination queries are supported."
+  },
   "example": {
     "unifiedCli": "aliyun nas describe-filesets --file-system-id bmcpfs-290w65p03ok64ya0000 --filters Value=fset-1902718ea0ae0000 Key=FsetIds --next-token TGlzdFJlc291cmNlU0000mVzJjE1MTI2NjY4NzY5MTAzOTEmMiZORnI4NDhVeEtrUT0= --max-results 20 --order-by-field FileCountLimit --sort-order asc --region cn-hangzhou",
     "legacyCli": "aliyun nas DescribeFilesets --region cn-hangzhou --Filters.1.Key FsetIds --NextToken 'TGlzdFJlc291cmNlU0000mVzJjE1MTI2NjY4NzY5MTAzOTEmMiZORnI4NDhVeEtrUT0=' --OrderByField FileCountLimit --MaxResults 20 --Filters.1.Value 'fset-1902718ea0ae0000' --FileSystemId 'bmcpfs-290w65p03ok64ya0000' --SortOrder asc"

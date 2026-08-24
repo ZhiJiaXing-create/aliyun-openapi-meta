@@ -1,5 +1,6 @@
 {
   "name": "CreateBgpPeer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,80 @@
       "name": "BfdMultiHop",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "BFD跳数。取值范围：**1**~**255**。\n\n选择开启BFD功能时，需要配置此参数。\n输入BFD跳数，即数据从源端到目标端传输时经过的最大设备数量。您可以根据真实的物理链路因素配置不同的跳数。\n\n> 当您在多云环境或光纤直连组网中使用BFD，中间无任何桥接设备时，则需要将BFD的默认跳数从**255**改成**1**。",
+        "en": "The BFD hop count. Valid values: **1** to **255**.\n\nThis parameter is required when BFD is enabled.\nSpecify the BFD hop count, which is the maximum number of devices that data passes through from the source to the destination. You can configure different hop counts based on actual physical link factors.\n\n> When you use BFD in a multi-cloud environment or a fiber direct connect network without any bridging devices in between, you need to change the default BFD hop count from **255** to **1**."
+      }
     },
     {
       "name": "BgpGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "BGP组的ID。",
+        "en": "The ID of the BGP group."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nThe client generates the value of this parameter. Make sure that the value is unique among different requests. The maximum length is 64 ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** of each API request is different."
+      }
     },
     {
       "name": "EnableBfd",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启BFD功能，取值：\n\n- **true**：开启BFD功能。\n\n- **false**：不开启BFD功能。",
+        "en": "Specifies whether to enable Bidirectional Forwarding Detection (BFD). Valid values:\n\n- **true**: enables BFD.\n\n- **false**: disables BFD."
+      }
     },
     {
       "name": "IpVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP版本。取值：\n\n- **IPv4**（默认值）：IPv4版本。\n- **IPv6**：IPv6版本，只有当创建BGP组的VBR开通IPv6功能时，支持IPv6版本。",
+        "en": "The IP version. Valid values:\n\n- **IPv4** (default): IPv4.\n- **IPv6**: IPv6. IPv6 is supported only when the VBR on which the BGP group is created has IPv6 enabled."
+      }
     },
     {
       "name": "PeerIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "BGP邻居的IP地址。",
+        "en": "The IP address of the BGP peer."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "BGP组所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the BGP group.\n\nYou can call the [DescribeRegions](~~36063~~) API to obtain the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "向指定的BGP组中添加BGP邻居",
+    "en": "Add a BGP peer to the specified BGP group"
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-bgp-peer --biz-region-id cn-hangzhou --bgp-group-id bgpg-wz9f62v4fbg0000 --peer-ip-address 116.62.XX.XX --enable-bfd true --client-token 123e4567-e89b-12d3-a456-426655440000 --ip-version IPv4 --bfd-multi-hop 3 --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateBgpPeer --region cn-hangzhou --PeerIpAddress '116.62.XX.XX' --IpVersion IPv4 --EnableBfd true --BfdMultiHop 3 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --BgpGroupId 'bgpg-wz9f62v4fbg0000'"

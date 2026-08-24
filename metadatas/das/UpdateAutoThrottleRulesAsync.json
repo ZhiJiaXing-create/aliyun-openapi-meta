@@ -1,5 +1,6 @@
 {
   "name": "UpdateAutoThrottleRulesAsync",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "AbnormalDuration",
       "position": "Query",
       "type": "Double",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "触发自动SQL限流的异常的持续时间阈值，取值范围：大于等于2的正整数，单位：分钟。",
+        "en": "The duration threshold for triggering automatic SQL throttling. Set this parameter to an integer that is greater than or equal to 2. Unit: minutes."
+      }
     },
     {
       "name": "ActiveSessions",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "活跃会话数阈值。\t\n\n- 与CPU利用率阈值关系为**OR**（或）时，大于等于16。\n- 与CPU利用率阈值关系为**AND**（且）时，大于等于2。",
+        "en": "The threshold for the number of active sessions.\n\n- If this parameter and CpuUsage are in the **OR** relationship, set this parameter to an integer that is greater than or equal to 16.\n\n- If this parameter and CpuUsage are in the **AND** relationship, set this parameter to an integer that is greater than or equal to 2."
+      }
     },
     {
       "name": "AllowThrottleEndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "可限流时间段的结束时间（UTC时间）。",
+        "en": "The end time of the throttling window. The time must be in UTC."
+      }
     },
     {
       "name": "AllowThrottleStartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "可限流时间段的开始时间（UTC时间）。",
+        "en": "The start time of the throttling window. The time must be in UTC."
+      }
     },
     {
       "name": "AutoKillSession",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否同时KILL执行中的异常SQL：\n> 异常SQL：与需要限流的SQL模板相同。\n\n- **true**：是。\n- **false**：否。",
+        "en": "Specifies whether to terminate abnormal SQL statements in execution at the same time. Valid values:\n\n> Abnormal SQL statements use the same template as the SQL statements to be throttled.\n\n- **true**\n\n- **false**"
+      }
     },
     {
       "name": "ConsoleContext",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备用参数。",
+        "en": "The reserved parameter."
+      }
     },
     {
       "name": "CpuSessionRelation",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "CPU利用率阈值和活跃会话数阈值的逻辑关系。\n- **AND**：且。\n- **OR**：或。",
+        "en": "The logical relationship between the CPU utilization threshold and the maximum number of active sessions. Valid values:\n\n- **AND**\n\n- **OR**"
+      }
     },
     {
       "name": "CpuUsage",
       "position": "Query",
       "type": "Double",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "CPU利用率阈值，取值范围：70%~100%。",
+        "en": "The threshold for CPU utilization. Valid values: 70% to 100%."
+      }
     },
     {
       "name": "InstanceIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库实例ID。\n\n> 数据格式为JSONArray，例如`['实例ID1','实例ID2']`，实例ID间用英文逗号（,）分隔。",
+        "en": "The database instance IDs.\n\n> Set this parameter to a JSON array that consists of multiple instance IDs. Separate instance IDs with commas (,). Example: `['Instance ID1', 'Instance ID2']`."
+      }
     },
     {
       "name": "MaxThrottleTime",
       "position": "Query",
       "type": "Double",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "最大限流时长，取值为正整数，单位：分钟。",
+        "en": "The maximum throttling duration. Set this parameter to a positive integer. Unit: minutes."
+      }
     },
     {
       "name": "ResultId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "异步请求的ID。\n> 异步调用后不会立即返回完整结果，首先需要调用该接口获取**ResultId**，然后使用返回数据的**ResultId**，重新发起调用，直到**isFinish**取值为**true**时，返回完整结果。即获取一次完整数据，至少需要调用该接口两次。",
+        "en": "The ID of the asynchronous request.\n\n> You can leave this parameter empty when you call the operation to initiate the request for the first time, and use the value of this parameter contained in the response to the first request for subsequent requests."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置自动SQL限流配置参数",
+    "en": "UpdateAutoThrottleRulesAsync"
+  },
+  "descriptions": {
+    "zh": "> 异步调用后不会立即返回完整结果，首先需要调用该接口获取**ResultId**，然后使用返回数据的**ResultId**，重新发起调用，直到**isFinish**取值为**true**时，返回完整结果。即获取一次完整数据，至少需要调用该接口两次。\n\n使用该接口需满足以下前提条件：\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n\n- 目标数据库实例已开启自治服务，详情请参见[自治中心](~~152139~~)。\n\n- 目标数据库实例为：\n    - RDS MySQL 5.6、5.7、 8.0高可用系列、三节点企业系列。\n    - PolarDB MySQL版 5.6集群版、5.7集群版、 8.0集群版。",
+    "en": "> Asynchronous calls do not immediately return the complete results. To obtain the complete results, you must use the value of **ResultId** returned in the response to re-initiate the call until the value of **isFinish** is **true**.\\*\\*\\*\\* In this case, you must call this operation at least twice.\n\nBefore you call this operation, take note of the following items:\n\n- If you use an SDK to call API operations of Database Autonomy Service (DAS), you must set the region ID to cn-shanghai.\n\n- The autonomy service must be enabled for the database instance that you want to manage. For more information, see [Autonomy center](~~152139~~).\n\n- The database instance that you want to manage must be of one of the following types:\n\n  - ApsaraDB RDS for MySQL High-availability Edition or Enterprise Edition that runs MySQL 5.6, MySQL 5.7, or MySQL 8.0\n\n  - PolarDB for MySQL Cluster Edition that runs MySQL 5.6, MySQL 5.7, or MySQL 8.0"
+  },
   "example": {
     "unifiedCli": "aliyun das update-auto-throttle-rules-async --console-context None --instance-ids rm-2ze8g2am976240000_,_rm-2ze9xrhze07090000 --cpu-usage 70.0 --cpu-session-relation OR --active-sessions 16 --abnormal-duration 2.0 --max-throttle-time 10.0 --allow-throttle-start-time 00:00Z --allow-throttle-end-time 23:59Z --auto-kill-session true --result-id async_507044db6c4eadfa2dab9b084e800000 --region cn-hangzhou",
     "legacyCli": "aliyun das UpdateAutoThrottleRulesAsync --region cn-hangzhou --AllowThrottleStartTime '00:00Z' --ConsoleContext None --AutoKillSession true --CpuSessionRelation OR --CpuUsage '70.0' --InstanceIds 'rm-2ze8g2am976240000_,_rm-2ze9xrhze07090000' --AbnormalDuration '2.0' --AllowThrottleEndTime '23:59Z' --ResultId async_507044db6c4eadfa2dab9b084e800000 --ActiveSessions 16 --MaxThrottleTime '10.0'"

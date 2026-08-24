@@ -1,5 +1,6 @@
 {
   "name": "PushNoticeToAndroid",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "AppKey",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "AppKey信息。",
+        "en": "Your AppKey."
+      }
     },
     {
       "name": "Body",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "发送的通知内容。",
+        "en": "The body of the notification."
+      }
     },
     {
       "name": "ExtParameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义的KV结构，供开发者扩展使用，针对Android设备。该参数要以JSON map的格式传入。",
+        "en": "Custom key-value pairs for Android-specific extensions. Pass this as a JSON object."
+      }
     },
     {
       "name": "JobKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "推送任务自定义标识，当JobKey不为空时，回执日志中会附带该字段。查看回执日志参见[回执日志](~~434651~~)。",
+        "en": "A custom ID for the push task. If you specify a non-empty JobKey, it appears in the delivery receipt log. For more information, see [Delivery receipt logs](~~434651~~)."
+      }
     },
     {
       "name": "StoreOffline",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通知是否离线保存。StoreOffline默认设置为false。\n\n若保存，在推送时候用户不在线，在过期时间（ExpireTime）内用户上线时会被再次发送。ExpireTime默认为72小时。",
+        "en": "Whether to store the notification for offline delivery. Default: false.\n\nIf enabled, the notification is redelivered when the user comes online within the time-to-live (TTL) period. Default TTL: 72 hours."
+      }
     },
     {
       "name": "Target",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "推送目标。可取值：\n\n- **DEVICE**：根据设备推送\n- **ACCOUNT**：根据账号推送\n- **ALIAS**：根据别名推送\n- **TAG**：根据标签推送\n- **ALL**：推送给全部设备",
+        "en": "The target of the push. Valid values:\n\n- **DEVICE**: Push to specific devices.\n\n- **ACCOUNT**: Push to specific accounts.\n\n- **ALIAS**: Push to users with specific aliases.\n\n- **TAG**: Push to users with specific tags.\n\n- **ALL**: Push to all devices."
+      }
     },
     {
       "name": "TargetValue",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "根据Target来设定，多个值使用逗号分隔，超过限制需要分多次推送。\n\n- Target=DEVICE，值如`deviceid111,deviceid1111`（最多支持1000个）。\n- Target=ACCOUNT，值如`account111,account222`（最多支持1000个）。\n- Target=ALIAS，值如`alias111,alias222`（最多支持1000个）。\n- Target=TAG，支持单Tag和多Tag，格式请参见[标签格式](~~434847~~)。\n- Target=ALL，值为**ALL**。",
+        "en": "Set this based on the Target value. Separate multiple values with commas. If you exceed the limit, send multiple requests.\n\n- If Target=DEVICE, use values such as `deviceid111,deviceid1111`. Maximum: 1000 devices.\n\n- If Target=ACCOUNT, use values such as `account111,account222`. Maximum: 1000 accounts.\n\n- If Target=ALIAS, use values such as `alias111,alias222`. Maximum: 1000 aliases.\n\n- If Target=TAG, support single or multiple tags. For format details, see [Tag format](~~434847~~).\n\n- If Target=ALL, set this to **ALL**."
+      }
     },
     {
       "name": "Title",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "发送的通知标题。",
+        "en": "The title of the notification."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "推送通知给Android设备",
+    "en": "Push Notification to Android Devices"
+  },
+  "descriptions": {
+    "zh": "**这个接口即将废弃，请使用具备更多推送能力的[高级推送接口](~~2249916~~)，在该接口中指定推送平台`DeviceType`为`ANDROID`，推送类型`PushType`为`NOTICE`，即可达到同样效果。**\n\n**请确保在使用该接口前，以充分了解EMAS移动推送产品的[收费方式和价格](~~434638~~)。**",
+    "en": "**This operation is deprecated. Use the [Advanced Push API](~~2249916~~) instead. In that API, set the `DeviceType` parameter to `ANDROID` and the `PushType` parameter to `NOTICE`.**\n\n**Before using this operation, review the [pricing and billing model](~~434638~~) for EMAS Mobile Push.**"
+  },
   "example": {
     "unifiedCli": "aliyun push push-notice-to-android --app-key 23267207 --target ALL --target-value ALL --title title --biz-body body --store-offline true --job-key 123 --ext-parameters key1_:_value1_,_api_name_:_PushNoticeToAndroidRequest --region cn-hangzhou",
     "legacyCli": "aliyun push PushNoticeToAndroid --region cn-hangzhou --Target ALL --TargetValue ALL --JobKey 123 --AppKey 23267207 --Title title --ExtParameters 'key1_:_value1_,_api_name_:_PushNoticeToAndroidRequest' --Body body --StoreOffline true"

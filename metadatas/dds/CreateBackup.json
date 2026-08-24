@@ -1,5 +1,6 @@
 {
   "name": "CreateBackup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "BackupMethod",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的备份方式，取值：\n- **Snapshot**：快照备份。\n- **Logical**：逻辑备份。\n- **Physical**（默认值）：物理备份。\n\n> - 云盘版实例仅支持快照备份。\n> - 仅副本集和分片集群实例支持选择备份方式。单节点实例无需传入本参数，固定为快照备份。",
+        "en": "The backup method. Valid values:\n\n- **Snapshot**: A snapshot backup.\n\n- **Logical**: A logical backup.\n\n- **Physical** (default): A physical backup.\n\n> * Instances with cloud disks support only snapshot backups.\n>\n> * This parameter applies only to replica set and sharded cluster instances. This parameter is not required for standalone instances, which use snapshot backups."
+      }
     },
     {
       "name": "BackupRetentionPeriod",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份保留天数，只适用于云盘副本集与云盘分片集群实例。\n\n> 不传表示和默认的备份策略保持一致。传递时，可传 \n>- 7-730天\n>-  -1 （长久保留）",
+        "en": "The backup retention period in days. This parameter applies only to replica set and sharded cluster instances that use cloud disks.\n\n> If you do not specify this parameter, the retention period from the default backup policy is used. You can set this parameter to one of the following values:\n>\n> - A value from 7 to 730\n>\n> - -1 (permanent retention)"
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "手动备份实例",
+    "en": "CreateBackup"
+  },
+  "descriptions": {
+    "zh": "调用CreateBackup接口时，实例状态必须为运行中。",
+    "en": "The instance must be in the Running state."
+  },
   "example": {
     "unifiedCli": "aliyun dds create-backup --db-instance-id d-bp22350000 --backup-method Logical --backup-retention-period 30 --region cn-hangzhou",
     "legacyCli": "aliyun dds CreateBackup --region cn-hangzhou --BackupMethod Logical --DBInstanceId 'd-bp22350000' --BackupRetentionPeriod 30"

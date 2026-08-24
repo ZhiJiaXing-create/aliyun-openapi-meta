@@ -1,5 +1,6 @@
 {
   "name": "DeactiveFlowLog",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "CenId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云企业网实例ID。",
+        "en": "The ID of the Cloud Enterprise Network (CEN) instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The unique, one-use client token that is used to ensure the idempotence of the request. It can contain only ASCII characters.\n\n> If you leave this parameter empty, the system automatically uses the **request ID** as the **client token**."
+      }
     },
     {
       "name": "FlowLogId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流日志ID。",
+        "en": "The ID of the flow log."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流日志所属地域ID。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
+        "en": "The region ID of the flow log.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query region IDs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "停止流日志",
+    "en": "DeactiveFlowLog"
+  },
+  "descriptions": {
+    "zh": "`DeactiveFlowLog`接口属于异步接口，即系统会先返回一个**RequestId**，但流日志并未被完全停止，系统后台的停止任务仍在进行。您可以调用`DescribeFlowlogs`接口查询流日志的状态。\n\n- 当流日志处于**Modifying**状态时，表示流日志正在被停止，在该状态下，您只能执行查询操作，不能执行其他操作。\n- 当流日志处于**Inactive**状态时，表示流日志已被停止。",
+    "en": "This operation is executed asynchronously. After receiving a request, the system returns a **request ID** before it finishes disabling the flow log. The task is continued in the backend. You can call `DescribeFlowlogs` to check whether the flow log has been disabled.\n\n- If the flow log is in the **Modifying** state, the task is still in progress. In this case, you can query information about the flow log but cannot perform other operations on it.\n- If the flow log is in the **Inactive** state, the flow log has been disabled."
+  },
   "example": {
     "unifiedCli": "aliyun cbn deactive-flow-log --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --flow-log-id flowlog-m5evbtbpt0000 --cen-id cen-7qthudw0ll6jmc0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeactiveFlowLog --region cn-hangzhou --CenId 'cen-7qthudw0ll6jmc0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --FlowLogId 'flowlog-m5evbtbpt0000'"

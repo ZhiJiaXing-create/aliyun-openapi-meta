@@ -1,0 +1,112 @@
+{
+  "name": "Cursor",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "EndTime",
+      "position": "Body",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "结束时间戳。\n\n单位：毫秒。\n\n> 结束时间无限制，可以设置为未来的某个时间。",
+        "en": "The end timestamp.\n\nUnit: milliseconds.\n\n> The end time has no limit and can be set to a future time."
+      }
+    },
+    {
+      "name": "Matchers",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "监控项的维度信息。",
+        "en": "The dimension information of the metric."
+      },
+      "sub_parameters": [
+        {
+          "name": "Label",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "监控项维度的键。\n\n监控项维度的格式：key-value键值对形式的集合，例如：`instanceId:i-2ze2d6j5uhg20x47****`或`userId:120886317861****`。\n\n关于如何获取监控项的维度，请参见[云产品监控项](~~163515~~)中的参数`Dimension`。",
+            "en": "The key of the metric dimension.\n\nThe metric dimension is in the format of a collection of key-value pairs, for example, `instanceId:i-2ze2d6j5uhg20x47****` or `userId:120886317861****`.\n\nFor information about how to obtain the dimensions of a metric, see the `Dimension` parameter in [Cloud service metrics](~~163515~~)."
+          }
+        },
+        {
+          "name": "Operator",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "监控项维度的匹配关系。\n\n目前仅支持EQUALS（等于）。",
+            "en": "The matching relationship of the metric dimension.\n\nCurrently, only EQUALS is supported."
+          }
+        },
+        {
+          "name": "Value",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "监控项维度的值。\n\n监控项维度的格式：key-value键值对形式的集合，例如：`instanceId:i-2ze2d6j5uhg20x47****`或`userId:120886317861****`。\n\n关于如何获取监控项的维度，请参见[云产品监控项](~~163515~~)中的参数`Dimension`。",
+            "en": "The value of the metric dimension.\n\nThe metric dimension is in the format of a collection of key-value pairs, for example, `instanceId:i-2ze2d6j5uhg20x47****` or `userId:120886317861****`.\n\nFor information about how to obtain the dimensions of a metric, see the `Dimension` parameter in [Cloud service metrics](~~163515~~)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metric",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "云产品的监控项名称。\n\n关于如何获取云产品的监控项名称，请参见[云产品监控项](~~163515~~)。",
+        "en": "The metric name of the cloud service.\n\nFor information about how to obtain the metric name of a cloud service, see [Cloud service metrics](~~163515~~)."
+      }
+    },
+    {
+      "name": "Namespace",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "云产品的数据命名空间。\n\n关于如何获取云产品的数据命名空间，请参见[云产品监控项](~~163515~~)。",
+        "en": "The data namespace of the cloud service.\n\nFor information about how to obtain the data namespace of a cloud service, see [Cloud service metrics](~~163515~~)."
+      }
+    },
+    {
+      "name": "Period",
+      "position": "Body",
+      "type": "Integer",
+      "required": true,
+      "description": {
+        "zh": "监控项的时间间隔。\n\n单位：秒。\n\n> 监控项的时间间隔通常为60秒。特殊取值，请参见[云产品监控项](~~163515~~)中的参数`Period`。",
+        "en": "The interval of the metric.\n\nUnit: seconds.\n\n> The interval of a metric is typically 60 seconds. For special values, see the `Period` parameter in [Cloud service metrics](~~163515~~)."
+      }
+    },
+    {
+      "name": "StartTime",
+      "position": "Body",
+      "type": "Long",
+      "required": true,
+      "description": {
+        "zh": "开始时间戳。\n\n单位：毫秒。\n\n> 由于云监控中的监控数据只能保存90天，建议开始时间与当前时间间隔小于等于90天。",
+        "en": "The start timestamp.\n\nUnit: milliseconds.\n\n> Because monitoring data in CloudMonitor is retained for only 90 days, the interval between the start time and the current time should be no more than 90 days."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取导出数据初始游标",
+    "en": "Obtain initial cursor for data export"
+  },
+  "descriptions": {
+    "zh": "### 前提条件\n请确保您已开通企业云监控。具体操作，请参见[开通企业云监控](~~250773~~)。\n\n### 背景信息\n先调用本接口获取初始的Cursor，再调用BatchGet接口导出监控数据。更多信息，请参见[BatchGet](~~391205~~)。\n\n### 使用说明\n本文将提供一个示例，定义云产品`acs_ecs_dashboard`的监控项`cpu_idle`在时间段`1641627000000`（2022-01-08 15:30:00）至`1641645000000`（2022-01-08 20:30:00）内每60秒的数据导出范围。返回结果显示`Cursor`信息。",
+    "en": "### Before you begin\nMake sure that you have activated Hybrid Cloud Monitoring. For more information, see [Activate Hybrid Cloud Monitoring](~~250773~~).\n\n### Background information\nCall this operation to obtain the initial Cursor, and then call the BatchGet operation to export monitoring data. For more information, see [BatchGet](~~391205~~).\n\n### Operation description\nThis topic provides an example on how to define the export scope for the `cpu_idle` metric of the `acs_ecs_dashboard` cloud service at 60-second intervals from `1641627000000` (2022-01-08 15:30:00) to `1641645000000` (2022-01-08 20:30:00). The `Cursor` information is returned."
+  }
+}

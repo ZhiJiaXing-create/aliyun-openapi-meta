@@ -1,0 +1,74 @@
+{
+  "name": "VerifyMac",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "Algorithm",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "生成消息验证码的算法。依据使用的密钥规格不同，可取值包括：  \n\n- HMAC_SM3\n\n- HMAC_SHA_224\n\n- HMAC_SHA_256\n\n- HMAC_SHA_384\n\n- HMAC_SHA_512",
+        "en": "The algorithm used to generate the message authentication code. Valid values vary based on the key specification:  \n\n- HMAC_SM3\n\n- HMAC_SHA_224\n\n- HMAC_SHA_256\n\n- HMAC_SHA_384\n\n- HMAC_SHA_512"
+      }
+    },
+    {
+      "name": "DryRun",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "是否开启DryRun模式。true：开启false（默认值）：关闭DryRun模式用于测试API调用，验证您是否具有相应资源的权限，以及请求参数是否配置正确。DryRun模式开启后，KMS会始终返回失败并提示失败原因。失败原因包含如下：DryRunOperationError：不配置DryRun参数时，请求会成功。ValidationError：请求中指定的参数有误。AccessDeniedError：您无权在KMS资源上执行该操作。",
+        "en": "Specifies whether to enable DryRun mode. Valid values:\n- true: enables DryRun mode.\n- false (default): disables DryRun mode.\n\nDryRun mode is used to test API calls and verify whether you have the required permissions on the corresponding resources and whether the request parameters are correctly configured. When DryRun mode is enabled, KMS always returns a failure and provides the failure reason. Failure reasons include:\n- DryRunOperationError: The request would succeed if the DryRun parameter is not specified.\n- ValidationError: The parameters specified in the request are invalid.\n- AccessDeniedError: You are not authorized to perform this operation on the KMS resource."
+      }
+    },
+    {
+      "name": "KeyId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "密钥的ID，也可以指定为密钥别名或密钥资源名称（ARN）。关于别名的详细介绍，请参见[管理密钥别名](~~480655~~)。\n>访问其他阿里云账号下的密钥时，必须输入密钥ARN。密钥ARN的格式为`acs:kms:${region}:${account}:key/${keyid}`。",
+        "en": "The ID of the key. You can also specify a key alias or key Amazon Resource Name (ARN). For more information about aliases, refer to [Manage key aliases](~~480655~~).\n>To access a key in a different Alibaba Cloud account, you must specify the key ARN. The key ARN is in the format of `acs:kms:${region}:${account}:key/${keyid}`."
+      }
+    },
+    {
+      "name": "Mac",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "base64编码的待校验消息验证码",
+        "en": "The Base64-encoding message authentication code to verify."
+      }
+    },
+    {
+      "name": "Message",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "原始消息数据。  \n\n使用Base64编码。例如：待生成消息验证码的十六进制内容为`[0x31, 0x32, 0x33, 0x34]`，则对应的Base64编码为`MTIzNA==`。",
+        "en": "The original message data.  \n\nUse Base64 encoding. For example, if the hexadecimal content of the message for which you want to generate a message authentication code is `[0x31, 0x32, 0x33, 0x34]`, the corresponding Base64-encoded value is `MTIzNA==`."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "验证HMAC消息认证码",
+    "en": "Verify HMAC message authentication code"
+  },
+  "descriptions": {
+    "zh": "RAM 用户或 RAM 角色调用该 OpenAPI 需要被授予的权限策略详情，请参见访问控制。\n\n本接口可以通过共享网关或专属网关调用。详细介绍，请参见阿里云 SDK。\n\n- 共享网关：通过公网、VPC 域名访问 KMS，该方式需要打开公网开关。具体操作，请参见通过公网访问 KMS 实例中的密钥。\n- 专属网关：通过 KMS 私网地址（<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com）访问 KMS。",
+    "en": "For details about the access policy required when a RAM user or RAM role invokes this operation, refer to access control.\n\nThis operation can be invoked through a shared gateway or a dedicated gateway. For more information, refer to Alibaba Cloud SDK.\n\n- Shared gateway: Access KMS through a public or VPC endpoint. This method requires you to enable the public network access switch. For more information, refer to accessing keys in a KMS instance over the Internet.\n- Dedicated gateway: Access KMS through a KMS private endpoint (<YOUR_KMS_INSTANCE_ID>.cryptoservice.kms.aliyuncs.com)."
+  },
+  "example": {
+    "unifiedCli": "aliyun kms verify-mac --key-id key-hzz630494463ejqjx0000 --mac vz1Snp+jGJbgydCFRWVWxAwIMdyfKCSp+jnMWQ== --message VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZy4= --algorithm HMAC_SHA_256 --dry-run false --region cn-hangzhou",
+    "legacyCli": "aliyun kms VerifyMac --region cn-hangzhou --Message 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZy4=' --DryRun false --KeyId 'key-hzz630494463ejqjx0000' --Algorithm HMAC_SHA_256 --Mac 'vz1Snp+jGJbgydCFRWVWxAwIMdyfKCSp+jnMWQ=='"
+  }
+}

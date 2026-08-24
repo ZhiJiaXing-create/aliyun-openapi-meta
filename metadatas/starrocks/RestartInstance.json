@@ -1,5 +1,6 @@
 {
   "name": "RestartInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/webapi/starrocks/restartCluster",
@@ -8,15 +9,34 @@
       "name": "FastMode",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否以快速重启模式重启。默认为false。\n- true：以快速重启模式重启计算节点。分为多个批次重启计算节点，批次内并行重启，批次间串行执行；\n- false：以滚动重启模式重启计算节点。",
+        "en": "Specifies whether to restart compute nodes in quick restart mode. Default value: false. Valid values:\n\n*   true: Compute nodes are restarted in quick restart mode in multiple batches. The batches are executed in parallel, and the nodes in each batch are restarted at the same time.\n*   false: Compute nodes are restarted in rolling restart mode."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例 ID。",
+        "en": "The instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重启实例",
+    "en": "RestartInstance"
+  },
+  "descriptions": {
+    "zh": "该接口为异步接口，实例的重启不是立即完成的，成功调用后，实例会先进入重启中（restarting）状态，当返回的状态为运行中（running）时代表重启成功。",
+    "en": "This operation is an asynchronous operation. After you call this operation to restart a StarRocks instance, the operation sets the status of the instance to Restarting and begins the restart process. When the status of the instance changes to Running, the instance is restarted."
+  },
   "example": {
     "unifiedCli": "aliyun starrocks restart-instance --instance-id c-b25e21e243880000 --fast-mode true --region cn-hangzhou",
     "legacyCli": "aliyun starrocks POST /webapi/starrocks/restartCluster --region cn-hangzhou --InstanceId 'c-b25e21e243880000' --FastMode true --header \"Content-Type=application/json\""

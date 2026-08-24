@@ -1,5 +1,6 @@
 {
   "name": "UpdateBasicEndpointGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组描述信息。\n\n描述长度最大200字符，不能以`http://`和`https://`开头。",
+        "en": "The description of the endpoint group.\n\nThe description can be up to 200 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "EndpointAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点的地址。",
+        "en": "The address of the endpoint."
+      }
     },
     {
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组ID。",
+        "en": "The ID of the endpoint group."
+      }
     },
     {
       "name": "EndpointSubAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点辅助地址。\n\n当加速IP绑定到ECS辅助私网IP地址或ENI辅助私网IP时，需配置该参数。\n\n- 当终端节点类型为**ECS**时，**EndpointSubAddress**可以为主网卡的辅助私网IP，为空表示主网卡的主私网IP。\n- 当终端节点类型为**ENI**时，**EndpointSubAddress**可以为辅助网卡的辅助私网IP，为空表示辅助网卡的主私网IP。",
+        "en": "The secondary address of the endpoint.\n\nThis parameter is required only if the accelerated IP address is associated with the secondary private IP address of an ECS instance or an ENI.\n\n- If you set the endpoint type to **ECS**, you can set **EndpointSubAddress** to the secondary private IP address of the primary ENI. If you leave this parameter empty, the primary private IP address of the primary ENI is used.\n\n- If you set the endpoint type to **ENI**, you can set **EndpointSubAddress** to the secondary private IP address of the secondary ENI. If you leave this parameter empty, the primary private IP address of the secondary ENI is used."
+      }
     },
     {
       "name": "EndpointType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端节点类型。取值：\n- **ENI**：阿里云弹性网卡。\n- **SLB**：阿里云CLB实例。\n- **ECS**：阿里云ECS实例。",
+        "en": "The type of the endpoint. Valid values:\n\n- **ENI**: elastic network interface (ENI).\n\n- **SLB**: Classic Load Balancer (CLB) instance.\n\n- **ECS**: Elastic Compute Service (ECS) instance."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组的名称。\n\n名称长度为 1~128 个字符，以大小写字母或中文开头，可包含数字、半角句号（.）下划线（_）和短划线（-）。",
+        "en": "The name of the endpoint group.\n\nThe name must be 1 to 128 characters in length, and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-). It must start with a letter."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the basic GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改基础型终端节点组配置信息",
+    "en": "UpdateBasicEndpointGroup"
+  },
+  "descriptions": {
+    "zh": "- **UpdateBasicEndpointGroup**接口属于异步接口，即系统会先返回一个请求ID，但基础型全球加速实例的终端节点组配置信息并未修改完成，系统后台的修改任务仍在进行。后台通过删除原终端节点组并创建新的终端节点组来完成基础型全球加速实例终端节点组的修改，您可以调用[GetBasicAccelerator](~~353188~~)，通过查询基础型全球加速实例的状态，来确认终端节点组配置信息修改是否完成：\n\n    - 当基础型全球加速实例处于**configuring**状态时，表示终端节点组配置信息正在修改中，在该状态下，您只能执行查询操作，不能执行其他操作。\n\n    - 当基础型全球加速实例处于**active**状态时，表示终端节点组配置信息修改完成。\n\n- **UpdateBasicEndpointGroup**接口不支持在同一个基础型全球加速实例内并发修改终端节点组配置信息。",
+    "en": "- **UpdateBasicEndpointGroup** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. The system modifies the configurations of an endpoint group that is associated with a basic GA instance by deleting the endpoint group and creating a new endpoint group. You can call the [GetBasicAccelerator](~~353188~~) operation to query the status of the task.\n\n  - If the basic GA instance is in the **configuring** state, the configurations of the endpoint group are being modified. In this case, you can perform only query operations.\n\n  - If the basic GA instance is in the **active** state, the configurations of the endpoint group are modified.\n\n- The **UpdateBasicEndpointGroup** operation cannot be repeatedly called for the same basic GA instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga update-basic-endpoint-group --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-group-id epg-bp1dmlohjjz4kqaun0000 --name group1 --description BasicEndpointGroup --biz-endpoint-type ENI --endpoint-address eni-bp1a05txelswuj8g0000 --endpoint-sub-address 172.16.XX.XX --region cn-hangzhou",
     "legacyCli": "aliyun ga UpdateBasicEndpointGroup --region cn-hangzhou --EndpointGroupId 'epg-bp1dmlohjjz4kqaun0000' --Description BasicEndpointGroup --EndpointType ENI --EndpointSubAddress '172.16.XX.XX' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Name group1 --EndpointAddress 'eni-bp1a05txelswuj8g0000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateRouteEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，请确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a parameter value from your client. Make sure that the value is unique among different requests. The ClientToken value can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义路由条目的描述信息。\n\n描述长度为1～256个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the custom route entry.\n\nThe description must be 1 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "DestinationCidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自定义路由条目的目标网段，支持IPv4、IPv6、前缀列表的目标网段和前缀列表的实例ID。需满足以下要求：\n          \n- 目标网段不能指向100.64.0.0/10或被100.64.0.0/10包含。  \n \n- 同一张路由表内的不同路由条目的目标网段不能相同。",
+        "en": "The destination CIDR block of the custom route entry. IPv4 CIDR blocks, IPv6 CIDR blocks, destination CIDR blocks of prefix lists, and instance IDs of prefix lists are supported. The following requirements must be met:\n          \n- The destination CIDR block cannot point to or be contained by 100.64.0.0/10.  \n \n- The destination CIDR blocks of different route entries in the same route table must be unique."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建路由条目。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n- **true**: performs a dry run. The system checks the required parameters, request format, and business restrictions. If the request fails the dry run, the corresponding error is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n- **false** (default): sends a normal request, passes the dry run, and returns an HTTP 2xx status code. The route is directly created."
+      }
     },
     {
       "name": "NextHopId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义路由条目的下一跳实例的ID。\n> 若选择NextHopType为ECR，您可以通过[DescribeExpressConnectRouterAssociation](~~2712069~~)接口获取AssociationId作为下一跳ID。\n> -",
+        "en": "The ID of the next hop instance of the custom route entry.\n> If you set NextHopType to ECR, you can call the [DescribeExpressConnectRouterAssociation](~~2712069~~) operation to obtain the AssociationId as the next hop ID.\n> -."
+      }
     },
     {
       "name": "NextHopList",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "下一跳的信息。",
+        "en": "The information about the next hops."
+      },
       "sub_parameters": [
         {
           "name": "NextHopId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ECMP路由的下一跳实例的ID。",
+            "en": "The ID of the next hop instance of the ECMP route."
+          }
         },
         {
           "name": "NextHopType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ECMP路由的下一跳的类型，目前仅取值：**RouterInterface**（路由器接口）。",
+            "en": "The type of next hop of the ECMP route. Valid value: **RouterInterface** (router interface)."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ECMP路由的下一跳的路由权重。",
+            "en": "The weight of the next hop of the ECMP route."
+          }
         }
       ]
     },
@@ -64,27 +101,54 @@
       "name": "NextHopType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义路由条目的下一跳的类型，取值： \n\n- **Instance**（默认值）：ECS实例。\n\n- **HaVip**：高可用虚拟IP。  \n\n- **RouterInterface**：路由器接口。\n\n- **NetworkInterface**：弹性网卡。\n\n- **VpnGateway**：VPN网关。\n\n- **IPv6Gateway**：IPv6网关。\n\n- **NatGateway**：NAT网关。\n\n- **Attachment**：转发路由器。\n\n- **VpcPeer**：VPC对等连接。\n- **Ipv4Gateway**：IPv4网关。\n- **GatewayEndpoint**：网关终端节点。\n- **Ecr**：专线网关。\n- **GatewayLoadBalancerEndpoint**：网关型负载均衡终端节点。",
+        "en": "The type of next hop of the custom route entry. Valid values: \n\n- **Instance** (default): ECS instance.\n\n- **HaVip**: high-availability virtual IP address.  \n\n- **RouterInterface**: vRouter interface.\n\n- **NetworkInterface**: network interface controller (NIC).\n\n- **VpnGateway**: VPN gateway.\n\n- **IPv6Gateway**: IPv6 gateway.\n\n- **NatGateway**: NAT gateway.\n\n- **Attachment**: transit router.\n\n- **VpcPeer**: VPC peering connection.\n- **Ipv4Gateway**: IPv4 gateway.\n- **GatewayEndpoint**: gateway endpoint.\n- **Ecr**: Express Connect Router (ECR).\n- **GatewayLoadBalancerEndpoint**: Gateway Load Balancer endpoint (GWLBe)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由表所属地域的ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the route table.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     },
     {
       "name": "RouteEntryName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要添加的自定义路由条目的名称。\n\n名称长度为1～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the custom route entry to add.\n\nThe name must be 1 to 128 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "RouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要添加自定义路由条目的路由表ID。",
+        "en": "The ID of the route table to which you want to add a custom route entry."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建自定义路由条目",
+    "en": "Create a custom route entry"
+  },
+  "descriptions": {
+    "zh": "- **CreateRouteEntry**接口属于异步接口，即系统会返回一个实例ID，但该路由的添加尚未完成，系统后台的启动任务仍在进行。您可以调用[DescribeRouteEntryList](~~138148~~)查询路由的添加状态：\n    - 当路由处于**Creating**状态时，表示路由添加中。\n    - 当路由处于**Created**状态时，表示路由添加完成。\n- **CreateRouteEntry**接口不支持在同一个VPC或者同一个VBR中并发添加自定义路由条目。\n- **CreateRouteEntry**接口在并发情况下可能返回**TaskConflict**错误码，请酌情重试。\n\n**使用该接口为VPC路由器的路由表添加自定义路由条目时，请注意以下事项：**\n> 当添加的路由为前缀列表路由时，路由配额的计算为现存路由与前缀列表路由的最大路由条目数之和是否超过路由配额的限制。\n- 同一个路由表中自定义路由条目不能超过200条。  \n\n- 自定义路由条目的目标网段（**DestinationCidrBlock**）不能和VPC内的交换机的网段相同，可以包含交换机的网段但是不能被交换机的网段包含。   \n\n- 自定义路由条目的目标网段（**DestinationCidrBlock**）可以配置为比云服务系统路由网段`100.64.0.0/10`更明细的网段，但不支持和该网段相同。\n<notice>由于目标网段为`100.64.0.0/10`的系统路由用于VPC内的云产品通信，建议您谨慎配置更明细的路由，如果配置错误将导致云产品服务无法正常访问和使用。</notice>\n\n- 同一路由表下的路由条目的目标网段（**DestinationCidrBlock**）不允许相同。   \n\n- 如果指定的目标网段（**DestinationCidrBlock**）是一个IP地址，会按照32位掩码来处理。   \n\n- 多条自定义路由条目可以指向同一个下一跳（**NextHopId**）。  \n\n- 自定义路由条目的下一跳（**NextHopId**）必须和路由表在同一个VPC。  \n\n- 支持通过**NextHopList**参数配置ECMP路由： \n        \n\n  * 添加普通（非ECMP）自定义路由时，需指定**DestinationCidrBlock**、**NextHopType**和**NextHopId**参数，且不能指定**NextHopList**参数。   \n \n  * 添加ECMP路由时，需指定**DestinationCidrBlock**和**NextHopList**参数，且不能指定**NextHopType**和**NextHopId**参数。   \n\n\n**使用该接口为边界路由器的路由表添加自定义路由条目时，请注意以下事项：**\n\n- 同一个路由表中自定义路由条目不能超过200条。  \n       \n- 不支持**NextHopList**参数。   \n       \n- 自定义路由条目的目标网段（**DestinationCidrBlock**）可以配置为比云服务系统路由网段`100.64.0.0/10`更明细的网段，但不支持和该网段相同。\n<notice>由于目标网段为`100.64.0.0/10`的系统路由用于VPC内的云产品通信，建议您谨慎配置更明细的路由，如果配置错误将导致云产品服务无法正常访问和使用。</notice>\n      \n- 同一路由表下的路由条目的目标网段（**DestinationCidrBlock**）不允许相同。   \n       \n- 如果指定的目标网段（**DestinationCidrBlock**）是一个IP地址，会按照32位掩码来处理。   \n      \n- 多条自定义路由条目可以指向同一个下一跳（**NextHopId**）。  \n      \n- 自定义路由条目的下一跳（**NextHopId**）必须是该VBR关联的路由器接口。  \n       \n- 只允许在VBR状态是**Active**，而且对应的物理专线状态是**Enabled**且没有被欠费锁定的情况下在VBR上新建路由条目。  \n      \n- 仅支持添加普通路由（非ECMP），需指定**DestinationCidrBlock**、**NextHopType**和**NextHopId**参数，且不能指定**NextHopList**参数。",
+    "en": "- The **CreateRouteEntry** operation is asynchronous. After you send a request, the system returns an instance ID, but the custom route entry has not been created yet. The system continues to run the node in the background. You can invoke [DescribeRouteEntryList](~~138148~~) to query the status of the route:\n    - If the route is in the **Creating** state, the route is being created.\n    - If the route is in the **Created** state, the route is created.\n- The **CreateRouteEntry** operation does not support concurrent creation of custom route entries in the same VPC or the same VBR.\n- The **CreateRouteEntry** operation may return the **TaskConflict** error code in concurrent scenarios. Retry the operation as needed.\n\n**Take note of the following items when you use this operation to add custom route entries to a route table of a vRouter:**\n> When the route to be added is a prefix list route, the routing quota is calculated based on the sum of existing routes and the maximum number of entries in the prefix list route. The sum cannot exceed the routing quota.\n- A route table can contain up to 200 custom route entries.\n\n- The destination CIDR block (**DestinationCidrBlock**) of a custom route entry cannot be the same as a vSwitch CIDR block in the VPC. The destination CIDR block can contain a vSwitch CIDR block but cannot be contained by a vSwitch CIDR block.\n\n- The destination CIDR block (**DestinationCidrBlock**) of a custom route entry can be a more specific CIDR block than the cloud service system route CIDR block `100.64.0.0/10`, but cannot be the same as that CIDR block.\n<notice>The system route with the destination CIDR block `100.64.0.0/10` is used for communication among cloud services within the VPC. Exercise caution when you configure a more specific route. Incorrect configurations may cause cloud services to become inaccessible.</notice>.\n\n- The destination CIDR blocks (**DestinationCidrBlock**) of route entries in the same route table must be unique.\n\n- If the specified destination CIDR block (**DestinationCidrBlock**) is an IP address, it is treated as a CIDR block with a 32-bit mask.\n\n- Multiple custom route entries can point to the same next hop (**NextHopId**).\n\n- The next hop (**NextHopId**) of a custom route entry must be in the same VPC as the route table.\n\n- You can configure ECMP routing by using the **NextHopList** parameter settings:\n\n  * To add a non-ECMP custom route, specify the **DestinationCidrBlock**, **NextHopType**, and **NextHopId** parameters. Do not specify the **NextHopList** parameter.   \n \n  * To add an ECMP route, specify the **DestinationCidrBlock** and **NextHopList** parameters. Do not specify the **NextHopType** or **NextHopId** parameter.\n\n**Take note of the following items when you use this operation to add custom route entries to a route table of a Virtual Border Router (VBR):**\n\n- A route table can contain up to 200 custom route entries.  \n       \n- The **NextHopList** parameter is not supported.   \n       \n- The destination CIDR block (**DestinationCidrBlock**) of a custom route entry can be a more specific CIDR block than the cloud service system route CIDR block `100.64.0.0/10`, but cannot be the same as that CIDR block.\n<notice>The system route with the destination CIDR block `100.64.0.0/10` is used for communication among cloud services within the VPC. Exercise caution when you configure a more specific route. Incorrect configurations may cause cloud services to become inaccessible.</notice>\n      \n- The destination CIDR blocks (**DestinationCidrBlock**) of route entries in the same route table must be unique.   \n       \n- If the specified destination CIDR block (**DestinationCidrBlock**) is an IP address, it is treated as a CIDR block with a 32-bit mask.   \n      \n- Multiple custom route entries can point to the same next hop (**NextHopId**).  \n      \n- The next hop (**NextHopId**) of a custom route entry must be a vRouter interface associated with the VBR.  \n       \n- You can create route entries on a VBR only when the VBR is in the **Active** state, the corresponding Express Connect circuit is in the **Enabled** state, and the circuit is not under overdue payment lock.  \n      \n- Only non-ECMP route entries are supported. Specify the **DestinationCidrBlock**, **NextHopType**, and **NextHopId** parameters. Do not specify the **NextHopList** parameter."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-route-entry --biz-region-id cn-hangzhou --route-table-id vtb-bp145q7glnuzd0000 --destination-cidr-block 192.168.0.0/24 --next-hop-id i-j6c2fp57q8rr4jlu0000 --client-token 02fb3da4-130e-11e9-8e44-0010000 --route-entry-name test --description test --next-hop-type RouterInterface --next-hop-list NextHopType=RouterInterface NextHopId=ri-2zeo3xzyf3cd8r40000 Weight=10 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateRouteEntry --region cn-hangzhou --NextHopType RouterInterface --RouteTableId 'vtb-bp145q7glnuzd0000' --Description test --NextHopList.1.NextHopId 'ri-2zeo3xzyf3cd8r40000' --RouteEntryName test --NextHopId 'i-j6c2fp57q8rr4jlu0000' --DryRun false --NextHopList.1.NextHopType RouterInterface --NextHopList.1.Weight 10 --RegionId 'cn-hangzhou' --DestinationCidrBlock '192.168.0.0/24' --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

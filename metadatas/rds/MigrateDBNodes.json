@@ -1,5 +1,6 @@
 {
   "name": "MigrateDBNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "Specifies the client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用[DescribeDBInstances](~~26232~~)获取。",
+        "en": "The instance ID. You can call the [DescribeDBInstances](~~26232~~) operation to query the IDs of instances."
+      }
     },
     {
       "name": "DBNode",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "集群节点列表。",
+        "en": "The details of the nodes."
+      },
       "sub_parameters": [
         {
           "name": "nodeId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点id",
+            "en": "The node ID."
+          }
         },
         {
           "name": "zoneId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点所在的可用区ID。",
+            "en": "The ID of the zone in which the node resides."
+          }
         }
       ]
     },
@@ -40,21 +61,40 @@
       "name": "EffectiveTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "迁移时间。取值：\n* **Immediately**：立即切换（默认）\n* **MaintainTime**：在运维时间段切换\n* **ScheduleTime**：在指定时间切换\n\n> 如果传入**ScheduleTime**，则还需指定SwitchTime参数。",
+        "en": "The time when you want the system to start the migration. Valid value:\n\n*   **Immediately**: The system immediately starts the migration. This is the default value.\n*   **MaintainTime**: The system starts the migration during the specified maintenance window.\n*   **Specified**: The system starts the migration at the specified point in time."
+      }
     },
     {
       "name": "SwitchTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定执行修改的时间。建议在业务低峰期执行变配。格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "Specifies the time when the modification is performed. We recommend that you apply the specification during off-peak hours. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机ID。",
+        "en": "The vSwitch ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "迁移RDS实例节点",
+    "en": "MigrateDBNodes"
+  },
   "example": {
     "unifiedCli": "aliyun rds migrate-db-nodes --client-token ETnLKlblzczshOTUbOCz0000 --db-instance-id rm-t4n3a0000 --db-node zoneId=cn-hangzhou-f nodeId=rn-6256r4a87xvv70000 --effective-time MaintainTime --vswitch-id vsw-0000 --switch-time 2022-05-06T09:24:00Z --region cn-hangzhou",
     "legacyCli": "aliyun rds MigrateDBNodes --region cn-hangzhou --DBNode '[{\"zoneId\":\"cn-hangzhou-f\",\"nodeId\":\"rn-6256r4a87xvv70000\"}]' --DBInstanceId 'rm-t4n3a0000' --EffectiveTime MaintainTime --VSwitchId 'vsw-0000' --ClientToken ETnLKlblzczshOTUbOCz0000 --SwitchTime '2022-05-06T09:24:00Z'"

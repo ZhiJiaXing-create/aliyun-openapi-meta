@@ -1,0 +1,70 @@
+{
+  "name": "InvokeCommand",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "CommandId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "命令ID。您可以通过接口DescribeCommands查询所有可用的CommandId。",
+        "en": "The command ID. You can call the DescribeCommands operation to query all available command IDs."
+      }
+    },
+    {
+      "name": "InstanceIds",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "轻量应用服务器的实例ID。取值可以由多个实例ID组成一个JSON数组，最多支持50个ID，ID之间用半角逗号（,）隔开。",
+        "en": "The IDs of the simple application servers. The value can be a JSON array that consists of up to 50 IDs of simple application servers. Separate multiple IDs with commas (,)."
+      }
+    },
+    {
+      "name": "Parameters",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "启用自定义参数功能时，执行命令时传入的自定义参数的键值对。\n\n- 自定义参数的个数范围为0~10。Map的键不允许为空字符串，最多支持64个字符。\n\n- Map的值允许为空字符串。自定义参数与原始命令内容在Base64编码后，综合长度不能超过18KB。\n\n- 设置的自定义参数名集合必须为创建命令时定义的参数集的子集。\n\n- 对于未传入的参数，您可以使用空字符串代替。您可以取消设置该参数从而禁用自定义参数。",
+        "en": "The key-value pairs of custom parameters to specify when the custom parameter feature is enabled.\n\n*   You can specify up to 10 custom parameters. Each key in a Map collection cannot be an empty string and can be up to 64 characters in length.\n*   Values in a Map collection can be empty strings. The total length of the custom parameters and the original command cannot exceed 18 KB after they are encoded in Base64.\n*   The custom parameter names that you specify for the Parameters parameter must be included in the custom parameter names that you specified when you created the command.\n*   You can use empty strings to represent the custom parameters that are not specified. If you want to disable the custom parameter feature, you can leave this parameter empty."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[ListRegions](~~189315~~)查询可用地域。",
+        "en": "The region ID. You can call the [ListRegions](~~189315~~) operation to query the most recent region list."
+      }
+    },
+    {
+      "name": "Username",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "在轻量应用服务器中执行命令的用户名称。长度不得超过255个字符。\n\n- Linux系统的轻量应用服务器，默认以root用户执行命令。\n\n- Windows系统的轻量应用服务器，默认以System用户执行命令。\n\n您可以修改Linux系统执行用户，Windows系统执行用户不支持修改。",
+        "en": "The name of the user who runs the command in a simple application server. The username cannot exceed 255 characters in length.\n\n*   For Linux servers, the default value is the root username.\n*   For Windows servers, the default value is the system username.\n\nYou can change the user to run the command only for Linux simple application servers."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "执行命令",
+    "en": "InvokeCommand"
+  },
+  "descriptions": {
+    "zh": "- 对目标轻量应用服务器有如下限制，当您选择多台轻量应用服务器后，若其中某台轻量应用服务器不满足执行条件，需要重新调用该接口。 \n    - 服务器状态必须为运行中（`Running`），您可以调用[ListInstances](~~2361065~~)查询。\n    - 已预先安装[云助手Agent](~~2361030~~)。\n    - 执行类型为PowerShell的命令时，必须已经配置了PowerShell模块。\n- 命令可能会因为目标服务器的状态异常，网络异常或云助手Agent异常而出现无法执行的情况，无法执行不会生成执行信息。\n- 当您创建命令启用了自定义参数时，需要在执行命令时传入自定义参数（`Parameters`）。\n- 调用此接口时您只能选择一条公共命令或您创建的自定义命令。",
+    "en": "*   The simple application servers for which you want to call the operation must meet the following conditions. If a simple application server cannot meet the conditions, you must call this operation again.\n\n    *   The simple application servers are in the `Running` state. You can call the [ListInstances](~~2361065~~) operation to query the status of simple application servers.\n    *   Cloud Assistant Agent is installed on the simple application servers. For more information, see [InstallCloudAssistant](~~2361030~~).\n    *   If you run a PowerShell command, make sure that the PowerShell module is configured for the simple application servers.\n\n*   The command may fail to be run due to the abnormal states of simple application servers, network exceptions, or exceptions in Cloud Assistant Agent. If the command fails to be run, no execution information is generated.\n\n*   If you enable the custom parameter feature when you create a command, you must set the `Parameters` parameter to specify custom parameters when you run the command.\n\n*   When you call this operation, you can select only one common command or a custom command that you have created."
+  }
+}

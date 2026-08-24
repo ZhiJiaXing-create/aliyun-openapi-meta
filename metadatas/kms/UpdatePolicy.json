@@ -1,5 +1,6 @@
 {
   "name": "UpdatePolicy",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AccessControlRules",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络控制规则。\n\n>查询已创建的网络控制规则，请参见[ListNetworkRules](~~2539433~~)。",
+        "en": "The access control rule.\n\n> For more information about how to query created access control rules, see [ListNetworkRules](~~2539433~~)."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述信息。",
+        "en": "The description."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要更新的权限策略名称。",
+        "en": "The name of the permission policy that you want to update."
+      }
     },
     {
       "name": "Permissions",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "更改后的权限策略支持的操作。取值：\n\n- RbacPermission/Template/CryptoServiceKeyUser：可以对KMS实例进行密码运算操作。\n\n- RbacPermission/Template/CryptoServiceSecretUser：可以对KMS实例进行凭据相关操作。\n\n支持同时选择这两种操作。",
+        "en": "The operations that are supported by the updated policy. Valid values:\n\n*   RbacPermission/Template/CryptoServiceKeyUser: allows you to perform cryptographic operations.\n*   RbacPermission/Template/CryptoServiceSecretUser: allows you to perform secret-related operations.\n\nYou can select both."
+      }
     },
     {
       "name": "Resources",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "更改后的允许访问的密钥和凭据。\n\n- 密钥：格式为`key/${KeyId}`，如果允许访问当前KMS实例的所有密钥请输入key/*。\n\n- 凭据：格式为`secret/${SecretName}`，如果允许访问当前KMS实例的所有凭据请输入secret/*。",
+        "en": "The key and secret that are allowed to access after the update.\n\n*   Key: Enter a key in the `key/${KeyId}` format. To allow access to all keys of a KMS instance, enter key/\\*.\n*   Secret: Enter a secret in the `secret/${SecretName}` format. To allow access to all secrets of a KMS instance, enter secret/\\*."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新访问策略",
+    "en": "UpdatePolicy"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 支持更新权限策略的RBAC权限、允许访问资源、网络控制规则以及描述信息，不支持更新权限策略名称、作用域。\n\n- 更新权限策略会影响所有已绑定该权限策略的应用接入点AAP，请谨慎操作。",
+    "en": "- You can update the role-based access control (RBAC) permissions, accessible resources, access control rules, and description of a permission policy. You cannot update the name or scope of a permission policy.\n- Updating a permission policy affects all application access points (AAPs) that are bound to the permission policy. Exercise caution when you perform this operation."
+  },
   "example": {
     "unifiedCli": "aliyun kms update-policy --name policy_test --permissions RbacPermission/Template/CryptoServiceKeyUser_,_RbacPermission/Template/CryptoServiceSecretUser --resources secret/acs/ram/user/ram-secret_,_secret/acs/ram/user/acr-master_,_key/key-hzz63d9c8d3dfv8cv0000 --access-control-rules NetworkRules_:_kst-hzz62ee817bvyyr5x0000.efkd_,_kst-hzz62ee817bvyyr5x0000.eyyp --description policy_description --region cn-hangzhou",
     "legacyCli": "aliyun kms UpdatePolicy --region cn-hangzhou --Description policy_description --AccessControlRules 'NetworkRules_:_kst-hzz62ee817bvyyr5x0000.efkd_,_kst-hzz62ee817bvyyr5x0000.eyyp' --Permissions 'RbacPermission/Template/CryptoServiceKeyUser_,_RbacPermission/Template/CryptoServiceSecretUser' --Resources 'secret/acs/ram/user/ram-secret_,_secret/acs/ram/user/acr-master_,_key/key-hzz63d9c8d3dfv8cv0000' --Name policy_test"

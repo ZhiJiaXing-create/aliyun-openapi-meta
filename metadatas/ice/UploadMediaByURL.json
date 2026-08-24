@@ -1,0 +1,90 @@
+{
+  "name": "UploadMediaByURL",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AppId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "应用ID。",
+        "en": "The application ID."
+      }
+    },
+    {
+      "name": "EntityId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "实体 ID。可调用CreateEntity接口创建实体，自定义动态元数据结构。",
+        "en": "The entity ID. You can call the CreateEntity API to create an entity and define a custom dynamic metadata schema."
+      }
+    },
+    {
+      "name": "MediaMetaData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "上传媒体文件的元数据信息，为JSON字符串。\n- 与UploadURLs里的URL匹配才能生效。\n- JSON格式：[UploadMetadata, UploadMetadata,…]，需转为JSON字符串 。\n- 更多信息，请参见下表UploadMetadata。",
+        "en": "The metadata of the media file, provided as a JSON string.\n\n- This metadata takes effect only when it matches a URL in `UploadURLs`.\n\n- The value must be a JSON array in the `[UploadMetadata, UploadMetadata, ...]` format, passed as a JSON string.\n\n- For more information, see the UploadMetadata table below."
+      }
+    },
+    {
+      "name": "PostProcessConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "Type = video  || audio  有上传后处理动作。\n\nProcessType取值：Workflow。",
+        "en": "Specifies post-upload processing actions for media files of type `video` or `audio`.\n\nThe only supported value for `ProcessType` is `Workflow`."
+      }
+    },
+    {
+      "name": "UploadTargetConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "目标存储地址。\n\n- StorageType 取值：仅支持oss。\n- StorageLocation 仅支持VOD点播存储，不支持用户自有OSS存储。",
+        "en": "The destination storage location.\n\n- The only valid value for `StorageType` is `oss`.\n\n- `StorageLocation` supports VOD storage only and does not support your own OSS buckets."
+      }
+    },
+    {
+      "name": "UploadURLs",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "媒体源文件URL。\n- URL中需要包括扩展名, 比如`https://****.mp4`中mp4为扩展名。\n    - 如果URL中不包含扩展名，可以在`UploadMetadatas`中传入`FileExtension`来指定。\n    - 如果URL中有扩展名且同时传入`FileExtension`，以传入的`FileExtension`为准。\n- URL编码，多个地址之间以半角逗号（,）分隔，最多支持20个。\n- 避免存在特殊字符导致无法上传视频，需要URL编码后再做逗号拼接。",
+        "en": "The source URL of the media file.\n\n- The URL must include a file extension. For example, in `https://****.mp4`, mp4 is the file extension.\n\n  - If the URL does not include a file extension, you can specify it by using the `FileExtension` parameter in `MediaMetaData`.\n\n  - If a file extension is present in both the URL and the `FileExtension` parameter, the value of `FileExtension` takes precedence.\n\n- The URLs must be URL-encoded. Separate multiple URLs with commas (,). You can specify up to 20 URLs.\n\n- To prevent upload failures due to special characters, URL-encode each URL before concatenating them with commas."
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "自定义设置。为JSON字符串，支持消息回调等设置。",
+        "en": "Custom settings, provided as a JSON string. This parameter supports configurations such as message callbacks."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "URL拉取上传",
+    "en": "UploadMediaByURL"
+  },
+  "descriptions": {
+    "zh": "### 接口说明\n- 如果配置了回调，则上传完成后会收到URL上传视频完成的事件通知，可以通过获取URL上传信息接口查询上传状态。\n- 上传任务提交成功后，会在云端生成异步执行的任务，进行排队执行；上传完成后可根据事件通知（消息回调）返回的URL和视频ID等信息进行关联。\n### 使用限制\n- 本接口仅支持上传至VOD点播存储，不支持上传至用户自有OSS存储。使用自有OSS存储的用户，可以先将文件拉取到本地，通过[OSS SDK](~~32006~~)上传文件至OSS，然后再调用[RegisterMediaInfo](~~441152~~)接口将OSS文件注册至媒资库。\n- 本接口目前仅支持华东2（上海）、华北2（北京）、华南1（深圳）地域。\n\n- 本接口仅支持上传音视频文件。",
+    "en": "### Description\n\n- If a callback is configured, the service sends an event notification when the URL upload is complete. You can query the upload status by calling the API to retrieve URL upload information.\n\n- After you successfully submit an upload job, the system creates an asynchronous task in the cloud and queues it for execution. After the upload is complete, you can use the URL and media ID from the event notification (message callback) to update your records.\n\n### Limitations\n\n- This API supports uploading files to VOD storage only and does not support uploading to your own Object Storage Service (OSS) buckets. To use your own OSS storage, you must first pull the files to a local device, upload them to OSS by using the [OSS SDK](~~32006~~), and then call the [RegisterMediaInfo](~~441152~~) API to register the OSS object with the media asset library.\n\n- This API is currently available only in the China (Shanghai), China (Beijing), and China (Shenzhen) regions.\n\n- This API supports uploading audio and video files only."
+  }
+}

@@ -1,5 +1,6 @@
 {
   "name": "UpdateLiveStreamTranscode",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "App",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称，不可修改。",
+        "en": "The AppName of the live stream. This parameter cannot be modified."
+      }
     },
     {
       "name": "Domain",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名，不可修改。",
+        "en": "The streaming domain. This parameter cannot be modified."
+      }
     },
     {
       "name": "EncryptParameters",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加密配置。JSON格式，各字段说明如下：\n- **EncryptType**：加密类型。固定取值aliyun。\n- **KmsKeyID**：用户KMS主密钥ID。\n- **KmsKeyExpireInterval**：换Key周期。取值范围：60~3600，单位：秒。\n> 当使用DRM加密时，**KmsKeyID**不可修改。",
+        "en": "The encryption settings, formatted as a JSON string.\n\n- **EncryptType**: The encryption type. Set the value to aliyun.\n\n- **KmsKeyID**: The ID of the customer master key (CMK) in Key Management Service (KMS).\n\n- **KmsKeyExpireInterval**: The key rotation period. Unit: seconds. Valid values: **60 to 3600.**\n\n> When you use Digital Rights Management (DRM) encryption, you cannot modify **KmsKeyID**."
+      }
     },
     {
       "name": "Lazy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启触发转码。取值：\n- **yes**：开启触发转码。\n- **no**：不开启触发转码。",
+        "en": "Specifies whether to enable on-demand transcoding. Valid values:\n\n- **yes**: Transcoding only starts when the first viewer requests this transcoded stream.\n\n- **no**: Transcoding starts immediately after the stream is published."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Template",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转码模版，不可修改。",
+        "en": "The transcoding template name. This parameter cannot be modified."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新通用转码配置",
+    "en": "UpdateLiveStreamTranscode"
+  },
+  "descriptions": {
+    "zh": "先通过密钥管理服务KMS获取用户KMS主密钥ID，再调用本接口添加转码配置信息，目前本接口只支持标准质量模板和窄带高清™转码模板两种转码模板。\n## QPS限制\n本接口的单用户QPS限制为30次/秒。",
+    "en": "To modify the encryption settings, first obtain a Customer Master Key (CMK) ID from Key Management Service (KMS). This operation supports only standard and Narrowband HD™ transcoding templates.\n\n## QPS limits\n\nou can call this operation up to 30 times per second per account."
+  },
   "example": {
     "unifiedCli": "aliyun live update-live-stream-transcode --biz-region-id cn-hangzhou --domain example.com --app liveApp0000 --template lsd --encrypt-parameters EncryptType_:_aliyun_,_KmsKeyID_:_afce5722-81d2-43c3-9930-7601da110000_,_KmsKeyExpireInterval_:_3600 --lazy yes --region cn-hangzhou",
     "legacyCli": "aliyun live UpdateLiveStreamTranscode --region cn-hangzhou --App liveApp0000 --Lazy yes --EncryptParameters 'EncryptType_:_aliyun_,_KmsKeyID_:_afce5722-81d2-43c3-9930-7601da110000_,_KmsKeyExpireInterval_:_3600' --RegionId 'cn-hangzhou' --Domain 'example.com' --Template lsd"

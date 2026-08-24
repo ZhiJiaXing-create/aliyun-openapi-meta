@@ -1,5 +1,6 @@
 {
   "name": "GetErrorRequestSample",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DbName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The name of the database."
+      }
     },
     {
       "name": "End",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询结束时间，格式为Unix时间戳，单位为毫秒。\n\n> 查询结束时间需晚于查询开始时间，且查询开始时间和查询结束时间的间隔不能超过1天。",
+        "en": "The end of the time range to query. Set this parameter to a UNIX timestamp representing the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 UTC.\n\n> The end time must be later than the start time. The interval cannot exceed 24 hours."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n> 对于PolarDB MySQL版实例，需要提供节点ID。",
+        "en": "The node ID.\n\n> You must specify the node ID if your database instance is a PolarDB for MySQL cluster."
+      }
     },
     {
       "name": "SqlId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SQL ID，您可以调用[GetAsyncErrorRequestListByCode](~~410746~~)接口查询实例中产生MySQL错误码的SQL ID。",
+        "en": "The SQL query ID. You can call the [GetAsyncErrorRequestListByCode](~~410746~~) operation to query the ID of the SQL query for which MySQL error code is returned."
+      }
     },
     {
       "name": "Start",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询开始时间，格式为Unix时间戳，单位为毫秒。\n\n> 查询开始时间需在数据库实例SQL洞察存储时长范围内，最大不能早于当前时间90天。",
+        "en": "The beginning of the time range to query. Set this parameter to a UNIX timestamp representing the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 UTC.\n\n> The start time must be within the storage duration of the SQL Explorer feature of the database instance, and can be up to 90 days earlier than the current time."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询执行错误的SQL样本数据",
+    "en": "GetErrorRequestSample"
+  },
+  "descriptions": {
+    "zh": "> 异步调用后不会立即返回完整结果，当返回数据中**isFinish**取值为**false**时，请等待1s后重新发起调用，直到**isFinish**取值为**true**时，返回完整结果。\n\n\n- 目前仅支持RDS MySQL和PolarDB MySQL版实例，请确保在使用该接口前，该实例已经开启DAS企业版，具体请参见[购买DAS企业版](~~163298~~)。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。",
+    "en": "> GetErrorRequestSample is an asynchronous operation. After a request is sent, the complete results are not returned immediately. If the value of **isFinish** is **false** in the response, wait for 1 second and then send a request again. If the value of **isFinish** is **true**, the complete results are returned.\n\n- This API operation supports only ApsaraDB RDS for MySQL instances and PolarDB for MySQL clusters for which Database Autonomy Service (DAS) Enterprise Edition is enabled. For more information, see [Purchase DAS Enterprise Edition](~~163298~~).\n\n- If you use an SDK to call API operations of DAS, you must set the region ID to cn-shanghai."
+  },
   "example": {
     "unifiedCli": "aliyun das get-error-request-sample --instance-id rm-2ze8g2am976240000 --node-id pi-bp179lg03445l0000 --sql-id 2cd4432556c3dab9d825ba3636370000 --start 1642556990714 --end 1642566830000 --db-name testdb01 --region cn-hangzhou",
     "legacyCli": "aliyun das GetErrorRequestSample --region cn-hangzhou --InstanceId 'rm-2ze8g2am976240000' --Start 1642556990714 --NodeId 'pi-bp179lg03445l0000' --End 1642566830000 --DbName testdb01 --SqlId 2cd4432556c3dab9d825ba3636370000"

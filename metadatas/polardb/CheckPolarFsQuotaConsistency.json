@@ -1,0 +1,64 @@
+{
+  "name": "CheckPolarFsQuotaConsistency",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "/",
+  "parameters": [
+    {
+      "name": "EnableRepair",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "修复不一致配额，示例值：\n\n* false\n* true",
+        "en": "Specifies whether to repair an inconsistent quota. Valid values:\n\n- false\n\n- true"
+      }
+    },
+    {
+      "name": "EnableStrictCalculate",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "在严格模式下计算目录的总使用量，示例值：\n\n* false\n* true",
+        "en": "Specifies whether to calculate the total usage of the directory in strict mode. Valid values:\n\n- false\n\n- true"
+      }
+    },
+    {
+      "name": "Path",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "目录",
+        "en": "The directory path."
+      }
+    },
+    {
+      "name": "PolarFsInstanceId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "PolarFs实例ID",
+        "en": "The ID of the PolarFS instance."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "检查配额一致性",
+    "en": "CheckPolarFsQuotaConsistency"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n该API允许用户验证指定PolarFS实例内的配额配置是否一致，包括但不限于目录路径上的存储容量和inode限制。如果存在不一致的情况，将返回具体的不一致路径列表及可能的错误信息。\n\n### 注意事项\n- 确保`PolarFsInstanceId`参数正确无误地指向了目标PolarFS实例。\n- 当系统检测到配额不一致时，除了返回`IsConsistent=false`外，还会提供`InconsistentPaths`数组来指示具体哪些路径存在问题。\n- 如果请求成功但没有发现任何不一致，则`InconsistentPaths`为空数组，并且`IsConsistent=true`。\n- 错误处理：若请求过程中遇到权限不足、资源不存在等问题，请参考提供的错误码定义部分以获取更详细的错误信息。",
+    "en": "## Description\n\nThis operation verifies the consistency of quota configurations within a specified PolarFS instance. These configurations include storage capacity and inode limits on directory paths. If inconsistencies are found, the operation returns a list of the inconsistent paths and any related error information.\n\n### Usage notes\n\n- Ensure that the `PolarFsInstanceId` parameter correctly identifies the target PolarFS instance.\n\n- When the system detects quota inconsistencies, it returns `IsConsistent=false` and populates the `InconsistentPaths` array.\n\n- If the request is successful and no inconsistencies are found, the `InconsistentPaths` array is empty and `IsConsistent` is set to `true`.\n\n- For errors such as insufficient permissions or a non-existent resource, see the error codes for details."
+  },
+  "example": {
+    "unifiedCli": "aliyun polardb check-polar-fs-quota-consistency --polar-fs-instance-id pfs-test0000 --path /test --enable-repair false --enable-strict-calculate false --region cn-hangzhou",
+    "legacyCli": "aliyun polardb CheckPolarFsQuotaConsistency --region cn-hangzhou --Path '/test' --EnableRepair false --PolarFsInstanceId 'pfs-test0000' --EnableStrictCalculate false"
+  }
+}

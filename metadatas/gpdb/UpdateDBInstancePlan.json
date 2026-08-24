@@ -1,5 +1,6 @@
 {
   "name": "UpdateDBInstancePlan",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 您可以调用[DescribeDBInstances](~~86911~~)接口查看目标地域下所有的AnalyticDB PostgreSQL实例的详情，包括实例ID。",
+        "en": "The ID of the instance.\n\n>  You can call the [DescribeDBInstances](~~86911~~) operation to query the details of all AnalyticDB for PostgreSQL instances in a specific region, including instance IDs."
+      }
     },
     {
       "name": "PlanConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行计划具体信息，JSON格式，内容需根据**PlanType**参数和**PlanScheduleType**参数的值进行调整，具体说明请参见以下补充说明。",
+        "en": "The execution information of the plan. Specify the parameter in the JSON format. The parameter value varies based on the values of **PlanType** and **PlanScheduleType**. The following section describes the PlanConfig parameter."
+      }
     },
     {
       "name": "PlanDesc",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计划描述。",
+        "en": "The description of the plan."
+      }
     },
     {
       "name": "PlanEndDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计划的结束时间，需要大于查询开始时间，格式为<i>yyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n> - 仅**周期执行**的计划需要设置该参数。\n>- 该参数非必填，没有结束时间，计划删除周期停止。",
+        "en": "The end time of the plan. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC. The end time must be later than the start time.\n\n> \n\n*   This parameter must be specified only for **periodically executed** plans.\n\n*   If you do not specify this parameter, the plan stops until the plan is deleted."
+      }
     },
     {
       "name": "PlanId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "计划ID。\n\n> 您可以调用[DescribeDBInstancePlans](~~449398~~)接口查看计划的详细信息，包括计划ID。",
+        "en": "The ID of the plan.\n\n>  You can call the [DescribeDBInstancePlans](~~449398~~) operation to query the details of plans, including plan IDs."
+      }
     },
     {
       "name": "PlanName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计划名称。",
+        "en": "The name of the plan."
+      }
     },
     {
       "name": "PlanStartDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "计划的开始时间，格式为<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n> - 仅**周期执行**的计划需要设置该参数。\n>- 不传默认为当前时间。",
+        "en": "The start time of the plan. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n> \n\n*   This parameter must be specified only for **periodically executed** plans.\n\n*   If you do not specify this parameter, the current time is used."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改定时计划",
+    "en": "UpdateDBInstancePlan"
+  },
+  "descriptions": {
+    "zh": "- 实例付费类型必须为按量付费。\n- 实例变配和规格变更时，可能会导致业务闪断，建议您将执行时间设置为业务低峰期。\n\n请确保在使用该接口前，已充分了解AnalyticDB PostgreSQL版产品的[收费方式](~~35406~~)和<props=\"china\">[价格](https://www.aliyun.com/price/product#/gpdb/detail/GreenplumPost)</props><props=\"intl\">[价格](https://www.alibabacloud.com/zh/product/hybriddb-postgresql/pricing)</props>。",
+    "en": "You can call this operation to modify a plan for an AnalyticDB for PostgreSQL instance in Serverless mode. For example, you can modify a plan for periodically pausing and resuming an instance or scaling an instance.\n\n## Limits\n\nYou can call this operation up to 1,000 times per second per account. If the number of the calls per second exceeds the limit, throttling is triggered. As a result, your business may be affected. We recommend that you take note of the limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun gpdb update-db-instance-plan --db-instance-id gp-bp12ga6v69h860000 --plan-name test-plan --plan-desc this_is_a_test_plan --plan-start-date 2022-04-17T23:00Z --plan-end-date 2023-04-17T23:00Z --plan-config pause_:_executeTime_:_2022-08-30T16:00:00Z --plan-id 1234 --region cn-hangzhou",
     "legacyCli": "aliyun gpdb UpdateDBInstancePlan --region cn-hangzhou --DBInstanceId 'gp-bp12ga6v69h860000' --PlanEndDate '2023-04-17T23:00Z' --PlanId 1234 --PlanDesc this_is_a_test_plan --PlanName 'test-plan' --PlanStartDate '2022-04-17T23:00Z' --PlanConfig 'pause_:_executeTime_:_2022-08-30T16:00:00Z'"

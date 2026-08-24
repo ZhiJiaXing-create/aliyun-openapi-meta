@@ -1,5 +1,6 @@
 {
   "name": "DescribeResourceCoverageDetail",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "BillOwnerId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源归属账号的ID，资源归属账号是实际使用资源的账号。",
+        "en": "The ID of the account for which you want to query coverage details. If you do not set this parameter, the data of the current Alibaba Cloud account and its RAM users is queried. To query the data of a RAM user, specify the ID of the RAM user."
+      }
     },
     {
       "name": "EndPeriod",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "格式：yyyy-MM-dd HH:mm:ss；查询逻辑为不包括该时间；为空表示截止到当前时间",
+        "en": "The end of the time range to query. The end is excluded from the time range. If you do not set this parameter, the end time is the current time. Specify the time in the format of yyyy-MM-dd HH:mm:ss."
+      }
     },
     {
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "本次读取的最大数据记录数量。默认值：20，最大值：300。",
+        "en": "The maximum number of entries to return. Default value: 20. Maximum value: 300."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页token，首页查询时传空，查询结果中返回下一页token地址。当结果token为空时表示全部查完。",
+        "en": "The token that is used to retrieve the next page of results. You do not need to set this parameter if you query coverage details within a specific time range for the first time. The response returns a token that you can use to query coverage details that are displayed on the next page. If a null value is returned for the NextToken parameter, no more coverage details can be queried."
+      }
     },
     {
       "name": "PeriodType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "MONTH：月维度；\nDAY：天维度；\nHOUR：小时维度；",
+        "en": "The time granularity at which coverage details are queried. Valid values: MONTH, DAY, and HOUR."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RI：预留实例；SCU：存储容量单位包",
+        "en": "The type of deduction plans whose coverage details are queried. Valid values: RI and SCU."
+      }
     },
     {
       "name": "StartPeriod",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "格式：yyyy-MM-dd HH:mm:ss；\n查询逻辑为包括该时间",
+        "en": "The beginning of the time range to query.\n\nThe beginning is included in the time range. Specify the time in the format of yyyy-MM-dd HH:mm:ss."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "资源覆盖率明细",
+    "en": "DescribeResourceCoverageDetail"
+  },
+  "descriptions": {
+    "zh": "1. 与费用中心“资源实例管理”菜单中的“覆盖率概况”的列表数据一致。\n2. 当前支持RI和SCU两种资源的覆盖率查询。\n3. 提供“小时”、“天”，“月”三种维度的覆盖率查询。",
+    "en": "1\\. The queried coverage details are the same as those displayed in the table on the Coverage tab of the Manage Reserved Instances page in the Billing Management console.\n\n2\\. You can call this operation to query the coverage details of RIs or SCUs.\n\n3\\. You can call this operation to query coverage details at an hourly, daily, or monthly granularity."
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi describe-resource-coverage-detail --start-period 2021-01-01_00:00:00 --end-period 2021-01-02_00:00:00 --period-type HOUR --next-token eyJwYWdlTnVtIjoyLCJwYWdlU2l6ZSI6MTB9 --max-results 200 --bill-owner-id 123745698925000 --resource-type RI --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi DescribeResourceCoverageDetail --region cn-hangzhou --PeriodType HOUR --NextToken eyJwYWdlTnVtIjoyLCJwYWdlU2l6ZSI6MTB9 --EndPeriod '2021-01-02_00:00:00' --MaxResults 200 --BillOwnerId 123745698925000 --ResourceType RI --StartPeriod '2021-01-01_00:00:00'"

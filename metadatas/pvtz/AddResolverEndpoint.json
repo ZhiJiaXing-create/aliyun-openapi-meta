@@ -1,5 +1,6 @@
 {
   "name": "AddResolverEndpoint",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,30 +10,50 @@
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "出站流量源IP地址列表（至少添加2个，最多可添加6个）。\n\n>为了保证高可用，出站终端节点要求至少添加2个出站源IP地址，而且建议这2个IP地址分配在不同的可用区，出站终端节点允许添加的出站源IP地址最多为6个",
+        "en": "The list of source IP addresses for outbound traffic. You must add at least two IP addresses. You can add up to six IP addresses.\n\n> To ensure high availability (HA), add at least two source IP addresses for the outbound endpoint. We recommend that you allocate these IP addresses in different zones. You can add a maximum of six source IP addresses."
+      },
       "sub_parameters": [
         {
           "name": "AzId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "交换机的可用区ID。",
+            "en": "The ID of the zone where the vSwitch resides."
+          }
         },
         {
           "name": "CidrBlock",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "子网掩码，交换机的IPv4网段。",
+            "en": "The IPv4 CIDR block of the vSwitch."
+          }
         },
         {
           "name": "Ip",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "子网掩码参数范围内的IP地址（留空则系统自动分配）。",
+            "en": "The IP address. The IP address must be within the specified CIDR block. If you leave this parameter empty, the system automatically assigns an IP address."
+          }
         },
         {
           "name": "VSwitchId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "交换机ID。",
+            "en": "The vSwitch ID."
+          }
         }
       ]
     },
@@ -40,33 +61,60 @@
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回值语言，取值：\n\n- zh：中文。\n\n- en：英文。\n\n默认值：en",
+        "en": "The language of the response. Valid values:\n\n- zh: Chinese.\n\n- en: English.\n\nDefault value: en"
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点名称，最长20个字符，超过限制会报错。",
+        "en": "The name of the endpoint. The name can be up to 20 characters long. An error is reported if the limit is exceeded."
+      }
     },
     {
       "name": "SecurityGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "安全组ID，安全组里面的规则将应用于出站VPC。\n\n>为了避免误操作造成线上流量中断，创建出站终端节点之后，无法更改此值。",
+        "en": "The ID of the security group. The rules in the security group are applied to the outbound VPC.\n\n> To prevent service interruptions, you cannot change this value after you create the outbound endpoint."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "出站专有网络ID（VPC ID），解析器所有出站的DNS查询流量都将经由此VPC进行流量转发。\n\n>为了避免误操作造成线上流量中断，创建出站终端节点之后，无法更改此值。",
+        "en": "The ID of the outbound virtual private cloud (VPC). All outbound DNS query traffic from the Resolver is forwarded through this VPC.\n\n> To prevent service interruptions, you cannot change this value after you create the outbound endpoint."
+      }
     },
     {
       "name": "VpcRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "出站VPC所在的地域ID（regionID）。",
+        "en": "The region ID of the outbound VPC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新增终端节点",
+    "en": "AddResolverEndpoint"
+  },
   "example": {
     "unifiedCli": "aliyun pvtz add-resolver-endpoint --name endpoint-test-name --vpc-region-id cn-hangzhou --vpc-id vpc-0jl96awrjt75ezglc0000 --security-group-id sg-0jld3m9yq7l2cw120000 --ip-config VSwitchId=vsw-0jlgeyq4oazkh5xue0000 Ip=172.16.XX.XX CidrBlock=172.16.XX.XX/24 AzId=cn-hangzhou-a --lang en --region cn-hangzhou",
     "legacyCli": "aliyun pvtz AddResolverEndpoint --region cn-hangzhou --IpConfig.1.Ip '172.16.XX.XX' --IpConfig.1.CidrBlock '172.16.XX.XX/24' --VpcId 'vpc-0jl96awrjt75ezglc0000' --IpConfig.1.VSwitchId 'vsw-0jlgeyq4oazkh5xue0000' --SecurityGroupId 'sg-0jld3m9yq7l2cw120000' --IpConfig.1.AzId 'cn-hangzhou-a' --VpcRegionId 'cn-hangzhou' --Lang en --Name 'endpoint-test-name'"

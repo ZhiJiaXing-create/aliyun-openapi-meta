@@ -1,5 +1,6 @@
 {
   "name": "CreateListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,155 +9,262 @@
       "name": "AlpnEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启ALPN。取值：\n\n- **true**：开启。\n\n- **false**（默认值）：关闭。",
+        "en": "Specifies whether to enable Application-Layer Protocol Negotiation (ALPN). Valid values:\n\n- **true**\n\n- **false** (default)"
+      }
     },
     {
       "name": "AlpnPolicy",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ALPN策略。取值：\n\n- **HTTP1Only**：只协商使用HTTP1.x协议，优先级为HTTP1.1>HTTP1.0。\n- **HTTP2Only**：只协商使用HTTP2.0协议。\n- **HTTP2Optional**：优先使用HTTP1.x协议，但也接受HTTP2.0协议，优先级为HTTP1.1>HTTP1.0>HTTP2.0。\n- **HTTP2Preferred**：优先使用HTTP2.0协议，但也接受HTTP1.x协议，优先级为HTTP2.0>HTTP1.1>HTTP1.0。\n\n> **AlpnEnabled**开启后需配置该参数。",
+        "en": "The ALPN policy. Valid values:\n\n- **HTTP1Only**: uses only HTTP 1.x. The priority is HTTP 1.1 > HTTP 1.0.\n\n- **HTTP2Only**: uses only HTTP 2.0.\n\n- **HTTP2Optional**: prefers HTTP 1.x, but also supports HTTP 2.0. The priority is HTTP 1.1 > HTTP 1.0 > HTTP 2.0.\n\n- **HTTP2Preferred**: prefers HTTP 2.0, but also supports HTTP 1.x. The priority is HTTP 2.0 > HTTP 1.1 > HTTP 1.0.\n\n> This parameter is required if AlpnEnabled is set to **true**."
+      }
     },
     {
       "name": "CaCertificateIds",
       "position": "Body",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "CA证书列表。仅对TCPSSL监听生效。\n\n> 目前仅支持添加1个CA证书。",
+        "en": "The CA certificates. This parameter takes effect only for TCP/SSL listeners.\n\n> You can specify only one CA certificate."
+      }
     },
     {
       "name": "CaEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否启动双向认证。取值：\n\n- **true**：启动。\n\n- **false**（默认值）：关闭。",
+        "en": "Specifies whether to enable mutual authentication. Valid values:\n\n- **true**\n\n- **false** (default)"
+      }
     },
     {
       "name": "CertificateIds",
       "position": "Body",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器证书列表信息。仅对TCPSSL监听生效。\n\n> 目前仅支持添加1个服务器证书。",
+        "en": "The server certificates. This parameter takes effect only for TCP/SSL listeners.\n\n> You can specify only one server certificate."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can create a client token to make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** may be different for each request."
+      }
     },
     {
       "name": "Cps",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该监听在每个可用区（VIP）处理的每秒新建连接限速值。取值范围：**0**~**1000000**。**0**表示不限速。",
+        "en": "The maximum number of new connections that can be created per second on the listener in each zone (VIP). Valid values: **0** to **1000000**. **0** indicates that the number of new connections is unlimited."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建监听。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a regular request. If the request passes the check, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "EndPort",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全端口监听结束端口。取值范围：**1** ~ **65535**。\n终止端口的取值大于起始端口。\n\n> 当**ListenerPort**为**0**时，需要配置该参数。",
+        "en": "The end port for the listener port range. Valid values: **1** to **65535**. The value of the end port must be greater than the value of the start port.\n\n> This parameter is required if **ListenerPort** is set to **0**."
+      }
     },
     {
       "name": "IdleTimeout",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接空闲超时时间。单位：秒。\n\n- 当**ListenerProtocol**取值为**TCP**或**TCPSSL**时，连接空闲超时时间取值范围为：**10**~**900**。默认值：**900**。\n\n- 当**ListenerProtocol**取值为**UDP**时，连接空闲超时时间取值范围为：**10**~**90**。默认值：**90**。",
+        "en": "The timeout period of an idle connection. Unit: seconds.\n\n- If **ListenerProtocol** is set to **TCP** or **TCPSSL**, the value must be in the range of **10** to **900**. Default value: **900**.\n\n- If **ListenerProtocol** is set to **UDP**, the value must be in the range of **10** to **90**. Default value: **90**."
+      }
     },
     {
       "name": "ListenerDescription",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义监听名称。\n\n长度限制为2~256个字符，支持中文和英文字母，可包含数字、半角逗号（,）、半角句号（.）、半角分号（;）、正斜线（/）、at（@）、下划线（_）和短划线（-）。",
+        "en": "The name of the listener.\n\nThe name must be 2 to 256 characters in length, and can contain letters, digits, commas (,), periods (.), semicolons (;), forward slashes (/), at signs (@), underscores (\\_), and hyphens (-)."
+      }
     },
     {
       "name": "ListenerPort",
       "position": "Body",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听端口。取值范围：**0**~**65535**。\n\n**0**：表示使用全端口功能。当设置为**0**时，您需要配置**StartPort**和**EndPort**。",
+        "en": "The listener port. Valid values: **0** to **65535**.\n\nA value of **0** specifies that all ports are used. If you set the value to **0**, you must also specify **StartPort** and **EndPort**."
+      }
     },
     {
       "name": "ListenerProtocol",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听协议。取值：**TCP**、**UDP**或**TCPSSL**。",
+        "en": "The listener protocol. Valid values: **TCP**, **UDP**, and **TCPSSL**."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络型负载均衡实例ID。",
+        "en": "The ID of the NLB instance."
+      }
     },
     {
       "name": "Mss",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "TCP报文的最大段大小。单位：字节，取值范围：**0**~**1500**。\n**0**：表示不修改用户TCP报文的MSS值。\n\n> 仅TCP、TCPSSL类型的监听支持该字段值。",
+        "en": "The maximum segment size (MSS) of TCP packets. Unit: bytes. Valid values: **0** to **1500**. **0** indicates that the MSS value of TCP packets is not modified.\n\n> This parameter is available only for listeners that use TCP or TCP/SSL."
+      }
     },
     {
       "name": "ProxyProtocolEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启通过Proxy Protocol协议携带客户端源地址到后端服务器。取值：\n\n- **true**：开启。\n\n- **false**（默认值）：关闭。",
+        "en": "Specifies whether to use the Proxy protocol to pass client IP addresses to backend servers. Valid values:\n\n- **true**\n\n- **false** (default)"
+      }
     },
     {
       "name": "ProxyProtocolV2Config",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通过Proxy Protocol协议携带VpcId、PrivateLinkEpId、PrivateLinkEpsId信息到后端服务器配置。",
+        "en": "The configuration of the Proxy protocol to carry the VpcId, PrivateLinkEpId, and PrivateLinkEpsId information to backend servers."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The ID of the region where the NLB instance is deployed.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "SecSensorEnabled",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启秒级监控功能。取值：\n\n- **true**：开启。\n\n- **false**（默认值）：关闭。",
+        "en": "Specifies whether to enable fine-grained monitoring. Valid values:\n\n- **true**\n\n- **false** (default)"
+      }
     },
     {
       "name": "SecurityPolicyId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全策略ID。支持系统安全策略和自定义安全策略。\n\n- 系统策略取值：**tls_cipher_policy_1_0**（默认值）、**tls_cipher_policy_1_1**、**tls_cipher_policy_1_2**、**tls_cipher_policy_1_2_strict**或**tls_cipher_policy_1_2_strict_with_1_3**。\n- 自定义安全策略：输入自定义安全策略ID。\n    - 创建自定义策略，请参见[CreateSecurityPolicy](~~445901~~)。\n    - 查询安全策略，请参见[ListSecurityPolicy](~~445900~~)。\n\n>仅对TCPSSL监听生效。",
+        "en": "The ID of the security policy. System security policies and custom security policies are supported.\n\n- Valid values for system policies: **tls\\_cipher\\_policy\\_1\\_0** (default), **tls\\_cipher\\_policy\\_1\\_1**, **tls\\_cipher\\_policy\\_1\\_2**, **tls\\_cipher\\_policy\\_1\\_2\\_strict**, and **tls\\_cipher\\_policy\\_1\\_2\\_strict\\_with\\_1\\_3**.\n\n- Custom security policies: the ID of the custom security policy.\n\n  - For more information about how to create a custom policy, see [CreateSecurityPolicy](~~445901~~).\n\n  - For more information about how to query security policies, see [ListSecurityPolicy](~~445900~~).\n\n> This parameter takes effect only for TCP/SSL listeners."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务器组ID。\n> - 当**ListenerProtocol**取值为**TCP**时，该监听支持选择后端协议为**TCP**或者**TCP_UDP**的服务器组，不支持选择后端协议为**UDP**的服务器组。\n> - 当**ListenerProtocol**取值为**UDP**时，该监听支持选择后端协议为**UDP**或者**TCP_UDP**的服务器组，不支持选择后端协议为**TCP**的服务器组。\n> - 当**ListenerProtocol**取值为**TCPSSL**时，该监听支持选择后端协议为**TCP**且**未开启客户端地址保持功能**的服务器组，不支持选择后端协议为**TCP**且**开启客户端地址保持功能**的服务器组、后端协议为**UDP**或者**TCP_UDP**的服务器组。",
+        "en": "The ID of the server group.\n\n> - If **TCP** is selected for **ListenerProtocol**, you can select a server group whose backend protocol is **TCP** or **TCP\\_UDP**. You cannot select a server group whose backend protocol is **UDP**.\n>\n> - If **UDP** is selected for **ListenerProtocol**, you can select a server group whose backend protocol is **UDP** or **TCP\\_UDP**. You cannot select a server group whose backend protocol is **TCP**.\n>\n> - If **TCPSSL** is selected for **ListenerProtocol**, you can select a server group whose backend protocol is **TCP** and for which the client IP address retention feature is **disabled**. You cannot select a server group whose backend protocol is **TCP** and for which the client IP address retention feature is **enabled**, or a server group whose backend protocol is **UDP** or **TCP\\_UDP**."
+      }
     },
     {
       "name": "StartPort",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全端口监听起始端口。取值范围：**1** ~ **65535**。\n\n> 当**ListenerPort**为**0**时，需要配置该参数。",
+        "en": "The start port for the listener port range. Valid values: **1** to **65535**.\n\n> This parameter is required if **ListenerPort** is set to **0**."
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。最多支持64个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。支持字符包括字母、数字、下划线 (_)、点 (.)、冒号 (:)、斜线 (/)、等号 (=)、加号 (+)、减号 (-)、@符号 (@) 。\n\n一次调用最多支持添加20个标签。",
+            "en": "The tag key. The tag key can be up to 64 characters in length, and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`. It can contain letters, digits, underscores (\\_), periods (.), colons (:), forward slashes (/), equal signs (=), plus signs (+), hyphens (-), and at signs (@).\n\nYou can specify up to 20 tags in each call."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。最多支持128个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或`https://`。支持字符包括字母、数字、下划线 (_)、点 (.)、冒号 (:)、斜线 (/)、等号 (=)、加号 (+)、减号 (-)、@符号 (@) 。\n\n一次调用最多支持添加20个标签。",
+            "en": "The tag value. The tag value can be up to 128 characters in length, and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`. It can contain letters, digits, underscores (\\_), periods (.), colons (:), forward slashes (/), equal signs (=), plus signs (+), hyphens (-), and at signs (@).\n\nYou can specify up to 20 tags in each call."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建监听",
+    "en": "CreateListener"
+  },
   "example": {
     "unifiedCli": "aliyun nlb create-listener --listener-protocol TCP --listener-port 80 --listener-description tcp_80 --load-balancer-id nlb-83ckzc8d4xlp8o0000 --server-group-id sgp-ppdpc14gdm3x4o0000 --idle-timeout 900 --security-policy-id tls_cipher_policy_1_0 --certificate-ids 123157000000 --ca-certificate-ids 139a00000000 --ca-enabled false --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --proxy-protocol-enabled false --sec-sensor-enabled false --alpn-enabled false --alpn-policy HTTP1Only --start-port 244 --end-port 566 --cps 100 --mss 43 --tag Value=Test Key=KeyTest --proxy-protocol-v2-config Ppv2VpcIdEnabled=false Ppv2PrivateLinkEpsIdEnabled=false Ppv2PrivateLinkEpIdEnabled=false --region cn-hangzhou",
     "legacyCli": "aliyun nlb CreateListener --region cn-hangzhou --CaEnabled false --ListenerPort 80 --CertificateIds.1 123157000000 --Tag.1.Key KeyTest --StartPort 244 --Cps 100 --DryRun false --ServerGroupId 'sgp-ppdpc14gdm3x4o0000' --IdleTimeout 900 --LoadBalancerId 'nlb-83ckzc8d4xlp8o0000' --ProxyProtocolV2Config '{\"Ppv2VpcIdEnabled\":false,\"Ppv2PrivateLinkEpsIdEnabled\":false,\"Ppv2PrivateLinkEpIdEnabled\":false}' --ListenerProtocol TCP --Mss 43 --SecurityPolicyId tls_cipher_policy_1_0 --CaCertificateIds.1 139a00000000 --ListenerDescription tcp_80 --AlpnPolicy HTTP1Only --EndPort 566 --ProxyProtocolEnabled false --Tag.1.Value Test --SecSensorEnabled false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AlpnEnabled false"

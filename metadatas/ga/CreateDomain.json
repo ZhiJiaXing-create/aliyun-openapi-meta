@@ -1,5 +1,6 @@
 {
   "name": "CreateDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AcceleratorIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。\n\n最多支持输入50个全球加速ID。",
+        "en": "The ID of the GA instance.\n\nYou can enter up to 50 IDs."
+      }
     },
     {
       "name": "Domain",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待添加的加速域名。\n\n仅支持添加主域名，例如`example.com`。",
+        "en": "The accelerated domain name to be added.\n\nWildcard domain names are supported. A wildcard domain name must start with `*.`, such as `*.example.com`."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会创建资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，返回HTTP 2xx状态码。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true:** performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, a 2xx HTTP status code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建域名",
+    "en": "CreateDomain"
+  },
+  "descriptions": {
+    "zh": "全球加速为您提供加速域名免阿里云备案服务，您只需要将已完成ICP备案的加速域名与全球加速实例进行关联，全球加速可对该加速域名及该加速域名所属主域名下的所有子域名免阿里云备案服务。\n\n本接口用于添加加速域名，以将加速域名与全球加速实例进行关联。在调用本接口时，请注意以下事项：\n- 加速域名部署在中国内地时，必须已完成ICP备案。\n- 同一个加速域名不能重复关联同一个全球加速实例。\n- **CreateDomain**接口不支持在同一个账号下并发添加加速域名。",
+    "en": "After you associate an accelerated domain name that has obtained an ICP number with a Global Accelerator (GA) instance, you do not need to complete filing for the accelerated domain name or its subdomains on Alibaba Cloud.\n\nThis operation adds an accelerated domain name and associates it with GA instances. Take note of the following items when calling this operation:\n\n- If your accelerated domain name is hosted in the Chinese mainland, you must obtain an ICP number for the domain name.\n\n- The same accelerated domain name cannot be repeatedly associated with the same GA instance.\n\n- You cannot repeatedly call the **CreateDomain** operation by using the same Alibaba Cloud account within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-domain --biz-region-id cn-hangzhou --accelerator-ids ga-bp1odcab8tmno0hdq0000 --domain example.com --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateDomain --region cn-hangzhou --AcceleratorIds.1 'ga-bp1odcab8tmno0hdq0000' --DryRun false --RegionId 'cn-hangzhou' --Domain 'example.com'"

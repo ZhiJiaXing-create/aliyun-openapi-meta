@@ -1,5 +1,6 @@
 {
   "name": "CreateTransitRouterRouteEntry",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接创建路由条目。\n- **true**：发送检查请求，只进行校验，不会创建路由条目。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **false** (default): sends a normal request. The route entry is created after the request passes the check.\n\n- **true**: sends a dry run request to check the request. The route entry is not created. The system checks the required parameters, request format, and service limits. If the request fails the check, an error message is returned. If the request passes the check, the `DryRunOperation` error code is returned."
+      }
     },
     {
       "name": "TransitRouterRouteEntryDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由条目的描述。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
+        "en": "The description of the route entry.\n\nThe description can be empty or 1 to 256 characters in length, and cannot start with http\\:// or https\\://."
+      }
     },
     {
       "name": "TransitRouterRouteEntryDestinationCidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由条目的目标网段，支持IPv4地址和IPv6地址。",
+        "en": "The destination CIDR block of the route entry. IPv4 and IPv6 CIDR blocks are supported."
+      }
     },
     {
       "name": "TransitRouterRouteEntryName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由条目的名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
+        "en": "The name of the route entry.\n\nThe name can be empty or 1 to 128 characters in length, and cannot start with http\\:// or https\\://."
+      }
     },
     {
       "name": "TransitRouterRouteEntryNextHopId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由条目的下一跳所关联的网络实例连接ID。",
+        "en": "The ID of the network instance connection that is associated with the next hop."
+      }
     },
     {
       "name": "TransitRouterRouteEntryNextHopType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "下一跳类型。取值：\n\n- **BlackHole**：表示指定该路由条目为黑洞路由。所有去往目标网段的路由均会被丢弃，无需指定具体的下一跳信息。\n- **Attachment**：表示指定该路由条目的下一跳为网络实例连接，且需要指定具体的网络实例连接ID。所有去往目标网段的路由均会被转发至指定的网络实例连接。",
+        "en": "The next hop type. Valid values:\n\n- **BlackHole**: The route is a blackhole route. All packets to the destination CIDR block are dropped. You do not need to specify a next hop.\n\n- **Attachment**: The next hop of the route is a network instance connection. You must specify the ID of the network instance connection. All packets to the destination CIDR block are forwarded to the specified network instance connection."
+      }
     },
     {
       "name": "TransitRouterRouteTableId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "企业版转发路由器的路由表ID。",
+        "en": "The ID of the route table of the Enterprise Edition transit router."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "在企业版转发路由器的路由表中添加路由条目",
+    "en": "CreateTransitRouterRouteEntry"
+  },
+  "descriptions": {
+    "zh": "**CreateTransitRouterRouteEntry**接口属于异步接口，即系统会先返回一个路由条目ID，但该路由条目并未创建完成，系统后台的创建任务仍在进行。您可以调用**ListTransitRouterRouteEntries**接口查询路由条目的状态。 \n\n- 当路由条目处于**Creating**状态时，表示路由条目正在创建中。在该状态下，您只能对该路由条目执行查询操作，不能执行其他操作。\n- 当路由条目处于**Active**状态时，表示路由条目创建完成。",
+    "en": "**CreateTransitRouterRouteEntry** is an asynchronous operation. After you send a request, the system returns a route entry ID. The route entry is created in the background. You can call the **ListTransitRouterRouteEntries** operation to query the status of the route entry.\n\n- If a route entry is in the **Creating** state, the route entry is being created. In this state, you can only query the route entry and cannot perform other operations.\n\n- If a route entry is in the **Active** state, the route entry has been created."
+  },
   "example": {
     "unifiedCli": "aliyun cbn create-transit-router-route-entry --client-token 02fb3da4-130e-11e9-8e44-0010000 --transit-router-route-entry-name testname --transit-router-route-entry-description testdesc --transit-router-route-table-id vtb-bp1dudbh2d5na6b500000 --transit-router-route-entry-next-hop-type BlackHole --transit-router-route-entry-destination-cidr-block 192.168.0.0/24 --transit-router-route-entry-next-hop-id tr-attach-nls9fzkfat89340000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun cbn CreateTransitRouterRouteEntry --region cn-hangzhou --TransitRouterRouteTableId 'vtb-bp1dudbh2d5na6b500000' --TransitRouterRouteEntryDestinationCidrBlock '192.168.0.0/24' --TransitRouterRouteEntryNextHopId 'tr-attach-nls9fzkfat89340000' --TransitRouterRouteEntryDescription testdesc --TransitRouterRouteEntryNextHopType BlackHole --DryRun false --TransitRouterRouteEntryName testname --ClientToken '02fb3da4-130e-11e9-8e44-0010000'"

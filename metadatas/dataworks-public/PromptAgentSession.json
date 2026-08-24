@@ -1,0 +1,54 @@
+{
+  "name": "PromptAgentSession",
+  "deprecated": false,
+  "protocol": "HTTPS|SSE",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "Id",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "请求方传入的 id，原样回显",
+        "en": "The ID passed in by the caller. The value is returned as-is in the response."
+      }
+    },
+    {
+      "name": "Jsonrpc",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "JSON-RPC 版本，固定 2.0",
+        "en": "The JSON-RPC version. Fixed value: 2.0."
+      }
+    },
+    {
+      "name": "Params",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "业务参数",
+        "en": "The business parameters."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "发送会话Prompt",
+    "en": "PromptAgentSession"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 该API用于向指定的会话ID发送用户的Prompt，并以SSE（Server-Sent Events）流式方式接收来自Agent的响应。\n- 响应可能包括消息分片、思考过程、工具调用状态更新等信息。\n- 如果指定的会话不存在，将通过SSE错误帧返回400错误。\n- `stopReason`字段指示了Agent停止本轮对话的原因。\n- 支持多种类型的内容块作为Prompt输入，如文本、OSS文件下载链接等。\n- 可选地提供额外元信息`Meta`来传递更多上下文给服务端。\n- 返回的内容符合开源协议 Agent Client Protocol (ACP) 的规范，具体可以参考：https://agentclientprotocol.com\n- ** 请确保在使用该接口前，已充分了解Data Agent产品的收费方式和价格 ** ：https://help.aliyun.com/zh/dataworks/dataworks-data-agent-agent-billing",
+    "en": "## Request\n\n- This API sends a user prompt to a specified session ID and streams the agent's response over SSE (Server-Sent Events).\n\n- The response may include message chunks, thought process, and tool calling status updates.\n\n- If the specified session does not exist, the API returns a 400 error in an SSE error frame.\n\n- The `stopReason` field indicates why the agent ended the turn.\n\n- You can use multiple types of content blocks in the prompt, such as text and OSS file download links.\n\n- You can provide additional metadata in the `Meta` parameter to pass more context to the server.\n\n- The response content conforms to the open-source Agent Client Protocol (ACP) specification. For more information, see https\\://agentclientprotocol.com\n\n- \\*\\*Review the billing methods and pricing for Data Agent before you use this API\\*\\*: https\\://help.aliyun.com/zh/dataworks/dataworks-data-agent-agent-billing"
+  },
+  "example": {
+    "unifiedCli": "aliyun dataworks-public prompt-agent-session --jsonrpc 2.0 --id 1021418411 --params '{\"Meta\":{\"Context\":\"key1_:_value1_,_key2_:_value2\"},\"Prompt\":[{\"Meta\":{\"Hide\":false},\"Type\":\"text\",\"Description\":\"Sales_Order_Details.csv\",\"Size\":1231231,\"Title\":\"Sales_Order_Details.csv\",\"Text\":\"Sales_in_the_last_7_days\",\"Uri\":\"oss://_bucket_/_ossKey\",\"MimeType\":\"text/csv‌\",\"Name\":\"xxx.csv\"}],\"SessionId\":\"sess_0f12abc34\"}' --api-version 2024-05-18 --region cn-hangzhou",
+    "legacyCli": "aliyun dataworks-public PromptAgentSession --region cn-hangzhou --Jsonrpc '2.0' --Params '{\"Meta\":{\"Context\":\"key1_:_value1_,_key2_:_value2\"},\"Prompt\":[{\"Meta\":{\"Hide\":false},\"Type\":\"text\",\"Description\":\"Sales_Order_Details.csv\",\"Size\":1231231,\"Title\":\"Sales_Order_Details.csv\",\"Text\":\"Sales_in_the_last_7_days\",\"Uri\":\"oss://_bucket_/_ossKey\",\"MimeType\":\"text/csv‌\",\"Name\":\"xxx.csv\"}],\"SessionId\":\"sess_0f12abc34\"}' --Id 1021418411"
+  }
+}

@@ -1,5 +1,6 @@
 {
   "name": "CreateNetworkOptimization",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,69 +9,124 @@
       "name": "Grpc",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启GRPC，默认关闭。取值范围：\n- on：开启\n- off：关闭",
+        "en": "Specifies whether to enable gRPC. This feature is disabled by default. Valid values:\n- on: enabled\n- off: disabled."
+      }
     },
     {
       "name": "Http2Origin",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启HTTP2回源，默认关闭。取值范围：\n- on：开启\n- off：关闭",
+        "en": "Specifies whether to enable HTTP/2 back-to-origin. This feature is disabled by default. Valid values:\n- on: enabled\n- off: disabled."
+      }
     },
     {
       "name": "Rule",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则内容，使用条件表达式来匹配用户请求。添加全局配置的时候不需要设置该参数。存在两种使用场景：\n- 匹配所有传入请求：值设置为true\n- 匹配指定请求：值设置为自定义表达式，例如：(http.host eq \\\"video.example.com\\\")",
+        "en": "The rule content, which uses a conditional expression to match user requests. This parameter is not required when you add a global configuration. Two scenarios are supported:\n- Match all incoming requests: set the value to true.\n- Match specified requests: set the value to a custom expression, such as (http.host eq \\\"video.example.com\\\")."
+      }
     },
     {
       "name": "RuleEnable",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则开关。添加全局配置的时候不需要设置该参数。取值范围：\n- on：开启。\n- off：关闭。",
+        "en": "The rule switch. This parameter is not required when you add a global configuration. Valid values:\n- on: enabled.\n- off: disabled."
+      }
     },
     {
       "name": "RuleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则名称。添加全局配置的时候不需要设置该参数。",
+        "en": "The rule name. This parameter is not required when you add a global configuration."
+      }
     },
     {
       "name": "Sequence",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则执行顺序，数值越小越优先执行。",
+        "en": "The rule execution order. A smaller value indicates a higher priority."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~ListSites~~)接口获取。",
+        "en": "The site ID. You can call the [ListSites](~~ListSites~~) operation to obtain the site ID."
+      }
     },
     {
       "name": "SiteVersion",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "站点配置的版本号。开启了配置版本管理的站点，可以通过该参数指定配置生效的站点版本，默认为版本0。",
+        "en": "The version number of the site configuration. For sites with configuration version management enabled, you can use this parameter to specify the site version on which the configuration takes effect. The default value is 0."
+      }
     },
     {
       "name": "SmartRouting",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启智能路由服务，默认关闭。取值范围：\n- on：开启\n- off：关闭",
+        "en": "Specifies whether to enable smart routing. This feature is disabled by default. Valid values:\n- on: enabled\n- off: disabled."
+      }
     },
     {
       "name": "UploadMaxFilesize",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "最大上传文件大小，单位是MB，取值范围：100～500。",
+        "en": "The maximum upload file size, in MB. Valid values: 100 to 500."
+      }
     },
     {
       "name": "Websocket",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启Websocket，默认开启。取值范围：\n- on：开启\n- off：关闭",
+        "en": "Specifies whether to enable WebSocket. This feature is enabled by default. Valid values:\n- on: enabled\n- off: disabled."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加站点网络优化配置",
+    "en": "Add site network optimization configuration"
+  },
+  "descriptions": {
+    "zh": "站点套餐规格需要为标准版或以上版本才能够使用Websocket功能。另外，调用此 API 时，必须至少提供一个功能配置参数，仅提供 SiteId 将返回错误。",
+    "en": "The site plan must be Standard Edition or higher to use the WebSocket feature. When calling this API, you must provide at least one feature configuration parameter. Providing only SiteId returns an error."
+  },
   "example": {
     "unifiedCli": "aliyun esa create-network-optimization --site-id 340035003106221 --site-version 1 --rule-name rule_example --rule-enable on --rule http.host_eq_video.example.com --smart-routing on --http2-origin on --websocket on --grpc on --upload-max-filesize 100 --sequence 1 --region cn-hangzhou",
     "legacyCli": "aliyun esa CreateNetworkOptimization --region cn-hangzhou --SiteId 340035003106221 --SmartRouting on --RuleEnable on --Websocket on --Rule 'http.host_eq_video.example.com' --Sequence 1 --Grpc on --SiteVersion 1 --Http2Origin on --RuleName rule_example --UploadMaxFilesize 100"

@@ -1,5 +1,6 @@
 {
   "name": "InitializeAutoShowListTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "CallBackUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户回调地址。",
+        "en": "The user webhook address."
+      }
     },
     {
       "name": "CasterConfig",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "导播台配置。包含：\n\n- （必填）CasterTemplate：导播台输出分辨率。\n\n- （非必填）LiveTemplate：输出转码任务列表。\n\n>JSON格式字符串，结构体内部字段请按首字母大写，驼峰格式输入。",
+        "en": "The production studio configuration. It includes:\n\n- (Required) CasterTemplate: The output resolution of the production studio.\n\n- (Optional) LiveTemplate: The list of output transcoding jobs.\n\n> This parameter is a JSON-formatted string. The fields in the struct must be in UpperCamelCase."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "输出的播流域名。",
+        "en": "The output streaming domain."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "结束时间戳，单位：毫秒。",
+        "en": "The end timestamp. Unit: milliseconds."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ResourceIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播单中的点播媒资文件ID列表（目前仅支持点播平台的mp4格式视频文件）。\n最多支持三个节目，每个节目会按照列表顺序进行播放直到EndTime会自动结束。\n>- 您可以通过控制台或API接口返回参数获取视频文件ID。详情请参见[媒资管理](~~86057~~)或[获取音视频上传地址和凭证](~~55407~~)。- 在EndTime前节目如已经播完，默认会持续播放最后一个节目的最后一帧，直到播放结束。",
+        "en": "A list of video-on-demand (VOD) media asset IDs in the playlist. Currently, only MP4 files from the VOD platform are supported.\nA maximum of three programs are supported. The programs are played in the order they appear in the list and automatically stop at the specified EndTime.\n\n> - Get the video file ID from the console or from the parameters returned by an API operation. For more information, see [Media management](~~86057~~) or [Obtain upload URLs and credentials for audio and video](~~55407~~)."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "开始时间戳，单位：毫秒。",
+        "en": "The start timestamp. Unit: milliseconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个定时任务",
+    "en": "InitializeAutoShowListTask"
+  },
+  "descriptions": {
+    "zh": "本接口支持配置定时启停一个播单定时任务，调用时请保证参数设置符合要求。\n## QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "This operation creates a scheduled task to start and stop a playlist. When you call this operation, you must specify the required parameters.\n\n## QPS limit\n\nThis operation is limited to 10 queries per second (QPS) per user. Calls that exceed this limit are throttled. Throttling can affect your business. Plan your calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun live initialize-auto-show-list-task --biz-region-id cn-hangzhou --resource-ids 89e02xxxxfb349axxxxa0c350d0000_,_6ae0xxxxxb349axxxxa0c350a0000 --start-time 1645688994000 --end-time 1645688994000 --caster-config CasterTemplate_:_lp_ld_,_LiveTemplates_:_lhd_,_lsd_,_lud --domain-name example.aliyundoc.com --call-back-url http://000.com/callback --region cn-hangzhou",
     "legacyCli": "aliyun live InitializeAutoShowListTask --region cn-hangzhou --ResourceIds '89e02xxxxfb349axxxxa0c350d0000_,_6ae0xxxxxb349axxxxa0c350a0000' --EndTime 1645688994000 --DomainName 'example.aliyundoc.com' --StartTime 1645688994000 --CallBackUrl 'http://000.com/callback' --CasterConfig 'CasterTemplate_:_lp_ld_,_LiveTemplates_:_lhd_,_lsd_,_lud' --RegionId 'cn-hangzhou'"

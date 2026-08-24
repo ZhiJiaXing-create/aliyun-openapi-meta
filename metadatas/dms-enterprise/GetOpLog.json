@@ -1,5 +1,6 @@
 {
   "name": "GetOpLog",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "DatabaseName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "DatabaseName."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "结束时间，时间格式为yyyy-MM-DD HH:mm:ss。",
+        "en": "The end of the time range to query. Specify the time in the yyyy-MM-DD HH:mm:ss format."
+      }
     },
     {
       "name": "Module",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "功能模块，缺省则返回对应时间段内所有功能模块，取值如下：\n- **PERMISSION**：权限\n- **OWNER**：数据Owner\n- **SQL_CONSOLE**：SQL窗口\n- **SQL\\_CONSOLE\\_EXPORT**：SQL窗口结果导出\n- **DATA_CHANGE**：数据变更\n- **DATA_EXPORT**：数据导出\n- **SQL_REVIEW**：SQL审核\n- **DT_SYNC**：库表同步\n- **DT_DETAIL**：库表详情\n- **DB_TASK**：任务管理\n- **INSTANCE_MANAGE**：实例管理\n- **USER_MANAGE**：用户管理\n- **SECURITY_RULE**：安全规则\n- **CONFIG_MANAGE**：配置管理\n- **RESOURCE_AUTH**：资源授权\n- **ACCESS_WHITE_IP**：访问IP白名单\n- **NDDL**：结构设计\n- **DSQL_CONSOLE**：跨库数据查询\n- **DSQL_CONSOLE_EXPORT**：跨库查询结果导出\n- **DB_EXPORT**：数据库导出\n- **DATA_TRACT**：数据追踪\n- **DATA_QUALITY**：数据质量\n- **DATALINK_MANAGE**：DBLink管理\n- **DATASEC_MANAGE**：敏感数据管理\n- **SELL**：售卖",
+        "en": "The functional module for which you want to query operation logs. If you do not specify this parameter, operation logs for all functional modules are returned. Valid values:\n\n*   **PERMISSION**: permissions\n*   **OWNER**: data owner\n*   **SQL_CONSOLE**: data query\n*   **SQL_CONSOLE_EXPORT**: query result export\n*   **DATA_CHANGE**: data change\n*   **DATA_EXPORT**: data export\n*   **SQL_REVIEW**: SQL review\n*   **DT_SYNC**: database and table synchronization\n*   **DT_DETAIL**: database and table details\n*   **DB_TASK**: task management\n*   **INSTANCE_MANAGE**: instance management\n*   **USER_MANAGE**: user management\n*   **SECURITY_RULE**: security rules\n*   **CONFIG_MANAGE**: configuration management\n*   **RESOURCE_AUTH**: resource authorization\n*   **ACCESS_WHITE_IP**: access IP address whitelist\n*   **NDDL**: schema design\n*   **DSQL_CONSOLE**: cross-database data query\n*   **DSQL_CONSOLE_EXPORT**: cross-database query result export\n*   **DATA_TRACT**: data tracking\n*   **DATA_QUALITY**: data quality\n*   **DATALINK_MANAGE** :DBLink management\n*   **DATASEC_MANAGE**: sensitive data management\n*   **SELL**: sales"
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "页码，从1开始。",
+        "en": "The number of the page to return. Pages start from page 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "每页记录数，取值如下：\n- 30\n- 50\n- 100",
+        "en": "The number of entries to return on each page. Valid values:\n\n*   30\n*   50\n*   100"
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "开始时间，时间格式为yyyy-MM-DD HH:mm:ss。",
+        "en": "The beginning of the time range to query. Specify the time in the yyyy-MM-DD HH:mm:ss format."
+      }
     },
     {
       "name": "Tid",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "租户ID，可通过调用接口[GetUserActiveTenant](~~198073~~)或[ListUserTenants](~~198074~~)获取该参数的值。",
+        "en": "The ID of the tenant. You can call the [GetUserActiveTenant](~~198073~~) or [ListUserTenants](~~198074~~) operation to query the tenant ID."
+      }
     },
     {
       "name": "UserNick",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户在DMS上的显示名。",
+        "en": "UserNick."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取指定时间内的操作日志详情列表",
+    "en": "GetOpLog"
+  },
+  "descriptions": {
+    "zh": "仅用户角色为管理员、DBA或安全管理员，可调用[ListUsers](~~141938~~)或[GetUser](~~147098~~)接口获取用户角色（RoleIdList）。",
+    "en": "Prerequisites: You are an administrator of Data Management (DMS) or a security administrator. You can call the [ListUsers](~~141938~~) or [GetUser](~~147098~~) operation to obtain your user role from the RoleIdList parameter that is returned."
+  },
   "example": {
     "unifiedCli": "aliyun dms-enterprise get-op-log --tid 3000 --module SECURITY_RULE --start-time 2022-03-23_10:00:00 --end-time 2022-03-29_10:00:00 --page-size 30 --page-number 1 --user-nick test_name --database-name 'dmstest@rm-bp1qb97d4b0000.mysql.rds.aliyuncs.com:3306【poc_dev】' --region cn-hangzhou",
     "legacyCli": "aliyun dms-enterprise GetOpLog --region cn-hangzhou --EndTime '2022-03-29_10:00:00' --PageSize 30 --PageNumber 1 --StartTime '2022-03-23_10:00:00' --DatabaseName 'dmstest@rm-bp1qb97d4b0000.mysql.rds.aliyuncs.com:3306【poc_dev】' --UserNick test_name --Module SECURITY_RULE --Tid 3000"

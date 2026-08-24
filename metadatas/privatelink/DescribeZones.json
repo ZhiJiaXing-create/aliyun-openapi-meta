@@ -1,22 +1,58 @@
 {
   "name": "DescribeZones",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
   "parameters": [
     {
+      "name": "CrossRegion",
+      "position": "Query",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否跨地域场景，默认值 false。\n\n以下场景需设置 CrossRegion 为 true，并结合 CrossRegionSide 使用：\n- **作为服务使用方**：需要创建跨地域终端节点以连接其他地域的终端节点服务。调用本接口查询当前地域中支持创建跨地域终端节点的可用区时，设置 CrossRegion 为 true，CrossRegionSide 设置为 Endpoint。\n\n- **作为服务提供方** ：需要将终端节点服务跨地域共享给其他地域的服务使用方。调用本接口查询当前地域中支持跨地域共享的可用区时，设置 CrossRegion 为 true，CrossRegionSide 设置为 EndpointService。",
+        "en": "Specifies whether this is a cross-region scenario. Default value: false.\n\nSet CrossRegion to true and use it together with CrossRegionSide in the following scenarios:\n- **As a service consumer**: You need to create a cross-region endpoint to connect to an endpoint service in another region. To query the zones in the current region that support cross-region endpoints, set CrossRegion to true and CrossRegionSide to Endpoint.\n\n- **As a service provider**: You need to share your endpoint service across regions with service consumers in other regions. To query the zones in the current region that support cross-region sharing, set CrossRegion to true and CrossRegionSide to EndpointService."
+      }
+    },
+    {
+      "name": "CrossRegionSide",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "指定查询跨地域连接中发起方或服务方的可用区支持情况。取值如下：\n-  **Endpoint**（默认）：终端节点。\n-  **EndpointService**：终端节点服务。\n\n> 该字段仅在 CrossRegion=true 时生效。",
+        "en": "Specifies whether to query the active zone support for the initiator side or the service side in a cross-region connection. Valid values:\n- **Endpoint** (default): endpoint.\n- **EndpointService**: endpoint service.\n\n> This parameter takes effect only when CrossRegion is set to true."
+      }
+    },
+    {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "可用区所在的地域ID。您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The ID of the region where the zones reside. You can call the [DescribeRegions](~~120468~~) operation to obtain the region ID."
+      }
     },
     {
       "name": "ServiceResourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "PrivateLink在某个地域可用区支持的情况，取决于后端服务资源类型。在查询PrivateLink支持的可用区列表时可指定服务资源类型，取值如下：\n\n- **slb**（默认）：表示服务资源类型为传统型负载均衡CLB（Classic Load Balancer）。\n-  **alb**：表示服务资源类型为应用型负载均衡ALB（Application Load Balancer）。\n- **nlb**：表示服务资源类型为网络型负载均衡NLB（Network Load Balancer ）。\n- **gwlb**：表示服务资源类型为网关型负载均衡 GWLB（Gateway Load Balancer）。",
+        "en": "The zone availability of PrivateLink in a region depends on the backend EPS resource type. You can specify the EPS resource type when querying the list of zones supported by PrivateLink. Valid values:\n\n- **slb** (default): the EPS resource type is Classic Load Balancer (CLB).\n- **alb**: the EPS resource type is Application Load Balancer (ALB).\n- **nlb**: the EPS resource type is Network Load Balancer (NLB).\n- **gwlb**: the EPS resource type is Gateway Load Balancer (GWLB)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询私网连接支持的可用区列表",
+    "en": "Query zones supported by privateLink"
+  },
   "example": {
     "unifiedCli": "aliyun privatelink describe-zones --biz-region-id cn-hangzhou --service-resource-type slb --cross-region false --cross-region-side EndpointService --region cn-hangzhou",
     "legacyCli": "aliyun privatelink DescribeZones --region cn-hangzhou --CrossRegion false --ServiceResourceType slb --RegionId 'cn-hangzhou' --CrossRegionSide EndpointService"

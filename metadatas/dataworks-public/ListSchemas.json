@@ -1,5 +1,6 @@
 {
   "name": "ListSchemas",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "Comment",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "注释，模糊匹配。",
+        "en": "The comment. Fuzzy match is supported."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "名称，模糊匹配。",
+        "en": "The name. Fuzzy match is supported."
+      }
     },
     {
       "name": "Order",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序方向，默认为Asc，枚举值，当前支持：\n\n- Asc：升序。\n- Desc：降序。",
+        "en": "The order in which schemas are sorted. Default value: Asc. Valid values:\n\n- Asc: ascending order\n\n- Desc: descending order"
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页页码，默认为1。",
+        "en": "The page number. Default value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页大小，默认为10，最大为100。",
+        "en": "The number of entries per page. Default value: 10. Maximum value: 100."
+      }
     },
     {
       "name": "ParentMetaEntityId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "父层级实体ID，可参考[元数据实体相关概念说明](~~2880092~~)，其中holo类型的`ParentMetaEntityId`可参考ListDatabases接口返回结果。\n\n`ParentMetaEntityId`格式为`${EntityType}:${实例ID或转义后的URL}:${数据目录标识}:${数据库名称}`，对于不存在的层级空字符占位。\n\n> 对于maxcompute类型，实例id层级使用空字符占位，数据库名称为maxcompute项目名称，要求该项目已开启三层模型。\n\n几种常用类型ParentMetaEntityId格式参考如下\n\t\n`maxcompute-project:::project_name` （要求该项目已开启三层模型）\n\n`holo-database:instance_id::database_name`\n\n> 其中   \n`instance_id`: holo实例ID   \n`database_name`: 数据库名称   \n`project_name`: maxcompute项目名",
+        "en": "The parent entity ID. For more information, see [Concepts related to metadata entities](~~2880092~~). For the Hologres metadata crawler type, you can call the ListDatabases operation to query the settings of the `ParentMetaEntityId` parameter.\n\nConfigure the `ParentMetaEntityId` parameter in the `${EntityType}:${Instance ID or escaped URL}:${Catalog identifier}:${Database name}` format. If a level does not exist, leave the level empty.\n\n> If you want to query the information about a MaxCompute schema, specify an empty string at the Instance ID level as a placeholder and a MaxCompute project name at the Database name level. Make sure that the schema feature is enabled for the MaxCompute project."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段，默认为CreateTime，枚举值，当前支持：\n\n- CreateTime：创建时间。\n- ModifyTime：修改时间。\n- Name：名称。\n- Type：类型。",
+        "en": "The field used for sorting. Default value: CreateTime. Valid values:\n\n- CreateTime\n\n- ModifyTime\n\n- Name\n\n- Type"
+      }
     },
     {
       "name": "Types",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "类型，精确匹配，为空时查询所有类型。",
+        "en": "The types. Exact match is supported. If this parameter is left empty, all types are queried."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询数据地图数据库模式列表",
+    "en": "Query the list of database schemas in Data Map"
+  },
+  "descriptions": {
+    "zh": "1. 需要购买DataWorks基础版及以上版本才能使用。",
+    "en": "1. You must purchase DataWorks Basic Edition or higher to use this feature."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public list-schemas --parent-meta-entity-id maxcompute-project:::project_name --name abc --comment test_comment --types MANAGED --sort-by CreateTime --order Asc --page-number 1 --page-size 10 --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public ListSchemas --region cn-hangzhou --Order Asc --Comment test_comment --Types MANAGED --PageSize 10 --PageNumber 1 --SortBy CreateTime --ParentMetaEntityId 'maxcompute-project:::project_name' --Name abc"

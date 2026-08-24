@@ -1,5 +1,6 @@
 {
   "name": "CreateOnlineDatabaseTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "CheckDBMode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "打开数据库后的一致性检查方法，取值：\n* **SyncExecuteDBCheck**：同步执行DB检查。\n* **AsyncExecuteDBCheck**：异步执行DB检查。\n\n>兼容SQL Server 2008 R2版本。",
+        "en": "The consistency check method after the database is open. Valid values:\n\n*   **SyncExecuteDBCheck**: synchronous database check\n*   **AsyncExecuteDBCheck**: asynchronous database check\n\n> The check methods are supported for RDS instances that run SQL Server 2008 R2."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The name of the database."
+      }
     },
     {
       "name": "MigrateTaskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "迁移任务ID。",
+        "en": "The ID of the migration task."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "打开备份数据上云任务的数据库",
+    "en": "CreateOnlineDatabaseTask"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS SQL Server\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n本接口用于备份数据上云，建议您先查看如下文档后，再使用本接口。\n- [全量备份数据上云（SQL Server 2008 R2）](~~95737~~)\n- [全量备份数据上云（SQL Server 2012、2014、2016、2017和2019）](~~95738~~)\n- [增量备份数据上云（SQL Server 2012、2014、2016、2017和2019）](~~95736~~)",
+    "en": "### [](#)Supported database engines\n\n*   SQL Server\n\n### [](#)References\n\n> : Before you call this operation, carefully read the following documentation. Make sure that you fully understand the prerequisites and impacts for calling this operation.\n\nThis operation is used to migrate backup data to the cloud. Before you call this operation, make sure that you understand the descriptions in the following topics:\n\n*   [Migrate the full backup data of a self-managed SQL Server database to an ApsaraDB RDS instance that runs SQL Server 2008 R2](~~95737~~)\n*   [Migrate full backup data of SQL Server 2012, 2014, 2016, 2017, or 2019 databases](~~95738~~)\n*   [Migrate incremental backup data to ApsaraDB RDS for SQL Server 2012, 2014, 2016, 2017, or 2019](~~95736~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds create-online-database-task --client-token ETnLKlblzczshOTUbOCz0000 --db-instance-id rm-uf6wjk50000 --db-name testDB --migrate-task-id 5652255443 --check-db-mode AsyncExecuteDBCheck --region cn-hangzhou",
     "legacyCli": "aliyun rds CreateOnlineDatabaseTask --region cn-hangzhou --DBInstanceId 'rm-uf6wjk50000' --MigrateTaskId 5652255443 --CheckDBMode AsyncExecuteDBCheck --DBName testDB --ClientToken ETnLKlblzczshOTUbOCz0000"

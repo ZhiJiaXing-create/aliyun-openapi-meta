@@ -1,0 +1,50 @@
+{
+  "name": "ExtendBucketWorm",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "/?wormExtend",
+  "parameters": [
+    {
+      "name": "body",
+      "position": "Body",
+      "type": "Struct",
+      "required": false,
+      "description": {
+        "zh": "保存合规保留策略的容器。",
+        "en": "The container that stores the retention policy."
+      }
+    },
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "wormId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "合规保留策略的ID。\n\n> 如果指定用于延长Object保留天数对应的合规保留策略ID不存在，则返回404。",
+        "en": "The ID of the retention policy.\n\n> If the specified retention policy ID for extending the object retention period does not exist, 404 is returned."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "延长存储空间中文件的保留天数",
+    "en": "Extend the retention period for objects in a bucket"
+  },
+  "descriptions": {
+    "zh": "当基于时间的合规保留策略创建后，该策略默认处于InProgress状态，且该状态的有效期为24小时。在有效期24小时内，此策略对应的Bucket数据处于保护状态。\n\n- 启动合规保留策略24小时内：若此策略未提交锁定，则Bucket所有者以及授权用户可以删除此策略；若该保留策略已提交锁定，则不允许删除此策略，且无法缩短策略保护周期，仅可以延长保护周期。\n\n- 启动合规保留策略24小时后：若超过24小时该保留策略未提交锁定，则该策略自动失效。\n\n若Bucket内有文件处于保护周期内，那么您将无法删除合规保留策略，同时也无法删除Bucket。当Bucket为空时，Bucket的所有者可以删除该Bucket，从而间接删除该Bucket的保留策略。\n\n\n> 若指定用于延长Object保留天数对应的WORM ID不存在，则返回404。",
+    "en": "After a time-based retention policy is created, the policy is in the InProgress state by default. This state is valid for 24 hours. Within the 24-hour validity period, the data in the bucket to which the policy applies is in protection status.\n\n- Within 24 hours after the retention policy is created: If the policy is not committed, the bucket owner and authorized users can delete the policy. If the retention policy is committed, the policy cannot be deleted, and the protection period cannot be shortened. You can only extend the protection period.\n\n- More than 24 hours after the retention policy is created: If the policy is not committed within 24 hours, the policy automatically expires.\n\nIf files in the bucket are within the protection period, you cannot delete the retention policy or the bucket. When the bucket is empty, the bucket owner can delete the bucket, which indirectly deletes the retention policy of the bucket.\n\n\n> If the specified WORM ID for extending the object retention period does not exist, 404 is returned."
+  }
+}

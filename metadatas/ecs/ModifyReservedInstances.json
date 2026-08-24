@@ -1,5 +1,6 @@
 {
   "name": "ModifyReservedInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,36 +10,60 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "预留实例券的配置信息数组。数组长度：1~100。",
+        "en": "The configurations of the new reserved instances. You can specify up to 100 new reserved instances."
+      },
       "sub_parameters": [
         {
           "name": "InstanceAmount",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "预留实例券可以同时匹配同规格按量付费实例的数量。取值范围：≥1。",
+            "en": "The number of pay-as-you-go instances of the specified instance type that the new reserved instance can match. The value of this parameter must be greater than or equal to 1."
+          }
         },
         {
           "name": "InstanceType",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "预留实例券可以匹配的实例规格。\n\n> 适用的实例规格持续更新，详情请参见[预留实例券概述](~~100370#3c1b682051vt4~~)。",
+            "en": "The instance types that the new reserved instance can match.\n\n> The supported instance types are continuously updated. For information about the instance types supported by reserved instances, see [Overview of reserved instances](~~100370#3c1b682051vt4~~)."
+          }
         },
         {
           "name": "ReservedInstanceName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "预留实例券的名称。\n\n长度为2~128个英文或中文字符。必须以大小写字母或中文开头，不能以http://和https://开头。可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+            "en": "The name of the new reserved instance.\n\nThe name must be 2 to 128 characters in length. The name must start with a letter and cannot start with http\\:// or https\\://. The name can contain letters, digits, colons (:), underscores (\\_), and hyphens (-)."
+          }
         },
         {
           "name": "Scope",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "预留实例券的范围。取值范围： \n\n- Region：地域级别。\n- Zone：可用区级别。\n\n默认值：Region。",
+            "en": "The scope level of the new reserved instance. Valid values:\n\n- Region\n\n- Zone\n\nDefault value: Region."
+          }
         },
         {
           "name": "ZoneId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "预留实例券所属的可用区编号。\n\n`Scope`参数值为`Zone`时，该参数为必填参数。\n\n您可以调用[DescribeZones](~~25609~~)获取可用区列表。",
+            "en": "The zone ID of the new reserved instance.\n\nThis parameter is required when you set `Scope` to `Zone`.\n\nYou can call the [DescribeZones](~~25609~~) operation to query the most recent zone list."
+          }
         }
       ]
     },
@@ -46,15 +71,34 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预留实例券所属的地域ID。\n\n您可以调用[DescribeRegions](~~25609~~)获取最新的阿里云地域列表。",
+        "en": "The region ID of the reserved instance.\n\nYou can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ReservedInstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预留实例券ID数组。数组长度：1~20。",
+        "en": "The IDs of reserved instances that you want to modify. You can specify up to 20 reserved instance IDs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改预留实例券配置",
+    "en": "ModifyReservedInstances"
+  },
+  "descriptions": {
+    "zh": "本接口为异步接口，接口调用成功后会返回新产生的预留实例券ID，原来的预留实例券会进入`更新中`状态，最终变为`失效`状态，与此同时，会有一张创建中状态的预留实例券产生，最终变为已生效状态，您可以通过[DescribeReservedInstances](~~2679781~~)进行查询。\n\n- 预留实例券只有在**已生效**状态下才可以修改配置。\n- 请确保修改配置前后预留实例券的[计算力](~~140660#2742f3844abzz~~)不会改变，否则修改请求会失败。\n- 预留实例券的拆分、合并、范围变更不能同时进行。\n\n更多信息，请参见[拆分、合并或修改预留实例券](~~100375~~)。\n\n## 请求示例\n\n- **拆分**：将一张杭州地域、实例规格为ecs.g5.xlarge、匹配数量为2的预留实例券拆分为两张实例规格为ecs.g5.large、匹配数量为1的预留实例券。\n```\n\"RegionId\":\"cn-hangzhou\", //设置地域为杭州\n\"ReservedInstanceId\":[\"ecsri-bp1hd03e9uv19e75****\"], //需要拆分的预留实例券ID\n\"Configuration\":[\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName1\", //修改后的预留实例券名称\n    \"InstanceType\":\"ecs.g5.large\", //设置修改后的实例规格\n    \"Scope\":\"Region\", //预留实例券的范围不可改变\n    \"InstanceAmount\":1 //表示预留实例券可以同时匹配同规格按量付费实例的数量为1台\n  },\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName2\",\n    \"InstanceType\":\"ecs.g5.large\",\n    \"Scope\":\"Region\",\n    \"InstanceAmount\":1\n  }\n]\n\n```\n\n- **合并**：将两张杭州地域可用区 H 、实例规格为ecs.g5.xlarge、匹配数量为4的预留实例券合并为一张实例规格为ecs.g5.4xlarge、匹配数量为2的预留实例券。\n```\n\"RegionId\":\"cn-hangzhou\", //设置地域为杭州\n\"ReservedInstanceId\":[\"ecsri-bp1hd03e9uv16b75****\",\"\"ecsri-bp1hd03e9uv16b76****\"\"], //需要合并的预留实例券ID\n\"Configuration\":[\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName\", //修改后的预留实例券名称\n    \"InstanceType\":\"ecs.g5.4xlarge\", //设置修改后的实例规格\n    \"Scope\":\"Zone\", //预留实例券的范围不可改变\n    \"ZoneId\":\"cn-hangzhou-h\", //\n    \"InstanceAmount\":2 //表示预留实例券可以同时匹配同规格按量付费实例的数量为2台\n  }\n]\n```\n\n- **变更范围**：将一张杭州地域可用区 H 、实例规格为ecs.g5.xlarge、匹配数量为6的预留实例券变更为一张杭州地域、实例规格为ecs.g5.2xlarge、匹配数量为3的预留实例券。\n```\n\"RegionId\":\"cn-hangzhou\", //设置地域为杭州\n\"ReservedInstanceId\":[\"ecsri-bp1hd03e9uv16b77****\"], //需要变更范围的预留实例券ID\n\"Configuration\":[\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName\", //变更范围后的预留实例券名称\n    \"InstanceType\":\"ecs.g5.2xlarge\", //设置修改后的实例规格\n    \"Scope\":\"Region\", //变更后预留实例券的范围\n    \"InstanceAmount\":3 //表示预留实例券可以同时匹配同规格按量付费实例的数量为3台\n  }\n]\n```",
+    "en": "This operation is an asynchronous operation. After you call this operation to modify a reserved instance, the operation starts the modification process and returns the ID of the resulting new reserved instance. The original reserved instance enters the `Updating` state and then the `Inactive` state. At the same time, the resulting new reserved instance is generated and enters the Creating state and then the Active state. You can call the [DescribeReservedInstances](~~2679781~~) operation to query the states of the reserved instance.\n\n- You can modify the configurations of a reserved instance only if the reserved instance is in the **Active** state.\n\n- Make sure that the [computing power](~~140660#2742f3844abzz~~) of the reserved instance remains unchanged before and after the modification. Otherwise, the modification fails.\n\n- You cannot split, merge, or change the scope of a reserved instance at the same time.\n\nFor more information, see [Split, merge, or modify reserved instances](~~100375~~).\n\n## [](#)Sample requests\n\n- **Sample request to split a reserved instance**: Split a regional reserved instance that is scoped to the China (Hangzhou) region and can match two pay-as-you-go instances of the ecs.g5.xlarge instance type into two regional reserved instances that are scoped to the China (Hangzhou) region and each can match one pay-as-you-go instance of the ecs.g5.large instance type:\n\n<!---->\n\n```\n\"RegionId\":\"cn-hangzhou\", //The ID of the region.\n\"ReservedInstanceId\":[\"ecsri-bp1hd03e9uv19e75****\"], //The ID of the reserved instance that you want to split.\n\"Configuration\":[\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName1\", //The name of the new reserved instance.\n    \"InstanceType\":\"ecs.g5.large\", //The instance type that the new reserved instance can match.\n    \"Scope\":\"Region\", //The scope level of the new reserved instance, which must be the same as the scope level of the original reserved instance.\n    \"InstanceAmount\":1 //The number of pay-as-you-go instances of the specified instance type that each new reserved instance can match.\n  },\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName2\",\n    \"InstanceType\":\"ecs.g5.large\",\n    \"Scope\":\"Region\",\n    \"InstanceAmount\":1\n  }\n]\n```\n\n- **Sample request to merge reserved instance:**: Merge two zonal reserved instances that are scoped to Hangzhou Zone H and can match four pay-as-you-go instances of the ecs.g5.xlarge instance type into one zonal reserved instance that is scoped to Hangzhou Zone H and can match two pay-as-you-go instances of the ecs.g5.4xlarge instance type:\n\n<!---->\n\n```\n\"RegionId\":\"cn-hangzhou\", //The ID of the region.\n\"ReservedInstanceId\":[\"ecsri-bp1hd03e9uv16b75****\",\"\"ecsri-bp1hd03e9uv16b76****\"\"], //The IDs of the reserved instances that you want to merge.\n\"Configuration\":[\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName\", //The name of the new reserved instance.\n    \"InstanceType\":\"ecs.g5.4xlarge\", //The instance type that the new reserved instance can match.\n    \"Scope\":\"Zone\", //The scope level of the new reserved instance, which must be the same as the scope level of the original reserved instances.\n    \"ZoneId\":\"cn-hangzhou-h\", //\n    \"InstanceAmount\":2 //The number of pay-as-you-go instances of the specified instance type that the new reserved instance can match.\n  }\n]\n```\n\n- **Sample request to change the scope of a reserved instance**: Change a regional reserved instance that is scoped to Hangzhou Zone H and can match six pay-as-you-go instances of the ecs.g5.xlarge instance type to a regional reserved instance that is scoped to the China (Hangzhou) region and can match three pay-as-you-go instances of the ecs.g5.2xlarge instance type.\n\n<!---->\n\n```\n\"RegionId\":\"cn-hangzhou\", //The ID of the region.\n\"ReservedInstanceId\":[\"ecsri-bp1hd03e9uv16b77****\"], //The ID of the reserved instance whose scope you want to change.\n\"Configuration\":[\n  {\n    \"ReservedInstanceName\":\"testReservedInstanceName\", //The name of the new reserved instance.\n    \"InstanceType\":\"ecs.g5.2xlarge\", //The instance type that the new reserved instance can match.\n    \"Scope\":\"Region\", //The scope level of the new reserved instance.\n    \"InstanceAmount\":3 //The number of pay-as-you-go instances of the specified instance type that the new reserved instance can match.\n  }\n]\n```"
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-reserved-instances --biz-region-id cn-hangzhou --reserved-instance-id ecsri-bp15xx20000 --configuration InstanceAmount=1 ZoneId=cn-hangzhou-i Scope=Zone ReservedInstanceName=testReservedInstanceName InstanceType=ecs.c5.4xlarge --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyReservedInstances --region cn-hangzhou --Configuration.1.Scope Zone --Configuration.1.ReservedInstanceName testReservedInstanceName --ReservedInstanceId.1 'ecsri-bp15xx20000' --Configuration.1.InstanceAmount 1 --Configuration.1.InstanceType 'ecs.c5.4xlarge' --RegionId 'cn-hangzhou' --Configuration.1.ZoneId 'cn-hangzhou-i'"

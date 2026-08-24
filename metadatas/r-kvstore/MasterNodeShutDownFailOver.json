@@ -1,5 +1,6 @@
 {
   "name": "MasterNodeShutDownFailOver",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "Category",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品资源类别，取值固定值`instance`。",
+        "en": "The resource category. Set the value to instance."
+      }
     },
     {
       "name": "DBFaultMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "- **Specify**：指定数据节点。\n- **Random**：表示系统随机模拟1/4个数据节点故障（不足1时取1、大于时向上取整），该参数仅在没有指定数据节点时生效。",
+        "en": "*   Specify: This mode allows you to specify a database node to use.\n*   Random: In this mode, a random database node is selected when no database node is specified."
+      }
     },
     {
       "name": "DBNodes",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定的数据节点。",
+        "en": "The IDs of the database nodes."
+      }
     },
     {
       "name": "FailMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "- **Hard**：模拟硬件的不可恢复故障，此时将直接触发切换（HA）。\n- **Soft**（默认）：模拟硬件的可恢复故障，此时将优先尝试恢复故障节点，若失败则触发切换（HA）。",
+        "en": "*   **Hard**: stimulates a hardware failure that cannot be recovered. In this case, a high-availability switchover is triggered.\n*   **Soft** (default): stimulates a hardware failure that can be recovered. In this case, the system first attempts to recover the faulty node. If the attempt fails, a high-availability switchover is triggered.\n\nValid values:\n\n*   Safe\n*   UnSafe\n*   Hard\n*   Soft"
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID，可调用[DescribeInstances](~~473778~~)获取。",
+        "en": "The instance ID. You can call the [DescribeInstances](~~473778~~) operation to query the instance ID."
+      }
     },
     {
       "name": "ProxyFaultMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "- **Specify**: 指定Proxy节点。\n- **Random**: 表示系统随机模拟1/4个Proxy节点故障（不足1时取1、大于时向上取整），该参数仅在没有指定Proxy节点时生效。",
+        "en": "*   Specify: This mode allows you to specify a proxy node to use.\n*   Random: In this mode, a random proxy node is selected when no proxy node is specified."
+      }
     },
     {
       "name": "ProxyInstanceIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定的Proxy节点。",
+        "en": "The IDs of the proxy nodes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "模拟指定节点故障",
+    "en": "MasterNodeShutDownFailOver"
+  },
+  "descriptions": {
+    "zh": "- 调用本接口时，指定的节点会关闭。实例会自动触发主备切换，将备节点提升为主节点。\n- 模拟故障的节点会在稍后自动恢复。\n- 单节点（单副本）不支持调用本接口。",
+    "en": "- 调用本接口时，指定的节点会关闭。实例会自动触发主备切换，将备节点提升为主节点。\n- 模拟故障的节点会在稍后自动恢复。\n- 单节点（单副本）不支持调用本接口。"
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore master-node-shut-down-fail-over --fail-mode Hard --db-nodes r-rdsdavinx01003-db-0,r-rdsdavinx01003-db-1 --proxy-instance-ids 6981,6982 --proxy-fault-mode Specify --db-fault-mode Random --instance-id r-bp1zxszhcgatnx0000 --category instance --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore MasterNodeShutDownFailOver --region cn-hangzhou --FailMode Hard --ProxyInstanceIds '6981,6982' --Category instance --DBNodes 'r-rdsdavinx01003-db-0,r-rdsdavinx01003-db-1' --DBFaultMode Random --InstanceId 'r-bp1zxszhcgatnx0000' --ProxyFaultMode Specify"

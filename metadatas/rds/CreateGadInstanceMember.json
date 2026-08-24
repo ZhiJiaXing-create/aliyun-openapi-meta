@@ -1,5 +1,6 @@
 {
   "name": "CreateGadInstanceMember",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,137 +9,236 @@
       "name": "CentralDBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "中心节点ID，可调用DescribeGadInstances查询。",
+        "en": "The ID of the central node . You can call the DescribeGadInstances operation to query the ID."
+      }
     },
     {
       "name": "CentralRdsDtsAdminAccount",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "中心节点的高权限账号，可调用DescribeAccounts查询。",
+        "en": "The username of the privileged account of the central node. You can call the DescribeAccounts operation to query the privileged account of the central node."
+      }
     },
     {
       "name": "CentralRdsDtsAdminPassword",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "中心节点的高权限账号对应的密码。",
+        "en": "The password of the privileged account of the central node."
+      }
     },
     {
       "name": "CentralRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "中心节点（主节点）所在地域ID，可调用DescribeRegions查询。",
+        "en": "The region ID of the central node. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "DBList",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "中心节点中数据库信息的JSON数组，数组中所有数据库信息将同步至当前单元节点。参数说明：\n* **name**：数据库名称。\n* **all**：是否同步当前库或表中的所有数据。取值：**true**|**false**\n* **Table**：表名称。若**all**参数为**false**，则还需要在JSON数组中套入需要同步的表名称。\n\n示例：`{\n   \"testdb\": {\n    \"name\": \"testdb\",\n    \"all\": false,\n    \"Table\": {\n      \"order\": {\n        \"name\": \"order\",\n        \"all\": true\n      },\n      \"ordernew\": {\n        \"name\": \"ordernew\",\n        \"all\": true\n      }\n    }\n  }\n}`\n> 更多信息，请参见[迁移、同步或订阅对象说明](~~209545~~)。",
+        "en": "A JSON array that consists of the information about the databases on the central node. All database information that you specify in this array is synchronized to the unit nodes of the global active database cluster. The JSON array contains the following fields:\n\n*   **name**: the name of the database.\n*   **all**: specifies whether to synchronize all data in the database or the table. Valid values: **true** and **false**.\n*   **Table**: the name of the table. If you set the **all** field to **false**, you must nest the name of the table that you want to synchronize into the JSON array.\n\nExample: `{ \"testdb\": { \"name\": \"testdb\", \"all\": false, \"Table\": { \"order\": { \"name\": \"order\", \"all\": true }, \"ordernew\": { \"name\": \"ordernew\", \"all\": true } } } }`\n\n>  For more information, see [Objects of DTS tasks](~~209545~~)."
+      }
     },
     {
       "name": "GadInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RDS全球多活数据库集群ID，可调用DescribeGadInstances查询。",
+        "en": "The ID of the global active database cluster. You can call the DescribeGadInstances operation to query the ID."
+      }
     },
     {
       "name": "UnitNode",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "单元节点（备节点）信息列表。",
+        "en": "The information about the unit node."
+      },
       "sub_parameters": [
         {
           "name": "DBInstanceDescription",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的名称。命名规则如下：\n- 长度为**2~255**个字符。\n- 以中文、英文字母开头，可以包含数字、中文、英文、下划线（_）、短横线（-）。\n- 不能以`http://`或`https://`开头。",
+            "en": "The name of the unit node that you want to create. The name must meet the following requirements:\n\n*   The name must be **2 to 255** characters in length.\n*   The name can contain letters, digits, underscores (\\_), and hyphens (-) and must start with a letter.\n*   The name cannot start with `http://` or `https://`."
+          }
         },
         {
           "name": "DBInstanceStorage",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的存储空间大小。单位：GB。每5 GB进行递增，取值范围请参见[实例规格表](~~26312~~)。您也可以调用DescribeAvailableResource接口查询目标实例规格中可用的存储空间范围。",
+            "en": "The storage capacity of the unit node that you want to create. Unit: GB The storage capacity increases in increments of 5 GB. For more information, see [Primary ApsaraDB RDS instance types](~~26312~~). You can also call the DescribeAvailableResource operation to query the storage capacity range that is supported by the new instance type."
+          }
         },
         {
           "name": "DBInstanceStorageType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例存储类型，取值：\n\n* **local_ssd**：本地SSD盘\n* **cloud_ssd**：SSD云盘\n* **cloud_essd**：ESSD PL1云盘\n* **cloud_essd2**：ESSD PL2云盘\n* **cloud_essd3**：ESSD PL3云盘",
+            "en": "The storage type of the instance. Valid values:\n\n*   **local_ssd**: local SSD\n*   **cloud_ssd**: standard SSD\n*   **cloud_essd**: PL1 ESSD\n*   **cloud_essd2**: PL2 ESSD\n*   **cloud_essd3**: PL3 ESSD"
+          }
         },
         {
           "name": "DbInstanceClass",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的实例规格。取值详情请参见[主实例规格表](~~26312~~)。您也可以调用DescribeAvailableResource接口查询目标地域中可用的实例规格列表。",
+            "en": "The instance type of the unit node that you want to create. For more information, see [Primary ApsaraDB RDS instance types](~~26312~~). You can call the DescribeAvailableResource operation to query the available instance types in a region."
+          }
         },
         {
           "name": "DtsConflict",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "新建单元节点在同步时发生主键冲突采取的修复策略。取值：\n* **overwrite**：覆盖目标节点中发生冲突的主键。\n* **interrupt**：中止同步任务，报错并退出。\n* **ignore**：覆盖当前节点中发生冲突的主键。",
+            "en": "The conflict resolution policy based on which Data Transmission Service (DTS) responds to primary key conflicts during data synchronization to the unit node that you want to create. Valid values:\n\n*   **overwrite**: DTS overwrites the conflicting primary key on the destination node.\n*   **interrupt**: DTS stops the synchronization task, reports an error, and then exits.\n*   **ignore**: DTS overwrites the conflicting primary key on the logger node."
+          }
         },
         {
           "name": "DtsInstanceClass",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "新建单元节点的数据同步链路规格。取值：\n* **small**\n* **medium**\n* **large**\n* **micro**\n\n>关于各规格的区别，请参见[数据同步规格链路说明](~~26605~~)。",
+            "en": "The specifications of the data synchronization task for the unit node that you want to create. Valid values:\n\n*   **small**\n*   **medium**\n*   **large**\n*   **micro**\n\n>  For more information, see [Specifications of data synchronization tasks](~~26605~~)."
+          }
         },
         {
           "name": "Engine",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的数据库引擎。当前仅支持**MySQL**。",
+            "en": "The database engine of the unit node that you want to create. Set the value to **MySQL**."
+          }
         },
         {
           "name": "EngineVersion",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的数据库版本。取值：\n* **8.0**\n* **5.7**\n* **5.6**\n* **5.5**",
+            "en": "The database engine version of the unit node that you want to create. Valid values:\n\n*   **8.0**\n*   **5.7**\n*   **5.6**\n*   **5.5**"
+          }
         },
         {
           "name": "RegionID",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "新建单元节点（备节点）所在的地域ID，可调用DescribeRegions查询。",
+            "en": "The region ID of the unit node or secondary node that you want to create. You can call the DescribeRegions operation to query the most recent region list."
+          }
         },
         {
           "name": "SecurityIPList",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的[IP白名单](~~43185~~)。多条记录请以英文逗号（,）隔开，不可重复，最多1000条记录。支持如下两种格式：\n* IP地址形式，例如：`10.10.XX.XX`。\n* CIDR形式，例如：`10.10.XX.XX/24`（无类域间路由，**24**表示了地址中前缀的长度，范围为**1~32**）。",
+            "en": "The [IP address whitelist](~~43185~~) of the unit node that you want to create. If you want to add more than one entry to the IP address whitelist, separate the entries with commas (,). Each entry must be unique. The IP address whitelist can contain up to 1,000 entries. The entries in the IP address whitelist must be in one of the following formats:\n\n*   IP addresses, such as `10.10.XX.XX`.\n*   CIDR blocks, such as `10.10.XX.XX/24`. In this example, **24** indicates that the prefix of each IP address in the IP address whitelist is 24 bits in length. You can replace 24 with a value within the range of **1 to 32**."
+          }
         },
         {
           "name": "VSwitchID",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "新建单元节点的虚拟交换机（vSwitch） ID。",
+            "en": "The vSwitch ID of the unit node that you want to create."
+          }
         },
         {
           "name": "VpcID",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "新建单元节点的专有网络（VPC）ID。",
+            "en": "The virtual private cloud (VPC) ID of the unit node that you want to create."
+          }
         },
         {
           "name": "ZoneID",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点所在的可用区ID，可调用DescribeRegions查询。",
+            "en": "The zone ID of the unit node that you want to create. You can call the DescribeRegions operation to query the zone ID."
+          }
         },
         {
           "name": "ZoneIDSlave1",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的备节点可用区ID。可调用DescribeRegions查询。\n* 如果和当前单元节点的**ZoneId**相同，则为单可用区部署。\n* 如果和当前单元节点的**ZoneId**不同，则为多可用区部署。",
+            "en": "The zone ID of the secondary node of the unit node that you want to create. You can call the DescribeRegions operation to query the zone ID.\n\n*   If the value of this parameter is the same as the **zone ID** of the unit node that you want to create, the single-zone deployment method is used.\n*   If the value of this parameter is different from the **zone ID** of the unit node that you want to create, the multiple-zone deployment method is used."
+          }
         },
         {
           "name": "ZoneIDSlave2",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新建单元节点的日志节点可用区ID。可调用DescribeRegions查询。\n* 如果和当前单元节点的**ZoneId**相同，则为单可用区部署。\n* 如果和当前单元节点的**ZoneId**不同，则为多可用区部署。",
+            "en": "The zone ID of the logger node of the unit node that you want to create. You can call the DescribeRegions operation to query the zone ID.\n\n*   If the value of this parameter is the same as the **zone ID** of the unit node that you want to create, the single-zone deployment method is used.\n*   If the value of this parameter is different from the **zone ID** of the unit node that you want to create, the multiple-zone deployment method is used."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建Gad实例成员",
+    "en": "CreateGadInstanceMember"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n<props=\"china\">[添加或移除单元节点](~~331851~~)</props>",
+    "en": "### [](#)Supported database engines\n\n*   RDS MySQL\n\n### [](#)References\n\n> Before you call this operation, carefully read the following documentation. Make sure that you fully understand the prerequisites and impacts for calling this operation.\n\n[Add or remove unit nodes](~~331851~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds create-gad-instance-member --central-region-id cn-hangzhou --central-db-instance-id rm-bp190h8y69tad0000 --gad-instance-id gad-rm-bp1npi2j80000 --unit-node EngineVersion=8.0 ZoneID=cn-hangzhou-j VSwitchID=vsw-bp1tg609m5j850000 ZoneIDSlave2=cn-hangzhou-j ZoneIDSlave1=cn-hangzhou-j DBInstanceStorageType=cloud_essd VpcID=vpc-bp19ame5m1r3o0000 SecurityIPList=10.10.XX.XX DtsInstanceClass=medium DBInstanceStorage=20 DtsConflict=overwrite RegionID=cn-hangzhou DbInstanceClass=rds.mysql.t1.small DBInstanceDescription=test Engine=MySQL --central-rds-dts-admin-account test --central-rds-dts-admin-password Test12345 --db-list testdb_:_name_:_testdb_,_all_:_false,_Table_:_order_:_name_:_order_,_all_:_true_,_ordernew_:_name_:_ordernew_,_all_:_true --region cn-hangzhou",
     "legacyCli": "aliyun rds CreateGadInstanceMember --region cn-hangzhou --UnitNode.1.VpcID 'vpc-bp19ame5m1r3o0000' --UnitNode.1.EngineVersion '8.0' --UnitNode.1.RegionID 'cn-hangzhou' --UnitNode.1.DBInstanceStorageType cloud_essd --GadInstanceId 'gad-rm-bp1npi2j80000' --UnitNode.1.DtsInstanceClass medium --UnitNode.1.ZoneIDSlave2 'cn-hangzhou-j' --UnitNode.1.ZoneIDSlave1 'cn-hangzhou-j' --CentralRdsDtsAdminPassword Test12345 --UnitNode.1.ZoneID 'cn-hangzhou-j' --UnitNode.1.VSwitchID 'vsw-bp1tg609m5j850000' --UnitNode.1.DtsConflict overwrite --UnitNode.1.DbInstanceClass 'rds.mysql.t1.small' --UnitNode.1.Engine MySQL --DBList 'testdb_:_name_:_testdb_,_all_:_false,_Table_:_order_:_name_:_order_,_all_:_true_,_ordernew_:_name_:_ordernew_,_all_:_true' --UnitNode.1.DBInstanceStorage 20 --UnitNode.1.DBInstanceDescription test --CentralRdsDtsAdminAccount test --CentralRegionId 'cn-hangzhou' --UnitNode.1.SecurityIPList '10.10.XX.XX' --CentralDBInstanceId 'rm-bp190h8y69tad0000'"

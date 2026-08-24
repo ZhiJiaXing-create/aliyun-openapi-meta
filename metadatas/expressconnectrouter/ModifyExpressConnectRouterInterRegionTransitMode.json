@@ -1,5 +1,6 @@
 {
   "name": "ModifyExpressConnectRouterInterRegionTransitMode",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,41 +9,72 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a unique value from your client for this parameter. ClientToken supports only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** as the **ClientToken**. The **RequestId** is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会修改服务资源。\n\n- **false**（默认值）：发送正常请求。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Sends a check request without modifying the service resource.\n\n- **false** (default): Sends a normal request."
+      }
     },
     {
       "name": "EcrId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "专线网关实例ID。",
+        "en": "The ID of the Express Connect Router (ECR) instance."
+      }
     },
     {
       "name": "TransitModeList",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "跨域转发模式列表。",
+        "en": "The list of inter-region forwarding modes."
+      },
       "sub_parameters": [
         {
           "name": "Mode",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "专线网关跨域转发模式，取值：\n- **ECMP**：负载均衡模式。\n- **NearBy**：就近转发模式。",
+            "en": "The inter-region forwarding mode of the ECR. Valid values:\n\n- **ECMP**: The load balancing mode.\n\n- **NearBy**: The nearby forwarding mode."
+          }
         },
         {
           "name": "RegionId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "专线网关实例所属的地域。",
+            "en": "The region where the ECR instance is deployed."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改专线网关（ECR）的跨地域转发模式",
+    "en": "ModifyExpressConnectRouterInterRegionTransitMode"
+  },
   "example": {
     "unifiedCli": "aliyun expressconnectrouter modify-express-connect-router-inter-region-transit-mode --ecr-id ecr-mezk2idmsd0vx20000 --transit-mode-list Mode=ECMP RegionId=cn-hangzhou --dry-run true --client-token FF9nMec/RZ6H9oqFn1pvyir/SLRlxCCyHJonbGzqL01hiM6Jb3wJowdHvjCfog7ww1b9rSHMRFJnrUBfVba68TJg== --region cn-hangzhou",
     "legacyCli": "aliyun expressconnectrouter ModifyExpressConnectRouterInterRegionTransitMode --region cn-hangzhou --EcrId 'ecr-mezk2idmsd0vx20000' --TransitModeList.1.RegionId 'cn-hangzhou' --DryRun true --ClientToken 'FF9nMec/RZ6H9oqFn1pvyir/SLRlxCCyHJonbGzqL01hiM6Jb3wJowdHvjCfog7ww1b9rSHMRFJnrUBfVba68TJg==' --TransitModeList.1.Mode ECMP"

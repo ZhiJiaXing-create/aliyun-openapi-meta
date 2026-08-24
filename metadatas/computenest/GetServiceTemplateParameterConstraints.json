@@ -1,5 +1,6 @@
 {
   "name": "GetServiceTemplateParameterConstraints",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. Generate a unique value from your client for each request. The token can contain only ASCII characters and cannot be more than 64 characters long."
+      }
     },
     {
       "name": "DeployRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "部署地域ID。",
+        "en": "The deployment region ID."
+      }
     },
     {
       "name": "EnablePrivateVpcConnection",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否已开启私网连接。可能的值：\n\n- true：已开启\n\n- false：未开启",
+        "en": "Indicates whether PrivateLink is enabled. Valid values:\n\n- true: enabled\n\n- false: disabled"
+      }
     },
     {
       "name": "Parameters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "服务实例配置参数。",
+        "en": "The configuration parameters of the service instance."
+      },
       "sub_parameters": [
         {
           "name": "ParameterKey",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "参数的名称。如果未指定参数的名称和值，则ROS将使用模板中指定的默认值。\n\n> Parameters为可选参数。若指定了Parameters，则ParameterKey为必选参数。",
+            "en": "The name of the parameter. If you do not specify the name and value of the parameter, Resource Orchestration Service (ROS) uses the default value that is specified in the template.\n\n> The Parameters parameter is optional. If you specify Parameters, ParameterKey is required."
+          }
         },
         {
           "name": "ParameterValue",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "模板中已定义的参数的取值。\n\n> Parameters为可选参数。若指定了Parameters，则ParameterValue为必选参数。",
+            "en": "The value of the parameter that is defined in the template.\n\n> The Parameters parameter is optional. If you specify Parameters, ParameterValue is required."
+          }
         }
       ]
     },
@@ -46,45 +71,80 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务ID。",
+        "en": "The service ID."
+      }
     },
     {
       "name": "ServiceInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务实例ID。",
+        "en": "The service instance ID."
+      }
     },
     {
       "name": "ServiceVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务版本。",
+        "en": "The service version."
+      }
     },
     {
       "name": "SpecificationName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "套餐规格名称。",
+        "en": "The specification name."
+      }
     },
     {
       "name": "TemplateName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "模板名称。",
+        "en": "The template name."
+      }
     },
     {
       "name": "TrialType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "使用类型。可选值：\n\n- Trial：支持试用。\n\n- NotTrial：不支持试用。",
+        "en": "The usage type. Valid values:\n\n- Trial: The service supports a trial.\n\n- NotTrial: The service does not support a trial."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询服务模板参数限定值",
+    "en": "GetServiceTemplateParameterConstraints"
+  },
   "example": {
     "unifiedCli": "aliyun computenest get-service-template-parameter-constraints --biz-region-id cn-hangzhou --service-id service-731f788406024axxxxxx --service-version 1 --template-name Template_1 --parameters ParameterValue=cn-hangzhou-j ParameterKey=InstanceType --client-token 123e4567-e89b-12d3-a456-426655440000 --deploy-region-id cn-hangzhou --trial-type NotTrial --specification-name Package_1 --service-instance-id si-461ee95f46ca46xxxxxx --enable-private-vpc-connection true --region cn-hangzhou",
     "legacyCli": "aliyun computenest GetServiceTemplateParameterConstraints --region cn-hangzhou --EnablePrivateVpcConnection true --DeployRegionId 'cn-hangzhou' --ServiceInstanceId 'si-461ee95f46ca46xxxxxx' --TrialType NotTrial --Parameters.1.ParameterKey InstanceType --ServiceVersion 1 --TemplateName Template_1 --RegionId 'cn-hangzhou' --SpecificationName Package_1 --ClientToken '123e4567-e89b-12d3-a456-426655440000' --Parameters.1.ParameterValue 'cn-hangzhou-j' --ServiceId 'service-731f788406024axxxxxx'"

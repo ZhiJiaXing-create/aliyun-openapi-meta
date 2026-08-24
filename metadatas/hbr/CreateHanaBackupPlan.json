@@ -1,5 +1,6 @@
 {
   "name": "CreateHanaBackupPlan",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "BackupPrefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "备份前缀。",
+        "en": "The backup prefix."
+      }
     },
     {
       "name": "BackupType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份类型。\n* COMPLETE：全量备份。\n* INCREMENTAL：增量备份。\n* DIFFERENTIAL：差量备份。",
+        "en": "The backup type. Valid values:\n\n*   COMPLETE: full backup\n*   INCREMENTAL: incremental backup\n*   DIFFERENTIAL: differential backup"
+      }
     },
     {
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SAP HANA实例ID。",
+        "en": "The ID of the SAP HANA instance."
+      }
     },
     {
       "name": "DatabaseName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The name of the database."
+      }
     },
     {
       "name": "PlanName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份计划名称。",
+        "en": "The name of the backup plan."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "Schedule",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份策略。可选格式：`I|{startTime}|{interval}`。表示从{startTime}开始每隔{interval}的时间执行一次备份任务。不会补偿已过去时间的备份任务。如果上一次备份任务没有完成，不会触发下一次备份任务。例如`I|1631685600|P1D`表示从2021-09-15 14:00:00开始每隔一天备份一次。\n\n* startTime：备份起始时间，UNIX时间，单位为秒。\n* interval： ISO8601时间间隔。例如：PT1H表示间隔一小时。P1D表示间隔一天。",
+        "en": "The backup policy. Format: `I|{startTime}|{interval}`. The system runs the first backup job at a point in time that is specified in the {startTime} parameter and the subsequent backup jobs at an interval that is specified in the {interval} parameter. The system does not run a backup job before the specified point in time. Each backup job, except the first one, starts only after the previous backup job is completed. For example, `I|1631685600|P1D` specifies that the system runs the first backup job at 14:00:00 on September 15, 2021 and the subsequent backup jobs once a day.\n\n*   startTime: the time at which the system starts to run a backup job. The time must follow the UNIX time format. Unit: seconds.\n*   interval: the interval at which the system runs a backup job. The interval must follow the ISO 8601 standard. For example, PT1H specifies an interval of one hour. P1D specifies an interval of one day."
+      }
     },
     {
       "name": "VaultId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份仓库ID。",
+        "en": "The ID of the backup vault."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建SAP HANA备份计划",
+    "en": "CreateHanaBackupPlan"
+  },
+  "descriptions": {
+    "zh": "- 备份计划关联了数据源与备份策略以及其他备份所需的信息。备份计划执行后会产生备份任务，记载备份进度与备份结果。如果备份任务成功，会产生一个备份快照。可以使用备份快照创建恢复任务。\n- 一个备份计划仅支持一种数据源。\n- 一个备份计划仅支持单个固定时间间隔的备份周期策略。\n- 一个备份计划仅能向一个备份仓库进行备份。",
+    "en": "*   A backup plan defines the data source, backup policy, and other configurations. After you execute a backup plan, a backup job is generated to record the backup progress and the backup result. If a backup job is completed, a backup snapshot is generated. You can use a backup snapshot to create a restore job.\n*   You can specify only one type of data source in a backup plan.\n*   You can specify only one interval as a backup cycle in a backup plan.\n*   Each backup plan allows you to back up data to only one backup vault."
+  },
   "example": {
     "unifiedCli": "aliyun hbr create-hana-backup-plan --vault-id v-0002pcwhdn000000wmi --cluster-id cl-00024vyjj9000000v --plan-name plan-20220110-113108 --schedule I_1602673264_P1D --backup-type COMPLETE --database-name SYSTEMDB --backup-prefix DIFF_DATA_BACKUP --resource-group-id rg-acfmvnf22m7itha --region cn-hangzhou",
     "legacyCli": "aliyun hbr CreateHanaBackupPlan --region cn-hangzhou --ResourceGroupId 'rg-acfmvnf22m7itha' --ClusterId 'cl-00024vyjj9000000v' --BackupPrefix DIFF_DATA_BACKUP --Schedule I_1602673264_P1D --DatabaseName SYSTEMDB --BackupType COMPLETE --VaultId 'v-0002pcwhdn000000wmi' --PlanName 'plan-20220110-113108'"

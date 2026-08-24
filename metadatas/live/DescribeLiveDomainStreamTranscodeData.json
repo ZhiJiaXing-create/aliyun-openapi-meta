@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveDomainStreamTranscodeData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的主播流域名。\n\n- 支持单个或批量域名查询。批量查询时多个域名用英文逗号（,）分隔。\n- 若参数为空，默认返回所有直播域名合并后的数据。\n- 传入DomainName时，请保证传入域名为直播域名，同时调用本接口的用户拥有传入域名的操作权限。",
+        "en": "The streaming domain of the streamer to query.\n\n- You can query a single domain name or multiple domain names at a time. Separate multiple domain names with commas (,).\n- If this parameter is left empty, the merged data of all live streaming domain names is returned by default.\n- When you specify DomainName, make sure that the specified domain name is a live streaming domain name and that the user calling this operation has the permissions to operate on the specified domain name."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. Specify the time in the <i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z format in UTC."
+      }
     },
     {
       "name": "Interval",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询的时间粒度。单位：秒。取值：\n\n- **3600**：按小时粒度。\n- **86400**：按天粒度。\n\n> 不填默认按小时。",
+        "en": "The time granularity of the query. Unit: seconds. Valid values:\n\n- **3600**: by hour.\n- **86400**: by day.\n\n> If this parameter is left empty, the default granularity is by hour."
+      }
     },
     {
       "name": "Precision",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询的时间精度。取值：\n- **min**（默认）：以分钟为单位。\n- **sec**：以秒为单位。",
+        "en": "The time precision of the query. Valid values:\n- **min** (default): in minutes.\n- **sec**: in seconds."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Split",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分组键。取值：\n\n- **domain**：域名。如果此参数Split（分组键）取值为domain时，返回参数Domain才生效。\n- **region**：直播中心地域。如果此参数Split（分组键）取值为region时，返回参数Region才生效。\n- **transcode_type**：转码类型。如果此参数Split（分组键）取值为transcode_type时，返回参数TanscodeType才生效。\n- **resolution**：分辨率。如果此参数Split（分组键）取值为resolution时，返回参数Resolution才生效。\n- **fps**：帧率。如果此参数Split（分组键）取值为fps时，返回参数Fps才生效。\n\n可选一个，也可多选，用英文逗号（,）分隔。\n\n默认为`domain,region,transcode_type,resolution,fps`，即全部进行分组。",
+        "en": "The grouping key. Valid values:\n\n- **domain**: domain name. If the Split (grouping key) parameter is set to domain, the Domain response parameter takes effect.\n- **region**: live center region. If the Split (grouping key) parameter is set to region, the Region response parameter takes effect.\n- **transcode_type**: transcoding type. If the Split (grouping key) parameter is set to transcode_type, the TanscodeType response parameter takes effect.\n- **resolution**: resolution. If the Split (grouping key) parameter is set to resolution, the Resolution response parameter takes effect.\n- **fps**: frame rate. If the Split (grouping key) parameter is set to fps, the Fps response parameter takes effect.\n\nYou can specify one or more values. Separate multiple values with commas (,).\n\nDefault value: `domain,region,transcode_type,resolution,fps`, which means all grouping keys are applied."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询起始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n- 最小数据时间粒度为1小时。\n- 不填默认读取过去24小时数据。",
+        "en": "The beginning of the time range to query. Specify the time in the <i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z format in UTC.\n\n- The minimum data time granularity is 1 hour.\n- If this parameter is left empty, data from the last 24 hours is read by default."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询域名转码用量数据",
+    "en": "Query domain name transcoding usage data"
+  },
+  "descriptions": {
+    "zh": "- 可以用来统计每个时间间隔的网络带宽数据。\n- 支持批量域名查询，多个域名用英文逗号（,）分隔。\n- 最多可获取最近90天的数据。\n- 数据时间粒度为小时或天。\n- 不同转码类型与转码分辨率对应的计费档次，请参见[直播转码计费说明](~~90424~~)中的转码账单中不同实例规格对应的转码计费档次说明。\n\n## QPS限制\n本接口的单用户QPS限制为20次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- You can use this operation to query network bandwidth data for each time interval.\n- Batch domain name queries are supported. Separate multiple domain names with commas (,).\n- You can query data from the last 90 days.\n- The data time granularity is hour or day.\n- For the billing tiers that correspond to different transcoding types and transcoding resolutions, see the billing tier description for different instance specifications in [Live stream transcoding billing](~~90424~~).\n\n## QPS limit\nThe single-user QPS limit for this operation is 20 calls per second. If the limit is exceeded, API calls are throttled, which may affect your business. Invoke this operation appropriately."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-domain-stream-transcode-data --biz-region-id cn-hangzhou --domain-name example.com --start-time 2017-12-10T20:00:00Z --end-time 2017-12-10T22:00:00Z --precision min --interval 3600 --split domain --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveDomainStreamTranscodeData --region cn-hangzhou --EndTime '2017-12-10T22:00:00Z' --DomainName 'example.com' --Precision min --StartTime '2017-12-10T20:00:00Z' --RegionId 'cn-hangzhou' --Split domain --Interval 3600"

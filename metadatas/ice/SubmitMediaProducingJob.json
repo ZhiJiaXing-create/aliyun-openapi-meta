@@ -1,0 +1,140 @@
+{
+  "name": "SubmitMediaProducingJob",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken 只支持 ASCII 字符，且不能超过 64 个字符。",
+        "en": "A client-generated token that ensures request idempotence. This token must be a unique value of up to 64 ASCII characters."
+      }
+    },
+    {
+      "name": "ClipsParam",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "模板对应的素材参数，Json格式，当TemplateId不为空时，ClipsParam不能为空。具体格式见 [普通模板创建及使用](~~445399~~)、[高级模板创建及使用](~~445389~~)。",
+        "en": "The clip parameters that correspond to the template, in JSON format. If `TemplateId` is specified, this parameter is required. For details about the format, see [Create and use basic templates](~~445399~~) and [Create and use advanced templates](~~445389~~)."
+      }
+    },
+    {
+      "name": "EditingProduceConfig",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "剪辑合成参数，配置详情请参见 [EditingProduceConfig参数详情](~~357745#section-8a4-pb2-hkv~~)。\n> \n>EditingProduceConfig没有配置封面图片时，则默认使用视频的第一帧作为封面。\n\n- AutoRegisterInputVodMedia：是否需要将您时间线中的VOD媒资自动注册至IMS，默认为true。\n\n- OutputWebmTransparentChannel: 是否需要输出视频带透明通道，默认为false。\n\n- CoverConfig: 自定义封面图参数。\n- ......",
+        "en": "The parameters for the media producing job. For configuration details, see [EditingProduceConfig parameter details](~~357745#section-8a4-pb2-hkv~~).\n\n> If a cover is not configured in `EditingProduceConfig`, the first frame of the video is used as the default cover.\n\n- `AutoRegisterInputVodMedia`: Specifies whether to automatically register the VOD media assets in your timeline to IMS. Default value: true.\n\n- `OutputWebmTransparentChannel`: Specifies whether to output a video with a transparent channel. Default value: false.\n\n- `CoverConfig`: The parameters for a custom cover.\n\n- ..."
+      }
+    },
+    {
+      "name": "MediaMetadata",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "合成视频的元数据，JSON格式。具体结构定义，请参见[MediaMetadata](~~357745#97ff26d0e3c28~~)。",
+        "en": "The metadata of the output video, in JSON format. For details about the structure, see [MediaMetadata](~~357745#97ff26d0e3c28~~)."
+      }
+    },
+    {
+      "name": "OutputMediaConfig",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "输出成品的目标配置，Json格式。可以设置输出成品的在OSS 上的URL，或者VOD Bucket 中的存储位置。\n\n- 输出到OSS时，输出目标的 MediaURL 必填；\n- 输出到VOD 时，StorageLocation 和 FileName 两个参数必填。\n\n[OutputMediaConfig 参数示例](~~357745#title-4j6-ve7-g31~~)。",
+        "en": "The configuration for the output media target, in JSON format. You can set the URL for the output media in OSS or the storage location in a VOD bucket.\n\n- When outputting to OSS, the `MediaURL` parameter is required.\n\n- When outputting to VOD, both the `StorageLocation` and `FileName` parameters are required.\n\nFor more information, see [OutputMediaConfig parameter examples](~~357745#title-4j6-ve7-g31~~)."
+      }
+    },
+    {
+      "name": "OutputMediaTarget",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "输出成品的目标类型。取值：\n\n- oss-object（客户在阿里云oss bucket下的oss object）\n\n- vod-media（阿里云vod的媒资）\n\n- S3（S3 协议输出）",
+        "en": "The target type for the output media. Valid values:\n\n- `oss-object`: An object in your Alibaba Cloud OSS bucket.\n\n- `vod-media`: A media asset in Alibaba Cloud VOD.\n\n- `S3`: A destination that supports the S3 protocol."
+      }
+    },
+    {
+      "name": "ProjectId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "剪辑工程ld。你可调用[CreateEditingProject](~~441137~~)接口创建剪辑工程，并获取ProjectId 提交剪辑任务。\n><notice>必须填写ProjectId、Timeline、TemplateId三个参数中的一个，剩余两个参数填写为空。></notice>",
+        "en": "The ID of the editing project. Call the [CreateEditingProject](~~441137~~) operation to create an editing project and obtain the `ProjectId` to submit a media producing job.\n><notice>You must specify one of the `ProjectId`, `Timeline`, or `TemplateId` parameters. The other two parameters must be left empty.></notice>"
+      }
+    },
+    {
+      "name": "ProjectMetadata",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "剪辑工程的元数据信息，Json格式。具体结构定义参见[ProjectMetadata](~~357745#title-yvp-81k-wff~~)。",
+        "en": "The metadata of the editing project, in JSON format. For details about the structure, see [ProjectMetadata](~~357745#title-yvp-81k-wff~~)."
+      }
+    },
+    {
+      "name": "Source",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "剪辑合成请求来源，取值范围：\n\n- OpenAPI：API 直接请求。\n\n- AliyunConsole：请求来自于阿里云控制台。\n\n- WebSDK：请求来自于集成了WebSDK的前端页面。",
+        "en": "The source of the media producing job request. Valid values:\n\n- `OpenAPI`: A request initiated through an API call.\n\n- `AliyunConsole`: A request that originates from the Alibaba Cloud console.\n\n- `WebSDK`: A request sent from a front-end page that integrates the WebSDK."
+      }
+    },
+    {
+      "name": "TemplateId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "模板Id，用于快速低门槛的构建时间线。支持基于普通模板和高级模板的视频剪辑。\n\n- 当使用模板Id提交剪辑合成作业时，必须提供ClipsParam参数，用于灵活调整或替换模板中的素材。\n\n- 可调用[GetTemplate](~~441164~~)获取模板信息。\n\n><notice>必须填写ProjectId、Timeline、TemplateId三个参数中的一个，剩余两个参数填写为空。\n></notice>",
+        "en": "The ID of a template for quickly building a timeline. You can use basic and advanced templates for video editing.\n\n- When you submit a media producing job using a template ID, you must provide the `ClipsParam` parameter to adjust or replace clips in the template.\n\n- Call the [GetTemplate](~~441164~~) operation to obtain template information.\n\n><notice>\n\nYou must specify one of the `ProjectId`, `Timeline`, or `TemplateId` parameters. The other two parameters must be left empty.\n\n></notice>"
+      }
+    },
+    {
+      "name": "Timeline",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "云剪辑任务时间线，当您需要将素材按照视频创意进行编排和特效设计时，可以手动构建Timeline参数。\n\n- 时间线主要包含轨道、素材、效果3种对象，详情请参见[Timeline配置说明](~~198823~~)。\n- 更多时间线配置示例请参见[最佳实践](~~2766669~~)。\n\n><notice>必须填写ProjectId、Timeline、TemplateId三个参数中的一个，剩余两个参数填写为空。></notice>",
+        "en": "The timeline for the cloud editing job. To arrange clips and design effects, manually construct the `Timeline` parameter.\n\n- A timeline primarily consists of three types of objects: tracks, clips, and effects. For more information, see [Timeline configuration](~~198823~~).\n\n- For more examples of timeline configurations, see [Best practices](~~2766669~~).\n\n><notice>\n\nYou must specify one of the `ProjectId`, `Timeline`, or `TemplateId` parameters. The other two parameters must be left empty.\n\n></notice>"
+      }
+    },
+    {
+      "name": "UserData",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "自定义设置，Json格式，长度限制为512字节。支持[任务完成回调配置](~~451631~~)。其中：\n- NotifyAddress为任务完成的回调\n- RegisterMediaNotifyAddress为成片媒资分析完成的回调",
+        "en": "Custom user data in JSON format. The value can be up to 512 bytes in length. This parameter supports [job completion callback configuration](~~451631~~). The fields include:\n\n- `NotifyAddress`: The callback for job completion.\n\n- `RegisterMediaNotifyAddress`: The callback invoked when the analysis of the output media asset is complete."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交剪辑合成作业",
+    "en": "SubmitMediaProducingJob"
+  },
+  "descriptions": {
+    "zh": "- **计费说明：视频剪辑按照剪辑合成的成片时长计费，详情请参见[视频剪辑](~~2840899~~)。若处理失败，不收取费用。**\n\n- 多样化剪辑能力：当您需要将素材按照个性化创意进行编排和设计时，您需要调用该接口，该接口支持通过灵活的[Timeline配置](~~198823~~)，实现复杂的视频剪辑需求。\n   \n- 素材引用规则：云剪辑时间线中引用的素材，既可以是素材库中的媒资，也可以直接引用OSS文件，暂不支持外部地址或CDN地址。当素材为OSS文件时，MediaUrl仅支持OSS地址格式，如：https://your-bucket.oss-region-name.aliyuncs.com/your-object.ext。   \n- 异步执行任务：- 该接口为[异步任务](~~3027141~~)，提交任务后返回任务ID（此时任务尚未完成，任务将进入后台排队异步执行），最终结果将通过回调通知，也可通过[查询剪辑合成作业](~~441149~~)主动查询任务状态。 \n\n- 任务状态查询：\n\n  1. 调用[查询剪辑合成作业](~~441149~~) ，通过传入 JobId 查询任务状态和结果。\n\n  1. 在提交剪辑合成作业时，您可以在请求参数中设置**UserData**，将其包含回调地址。当剪辑任务完成或失败时，系统会向该回调地址发送通知，您可以通过处理回调数据来了解任务的状态。\n\n-  媒资注册与分析：视频合成完成后，会自动注册媒资，此时媒资还是分析中状态，当媒资分析完成后，可以根据MediaId获取成片时长及分辨率信息。\n## 使用限制\n- 该接口的流量控制值为30 QPS（每秒提交任务的请求数）。提交的任务会进入后台排队，以异步方式处理。\n   >如果超出此限制，可能会遇到 \"Throttling.User\" 错误。详情请参见： [提交剪辑任务时遇到“Throttling.User”错误](~~453484~~)。\n\n- 提交大量任务（如1000条、10000条）时，系统会动态扩容，但可能会有一定排队时间。\n\n- 视频轨、图片轨、字幕轨的轨道数每种均限制最多100个。    \n- 素材个数无限制，素材文件总大小不能超过1 TB。  \n- 输入或输出OSS Bucket所在Region，必须和使用IMS的Region保持一致。   \n- 当输出为视频时，成片分辨率有以下限制：\n    - 宽高都不能小于128 px。\n    - 宽高都不能大于4096 px。\n    - 短边不能大于2160 px。",
+    "en": "- **Billing: Video editing is charged based on the duration of the output video. For more information, see [video editing](~~2840899~~). Failed jobs incur no charges.**\n\n- Flexible editing capabilities: Use this operation to arrange and design assets. It supports complex video editing through flexible [timeline](~~198823~~) configurations.\n\n- Asset reference rules: Assets referenced in the timeline can be media assets from your asset library or OSS objects. External URLs and CDN URLs are not supported. If an asset is an OSS object, MediaUrl must be an OSS URL, for example: https\\://your-bucket.oss-region-name.aliyuncs.com/your-object.ext.\n\n- Asynchronous job execution: This operation creates an [asynchronous task](~~3027141~~). After you submit a job, the operation returns a task ID and queues the job for background processing. The job is not yet complete at this stage. The system delivers the final result via a callback notification. You can also query the job status by [querying the editing and compositing job](~~441149~~).\n\n- Job status query:\n\n  1. Call [Query an editing and compositing job](~~441149~~) and pass the JobId to query the job status and result.\n\n  2. When you submit an editing and compositing job, you can include a callback URL in the **UserData** parameter of your request. When the job completes or fails, the system sends a notification to this callback URL. You can use the callback data to retrieve the job status.\n\n- Media asset registration and analysis: After video compositing completes, the system automatically registers a new media asset, which is initially in an analyzing state. After the analysis is complete, you can use the MediaId to retrieve the duration and resolution of the output video.\n\n## Limitations\n\n- The throttling limit for this operation is 30 QPS. Submitted jobs are queued and processed asynchronously.\n\n  > If you exceed this limit, you may encounter a \"Throttling.User\" error. For more information, see [\"Throttling.User\" error when submitting editing jobs](~~453484~~).\n\n- When you submit a large number of jobs (for example, 1,000 or 10,000), the system scales out automatically, but you may experience queueing delays.\n\n- The maximum number of tracks is 100 for each type: video, image, and subtitle.\n\n- While there is no limit on the number of assets, their total size must not exceed 1 TB.\n\n- The region of the input or output OSS bucket must match the IMS region.\n\n- When the output is a video, the following resolution limits apply:\n\n  - Both the width and height must be at least 128 px.\n\n  - Neither the width nor the height can exceed 4096 px.\n\n  - The shorter side cannot exceed 2160 px."
+  }
+}

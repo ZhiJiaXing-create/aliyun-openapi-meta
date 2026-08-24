@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceBandwidth",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，可调用[DescribeInstances](~~473778~~)获取。",
+        "en": "The ID of the instance. You can call the [DescribeInstances](~~473778~~) operation to query the ID of the instance."
+      }
     },
     {
       "name": "TargetIntranetBandwidth",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例总目标带宽值。\n><notice> 如果实例是集群版实例，总目标带宽值要能整除实例分片数量。新架构读写分离实例暂不支持此操作。></notice>",
+        "en": "The total expected bandwidth of the instance.\n\n> If the instance is a cluster instance, the TargetIntranetBandwidth must be divisible by the number of shards in the instance. This operation is not supported for read/write splitting instances."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例的带宽",
+    "en": "ModifyInstanceBandwidth"
+  },
+  "descriptions": {
+    "zh": "- 请确保在使用该接口前，已充分了解实例的带宽收费方式和价格。云数据库 Tair（兼容 Redis）会根据增加的带宽量和使用时长，按小时产生费用，不同地域的收费标准有所区别。更多信息，请参见[计费项](~~54532~~)。\n- 实例（或单分片）最多支持额外增加原实例默认带宽的6倍，但增加的上限为192 MB/s。例如Tair内存型2 GB标准架构的默认带宽为96 MB/s，该规格最多可增加192 MB/s，最终实例带宽上限为288 MB/s；Redis开源版256 MB标准架构的默认带宽为10 MB/s，该规格最多可增加60 MB/s，最终实例带宽上限为70 MB/s。",
+    "en": "*   Before you call this operation, make sure that you understand the billing methods and pricing of instance bandwidth. Tair (Redis OSS-compatible) charges fees per hour based on the amount and usage duration of the extra bandwidth that you purchase. The fees vary based on the region that you select. For more information, see [Billable items](~~54532~~).\n*   The bandwidth of an instance or a shard can be increased by up to six times the default bandwidth of the instance, but the increase in bandwidth cannot exceed 192 Mbit/s. For example, if the default bandwidth of a Tair DRAM-based master-replica instance equipped with 2 GB of memory is 96 Mbit/s, you can increase the bandwidth of the instance by up to 192 Mbit/s. As a result, the maximum bandwidth of the instance is 288 Mbit/s. If the default bandwidth of a Redis Open-Source Edition master-replica instance equipped with 256 MB of memory is 10 Mbit/s, you can increase the bandwidth of the instance by up to 60 Mbit/s. As a result, the maximum bandwidth of the instance is 70 Mbit/s."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore modify-instance-bandwidth --instance-id r-bp1zxszhcgatnx0000 --target-intranet-bandwidth 260 --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore ModifyInstanceBandwidth --region cn-hangzhou --TargetIntranetBandwidth 260 --InstanceId 'r-bp1zxszhcgatnx0000'"

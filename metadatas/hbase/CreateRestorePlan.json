@@ -1,5 +1,6 @@
 {
   "name": "CreateRestorePlan",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "HBase增强版集群ID。",
+        "en": "The ID of the ApsaraDB for HBase Performance-enhanced Edition cluster."
+      }
     },
     {
       "name": "RestoreAllTable",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否恢复所有表，取值：\n\n- **true**：恢复HBase增强版集群的所有表。\n- **false**：不恢复HBase增强版集群的所有表。\n\n> 取值为**true**时，**Tables**参数无效。取值为**false**时，**Tables**参数必须填写。",
+        "en": "Specifies whether to restore all tables. Valid values:\n\n- **true**: Restores all tables in the ApsaraDB for HBase Performance-enhanced Edition cluster.\n- **false**: Does not restore all tables in the ApsaraDB for HBase Performance-enhanced Edition cluster.\n\n> If this parameter is set to **true**, the **Tables** parameter is invalid. If this parameter is set to **false**, the **Tables** parameter is required."
+      }
     },
     {
       "name": "RestoreByCopy",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "通过复制方法恢复数据，固定取值为**true**。",
+        "en": "Specifies whether to restore data by using the copy method. Set the value to **true**."
+      }
     },
     {
       "name": "RestoreToDate",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "恢复到指定时间点，时间点的设置需要在恢复时间段内，恢复时间段可调用[DescribeRecoverableTimeRange](~~188365~~)接口查看。",
+        "en": "The point in time to which you want to restore data. The point in time must be within the recoverable time range. You can call the [DescribeRecoverableTimeRange](~~188365~~) operation to query the recoverable time range."
+      }
     },
     {
       "name": "Tables",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "表名称。需要⼀⾏写⼀个表名称，不支持通配符（*）。\n\n- 如果恢复至当前表，填写格式为：`namespace:table`，例如：`default:testTable`。\n- 如果恢复至其他表，填写格式为：`namespace:table/namespace:table2`，例如：`default:testTable/default:testTable2`。",
+        "en": "The table names. Specify one table name per line. Wildcards (*) are not supported.\n\n- To restore to the current table, use the format: `namespace:table`. Example: `default:testTable`.\n- To restore to a different table, use the format: `namespace:table/namespace:table2`. Example: `default:testTable/default:testTable2`."
+      }
     },
     {
       "name": "TargetClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "恢复到指定HBase增强版集群，也可以恢复到当前备份的集群。\n\n> 指定HBase增强版集群和备份的HBase增强版集群需要满足以下要求：<ul>\n<li>版本相同。</li>\n<li>处于同一个Region。</li>\n<li>与BDS集群相关联。</li></ul>",
+        "en": "The ID of the ApsaraDB for HBase Performance-enhanced Edition cluster to which data is restored. You can also restore data to the cluster that is currently backed up.\n\n> The specified ApsaraDB for HBase Performance-enhanced Edition cluster and the backed-up ApsaraDB for HBase Performance-enhanced Edition cluster must meet the following requirements:<ul>\n<li>They are of the same version.</li>\n<li>They are in the same region.</li>\n<li>They are associated with the BDS cluster.</li></ul>."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建恢复计划",
+    "en": "Create a restore plan"
+  },
+  "descriptions": {
+    "zh": "请确保在使用该接口前，HBaseue集群已开通备份恢复功能，确认恢复的HBaseue目标集群已与相应的BDS相关联。",
+    "en": "Before calling this operation, make sure that the backup and restore feature is enabled for the ApsaraDB for HBase Performance-enhanced Edition cluster and that the target ApsaraDB for HBase Performance-enhanced Edition cluster is associated with the corresponding BDS."
+  },
   "example": {
     "unifiedCli": "aliyun hbase create-restore-plan --cluster-id ld-bp150tns0sjxs0000 --target-cluster-id ld-bp169l540vc6c0000 --restore-all-table false --restore-by-copy true --restore-to-date 2020-11-05T05:49:42Z --tables test_ns:test_table/test_ns:test_table2 --api-version 2019-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun hbase CreateRestorePlan --region cn-hangzhou --ClusterId 'ld-bp150tns0sjxs0000' --RestoreByCopy true --TargetClusterId 'ld-bp169l540vc6c0000' --Tables 'test_ns:test_table/test_ns:test_table2' --RestoreToDate '2020-11-05T05:49:42Z' --RestoreAllTable false"

@@ -1,5 +1,6 @@
 {
   "name": "ListServiceInstanceDeployDetails",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "CycleTimeZone",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时区。\n\n参考格式：\"+08:00\"\n\n合法范围：\"-12:59\"到\"+13:00\"",
+        "en": "The time zone.\n\nExample: +08:00\n\nValid values: -12:59 to +13:00"
+      }
     },
     {
       "name": "CycleType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "决定聚合周期。无参时视为查询详情。\n\n可选值：\n- Year  \n- Month  \n- Day  \n- All",
+        "en": "The aggregation period. If you do not specify this parameter, the system queries the details.\n\nValid values:\n\n- Year\n\n- Month\n\n- Day\n\n- All"
+      }
     },
     {
       "name": "Dimension",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "维度名称。对应SQL中的Group By。\n\n可选值：\n- UserId\n- ServiceId\n- ServiceVersion\n- ServiceInstanceId\n- DeploySucceeded\n- ErrorType\n- ErrorCode",
+        "en": "The name of the dimension. This corresponds to the GROUP BY clause in SQL.\n\nValid values:\n\n- UserId\n\n- ServiceId\n\n- ServiceVersion\n\n- ServiceInstanceId\n\n- DeploySucceeded\n\n- ErrorType\n\n- ErrorCode"
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询结束时间。\n\n使用UTC+0时间，格式为yyyy-MM-ddTHH:mmZ。",
+        "en": "The end of the time range to query.\n\nUse UTC+0 time in the yyyy-MM-ddTHH:mmZ format."
+      }
     },
     {
       "name": "Filter",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "过滤器。",
+        "en": "The filter."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤值名称。对应SQL中的Where。\n\n可选值：\n-  UserId\n-  ServiceId\n-  ServiceVersion\n-  ServiceInstanceId\n-  DeploySucceeded(True or False，大小写不敏感)\n-  ErrorType\n-  ErrorCode",
+            "en": "The name of the filter. This corresponds to the WHERE clause in SQL.\n\nValid values:\n\n- UserId\n\n- ServiceId\n\n- ServiceVersion\n\n- ServiceInstanceId\n\n- DeploySucceeded (The value can be True or False. The value is case-insensitive.)\n\n- ErrorType\n\n- ErrorCode"
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤值列表。",
+            "en": "A list of filter values."
+          }
         }
       ]
     },
@@ -52,27 +81,50 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时每页行数。每页最大行数100行，默认行数20行。",
+        "en": "The number of entries per page for a paged query. Maximum value: 100. Default value: 20."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始token。",
+        "en": "The token that is used to start the next query."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例的地域ID。",
+        "en": "The region ID of the instance."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询开始时间。\n\n使用UTC+0时间，格式为yyyy-MM-ddTHH:mmZ。",
+        "en": "The start of the time range to query.\n\nUse UTC+0 time in the yyyy-MM-ddTHH:mmZ format."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询服务实例部署详情列表",
+    "en": "ListServiceInstanceDeployDetails"
+  },
   "example": {
     "unifiedCli": "aliyun computenestsupplier list-service-instance-deploy-details --biz-region-id cn-hangzhou --max-results 20 --next-token AAAAAZbOYA+x9UgM6xrgcMqFUjk= --filter '[{\"Value\":[\"service-c751ed91f2074af39779\"],\"Name\":\"ServiceId\"}]' --start-time 2024-08-25T02:23:00Z --end-time 2024-12-31T16:00:00Z --cycle-time-zone +08:00 --dimension ErrorType --cycle-type Month --region cn-hangzhou",
     "legacyCli": "aliyun computenestsupplier ListServiceInstanceDeployDetails --region cn-hangzhou --CycleType Month --NextToken 'AAAAAZbOYA+x9UgM6xrgcMqFUjk=' --EndTime '2024-12-31T16:00:00Z' --Filter.1.Value.1 'service-c751ed91f2074af39779' --CycleTimeZone '+08:00' --Dimension.1 ErrorType --MaxResults 20 --StartTime '2024-08-25T02:23:00Z' --RegionId 'cn-hangzhou' --Filter.1.Name ServiceId"

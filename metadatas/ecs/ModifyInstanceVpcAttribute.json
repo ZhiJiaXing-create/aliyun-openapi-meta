@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceVpcAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。\n\n> 调用该接口时，ECS实例的状态必须是**已停止**（`Stopped`），其他对于实例的限制条件，请认真阅读**接口说明**部分。",
+        "en": "The ID of the ECS instance.\n\n> When you call this operation, the ECS instance must be in the **Stopped** (`Stopped`) state. For other limits on the ECS instance, see the **Usage notes** section of this topic."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新的私网IP地址。\n\n>参数`PrivateIpAddress`依赖于`VSwitchId`，指定的IP地址必须在虚拟交换机子网网段中。\n\n默认值：当不传该值时，从虚拟交换机子网网段中随机分配。",
+        "en": "The new private IP address of the ECS instance.\n\n> The value of `PrivateIpAddress` depends on the value of `VSwitchId`. The specified IP address must be within the CIDR block of the specified vSwitch.\n\nBy default, if this parameter is empty, a private IP address is randomly assigned from the CIDR block of the specified vSwitch."
+      }
     },
     {
       "name": "SecurityGroupId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例修改VPC后加入的安全组ID列表。当且仅当传入`VpcId`参数时，需要同时传入该参数。\n\n- 安全组所属的VPC必须与目标VPC一致。\n- 指定修改后实例加入的安全组列表，可以是一个或者多个。安全组个数与实例能够加入安全组的限制有关。具体限制，请参见[使用限制](~~25412#SecurityGroupQuota1~~)。\n- 列表内安全组类型必须一致。\n- 支持切换安全组的类型。\n          当ECS实例跨类型切换安全组时，您需要充分了解两种安全组规则的配置区别，避免影响实例网络。更多信息，请参见[安全组概述](~~25387~~)。",
+        "en": "The IDs of new security groups to which the ECS instance belongs after the VPC is changed. This parameter is required only if `VpcId` is specified.\n\n- The security groups that you specify must belong to the new VPC.\n\n- You can specify one or more security groups. The valid values of N vary based on the maximum number of security groups to which an ECS instance can belong. For more information, see [Limits](~~25412#SecurityGroupQuota1~~).\n\n- The specified security groups must be of the same type.\n\n- You can switch the ECS instance to security groups of a different type. To ensure network connectivity, we recommend that you understand the differences in rule configurations of the two security group types before you switch the ECS instance to security groups of a different type. For more information, see [Overview of security groups](~~25387~~)."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "交换机ID。\n\n- 传入的ID为实例的当前交换机时，表明实例不变更交换机。\n- 传入的ID为一台新的交换机，并且参数`VpcId`为空时，新旧交换机必须属于同一个可用区、同一个专有网络VPC。\n- 当参数`VpcId`不为空时，该参数传入的交换机ID必须属于VpcId，并且和原交换机属于同一个可用区。",
+        "en": "The ID of the new vSwitch.\n\n- If you set this parameter to the ID of the current vSwitch, the vSwitch of the ECS instance remains unchanged.\n\n- If you set this parameter to the ID of a different vSwitch and leave `VpcId` empty, the new vSwitch must belong to the same zone and VPC as the current vSwitch.\n\n- If you specify `VpcId`, the vSwitch specified by this parameter must belong to the specified VPC and the same zone as the current vSwitch."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标VPC ID。",
+        "en": "The ID of the new VPC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改实例的VPC属性",
+    "en": "ModifyInstanceVpcAttribute"
+  },
+  "descriptions": {
+    "zh": "调用接口时，ECS实例的状态必须是**已停止**（`Stopped`）。\n\n- 修改实例的私网IP地址或交换机时，请注意：\n\n    - 新建的ECS实例必须经过重启才能调用该接口。\n    - 成功修改一次后，ECS实例必须经过重启才能继续调用该接口进行修改。\n\n- 修改实例的专有网络VPC时，请注意：\n\n    - **实例：**\n        - 实例状态：不能为已锁定、等待释放、已过期、过期回收中、欠费回收中。更多信息，请参见[实例生命周期介绍](~~25380~~)。\n        - 不支持已关联负载均衡实例的ECS实例。\n        - 实例不能在其它云服务中被使用。例如，实例不能在迁移中、不能已在更换VPC或实例内部署的数据库不能被DTS服务管理等。\n   \n    - **网络：**\n        - 不支持配置了EIP网卡可见模式或多EIP网卡可见模式的实例。\n        - 不支持绑定了高可用虚拟IP（HaVip）的实例。\n        - 不支持交换机绑定了自定义路由表的实例。\n        - 不支持开通了全球加速（GA）的实例。\n        - 不支持绑定辅助弹性网卡的实例。\n        - 不支持已分配IPv6地址的实例。\n        - 不支持主网卡有多IP的实例。\n        - 传入的交换机必须属于目标VPC。\n        - 修改前后交换机可用区必须一致。\n        - 如果指定主网卡私网IP，则IP必须在交换机地址段内且可用。如果不指定则随机分配，且目标交换机的可用IP数充足。\n        -  如果您使用的是其他账号共享给您的VPC，那么您需要确保目标安全组是由您的账号在该共享VPC中创建的，而不是由VPC所有者的账号创建的安全组。",
+    "en": "The ECS instance that you want to manage must be in the **Stopped** (`Stopped`) state.\n\n- When you call this operation to change the private IP address or vSwitch of an ECS instance, take note of the following items:\n\n  - If the instance is a new instance, you must restart the instance before you call this operation.\n\n  - After the private IP address or vSwitch of the instance is changed, you must restart the instance before you can recall this operation.\n\n- When you call this operation to change the VPC of an ECS instance, take note of the following items:\n\n  - **ECS instance:**\n\n    - The instance cannot be in the Locked, To Be Released, Expired, To Be Recycled, Expired and Being Recycled, or Overdue and Being Recycled state. For more information, see [Overview of instances](~~25380~~).\n\n    - The instance cannot be associated with Server Load Balancer (SLB) instances.\n\n    - The instance cannot be used in other Alibaba Cloud services. For example, the instance cannot be in the process of being migrated or having its VPC changed, or the databases deployed on the instance cannot be managed by Data Transmission Service (DTS).\n\n  - **Network:**\n\n    - The cut-through mode or the multi-elastic IP address (EIP)-to-elastic network interface (ENI) mode cannot be enabled for the ECS instance.\n\n    - The ECS instance cannot be associated with a high-availability virtual IP address (HAVIP).\n\n    - The vSwitch of the ECS instance cannot be associated with a custom route table.\n\n    - Global Accelerator (GA) cannot be activated for the ECS instance.\n\n    - Secondary ENIs cannot be attached to the ECS instance.\n\n    - The ECS instance cannot be assigned an IPv6 address.\n\n    - The primary ENI of the ECS instance cannot be associated with multiple IP addresses.\n\n    - The vSwitch must belong to the new VPC.\n\n    - The original and new vSwitches must reside in the same zone.\n\n    - If you assign a private IP address to the primary ENI of the ECS instance, the private IP address must be an idle IP address within the CIDR block of the new vSwitch. If you do not assign a private IP address to the primary ENI of the ECS instance, a private IP address is randomly assigned to the ENI. Make sure that sufficient IP addresses are available in the CIDR block of the new vSwitch.\n\n    - If you use a VPC that is shared by another Alibaba Cloud account with your account and want to change the security groups of the ECS instance, specify the security groups that you created in the VPC, instead of the security group created by the VPC owner, as the new security groups."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-instance-vpc-attribute --instance-id i-bp1iudwa5b1tqag10000 --vswitch-id vsw-bp1s5fnvk4gn3tw120000 --private-ip-address 172.17.00.00 --vpc-id vpc-bp1vwnn14rqpyiczj0000 --security-group-id sg-o6w9l8bc8dgmkw870000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyInstanceVpcAttribute --region cn-hangzhou --SecurityGroupId.1 'sg-o6w9l8bc8dgmkw870000' --PrivateIpAddress '172.17.00.00' --VpcId 'vpc-bp1vwnn14rqpyiczj0000' --InstanceId 'i-bp1iudwa5b1tqag10000' --VSwitchId 'vsw-bp1s5fnvk4gn3tw120000'"

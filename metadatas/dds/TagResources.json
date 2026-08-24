@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID，您可以调用[DescribeDBInstanceAttribute](~~62010~~)接口查询。",
+        "en": "The region ID of the instance. You can call the [DescribeDBInstanceAttribute](~~62010~~) operation to query the region ID of the instance."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The ID of the resource group."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例和标签信息列表。",
+        "en": "The details of the tags bound to the instance."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，取值固定为**INSTANCE**。",
+        "en": "The resource type. Set the value to **INSTANCE**."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签信息列表。",
+        "en": "The tags that are attached to the resources."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签的键。\n\nN表示传入第几个标签的键，N的取值范围为1~20。例如：\n- **Tag.1.Key**表示传入第一个标签的键。\n- **Tag.2.Key**表示传入第二个标签的键。",
+            "en": "The key of tag.\n\nN specifies the serial number of the tag. The following example shows how to calculate consumption intervals:\n\n- **Tag.1.Key** specifies the key of the first tag.\n\n- **Tag.2.Key** specifies the key of the second tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签的值。\n\nN表示传入第几个标签的值，N的取值范围为1~20。例如：\n- **Tag.1.Value**表示传入第一个标签的值。\n- **Tag.2.Value**表示传入第二个标签的值。",
+            "en": "The value of tag.\n\nN specifies the serial number of the tag. The following example shows how to calculate consumption intervals:\n\n- **Tag.1.Value** specifies the value of the first tag.\n\n- **Tag.2.Value** specifies the value of the second tag."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为一个或多个MongoDB实例绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "在实例数量较多的情况下，您可以创建多个标签，为实例绑定不同的标签对其进行分类，后续可通过标签筛选实例。\n- 标签由一对键（key）值（value）组成，键在同账号同地域下唯一，值无此限制。\n- 若设置的标签不存在，则自动创建该标签并绑定到目标实例。\n- 若实例已经绑定了有相同键的标签，则会覆盖绑定。\n- 每个实例最多可以绑定20个标签。\n- 每次调用最多可以对50个实例执行批量标签绑定。",
+    "en": "If you have a large number of instances, you can create multiple tags, bind the tags to the instances, and filter the instances by tag.\n\n- A tag consists of a key and a value. Each key must be unique in a region for an Alibaba Cloud account. Different keys can be mapped to the same value.\n\n- If the tag that you specify does not exist, this tag is automatically created and bound to the specified instance.\n\n- If a tag that has the same key is already bound to the instance, the new tag overwrites the existing tag.\n\n- You can bind up to 20 tags to each instance.\n\n- You can bind tags to up to 50 instances each time you call the operation."
+  },
   "example": {
     "unifiedCli": "aliyun dds tag-resources --biz-region-id cn-hangzhou --resource-type INSTANCE --resource-group-id rg-acfmyiu4ekp0000 --resource-id dds-bp1fa5efaa930000 --tag Value=4.0_environment Key=Development_group --region cn-hangzhou",
     "legacyCli": "aliyun dds TagResources --region cn-hangzhou --ResourceId.1 'dds-bp1fa5efaa930000' --Tag.1.Key Development_group --ResourceGroupId 'rg-acfmyiu4ekp0000' --Tag.1.Value '4.0_environment' --ResourceType INSTANCE --RegionId 'cn-hangzhou'"

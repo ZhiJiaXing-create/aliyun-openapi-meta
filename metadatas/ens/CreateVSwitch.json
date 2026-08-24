@@ -1,5 +1,6 @@
 {
   "name": "CreateVSwitch",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,77 @@
       "name": "CidrBlock",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "交换机的网段。交换机网段要求如下：\n- 交换机的网段的掩码长度范围为16~29位。\n- 交换机的网段必须从属于所在VPC的网段。\n- 交换机的网段不能与所在VPC中路由条目的目标网段相同，但可以是目标网段的子集。",
+        "en": "The CIDR block of the VSwitch. The following requirements apply:\n\n- The prefix length must be an integer from 16 to 29.\n\n- The CIDR block of the VSwitch must be a subset of the CIDR block of the VPC to which the VSwitch belongs.\n\n- The CIDR block of the VSwitch cannot be the same as the destination CIDR block of an existing route in the VPC, but it can be a subset of the destination CIDR block."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机的描述信息。\n\n描述长度为2~256个字符，必须以字母或中文开头，但不能以http://或https://开头。",
+        "en": "The description of the VSwitch.\n\nThe description must be 2 to 256 characters in length. It must start with a letter or a Chinese character, and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "EnsRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ENS节点ID。",
+        "en": "The ID of the ENS node."
+      }
+    },
+    {
+      "name": "Ipv6CidrBlock",
+      "position": "Query",
+      "type": "String",
+      "required": false
     },
     {
       "name": "NetworkId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要创建的交换机所属的网络ID。",
+        "en": "The ID of the network to which the VSwitch belongs."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源标签。",
+        "en": "The tags of the resource. You can specify up to 20 tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例的标签键。N的取值范围为**1**~**20**。\n\n- 不能以`aliyun`、`acs:`、`http://`或`https://`开头。\n- 最多支持64个字符。\n- 不允许传入空字符串。",
+            "en": "The key of the tag.\n\n- The tag key cannot start with `aliyun`, `acs:`, `http://`, or `https://`.\n\n- The tag key can be up to 64 characters long.\n\n- The tag key cannot be an empty string."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。N 的取值范围：1~20。一旦传入该值，可以为空字符串。最多支持 128 个字符，不能以acs:开头，不能包含http://或者https://。",
+            "en": "The value of the tag. It can be up to 128 characters long, can be an empty string, and cannot start with `acs:` or contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -52,9 +87,20 @@
       "name": "VSwitchName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机名称。命名规则如下：\n\n- 长度为2~128个英文或中文字符。\n- 必须以大小字母或中文开头，不能以 http://和https://开头。可以包含数字、半角冒号（:）、下划线（_）或者连字符（-）。\n\n默认值：空。",
+        "en": "The name of the VSwitch. The following requirements apply:\n\n- The name must be 2 to 128 characters in length.\n\n- The name must start with a letter or a Chinese character, and cannot start with `http://` or `https://`. The name can contain digits, colons (:), underscores (\\_), and hyphens (-).\n\nDefault value: an empty string."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建交换机",
+    "en": "CreateVSwitch"
+  },
   "example": {
     "unifiedCli": "aliyun ens create-vswitch --ens-region-id cn-xian-unicom --cidr-block 172.16.0.0/24 --vswitch-name Test_vSwitch --description This_is_my_vswitch. --network-id n-257gqcdfvx6n0000 --tag Value=Deep Key=team --ipv6-cidr-block 2408:XXXX:0:a600::/110 --region cn-hangzhou",
     "legacyCli": "aliyun ens CreateVSwitch --region cn-hangzhou --Tag.1.Key team --Description 'This_is_my_vswitch.' --Tag.1.Value Deep --CidrBlock '172.16.0.0/24' --VSwitchName Test_vSwitch --EnsRegionId 'cn-xian-unicom' --NetworkId 'n-257gqcdfvx6n0000' --Ipv6CidrBlock '2408:XXXX:0:a600::/110'"

@@ -1,5 +1,6 @@
 {
   "name": "DescribeDomainRealTimeSrcTrafficData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "加速域名，多个域名用半角逗号（,）分隔，一次最多支持100个域名查询。",
+        "en": "The accelerated domain name. You can specify up to 100 domain names in each call. Separate multiple domain names with commas (,)."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的结束时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。\n\n> 结束时间需大于起始时间。",
+        "en": "The end of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC.\n\n> The end time must be later than the start time."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据的起始时间点。\n\n日期格式按照ISO8601表示法，并使用UTC时间，格式为yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The start of the time range to query.\n\nSpecify the time in the ISO 8601 standard in the yyyy-MM-ddTHH:mm:ssZ format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询实时回源流量",
+    "en": "DescribeDomainRealTimeSrcTrafficData"
+  },
+  "descriptions": {
+    "zh": "- 如果您不指定StartTime和EndTime，该接口默认返回过去1小时的数据；指定StartTime和EndTime，该接口返回指定时间段的数据。",
+    "en": "- Each account can call this operation up to 10 times per second.\n\n- If you do not specify the StartTime or EndTime parameter, the request returns the data collected in the last hour by default. If you specify both the StartTime and EndTime parameters, the request returns the data collected within the specified time range.\n\n**Time granularity**\n\nThe time granularity varies with the time range specified by the StartTime and EndTime parameters. The following table describes the time period within which historical data is available and the data delay.\n\n| Time granularity | Maximum time range per query | Historical data available | Data delay |\n| ---------------- | ---------------------------- | ------------------------- | ---------- |\n| 1 minute         | 1 hour                       | 7 days                    | 5 minutes  |\n| 5 minutes        | 3 days                       | 93 days                   | 15 minutes |\n| 1 hour           | 31 days                      | 186 days                  | 4 hours    |"
+  },
   "example": {
     "unifiedCli": "aliyun cdn describe-domain-real-time-src-traffic-data --domain-name example.com --start-time 2019-12-10T20:00:00Z --end-time 2019-12-10T20:01:00Z --region cn-hangzhou",
     "legacyCli": "aliyun cdn DescribeDomainRealTimeSrcTrafficData --region cn-hangzhou --EndTime '2019-12-10T20:01:00Z' --DomainName 'example.com' --StartTime '2019-12-10T20:00:00Z'"

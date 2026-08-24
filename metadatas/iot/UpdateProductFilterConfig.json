@@ -1,5 +1,6 @@
 {
   "name": "UpdateProductFilterConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "产品的ProductKey。ProductKey是物联网平台为新建产品颁发的产品Key，作为其全局唯一标识符。\n您可以在物联网平台控制台查看或调用[QueryProductList](~~69271~~)查看当前账号下所有产品的信息。",
+        "en": "The ProductKey of the product. A ProductKey is a GUID that is issued by IoT Platform to a product.\n\nYou can use the IoT Platform console or call the [QueryProductList](~~69271~~) operation to view the information about all products within the current account."
+      }
     },
     {
       "name": "PropertyTimestampFilter",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否根据属性上报时间进行消息去重。可选值：\n\n- **true**：对设备上报的时间戳相同的属性消息进行去重。\n\n- **false**：不根据时间戳进行消息去重。",
+        "en": "Specifies whether to deduplicate messages based on the submission time of each property. Valid values:\n\n*   **true**: deduplicates property messages that have the same timestamp.\n*   **false**: does not deduplicate messages based on timestamps."
+      }
     },
     {
       "name": "PropertyValueFilter",
       "position": "Query",
       "type": "Boolean",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否根据属性值进行消息去重。可选值：\n\n- **true**：对设备上报相同属性值的消息进行去重。\n\n- **false**：不根据属性值进行消息去重。",
+        "en": "Specifies whether to deduplicate messages based on the value of each property. Valid values:\n\n*   **true**: deduplicates property messages that have the same property value.\n*   **false**: does not deduplicate messages based on property values."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新产品设备上报属性消息去重规则",
+    "en": "UpdateProductFilterConfig"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n消息去重规则：物联网平台根据您设置的去重规则，决定是否通过您设置的规则引擎云产品流转或服务端订阅，将设备上报的属性数据流转至指定目的地。\n\n规则触发条件之间是和（AND）关系。例如您设置了PropertyValueFilter=true和PropertyTimestampFilter=true，那么必须这两个条件都满足时，才会触发规则，去掉重复的消息。\n\n## QPS限制\n\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为5。\n\n> RAM用户共享阿里云账号配额。",
+    "en": "## Message deduplication rules\n\nBased on the rules that you set, IoT Platform determines whether to use the rules engine or server-side subscriptions to forward property data that is submitted by devices to a specified destination.\n\nThe triggering conditions of rules are related by the logic AND relation. For example, if you set the PropertyValueFilter=true and PropertyTimestampFilter=true conditions, the rule to remove duplicate messages is triggered only when both of the conditions are met.\n\n## Limits\n\nEach Alibaba Cloud account can run a maximum of 5 queries per second (QPS). \n\n>  RAM users of an Alibaba Cloud account share the quota of the account."
+  },
   "example": {
     "unifiedCli": "aliyun iot update-product-filter-config --iot-instance-id iot-cn-0pp1n8t0000 --product-key a1BwAGV0000 --property-timestamp-filter false --property-value-filter true --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot UpdateProductFilterConfig --region cn-hangzhou --IotInstanceId 'iot-cn-0pp1n8t0000' --ProductKey a1BwAGV0000 --PropertyTimestampFilter false --PropertyValueFilter true"

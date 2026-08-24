@@ -1,5 +1,6 @@
 {
   "name": "GetParametersForImport",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "KeyId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主密钥的全局唯一标识符。\n\n> 密钥材料来源必须是外部，即Origin为EXTERNAL。",
+        "en": "The globally unique ID of the CMK.\n\n>  You can import key material only for CMKs whose Origin parameter is set to EXTERNAL."
+      }
     },
     {
       "name": "WrappingAlgorithm",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用于加密密钥材料的算法。",
+        "en": "The algorithm that is used to encrypt key material."
+      }
     },
     {
       "name": "WrappingKeySpec",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用于加密密钥材料的公钥类型。",
+        "en": "The type of the public key that is used to encrypt key material."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取导入主密钥（CMK）材料的参数",
+    "en": "GetParametersForImport"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 返回的参数可用于执行[ImportKeyMaterial](~~68622~~)。\n\n- 主密钥材料来源必须是外部，即Origin为EXTERNAL。\n\n- 本次调用返回的公钥和令牌必须搭配使用，且只能用于本次调用中指定的主密钥。\n- 每次调用返回的公钥与令牌都不相同。  \n- 您需要指定用于加密密钥材料的公钥类型和加密算法，对应关系如下表所示。  \n\n    | 公钥类型        | 加密算法           | 说明 |\n    | ------------- |------------   | ----- | \n    |RSA_2048 |RSAES\\_PKCS1\\_V1\\_5 <br>RSAES\\_OAEP\\_SHA\\_1 <br>RSAES\\_OAEP\\_SHA\\_256  |支持所有地域、任意保护级别的密钥。<br>专属KMS不支持RSAES\\_OAEP\\_SHA\\_1。 |\n    |EC_SM2 |SM2PKE  |SM2为中国国家密码管理局批准的密码算法，仅支持导入保护级别为HSM的密钥，KMS通过部署在中国内地的托管密码机提供支持。更多信息，请参见[托管密码机简介](~~125803~~)。 | \n\n  更多信息，请参见[导入密钥材料](~~68523~~)。本文将提供一个示例，获取密钥ID为`1234abcd-12ab-34cd-56ef-12345678****`、加密算法为`RSAES_PKCS1_V1_5`、公钥类型为`RSA_2048`的主密钥材料参数，返回的主密钥材料参数包含密钥ID、用于加密密钥材料的公钥（PublicKey）、导入密钥材料的令牌（ImportToken）以及令牌的过期时间。",
+    "en": "The returned parameters can be used to call the [ImportKeyMaterial](https://www.alibabacloud.com/help/en/key-management-service/latest/importkeymaterial) operation.\n- You can import key material only for CMKs whose Origin parameter is set to EXTERNAL.\n- The public key and token that are returned by the GetParametersForImport operation must be used together. The public key and token can be used to import key material only for the CMK that is specified when you call the operation.\n- The public key and token that are returned vary each time you call the GetParametersForImport operation.\n- You must specify the type of the public key and the encryption algorithm that are used to encrypt key material. The following table lists the types of public keys and the encryption algorithms allowed for each type.   \n\n| Public key type | Encryption algorithm | Description |\n| --------------- | -------------------- | ----------- |\n| RSA_2048 | RSAES_PKCS1_V1_5 \n\nRSAES_OAEP_SHA_1 \n\nRSAES_OAEP_SHA_256 | CMKs of all regions and all protection levels are supported. \n\nDedicated Key Management Service (KMS) does not support RSAES_OAEP_SHA_1. |\n| EC_SM2 | SM2PKE | CMKs whose ProtectionLevel is set to HSM are supported. The SM2 algorithm is developed and approved by the State Cryptography Administration of China. The SM2 algorithm can be used only to import key material for a CMK whose ProtectionLevel is set to HSM. You can use the SM2 algorithm only when you enable the Managed HSM feature for KMS in the Chinese mainland. For more information, see [Overview of Managed HSM](https://www.alibabacloud.com/help/en/key-management-service/latest/managed-hsm-overview). |\nFor more information, see [Import key material](https://www.alibabacloud.com/help/en/key-management-service/latest/import-key-material). This topic provides an example on how to query the parameters that are used to import key material for a CMK. The ID of the CMK is `1234abcd-12ab-34cd-56ef-12345678****`, the encryption algorithm is `RSAES_PKCS1_V1_5`, and the public key is of the `RSA_2048` type. The parameters that are returned include the ID of the CMK, the public key that is used to encrypt the key material, the token that is used to import the key material, and the time when the token expires."
+  },
   "example": {
     "unifiedCli": "aliyun kms get-parameters-for-import --key-id 202b9877-5a25-46e3-a763-e20791b50000 --wrapping-algorithm RSAES_PKCS1_V1_5 --wrapping-key-spec RSA_2048 --region cn-hangzhou",
     "legacyCli": "aliyun kms GetParametersForImport --region cn-hangzhou --WrappingKeySpec RSA_2048 --KeyId '202b9877-5a25-46e3-a763-e20791b50000' --WrappingAlgorithm RSAES_PKCS1_V1_5"

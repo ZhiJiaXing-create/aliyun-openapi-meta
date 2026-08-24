@@ -1,5 +1,6 @@
 {
   "name": "CreateDataQualityEvaluationTask",
+  "deprecated": true,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -9,60 +10,100 @@
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "数据质量监控关联的数据质量规则列表。如果设置了DataQualityRule.Id，则把Id对应的规则关联到新建质量监控中；如果没有设置，则用其他字段创建一个新的规则，关联到新建的质量监控中。",
+        "en": "The list of data quality rules associated with the data quality monitor. If DataQualityRule.Id is specified, the rule corresponding to that ID is associated with the newly created quality monitor. If not specified, a new rule is created from the other fields and associated with the newly created quality monitor."
+      },
       "sub_parameters": [
         {
           "name": "CheckingConfig",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "样本校验设置",
+            "en": "The sample validation settings."
+          }
         },
         {
           "name": "Description",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据质量规则描述。",
+            "en": "The description of the data quality rule."
+          }
         },
         {
           "name": "Enabled",
           "position": "FormData",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "质量规则是否启用",
+            "en": "Specifies whether the quality rule is enabled."
+          }
         },
         {
           "name": "ErrorHandlers",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "质量规则校验问题处理器列表。",
+            "en": "The list of error handlers for issues detected by the quality rule validation."
+          }
         },
         {
           "name": "Id",
           "position": "FormData",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则ID。",
+            "en": "The ID of the rule."
+          }
         },
         {
           "name": "Name",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据质量规则名称。",
+            "en": "The name of the data quality rule."
+          }
         },
         {
           "name": "SamplingConfig",
           "position": "FormData",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "样本采集时，所需的参数。",
+            "en": "The parameters required when collecting samples."
+          }
         },
         {
           "name": "Severity",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则对于业务的等级（对应页面上的强弱规则），可选的枚举值：\n- Normal\n- High",
+            "en": "The business severity level of the rule (corresponding to strong/weak rules in the console). Valid values:\n- Normal\n- High"
+          }
         },
         {
           "name": "TemplateCode",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则所引用的规则模板唯一标识。",
+            "en": "The unique identifier of the rule template that the rule references."
+          }
         }
       ]
     },
@@ -70,31 +111,51 @@
       "name": "DataSourceId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据源ID，您可以调用[ListDataSources](~~211431~~)获取数据源的ID。",
+        "en": "The ID of the data source. You can call [ListDataSources](~~211431~~) to obtain the ID of the data source."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "质量监控任务描述",
+        "en": "The description of the quality monitoring task."
+      }
     },
     {
       "name": "Hooks",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "回调设置",
+        "en": "The hook settings."
+      },
       "sub_parameters": [
         {
           "name": "Condition",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Hook触发条件，当满足这个条件时，会触发hook动作。目前只能支持两种条件表达式：\n1. 只指定一组规则严重类型和规则校验状态，如`${severity} == \"High\" AND ${status} == \"Critical\"`，代表执行的规则中，如果有severity为High的规则校验结果是Critical，则满足条件\n2. 指定多组规则严重类型和规则校验状态，如`(${severity} == \"High\" AND ${status} == \"Critical\") OR (${severity} == \"Normal\" AND ${status} == \"Critical\") OR (${severity} == \"Normal\" AND ${status} == \"Error\")`，代表执行的规则中，如果有severity为High的规则校验结果是Critical、或者severity为Normal的规则校验结果是Critical、或者severity为Normal的规则校验结果是Error，则满足条件，条件表达式中severity的枚举与DataQualityRule中severity的枚举一致、status的枚举与DataQualityResult中的status一致。",
+            "en": "The trigger condition of the hook. The hook action is triggered when this condition is met. Currently only two forms of expressions are supported:\n1. Specify a single combination of rule severity and rule validation status, for example `${severity} == \"High\" AND ${status} == \"Critical\"`, which means the condition is met if among the executed rules there exists a rule whose severity is High and whose validation result is Critical.\n2. Specify multiple combinations of rule severity and rule validation status, for example `(${severity} == \"High\" AND ${status} == \"Critical\") OR (${severity} == \"Normal\" AND ${status} == \"Critical\") OR (${severity} == \"Normal\" AND ${status} == \"Error\")`, which means the condition is met if among the executed rules there exists a rule whose severity is High and validation result is Critical, or a rule whose severity is Normal and validation result is Critical, or a rule whose severity is Normal and validation result is Error. The enumeration of severity in the expression is the same as severity in DataQualityRule, and the enumeration of status is the same as status in DataQualityResult."
+          }
         },
         {
           "name": "Type",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Hook类型，目前只支持一种：\n- BlockTaskInstance：阻塞调度任务继续运行，数据质量监控是由调度任务触发的，那么在数据质量监控运行完成之后，会根据Hook.Condition来判断是否阻塞调度任务继续运行。",
+            "en": "The type of the hook. Currently only one type is supported:\n- BlockTaskInstance: blocks the scheduling task from continuing to run. If the data quality monitor is triggered by a scheduling task, after the monitor finishes running, Hook.Condition is evaluated to determine whether to block the scheduling task from continuing to run."
+          }
         }
       ]
     },
@@ -102,39 +163,74 @@
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "质量监控任务名称",
+        "en": "The name of the quality monitoring task."
+      }
     },
     {
       "name": "Notifications",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "通知订阅配置",
+        "en": "The notification subscription configuration."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DataWorks工作空间的ID。您可以登录[DataWorks控制台](https://workbench.data.aliyun.com/console)，进入工作空间管理页面获取ID。\n\n该参数用来确定本次API调用操作使用的DataWorks工作空间。",
+        "en": "The ID of the DataWorks workspace. You can log on to the [DataWorks console](https://workbench.data.aliyun.com/console) and go to the Workspace Management page to obtain the ID.\n\nThis parameter specifies the DataWorks workspace used by this API call."
+      }
     },
     {
       "name": "RuntimeConf",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "扩展配置，JSON格式的字符串，只对EMR类型的数据质量监控生效。\n- queue：执行EMR数据质量校验时，使用的yarn队列，默认为本项目配置的队列\n- sqlEngine：执行EMR的数据校验时，采用的SQL引擎\n    + HIVE_SQL\n    + SPARK_SQL",
+        "en": "The extended configuration, a JSON-formatted string. This setting takes effect only for EMR-type data quality monitors.\n- queue: The YARN queue used when running EMR data quality validation. The default is the queue configured for the current project.\n- sqlEngine: The SQL engine used when running EMR data validation.\n    + HIVE_SQL\n    + SPARK_SQL"
+      }
     },
     {
       "name": "Target",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据质量监控对象",
+        "en": "The data quality monitoring object."
+      }
     },
     {
       "name": "Trigger",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据质量校验任务的触发配置",
+        "en": "The trigger configuration of the data quality validation task."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据质量监控",
+    "en": "Creates a data quality monitor"
+  },
+  "descriptions": {
+    "zh": "需要购买 DataWorks 基础版及以上版本才能使用。",
+    "en": "DataWorks Basic Edition or higher is required."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public create-data-quality-evaluation-task --target TableGuid=odps.api_test.ods_openapi_log_d DatabaseType=maxcompute PartitionSpec=pt=_yyyymmdd-1 --description OpenAPI_create_a_data_quality_monitoring_test --name OpenAPI_create_a_data_quality_monitoring_test --runtime-conf queue_:_default_,_sqlEngine_:_SPARK_SQL --trigger '{\"Type\":\"ByScheduledTaskInstance\",\"TaskIds\":[30001]}' --project-id 10000 --hooks Condition=severity_==_High_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Error Type=BlockTaskInstance --notifications '{\"Condition\":\"severity_==_High_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Error\",\"Notifications\":[{\"NotificationChannels\":[[\"Mail\"]],\"NotificationReceivers\":[{\"Extension\":\"atAll_:_true\",\"ReceiverType\":\"DingdingUrl\",\"ReceiverValues\":[\"https://api.fc.aliyuncs.com/webhook\"]}]}]}' --data-source-id 1 --data-quality-rules '[{\"TemplateCode\":\"SYSTEM:field:null_value:fixed:0\",\"Description\":\"OpenAPI_test_rules\",\"CheckingConfig\":{\"Type\":\"Fixed\",\"Thresholds\":{\"Expected\":{\"Operator\":\"=\",\"Expression\":\"checkValue_0.01\",\"Value\":\"0\"},\"Warned\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"0.001\"},\"Critical\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"0.01\"}},\"ReferencedSamplesFilter\":\"bizdate_:_-1\"},\"Enabled\":true,\"Severity\":\"High\",\"Id\":2176,\"SamplingConfig\":{\"SettingConfig\":\"odps.sql.type.system.odps2=True,odps.sql.hive.compatible=True\",\"SamplingFilter\":\"status_!=_Succeeded\",\"Metric\":\"NullValueCount\",\"MetricParameters\":\"Columns_:_id_,_name_,_SQL_:_select_count_1_from_table\"},\"ErrorHandlers\":[{\"Type\":\"SaveErrorData\",\"ErrorDataFilter\":\"SELECT_0_FROM_ods_api_log_WHERE_status_=_Error\"}],\"Name\":\"OpenAPI_test_rules\"}]' --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public CreateDataQualityEvaluationTask --region cn-hangzhou --Target '{\"TableGuid\":\"odps.api_test.ods_openapi_log_d\",\"DatabaseType\":\"maxcompute\",\"PartitionSpec\":\"pt=_yyyymmdd-1\"}' --Description OpenAPI_create_a_data_quality_monitoring_test --RuntimeConf 'queue_:_default_,_sqlEngine_:_SPARK_SQL' --Trigger '{\"Type\":\"ByScheduledTaskInstance\",\"TaskIds\":[30001]}' --DataQualityRules '[{\"TemplateCode\":\"SYSTEM:field:null_value:fixed:0\",\"Description\":\"OpenAPI_test_rules\",\"CheckingConfig\":{\"Type\":\"Fixed\",\"Thresholds\":{\"Expected\":{\"Operator\":\"=\",\"Expression\":\"checkValue_0.01\",\"Value\":\"0\"},\"Warned\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"0.001\"},\"Critical\":{\"Operator\":\"example-string\",\"Expression\":\"checkValue_0.01\",\"Value\":\"0.01\"}},\"ReferencedSamplesFilter\":\"bizdate_:_-1\"},\"Enabled\":true,\"Severity\":\"High\",\"Id\":2176,\"SamplingConfig\":{\"SettingConfig\":\"odps.sql.type.system.odps2=True,odps.sql.hive.compatible=True\",\"SamplingFilter\":\"status_!=_Succeeded\",\"Metric\":\"NullValueCount\",\"MetricParameters\":\"Columns_:_id_,_name_,_SQL_:_select_count_1_from_table\"},\"ErrorHandlers\":[{\"Type\":\"SaveErrorData\",\"ErrorDataFilter\":\"SELECT_0_FROM_ods_api_log_WHERE_status_=_Error\"}],\"Name\":\"OpenAPI_test_rules\"}]' --ProjectId 10000 --Hooks '[{\"Condition\":\"severity_==_High_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Error\",\"Type\":\"BlockTaskInstance\"}]' --Notifications '{\"Condition\":\"severity_==_High_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Critical_OR_severity_==_Normal_AND_status_==_Error\",\"Notifications\":[{\"NotificationChannels\":[[\"Mail\"]],\"NotificationReceivers\":[{\"Extension\":\"atAll_:_true\",\"ReceiverType\":\"DingdingUrl\",\"ReceiverValues\":[\"https://api.fc.aliyuncs.com/webhook\"]}]}]}' --DataSourceId 1 --Name OpenAPI_create_a_data_quality_monitoring_test"

@@ -1,5 +1,6 @@
 {
   "name": "AttachLogStoreToEndpointGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,7 +9,11 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The instance ID of the Alibaba Cloud Global Accelerator (GA) instance."
+      }
     },
     {
       "name": "AccessLogRecordCustomizedHeaderList",
@@ -26,45 +31,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**. The **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "EndpointGroupIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点组ID列表。",
+        "en": "The list of endpoint group IDs."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听实例ID。",
+        "en": "The instance ID of the listener."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所属的地域ID，仅取值：**cn-hangzhou**。",
+        "en": "The region ID of the Alibaba Cloud Global Accelerator (GA) instance. Set the value to **cn-hangzhou**."
+      }
     },
     {
       "name": "SlsLogStoreName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SLS日志库名称。",
+        "en": "The name of the SLS Logstore."
+      }
     },
     {
       "name": "SlsProjectName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SLS项目名称。",
+        "en": "The name of the SLS project."
+      }
     },
     {
       "name": "SlsRegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "SLS地域ID。",
+        "en": "The region ID of the SLS service."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "关联SLS日志库到终端节点组",
+    "en": "Associate an SLS logstore with an endpoint group"
+  },
+  "descriptions": {
+    "zh": "- **AttachLogStoreToEndpointGroup**接口属于异步接口，即系统会先返回一个请求ID，但SLS日志库与终端节点组并未关联完成，系统后台的关联任务仍在进行。您可以调用[DescribeEndpointGroup](~~153260~~)查询终端节点组的状态：\n    - 当终端节点组处于**updating**状态时，表示SLS日志库与终端节点组正在关联中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示SLS日志库与终端节点组关联完成。\n- **AttachLogStoreToEndpointGroup**接口不支持在同一个全球加速实例内并发关联SLS日志库与终端节点组。",
+    "en": "- **AttachLogStoreToEndpointGroup** is an asynchronous operation. After you send a request, the system returns a request ID, but the association between the SLS Logstore and the endpoint group is not yet complete. The association node continues to run in the background. You can invoke [DescribeEndpointGroup](~~153260~~) to query the status of the endpoint group:\n    - If the endpoint group is in the **updating** state, the SLS Logstore is being associated with the endpoint group. In this state, you can only execute query operations.\n    - If the endpoint group is in the **active** state, the SLS Logstore is associated with the endpoint group.\n- **AttachLogStoreToEndpointGroup** does not support concurrent association of SLS Logstores with endpoint groups within the same Alibaba Cloud Global Accelerator (GA) instance."
+  },
   "example": {
     "unifiedCli": "aliyun ga attach-log-store-to-endpoint-group --biz-region-id cn-hangzhou --sls-project-name pn-01 --sls-log-store-name lsn-01 --accelerator-id ga-bp1odcab8tmno0hdq0000 --listener-id lsr-bp1bpn0kn908w4nbw0000 --sls-region-id cn-hangzhou --endpoint-group-ids epg-bp1dmlohjjz4kqaun0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --access-log-record-customized-header-list example-string --access-log-record-customized-headers-enabled true --region cn-hangzhou",
     "legacyCli": "aliyun ga AttachLogStoreToEndpointGroup --region cn-hangzhou --AccessLogRecordCustomizedHeaderList.1 'example-string' --SlsProjectName 'pn-01' --AccessLogRecordCustomizedHeadersEnabled true --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --EndpointGroupIds.1 'epg-bp1dmlohjjz4kqaun0000' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --SlsRegionId 'cn-hangzhou' --SlsLogStoreName 'lsn-01' --ListenerId 'lsr-bp1bpn0kn908w4nbw0000'"

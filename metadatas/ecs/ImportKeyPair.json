@@ -1,5 +1,6 @@
 {
   "name": "ImportKeyPair",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "KeyPairName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥对名称。必须保持名称唯一性。长度为2~128个字符，必须以大小写字母或中文开头，不能以http://和https:// 开头。支持Unicode中letter分类下的字符（其中包括英文、中文和数字等）。可以包含半角冒号（:）、下划线（_）、半角句号（.）或者短划线（-）。",
+        "en": "The name of the key pair. The name must be unique. The name must be 2 to 128 characters in length and must start with a letter or Chinese character. It cannot start with http:// or https://. The name can contain characters that are categorized as letter in Unicode, including letters, Chinese characters, and digits. The name can contain colons (:), underscores (_), periods (.), or hyphens (-)."
+      }
     },
     {
       "name": "PublicKeyBody",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "密钥对的公钥内容。",
+        "en": "The public key of the key pair."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SSH密钥对所在的企业资源组ID。",
+        "en": "The ID of the enterprise resource group to which the SSH key pair belongs."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "密钥对的标签键。N的取值范围：1~20。一旦传入该值，则不允许为空字符串。最多支持128个字符，不能以aliyun和acs:开头，不能包含http://或者https://。",
+            "en": "The key of tag N of the key pair. Valid values of N: 1 to 20. The tag key cannot be an empty string. The tag key can be up to 128 characters in length. It cannot start with aliyun or acs: and cannot contain http:// or https://."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "密钥对的标签值。N的取值范围：1~20。一旦传入该值，允许为空字符串。最多支持128个字符，不能包含http://或者https://。",
+            "en": "The value of tag N of the key pair. Valid values of N: 1 to 20. The tag value can be an empty string. The tag value can be up to 128 characters in length. It cannot contain http:// or https://."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "导入密钥对公钥",
+    "en": "ImportKeyPair"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n调用该接口时，您需要注意：\n\n- 您在每个地域的密钥对数最高为500对。\n- 导入的密钥对必须支持下列任一种加密方式：\n    - rsa\n    - dsa\n    - ssh-rsa\n    - ssh-dss\n    - ecdsa",
+    "en": "## Description\n\nWhen you call this operation, take note of the following items:\n\n- You can have a maximum of 500 key pairs in each region.\n- The imported key pair must support one of the following encryption methods:\n    - rsa\n    - dsa\n    - ssh-rsa\n    - ssh-dss\n    - ecdsa"
+  },
   "example": {
     "unifiedCli": "aliyun ecs import-key-pair --biz-region-id cn-hangzhou --biz-key-pair-name testKeyPairName --public-key-body ABC1234567 --resource-group-id rg-bp67acfmxazb4p0000 --tag Value=TestValue Key=TestKey --region cn-hangzhou",
     "legacyCli": "aliyun ecs ImportKeyPair --region cn-hangzhou --KeyPairName testKeyPairName --Tag.1.Key TestKey --ResourceGroupId 'rg-bp67acfmxazb4p0000' --Tag.1.Value TestValue --RegionId 'cn-hangzhou' --PublicKeyBody ABC1234567"

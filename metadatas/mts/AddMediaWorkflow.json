@@ -1,5 +1,6 @@
 {
   "name": "AddMediaWorkflow",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "媒体工作流名称。\n\n- 不能为空串。\n- 同一账号下的工作流名称不可重复。\n- 不超过64个字符。\n- UTF-8编码。",
+        "en": "The name of the media workflow.\n\n*   The value cannot be empty.\n*   The name cannot be the same as that of an existing media workflow within the current Alibaba Cloud account.\n*   The name can be up to 64 characters in length.\n*   The value must be encoded in the UTF-8 format."
+      }
     },
     {
       "name": "Topology",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "媒体工作流拓扑结构。格式为JSON对象，包括活动列表及活动依赖。更多信息请参见下文**Topology示例**。 \n\n> OSS的地域需要与当前MPS所在地域保持一致。",
+        "en": "The topology of the media workflow. The value must be a JSON object that contains the activities and activity dependencies. For more information, see the **Sample topology** section of this topic.\n\n>  The Object Storage Service (OSS) bucket must reside in the same region as your MPS service."
+      }
     },
     {
       "name": "TriggerMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "触发模式。 取值：\n\n- **OssAutoTrigger**：自动触发。\n\n- **NotInAuto**：不自动触发。",
+        "en": "The triggering mode of the media workflow. Valid values:\n\n*   **OssAutoTrigger**: The media workflow is automatically triggered.\n*   **NotInAuto**: The media workflow is not automatically triggered."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "新增媒体工作流",
+    "en": "AddMediaWorkflow"
+  },
+  "descriptions": {
+    "zh": "- 本接口可以定义媒体工作流的拓扑结构（DAG）、活动以及依赖关系。活动详情，请参见[媒体工作流活动介绍](~~68494~~)。使用本接口创建的工作流可以在媒体处理控制台查看并调用。\n- MPS媒体工作流仅支持通过前缀（文件路径）自动触发工作流，不支持通过后缀名触发工作流执行。详细触发规则，请参见[媒体工作流的文件触发匹配规则](~~68574~~)。\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "*   You can call this operation to define the topology, activities, and dependencies of a media workflow. The topology is represented by a directed acyclic graph (DAG) in the console. For more information, see [Workflow activities](~~68494~~). You can view and run the workflows that are created by calling this operation in the ApsaraVideo Media Processing (MPS) console.\n*   MPS media workflows can be automatically triggered only by using the prefix of the file path. Automatic triggering by using the suffix is not supported. For more information about the trigger rules, see [Workflow triggering rules for files](~~68574~~).\n\n### [](#qps)QPS limits\n\nYou can call this API operation up to 100 times per second per account. Requests that exceed this limit are dropped, and you will experience service interruptions. We recommend that you take note of this limit when you call this operation. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts add-media-workflow --name mediaworkflow-example --topology Activities_:_mediaworkflow-example_:_Parameters_:_Outputs_:_OutputObject_:_examplebucket/output/_RunId_/TRANSCODE_1659412220000/_FileName_,_TemplateId_:_S00000001-200010_,_TemplateName_:_MP4-LD_,_OutputBucket_:_examplebucket_,_OutputLocation_:_oss-cn-shanghai_,_Type_:_Transcode_,_Act-Start_:_Parameters_:_PipelineId_:_a7d481f07d8c45da88c71853ce7d0000_,_InputFile_:_Bucket_:_example-input_,_Location_:_oss-cn-shanghai_,_ObjectPrefix_:_mps-test/input/_,_Type_:_Start_,_Act-Report_:_Parameters_:_PublishType_:_Manual_,_Type_:_Report_,_Dependencies_:_mediaworkflow-example_:_Act-Report_,_Act-Start_:_mediaworkflow-example_,_Act-Report_: --trigger-mode OssAutoTrigger --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts AddMediaWorkflow --region cn-hangzhou --Topology 'Activities_:_mediaworkflow-example_:_Parameters_:_Outputs_:_OutputObject_:_examplebucket/output/_RunId_/TRANSCODE_1659412220000/_FileName_,_TemplateId_:_S00000001-200010_,_TemplateName_:_MP4-LD_,_OutputBucket_:_examplebucket_,_OutputLocation_:_oss-cn-shanghai_,_Type_:_Transcode_,_Act-Start_:_Parameters_:_PipelineId_:_a7d481f07d8c45da88c71853ce7d0000_,_InputFile_:_Bucket_:_example-input_,_Location_:_oss-cn-shanghai_,_ObjectPrefix_:_mps-test/input/_,_Type_:_Start_,_Act-Report_:_Parameters_:_PublishType_:_Manual_,_Type_:_Report_,_Dependencies_:_mediaworkflow-example_:_Act-Report_,_Act-Start_:_mediaworkflow-example_,_Act-Report_:' --TriggerMode OssAutoTrigger --Name 'mediaworkflow-example'"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateStackTemplateByResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "/V2/UpdateStackTemplateByResources",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求的幂等性。 该值由客户端生成，并且必须是全局唯一的。   \n长度最大为64个字符，可包含英文字符、数字、短划线（-）和下划线（_）。\n\n更多详情，请参见[如何保证幂等性](~~134212~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must make sure that it is unique among different requests.\n\nThe token can be up to 64 characters in length and can contain letters, digits, hyphens (-), and underscores (\\_).\n\nFor more information, see [How to ensure idempotence](~~134212~~)."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "此次请求是否只预览结果，取值：\n- true：返回修正后的资源栈的模板的内容，并不会修改资源栈的模板。与原模板比较分析后，再判断是否要执行修正。\n- false（默认值）：会直接对资源栈的模板进行修正以消除偏差。  \n\n> 建议设置DryRun为true，预览修改后的模板。如果符合预期，再设置DryRun为false，真正地执行修改。",
+        "en": "Specifies whether to only preview the corrected template in this request. Default value: false. Valid values:\n\n- true: returns the content of the corrected template and does not correct the template. After Resource Orchestration Service (ROS) compares the corrected template with the original template, ROS determines whether to execute the correction.\n\n- false: corrects the template to eliminate drift.\n\n> We recommend that you set the DryRun parameter to true to preview the corrected template. If the template content meets expectations, set the DryRun parameter to false to execute the correction."
+      }
     },
     {
       "name": "LogicalResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源名列表，用于过滤资源。修正模板时仅涉及列表中的资源。默认修正所有有偏差的资源。\n\n如果被修正的列表中包含偏差状态为DELETED的资源，为了确保修正后模板的正确性，可能会对列表之外但引用了被删除资源的资源进行调整。",
+        "en": "The logical ID of resource."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈所属的地域ID。您可以调用[DescribeRegions](~~131035~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the stack. You can call the [DescribeRegions](~~131035~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "StackId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源栈ID。",
+        "en": "The ID of the stack."
+      }
     },
     {
       "name": "TemplateFormat",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回的模板格式，取值：\n- JSON（默认值）\n- YAML",
+        "en": "The format of the returned template. Default value: JSON. Valid values:\n\n- JSON\n\n- YAML"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修正资源栈模板",
+    "en": "UpdateStackTemplateByResources"
+  },
+  "descriptions": {
+    "zh": "使用限制：只能对偏差状态（DRIFTED）的资源栈进行消除偏差。您需要先调用[DetectStackDrift](~~155094~~)接口对资源栈进行偏差检测，然后调用[GetStackDriftDetectionStatus](~~155097~~)接口查询资源栈偏差状态，确保资源栈处于偏差（DRIFTED）状态，最后调用UpdateStackTemplateByResources接口消除偏差。  \n\n本文将提供一个示例，为杭州地域资源栈ID为`4a6c9851-3b0f-4f5f-b4ca-a14bf691****`的资源栈消除偏差。",
+    "en": "Limits: You can eliminate only drift on stacks that have drifted. You must call the [DetectStackDrift](~~155094~~) operation to perform drift detection on a stack, call the [GetStackDriftDetectionStatus](~~155097~~) operation to query the drift status of the stack to make sure that the stack has drifted, and then call the UpdateStackTemplateByResources operation to eliminate drift.\n\nIn this topic, drift is eliminated for a stack whose ID is `4a6c9851-3b0f-4f5f-b4ca-a14bf691****`. The stack is deployed in the China (Hangzhou) region."
+  },
   "example": {
     "unifiedCli": "aliyun ros update-stack-template-by-resources --stack-id 4a6c9851-3b0f-4f5f-b4ca-a14bf6910000 --dry-run false --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --template-format JSON --logical-resource-id WebServer --region cn-hangzhou",
     "legacyCli": "aliyun ros UpdateStackTemplateByResources --region cn-hangzhou --TemplateFormat JSON --DryRun false --RegionId 'cn-hangzhou' --LogicalResourceId.1 WebServer --ClientToken '123e4567-e89b-12d3-a456-426655440000' --StackId '4a6c9851-3b0f-4f5f-b4ca-a14bf6910000'"

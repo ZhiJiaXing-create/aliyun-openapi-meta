@@ -1,5 +1,6 @@
 {
   "name": "ModifyDiskChargeType",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动支付。取值范围： \n         \n- true（默认）：自动支付。您需要确保账户余额充足，如果账户余额不足会生成异常订单，只能作废订单。 \n- false：只生成订单不扣费。如果您的账户余额不足，会生成正常的未支付订单，此订单可登录阿里云**费用与成本**后，在<props=\"china\"><ph>[我的订单](https://usercenter2.aliyun.com/order/list)</ph></props><props=\"intl\"><ph>[订单管理](https://usercenter2-intl.aliyun.com/order/list)</ph></props>页面支付。",
+        "en": "Specifies whether to automatically complete the payment. Valid values:\n\n- true (default): The payment is automatically completed. Maintain sufficient balance in your account. Otherwise, your order becomes invalid and must be canceled.\n\n- false: An order is generated but no payment is made. If your account balance is insufficient, you can set AutoPay to false to generate an unpaid order. Then, log on to the **Expenses and Costs console**, go to the [Orders page](https://usercenter2-intl.aliyun.com/order/list), and pay for the order."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The **token** can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [Ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "DiskChargeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云盘计费方式。取值范围： \n         \n- PrePaid（默认）：按量付费数据盘转换为包年包月数据盘。 \n- PostPaid：包年包月数据盘转换为按量付费数据盘。\n\n> 转换按量付费云盘为包年包月时，其容量费用计费周期自动与关联的ECS实例同步。",
+        "en": "The new billing method of the disk. Valid values:\n\n- PrePaid (default): changes the billing method from pay-as-you-go to subscription.\n\n- PostPaid: changes the billing method from subscription to pay-as-you-go.\n\n> When you change the billing method of a pay-as-you-go disk to subscription, the billing cycle of the disk is automatically synchronized with that of the associated ECS instance."
+      }
     },
     {
       "name": "DiskIds",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云盘ID列表，一个带有格式的JSON Array，最多支持16个ID，用半角逗号（,）隔开。",
+        "en": "The IDs of disks. The value is a JSON array that consists of up to 16 disk IDs. Separate the disk IDs with commas (,)."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "云盘挂载的实例ID。",
+        "en": "The ID of the instance to which disks are attached."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the instance. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改云盘的计费方式",
+    "en": "ModifyDiskChargeType"
+  },
+  "descriptions": {
+    "zh": "转换数据盘计费方式前，请仔细阅读[转换云盘计费方式](~~145018~~)。\n\n使用该接口时，请注意：\n\n- 不支持修改挂载在按量付费实例上数据盘的计费方式，按量付费实例仅支持挂载按量付费云盘。\n- 数据盘挂载的实例不能为到期停机状态。\n- 更换计费方式前后的价格差退款会退还到您的原付费方式中，已使用的代金券不退回。\n- 每块云盘成功修改计费方式一次，五分钟内不能再次修改。  \n<props=\"china\">- 开启多重挂载特性的云盘，仅支持按量付费的计费方式，不能转换为包年包月的计费方式。</props>\n\n\n更换计费方式后，默认自动扣费。您需要确保账户余额充足，否则会生成异常订单，此时只能作废订单。如果您的账户余额不足，可以将参数AutoPay置为false，此时会生成正常的未支付订单，您可以登录阿里云**费用与成本**后，在<props=\"china\"><ph>[我的订单](https://usercenter2.aliyun.com/order/list)</ph></props><props=\"intl\"><ph>[订单管理](https://usercenter2-intl.aliyun.com/order/list)</ph></props>页面支付。",
+    "en": "For information about how to change the billing method of cloud disks, see [Change the billing methods of a disk](~~145018~~).\n\nTake note of the following items:\n\n- Only pay-as-you-go disks can be attached to pay-as-you-go instances, and the billing methods of the disks cannot be changed.\n\n- The instance to which data disks are attached cannot be in the Stopped state due to expiration.\n\n- The price difference is refunded to the payment account that you used. Vouchers that have been redeemed are nonrefundable.\n\n- You cannot change the billing method again within 5 minutes of a successful change.\n\nAfter you change the billing method, the payment (if any) is automatically completed. Maintain sufficient balance in your account. Otherwise, your order becomes invalid and must be canceled. If your account balance is insufficient, you can set AutoPay to false to generate an unpaid order. Then, log on to the **Expenses and Costs console**, go to the [Orders page](https://usercenter2-intl.aliyun.com/order/list), and pay for the order."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-disk-charge-type --instance-id i-bp1i778bq705cvx10000 --biz-region-id cn-hangzhou --disk-ids 'd-bp67acfmxazb4ph0000_,_d-bp67acfmxazb4pi0000_,_…_d-bp67acfmxazb4pj0000' --auto-pay true --client-token 123e4567-e89b-12d3-a456-426655440000 --disk-charge-type PostPaid --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifyDiskChargeType --region cn-hangzhou --DiskIds 'd-bp67acfmxazb4ph0000_,_d-bp67acfmxazb4pi0000_,_…_d-bp67acfmxazb4pj0000' --InstanceId 'i-bp1i778bq705cvx10000' --DiskChargeType PostPaid --RegionId 'cn-hangzhou' --AutoPay true --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

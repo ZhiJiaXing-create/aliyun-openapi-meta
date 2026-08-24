@@ -1,5 +1,6 @@
 {
   "name": "RecognizeAction",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "Type",
       "position": "Body",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "输入内容类型，包括视频和图像两种类型。\n\n- 0：表示输入视频URL或视频Base64编码字符串。\n\n- 1：表示输入图像URL或图像Base64编码字符串。\n\n- 其他：非法输入。",
+        "en": "The input content type, which can be video or image.\n\n- 0: specifies a video URL or Base64-encoded video string as input.\n\n- 1: specifies an image URL or Base64-encoded image string as input.\n\n- Other values: invalid input."
+      }
     },
     {
       "name": "URLList",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "图像列表",
+        "en": "The list of images."
+      },
       "sub_parameters": [
         {
           "name": "URL",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "Type为1时需要输入的图像URL地址，**必须输入4张图像，且4张图像建议为两秒钟视频均匀采样的图像，分辨率和通道数必须一致**。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。",
+            "en": "The image URL to be provided when Type is set to 1. **You must provide exactly 4 images, and the 4 images must be uniformly sampled from a 2-second video. The resolution and number of channels must be consistent across all images.** We recommend that you use an OSS link in the Shanghai region. If the file is stored locally or the OSS link is in a region other than Shanghai, see [File URL processing](~~155645~~)."
+          }
         },
         {
           "name": "imageData",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "图像Base64编码字符串，与URL共存时，URL优先。文件的Base64编码处理操作，请参见[文件Base64处理](~~468191~~)。",
+            "en": "The Base64-encoded string of the image. If both this parameter and URL are specified, URL takes precedence. For information about Base64 encoding, see [File Base64 processing](~~468191~~)."
+          }
         }
       ]
     },
@@ -34,15 +51,34 @@
       "name": "VideoData",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "视频Base64编码字符串，与VideoURL共存时，VideoURL优先。文件的Base64编码处理操作，请参见[文件Base64处理](~~468191~~)。",
+        "en": "The Base64-encoded string of the video. If both this parameter and VideoURL are specified, VideoURL takes precedence. For information about Base64 encoding, see [File Base64 processing](~~468191~~)."
+      }
     },
     {
       "name": "VideoUrl",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Type为0时需要输入的视频URL地址。推荐使用上海地域的OSS链接，对于文件在本地或者非上海地域OSS链接的情况，请参见[文件URL处理](~~155645~~)。",
+        "en": "The video URL to be provided when Type is set to 0. We recommend that you use an Object Storage Service (OSS) link in the Shanghai region. If the file is stored locally or the OSS link is in a region other than Shanghai, see [File URL processing](~~155645~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "动作行为识别",
+    "en": "Action recognition"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n动作行为识别能力可以识别视频和图像中的人体动作行为，并返回识别后的行为类别。当前可以识别的行为类别包括：举手、吃喝、吸烟、打电话、玩手机、趴桌睡觉、跌倒、洗手、拍照。您可以根据系统提供的动作置信度判断阈值，对识别的动作进行判断。\n\n**动作行为识别适用范围：**\n- 举手：手臂伸直高高举起，手腕高过头顶。\n- 吃喝：吃东西或者喝水。\n- 吸烟：将烟点着，真吸烟，画面中需要能看清烟。\n- 打电话：电话或者微信语音，手机必须靠近耳朵或者嘴边。\n- 玩手机：用手机打字、浏览手机、看视频、玩游戏，视频聊天等玩手机行为，画面中需要能看清手机。\n- 趴桌睡觉：头趴在桌子上睡觉。\n- 跌倒：整个人跌倒在地，身体倒下。\n- 洗手：在水龙头或者盆中洗手。\n- 拍照：手机稍微举起，用手机对着某人或物拍照。\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 当前能力可在视觉智能开放平台有完整的免费产品体验，您可以单击[立即试用](https://vision.aliyun.com/experience/detail?&tagName=facebody&children=RecognizeAction)对该能力进行更直观试用以及在线购买。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n- 驾驶员监控系统（DMS）：检测驾驶员是否存在吸烟、吃喝、打电话、玩手机等影响安全驾驶的行为。\n- 学习状况监测：监测学习过程是否存在举手、玩手机、趴桌子睡觉等行为。\n- 公共场所行为监测：监测在博物馆、展览馆等公共场所是否存在吸烟、打电话、拍照等不文明行为，以及是否有跌倒这样的异常情况发生。\n- 工作场所监督：监测在工作场所是否存在吃喝、吸烟、打电话、趴桌子睡觉等行为，是否有按要求洗手。\n\n## 特色优势\n- 覆盖多种应用场景：支持识别举手、吃喝、吸烟、打电话、玩手机、睡觉、跌打、洗手、拍照等行为，涵盖驾驶、学习、泛安防等多种场景。\n- 适应多种光照条件：适应在自然光、室内光照、夜晚红外模式等光照条件下的行为识别。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[人脸人体服务](https://vision.aliyun.com/facebody)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_facebody_public_cn#/open)。\n\n> 本能力支持企业或个人认证用户开通。更多实名认证操作信息，请参见[实名认证](https://help.aliyun.com/knowledge_list/37170.html)。\n\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/facebody/2019-12-30/RecognizeAction?lang=JAVA&sdkStyle=old&params=%7B%22Type%22%3A1%2C%22URLList%22%3A%5B%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction1.png%22%7D%2C%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction2.png%22%7D%2C%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction3.png%22%7D%2C%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction4.png%22%7D%5D%7D&tab=DEMO)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 开发接入步骤：\n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为人脸人体（facebody）的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n6. 示例代码：该能力常用语言的示例代码，请参见[动作行为识别示例代码](~~478479~~)。\n\n7. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n\n- 视频要求：\n    1. 时长大于2秒，小于5秒。如果输入视频时长大于5秒，系统仅返回前5秒的检测结果。\n    2. 视频大小应小于10 MB。\n    3. 分辨率大于256×256像素，小于等于1280×720像素。\n    4. 支持一些常见的视频格式，例如MPEG、AVI、MOV、MP4。\n\n        > 建议为居家摄像头或近距离监控场景。即摄像头固定不动，拍摄距离为2米~10米。\n- 图像要求：\n\n    1. 帧数4帧，必须是同一个视频连续2秒均匀抽帧的结果。如果输入4帧非同一个视频中的，会导致识别报错。\n    2. 分辨率大于256×256像素，小于等于1280×720像素。\n    3. 支持的格式为JPEG、PNG、BMP、JPG。\n    4. 可使用URL与Base64编码字符串混合输入。\n\n- URL地址中不能包含中文字符。",
+    "en": "## Description\nThe action recognition feature identifies human actions and behaviors in videos and images, and returns the recognized behavior categories. Currently supported behavior categories include: raising hand, eating or drinking, smoking, making a phone call, using a phone, sleeping on a desk, falling down, washing hands, and taking a photo. You can use the system-provided confidence thresholds to determine the recognized actions.\n\n**Applicable scope of action recognition:**\n- Raising hand: The arm is extended straight up with the wrist above the head.\n- Eating or drinking: Eating food or drinking water.\n- Smoking: Lighting and actually smoking a cigarette. The cigarette must be clearly visible in the image.\n- Making a phone call: Using a phone call or WeChat voice call. The phone must be close to the ear or mouth.\n- Using a phone: Typing on a phone, browsing, watching videos, playing games, video chatting, and other phone usage behaviors. The phone must be clearly visible in the image.\n- Sleeping on a desk: Resting the head on a desk while sleeping.\n- Falling down: The entire body falls to the ground.\n- Washing hands: Washing hands under a faucet or in a basin.\n- Taking a photo: Holding a phone slightly raised and taking a photo of a person or object.\n\n> - You can visit [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) for online assistance.\n- You can try this feature for free on the Vision Intelligence Open Platform. Click [Try Now](https://vision.aliyun.com/experience/detail?&tagName=facebody&children=RecognizeAction) for a hands-on experience and online purchase.\n- For questions about API integration and usage of Alibaba Cloud Vision Intelligence Open Platform, join the DingTalk group (23109592) to contact us.\n\n## Common scenarios\n- Driver Monitoring System (DMS): Detects whether a driver is smoking, eating or drinking, making a phone call, using a phone, or engaging in other behaviors that affect driving safety.\n- Learning status monitoring: Monitors whether behaviors such as raising a hand, using a phone, or sleeping on a desk occur during learning procedures.\n- Public place behavior monitoring: Monitors whether behaviors such as smoking, making phone calls, or taking photos occur in public places such as museums and exhibition halls, and detects abnormal situations such as falling down.\n- Workplace supervision: Monitors whether behaviors such as eating or drinking, smoking, making phone calls, or sleeping on a desk occur in the workplace, and checks whether hand-washing requirements are followed.\n\n## Features\n- Overwrites multiple common scenarios: Supports recognition of behaviors such as raising hand, eating or drinking, smoking, making a phone call, using a phone, sleeping, falling down, washing hands, and taking a photo. This covers various patterns including driving, learning, and general security.\n- Adapts to various lighting conditions: Supports behavior recognition under natural light, indoor lighting, and nighttime infrared pattern.\n\n## Getting started\n1. Create an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **Register Now** in the upper-right corner, and follow the instructions to create an account.\n2. Activate the service: Make sure you have activated the [Face and Body service](https://vision.aliyun.com/facebody). If you have not activated the service, [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_facebody_public_cn#/open).\n\n> This feature is available to enterprise or verify your identity - Individual account users. For more information about identity verification, see [Identity Verification](https://help.aliyun.com/knowledge_list/37170.html).\n\n3. Create an AccessKey pair: Make sure you have [created an AccessKey pair](~~175144~~). If you are using a RAM user AccessKey, grant the AliyunVIAPIFullAccess permission to the RAM user. For more information, see [RAM authorization](~~145025~~).\n4. Online debugging (optional): You can use [OpenAPI Explorer](https://next.api.aliyun.com/api/facebody/2019-12-30/RecognizeAction?lang=JAVA&sdkStyle=old&params=%7B%22Type%22%3A1%2C%22URLList%22%3A%5B%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction1.png%22%7D%2C%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction2.png%22%7D%2C%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction3.png%22%7D%2C%7B%22URL%22%3A%22http%3A%2F%2Fviapi-test.oss-cn-shanghai.aliyuncs.com%2Fviapi-3.0domepic%2Ffacebody%2FRecognizeAction%2F1RecognizeAction4.png%22%7D%5D%7D&tab=DEMO) to debug the feature online, view complete sample code and SDK dependency information, or download the complete project.\n5. Development and integration steps:\n- Select the SDK language you want to use from the [SDK overview](~~145033~~).\n- Find the SDK package for the Face and Body (facebody) category in the corresponding SDK documentation and install it.\n- Modify the sample code provided in the references as needed and invoke the operation.\n\n6. Sample code: For sample code in commonly used languages, see [Action recognition sample code](~~478479~~).\n\n7. Direct client calls: Common client call methods for this feature include the following.\n- [Direct call from web frontend](~~467779~~)\n- [Direct call from mini programs](~~467780~~)\n- [Direct call from Android](~~467781~~)\n- [Direct call from iOS](~~467782~~).\n\n## Input limits\n\n- Video requirements:\n    1. The duration must be greater than 2 seconds and less than 5 seconds. If the input video is longer than 5 seconds, the system returns detection results for only the first 5 seconds.\n    2. The video size must be less than 10 MB.\n    3. The resolution must be greater than 256 × 256 pixels and less than or equal to 1280 × 720 pixels.\n    4. Common video formats are supported, such as MPEG, AVI, MOV, and MP4.\n\n        > A home camera or close-range monitoring scenario is recommended, where the camera is fixed and the shooting distance is 2 to 10 meters.\n- Image requirements:\n\n    1. The number of frames must be 4, and they must be uniformly sampled from the same video over a continuous 2-second period. If the 4 frames are not from the same video, a recognition error occurs.\n    2. The resolution must be greater than 256 × 256 pixels and less than or equal to 1280 × 720 pixels.\n    3. Supported formats are JPEG, PNG, BMP, and JPG.\n    4. A mix of URL and Base64-encoded string inputs is supported.\n\n- The URL must not contain Chinese characters."
+  },
   "example": {
     "unifiedCli": "aliyun facebody recognize-action --type 0 --video-url http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/facebody/RecognizeAction/RecognizeAction-video1.mp4 --url-list imageData=/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgQ0000 URL=http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/facebody/RecognizeAction/1RecognizeAction1.png --video-data iVBORw0KGgoAAAANSUhEUgAAAoAAAAHJCAIAAACaEB9NAAEAAElEQVR4nNT9Wb0000 --api-version 2019-12-30 --region cn-hangzhou",
     "legacyCli": "aliyun facebody RecognizeAction --region cn-hangzhou --Type 0 --VideoData iVBORw0KGgoAAAANSUhEUgAAAoAAAAHJCAIAAACaEB9NAAEAAElEQVR4nNT9Wb0000 --URLList.1.imageData '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgQ0000' --URLList.1.URL 'http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/facebody/RecognizeAction/1RecognizeAction1.png' --VideoUrl 'http://viapi-test.oss-cn-shanghai.aliyuncs.com/viapi-3.0domepic/facebody/RecognizeAction/RecognizeAction-video1.mp4'"

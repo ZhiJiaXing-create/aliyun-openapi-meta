@@ -1,5 +1,6 @@
 {
   "name": "GrantUserPermission",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "IsRamRole",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标权限授予实体，如果是RAM角色，则为`true`，否则为`false`。",
+        "en": "The entity to which the permissions are granted. A value of `true` indicates that the permissions are granted to a RAM user. A value of `false` indicates that the permissions are granted to a RAM role."
+      }
     },
     {
       "name": "Namespace",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "命名空间名称。\n\n- 当**RoleType**取值为**cluster**时，本参数无需设置。\n- 当**RoleType**取值为**namespace**时，本参数必须填写。\n- 当**RoleType**取值为**namespace**，且**RoleName**取值为**gitops-dev**时，本参数必须设置且只能设置为**argocd**。",
+        "en": "The name of the namespace.\n\n*   If **RoleType** is set to **cluster**, you do not need to specify this parameter.\n*   This parameter is required if **RoleType** is set to **namespace**.\n*   If **RoleType** is set to **namespace** and **RoleName** is set to **gitops-dev**, this parameter is required and must be set to **argocd**."
+      }
     },
     {
       "name": "RoleName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "预置的角色名称，取值：\n\n- admin: 管理员。\n- dev：开发人员。\n- gitops-dev: GitOps开发人员（仅限于舰队实例）。\n\nRoleName参数取值和RoleType参数取值关系如下：\n- 当**RoleType**取值为**cluster**时，本参数只能设置为**admin**。\n- 当**RoleType**取值为**namespace**时，本参数只能设置为**dev**或**gitops-dev**。",
+        "en": "The predefined role. Valid values:\n\n*   admin: administrator\n*   dev: developer\n*   gitops-dev: GitOps developer. The parameter is available only for Fleet instances.\n\nThe value of RoleName and that of RoleType must meet the following requirements:\n\n*   If **RoleType** is set to **cluster**, this parameter must be set to **admin**.\n*   If **RoleType** is set to **namespace**, this parameter must be set to **dev** or **gitops-dev**."
+      }
     },
     {
       "name": "RoleType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "授权类型，取值：\n\n- cluster：集群维度。\n- namespace: 命名空间维度。",
+        "en": "The authorization type. Valid values:\n\n*   cluster: The permissions are granted to a cluster.\n*   namespace: The permissions are granted to a namespace of a cluster."
+      }
     },
     {
       "name": "UserId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "RAM用户ID或者RAM角色ID。",
+        "en": "The ID of the RAM user or RAM role."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "授予RAM用户RBAC权限",
+    "en": "GrantUserPermission"
+  },
+  "descriptions": {
+    "zh": "- 您需要使用阿里云账号（主账号）、集群创建者或已具有集群管理员权限的RAM用户，为指定的RAM用户或RAM角色授权，普通RAM用户无调用本接口进行授权操作的权限。\n- 授予RBAC权限前，您需要先为RAM用户或RAM角色授予ACK One集群的操作权限，具体操作，请参见[为RAM用户或RAM角色授予系统权限策略](~~613486~~)。\n\n更多授权信息，请参见[授权概述](~~613468~~)。",
+    "en": "*   To call this API operation to grant permissions to a RAM user or RAM role on a specific cluster, you must use an Alibaba Cloud account, the account that is used to create the cluster, or a RAM user that has the cluster administrator permissions. A regular RAM user does not have the permissions to call this operation.\n*   Before you grant RBAC permissions to a RAM user or RAM role on a cluster, you must grant the operation permissions to the RAM user or RAM role on the specified cluster. For more information, see [Attach a system permission policy to a RAM user or RAM role](~~613486~~).\n\nFor more information, see [Authorization overview](~~613468~~)."
+  },
   "example": {
     "unifiedCli": "aliyun adcp grant-user-permission --role-type cluster --role-name admin --cluster-id c102fe5f1ee5d4c87a68121a77d8b0000 --namespace default --user-id 21760000 --is-ram-role false --region cn-hangzhou",
     "legacyCli": "aliyun adcp GrantUserPermission --region cn-hangzhou --RoleName admin --ClusterId c102fe5f1ee5d4c87a68121a77d8b0000 --RoleType cluster --UserId 21760000 --IsRamRole false --Namespace default"

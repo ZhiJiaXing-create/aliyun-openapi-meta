@@ -1,5 +1,6 @@
 {
   "name": "DeleteIpv6InternetBandwidth",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。\n> -",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The ClientToken value can contain only ASCII characters.\n> If you do not specify this parameter, the system uses the RequestId of the API request as the ClientToken. The RequestId may be different for each API request.\n> -."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：只预检此次请求，不会删除IPsec服务端。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误信息。如果检查通过，则返回`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后直接删除IPsec服务端。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run without actually deleting the Internet bandwidth. The system checks whether the required parameters are specified, whether the request format is valid, and whether business restrictions are met. If the check fails, the corresponding error message is returned. If the check passes, `DryRunOperation` is returned.\n\n- **false** (default): performs a dry run and sends the request. If the check passes, the Internet bandwidth is deleted."
+      }
     },
     {
       "name": "Ipv6AddressId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPv6地址的ID。\n\n> 您必须输入参数**Ipv6AddressId**和参数**Ipv6InternetBandwidthId**中的任意一个。",
+        "en": "The ID of the IPv6 address.\n\n> You must specify either **Ipv6AddressId** or **Ipv6InternetBandwidthId**."
+      }
     },
     {
       "name": "Ipv6InternetBandwidthId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPv6地址的公网带宽实例ID。",
+        "en": "The Internet bandwidth instance ID of the IPv6 address."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPv6网关的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the IPv6 gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除公网带宽",
+    "en": "Delete internet bandwidth"
+  },
+  "descriptions": {
+    "zh": "**DeleteIpv6InternetBandwidth**接口不支持并发删除同一个公网带宽。",
+    "en": "The **DeleteIpv6InternetBandwidth** operation does not support concurrent deletion of the same Internet bandwidth."
+  },
   "example": {
     "unifiedCli": "aliyun vpc delete-ipv6-internet-bandwidth --biz-region-id cn-hangzhou --ipv6-address-id ipv6-2zen5j4axcp5l5qyy0000 --ipv6-internet-bandwidth-id ipv6bw-uf6hcyzu65v98v3du0000 --dry-run true --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc DeleteIpv6InternetBandwidth --region cn-hangzhou --Ipv6AddressId 'ipv6-2zen5j4axcp5l5qyy0000' --DryRun true --RegionId 'cn-hangzhou' --Ipv6InternetBandwidthId 'ipv6bw-uf6hcyzu65v98v3du0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

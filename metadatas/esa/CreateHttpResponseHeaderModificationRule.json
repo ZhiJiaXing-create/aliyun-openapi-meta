@@ -1,5 +1,6 @@
 {
   "name": "CreateHttpResponseHeaderModificationRule",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -9,30 +10,50 @@
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "修改响应头，支持添加、删除、修改三种操作方式。",
+        "en": "An array of objects that specify modifications to the response header. The supported operations are `add`, `del`, and `modify`."
+      },
       "sub_parameters": [
         {
           "name": "Name",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "响应头名称。",
+            "en": "The name of the response header."
+          }
         },
         {
           "name": "Operation",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "操作方式。取值范围：\n\n- add：添加。\n- del：删除\n- modify：变更。",
+            "en": "The modification to perform on the header. Valid values:\n\n- `add`: Adds a header.\n\n- `del`: Deletes a header.\n\n- `modify`: Modifies a header."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "值类型。取值范围：\n- static：静态模式。\n- dynamic：动态模式。",
+            "en": "The value type. Valid values:\n\n- `static`: Static value.\n\n- `dynamic`: Dynamic value."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "响应头值。",
+            "en": "The value to assign to the header. This parameter is not required when the `Operation` is `del`."
+          }
         }
       ]
     },
@@ -40,39 +61,70 @@
       "name": "Rule",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则内容，使用条件表达式来匹配用户请求。添加全局配置的时候不需要设置该参数。存在两种使用场景：\n- 匹配所有传入请求：值设置为true\n- 匹配指定请求：值设置为自定义表达式，例如：(http.host eq \\\"video.example.com\\\")",
+        "en": "Specifies the conditional expression that an incoming request must match for the rule to apply. This parameter is not required when adding a Global Configuration. You can set the value in one of the following ways:\n\n- To match all incoming requests, set the value to `true`.\n\n- To match specific requests, set the value to a custom expression. For example: `(http.host eq \"video.example.com\")`"
+      }
     },
     {
       "name": "RuleEnable",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则开关。添加全局配置的时候不需要设置该参数。取值范围：\n- on：开启。\n- off：关闭。",
+        "en": "Specifies whether to enable the rule. This parameter is not required when adding a Global Configuration. Valid values:\n\n- `on`: Enables the rule.\n\n- `off`: Disables the rule."
+      }
     },
     {
       "name": "RuleName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则名称。添加全局配置的时候不需要设置该参数。",
+        "en": "The name of the rule. This parameter is not required when adding a Global Configuration."
+      }
     },
     {
       "name": "Sequence",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则执行顺序，数值越小越优先执行。",
+        "en": "The rule's execution order. A lower value indicates a higher priority."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID。可通过调用[ListSites](~~2850189~~)接口查询获取。",
+        "en": "The Site ID. You can get this ID by calling the [ListSites](~~2850189~~) operation."
+      }
     },
     {
       "name": "SiteVersion",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "站点配置的版本号。开启了配置版本管理的站点，可以通过该参数指定配置生效的站点版本，默认为版本0。",
+        "en": "The version number of the Site configuration. For sites with Configuration Version Management enabled, this parameter specifies the configuration version that the Rule applies to. If omitted, this parameter defaults to version 0."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建修改HTTP响应头配置",
+    "en": "Create or Modify HTTP Response Header Configuration"
+  },
   "example": {
     "unifiedCli": "aliyun esa create-http-response-header-modification-rule --site-id 123456000000 --site-version 0 --rule-name rule_example --rule-enable on --rule http.host_eq_video.example.com --response-header-modification Type=static Value=headervalue Operation=add Name=headername --sequence 1 --region cn-hangzhou",
     "legacyCli": "aliyun esa CreateHttpResponseHeaderModificationRule --region cn-hangzhou --SiteId 123456000000 --RuleEnable on --ResponseHeaderModification '[{\"Type\":\"static\",\"Value\":\"headervalue\",\"Operation\":\"add\",\"Name\":\"headername\"}]' --Rule 'http.host_eq_video.example.com' --Sequence 1 --SiteVersion 0 --RuleName rule_example"

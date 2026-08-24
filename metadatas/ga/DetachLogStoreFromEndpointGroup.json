@@ -1,5 +1,6 @@
 {
   "name": "DetachLogStoreFromEndpointGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The ID of the GA instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** for each API request may be different."
+      }
     },
     {
       "name": "EndpointGroupIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点组ID列表。",
+        "en": "The IDs of endpoint groups."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听实例ID。",
+        "en": "The ID of the listener."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解除SLS日志库和终端节点组的关联关系",
+    "en": "DetachLogStoreFromEndpointGroup"
+  },
+  "descriptions": {
+    "zh": "- **DetachLogStoreFromEndpointGroup**接口属于异步接口，即系统会先返回一个请求ID，但SLS日志库和终端节点组的关联关系并未解除完成，系统后台的解关联任务仍在进行。您可以调用[DescribeEndpointGroup](~~153260~~)查询终端节点组的状态：\n     - 当终端节点组处于**updating**状态时，表示SLS日志库和终端节点组正在解关联中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示SLS日志库和终端节点组的关联关系解除完成。\n- **DetachLogStoreFromEndpointGroup**接口不支持在同一个全球加速实例内并发解除SLS日志库和终端节点组的关联关系。",
+    "en": "## Description\n\n*   **DetachLogStoreFromEndpointGroup** is an asynchronous operation. After you send a request, the system returns a request ID, but the operation is still being performed in the system background. You can call the [DescribeEndpointGroup](~~153260~~) operation to query the state of an endpoint group.\n\n    *   If the endpoint group is in the **updating** state, the Log Service Logstore is being disassociated from the endpoint group. In this case, you can perform only query operations.\n\n    <!---->\n\n    *   If the endpoint group is in the **active** state, the Log Service Logstore is disassociated from the endpoint group.\n\n*   The **DetachLogStoreFromEndpointGroup** operation cannot be repeatedly called for the same Global Accelerator (GA) instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga detach-log-store-from-endpoint-group --biz-region-id cn-hangzhou --accelerator-id ga-bp1odcab8tmno0hdq0000 --listener-id lsr-bp1bpn0kn908w4nbw0000 --endpoint-group-ids epg-bp1dmlohjjz4kqaun0000 --client-token 02fb3da40000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DetachLogStoreFromEndpointGroup --region cn-hangzhou --RegionId 'cn-hangzhou' --ClientToken 02fb3da40000 --EndpointGroupIds.1 'epg-bp1dmlohjjz4kqaun0000' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --ListenerId 'lsr-bp1bpn0kn908w4nbw0000'"

@@ -1,5 +1,6 @@
 {
   "name": "SuspendSynchronizationJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AccountId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云主账号ID，无需设置，该参数即将下线。",
+        "en": "The ID of the Alibaba Cloud account. You do not need to specify this parameter because this parameter is about to be deprecated."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID，传入本参数来指定实例所在地域，详情请参见[支持的地域列表](~~141033~~)。",
+        "en": "The region ID. Specify this parameter to indicate the region where the instance resides. For more information, see [Supported regions](~~141033~~)."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "SynchronizationDirection",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步方向，取值：\n- **Forward**：正向。\n- **Reverse**：反向。\n\n> - 默认取值为**Forward**。\n- 当数据同步实例的拓扑为双向时，才可以传入**Reverse**以暂停反向同步链路。",
+        "en": "The synchronization direction. Valid values:\n- **Forward**: forward.\n- **Reverse**: reverse.\n\n> - Default value: **Forward**.\n- You can set this parameter to **Reverse** to pause the reverse synchronization link only if the topology of the data synchronization instance is two-way synchronization."
+      }
     },
     {
       "name": "SynchronizationJobId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据同步实例ID，可以通过调用**DescribeSynchronizationJobs**接口查询。",
+        "en": "Instance ID of the data synchronization instance. You can call the **DescribeSynchronizationJobs** operation to query instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "暂停同步作业",
+    "en": "Pause a synchronization task"
+  },
+  "descriptions": {
+    "zh": "> - 调用本接口时，同步作业须处于同步中状态。\n- 暂停同步作业不能超过6个小时，否则将无法被再次启动。\n- 按量付费类型的同步作业即使处于暂停状态，DTS依然会收取费用。这是由于DTS只是暂停向目标库写入数据，仍然会继续拉取源库的日志以便重启任务后快速恢复运行，因此还是会占用源数据库的带宽等资源。",
+    "en": "> - When you call this operation, the synchronization task must be in the Synchronizing state.\n- A synchronization task cannot be paused for more than 6 hours. Otherwise, the task cannot be restarted.\n- DTS continues to charge fees for a pay-as-you-go synchronization task even if the task is paused. This is because DTS only pauses writing data to the destination instance but continues to pull logs from the source instance to ensure quick resumption when the task is restarted. Therefore, the task still consumes resources such as bandwidth of the source database."
+  },
   "example": {
     "unifiedCli": "aliyun dts suspend-synchronization-job --biz-region-id cn-hangzhou --synchronization-job-id dtsmr1q4mc21520000 --synchronization-direction Forward --account-id 123233440000 --resource-group-id rg-acfmzawhxxc0000 --api-version 2020-01-01 --region cn-hangzhou",
     "legacyCli": "aliyun dts SuspendSynchronizationJob --region cn-hangzhou --SynchronizationJobId dtsmr1q4mc21520000 --AccountId 123233440000 --ResourceGroupId 'rg-acfmzawhxxc0000' --RegionId 'cn-hangzhou' --SynchronizationDirection Forward"

@@ -1,5 +1,6 @@
 {
   "name": "LeaveSecurityGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。\n\n> 当该参数传入值时，`NetworkInterfaceId`必须为空。",
+        "en": "The instance ID.\n\n> If you configure this parameter, you cannot configure `NetworkInterfaceId`."
+      }
     },
     {
       "name": "NetworkInterfaceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "弹性网卡ID。\n\n> 当该参数传入值时，`InstanceId`必须为空。",
+        "en": "The ENI ID.\n\n> If you configure this parameter, you cannot configure `InstanceId`."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。\n\n- 实例移出安全组的操作可以不指定地域ID。\n- 弹性网卡移出安全组的操作必须指定弹性网卡所在的地域ID。",
+        "en": "The region ID. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list.\n\n- If you want to remove an instance from a security group, you do not need to specify a region ID.\n\n- If you want to remove an ENI from a security group, you must specify the ID of the region in which the ENI resides."
+      }
     },
     {
       "name": "SecurityGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "安全组ID。",
+        "en": "The security group ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移出安全组",
+    "en": "LeaveSecurityGroup"
+  },
+  "descriptions": {
+    "zh": "> 该API已不推荐使用。推荐您调用[ModifyInstanceAttribute](~~25503~~)接口将ECS实例加入或移除安全组；调用[ModifyNetworkInterfaceAttribute](~~58513~~)接口将弹性网卡（ENI）加入或移除安全组。\n\n><notice>阿里云已于2024年7月8日对该接口进行了校验规则调整。当移除不在组内的实例或者网卡时，从返回成功调整为返回错误码：“InvalidSecurityGroupAssociation.NotFound”。请您及时做好错误码兼容，避免影响线上业务。></notice>\n- 不支持同时将实例和弹性网卡移出一个安全组，即参数`InstanceId`和`NetworkInterfaceId`不能同时传值。\n-  移出安全组之前，实例必须处于**已停止**（Stopped）或者**运行中**（Running）状态。  \n-  一台实例或者一张弹性网卡必须至少加入一个安全组，当该实例或者弹性网卡只加入了一个安全组时，移出请求失败报错。  \n-  移除不在组内的实例或者网卡时，移出请求失败报错。",
+    "en": "> This operation is not recommended. We recommend that you call the [ModifyInstanceAttribute](~~25503~~) operation to add an instance to or remove an instance from a security group, and call the [ModifyNetworkInterfaceAttribute](~~58513~~) operation to add an ENI to or remove an ENI from a security group.\n\n> Alibaba Cloud modified verification rules for the LeaveSecurityGroup operation on July 8, 2024. When you remove an ECS instance or ENI that does not belong to a security group from the security group, the \"InvalidSecurityGroupAssociation.NotFound\" error code is returned instead of a success response. Update the LeaveSecurityGroup operation to use the new verification rules with the new error code based on your business requirements.\n\n- You cannot remove an instance and an ENI from a security group at the same time. This indicates that you cannot specify `InstanceId` and `NetworkInterfaceId` in one request.\n\n- Before you remove an instance from a security group, the instance must be in the **Stopped** (Stopped) or **Running** (Running) state.\n\n- An instance or ENI must be added to at least one security group. If you remove an instance or ENI from the only security group, the removal request fails and an error is returned.\n\n- When you remove an instance or ENI that is not in a security group from the security group, the removal request fails and an error is returned."
+  },
   "example": {
     "unifiedCli": "aliyun ecs leave-security-group --security-group-id sg-bp67acfmxazb4p0000 --instance-id i-bp67acfmxazb4p0000 --network-interface-id eni-bp13kd656hxambfe0000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun ecs LeaveSecurityGroup --region cn-hangzhou --InstanceId 'i-bp67acfmxazb4p0000' --SecurityGroupId 'sg-bp67acfmxazb4p0000' --RegionId 'cn-hangzhou' --NetworkInterfaceId 'eni-bp13kd656hxambfe0000'"

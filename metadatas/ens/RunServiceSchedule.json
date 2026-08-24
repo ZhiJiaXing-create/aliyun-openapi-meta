@@ -1,5 +1,6 @@
 {
   "name": "RunServiceSchedule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,100 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID",
+        "en": "The ID of the application."
+      }
     },
     {
       "name": "ClientIp",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "客户端的IP地址。",
+        "en": "The IP address of the client."
+      }
     },
     {
       "name": "Directorys",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要挂载的用户数据文件的目录列表。必须是全路径，不支持'/../'，取值示例： [\"/data/app01\", \"/data/user\"]。\n注意：输入的目录路径是虚拟设备\"/data\"目录的相对目录，即实际对应的虚拟设备路径为\"/data/{输入路径}\"",
+        "en": "The directory to which the data file is mounted. The value must be a full path and cannot be '/../'. Example: \\[\"/data/app01\", \"/data/user\"]. Specify the relative path of the virtual device for this parameter. For example, specify /data for this parameter when the actual path of the virtual device is /data/{input path}."
+      }
     },
     {
       "name": "PodConfigName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "无效参数",
+        "en": "The parameter does not take effect."
+      }
     },
     {
       "name": "PreLockedTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "锁定空闲设备的时间上限，单位秒，仅ServiceAction=PreSchedule有效。默认300。",
+        "en": "The maximum duration for locking an idle device. Unit: seconds. This parameter takes effect only if you set ServiceAction to PreSchedule. Default value: 300."
+      }
     },
     {
       "name": "ScheduleStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设备调度策略。Json格式的字符串。",
+        "en": "The scheduling policy of the device. The value must be a JSON string."
+      }
     },
     {
       "name": "ServiceAction",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "调度服务操作。枚举类型，取值范围：\n\n容器化场景：\n\n- Start：选择并激活一个可调度云设备，启动服务\n- Stop：结束并释放云设备\n- Console：Uuid处于调度中状态时，进行命令交互\n\n裸金属/虚机场景：\n  \n- PreSchedule：预调度并锁定虚机实例\n- Confirm：确认调度\n- Cancel：取消调度\n- Console：Uuid处于调度中状态时，进行命令交互",
+        "en": "The scheduling operation. The value must be of the enumeration type. Valid values:\n\nContainer scenario:\n\n- Start: selects and activates an idle cloud device.\n\n- Stop: stops and releases the cloud device.\n\n- Console: performs the scheduling operation when the device is in the scheduling state.\n\nBare metal instance or virtual machine scenario:\n\n- PreSchedule: locks a virtual machine instance for scheduling.\n\n- Confirm: confirms the scheduling operation.\n\n- Cancel: cancels the scheduling operation.\n\n- Console: performs the scheduling operation when the device is in the scheduling state."
+      }
     },
     {
       "name": "ServiceCommands",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容器服务命令列表。Json数组格式的字符串。",
+        "en": "The service commands. The value must be a JSON string."
+      }
     },
     {
       "name": "Uuid",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "设备UUID",
+        "en": "The UUID of the device."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "执行设备服务调度",
+    "en": "RunServiceSchedule"
+  },
   "example": {
     "unifiedCli": "aliyun ens run-service-schedule --app-id 474bdef0-d149-4695-abfb-52912d9143f0 --uuid hdm_d4f1059a8e1afc0956bd71b497faa433 --client-ip 180.166.45.146 --service-action Start --pod-config-name android --pre-locked-timeout 300 --directorys /data/app01_,_/data/user --service-commands containerName_:_android_,_commands_:_cat_/tmp/token.json_,_commands_:_ls_-l_/data/data --schedule-strategy selectLevel_:_RegionId_,_values_:_cn-chengdu-telecom-2 --region cn-hangzhou",
     "legacyCli": "aliyun ens RunServiceSchedule --region cn-hangzhou --Uuid hdm_d4f1059a8e1afc0956bd71b497faa433 --Directorys '/data/app01_,_/data/user' --AppId '474bdef0-d149-4695-abfb-52912d9143f0' --ServiceAction Start --ScheduleStrategy 'selectLevel_:_RegionId_,_values_:_cn-chengdu-telecom-2' --PreLockedTimeout 300 --ClientIp '180.166.45.146' --ServiceCommands 'containerName_:_android_,_commands_:_cat_/tmp/token.json_,_commands_:_ls_-l_/data/data' --PodConfigName android"

@@ -1,5 +1,6 @@
 {
   "name": "DetachResourceFromVpcEndpointService",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a unique token for each request. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会移除服务资源。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run. The system checks the request for potential issues, including missing required parameters, incorrect request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): Sends the request. If the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要移除服务资源的终端节点服务所属的地域ID。您可以通过调用[DescribeRegions](~~120468~~)接口获取地域ID。",
+        "en": "The ID of the region where the endpoint service is deployed. Call the [DescribeRegions](~~120468~~) operation to get a region ID."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务资源ID。",
+        "en": "The ID of the service resource."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务资源的类型。\n\n- **slb**：表示服务资源类型为传统型负载均衡CLB（Classic Load Balancer）。\n\n- **alb**：表示服务资源类型为应用型负载均衡ALB（Application Load Balancer）。\n\n-  **nlb**：表示服务资源类型为网络型负载均衡NLB（Network Load Balancer ）。\n- **gwlb** : 表示服务资源类型为网关型负载均衡 GWLB（Gateway Load Balancer）。",
+        "en": "The type of the service resource.\n\n- **slb**: Classic Load Balancer (CLB).\n\n- **alb**: Application Load Balancer (ALB).\n\n- **nlb**: Network Load Balancer (NLB).\n\n- **gwlb**: Gateway Load Balancer (GWLB)."
+      }
     },
     {
       "name": "ServiceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要移除服务资源的终端节点服务的ID。",
+        "en": "The ID of the endpoint service from which you want to remove the service resource."
+      }
     },
     {
       "name": "ZoneId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "要移除服务资源的终端节点服务所属的可用区。您可以通过调用[describeregions](~~120468~~)接口获取地域ID。服务资源为ALB/NLB/GWLB时，ZoneId为需要填写。",
+        "en": "The ID of the zone. This parameter is required if the service resource is an ALB, a NLB, or a GWLB. Call the [DescribeRegions](~~120468~~) operation to get a zone ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除终端节点服务中的服务资源",
+    "en": "DetachResourceFromVpcEndpointService"
+  },
+  "descriptions": {
+    "zh": "- 移除终端节点服务中的服务资源之前，请确保终端节点服务处于**Active**状态，您可以通过调用[GetVpcEndpointServiceAttribute](~~469330~~)接口，查询终端节点服务状态。\n- **DetachResourceFromVpcEndpointService**接口不支持在同一个终端节点服务实例下并发移除服务资源。",
+    "en": "- Before you remove a service resource from an endpoint service, make sure that the endpoint service is in the **Active** status. Call the [GetVpcEndpointServiceAttribute](~~469330~~) operation to query the status of the endpoint service.\n\n- The **DetachResourceFromVpcEndpointService** operation does not support the concurrent removal of service resources from the same endpoint service instance."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink detach-resource-from-vpc-endpoint-service --biz-region-id cn-hangzhou --resource-type slb --resource-id lb-hp32z1wp5peaoox2q0000 --zone-id cn-hangzhou-c --service-id epsrv-hp3vpx8yqxblby3i0000 --dry-run false --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --region cn-hangzhou",
     "legacyCli": "aliyun privatelink DetachResourceFromVpcEndpointService --region cn-hangzhou --ZoneId 'cn-hangzhou-c' --ResourceId 'lb-hp32z1wp5peaoox2q0000' --DryRun false --ResourceType slb --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760' --ServiceId 'epsrv-hp3vpx8yqxblby3i0000'"

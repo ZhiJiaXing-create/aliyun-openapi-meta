@@ -1,0 +1,60 @@
+{
+  "name": "RestoreObject",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "/[key]?restore",
+  "parameters": [
+    {
+      "name": "body",
+      "position": "Body",
+      "type": "Struct",
+      "required": false,
+      "description": {
+        "zh": "保存解冻请求信息的请求体。",
+        "en": "The request body that contains the restore request information."
+      }
+    },
+    {
+      "name": "bucket",
+      "position": "Host",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Bucket名称。",
+        "en": "The bucket name."
+      }
+    },
+    {
+      "name": "key",
+      "position": "Path",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "Object的完整路径。",
+        "en": "The full path of the object."
+      }
+    },
+    {
+      "name": "versionId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "请求解冻的Obejct的版本号。",
+        "en": "The version ID of the object to restore."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "解冻归档类型或冷归档的文件",
+    "en": "Restore an archive or cold archive object"
+  },
+  "descriptions": {
+    "zh": "**版本控制**\n\nObject的各个版本可以对应不同的存储类型。调用RestoreObject接口默认解冻Object当前版本，您可以通过指定versionId的方式来解冻Object指定版本。\n\n>- RestoreObject接口只针对归档或冷归档类型的Object，不适用于标准类型和低频访问类型的Object。\n- 如果针对该Object第一次调用RestoreObject接口，则返回202。\n- 如果已经成功调用过RestoreObject接口，且Object已完成解冻，再次调用时返回200 OK。\n\n**解冻过程说明**\n\n对于归档类型或者冷归档类型的Object，如果需要读取Object，请提前解冻。归档类型的Object解冻有分钟级延迟，冷归档类型的Object解冻有数小时延迟。\n\n归档类型或者冷归档类型的Object在执行解冻前后的状态变换过程如下：\n\n1、 Object初始时处于冷冻状态。\n\n2、提交一次解冻请求后，Object处于解冻中状态。\n\n3、服务端完成解冻任务后，Object进入解冻状态，此时您可以读取Object。\n- 对于归档类型的Object，解冻状态默认持续24小时，24小时内再次调用RestoreObject接口则解冻状态会自动延长24小时，一次解冻流程内可有效调用7次RestoreObject接口达到最长7天的解冻持续时间。您也可以通过传入解冻天数，一次调用RestoreObject接口指定最长7天的解冻持续时间。\n- 对于冷归档类型的Object，您可以指定解冻天数和解冻优先级，解冻天数最短为1天，最长为7天。不同解冻优先级的首字节取回时间如下：\n\n  - 高优先级（Expedited）：表示1小时内完成解冻。\n  - 标准（Standard）：表示2~5小时内完成解冻。如果不传入JobParameters节点，则默认为Standard。\n  - 批量（Bulk）：表示5~12小时内完成解冻。\n\n4、解冻状态结束后，Object再次返回到冷冻状态。\n\n**计费说明**\n\n状态变换过程中产生的相关费用如下：\n- 对处于冷冻状态的Object执行解冻操作，会产生数据取回费用。\n- 解冻状态最多延长7天。在此期间不再重复收取数据取回费用。\n- 解冻状态结束后，Object又回到冷冻状态，再次执行解冻操作会收取数据取回费用。",
+    "en": "**Versioning**.\n\nEach version of an object can have a different storage class. By default, calling the RestoreObject operation restores the current version of the object. You can restore a specific version by specifying the versionId parameter.\n\n>- The RestoreObject operation applies only to Archive or Cold Archive objects. It does not apply to Standard or Infrequent Access objects.\n- If you call the RestoreObject operation on the object for the first time, 202 is returned.\n- If you have already called the RestoreObject operation and the object has been restored, 200 OK is returned.\n\n**Restore process**.\n\nTo read an Archive or Cold Archive object, you must restore it in advance. Restoring an Archive object has a latency of minutes. Restoring a Cold Archive object has a latency of hours.\n\nThe following describes the state transitions of an Archive or Cold Archive object before and after a restore operation:\n\n1. The object is initially in the frozen state.\n\n2. After you submit a restore request, the object enters the restoring state.\n\n3. After the server completes the restore task, the object enters the restored state, and you can read the object.\n- For an Archive object, the restored state lasts 24 hours by default. If you call the RestoreObject operation again within 24 hours, the restored state is automatically extended by 24 hours. You can call the RestoreObject operation up to 7 times during a single restore process for a maximum restored state duration of 7 days. You can also specify a restored state duration of up to 7 days in a single RestoreObject call by passing in the number of days.\n- For a Cold Archive object, you can specify the number of restore days and the restore priority. The minimum number of restore days is 1 and the maximum is 7. The time to retrieve the first byte varies by restore priority:\n\n  - Expedited: The restore is completed within 1 hour.\n  - Standard: The restore is completed within 2 to 5 hours. If you do not specify the JobParameters node, the default priority is Standard.\n  - Bulk: The restore is completed within 5 to 12 hours.\n\n4. After the restored state expires, the object returns to the frozen state.\n\n**Billing**.\n\nThe following fees are incurred during the state transition process:\n- Restoring an object in the frozen state incurs data retrieval fees.\n- The restored state can be extended for up to 7 days. No additional data retrieval fees are charged during this period.\n- After the restored state expires, the object returns to the frozen state. Restoring the object again incurs data retrieval fees."
+  }
+}

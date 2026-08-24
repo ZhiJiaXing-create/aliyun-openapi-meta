@@ -1,5 +1,6 @@
 {
   "name": "BatchSetDcdnDomainConfigs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "DomainNames",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "加速域名，多个域名用半角逗号（,）分隔，注意以下配置限制：\n\n- 一次最多传20个域名。\n- 域名个数乘以 Functions个数，小于等于50。",
+        "en": "The accelerated domain names. Separate multiple domain names with a comma. Note the following limits:\n\n- You can specify a maximum of 20 domain names.\n\n- The number of domain names multiplied by the number of features in the `Functions` parameter must not exceed 50."
+      }
     },
     {
       "name": "Functions",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "功能列表，一次传入最多50条，格式如下：\n - **functionName**（功能名称）：可配置功能请参见[功能列表](~~410622~~)，多个参数之间用半角逗号（,）分隔。\n- **argName**：**functionName**的配置项（可配置多个配置项）。\n- **argValue**：**functionName**的配置项的取值。\n- **parentid**（规则条件ID，非必填）：通过配置[域名配置功能参数](~~410622~~)中的功能函数**condition**（规则引擎），可以创建出规则条件（规则条件可以通过识别用户请求中携带的各种参数来匹配和过滤用户请求），每一个规则条件被创建以后都会生成一个对应的[configid](~~388994~~)，configid可以被当作ParentId参数被其他功能函数引用，这样规则条件就可以与功能配置一起组合形成更灵活的配置。\n\n```\n[\n {\n   \"functionArgs\": [\n    {\n     \"argName\": \"功能参数A\", \n     \"argValue\": \"功能参数A对应的值\"\n    }, \n  {\n    \"argName\": \"功能参数B\", \n    \"argValue\": \"功能参数B对应的值\"\n     }\n ], \n \"functionName\": \"功能名称\"\n    }\n]\n```",
+        "en": "A list of up to 50 features. The value must be in the following format:\n\n- **functionName** (feature name): The name of the feature. For a list of configurable features, see [feature list](~~410622~~).\n\n- **argName**: A configuration item for the feature specified by **functionName**. You can specify multiple configuration items.\n\n- **argValue**: The value of the configuration item.\n\n- **parentid** (rule condition ID, optional): You can create a rule condition by configuring the **condition** function of the rules engine. A rule condition filters user requests based on various parameters. After a rule condition is created, a corresponding [configid](~~388994~~) is generated. You can use this configid as the value of the `ParentId` parameter to reference the rule condition in other functions. This way, you can combine rule conditions with feature configurations to create more flexible configurations. For more information, see [Parameters for domain name configuration features](~~410622~~).\n\n```\n[\n {\n   \"functionArgs\": [\n    {\n     \"argName\": \"feature parameter A\", \n     \"argValue\": \"value of feature parameter A\"\n    }, \n  {\n    \"argName\": \"feature parameter B\", \n    \"argValue\": \"value of feature parameter B\"\n     }\n ], \n \"functionName\": \"feature name\"\n    }\n]\n```"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量配置域名",
+    "en": "BatchSetDcdnDomainConfigs"
+  },
+  "descriptions": {
+    "zh": "- 单用户调用频率：30次/秒。",
+    "en": "- The rate limit is 30 calls per second per account."
+  },
   "example": {
     "unifiedCli": "aliyun dcdn batch-set-dcdn-domain-configs --domain-names example.com,example.org --functions functionArgs_:_argName_:_switch_,_argValue_:_on_,_argName_:_region_,_argValue_:_0_,_functionName_:_ipv6 --region cn-hangzhou",
     "legacyCli": "aliyun dcdn BatchSetDcdnDomainConfigs --region cn-hangzhou --Functions 'functionArgs_:_argName_:_switch_,_argValue_:_on_,_argName_:_region_,_argValue_:_0_,_functionName_:_ipv6' --DomainNames 'example.com,example.org'"

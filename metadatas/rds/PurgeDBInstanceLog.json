@@ -1,5 +1,6 @@
 {
   "name": "PurgeDBInstanceLog",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待清理或收缩日志的实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "清理或收缩RDS实例日志",
+    "en": "PurgeDBInstanceLog"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n- RDS SQL Server\n\n### 功能说明\nRDS实例有自动上传日志备份机制，但是在实例空间不足时，您可以使用本接口手动上传日志备份，提前释放存储空间。上传后系统会自动清理本地重复的日志备份。\n调用本接口会将本地日志备份上传到OSS上（SQL Server会先收缩事务日志再上传），然后清理本地日志备份，释放存储空间。\n\n### 注意事项\n- 上传日志备份不会影响数据恢复功能。\n-  释放的是存储空间，不是备份空间，因此不会降低备份空间使用量。\n- 日志备份上传到的OSS由RDS提供，不需要您购买，同时也不支持访问此OSS。",
+    "en": "### Supported database engines\n\n*   MySQL\n*   SQL Server\n\n### Description\n\nThe system automatically uploads log backup files to Object Storage Service (OSS) buckets. If the remaining storage of an instance is insufficient, you can call this operation to upload the log backup files of the instance to OSS buckets. After the upload is complete, the system deletes these files from the instance to release storage. This operation is called to upload log backup files from an instance to OSS buckets and then delete these files from the instance. If the instance runs SQL Server, transaction log backup files are compressed before they are uploaded.\n\n### Precautions\n\n*   When you upload log backup files, the data restoration feature is not affected.\n*   This operation is called to release storage. The backup storage usage is not reduced.\n*   The OSS buckets to which log backup files are uploaded are provided by the system. You do not need to purchase these OSS buckets. In addition, you cannot access these OSS buckets."
+  },
   "example": {
     "unifiedCli": "aliyun rds purge-db-instance-log --client-token ETnLKlblzczshOTUbOCz0000 --db-instance-id rm-uf6wjk50000 --region cn-hangzhou",
     "legacyCli": "aliyun rds PurgeDBInstanceLog --region cn-hangzhou --DBInstanceId 'rm-uf6wjk50000' --ClientToken ETnLKlblzczshOTUbOCz0000"

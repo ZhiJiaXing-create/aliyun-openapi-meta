@@ -1,5 +1,6 @@
 {
   "name": "SubmitFpDBDeleteJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "DelType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "操作类型，支持类型：\n\n- **Purge**：清空DNA库，即删除DNA库中所有内容，不会删除DNA库。\n\n- **Delete**：删除DNA库，即删除此DNA库。其中，modelId在[11, 14]内的新版本指纹库仅支持删除操作。\n\n- 默认值：**Purge**。",
+        "en": "The type of operation. Valid values:\n\n- **Purge**: Purges the DNA library. This operation removes all content from the library but does not delete the library itself.\n\n- **Delete**: Deletes the DNA library. This operation permanently removes the library. Note: This is the only supported operation for fingerprint libraries with a `modelId` from 11 to 14.\n\n- Default value: **Purge**."
+      }
     },
     {
       "name": "FpDBId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DNA库ID，可以从[提交新建DNA库](~~170149~~)的返回参数中获取。",
+        "en": "The API call to [create a DNA library](~~170149~~) returns this ID in its response."
+      }
     },
     {
       "name": "PipelineId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "管道ID，用于绑定消息通知。可以通过**MPS控制台** > **全局设置** > **管道**获取。",
+        "en": "The ID of the ApsaraVideo Media Processing (MPS) pipeline for the job. MPS uses this ID to send message notifications. You can obtain the pipeline ID in the **MPS console** by navigating to **Global Settings** > **Pipelines**."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，支持中英文、数字等，最大长度128个字节。",
+        "en": "The user-defined data. The value can be a string of up to 128 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交删除DNA库",
+    "en": "SubmitFpDBDeleteJob"
+  },
+  "descriptions": {
+    "zh": "本接口通过指定DNA库ID实现清空（删除DNA库中所有内容，不会删除DNA库）或删除（直接删除DNA库）操作，如果不指定操作类型，则默认清空DNA库。其中，modelId在[11, 14]内的新版本指纹库仅支持删除操作，即DelType=Delete。\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "This operation purges or deletes a DNA library by its ID. You can choose one of two operations: `Purge` or `Delete`. The `Purge` operation removes all content from the DNA library but preserves the library. The `Delete` operation permanently removes the library. If you do not specify an operation type, `Purge` is used by default. Note that fingerprint libraries with a `modelId` from 11 to 14 support only the `Delete` operation.\n\n## QPS limit\n\nThe rate limit for this operation is 100 queries per second (QPS) per user. If you exceed this limit, your API calls will be throttled, which may affect your business. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-fp-db-delete-job --pipeline-id fb712a6890464059b1b2ea7c86470000 --fp-db-id 88c6ca184c0e47098a5b665e2a120000 --user-data example_data --del-type Purge --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitFpDBDeleteJob --region cn-hangzhou --UserData example_data --PipelineId fb712a6890464059b1b2ea7c86470000 --FpDBId 88c6ca184c0e47098a5b665e2a120000 --DelType Purge"

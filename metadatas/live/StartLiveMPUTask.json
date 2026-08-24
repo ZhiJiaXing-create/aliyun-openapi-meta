@@ -1,5 +1,6 @@
 {
   "name": "StartLiveMPUTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID，仅支持传单个ID。由大小写字母、数字、下划线、短划线（-）组成，最大64字符。",
+        "en": "The application ID. Only one ID is supported. It can contain uppercase letters, lowercase letters, digits, underscores (\\_), and hyphens (-). The maximum length is 64 characters."
+      }
     },
     {
       "name": "ChannelId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "频道ID，仅支持传单个ID。由大小写字母、数字、下划线、短划线（-）组成，最大64字符。",
+        "en": "The channel ID. Only one ID is supported. It can contain uppercase letters, lowercase letters, digits, underscores (\\_), and hyphens (-). The maximum length is 64 characters."
+      }
     },
     {
       "name": "MaxIdleTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "空闲超时时间；单位为秒，取值范围为\\[10,86400\\]。\n > 设置此参数后，会在任务处于空闲状态的时长大于 MaxIdleTime 时，自动停止该任务；若不设置此参数，则会在房间关闭后，立刻停止该任务。",
+        "en": "The idle timeout period. Unit: seconds. The value must be in the range of \\[10, 86400].\n\n> If you set this parameter, the task is automatically stopped when it has been idle for a period longer than MaxIdleTime. If you do not set this parameter, the task is stopped immediately after the channel is closed."
+      }
     },
     {
       "name": "MixMode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "混流模式。取值：\n- **0**：单路转推，不混流转码，仅转推原始单路流，无需配置混流转码参数。\n- **1（默认值）**：混流转码转推。",
+        "en": "The stream mixing mode. Valid values:\n\n- **0**: Single-stream ingest. The original single stream is ingested without stream mixing or transcoding. You do not need to configure stream mixing and transcoding parameters.\n\n- **1** (default): Stream mixing and transcoding."
+      }
     },
     {
       "name": "MultiStreamURL",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "多地址转推参数，可填写多个直播推流地址。\n> 在设置任务的转推地址时，StreamURL参数与MultiStreamURL参数，只能配置其中一个参数，且必须配置其中一个参数。",
+        "en": "The parameters for ingesting to multiple URLs. You can specify multiple live ingest URLs.\n\n> When you set the ingest URL for a task, you must configure either the StreamURL parameter or the MultiStreamURL parameter, but not both."
+      },
       "sub_parameters": [
         {
           "name": "IsAliCdn",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否转推到阿里云CDN。\n- false为转推非阿里云CDN。\n- true为转推阿里云CDN。\n\n> 该参数默认为false。",
+            "en": "Specifies whether to ingest the stream to Alibaba Cloud CDN.\n\n- false: Ingest to a non-Alibaba Cloud CDN.\n\n- true: Ingest to Alibaba Cloud CDN.\n\n> The default value is false."
+          }
         },
         {
           "name": "URL",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "直播推流地址，仅支持RTMP协议，最大长度不超过2048个字符。生成规则请参见[推流地址和播放地址](~~199339~~)。",
+            "en": "The live ingest URL. Only the RTMP protocol is supported. The maximum length is 2048 characters. For information about how to generate the URL, see [Ingest URLs and playback URLs](~~199339~~)."
+          }
         }
       ]
     },
@@ -52,39 +81,74 @@
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "请求的混流服务所在区域。取值：\n\n- **CN-Shanghai<props=\"china\"><ph>（默认值）</ph></props>**：上海。\n- **AP-Singapore<props=\"intl\"><ph>（默认值）</ph></props>**：新加坡。\n- **EMAA-Saudi**：沙特。",
+        "en": "The region where the stream mixing service is located. Valid values:\n\n- **CN-Shanghai<props=\"china\">(default)</props>**: Shanghai.\n\n- **AP-Singapore<props=\"intl\">(default)</props>**: Singapore.\n\n- **EMAA-Saudi**: Saudi Arabia."
+      }
     },
     {
       "name": "SeiParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "SEI配置参数。",
+        "en": "The SEI configuration parameters."
+      }
     },
     {
       "name": "SingleSubParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "单流转推参数，单流转推（MixMode=0）时必填。需要混流转码时不填。",
+        "en": "The parameters for single-stream ingest. This parameter is required when MixMode is set to 0. Do not set this parameter for stream mixing and transcoding."
+      }
     },
     {
       "name": "StreamURL",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "直播推流地址，仅支持RTMP协议，仅支持传单个地址，最大长度不超过2048个字符。生成规则请参见[推流地址和播放地址](~~199339~~)。\n\n>- 对已开防盗链鉴权的域名，需要在推流地址中包含鉴权串。\n- 禁止同一个StreamURL在不同任务中同时使用。\n- 任务停止10S之内，禁止使用同一个StreamURL。",
+        "en": "The live ingest URL. Only the RTMP protocol is supported. Only one URL is supported. The maximum length is 2048 characters. For information about how to generate the URL, see [Ingest URLs and playback URLs](~~199339~~).\n\n> - For domain names with hotlink protection enabled, the ingest URL must include an access token.\n\n- Do not use the same StreamURL in different tasks at the same time.\n\n- Do not use the same StreamURL within 10 seconds after a task stops."
+      }
     },
     {
       "name": "TaskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "任务ID，仅支持传单个ID。由大小写字母、数字、下划线、短划线（-）组成，最大55字符。此ID为旁路转推的标识，需保证唯一。\n启动任务时，如果同ID任务还在，未被清理，会返回InvalidParam。",
+        "en": "The task ID. Only one ID is supported. It can contain uppercase letters, lowercase letters, digits, underscores (\\_), and hyphens (-). The maximum length is 55 characters. This ID is the unique identifier for the bypass ingest task.\nIf a task with the same ID still exists and has not been cleared when you start a new task, \\`InvalidParam\\` is returned."
+      }
     },
     {
       "name": "TranscodeParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "混流转码转推参数，混流转码转推（MixMode=1）时必填。需要单流转推时不填。",
+        "en": "The parameters for stream mixing and transcoding. This parameter is required when MixMode is set to 1. Do not set this parameter for single-stream ingest."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建混流转推任务（新）",
+    "en": "StartLiveMPUTask"
+  },
+  "descriptions": {
+    "zh": "单个应用ID默认支持单路转推任务上限为200个，混流转码转推任务上限为40。如果您需要提升配额，请[提交工单](https://smartservice.console.aliyun.com/service/create-ticket)。\n### 混流任务生命周期\n**启动**\n- 主播首次开播，可以调用StartLiveMPUTask启动旁路。\n    \n    - 若无用户入会，会返回channel不存在错误。\n    -   用户开始推流时才会输出旁路流。若单路任务用户未推流，则旁路流无法播放。\n    -   混流任务需保证至少有一个用户有推流，旁路流才可播放。未推流的用户对应的布局画面会展示黑屏。\n\n- 客户业务服务器建议记录旁路任务状态、任务类型、任务参数。\n    - 任务状态：启动、停止。\n    - 任务类型：单路、混流。\n    - 任务参数：即最新的入参，例如：调用UpdateLiveMPUTask成功后，记录最新任务参数。\n- 在连麦或者PK场景下，此时任务已经被更新为混流。若当前主播异常退出重新入会后，客户业务服务器可以根据保存的最新的任务类型和任务参数，直接调用StartLiveMPUTask启动混流任务。\n    - 如果启动前任务未被系统自动清理，则直接启动成功。\n    - 如果任务还未被系统自动清理，则会返回**任务已存在**错误码。\n\n**结束**\n- 主播离会，需要主动调用[StopLiveMPUTask](~~2362742~~)停止旁路任务。\n- 若任务所指定的所有用户均已离会但未主动调用StopLiveMPUTask，系统会在2分钟后对旁路任务进行停止。\n\n## QPS限制\n本接口的单用户QPS限制为500次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "By default, each application ID supports a maximum of 200 single-stream ingest tasks and 40 stream mixing and transcoding tasks. To increase the quota, [submit a ticket](https://smartservice.console.aliyun.com/service/create-ticket).\n\n### Stream mixing task lifecycle\n\n**Start**\n\n- When a streamer starts streaming for the first time, you can call StartLiveMPUTask to start a bypass task.\n\n  - If no users are in the channel, a \"channel does not exist\" error is returned.\n\n  - The bypass stream is output only when a user starts stream ingest. If the user in a single-stream task does not ingest a stream, the bypass stream cannot be played.\n\n  - For a stream mixing task, at least one user must be ingesting a stream for the bypass stream to be playable. The layout area for users who are not ingesting streams shows a black screen.\n\n- You can record the bypass task status, task type, and task parameters on your business server.\n\n  - Task status: Started, Stopped.\n\n  - Task type: Single-stream, Stream mixing.\n\n  - Task parameters: The latest input parameters. For example, after a successful call to UpdateLiveMPUTask, record the latest task parameters.\n\n- In co-streaming or PK scenarios, if a task has been updated to a stream mixing task and the streamer unexpectedly leaves and then rejoins the channel, your business server can call StartLiveMPUTask to restart the stream mixing task based on the saved task type and parameters.\n\n  - If the system has not automatically cleared the task before you start it, the task starts successfully.\n\n  - If the system has not yet cleared the task, a **Task already exists** error code is returned.\n\n**End**\n\n- When a streamer leaves the channel, call [StopLiveMPUTask](~~2362742~~) to stop the bypass task.\n\n- If all users in the task leave the channel and StopLiveMPUTask is not called, the system automatically stops the bypass task after 2 minutes.\n\n## QPS limits\n\nThe queries per second (QPS) limit for a single user for this API is 500 calls/second. If you exceed this limit, API calls are throttled. This may affect your business. We recommend that you call this API reasonably."
+  },
   "example": {
     "unifiedCli": "aliyun live start-live-mpu-task --app-id yourAppId --channel-id yourChannelId --task-id yourTaskId --mix-mode 0 --stream-url rtmp://example.com/live/stream --multi-stream-url IsAliCdn=false URL=rtmp://example.com/live/stream0000 --biz-region CN-Shanghai --max-idle-time 10 --single-sub-params StreamType=0 UserId=yourSubUserId SourceType=camera --transcode-params '{\"Background\":{\"RenderMode\":\"1\",\"URL\":\"yourImageUrl\"},\"Layout\":{\"UserPanes\":[{\"BackgroundImageUrl\":\"yourImageUrl\",\"RenderMode\":\"1\",\"ZOrder\":\"0\",\"X\":\"0.2456\",\"Y\":\"0.3789\",\"UserInfo\":{\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"},\"Height\":\"0.2632\",\"Width\":\"0.3564\"}]},\"EncodeParams\":{\"AudioSampleRate\":\"44100\",\"AudioBitrate\":\"128\",\"AudioChannels\":\"2\",\"VideoHeight\":\"1000\",\"AudioOnly\":\"false\",\"VideoFramerate\":\"25\",\"VideoWidth\":\"1920\",\"VideoGop\":\"20\",\"EnhancedParam\":\"profile_:_high_,_preset_:_veryfast\",\"VideoCodec\":\"H.264\",\"VideoBitrate\":\"3500\"},\"UserInfos\":[{\"StreamType\":\"0\",\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"}]}' --sei-params '{\"LayoutVolume\":{\"FollowIdr\":\"0\",\"Interval\":\"1000\"},\"PassThrough\":{\"PayloadContentKey\":\"yourPayloadContentKey\",\"PayloadContent\":\"yourPayloadContent\",\"FollowIdr\":\"0\",\"Interval\":\"1000\"},\"PayloadType\":\"100\"}' --region cn-hangzhou",
     "legacyCli": "aliyun live StartLiveMPUTask --region cn-hangzhou --TaskId yourTaskId --MixMode 0 --AppId yourAppId --Region 'CN-Shanghai' --SeiParams '{\"LayoutVolume\":{\"FollowIdr\":\"0\",\"Interval\":\"1000\"},\"PassThrough\":{\"PayloadContentKey\":\"yourPayloadContentKey\",\"PayloadContent\":\"yourPayloadContent\",\"FollowIdr\":\"0\",\"Interval\":\"1000\"},\"PayloadType\":\"100\"}' --ChannelId yourChannelId --MaxIdleTime 10 --SingleSubParams '{\"StreamType\":\"0\",\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\"}' --TranscodeParams '{\"Background\":{\"RenderMode\":\"1\",\"URL\":\"yourImageUrl\"},\"Layout\":{\"UserPanes\":[{\"BackgroundImageUrl\":\"yourImageUrl\",\"RenderMode\":\"1\",\"ZOrder\":\"0\",\"X\":\"0.2456\",\"Y\":\"0.3789\",\"UserInfo\":{\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"},\"Height\":\"0.2632\",\"Width\":\"0.3564\"}]},\"EncodeParams\":{\"AudioSampleRate\":\"44100\",\"AudioBitrate\":\"128\",\"AudioChannels\":\"2\",\"VideoHeight\":\"1000\",\"AudioOnly\":\"false\",\"VideoFramerate\":\"25\",\"VideoWidth\":\"1920\",\"VideoGop\":\"20\",\"EnhancedParam\":\"profile_:_high_,_preset_:_veryfast\",\"VideoCodec\":\"H.264\",\"VideoBitrate\":\"3500\"},\"UserInfos\":[{\"StreamType\":\"0\",\"UserId\":\"yourSubUserId\",\"SourceType\":\"camera\",\"ChannelId\":\"yourChannelId\"}]}' --MultiStreamURL '[{\"IsAliCdn\":false,\"URL\":\"rtmp://example.com/live/stream0000\"}]' --StreamURL 'rtmp://example.com/live/stream'"

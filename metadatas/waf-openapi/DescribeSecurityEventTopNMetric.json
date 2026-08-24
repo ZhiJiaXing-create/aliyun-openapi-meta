@@ -1,5 +1,6 @@
 {
   "name": "DescribeSecurityEventTopNMetric",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "Filter",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询过滤条件，多个过滤条件之间是逻辑与的关系。",
+        "en": "The query filter conditions. Multiple filter conditions are evaluated using a logical AND."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF实例的ID。\n\n> 您可以调用[DescribeInstance](~~433756~~)查询当前WAF实例的ID。",
+        "en": "The ID of the WAF instance.\n\n> You can call [DescribeInstance](~~433756~~) to query the ID of the current WAF instance."
+      }
     },
     {
       "name": "Limit",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "控制统计数据按照降序排序后返回数据条数，最大值为10。",
+        "en": "The number of data entries to return after the statistics are sorted in descending order. Maximum value: 10."
+      }
     },
     {
       "name": "Metric",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "用于区分返回的数据内容，不同的Metric对应不同的数据内容，该接口支持的Metric如下：\n> “攻击请求”的定义参见API接口描述，下面的描述中引用该概念\n\n- real_client_ip，把攻击请求的源IP聚合统计并降序排序后，返回前N条数据\n- http_user_agent，把攻击请求的User-Agent聚合统计并按照降序排序后，返回前N条数据\n- matched_host，把攻击请求命中的防护对象聚合统计并按照降序排序后，返回前N条数据\n- remote_region_id，把攻击请求的源IP所属的国家聚合统计并降序排序后，返回前N条数据\n- request_path，把攻击请求的URL（不包含query）聚合统计并按照降序排序后，返回前N条数据\n- block_defense_scene，把拦截请求（处置动作为非“观察”）的最终处置模块聚合统计并按照降序排序后，返回前N条数据\n- defense_scene，把攻击请求命中的所有防护模块进行聚合统计并按照降序排序后，返回前N条数据\n- defense_scene_rule_id，查询命中的非观察规则的top rule id以及规则对应的防护模块。该查询只返回非观察模式规则的统计。返回数据格式如下：<br>\n `{ \"Attribute\": \"waf_base\", \"Value\": 140, \"Name\": \"111034\" }`\n- defense_scene_with_rule_id，返回命中请求数排名前N的规则id以及规则所属防护模块，使用“-”连接。该查询不区分规则动作，包含了观察规则和拦截规则。返回格式如下所示：<br>\n `{ \"Attribute\": \"\",  \"Value\": 1,  \"Name\": \"120075-waf_base\" }`\n- defense_scene_top_rule_id，查询某个防护模块的top命中规则，需要在Filter的Conditions字段指定过滤条件，比如查询\"自定义acl\"模块的top命中规则，Conditions字段格式如下：<br>\n   `{ \"Key\": \"defense_scene_map\", \"OpValue\": \"contain\", \"Values\": \"custom_acl\" }`\n- defense_scene_rule_type，查询web核心防护模块的top命中规则类型，只有Web核心防护模块支持该查询，因为只有Web核心防护有规则子类型。查询时需要在Filter的Conditions字段指定过滤条件。格式如下：<br>\n`    { \"Key\": \"defense_scene\", \"OpValue\": \"eq\", \"Values\": \"waf_base\" }`",
+        "en": "Specifies the type of data to return. Different Metric values correspond to different data content. The following Metric values are supported by this API operation:\n> The definition of \"attack request\" is described in the API operation description. The following descriptions reference this concept.\n\n- real_client_ip: performs aggregation and sorting of the source IP addresses of attack requests in descending order, and returns the top N entries.\n- http_user_agent: performs aggregation and sorting of the User-Agent values of attack requests in descending order, and returns the top N entries.\n- matched_host: performs aggregation and sorting of the protected objects hit by attack requests in descending order, and returns the top N entries.\n- remote_region_id: performs aggregation and sorting of the countries to which the source IP addresses of attack requests belong in descending order, and returns the top N entries.\n- request_path: performs aggregation and sorting of the URLs (excluding query strings) of attack requests in descending order, and returns the top N entries.\n- block_defense_scene: performs aggregation and sorting of the final action modules of blocked requests (whose action is not \"monitor\") in descending order, and returns the top N entries.\n- defense_scene: performs aggregation and sorting of all protection modules hit by attack requests in descending order, and returns the top N entries.\n- defense_scene_rule_id: queries the top rule IDs of hit non-monitor rules and the protection modules to which the rules belong. This query returns statistics only for non-monitor mode rules. The returned data format is as follows:<br>\n `{ \"Attribute\": \"waf_base\", \"Value\": 140, \"Name\": \"111034\" }`\n- defense_scene_with_rule_id: returns the top N rule IDs ranked by the number of hit requests and the protection modules to which the rules belong, connected by \"-\". This query does not distinguish between rule actions and includes both monitor rules and block rules. The returned format is as follows:<br>\n `{ \"Attribute\": \"\",  \"Value\": 1,  \"Name\": \"120075-waf_base\" }`\n- defense_scene_top_rule_id: queries the top rule hits of a specific protection module. Specify filter conditions in the Conditions field of Filter. For example, to query the top rule hits of the \"custom ACL\" module, set the Conditions field as follows:<br>\n   `{ \"Key\": \"defense_scene_map\", \"OpValue\": \"contain\", \"Values\": \"custom_acl\" }`\n- defense_scene_rule_type: queries the top hit rule types of the web core protection module. Only the web core protection module supports this query because only web core protection has rule child classes. Specify filter conditions in the Conditions field of Filter. The format is as follows:<br>\n`    { \"Key\": \"defense_scene\", \"OpValue\": \"eq\", \"Values\": \"waf_base\" }`"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF实例所属地域。取值：\n\n- **cn-hangzhou**：表示中国内地。\n- **ap-southeast-1**：表示非中国内地。",
+        "en": "The region where the WAF instance is deployed. Valid values:\n\n- **cn-hangzhou**: the Chinese mainland.\n- **ap-southeast-1**: outside the Chinese mainland."
+      }
     },
     {
       "name": "ResourceManagerResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云资源组ID。",
+        "en": "The Alibaba Cloud resource group ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询攻击流量top统计数据",
+    "en": "Query top attack traffic statistics"
+  },
+  "descriptions": {
+    "zh": "攻击流量指的是命中规则并且被判定为有风险的请求。如下三种数据不包含：\n\n- 命中“白名单规则”的请求。\n- 命中bot规则，但是规则动作为“回源标记”的请求。\n- 命中规则并且规则动作为“动态令牌”/“滑块”/“严格滑块”/“js验证”，但是用户校验通过并放行的请求。",
+    "en": "Attack traffic refers to requests that have rule hits and are identified as risky. The following three types of data are excluded:\n\n- Requests that hit whitelist rules.\n- Requests that hit bot rules but whose rule action is set to \"back-to-origin marking\".\n- Requests that hit rules with actions set to \"dynamic token\", \"slider\", \"strict slider\", or \"JS authenticate\", but the user passes the verification and the requests are allowed."
+  },
   "example": {
     "unifiedCli": "aliyun waf-openapi describe-security-event-topn-metric --instance-id waf_cdnsdf30000 --filter '{\"DateRange\":{\"StartDate\":1713888000,\"EndDate\":1713888600},\"Conditions\":[{\"OpValue\":\"eq\",\"Values\":\"test.waf-top\",\"Key\":\"matched_host\"}]}' --limit 10 --metric real_client_ip --biz-region-id cn-hangzhou --resource-manager-resource-group-id rg-acfm000q --api-version 2021-10-01 --region cn-hangzhou",
     "legacyCli": "aliyun waf-openapi DescribeSecurityEventTopNMetric --region cn-hangzhou --ResourceManagerResourceGroupId 'rg-acfm000q' --InstanceId waf_cdnsdf30000 --Filter '{\"DateRange\":{\"StartDate\":1713888000,\"EndDate\":1713888600},\"Conditions\":[{\"OpValue\":\"eq\",\"Values\":\"test.waf-top\",\"Key\":\"matched_host\"}]}' --Metric real_client_ip --Limit 10 --RegionId 'cn-hangzhou'"

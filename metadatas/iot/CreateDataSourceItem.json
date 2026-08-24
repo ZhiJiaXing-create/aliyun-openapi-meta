@@ -1,5 +1,6 @@
 {
   "name": "CreateDataSourceItem",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "DataSourceId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据源ID。",
+        "en": "DataSource ID."
+      }
     },
     {
       "name": "DeviceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义的消息Topic所属的设备名称。\n\n><notice>对于开源MQTT托管形态产品和设备，及MQTT云网关产品和设备，**Topic**为自定义的消息Topic时，**scopeType**为**DEVICE**时，必须设置此参数。\n></notice>",
+        "en": "The **device name** of the device to which the custom message **topic** belongs.\n\n><notice>When the **topic** is a custom message **topic** and **scopeType** is **DEVICE**, you must set this parameter for open-source MQTT hosted products and devices, and for MQTT cloud gateway products and devices.\n></notice>"
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The instance ID. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>  If your instance has an ID, you must specify this parameter. Otherwise, the request fails. If no Overview page exists or no instance ID is displayed, you do not need to specify this parameter.\n\nFor more information, see the [Overview](~~356505~~) topic of IoT instances."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义的消息Topic所属产品的**ProductKey**。\n\n><notice>对于开源MQTT托管形态产品和设备，及MQTT云网关产品和设备，必须设置此参数。\n></notice>",
+        "en": "The **ProductKey** of the product to which the custom message **topic** belongs.\n\n><notice>You must set this parameter for open-source MQTT hosted products and devices, and for MQTT cloud gateway products and devices.\n></notice>"
+      }
     },
     {
       "name": "ScopeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义的消息Topic订阅的作用域，可取值：\n\n- **PRODUCT **：产品维度，表示作用在产品下的所有设备上。即需同时传入**ProductKey**。\n- **DEVICE **：设备维度，表示作用在产品下指定的设备上。即需同时传入**DeviceName**。\n\n><notice>对于开源MQTT托管形态产品和设备，及MQTT云网关产品和设备，**Topic**为自定义的消息Topic时，必须设置此参数。\n></notice>",
+        "en": "The scope of the subscription to the custom message topic. Valid values:\n\n- **PRODUCT**: Product dimension. This value indicates that the subscription applies to all devices under the product. In this case, you must also specify **ProductKey**.\n- **DEVICE**: Device dimension. This value indicates that the subscription applies to a specified device under the product. In this case, you must also specify **DeviceName**.\n\n><notice>For open-source MQTT-hosted products and devices, and MQTT cloud gateway products and devices, if the **topic** is a custom message topic, you must specify this parameter.\n></notice>"
+      }
     },
     {
       "name": "Topic",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用到规则引擎的具体Topic，格式一般为：`/${productKey}/${deviceName}/topicShortName`。其中，`${productKey}`是设备所属产品的**ProductKey**，`${deviceName}`是具体设备的名称，`topicShortName`是Topic剩余部分。\n\n- 基础通信Topic或物模型通信Topic的格式一般为：`/${productKey}/${deviceName}/topicShortName`。其中，`${deviceName}`可以使用通配符`+`代替，表示产品下所有设备名称。`topicShortName`取值如下：\n\n    - `/thing/event/property/post `设备上报的属性消息。\n    - `/thing/event/${tsl.event.identifier}/post`设备上报的事件消息，`${}`中是产品物模型中事件identifier。\n    - `/thing/lifecycle` 设备生命周期变更消息。\n    - `/thing/downlink/reply/message`设备响应云端指令的结果消息。\n    - `/thing/list/found`网关上报发现子设备消息。\n    - `/thing/topo/lifecycle`设备拓扑关系变更消息。\n    - `/thing/event/property/history/post`设备历史属性上报消息。\n    - `/thing/event/${tsl.event.identifier}/history/post`设备历史事件上报消息，`${}`中是产品物模型中事件identifier。\n    - `/ota/upgrade`设备OTA升级状态通知消息。\n    - `/ota/version/post`设备OTA模块版本号上报消息。\n    - `/thing/deviceinfo/update`设备标签变更消息。\n\n    OTA升级批次状态通知Topic也属于基础通信Topic,格式为：`/${productKey}/${packageId}/${jobId}/ota/job/status`。其中，`${packageId}`是升级包ID，`${jobId}`是升级批次ID。\n- 自定义消息Topic为：`/${productKey}/${deviceName}/user/#`，如：`/${productKey}/${deviceName}/user/get`。\n\n  调用[QueryProductTopic](~~69647~~)接口，可以查看产品下的所有自定义Topic类。\n\n    指定自定义Topic时，可以使用通配符`+`和`#`。\n    - `${deviceName}`可以使用通配符`+`代替，表示产品下所有设备；\n    - 之后字段可以用`/user/#`，`#`表示`/user`层级之后的所有层级名称。\n    \n- 设备状态变化通知Topic为：`/as/mqtt/status/${productKey}/${deviceName}`。\n\n 可以直接使用通配符`+`，表示产品下所有设备的状态变化通知。\n\n使用通配符，请参见[Topic类中的通配符](~~85539~~)。\n\nTopic数据格式的详细说明，请参见[数据格式](~~73736~~)。\n\n><notice>对于开源MQTT托管形态产品和设备，及MQTT云网关产品和设备，仅支持自定义的消息Topic、设备状态变化通知Topic和设备生命周期变更Topic。自定义的消息Topic说明，请参见消息通信说明。若输入自定义的消息Topic，需同时传入**ScopeType**和**ProductKey**。若**ScopeType**为**DEVICE**，还需传入**DeviceName**。\n></notice>",
+        "en": "The topic that you want to add to the data source in the rules engine. Format: `/${productKey}/${deviceName}/topicShortName`. `${productKey}` specifies the **ProductKey** of the product to which a device belongs. `${deviceName}` specifies the name of the device. `topicShortName` specifies the custom name of the topic.\n\n*   Basic communication topics or Thing Specification Language (TSL) communication topics are in the `/${productKey}/${deviceName}/topicShortName` format. You can replace `${deviceName}` with the plus sign (`+`) wildcard character. The wildcard character specifies that the topic applies to all devices in the product. Valid values of `topicShortName`:\n\n    *   `/thing/event/property/post`: submits the property data of a device.\n    *   `/thing/event/${tsl.event.identifier}/post`: submits the event data of a device. `${tsl.event.identifier}` specifies the identifier of an event in the TSL model.\n    *   `/thing/lifecycle`: submits device lifecycle changes.\n    *   `/thing/downlink/reply/message`: sends a response to a request from IoT Platform.\n    *   `/thing/list/found`: submits data when a gateway detects a new sub-device.\n    *   `/thing/topo/lifecycle`: submits device topology changes.\n    *   `/thing/event/property/history/post`: submits the historical property data of a device.\n    *   `/thing/event/${tsl.event.identifier}/post`: submits the historical event data of a device. `${tsl.event.identifier}` specifies the identifier of an event in the TSL model.\n    *   `/ota/upgrade`: submits the over-the-air (OTA) update status.\n    *   `/ota/version/post`: submits OTA module versions.\n    *   `/thing/deviceinfo/update`: submits device tag changes.\n\n    `/${productKey}/${packageId}/${jobId}/ota/job/status`: submits the status of each OTA update batch. This topic is a basic communication topic. `${packageId}` specifies the ID of the update package. `${jobId}` specifies the ID of the update batch.\n\n*   Custom topics are in the `/${productKey}/${deviceName}/user/#` format. Example: `/${productKey}/${deviceName}/user/get`.\n\n    You can call the [QueryProductTopic](~~69647~~) operation to view all custom topics of a product.\n\n    When you specify a custom topic, you can use the plus sign (`+`) and number sign (`#`) wildcard characters.\n\n    *   You can replace `${deviceName}` with the plus sign (`+`) wildcard character. The wildcard character specifies that the topic applies to all devices in the product.\n    *   You can replace the fields that follow ${deviceName} with `/user/#`. The number sign (`#`) wildcard character specifies that the topic applies to all fields that follow `/user`.\n\n*   Topics that are used to submit device status changes are in the `/as/mqtt/status/${productKey}/${deviceName}` format.\n\nYou can use the plus sign (`+`) wildcard character to specify that the status changes of all devices in the product are submitted.\n\nFor more information about how to use wildcard characters, see the \"Custom topics with wildcard characters\" section in [Use custom topics](~~85539~~).\n\nFor more information about the data formats of topics, see [Data formats](~~73736~~).\n\n> You can add only the following topics to the data source in the rules engine for MQTT gateways, devices of MQTT gateways, and products and devices that use the open source MQTT protocol: custom topics, topics that are used to submit device status changes, and topics that are used to submit device lifecycle changes. For more information about custom topics, see the \"Messaging\" topic. If you set this parameter to a custom topic, you must specify ScopeType and ProductKey. If you set ScopeType to DEVICE, you must specify DeviceName."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "CreateDataSourceItem",
+    "en": "CreateDataSourceItem"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n调用该接口前，请先创建数据源，具体操作，请参见[创建数据源的步骤1~步骤6](~~270932~~)；然后在物联网平台控制台对应实例下**消息转发 > 云产品流转**页面的**数据源**页签，查看**数据源ID**。\n\n><notice>对于开源MQTT托管形态产品和设备，及MQTT云网关产品和设备，**Topic**为自定义的消息Topic时，必须传入**ScopeType**和**ProductKey**。若**ScopeType**为**DEVICE**，还需传入**DeviceName**。\n></notice>\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n\n> RAM用户共享阿里云账号配额。",
+    "en": "## How-To\nBefore you invoke this API operation, create a data source first. For more information, see [Step 1 to Step 6 in Create a data source](~~270932~~). Then, go to the **Data Sources** tab of the **Message Forwarding > Data Forwarding** page for the corresponding instance in the IoT Platform console to view the **DataSource ID**.\n\n><notice>For open-source MQTT-hosted products and devices, and MQTT cloud gateway products and devices, if the **topic** is a custom message topic, you must specify **ScopeType** and **ProductKey**. If **ScopeType** is set to **DEVICE**, you must also specify **DeviceName**.\n></notice>\n\n## QPS limits\nEach Alibaba Cloud account can send up to 10 queries per second (QPS) to invoke this API operation.\n\n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot create-data-source-item --iot-instance-id iot-0pp1n8t000 --data-source-id 1002 --topic /as/mqtt/status/gy000z/+ --product-key gy000z --device-name device1 --scope-type PRODUCT --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot CreateDataSourceItem --region cn-hangzhou --ScopeType PRODUCT --IotInstanceId 'iot-0pp1n8t000' --Topic '/as/mqtt/status/gy000z/+' --DataSourceId 1002 --ProductKey gy000z --DeviceName device1"

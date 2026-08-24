@@ -1,5 +1,6 @@
 {
   "name": "UpdateK8sIngressRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "PUT",
   "pathPattern": "/pop/v5/k8s/acs/k8s_ingress",
@@ -8,39 +9,70 @@
       "name": "Annotations",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "注解。",
+        "en": "The annotations."
+      }
     },
     {
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The ID of the Kubernetes cluster."
+      }
     },
     {
       "name": "IngressConf",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "JSON对象字符串表示的应用路由规则，格式如下所示：\n```\n{\n  \"rules\": [\n    {\n      \"host\": \"abc.com\",\n      \"secretName\": \"tls-secret\",\n      \"paths\": [\n        {\n          \"path\": \"/path\",\n          \"backend\": {\n            \"servicePort\": 80,\n            \"serviceName\": \"xxx\"\n          }\n        }\n      ]\n    }\n  ]\n}\n```\n代码字段解释如下：\n- rules：路由规则列表。\n- host：路由规则域名。\n- secretName：TLS证书类型的Secret，当需要支持HTTPS协议时需要配置该证书。\n- paths：匹配路径列表。\n- path：匹配路径。\n- backend：后端服务，支持配置由EDAS控制台创建的Service。\n- serviceName：后端服务名称。\n- servicePort：后端服务端口。",
+        "en": "The routing rules of the Ingress. Set this parameter to a JSON string in the following format:\n\n    {\n      \"rules\": [\n        {\n          \"host\": \"abc.com\",\n          \"secretName\": \"tls-secret\",\n          \"paths\": [\n            {\n              \"path\": \"/path\",\n              \"backend\": {\n                \"servicePort\": 80,\n                \"serviceName\": \"xxx\"\n              }\n            }\n          ]\n        }\n      ]\n    }\n\nParameter description:\n\n*   rules: the list of routing rules.\n*   host: the domain name to be accessed.\n*   secretName: the name of the Secret that stores the information about the Transport Layer Security (TLS) certificate. The certificate is required if you need to use the HTTPS protocol.\n*   paths: the list of paths to be accessed.\n*   path: the path to be accessed.\n*   backend: the configuration of the backend service. You can specify a service that is created in the Enterprise Distributed Application Service (EDAS) console.\n*   serviceName: the name of the backend service.\n*   servicePort: the port of the backend service."
+      }
     },
     {
       "name": "Labels",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签。",
+        "en": "The labels."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由规则名称。只能为小写字母、数字和短划线（-），必须以小写字母开头，不以短划线（-）结尾，长度不超过63个字符。",
+        "en": "The name of the Ingress. The name can contain lowercase letters, digits, and hyphens (-). It must start with a lowercase letter but cannot end with a hyphen (-). The name can be up to 63 characters in length."
+      }
     },
     {
       "name": "Namespace",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "K8s集群命名空间。",
+        "en": "The namespace of the Kubernetes cluster."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新应用路由规则",
+    "en": "UpdateK8sIngressRule"
+  },
   "example": {
     "unifiedCli": "aliyun edas update-k8s-ingress-rule --cluster-id 5b2b4ab4-efbc-4a81-9c45-xxxxxxxxxxxxx --namespace default --name my-ingress-rule --ingress-conf rules_:_host_:_abc.com_,_secretName_:_tls-secret_,_paths_:_path_:_/path_,_backend_:_servicePort_:80,_serviceName_:_xxx --annotations nginx.ingress.kubernetes.io/ssl-redirect_:_true_,_nginx.ingress.kubernetes.io/configuration-snippet_:_set_test_value --labels test-label_:_test-label-value --region cn-hangzhou",
     "legacyCli": "aliyun edas PUT /pop/v5/k8s/acs/k8s_ingress --region cn-hangzhou --IngressConf 'rules_:_host_:_abc.com_,_secretName_:_tls-secret_,_paths_:_path_:_/path_,_backend_:_servicePort_:80,_serviceName_:_xxx' --Annotations 'nginx.ingress.kubernetes.io/ssl-redirect_:_true_,_nginx.ingress.kubernetes.io/configuration-snippet_:_set_test_value' --ClusterId '5b2b4ab4-efbc-4a81-9c45-xxxxxxxxxxxxx' --Labels 'test-label_:_test-label-value' --Namespace default --Name 'my-ingress-rule' --header \"Content-Type=application/json\""

@@ -1,5 +1,6 @@
 {
   "name": "CreateLiveStreamRecordIndexFiles",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AppName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流所属应用名称。AppName名称与推流地址中的AppName名称对应，模板才能生效。若不限制AppName可填*，即可匹配所有AppName。",
+        "en": "The AppName of the live stream. The template takes effect only when this name matches the AppName in the ingest URL. Use `*` to match all application names."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "主播流域名。",
+        "en": "The main streaming domain."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "索引文件的结束时间。ts文件的上传时间在此之前则会被包含进索引文件。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end time for the manifest. TS segments uploaded before this time will be included. Format: yyyy-MM-ddTHH:mm:ssZ (UTC)."
+      }
     },
     {
       "name": "EndTimeIncluded",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否包含结束时间。传true会尝试多包含一个ts文件，创建的索引文件会完整覆盖StartTime和EndTime。",
+        "en": "Specifies whether to include an extra TS segment to cover the EndTime. If set to true, the created manifest will fully cover the StartTime to EndTime range."
+      }
     },
     {
       "name": "OssBucket",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储Bucket名称。",
+        "en": "The name of the OSS bucket."
+      }
     },
     {
       "name": "OssEndpoint",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储Endpoint名称。",
+        "en": "The endpoint of the OSS bucket."
+      }
     },
     {
       "name": "OssObject",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "OSS存储的录制文件名。",
+        "en": "The path and file name for the recording file in OSS."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "索引文件的开始时间。ts文件的上传时间在此之后则会被包含进索引文件。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The start time for the manifest. TS segments uploaded after this time will be included. Format: yyyy-MM-ddTHH:mm:ssZ (UTC)."
+      }
     },
     {
       "name": "StreamName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "播流名称。StreamName名称与推流地址中的StreamName名称对应，模板才能生效。若不限制StreamName可填*，即可匹配所有StreamName。",
+        "en": "The stream name. The template takes effect only when this name matches the StreamName in the ingest URL. Use `*` to match all stream names."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建录制索引文件",
+    "en": "CreateLiveStreamRecordIndexFiles"
+  },
+  "descriptions": {
+    "zh": "您已配置OSS，具体操作，请参见[配置OSS](~~84932~~)。\n直播录制索引是将视频直播流以M3U8的格式进行录制，存储在OSS中后，对已存储的TS分片索引文件进行实时的剪辑处理。  \n\n> - 创建录制索引必保证直播流发生过推流行为，如果设置的时间内未发生过直播或直播流名称错误等会导致创建录制索引失败。\n> - 请确保DomainName/AppName/StreamName都是正确的，否则会返回InvalidStream.NotFound错误。\n> - StartTime和EndTime的间隔至少是一片TS的时长（默认为30s）。\n> - EndTime要大于StartTime，并且间隔最多不能超过4天。\n> - TS分片信息在视频直播系统中仅保存3个月，创建M3U8文件只能选择最近3个月的录制内容。\n> - TS分片文件存储在OSS中，保存时间由OSS的存储配置决定。详细信息，请参见[设置生命周期规则](~~31904~~)。\n> - 创建好的M3U8索引文件的信息在视频直播系统中仅保存6个月，若要查询仅能查询6个月内创建的索引文件的信息。\n> - M3U8索引文件存储在OSS中，保存时间由OSS的存储配置决定。\n> - 当M3U8和TS的bucket不同时，M3U8里的TS路径将会是 HTTP格式。\n## QPS限制\n本接口的单用户QPS限制为45次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "You must have Object Storage Service (OSS) configured. For more information, see [Configure OSS](~~84932~~). ApsaraVideo Live can record live streams in the M3U8 format and store TS segments in OSS. This API generates an M3U8 manifest by performing real-time clipping of recorded TS segments.\n\n> - To create a manifest, the live stream must have been active during the specified period. The operation will fail if the stream was not active or if the stream name is incorrect.\n>\n> - Make sure that the DomainName, AppName, and StreamName are correct. Otherwise, an InvalidStream.NotFound error is returned.\n>\n> - The time interval between StartTime and EndTime must be at least the duration of one TS segment (default is 30 seconds).\n>\n> - EndTime must be later than StartTime, and the interval cannot exceed 4 days.\n>\n> - TS segment information is retained in the system for only 3 months. You can only create M3U8 manifests for recordings within the last 3 months.\n>\n> - TS segment files are stored in OSS. Their retention period is determined by your OSS lifecycle rules. For details, see [Set lifecycle rules](~~31904~~).\n>\n> - Metadata for created M3U8 manifests is retained in the system for 6 months. You can only query information about manifests created within this period.\n>\n> - M3U8 manifests are stored in OSS. Their retention period is determined by your OSS lifecycle rules.\n>\n> - If the M3U8 manifest and TS files are stored in different buckets, the TS paths within the M3U8 manifest will be absolute HTTP URLs.\n\n## QPS limit\n\nYou can call this operation up to 45 times per second per account. Requests that exceed this limit are dropped and you may experience service interruptions."
+  },
   "example": {
     "unifiedCli": "aliyun live create-live-stream-record-index-files --domain-name example.com --app-name liveApp0000 --stream-name liveStream0000 --oss-endpoint cn-oss-0000.aliyuncs.com --oss-bucket liveBucket0000 --oss-object AppName_/_StreamName_/_Date_/_Hour_/_Minute_Second_.m3u8 --start-time 2017-12-21T08:00:00Z --end-time 2017-12-22T08:00:00Z --end-time-included false --region cn-hangzhou",
     "legacyCli": "aliyun live CreateLiveStreamRecordIndexFiles --region cn-hangzhou --EndTimeIncluded false --StreamName liveStream0000 --OssEndpoint 'cn-oss-0000.aliyuncs.com' --EndTime '2017-12-22T08:00:00Z' --DomainName 'example.com' --OssBucket liveBucket0000 --StartTime '2017-12-21T08:00:00Z' --OssObject 'AppName_/_StreamName_/_Date_/_Hour_/_Minute_Second_.m3u8' --AppName liveApp0000"

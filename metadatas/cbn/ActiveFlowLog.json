@@ -1,5 +1,6 @@
 {
   "name": "ActiveFlowLog",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "CenId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "云企业网实例ID。",
+        "en": "The ID of the Cloud Enterprise Network (CEN) instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that the value is unique among different requests. The client token can contain only ASCII characters.\n\n> If you do not set this parameter, ClientToken is set to the value of RequestId. The value of RequestId may be different for each request."
+      }
     },
     {
       "name": "FlowLogId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流日志ID。",
+        "en": "The ID of the flow log."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流日志所属地域ID。\n\n您可以通过调用[DescribeChildInstanceRegions](~~132080~~)接口获取地域ID。",
+        "en": "The ID of the region where the flow log is deployed.\n\nYou can call the [DescribeChildInstanceRegions](~~132080~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "启动流日志",
+    "en": "ActiveFlowLog"
+  },
+  "descriptions": {
+    "zh": "- 创建流日志后，流日志默认为启动状态。如果您中途停止了流日志，您可以调用本接口重新启动流日志。\n- `ActiveFlowLog`接口属于异步接口，即系统会先返回一个**RequestId**，但流日志并未完全启动，系统后台的启动任务仍在进行。您可以调用`DescribeFlowlogs`接口查询流日志的状态。\n    \n    - 当流日志处于**Modifying**状态时，表示流日志正在启动中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当流日志处于**Active**状态时，表示流日志已启动完成。",
+    "en": "- A flow log is enabled by default after creation. If the flow log was stopped, call this operation to re-enable it.\n\n- `ActiveFlowLog` is an asynchronous operation. After you send a request, the system returns a **request ID** and runs the task in the background. You can call the `DescribeFlowlogs` operation to query the status of a flow log.\n\n  - If a flow log is in the **Modifying** state, the flow log is being enabled. In this case, you can query the flow log but cannot perform other operations.\n\n  - If a flow log is in the **Active** state, the flow log is enabled."
+  },
   "example": {
     "unifiedCli": "aliyun cbn active-flow-log --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --flow-log-id flowlog-m5evbtbpt0000 --cen-id cen-7qthudw0ll6jmc0000 --region cn-hangzhou",
     "legacyCli": "aliyun cbn ActiveFlowLog --region cn-hangzhou --CenId 'cen-7qthudw0ll6jmc0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --FlowLogId 'flowlog-m5evbtbpt0000'"

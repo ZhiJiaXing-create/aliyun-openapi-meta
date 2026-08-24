@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstanceTDE",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "EncryptionKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义密钥ID，您可以调用[DescribeEncryptionKeyList](~~473860~~)获取。\n\n> * 如果不传入本参数，则由[密钥管理服务](~~28935~~)自动生成密钥。\n> * 如需创建自定义密钥，您可以调用密钥管理服务的[CreateKey](~~28947~~)接口。",
+        "en": "The ID of the custom key. You can call the [DescribeEncryptionKeyList](~~473860~~) operation to query the key ID.\n\n> \n\n*   If you do not specify this parameter, [Key Management Service (KMS)](~~28935~~) automatically generates a key.\n\n*   To create a custom key, you can call the [CreateKey](~~28947~~) operation of the KMS API."
+      }
     },
     {
       "name": "EncryptionName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加密算法，默认AES-CTR-256。\n> 当**TDEStatus**参数取值为**Enabled**时，本参数才可用。",
+        "en": "The encryption algorithm. Default value: AES-CTR-256.\n\n> This parameter is available only if the **TDEStatus** parameter is set to **Enabled**."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，可调用[DescribeInstances](~~473778~~)获取。",
+        "en": "The ID of the instance. You can call the [DescribeInstances](~~473778~~) operation to query the ID of the instance."
+      }
     },
     {
       "name": "RoleArn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定待授权角色的全局资源描述符ARN（Alibaba Cloud Resource Name）信息，完成授权后即可使用相关密钥管理服务，格式：`acs:ram::$accountID:role/$roleName` 。\n\n> * `$accountID`：云账号ID。您可以登录阿里云控制台，将鼠标悬停在右上角头像的位置，单击**安全设置**进行查看。\n> * `$roleName`：RAM角色名称，取值固定为：**AliyunRdsInstanceEncryptionDefaultRole**。",
+        "en": "The Alibaba Cloud Resource Name (ARN) of the Resource Access Management (RAM) role that you want to attach to your Tair (Redis OSS-compatible) instance. The ARN must be in the format of `acs:ram::$accountID:role/$roleName`. After the role is attached, your Tair (Redis OSS-compatible) instance can use KMS.\n\n> \n\n*   `$accountID`: the ID of the Alibaba Cloud account. To view the account ID, log on to the Alibaba Cloud console, move the pointer over your profile picture in the upper-right corner of the page, and then click **Security Settings**.\n\n*   `$roleName`: the name of the RAM role. Replace $roleName with **AliyunRdsInstanceEncryptionDefaultRole**."
+      }
     },
     {
       "name": "TDEStatus",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "开启TDE功能，取值：**Enabled**。\n> TDE功能开启后暂不支持关闭，开启前请评估是否影响业务。更多信息，请参见[开启透明数据加密TDE](~~265913~~)。",
+        "en": "Specifies whether to enable TDE. Set the value to **Enabled**.\n\n> TDE cannot be disabled after it is enabled. Before you enable it, evaluate whether this feature affects your business. For more information, see [Enable TDE](~~265913~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "开启透明数据加密TDE",
+    "en": "ModifyInstanceTDE"
+  },
+  "descriptions": {
+    "zh": "> 关于透明数据加密TDE（Transparent Data Encryption）的详细介绍及开启后的影响，请参见[开启透明数据加密TDE](~~265913~~)。",
+    "en": "> For more information about TDE and the impact of TDE, see [Enable TDE](~~265913~~)."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore modify-instance-tde --instance-id r-bp1zxszhcgatnx0000 --tde-status Enabled --encryption-name AES-CTR-256 --encryption-key ad463061-992d-4195-8a94-ed6300000000 --role-arn acs:ram::1234567890120000:role/AliyunRdsInstanceEncryptionDefaultRole --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore ModifyInstanceTDE --region cn-hangzhou --TDEStatus Enabled --InstanceId 'r-bp1zxszhcgatnx0000' --EncryptionName 'AES-CTR-256' --EncryptionKey 'ad463061-992d-4195-8a94-ed6300000000' --RoleArn 'acs:ram::1234567890120000:role/AliyunRdsInstanceEncryptionDefaultRole'"

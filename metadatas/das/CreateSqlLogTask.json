@@ -1,5 +1,6 @@
 {
   "name": "CreateSqlLogTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "EndTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务结束时间，格式为unix时间戳，单位为毫秒。",
+        "en": "The end of the time range to query. Specify the time in the UNIX timestamp format. Unit: milliseconds."
+      }
     },
     {
       "name": "Filters",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "筛选条件列表。",
+        "en": "The filter conditions."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数的名称。\n\n> 支持的过滤参数及其取值请参考**请求参数补充说明**。",
+            "en": "The name of the filter parameter.\n\n> For more information about the supported filter parameters and their valid values, see the following **supplement about the Key parameter**."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数的数值。",
+            "en": "The value of the filter parameter."
+          }
         }
       ]
     },
@@ -34,39 +51,74 @@
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库实例ID。",
+        "en": "The ID of the database instance."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务名称。",
+        "en": "The name of the task."
+      }
     },
     {
       "name": "NodeId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n>该参数仅适用于集群版实例，可以选择查询指定节点离线任务。若不传该参数，默认返回主节点离线任务。",
+        "en": "The node ID.\n\n> This parameter is available only for instances that run in a cluster architecture. You can specify this parameter to query the offline tasks of a specific node. By default, if this parameter is not specified, the information about the offline tasks of the primary node is returned."
+      }
     },
     {
       "name": "Role",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "PolarDB-X 2.0数据库实例节点信息。\n\n- **polarx_cn**：计算节点。\n\n- **polarx_dn**：数据节点。",
+        "en": "The role of the node of the PolarDB-X 2.0 database instance. Valid values:\n\n- **polarx\\_cn**: compute node\n\n- **polarx\\_dn**: data node"
+      }
     },
     {
       "name": "StartTime",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务的开始时间，格式为Unix时间戳，单位为毫秒。",
+        "en": "The beginning of the time range to query. Specify the time in the UNIX timestamp format. Unit: milliseconds."
+      }
     },
     {
       "name": "Type",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务类型\n\n- **Export**：导出任务。\n> **Export**支持的过滤参数及其取值请参考**请求参数补充说明**。\n- **Query**：查询任务。",
+        "en": "The type of the task. Valid values:\n\n- **Export**\n\n- **Query**\n\n- **Insight**"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建DAS企业版离线任务",
+    "en": "CreateSqlLogTask"
+  },
+  "descriptions": {
+    "zh": "前提条件：\n\n- 使用阿里云或DAS的SDK时，建议使用最新版本。\n- 在使用SDK调用DAS服务时，需要将地域指定为cn-shanghai。\n- 仅开通了DAS企业版的数据库实例支持创建离线任务。DAS企业版各个版本支持的数据库和地域请参见[DAS产品系列及支持的功能](~~156204~~)。\n\n接口限制：\n\n最大同时执行数量为10。",
+    "en": "Before you call this operation, take note of the following items:\n\n- If you use an Alibaba Cloud SDK or DAS SDK to call this operation, we recommend that you use the latest version of the SDK.\n\n- If you use an SDK to call operations of DAS, you must set the region ID to cn-shanghai.\n\n- You can create an offline task only for database instances for which DAS Enterprise Edition V2 or V3 is enabled. For more information about the databases and regions that are supported by various versions of DAS Enterprise Edition, see [Editions and supported features](~~156204~~)."
+  },
   "example": {
     "unifiedCli": "aliyun das create-sql-log-task --instance-id pc-2ze8g2am976240000 --node-id pi-uf6k5f6g3912i0000 --type Export --name SQL_audit_export_1 --filters Value=select Key=KeyWords --start-time 1596177993000 --end-time 1608888296000 --role polarx_cn --region cn-hangzhou",
     "legacyCli": "aliyun das CreateSqlLogTask --region cn-hangzhou --Role polarx_cn --Type Export --Filters.1.Key KeyWords --EndTime 1608888296000 --InstanceId 'pc-2ze8g2am976240000' --Filters.1.Value select --NodeId 'pi-uf6k5f6g3912i0000' --StartTime 1596177993000 --Name SQL_audit_export_1"

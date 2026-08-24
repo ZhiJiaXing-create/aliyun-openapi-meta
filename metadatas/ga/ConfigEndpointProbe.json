@@ -1,5 +1,6 @@
 {
   "name": "ConfigEndpointProbe",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "Enable",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "是否开启时延探测。取值：\n\n- **true**：开启。\n\n- **false**（默认值）：不开启。",
+        "en": "Specifies whether to enable latency monitoring. Valid values:\n\n*   **true**\n*   **false** (default)"
+      }
     },
     {
       "name": "Endpoint",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点。",
+        "en": "The endpoint."
+      }
     },
     {
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点组ID。",
+        "en": "The endpoint group ID."
+      }
     },
     {
       "name": "EndpointType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "终端节点类型。取值：\n- **Ip**：云下自定义IP。\n- **Domain**：云下自定义域名。\n- **EIP**：云上EIP。\n- **PublicIp**：云上公网IP。",
+        "en": "The type of the endpoint. Valid values:\n\n*   **Ip:** a custom IP address.\n*   **Domain:** a custom domain name.\n*   **EIP:** an Alibaba Cloud elastic IP address (EIP).\n*   **PublicIp:** an Alibaba Cloud public IP address."
+      }
     },
     {
       "name": "ProbePort",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时延探测端口。取值范围：**0**～**65535**。",
+        "en": "The port that is used to monitor latency. Valid values: **0** to **65535**."
+      }
     },
     {
       "name": "ProbeProtocol",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "时延探测协议。取值：\n- **tcp**：TCP协议。\n- **icmp**：ICMP协议。",
+        "en": "The protocol that is used to monitor latency. Valid values:\n\n*   **tcp:** TCP.\n*   **icmp:** ICMP."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The region ID of the GA instance. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "配置终端节点时延探测",
+    "en": "ConfigEndpointProbe"
+  },
+  "descriptions": {
+    "zh": "- **ConfigEndpointProbe**接口属于异步接口，即系统会先返回一个请求ID，但终端节点时延探测并未配置完成，系统后台的配置任务仍在进行。您可以通过调用[DescribeEndpointGroup](~~153260~~)查询终端节点组的状态，以确认终端节点组中终端节点的时延探测配置是否完成：\n    - 当终端节点组处于**updating**状态时，表示终端节点组中终端节点的时延探测正在配置中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当终端节点组处于**active**状态时，表示终端节点组中终端节点时延探测配置完成。\n\n- **ConfigEndpointProbe**接口不支持在同一个全球加速实例内并发配置终端节点时延探测。",
+    "en": "*   **ConfigEndpointProbe** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [DescribeEndpointGroup](~~153260~~) operation to query the status of the endpoint group to which an endpoint belongs and determine whether latency monitoring is configured for the endpoint.\n\n    *   If the endpoint group is in the **updating** state, it indicates that latency monitoring is being configured for the endpoint. In this case, you can perform only query operations.\n    *   If the endpoint group is in the **active** state, it indicates that latency monitoring is configured for the endpoint.\n\n*   The **ConfigEndpointProbe** operation holds an exclusive lock on the Global Accelerator (GA) instance. While the operation is in progress, you cannot call the same operation in the same Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun ga config-endpoint-probe --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-group-id epg-bp1dmlohjjz4kqaun0000 --biz-endpoint-type Ip --biz-endpoint 127.0.XX.XX --probe-protocol tcp --probe-port 80 --enable true --region cn-hangzhou",
     "legacyCli": "aliyun ga ConfigEndpointProbe --region cn-hangzhou --ProbeProtocol tcp --EndpointGroupId 'epg-bp1dmlohjjz4kqaun0000' --Endpoint '127.0.XX.XX' --EndpointType Ip --Enable true --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --ProbePort 80"

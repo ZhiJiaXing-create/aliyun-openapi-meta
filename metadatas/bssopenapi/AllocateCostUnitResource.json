@@ -1,5 +1,6 @@
 {
   "name": "AllocateCostUnitResource",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "FromUnitId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源财务单元ID（必传）。\n- 0表示未分配财务单元ID\n- 大于0表示已分配的财务单元ID",
+        "en": "The ID of the source cost center.\n\n*   A value of 0 indicates that the resources to be transferred have not been allocated to a cost center.\n*   A value greater than 0 indicates the ID of an existing cost center."
+      }
     },
     {
       "name": "FromUnitUserId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源财务单元的属主用户ID（必传）。",
+        "en": "The user ID of the owner of the source cost center."
+      }
     },
     {
       "name": "ResourceInstanceList",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "资源实例列表。",
+        "en": "The resource instances to be transferred."
+      },
       "sub_parameters": [
         {
           "name": "ApportionCode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "分拆型实例的分拆型，只有分拆型产品实例才需要传这个参数。\n- 目前分拆项产品有八种商品，其商品code分别是oss、dcdn、snapshot、vod、cdn、live、cbwp。\n- 这个分拆项字段一般是通过QueryCostUnitResource获取用户的某一个财务单元（包含未分配）下的所有账单实例（包括分拆型实例会带分拆项）。",
+            "en": "The split item of the shared instance. This parameter is required only for shared instances.\n\n*   Eight cloud services support bill splitting. The commodity codes of the eight services are oss, dcdn, snapshot, vod, cdn, live, and cbwp.\n*   You can obtain the split item of a shared instance by calling QueryCostUnitResource operation to obtain all resource instances within a cost center."
+          }
         },
         {
           "name": "CommodityCode",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "账单实例的商品code（必传）。",
+            "en": "The commodity code of the resource instance."
+          }
         },
         {
           "name": "ResourceId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "账单的实例ID（必传）。",
+            "en": "The ID of the resource instance."
+          }
         },
         {
           "name": "ResourceUserId",
           "position": "Query",
           "type": "Long",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "账单实例的属主用户ID（必传）。",
+            "en": "The user ID of the resource instance owner."
+          }
         }
       ]
     },
@@ -52,15 +81,30 @@
       "name": "ToUnitId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标财务单元ID，取值：\n- -1表示已分配资源移除到未分配。\n- 大于0表示分配到指定财务单元。",
+        "en": "The ID of the destination cost center.\n\n*   A value of -1 indicates that the allocated resources are changed to unallocated.\n*   A value greater than 0 indicates the ID of an existing cost center."
+      }
     },
     {
       "name": "ToUnitUserId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标财务单元属主用户ID。",
+        "en": "The user ID of the owner of the destination cost center."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "资源分配到财务单元",
+    "en": "AllocateCostUnitResource"
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi allocate-cost-unit-resource --from-unit-user-id 273394581313325532 --from-unit-id 0 --to-unit-user-id 241021678450941490 --to-unit-id 186419 --resource-instance-list ResourceUserId=273394581313325532 ResourceId=cn-hangzhou_standard CommodityCode=oss ApportionCode=qwer1-cn-beijing --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi AllocateCostUnitResource --region cn-hangzhou --ResourceInstanceList.1.CommodityCode oss --ResourceInstanceList.1.ResourceUserId 273394581313325532 --ResourceInstanceList.1.ApportionCode 'qwer1-cn-beijing' --FromUnitUserId 273394581313325532 --ToUnitUserId 241021678450941490 --ResourceInstanceList.1.ResourceId 'cn-hangzhou_standard' --FromUnitId 0 --ToUnitId 186419"

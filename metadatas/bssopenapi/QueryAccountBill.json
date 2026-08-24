@@ -1,5 +1,6 @@
 {
   "name": "QueryAccountBill",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "BillOwnerId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源归属账号ID，资源归属账号是实际使用资源的账号。",
+        "en": "The ID of the account that owns and actually uses the resource."
+      }
     },
     {
       "name": "BillingCycle",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "账单日期，YYYY-MM。",
+        "en": "The billing date. Format: YYYY-MM."
+      }
     },
     {
       "name": "BillingDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账单日期，仅当Granularity为DAILY时必填，格式为YYYY-MM-DD。",
+        "en": "The billing date. This parameter is required only when you set Granularity to DAILY. Format: YYYY-MM-DD."
+      }
     },
     {
       "name": "Granularity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询账单的颗粒度。取值：\n- MONTHLY：月。与费用中心-费用账单-账单明细-账期账单一致。\n- DAILY：日。与费用中心-费用账单-账单明细-按天账单一致。\n\n> 选择DAILY需指定BillingDate。",
+        "en": "The granularity for querying the bill. Valid values:\n\n- MONTHLY: Queries bills on a monthly basis. Corresponds to the monthly bills in **Expenses & Costs&#xA;**> **Bills&#xA;**> **Bill Details&#xA;**.\n\n- DAILY: Queries bills on a daily basis. Corresponds to the daily bills in **Expenses & Costs&#xA;**> **Bills&#xA;**> **Bill Details&#xA;**.\n\n> If you set `Granularity` to `DAILY`, you must also specify the `BillingDate` parameter."
+      }
     },
     {
       "name": "IsGroupByProduct",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否增加产品Code汇总。\n- true。\n- false。\n\n默认false。",
+        "en": "Specifies whether to aggregate the results by product code.\n\n- true: Results are aggregated by product code.\n\n- false: Results are not aggregated by product code.\n\nDefault value: false."
+      }
     },
     {
       "name": "PageNum",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，默认值为1。",
+        "en": "The page number. The default value is 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页数量，默认值20，最大值：300。",
+        "en": "The number of entries per page. The default value is 20. The maximum value is 300."
+      }
     },
     {
       "name": "ProductCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品code。",
+        "en": "The product code."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "账号账单查询服务",
+    "en": "QueryAccountBill"
+  },
+  "descriptions": {
+    "zh": "- 当月数据查询结果仅供参考，不作为对账依据；当月最终账单在次月3日12点后支持查看/导出（月中会发生包括但不限于以下少数场景：延迟出账，退款，调账，欠费核销等）。\n- 支持近18个月数据。 \n- 账单数据相对于实际费用消耗延迟24小时更新，其中实例ID相关的信息（ 实例配置，实例规格，实例昵称，资源组，公网IP，私网IP，可用区）延迟48小时更新。  \n- 账单数据不支持提供分拆型云产品（例如：CDN、OSS、共享带宽等）各个分拆项（例如：域名、Bucket、EIP等）的具体费用（如需统计含分拆项数据，请前往分账账单）。\n- 对于云通信产品，仅支持查询2020年6月及以后的明细数据，万网产品（包括域名、商标等）仅支持查询2020年11月及以后的明细数据。\n- 单用户限流10笔/秒，如遇超时，请重试。",
+    "en": "- Data for the current month is for reference only. Do not use it for reconciliation. The final bill for the current month is available to view or export after 12:00 on the third day of the next month. This delay accounts for mid-month events such as delayed billing, refunds, bill adjustments, and overdue payment write-offs.\n\n- Data from the last 18 months is available.\n\n- Billing data is updated 24 hours after actual resource consumption. Information related to instance IDs, such as instance configurations, instance types, instance nicknames, resource groups, public IP addresses, private IP addresses, and zones, is updated with a 48-hour delay.\n\n- Billing data does not include the costs of attached resources, such as domain names, buckets, and elastic IP addresses (EIPs), for products such as CDN, OSS, and Internet Shared Bandwidth. To view statistics that include data for attached resources, go to Split Bill.\n\n- For Alibaba Cloud Communications products, detailed data is available only from June 2020 onwards. For HiChina products, such as Domain Names and trademarks, detailed data is available only from November 2020 onwards.\n\n- Each account is limited to 10 queries per second. If a timeout occurs, retry the request."
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi query-account-bill --billing-cycle 2018-07 --page-num 1 --page-size 20 --is-group-by-product false --product-code rds --bill-owner-id 122 --granularity MONTHLY --billing-date 2021-06-01 --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi QueryAccountBill --region cn-hangzhou --BillingCycle '2018-07' --PageNum 1 --PageSize 20 --ProductCode rds --IsGroupByProduct false --BillOwnerId 122 --BillingDate '2021-06-01' --Granularity MONTHLY"

@@ -1,0 +1,90 @@
+{
+  "name": "CreateCapacityReservation",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AppId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "应用ID。",
+        "en": "The application ID."
+      }
+    },
+    {
+      "name": "AppVersion",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "应用版本ID。",
+        "en": "The Application Version ID."
+      }
+    },
+    {
+      "name": "ClientToken",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "自定义Token，保证请求幂等性。\n> 支持ASCII字符，且不能超过64个字符。",
+        "en": "Custom token used to ensure Request idempotence.  \n> ASCII characters are supported, and the length must not exceed 64 characters."
+      }
+    },
+    {
+      "name": "DistrictId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "区域ID。取值：\n\n- huadong\n\n- xinan\n\n- huanan\n\n- huabei\n\n- huazhong",
+        "en": "Area ID. Valid values:\n\n- huadong\n\n- xinan\n\n- huanan\n\n- huabei\n\n- huazhong"
+      }
+    },
+    {
+      "name": "ExpectResourceReadyTime",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "预期资源开始服务时间。\n\n时间格式：`yyyy-mm-dd HH:MM:SS`。\n\n时区是北京时间（东八区）。\n\n> 本参数仅适用于白名单用户。",
+        "en": "Expected time when resources become ready to serve.\n\nTime format: `yyyy-mm-dd HH:MM:SS`.\n\nTime Zone is UTC+8.\n\n> This parameter applies only to whitelist Users."
+      }
+    },
+    {
+      "name": "ExpectSessionCapacity",
+      "position": "Body",
+      "type": "Integer",
+      "required": true,
+      "description": {
+        "zh": "预期可支持的会话数量。",
+        "en": "Expected number of sessions to support."
+      }
+    },
+    {
+      "name": "ProjectId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "项目ID。",
+        "en": "Project ID."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建容器预定任务",
+    "en": "Create a container reservation job"
+  },
+  "descriptions": {
+    "zh": "当预定任务完成时，HTTP接口推送消息如下：\n> HTTP接口是接收会话启动、停止、串流等消息的一种方式。目前消息保存1天，重试策略为退避重试，最多重试176次。\n\n事件类型为`CAPACITY_REEERVATION_RESULT`。\n><notice>不区分模式，仅推送HTTP接口。></notice>\n\n| 名称 | 类型 | 是否必选 | 说明|\n| ------ | ------ | ------ |----- |\n|success|Boolean|是|任务是否成功。<br> 取值： <br>true：任务成功。<br>false：任务失败。|\n|eventType|String|是|事件类型。|\n|eventDetail|Object[EventDetail]|是|事件详情。<br>当任务成功时，返回该参数。|\n\nEventDetail数据结构如下所示。\n| 名称 | 类型 | 是否必选 | 说明|\n| ------ | ------ | ------ |----- |\n| taskId | String | 是 | 任务ID。 |\n| success | Boolean | 是 | 任务是否成功。<br> 取值：<br>true：任务成功。<br>false：任务失败。 |\n| projectId | String | 是 | 项目ID。  |\n| appId | String | 是 | 应用ID。 |\n| appVersion | String | 是 | 应用版本。  |\n| districtId | String | 是 | 区域ID。 |\n| expectSessionCapacity | Integer| 是 | 期望支撑的会话数量。  |\n| realSessionCapacity | Integer | 是 | 实际生产出的容器能支撑的会话数量。  |",
+    "en": "When the reservation job completes, the HTTP API pushes a message as follows:  \n> The HTTP API is a method for receiving messages about session start, stop, streaming, and other events. Currently, messages are retained for 1 Day, and the retry policy is backoff retry, with a maximum of 176 retries.\n\nThe event type is `CAPACITY_RESERVATION_RESULT`.  \n><notice>Regardless of pattern, messages are pushed only through the HTTP API.></notice>\n\n| Name | Type | Required | Description |\n| ------ | ------ | ------ |----- |\n| success | Boolean | Yes | Indicates whether the job succeeded.<br> Valid values: <br>true: The job succeeded.<br>false: The job failed. |\n| eventType | String | Yes | The event type. |\n| eventDetail | Object[EventDetail] | Yes | The event details.<br>This parameter is returned only when the job succeeds. |\n\nThe data structure of EventDetail is as follows:\n\n| Name | Type | Required | Description |\n| ------ | ------ | ------ |----- |\n| taskId | String | Yes | The job ID. |\n| success | Boolean | Yes | Indicates whether the job succeeded.<br> Valid values:<br>true: The job succeeded.<br>false: The job failed. |\n| projectId | String | Yes | The project ID. |\n| appId | String | Yes | The application ID. |\n| appVersion | String | Yes | The Application Version. |\n| districtId | String | Yes | The area ID. |\n| expectSessionCapacity | Integer | Yes | The expected number of sessions to be supported. |\n| realSessionCapacity | Integer | Yes | The actual number of sessions supported by the produced containers. |"
+  }
+}

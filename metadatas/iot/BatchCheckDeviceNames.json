@@ -1,5 +1,6 @@
 {
   "name": "BatchCheckDeviceNames",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -20,13 +21,19 @@
           "name": "DeviceName",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The ID of the request."
+          }
         },
         {
           "name": "DeviceNickname",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "en": "The error message returned if the call fails."
+          }
         }
       ]
     },
@@ -34,15 +41,34 @@
       "name": "IotInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该ID值，否则调用会失败。\n- 若无<props=\"intl\"><ph>**实例概览**页面或</ph></props>ID值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "The ID of the instance. You can view the instance **ID** on the **Overview** page in the IoT Platform console.\n\n>*   If your instance has an ID, you must configure this parameter. If you do not set this parameter, the call fails.\n>*   If your instance has no **Overview** page or ID, you do not need to set this parameter.\n\nFor more information, see [Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProductKey",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要注册的设备所属的产品ProductKey。",
+        "en": "The ProductKey of the product to which the devices belong."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "BatchCheckDeviceNames",
+    "en": "BatchCheckDeviceNames"
+  },
+  "descriptions": {
+    "zh": "## 使用说明\n该接口和**BatchRegisterDeviceWithApplyId**接口结合使用，在一个产品下批量注册多个设备，并且为每个设备单独命名。\n批量注册设备流程：\n\n1. 调用本接口，传入要批量注册的设备的名称，物联网平台返回申请批次ID（**ApplyId**）。返回成功结果，表示批量校验设备名称的申请已经提交成功。实际的校验是异步执行的，会有一个过程。\n2. 调用[QueryBatchRegisterDeviceStatus](~~69483~~)查看名称设置结果。\n3.  调用[BatchRegisterDeviceWithApplyId](~~69514~~)批量注册设备。\n4. （可选）调用[QueryBatchRegisterDeviceStatus](~~69483~~)查看设备注册结果。\n5. 调用[QueryPageByApplyId](~~69518~~)查看批量注册的设备信息。\n\n## 使用限制\n单次调用，最多能定义1,0000 个设备名称。\n\n## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为10。\n> RAM用户共享该阿里云账号配额。",
+    "en": "## How-To\n\nUse this API together with the **BatchRegisterDeviceWithApplyId** API to register multiple devices under one product and assign a unique name to each device.\n\nThe batch device registration flow is as follows:\n\n1. Call this API and pass the names of the devices you want to register in batch. The IoT Platform returns an application batch ID (**ApplyId**). A successful response indicates that the request to validate the device names in batch has been successfully submitted. The actual validation is executed asynchronously and takes some time.\n2. Call [QueryBatchRegisterDeviceStatus](~~69483~~) to view the result of the name validation.\n3. Call [BatchRegisterDeviceWithApplyId](~~69514~~) to register the devices in batch.\n4. (Optional) Call [QueryBatchRegisterDeviceStatus](~~69483~~) to check the device registration result.\n5. Call [QueryPageByApplyId](~~69518~~) to view the information of the registered devices.\n\n## Limits\n\nYou can define up to 10,000 device names in a single call.\n\n## QPS Limit\n\nEach Alibaba Cloud account can make a maximum of 10 queries per second (QPS) to this API.\n\n> Resource Access Management (RAM) users share the quota of the Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot batch-check-device-names --iot-instance-id iot-cn-0pp1n8t0000 --product-key a1BwAGV0000 --device-name example-string --device-name-list DeviceNickname=example-string DeviceName=example-string --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot BatchCheckDeviceNames --region cn-hangzhou --DeviceNameList.1.DeviceName 'example-string' --IotInstanceId 'iot-cn-0pp1n8t0000' --DeviceName.1 'example-string' --DeviceNameList.1.DeviceNickname 'example-string' --ProductKey a1BwAGV0000"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyBackupStrategy",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,70 @@
       "name": "BackupLogIntervalSeconds",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "增量时间间隔，以秒（s）为单位。\n> 仅支持物理备份。",
+        "en": "The interval at which you want to perform incremental log backups. Unit: seconds.\n\n> This parameter takes effect only when physical backups are performed."
+      }
     },
     {
       "name": "BackupPeriod",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全量备份周期，取值如下：\n- Monday：周一\n- Tuesday：周二\n- Wednesday：周三\n- Thursday：周四\n- Friday：周五\n- Saturday：周六\n- Sunday：周日\n\n> BackupPeriod值必须指定每周至少两天，且日期间用英文逗号（,）分隔。",
+        "en": "The day of each week when the full backup task runs. Valid values:\n\n- Monday\n\n- Tuesday\n\n- Wednesday\n\n- Thursday\n\n- Friday\n\n- Saturday\n\n- Sunday"
+      }
     },
     {
       "name": "BackupPlanId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "备份计划ID。",
+        "en": "The ID of the backup schedule."
+      }
     },
     {
       "name": "BackupStartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全量备份开始时间，取值：格式：HH:mm。\n\n> 该参数必填。",
+        "en": "The start time of the full backup task. Specify the time in the HH:mm format."
+      }
     },
     {
       "name": "BackupStrategyType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "全量备份周期，取值：\n- **simple**：周期备份，和BackupPeriod、BackupStartTime配合使用。\n- **manual**：手动备份。\n\n> 默认为**simple**。",
+        "en": "The backup method that you want to use for full backups. Valid values:\n\n- **simple**: scheduled backup. If you specify this value for the BackupStrategyType parameter, you must also specify the BackupPeriod and BackupStartTime parameters.\n\n- **Manual**: manual backup.\n\n> Default value: **simple**."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。",
+        "en": "The client token that is used to ensure the idempotence of the request."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改备份时间",
+    "en": "ModifyBackupStrategy"
+  },
   "example": {
     "unifiedCli": "aliyun dbs modify-backup-strategy --backup-plan-id dbstooi01XXXX --backup-period Monday,Tuesday,Wednesday --backup-start-time 14:22 --backup-strategy-type simple --backup-log-interval-seconds 1000 --client-token ETnLKlblzczshOTUbOCzxxxxxxx --api-version 2019-03-06 --region cn-hangzhou",
     "legacyCli": "aliyun dbs ModifyBackupStrategy --region cn-hangzhou --BackupPeriod 'Monday,Tuesday,Wednesday' --BackupStartTime '14:22' --BackupPlanId dbstooi01XXXX --BackupStrategyType simple --ClientToken ETnLKlblzczshOTUbOCzxxxxxxx --BackupLogIntervalSeconds 1000"

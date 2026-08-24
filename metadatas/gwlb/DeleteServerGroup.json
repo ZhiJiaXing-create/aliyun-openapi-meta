@@ -1,5 +1,6 @@
 {
   "name": "DeleteServerGroup",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate a value, and you must make sure that the value is unique among different requests. The ClientToken parameter can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the request as the **ClientToken**. The **RequestId** of each API request may be different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n- **true**：发送检查请求，不会删除服务器组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2XX状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: sends a check request without deleting the server group. The system checks whether the required parameters are specified, the request format is valid, and the service limits are met. If the request fails the check, the corresponding error is returned. If the request passes the check, the `DryRunOperation` error code is returned.\n\n- **false** (default): sends a normal request. After the request passes the check, an HTTP 2xx status code is returned and the operation is performed."
+      }
     },
     {
       "name": "ServerGroupId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "服务器组ID",
+        "en": "The ID of the server group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除服务器组",
+    "en": "DeleteServerGroup"
+  },
+  "descriptions": {
+    "zh": "服务器组未被任何监听使用时支持删除。",
+    "en": "You can delete a server group only if it is not associated with a listener."
+  },
   "example": {
     "unifiedCli": "aliyun gwlb delete-server-group --server-group-id sgp-atstuj3rtoptyui0000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun gwlb DeleteServerGroup --region cn-hangzhou --DryRun false --ServerGroupId 'sgp-atstuj3rtoptyui0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

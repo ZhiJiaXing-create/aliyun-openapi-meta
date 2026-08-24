@@ -1,5 +1,6 @@
 {
   "name": "DescribeHaVips",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,18 +10,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "过滤条件详细信息。",
+        "en": "The details of the filter condition."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件，最多可支持5个过滤条件。**N**的取值范围为**1~5**。\n支持的过滤条件如下：\n\n- **VpcId**：专有网络ID。 \n\n- **VSwitchId**：交换机ID。 \n\n- **Status**：HaVip的状态。 \n\n- **HaVipId**：HaVip的ID。 \n\n- **HaVipAddress**：HaVip的IP地址。\n\n每个过滤条件（Filter Key）可以过滤多个值，每个值之间为“或”关系，只要有其中一个值符合则视为符合参数的过滤条件。\n\n各个过滤条件（Filter Key）之间为“与”关系，必须符合所有参数的过滤条件，才能被查询出来。",
+            "en": "The filter keys. You can specify at most five filter keys. Valid values of **N**: **1 to 5**. The following filter keys are supported:\n\n*   **VpcId**: virtual private cloud (VPC) ID\n*   **VSwitchId**: vSwitch ID\n*   **Status**: HaVip status\n*   **HaVipId**: HaVip ID\n*   **HaVipAddress**: HaVip IP address\n\nYou can specify multiple values for each filter key. The logical operator among multiple values is OR. If one value is matched, the filter key is matched.\n\nThe logical operator among multiple filter keys is AND. HaVips can be queried only if all filter keys are matched."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定的过滤条件对应的值。**N**的取值范围为**1~5**。",
+            "en": "The value of the filter key. Valid values of **N**: **1 to 5**."
+          }
         }
       ]
     },
@@ -28,47 +41,82 @@
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "列表的页码。默认值：**1**。",
+        "en": "The number of the returned page. Default value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时每页的行数，最大值为**50**。默认值为**10**。",
+        "en": "The number of entries per page. Maximum value: **50**. Default value: **10**."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "HaVip所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the HaVip.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "HaVip所属的资源组ID。",
+        "en": "The ID of the resource group to which the HaVip belongs."
+      }
     },
     {
       "name": "Tags",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tag list."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。如需传入该值，则不能输入空字符串。\n\n一个标签键最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The key of tag N to add to the resource. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。如需传入该值，可以输入空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The value of tag N to add to the resource. You can specify at most 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot contain `http://` or `https://`. The tag value cannot start with `aliyun` or `acs:`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询地域内的高可用虚拟IP（HaVip）",
+    "en": "DescribeHaVips"
+  },
   "example": {
     "unifiedCli": "aliyun vpc describe-ha-vips --biz-region-id cn-hangzhou --page-number 1 --page-size 10 --filter '[{\"Value\":[\"Active\"],\"Key\":\"HaVipId\"}]' --resource-group-id rg-bp67acfmxazb4ph0000 --tags Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpc DescribeHaVips --region cn-hangzhou --Tags.1.Value FinanceJoshua --PageSize 10 --ResourceGroupId 'rg-bp67acfmxazb4ph0000' --PageNumber 1 --Filter.1.Value.1 Active --Tags.1.Key FinanceDept --RegionId 'cn-hangzhou' --Filter.1.Key HaVipId"

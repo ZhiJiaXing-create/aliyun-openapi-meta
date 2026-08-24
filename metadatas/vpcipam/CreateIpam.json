@@ -1,5 +1,6 @@
 {
   "name": "CreateIpam",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,65 +9,116 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "The client token used to ensure the idempotence of the request. Use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会创建IPAM。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码DryRunOperation。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接创建IPAM。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the DryRunOperation error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "IpamDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPAM的描述信息。\n\n长度为1～256个字符，必须以大小写字母或中文开头，但不能以` http:// `和` https:// `开头。描述不填则为空，默认值为空。",
+        "en": "The description of the IPAM.\n\nIt must be 1 to 256 characters in length. Start with a letter but cannot start with `http://` or `https://`. If you do not specify a description, the description is empty by default."
+      }
     },
     {
       "name": "IpamName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPAM的名称。\n\n长度为1～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the IPAM.\n\nIt must be 1 to 128 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "OperatingRegionList",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPAM生效地域列表。",
+        "en": "The effective regions of the IPAM."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPAM托管地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The ID of the region where the IPAM instance is hosted. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IPAM的资源组ID。",
+        "en": "The resource group ID of the IPAM."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表信息。",
+        "en": "The tag list."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持64个字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-），不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the resource. You can specify at most 20 tag keys. It cannot be an empty string.\n\nThe tag key can be up to 64 characters in length and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-). It must start with a letter but cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。一旦传入该值，可以为空字符串。\n\n最多支持128个字符，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the resource. You can specify up to 20 tag values. You can specify empty strings as tag values.\n\nThe tag value can be up to 128 characters in length and cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个IPAM实例",
+    "en": "CreateIpam"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 每个阿里云账号（主账号）在每个地域只支持创建1个IPAM。\n\n- 目前，IPAM仅支持分配IPv4类型的IP地址。\n\n- 创建IPAM实例时：\n    - 若用户在当前地域不存在自定义类型的资源发现实例，系统会直接创建与IPAM实例关联的默认资源发现实例。\n    - 若用户在当前地域已经存在自定义类型的资源发现实例，系统会将该资源发现转化为默认资源发现，并创建与IPAM实例的关联关系。",
+    "en": "- You can create only one IPAM with each Alibaba Cloud account in each region.\n- Only IPv4 IP addresses can be allocated.\n\n- When you create an IPAM instance:\n    - If there is no custom resource discovery in the region, the system creates a default resource discovery associated with the IPAM instance.\n    - If there is a custom resource discovery in the region, the system converts it to a default resource discovery and associates it with the IPAM instance."
+  },
   "example": {
     "unifiedCli": "aliyun vpcipam create-ipam --biz-region-id cn-hangzhou --ipam-name abc --operating-region-list cn-hangzhou --ipam-description This_is_my_first_Ipam --resource-group-id rg-acfmxazb4ph6aiy0000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpcipam CreateIpam --region cn-hangzhou --OperatingRegionList.1 'cn-hangzhou' --Tag.1.Key FinanceDept --IpamName abc --ResourceGroupId 'rg-acfmxazb4ph6aiy0000' --Tag.1.Value FinanceJoshua --IpamDescription This_is_my_first_Ipam --DryRun false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

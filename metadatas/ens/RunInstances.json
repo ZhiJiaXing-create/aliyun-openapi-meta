@@ -1,5 +1,6 @@
 {
   "name": "RunInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "Amount",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "创建的实例数量。取值范围：1~100。",
+        "en": "The number of instances to create. Valid values: 1 to 100."
+      }
     },
     {
       "name": "AutoReleaseTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按量付费实例的自动释放时间。按照[ISO 8601](~~25696~~)标准表示，使用UTC+0时间。格式为：`yyyy-MM-ddTHH:mm:ssZ`。\n\n- 如果秒（`ss`）取值不是`00`，则自动取为当前分钟（`mm`）开始时。\n\n- 最短释放时间为当前时间一小时之后。",
+        "en": "The time when the pay-as-you-go instance is automatically released. The time must be in the [ISO 8601](~~25696~~) standard in the `yyyy-MM-ddTHH:mm:ssZ` format and must be in UTC.\n\n- If the seconds part (`ss`) is not `00`, the time is automatically set to the beginning of the current minute (`mm`).\n\n- The release time must be at least one hour later than the current time."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动续费。取值：\n\n- **true**：自动续费\n- **false**：不自动续费（默认）\n\n>按量付费时，该参数无效。",
+        "en": "Specifies whether to enable auto-renewal. Valid values:\n\n- **true**: enables auto-renewal\n\n- **false** (default): disables auto-renewal\n\n> This parameter does not apply to pay-as-you-go instances."
+      }
     },
     {
       "name": "AutoUseCoupon",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用代金券，默认为使用，即AutoUseCoupon=true。",
+        "en": "Specifies whether to automatically use coupons. Default value: `true`."
+      }
     },
     {
       "name": "BillingCycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例计算资源计费周期，仅支持实例级后付费。\n取值\n\n- **Day**：按天计费。\n\n- **Month**：按月计费。",
+        "en": "The billing cycle for the computing resources of the instance. This parameter is applicable only to pay-as-you-go instances that are billed individually.\nValid values:\n\n- **Day**: billed on a daily basis\n\n- **Month**: billed on a monthly basis"
+      }
     },
     {
       "name": "Carrier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运营商。\n>区域级调度时必填。</br>\n>在节点级调度时如果是节点存在多运营商场景时，如果不输入运营商则会按节点的运营商进行生产，如有移动、联通两个运营商，则生产出来的实例有两个ISP。</br>您可以通过[DescribeRegionIsps](~~2637461~~)获取节点运营商信息。",
+        "en": "The carrier.\n\n> This parameter is required for regional scheduling.<br>For node-level scheduling, if you do not specify a carrier for a node that supports multiple carriers, the system creates instances with all supported carriers. For example, if a node supports both China Mobile and China Unicom, the created instances will have two carriers.<br>You can call the [DescribeRegionIsps](~~2637461~~) operation to obtain the carrier information of a node."
+      }
     },
     {
       "name": "DataDisk",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "数据盘规格。",
+        "en": "The data disk specifications."
+      },
       "sub_parameters": [
         {
           "name": "Category",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "磁盘种类。取值：\n- **cloud_efficiency**：高效云盘\n- **cloud_ssd**：全闪云盘\n- **local_hdd**：本地HDD盘\n- **local_ssd**：本地SSD盘",
+            "en": "The category of the data disk. Valid values:\n\n- **cloud\\_efficiency**: Ultra Disk\n\n- **cloud\\_ssd**: standard SSD\n\n- **local\\_hdd**: local HDD\n\n- **local\\_ssd**: local SSD"
+          }
         },
         {
           "name": "Encrypted",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否加密云盘。取值范围：\n\n- true：是\n\n- false（默认值）：否",
+            "en": "Specifies whether to encrypt the data disk. Valid values:\n\n- true: The data disk is encrypted.\n\n- false (default): The data disk is not encrypted."
+          }
         },
         {
           "name": "KMSKeyId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "云盘使用的KMS密钥ID。取值范围：\n\n- true：是\n\n- false（默认值）：否\n\n> 如果Encrypted置为true，KMSKeyId为空时则使用服务默认密钥。",
+            "en": "The ID of the KMS key to use for the data disk. Valid values:\n\n- true: yes\n\n- false (default): no\n\n> If Encrypted is set to true but KMSKeyId is left empty, the default service key is used."
+          }
         },
         {
           "name": "Size",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据盘大小，单位：GiB。",
+            "en": "The size of the data disk, in GiB."
+          }
         }
       ]
     },
@@ -76,205 +121,347 @@
       "name": "DeletionProtection",
       "position": "Query",
       "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "实例释放保护属性，指定是否支持通过控制台或API释放实例。取值范围： \n\n-  true：开启实例释放保护。\n-  false：关闭实例释放保护。\n\n默认值：false。\n\n> 该属性仅适用于按量付费实例，且只能限制手动释放操作，对系统释放操作不生效。",
+        "en": "Specifies whether to enable release protection for the instance to prevent it from being accidentally released from the console or by calling an API operation. Valid values:\n\n- true: enables release protection.\n\n- false: disables release protection.\n\nDefault value: false.\n\n> This parameter is applicable only to pay-as-you-go instances and protects them only from manual releases. It does not protect them from system-initiated releases."
+      }
+    },
+    {
+      "name": "DeploymentSetId",
+      "position": "Query",
+      "type": "String",
       "required": false
     },
     {
       "name": "EnsRegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点ID。\n\n> 节点级调度时必填，区域级调度时无效。",
+        "en": "The ID of the node.\n\n> This parameter is required for node-level scheduling and is invalid for regional scheduling."
+      }
     },
     {
       "name": "HostName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "主机名称。",
+        "en": "The hostname."
+      }
     },
     {
       "name": "ImageId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像ID。arm版卡不能填，其他类型规格必填。",
+        "en": "The image ID. This parameter is required for all instance types except for ARM-based ones."
+      }
     },
     {
       "name": "InstanceChargeStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例计费策略。取值：\n\n- **instance**：实例粒度\n- 不传默认按用户维度",
+        "en": "The billing policy of the instance. Valid values:\n\n- **instance**: The instance is billed individually.\n\n- If you do not specify this parameter, the account-level billing policy is used by default."
+      }
     },
     {
       "name": "InstanceChargeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例付费方式。取值：\n- **PrePaid**：预付费，包年包月。\n- **PostPaid**：按量付费。",
+        "en": "The billing method for the instance. Valid values:\n\n- **PrePaid**: subscription\n\n- **PostPaid**: pay-as-you-go"
+      }
     },
     {
       "name": "InstanceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例名称。长度为2~128个字符，必须以大小字母或中文开头，不能以`http://`和`https://`开头。可以包含中文、英文、数字、半角冒号（:）、下划线（_）、点号（.）或者连字符（-）。\n\n默认值为实例的InstanceId。",
+        "en": "The instance name. The name must be 2 to 128 characters in length. It must start with a letter or a Chinese character and cannot start with `http://` or `https://`. It can contain Chinese characters, letters, digits, colons (:), underscores (\\_), periods (.), and hyphens (-).\n\nBy default, this parameter is set to the `InstanceId` of the instance."
+      }
     },
     {
       "name": "InstanceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例规格。",
+        "en": "The instance type."
+      }
     },
     {
       "name": "InternetChargeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "带宽计费方式。取值：\n- **BandwidthByDay**：日峰值带宽\n- **95BandwidthByMonth**：月95峰值带宽\n\n> 如果是第一次新购时可以进行选择计费方式，后续此字段值会根据第一次所选择的计费方式进行默认处理。",
+        "en": "The billing method for bandwidth. Valid values:\n\n- **BandwidthByDay**: pay-by-day peak bandwidth\n\n- **95BandwidthByMonth**: pay-by-monthly 95th percentile bandwidth\n\n> You can select a billing method only when you purchase an instance for the first time. For subsequent purchases, the system uses the previously selected billing method by default."
+      }
     },
     {
       "name": "InternetMaxBandwidthOut",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "公网最大带宽，如果本参数的值大于0，则自动为实例分配公网IP。",
+        "en": "The maximum public bandwidth. If this value is greater than 0, a public IP address is automatically assigned to the instance."
+      }
     },
     {
       "name": "IpType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "IP类型。取值：\n\n- **ipv4**（默认值）：IPv4。\n\n- **ipv6**：IPv6。\n\n- **ipv4Andipv6**：IPv4和IPv6(单栈)。\n- **ipv4Withipv6**：IPv4和IPv6(双栈)。",
+        "en": "The IP address type. Valid values:\n\n- **ipv4** (default): IPv4.\n\n- **ipv6**: IPv6.\n\n- **ipv4Andipv6**: IPv4 and IPv6 (single stack).\n\n- **ipv4Withipv6**: IPv4 and IPv6 (dual stack)."
+      }
     },
     {
       "name": "Ipv6AddressCount",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为私网主网卡指定随机生成的ipv6地址数量。",
+        "en": "The number of randomly generated IPv6 addresses to assign to the primary private ENI."
+      }
     },
     {
       "name": "KeyPairName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "密钥对名称。\n> **Password**、**KeyPairName**、**PasswordInherit**至少填入一个。",
+        "en": "The name of the key pair.\n\n> You must specify at least one of the `Password`, `KeyPairName`, and `PasswordInherit` parameters."
+      }
     },
     {
       "name": "LaunchTemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板ID",
+        "en": "The ID of the launch template."
+      }
     },
     {
       "name": "LaunchTemplateName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板名称",
+        "en": "The name of the launch template."
+      }
     },
     {
       "name": "LaunchTemplateVersion",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板版本",
+        "en": "The version of the launch template."
+      }
     },
     {
       "name": "NetDistrictCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地区Code。\n>区域级调度时必填，节点级调度时无效。",
+        "en": "The district code.\n\n> This parameter is required for regional scheduling and is invalid for node-level scheduling."
+      }
     },
     {
       "name": "NetWorkId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络ID。\n\n>只能在节点级调度使用，区域级调度时配置该参数会报错。如果不指定交换机信息时，则只会校验网络ID是否合法，实际资源生产并不以此网络ID为准。",
+        "en": "The network ID.\n\n> This parameter is applicable only to node-level scheduling. An error is reported if you specify this parameter for regional scheduling. If you do not specify a vSwitch, the system validates the network ID, but instance creation in this network is not guaranteed."
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例密码。\n\n> **Password**、**KeyPairName**、**PasswordInherit**至少填入一个。",
+        "en": "The instance password.\n\n> You must specify at least one of the `Password`, `KeyPairName`, and `PasswordInherit` parameters."
+      }
     },
     {
       "name": "PasswordInherit",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否使用镜像预置密码。取值：\n\n- **true**：使用\n- **false**：不使用\n\n> **Password**、**KeyPairName**、**PasswordInherit**至少填入一个。",
+        "en": "Specifies whether to use the preset password of the image. Valid values:\n\n- **true**: uses the preset password.\n\n- **false**: does not use the preset password.\n\n> You must specify at least one of the `Password`, `KeyPairName`, and `PasswordInherit` parameters."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买资源的时长。\n\n- 如果**PeriodUnit**取值为**Day**时，则**Period**仅可设置为**3**。\n\n- 如果**PeriodUnit**取值为**Month**时，则**Period**可设置为**1-9**,**12**。",
+        "en": "The subscription duration.\n\n- If `PeriodUnit` is set to `Day`, `Period` can be set only to `3`.\n\n- If `PeriodUnit` is set to `Month`, `Period` can be set to `1` to `9`, or `12`."
+      }
     },
     {
       "name": "PeriodUnit",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买资源的时长单位。取值：\n- **Month**（默认）：按月购买。\n- **Day**：按天购买。",
+        "en": "The unit of time for purchasing resources. Valid values:\n\n- **Month** (default): Purchase by month.\n\n- **Day**: Purchase by day."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "私网IP地址。\n>只能在节点级调度使用，区域级调度时配置该参数会报错。\n如果指定了私网IP，实例数量只能为1台，且私网IP和交换机ID同时非空时，该私网IP才生效。",
+        "en": "Private IP address.\n\n> This parameter can be used only for node-level scheduling. Configuring this parameter for region-level scheduling causes an error.\n> If you specify a private IP, the number of instances can only be 1, and the private IP takes effect only when both the private IP and the VSwitch ID are specified."
+      }
     },
     {
       "name": "PublicIpIdentification",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否启用公网ipidentification。\n取值：\n\n- true：启用。\n\n- false：不启用\n\n默认值：true。",
+        "en": "Specifies whether to assign a public IP address.\nValid values:\n\n- **true** (default): assigns a public IP address.\n\n- **false**: does not assign a public IP address."
+      }
     },
     {
       "name": "ScheduleAreaLevel",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度层级。通过该字段来执行节点级调度或者区域调度。取值：\n\n- **Big**：大区\n- **Middle**：省份\n- **Small**：城市\n- **Region**：节点",
+        "en": "The scheduling level. This determines whether to perform regional or node-level scheduling. Valid values:\n\n- **Big**: large area\n\n- **Middle**: province\n\n- **Small**: city\n\n- **Region**: node"
+      }
     },
     {
       "name": "SchedulingPriceStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度价格策略。取值：\n\n- **PriceHighPriority**：优先高价\n- **PriceLowPriority**：优先低价",
+        "en": "The price-based scheduling strategy. Valid values:\n\n- **PriceHighPriority**: prioritizes nodes with higher prices\n\n- **PriceLowPriority**: prioritizes nodes with lower prices"
+      }
     },
     {
       "name": "SchedulingStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "调度策略。取值：\n\n- **Concentrate**：集中\n- **Disperse**：分散\n\n> 节点级调度时，为**Concentrate**；区域级调度时，按客户需求选择。",
+        "en": "The scheduling strategy. Valid values:\n\n- **Concentrate**: concentrated deployment\n\n- **Disperse**: dispersed deployment\n\n> For node-level scheduling, set this parameter to **Concentrate**. For regional scheduling, select a strategy based on your business requirements."
+      }
     },
     {
       "name": "SecurityId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全组ID。",
+        "en": "The ID of the security group."
+      }
     },
     {
       "name": "SpotDuration",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "抢占式实例保护期。\n\n单位：小时。",
+        "en": "The protection period of the preemptible instance.\n\nUnit: hours."
+      }
     },
     {
       "name": "SpotStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按量付费实例的竞价策略。当参数`InstanceChargeType`取值为`PostPaid`时生效。取值范围：\n\n- NoSpot：正常按量付费实例。\n- SpotAsPriceGo：系统自动出价，跟随当前市场实际价格。\n\n默认值：NoSpot。",
+        "en": "The spot strategy for pay-as-you-go instances. Valid values:\n\n- NoSpot (default): a regular pay-as-you-go instance\n\n- SpotAsPriceGo: a preemptible instance for which the system automatically bids based on the real-time market price\n\nDefault value: NoSpot."
+      }
     },
     {
       "name": "SystemDisk",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "系统盘规格。",
+        "en": "The system disk specifications."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "实例所绑定的标签",
+        "en": "The tags to add to the instance."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "自定义标签key",
+            "en": "The key of the tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。不可超过128个字符，不能以`aliyun`或`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The value of the tag. The value cannot exceed 128 characters in length, start with `aliyun` or `acs:`, or contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -282,19 +469,31 @@
       "name": "UniqueSuffix",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否为**HostName**和**InstanceName**添加有序后缀，有序后缀从001开始递增，最大不能超过999。",
+        "en": "Specifies whether to append an ordered suffix to `HostName` and `InstanceName`. The suffix starts from 001 and increments up to 999."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，最大支持16 KB。您可传入**UserData**信息，**UserData**以Base64的方式编码。",
+        "en": "The user data for the instance. The data must be Base64-encoded and not exceed 16 KB in size."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "交换机ID。\n\n>只能在节点级调度使用，区域级调度时配置该参数会报错。",
+        "en": "The ID of the vSwitch.\n\n> This parameter is applicable only to node-level scheduling. An error is reported if you specify this parameter for regional scheduling."
+      }
     },
     {
       "name": "VpdId",
@@ -309,6 +508,13 @@
       "required": false
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "批量创建实例",
+    "en": "Batch Create Instances"
+  },
   "example": {
     "unifiedCli": "aliyun ens run-instances --instance-type ens.sn1.small --instance-charge-type PostPaid --image-id m-5si16wo6simkt267p8b7h0000 --net-district-code 350000 --carrier telecom --schedule-area-level Region --scheduling-strategy Concentrate --ens-region-id cn-foshan-telecom --password testPassword --biz-key-pair-name wx2-jumpserver --internet-charge-type BandwidthByDay --system-disk Category=local_ssd Size=50 --data-disk Category=cloud_efficiency KMSKeyId=false Size=20 Encrypted=false --period 1 --internet-max-bandwidth-out 1 --amount 1 --net-work-id net-id --vswitch-id vsw-5sagnw7m613oulalkd10n0000 --security-id sg-test --host-name test-HostName --instance-name TestName --unique-suffix true --user-data ZWtest --auto-renew true --scheduling-price-strategy PriceHighPriority --private-ip-address 10.0.XX.XX --period-unit Month --public-ip-identification true --password-inherit false --instance-charge-strategy instance --billing-cycle Day --ip-type ipv4 --auto-use-coupon true --tag Value=tagValue Key=team --auto-release-time 2023-06-28T14:38:52Z --spot-strategy SpotAsPriceGo --spot-duration 1 --ipv6-address-count 2 --deletion-protection false --launch-template-id lt-test --launch-template-name lt-test --launch-template-version 2 --vpd-id example-string --vpd-vswitchids example-string --deployment-set-id example-string --region cn-hangzhou",
     "legacyCli": "aliyun ens RunInstances --region cn-hangzhou --PrivateIpAddress '10.0.XX.XX' --UserData ZWtest --IpType ipv4 --InstanceChargeType PostPaid --AutoRenew true --SpotDuration 1 --SystemDisk '{\"Category\":\"local_ssd\",\"Size\":50}' --SchedulingStrategy Concentrate --ScheduleAreaLevel Region --Ipv6AddressCount 2 --ImageId 'm-5si16wo6simkt267p8b7h0000' --Carrier telecom --InstanceType 'ens.sn1.small' --HostName 'test-HostName' --SpotStrategy SpotAsPriceGo --Password testPassword --PasswordInherit false --KeyPairName 'wx2-jumpserver' --Tag.1.Key team --BillingCycle Day --LaunchTemplateName 'lt-test' --NetWorkId 'net-id' --NetDistrictCode 350000 --VpdVSwitchIds '[\"example-string\"]' --Amount 1 --VSwitchId 'vsw-5sagnw7m613oulalkd10n0000' --Period 1 --LaunchTemplateId 'lt-test' --DeletionProtection false --InternetChargeType BandwidthByDay --InstanceName TestName --DeploymentSetId 'example-string' --DataDisk '[{\"Category\":\"cloud_efficiency\",\"KMSKeyId\":\"false\",\"Size\":20,\"Encrypted\":false}]' --InternetMaxBandwidthOut 1 --UniqueSuffix true --AutoUseCoupon true --VpdId 'example-string' --PublicIpIdentification true --Tag.1.Value tagValue --SecurityId 'sg-test' --SchedulingPriceStrategy PriceHighPriority --LaunchTemplateVersion 2 --InstanceChargeStrategy instance --EnsRegionId 'cn-foshan-telecom' --PeriodUnit Month --AutoReleaseTime '2023-06-28T14:38:52Z'"

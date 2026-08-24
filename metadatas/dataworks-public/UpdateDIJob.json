@@ -1,5 +1,6 @@
 {
   "name": "UpdateDIJob",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "DIJobId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该字段已废弃，请使用Id字段。",
+        "en": "This parameter is deprecated. Use the `Id` parameter instead."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务的描述",
+        "en": "The description of the synchronization job."
+      }
     },
     {
       "name": "FileSpec",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "脚本模式代码内容",
+        "en": "The job configuration in script mode."
+      }
     },
     {
       "name": "Id",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务ID。",
+        "en": "The ID of the synchronization job."
+      }
     },
     {
       "name": "JobSettings",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "同步任务维度的设置，含DDL处理策略、源端和目标端列数据类型映射策略、任务运行时参数等",
+        "en": "The settings for the synchronization job. This includes DDL handling settings, data type mappings for columns between the source and destination, and runtime parameters."
+      }
     },
     {
       "name": "Owner",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务责任人",
+        "en": "The owner of the synchronization job."
+      }
     },
     {
       "name": "ProjectId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "DataWorks工作空间ID。您可以通过[ListProjects](~~178393~~)接口获取工作空间ID。",
+        "en": "The ID of the DataWorks workspace. You can call the [ListProjects](~~178393~~) operation to get the workspace ID."
+      }
     },
     {
       "name": "ResourceSettings",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源设置",
+        "en": "The resource settings."
+      }
     },
     {
       "name": "TableMappings",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "同步对象转换映射列表，列表中每个元素描述了一组源端同步对象选择规则列表和在该组同步对象上应用的同步对象转换规则列表\n\n\n> [ { \"SourceObjectSelectionRules\":[ { \"ObjectType\":\"Database\", \"Action\":\"Include\", \"ExpressionType\":\"Exact\", \"Expression\":\"biz_db\" }, { \"ObjectType\":\"Schema\", \"Action\":\"Include\", \"ExpressionType\":\"Exact\", \"Expression\":\"s1\" }, { \"ObjectType\":\"Table\", \"Action\":\"Include\", \"ExpressionType\":\"Exact\", \"Expression\":\"table1\" } ], \"TransformationRuleNames\":[ { \"RuleName\":\"my_database_rename_rule\", \"RuleActionType\":\"Rename\", \"RuleTargetType\":\"Schema\" } ] } ]",
+        "en": "A list of object transformation mappings. Each mapping specifies a set of selection rules for source objects and a list of transformation rules that apply to the selected objects.\n\n> \\[ { \"SourceObjectSelectionRules\":\\[ { \"ObjectType\":\"Database\", \"Action\":\"Include\", \"ExpressionType\":\"Exact\", \"Expression\":\"biz\\_db\" }, { \"ObjectType\":\"Schema\", \"Action\":\"Include\", \"ExpressionType\":\"Exact\", \"Expression\":\"s1\" }, { \"ObjectType\":\"Table\", \"Action\":\"Include\", \"ExpressionType\":\"Exact\", \"Expression\":\"table1\" } ], \"TransformationRuleNames\":\\[ { \"RuleName\":\"my\\_database\\_rename\\_rule\", \"RuleActionType\":\"Rename\", \"RuleTargetType\":\"Schema\" } ] } ]"
+      },
       "sub_parameters": [
         {
           "name": "SourceObjectSelectionRules",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "每条规则可选择待同步源端对象的不同对象类型，如选择源端数据库、源端数据表",
+            "en": "The rules for selecting source objects. Each rule can select a different type of source object to synchronize, such as a source database or table."
+          }
         },
         {
           "name": "TransformationRules",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "源端对象上应用的转换规则",
+            "en": "The transformation rules for the source objects."
+          }
         }
       ]
     },
@@ -77,34 +122,65 @@
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "同步对象转换规则定义列表\n>[ { \"RuleName\":\"my_database_rename_rule\", \"RuleActionType\":\"Rename\", \"RuleTargetType\":\"Schema\", \"RuleExpression\":\"{\"expression\":\"${srcDatasoureName}_${srcDatabaseName}\"}\" } ]",
+        "en": "A list of transformation rule definitions.\n\n> \\[ { \"RuleName\":\"my\\_database\\_rename\\_rule\", \"RuleActionType\":\"Rename\", \"RuleTargetType\":\"Schema\", \"RuleExpression\":\"{\"expression\":\"${srcDatasoureName}\\_${srcDatabaseName}\"}\" } ]"
+      },
       "sub_parameters": [
         {
           "name": "RuleActionType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "动作类型，可选的枚举值：\n\n- DefinePrimaryKey（定义主键）\n- Rename（重命名）\n- AddColumn（增加列）\n- HandleDml（DML处理）\n- DefineIncrementalCondition（定义增量条件）\n- DefineCycleScheduleSettings（定义周期调度设置）\n- DefinePartitionKey（定义分区列）",
+            "en": "The type of the action. Valid values:\n\n- `DefinePrimaryKey`: Defines a primary key.\n\n- `Rename`: Renames an object.\n\n- `AddColumn`: Adds a column.\n\n- `HandleDml`: Handles DML operations.\n\n- `DefineIncrementalCondition`: Defines an incremental condition.\n\n- `DefineCycleScheduleSettings`: Defines periodic scheduling settings.\n\n- `DefinePartitionKey`: Defines a partition key."
+          }
         },
         {
           "name": "RuleExpression",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则表达式，json string格式。\n\n1. 重命名规则（Rename）\n- 示例：{\"expression\":\"${srcDatasourceName}_${srcDatabaseName}_0922\" }\n- expression：为重命名转换规则表达式，表达式内支持变量包括：${srcDatasourceName}（源端数据源名）、${srcDatabaseName}（源端库名）、${srcTableName}（源端表名）。\n2. 加列规则（AddColumn)\n- 示例：{\"columns\":[{\"columnName\":\"my_add_column\",\"columnValueType\":\"Constant\",\"columnValue\":\"123\"}]}\n- 如不指定，默认规则为不加列不复制。\n- columnName：附加的列名称。\n- columnValueType：附加的列取值类型，包括Constant（常量）、Variable（变量）。\n- columnValue：附加的列取值。当columnValueType=Constant时，value为自定义常量，String类型。当columnValueType=Variable时，value为内置变量。内置变量可选值包括：EXECUTE_TIME（执行时间，Long类型）、DB_NAME_SRC（源端数据库名称，String类型）、DATASOURCE_NAME_SRC（源端数据源名称，String类型）、TABLE_NAME_SRC（源端表名，String类型）、DB_NAME_DEST（目标端数据库名称，String类型）、DATASOURCE_NAME_DEST（目标端数据源名称，String类型）、TABLE_NAME_DEST（目标端表名，String类型）、DB_NAME_SRC_TRANSED（转换后的数据库名称，String类型）。\n3. 指定目标端表的主键列列名（DefinePrimaryKey）\n- 示例：{\"columns\":[\"ukcolumn1\",\"ukcolumn2\"]}\n- 如不指定默认使用源端主键列。\n- 当目标端为已有表：数据集成系统不会修改目标端表结构，如果指定的主键列不在目标端的列集合中，任务启动会报错提示。\n- 当目标端为自动建表：数据集成系统会自动创建目标端表结构，表结构包含定义的主键列。当指定的主键列不在目标端的列集合中时，任务启动会报错提示。\n4. DML处理规则（HandleDml）\n- 示例： {\"dmlPolicies\":[{\"dmlType\":\"Delete\",\"dmlAction\":\"Filter\",\"filterCondition\":\"id > 1\"}]}\n- 如不指定，默认规则为Insert、Update、Delete均为Normal\n- dmlType：DML操作类型，Insert（插入）、Update（更新）、Delete（删除）\n- dmlAction：DML处理策略，Normal（正常处理）、Ignore（忽略）、Filter（有条件的正常处理，当dmlType=Update/Delete时使用）、LogicalDelete（逻辑删除）\n- filterCondition：DML过滤条件，当dmlAction=Filter时使用\n5. 增量条件（DefineIncrementalCondition）\n- 示例： {\"where\":\"id > 0\"}\n- 指定增量过滤条件\n6. 周期调度参数（DefineCycleScheduleSettings）\n- 示例： {\"cronExpress\":\" * * * * * *\", \"cycleType\":\"1\"}\n- 指定周期任务调度参数\n7. 指定分区键（DefinePartitionKey）\n- 示例： {\"columns\":[\"id\"]}\n- 指定分区键",
+            "en": "The rule expression, specified as a JSON string.\n\n1. Rename rule (`Rename`)\n\n- Example: `{\"expression\":\"${srcDatasourceName}_${srcDatabaseName}_0922\"}`\n\n- `expression`: The expression for the rename transformation rule. The expression supports variables, including `${srcDatasourceName}` (source data source name), `${srcDatabaseName}` (source database name), and `${srcTableName}` (source table name).\n\n2. Add column rule (`AddColumn`)\n\n- Example: `{\"columns\":[{\"columnName\":\"my_add_column\",\"columnValueType\":\"Constant\",\"columnValue\":\"123\"}]}`\n\n- If this rule is not specified, no columns are added.\n\n- `columnName`: The name of the column to add.\n\n- `columnValueType`: The value type of the added column. Valid values: `Constant` and `Variable`.\n\n- `columnValue`: The value of the added column. If `columnValueType` is `Constant`, the value is a custom constant of the string type. If `columnValueType` is `Variable`, the value is a built-in variable. Valid built-in variables: `EXECUTE_TIME` (execution time, Long type), `DB_NAME_SRC` (source database name, String type), `DATASOURCE_NAME_SRC` (source data source name, String type), `TABLE_NAME_SRC` (source table name, String type), `DB_NAME_DEST` (destination database name, String type), `DATASOURCE_NAME_DEST` (destination data source name, String type), `TABLE_NAME_DEST` (destination table name, String type), and `DB_NAME_SRC_TRANSED` (transformed database name, String type).\n\n3. Define primary key rule (`DefinePrimaryKey`)\n\n- Example: `{\"columns\":[\"ukcolumn1\",\"ukcolumn2\"]}`\n\n- If this rule is not specified, the primary key of the source is used by default.\n\n- Data Integration does not modify the structure of an existing destination table. If a specified primary key column does not exist in the table, the synchronization job fails.\n\n- When a destination table is automatically created, Data Integration includes the defined primary key columns in the structure. If a specified primary key column is not in the destination column set, the synchronization job fails.\n\n4. DML handling rule (`HandleDml`)\n\n- Example: `{\"dmlPolicies\":[{\"dmlType\":\"Delete\",\"dmlAction\":\"Filter\",\"filterCondition\":\"id > 1\"}]}`\n\n- If this rule is not specified, the default action for `Insert`, `Update`, and `Delete` operations is `Normal`.\n\n- `dmlType`: The DML operation type. Valid values: `Insert`, `Update`, and `Delete`.\n\n- `dmlAction`: The DML handling policy. Valid values: `Normal` (process the operation), `Ignore` (ignore the operation), `Filter` (conditionally process the operation, used when `dmlType` is `Update` or `Delete`), and `LogicalDelete` (perform a logical delete).\n\n- `filterCondition`: The DML filter condition, used when `dmlAction` is `Filter`.\n\n5. Incremental condition rule (`DefineIncrementalCondition`)\n\n- Example: `{\"where\":\"id > 0\"}`\n\n- The `WHERE` clause for the incremental condition.\n\n6. Periodic scheduling rule (`DefineCycleScheduleSettings`)\n\n- Example: `{\"cronExpress\":\" * * * * * *\", \"cycleType\":\"1\"}`\n\n- Specifies the scheduling parameters for a periodic job.\n\n7. Define partition key rule (`DefinePartitionKey`)\n\n- Example: `{\"columns\":[\"id\"]}`\n\n- Specifies the partition key."
+          }
         },
         {
           "name": "RuleName",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "规则名称，当动作类型和动作作用的目标类型相同时，规则名称需保证唯一性，长度不能超过50个字符",
+            "en": "The name of the transformation rule. The name must be unique for a specific combination of `RuleActionType` and `RuleTargetType` and can be up to 50 characters long."
+          }
         },
         {
           "name": "RuleTargetType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "动作作用的目标类型，可选的枚举值：\n\n- Table（表）\n- Schema（schema）\n- Database（数据库）",
+            "en": "The type of the target object. Valid values:\n\n- `Table` (table)\n\n- `Schema` (schema)\n\n- `Database` (database)"
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新数据集成同步任务",
+    "en": "UpdateDIJob"
+  },
+  "descriptions": {
+    "zh": "需要购买DataWorks基础版及以上版本才能使用。",
+    "en": "This feature requires DataWorks Basic Edition or higher."
+  },
   "example": {
     "unifiedCli": "aliyun dataworks-public update-di-job --id 11588 --description DI_Job_Demo --table-mappings '[{\"TransformationRules\":[{\"RuleActionType\":\"Rename\",\"RuleTargetType\":\"Table\",\"RuleName\":\"rename_rule_1\"}],\"SourceObjectSelectionRules\":[{\"ObjectType\":\"Table\",\"Action\":\"Include\",\"Expression\":\"mysql_table_1\",\"ExpressionType\":\"Exact\"}]}]' --job-settings '{\"DdlHandlingSettings\":[{\"Action\":\"Critical\",\"Type\":\"AddColumn\"}],\"ColumnDataTypeSettings\":[{\"DestinationDataType\":\"text\",\"SourceDataType\":\"bigint\"}],\"RuntimeSettings\":[{\"Value\":\"1\",\"Name\":\"src.offline.datasource.max.connection\"}],\"ChannelSettings\":\"structInfo_:_MANAGED_,_storageType_:_TEXTFILE_,_writeMode_:_APPEND_,_partitionColumns_:_columnName_:_pt_,_columnType_:_STRING_,_comment_:_,_fieldDelimiter_:\",\"CycleScheduleSettings\":{\"ScheduleParameters\":\"bizdate=_bizdate\"}}' --resource-settings '{\"ScheduleResourceSettings\":{\"ResourceGroupIdentifier\":\"S_res_group_222_333\",\"RequestedCu\":2.0},\"RealtimeResourceSettings\":{\"ResourceGroupIdentifier\":\"S_res_group_111_222\",\"RequestedCu\":2.0},\"OfflineResourceSettings\":{\"ResourceGroupIdentifier\":\"S_res_group_111_222\",\"RequestedCu\":2.0}}' --transformation-rules RuleActionType=Rename RuleExpression=expression_:_srcDatasoureName_srcDatabaseName RuleTargetType=Table RuleName=rename_rule_1 --project-id 10000 --di-job-id 11588 --owner 95279527 --file-spec resourceSettings_:_realtimeResourceSettings_:_requestedCu_:_2,_resourceGroupIdentifier_:_Serverless_res_group_123_456_,_offlineResourceSettings_:_requestedCu_:_2,_resourceGroupIdentifier_:_Serverless_res_group_123_456_,_tableMappings_:_sourceObjectSelectionRules_:_expression_:_autotest_hologres_,_action_:_Include_,_expressionType_:_Exact_,_objectType_:_Datasource_,_expression_:_auto_holo_2661647_,_action_:_Include_,_expressionType_:_Exact_,_objectType_:_Table_,_expression_:_public_,_action_:_Include_,_expressionType_:_Exact_,_objectType_:_Schema_,_transformationRules_:_ruleTargetType_:_Table_,_ruleActionType_:_SourceSchema_,_ruleName_:_SourceSchema_Table_BStf8aXPSCJjOWGe_,_ruleTargetType_:_Schema_,_ruleActionType_:_Rename_,_ruleName_:_Rename_Schema_3qWNOIsljtInvKJy_,_ruleTargetType_:_Table_,_ruleActionType_:_Rename_,_ruleName_:_Rename_Table_o3PVQq1aIKDGoVVW_,_ruleTargetType_:_Table_,_ruleActionType_:_DefineDstTableSettings_,_ruleName_:_DefineDstTableSettings_Table_BhJltOmOCIc81fzi_,_ruleTargetType_:_Table_,_ruleActionType_:_ColumnMapping_,_ruleName_:_ColumnMapping_Table_nP4hJPX1wh2W3fpo_,_sourceDataSourceSettings_:_dataSourceProperties_:_timeZone_:_Asia/Shanghai_,_dataSourceName_:_autotest_hologres_,_jobSettings_:_runtimeSettings_:_,_ddlHandlingSettings_:_,_columnDataTypeSettings_:_,_cycleScheduleSettings_:_,_channelSettings_:_destinationChannelSettings_:_conflictMode_:_replace_,_dynamicColumnAction_:_replay_,_writeMode_:_replay_,_sourceChannelSettings_:_,_destinationDataSourceType_:_Hologres_,_transformationRules_:_ruleTargetType_:_Table_,_ruleName_:_SourceSchema_Table_BStf8aXPSCJjOWGe_,_ruleActionType_:_SourceSchema_,_ruleExpression_:_columns_:_name_:_id_,_category_:_normal_,_type_:_BIGINT_,_name_:_decimal_,_category_:_normal_,_type_:_DECIMAL_,_ruleTargetType_:_Schema_,_ruleName_:_Rename_Schema_3qWNOIsljtInvKJy_,_ruleActionType_:_Rename_,_ruleExpression_:_expression_:_public_,_ruleTargetType_:_Table_,_ruleName_:_Rename_Table_o3PVQq1aIKDGoVVW_,_ruleActionType_:_Rename_,_ruleExpression_:_expression_:_auto_holo_2661647_dst_,_ruleTargetType_:_Table_,_ruleName_:_DefineDstTableSettings_Table_BhJltOmOCIc81fzi_,_ruleActionType_:_DefineDstTableSettings_,_ruleExpression_:_ddlString_:_BEGIN_CREATE_TABLE_IF_NOT_EXISTS_public.auto_holo_2661647_dst_id_BIGINT_PRIMARY_KEY,_decimal_DECIMAL_38,18_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_time_to_live_in_seconds_,_3153600000_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_orientation_,_column_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_binlog.level_,_replica_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_binlog.ttl_,_2592000_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_bitmap_columns_,_text_,_char_,_varchar_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_dictionary_encoding_columns_,_text_:auto,_bytea_:auto,_char_:auto,_varchar_:auto_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_distribution_key_,_id_COMMIT_,_ddlType_:_STRUCT_,_ruleTargetType_:_Table_,_ruleName_:_ColumnMapping_Table_nP4hJPX1wh2W3fpo_,_ruleActionType_:_ColumnMapping_,_ruleExpression_:_columnMapping_:_sourceColName_:_id_,_dstColName_:_id_,_sourceColName_:_decimal_,_dstColName_:_decimal_,_migrationType_:_FullAndRealtimeIncremental_,_destinationDataSourceSettings_:_dataSourceProperties_:_,_dataSourceName_:_autotest_hologres_,_sourceDataSourceType_:_Hologres --api-version 2024-05-18 --region cn-hangzhou",
     "legacyCli": "aliyun dataworks-public UpdateDIJob --region cn-hangzhou --Owner 95279527 --Description DI_Job_Demo --JobSettings '{\"DdlHandlingSettings\":[{\"Action\":\"Critical\",\"Type\":\"AddColumn\"}],\"ColumnDataTypeSettings\":[{\"DestinationDataType\":\"text\",\"SourceDataType\":\"bigint\"}],\"RuntimeSettings\":[{\"Value\":\"1\",\"Name\":\"src.offline.datasource.max.connection\"}],\"ChannelSettings\":\"structInfo_:_MANAGED_,_storageType_:_TEXTFILE_,_writeMode_:_APPEND_,_partitionColumns_:_columnName_:_pt_,_columnType_:_STRING_,_comment_:_,_fieldDelimiter_:\",\"CycleScheduleSettings\":{\"ScheduleParameters\":\"bizdate=_bizdate\"}}' --DIJobId 11588 --TableMappings '[{\"TransformationRules\":[{\"RuleActionType\":\"Rename\",\"RuleTargetType\":\"Table\",\"RuleName\":\"rename_rule_1\"}],\"SourceObjectSelectionRules\":[{\"ObjectType\":\"Table\",\"Action\":\"Include\",\"Expression\":\"mysql_table_1\",\"ExpressionType\":\"Exact\"}]}]' --FileSpec 'resourceSettings_:_realtimeResourceSettings_:_requestedCu_:_2,_resourceGroupIdentifier_:_Serverless_res_group_123_456_,_offlineResourceSettings_:_requestedCu_:_2,_resourceGroupIdentifier_:_Serverless_res_group_123_456_,_tableMappings_:_sourceObjectSelectionRules_:_expression_:_autotest_hologres_,_action_:_Include_,_expressionType_:_Exact_,_objectType_:_Datasource_,_expression_:_auto_holo_2661647_,_action_:_Include_,_expressionType_:_Exact_,_objectType_:_Table_,_expression_:_public_,_action_:_Include_,_expressionType_:_Exact_,_objectType_:_Schema_,_transformationRules_:_ruleTargetType_:_Table_,_ruleActionType_:_SourceSchema_,_ruleName_:_SourceSchema_Table_BStf8aXPSCJjOWGe_,_ruleTargetType_:_Schema_,_ruleActionType_:_Rename_,_ruleName_:_Rename_Schema_3qWNOIsljtInvKJy_,_ruleTargetType_:_Table_,_ruleActionType_:_Rename_,_ruleName_:_Rename_Table_o3PVQq1aIKDGoVVW_,_ruleTargetType_:_Table_,_ruleActionType_:_DefineDstTableSettings_,_ruleName_:_DefineDstTableSettings_Table_BhJltOmOCIc81fzi_,_ruleTargetType_:_Table_,_ruleActionType_:_ColumnMapping_,_ruleName_:_ColumnMapping_Table_nP4hJPX1wh2W3fpo_,_sourceDataSourceSettings_:_dataSourceProperties_:_timeZone_:_Asia/Shanghai_,_dataSourceName_:_autotest_hologres_,_jobSettings_:_runtimeSettings_:_,_ddlHandlingSettings_:_,_columnDataTypeSettings_:_,_cycleScheduleSettings_:_,_channelSettings_:_destinationChannelSettings_:_conflictMode_:_replace_,_dynamicColumnAction_:_replay_,_writeMode_:_replay_,_sourceChannelSettings_:_,_destinationDataSourceType_:_Hologres_,_transformationRules_:_ruleTargetType_:_Table_,_ruleName_:_SourceSchema_Table_BStf8aXPSCJjOWGe_,_ruleActionType_:_SourceSchema_,_ruleExpression_:_columns_:_name_:_id_,_category_:_normal_,_type_:_BIGINT_,_name_:_decimal_,_category_:_normal_,_type_:_DECIMAL_,_ruleTargetType_:_Schema_,_ruleName_:_Rename_Schema_3qWNOIsljtInvKJy_,_ruleActionType_:_Rename_,_ruleExpression_:_expression_:_public_,_ruleTargetType_:_Table_,_ruleName_:_Rename_Table_o3PVQq1aIKDGoVVW_,_ruleActionType_:_Rename_,_ruleExpression_:_expression_:_auto_holo_2661647_dst_,_ruleTargetType_:_Table_,_ruleName_:_DefineDstTableSettings_Table_BhJltOmOCIc81fzi_,_ruleActionType_:_DefineDstTableSettings_,_ruleExpression_:_ddlString_:_BEGIN_CREATE_TABLE_IF_NOT_EXISTS_public.auto_holo_2661647_dst_id_BIGINT_PRIMARY_KEY,_decimal_DECIMAL_38,18_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_time_to_live_in_seconds_,_3153600000_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_orientation_,_column_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_binlog.level_,_replica_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_binlog.ttl_,_2592000_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_bitmap_columns_,_text_,_char_,_varchar_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_dictionary_encoding_columns_,_text_:auto,_bytea_:auto,_char_:auto,_varchar_:auto_CALL_SET_TABLE_PROPERTY_public.auto_holo_2661647_dst_,_distribution_key_,_id_COMMIT_,_ddlType_:_STRUCT_,_ruleTargetType_:_Table_,_ruleName_:_ColumnMapping_Table_nP4hJPX1wh2W3fpo_,_ruleActionType_:_ColumnMapping_,_ruleExpression_:_columnMapping_:_sourceColName_:_id_,_dstColName_:_id_,_sourceColName_:_decimal_,_dstColName_:_decimal_,_migrationType_:_FullAndRealtimeIncremental_,_destinationDataSourceSettings_:_dataSourceProperties_:_,_dataSourceName_:_autotest_hologres_,_sourceDataSourceType_:_Hologres' --ResourceSettings '{\"ScheduleResourceSettings\":{\"ResourceGroupIdentifier\":\"S_res_group_222_333\",\"RequestedCu\":2.0},\"RealtimeResourceSettings\":{\"ResourceGroupIdentifier\":\"S_res_group_111_222\",\"RequestedCu\":2.0},\"OfflineResourceSettings\":{\"ResourceGroupIdentifier\":\"S_res_group_111_222\",\"RequestedCu\":2.0}}' --TransformationRules '[{\"RuleActionType\":\"Rename\",\"RuleExpression\":\"expression_:_srcDatasoureName_srcDatabaseName\",\"RuleTargetType\":\"Table\",\"RuleName\":\"rename_rule_1\"}]' --ProjectId 10000 --Id 11588"

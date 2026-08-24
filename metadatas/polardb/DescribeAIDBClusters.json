@@ -1,5 +1,6 @@
 {
   "name": "DescribeAIDBClusters",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,71 +9,122 @@
       "name": "AiNodeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点类型。支持多个类型搜索，两个值用逗号隔离：\n\n- vnode： K8s纳管\n- container：可登录容器\n- maas: 模型服务",
+        "en": "The node type. To specify multiple types, separate them with a comma. Valid values:\n\n- **vnode**: a node managed by Kubernetes\n\n- **container**: a container that you can log on to\n\n- **maas**: model service"
+      }
     },
     {
       "name": "DBClusterDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群描述，可模糊查询。",
+        "en": "The cluster description. Fuzzy search is supported."
+      }
     },
     {
       "name": "DBClusterIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群ID。多个集群ID间用英文逗号（,）隔开。",
+        "en": "The cluster ID. To specify multiple clusters, separate their IDs with a comma."
+      }
     },
     {
       "name": "DBClusterStatus",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群状态，取值范围如下：\n\n- **Creating**：创建中\n- **Running**：运行中\n- **Deleting**：释放中\n- **Rebooting**：重启中\n- **DBNodeCreating**：正在增加节点\n- **DBNodeDeleting**：正在删除节点\n- **ClassChanging**：正在变更节点规格\n- **NetAddressCreating**：正在创建网络连接\n- **NetAddressDeleting**：正在删除网络连接\n- **NetAddressModifying**：正在修改网络连接 \n- **Deleted**：已释放\n* **ClassChanged**：升降配结束资源回收中",
+        "en": "The cluster status. Valid values:\n\n- **Creating**: The cluster is being created.\n\n- **Running**: The cluster is running.\n\n- **Deleting**: The cluster is being released.\n\n- **Rebooting**: The cluster is restarting.\n\n- **DBNodeCreating**: A node is being added.\n\n- **DBNodeDeleting**: A node is being deleted.\n\n- **ClassChanging**: The node specifications are being changed.\n\n- **NetAddressCreating**: A network connection is being created.\n\n- **NetAddressDeleting**: A network connection is being deleted.\n\n- **NetAddressModifying**: A network connection is being modified.\n\n- **Deleted**: The cluster is released.\n\n* **ClassChanged**: Resources are being reclaimed after the upgrade or downgrade."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码。",
+        "en": "The page number."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值为**30**、**50**或**100**。\n                              \n默认值为**30**。",
+        "en": "The number of entries per page. Valid values: **30**, **50**, and **100**.\n\nDefault value: **30**."
+      }
     },
     {
       "name": "PayType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "付费类型，取值范围如下： \n\n- **Postpaid**：按量付费\n- **Prepaid**：预付费（包年包月）",
+        "en": "The billing method. Valid values:\n\n- **Postpaid**: pay-as-you-go\n\n- **Prepaid**: subscription"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表",
+        "en": "A list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键，可以根据标签过滤集群列表。最多20对标签，各个标签对的数字n必须不同，且必须是从1开始的连续整数。Tag.n.Key对应的值为Tag.n.Value。",
+            "en": "The tag key. Use this parameter with `Tag.n.Value` to filter clusters by tag. You can specify up to 20 tag pairs. The index n must be a unique, consecutive integer starting from 1."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键对应的标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询AI集群列表",
+    "en": "DescribeAIDBClusters"
+  },
   "example": {
     "unifiedCli": "aliyun polardb describe-aidb-clusters --db-cluster-ids pc-000000000000000 --page-size 30 --page-number 1 --db-cluster-description pc-0000000000000000 --db-cluster-status Running --pay-type Prepaid --biz-region-id cn-hangzhou --ai-node-type vnode,container --tag Value=testValueData Key=testKey --region cn-hangzhou",
     "legacyCli": "aliyun polardb DescribeAIDBClusters --region cn-hangzhou --Tag.1.Key testKey --PageSize 30 --DBClusterIds 'pc-000000000000000' --PageNumber 1 --DBClusterStatus Running --AiNodeType 'vnode,container' --Tag.1.Value testValueData --DBClusterDescription 'pc-0000000000000000' --PayType Prepaid --RegionId 'cn-hangzhou'"

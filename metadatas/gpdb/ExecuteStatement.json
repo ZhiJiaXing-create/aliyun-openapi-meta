@@ -1,5 +1,6 @@
 {
   "name": "ExecuteStatement",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,120 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。\n\n> 您可以调用[DescribeDBInstances](~~86911~~)接口查看目标地域下所有的AnalyticDB PostgreSQL实例的详情，包括实例ID。",
+        "en": "The instance ID.\n\n> You can call the [DescribeDBInstances](~~86911~~) operation to query the details of all AnalyticDB for PostgreSQL instances in a region, including instance IDs."
+      }
     },
     {
       "name": "Database",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The database name."
+      }
     },
     {
       "name": "Parameters",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配置参数列表。",
+        "en": "The list of configuration parameters."
+      }
     },
     {
       "name": "RagWorkspaceCollection",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "向量数据集参数。\n> 当WorkspaceId非空时，必须同时传入该参数。",
+        "en": "The vector dataset parameters.\n> If WorkspaceId is not empty, this parameter is required."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例所在地域ID。",
+        "en": "The region ID of the instance."
+      }
     },
     {
       "name": "RunType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "运行类型。可选：\n- synchronous： 同步\n- asynchronous：异步，暂时不支持。",
+        "en": "The run type. Valid values:\n- synchronous: synchronous execution.\n- asynchronous: asynchronous execution. Currently not supported."
+      }
     },
     {
       "name": "SecretArn",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "访问凭证。通过CreateSecret接口创建。\n\n> 通过子账号访问此接口时，需要有对此SecretArn的UseSecret或GetSecretValue的权限。",
+        "en": "The access credential. Created by calling the CreateSecret operation.\n\n> When you access this operation by using a RAM user, you must have the UseSecret or GetSecretValue permission on this SecretArn."
+      }
     },
     {
       "name": "Sql",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要执行的SQL语句。",
+        "en": "The SQL statement to execute."
+      }
     },
     {
       "name": "Sqls",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "多条SQL。",
+        "en": "The list of multiple SQL statements."
+      }
     },
     {
       "name": "StatementName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行语句名称。当RunType为asynchronous时生效。",
+        "en": "The name of the execution statement. This parameter takes effect only when RunType is set to asynchronous."
+      }
     },
     {
       "name": "WorkspaceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "多数据库实例组成的Workspace的Id。此参数和DBInstanceId参数不能同时为空，当和DBInstanceId同时指定时以此参数为准。",
+        "en": "The ID of the workspace that consists of multiple database instances. This parameter and DBInstanceId cannot both be empty. If both this parameter and DBInstanceId are specified, this parameter takes precedence."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "执行SQL语句",
+    "en": "Execute an SQL statement"
+  },
   "example": {
     "unifiedCli": "aliyun gpdb execute-statement --db-instance-id gp-xxxxxxxxx --workspace-id gp-ws-00000 --rag-workspace-collection Collection=mycollection Namespace=mynamespace --biz-region-id cn-hangzhou --secret-arn acs:gpdb:cn-beijing:103300:secret/testsecret-eG2AQGRIwQ0zFp4VA7mYL3uiCXTfDQbQ --database adbtest --run-type synchronous --statement-name test --sql select_0_from_table1 --sqls set_idle_in_transaction_session_timeout_=_300000 --parameters myvalue --region cn-hangzhou",
     "legacyCli": "aliyun gpdb ExecuteStatement --region cn-hangzhou --SecretArn 'acs:gpdb:cn-beijing:103300:secret/testsecret-eG2AQGRIwQ0zFp4VA7mYL3uiCXTfDQbQ' --StatementName test --Sqls '[\"set_idle_in_transaction_session_timeout_=_300000\"]' --Parameters '[\"myvalue\"]' --DBInstanceId 'gp-xxxxxxxxx' --WorkspaceId 'gp-ws-00000' --Database adbtest --RunType synchronous --RagWorkspaceCollection '{\"Collection\":\"mycollection\",\"Namespace\":\"mynamespace\"}' --RegionId 'cn-hangzhou' --Sql select_0_from_table1"

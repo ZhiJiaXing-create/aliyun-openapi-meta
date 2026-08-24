@@ -1,5 +1,6 @@
 {
   "name": "RenewInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,113 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动付费。取值：\n\n* **true**：自动付费，默认值。\n* **false**：手动付费。\n\n<props=\"china\">选择为手动付费时，您需要在控制台的顶部菜单栏，单击**费用** > **续费管理**，然后单击左侧导航栏的**订单管理** > **我的订单**，找到目标订单进行支付。</props>\n\n<props=\"intl\">选择为手动付费时，您需要在控制台的顶部菜单栏，单击**费用** > **续费管理**，然后单击左侧导航栏的**订单管理**，找到目标订单进行支付。</props>\n\n\n\n<props=\"partner\">选择为手动付费时，您需要在控制台的顶部菜单栏，单击**费用** > **续费管理**，然后单击左侧导航栏的**订单管理**，找到目标订单进行支付。</props>",
+        "en": "Specifies whether to enable automatic payment. Default value: true. Valid values:\n\n*   **true**: enables automatic payment.\n*   **false**: disables automatic payment.\n\nIf you select false, you must choose **Expenses** > **Renewal Management** in the top navigation bar. In the left-side navigation pane, click **Orders**. Find the specified order and pay for it."
+      }
     },
     {
       "name": "AutoRenew",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启自动续费，取值：\n* **true**：开启，按以选择的续费时长进行续费，例如您选择续费时长为3个月，那么每次自动续费时会缴纳3个月的费用。\n* **false**（默认）：不开启。",
+        "en": "Specifies whether to enable auto-renewal for the instance. Valid values:\n\n*   **true**: enables auto-renewal. The instance is renewed based on the specified renewal duration. For example, if you set the renewal duration to three months, you are charged for three months of service each time the instance is automatically renewed.\n*   **false** (default): disables auto-renewal."
+      }
     },
     {
       "name": "BusinessInfo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "活动ID、业务信息。",
+        "en": "The ID of the promotional event or business information."
+      }
     },
     {
       "name": "Capacity",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "续费不允许变更存储容量，该参数已经弃用，默认按当前规格下订单续费。",
+        "en": "The storage capacity of the instance. Unit: MB. When you renew the instance, you can specify this parameter to change specifications of the instance.\n\n> To change the specifications when you renew the instance, you must specify at least one of the `Capacity` and `InstanceClass` parameters."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性。由客户端生成该参数值，要保证在不同请求间唯一，大小写敏感、不超过64个ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must make sure that it is unique among different requests. The token is case-sensitive. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "CouponNo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "优惠码，默认值为：`youhuiquan_promotion_option_id_for_blank`。",
+        "en": "The coupon code. Default value: `youhuiquan_promotion_option_id_for_blank`."
+      }
     },
     {
       "name": "FromApp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于备注请求来源，默认值为**OpenAPI**，无需手动设置。",
+        "en": "The source of the request. The default value is **OpenAPI** and cannot be changed."
+      }
     },
     {
       "name": "InstanceClass",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "续费不允许变更规格，该参数已经弃用，默认按当前规格下订单续费。",
+        "en": "The instance type code. For more information, see [Instance specifications overview](~~26350~~). When you renew the instance, you can specify this parameter to change specifications of the instance.\n\n> To change the specifications when you renew the instance, you must specify at least one of the `Capacity` and `InstanceClass` parameters."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The ID of the instance."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "续费的周期，单位为月，取值：**1**~**9**、**12**、**24**、**36**。\n>例如实例还有3个月到期，本次续费3个月，则本次续费后，实例还剩余6个月到期。",
+        "en": "The renewal period. Valid values: **1**, 2, 3, 4, 5, 6, 7, 8, **9**, **12**, **24**, and **36**. Unit: months."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "手动续费",
+    "en": "RenewInstance"
+  },
+  "descriptions": {
+    "en": "This operation is applicable only to subscription instances."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore renew-instance --instance-id r-bp1zxszhcgatnx0000 --capacity - --instance-class - --period 6 --auto-pay true --from-app OpenAPI --business-info 000000000 --coupon-no youhuiquan_promotion_option_id_for_blank --client-token 0.6823317918435086 --auto-renew false --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore RenewInstance --region cn-hangzhou --CouponNo youhuiquan_promotion_option_id_for_blank --BusinessInfo 000000000 --InstanceId 'r-bp1zxszhcgatnx0000' --Capacity '-' --AutoRenew false --Period 6 --InstanceClass '-' --AutoPay true --FromApp OpenAPI --ClientToken '0.6823317918435086'"

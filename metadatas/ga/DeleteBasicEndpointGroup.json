@@ -1,5 +1,6 @@
 {
   "name": "DeleteBasicEndpointGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组ID。",
+        "en": "The ID of the endpoint group that is associated with the basic GA instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除基础型全球加速实例的终端节点组",
+    "en": "DeleteBasicEndpointGroup"
+  },
+  "descriptions": {
+    "zh": "删除终端节点组前，请注意：\n\n- 存在终端节点与加速IP绑定关系时，不支持删除终端节点组。您可以调用[DeleteBasicAccelerateIpEndpointRelation](~~2253413~~)解除加速IP与终端节点的绑定关系。\n- 当所有终端节点不再存在与加速IP的绑定关系时，可直接删除终端节点组，系统将同时删除该终端节点组下所有终端节点。\n- **DeleteBasicEndpointGroup**接口属于异步接口，即系统会先返回一个请求ID，但基础型全球加速实例的终端节点组并未删除完成，系统后台的删除任务仍在进行。您可以调用[GetBasicEndpointGroup](~~362984~~)查询该终端节点组的状态：\n    - 当终端节点组处于**deleting**状态时，表示终端节点组正在删除中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当查询不到该终端节点组时，表示终端节点组删除完成。\n- **DeleteBasicEndpointGroup**接口不支持在同一个基础型全球加速实例内并发删除终端节点组。",
+    "en": "Before you delete an endpoint group, take note of the following items:\n\n*   If an endpoint in the endpoint group is associated with an accelerated IP address, you cannot delete the endpoint group. You can call the [DeleteBasicAccelerateIpEndpointRelation](~~2253413~~) operation to disassociate the endpoint from the accelerated IP address.\n\n*   If no endpoint in the endpoint group is associated with an accelerated IP address, you can delete the endpoint group. When you delete an endpoint group, all endpoints in the endpoint group are deleted.\n\n*   **DeleteBasicEndpointGroup** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetBasicEndpointGroup](~~362984~~) operation to query the status of the task.\n\n    *   If the endpoint group is in the **deleting** state, the endpoint group is being deleted. In this case, you can perform only query operations.\n    *   If the endpoint group cannot be queried, the endpoint group is deleted.\n\n*   The **DeleteBasicEndpointGroup** operation cannot be repeatedly called for the same GA instance within a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga delete-basic-endpoint-group --client-token 123e4567-e89b-12d3-a456-426655440000 --endpoint-group-id epg-bp1dmlohjjz4kqaun0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga DeleteBasicEndpointGroup --region cn-hangzhou --EndpointGroupId 'epg-bp1dmlohjjz4kqaun0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

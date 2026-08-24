@@ -1,5 +1,6 @@
 {
   "name": "DescribeLiveDetectPornData",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "App",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播流所属应用名称。",
+        "en": "The name of the application to which the stream belongs."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的主播流域名。\n- 支持单个或批量域名查询。批量查询时多个域名用英文逗号（,）分隔。\n\n- 若参数为空，默认返回所有直播域名合并后的数据。",
+        "en": "The streaming domain to query.\n\n- You can query one or more domain names. To query multiple domain names, separate them with commas (,).\n\n- If you do not specify this parameter, the service returns the merged data for all streaming domains."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结束时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。",
+        "en": "The end of the time range to query. Specify the time in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC."
+      }
     },
     {
       "name": "Fee",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户每天拥有免费的图片扫描额度。取值：\n\n- **free**\n- **charge**",
+        "en": "You have a daily free quota for image scans. Valid values:\n\n- **free**\n\n- **charge**"
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "域名所属地域。",
+        "en": "The region where the domain name is located."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "Scene",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "检测场景。取值：\n\n- **porn**（默认值）：鉴黄。\n- **terrorism**：暴恐涉政。\n- **ad**：图文违规。\n- **live**：不良直播场景。\n- **logo**：logo检测。",
+        "en": "The detection scenario. Valid values:\n\n- **porn** (default): pornography detection.\n\n- **terrorism**: terrorism and political content detection.\n\n- **ad**: ad and text violation detection.\n\n- **live**: undesirable live streaming scenario detection.\n\n- **logo**: logo detection."
+      }
     },
     {
       "name": "SplitBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分组字段列表。多个字段用英文逗号（,）分隔。\n\n> 当**SplitBy**为空时，仅返回**TimeStamp**和**Count**。",
+        "en": "The list of grouping fields. Separate multiple fields with commas (,).\n\n> If you leave this parameter empty, the service returns only TimeStamp and Count."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "起始时间。格式为：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n> - 最多可获取最近90天的数据。\n- 最小数据粒度为5分钟，取值为空则默认获取最近24小时数据。",
+        "en": "The start of the time range to query. Specify the time in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n> - You can query data from the last 90 days.\n\n- The minimum data granularity is 5 minutes. If you leave this parameter empty, the service queries data from the last 24 hours by default."
+      }
     },
     {
       "name": "Stream",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播流名称。",
+        "en": "The stream name."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询直播审核用量数据",
+    "en": "DescribeLiveDetectPornData"
+  },
+  "descriptions": {
+    "zh": "- 最小数据粒度为5分钟，若`StartTime`取值为空则默认获取最近24小时数据。\n\n- 最多可获取最近90天的数据。\n\n- 可以用来查询每个时间间隔的网络带宽数据。\n\n## QPS限制\n本接口的单用户QPS限制为10次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- The minimum data granularity is 5 minutes. If the `StartTime` parameter is empty, the service queries data from the last 24 hours by default.\n\n- You can query data from the last 90 days.\n\n- You can query network bandwidth data for each time interval.\n\n## QPS limits\n\nThe queries per second (QPS) limit for a single user is 10. If you exceed this limit, API calls are throttled. This may affect your business. Plan your calls accordingly."
+  },
   "example": {
     "unifiedCli": "aliyun live describe-live-detect-porn-data --biz-region-id cn-hangzhou --domain-name example.com --start-time 2017-12-10T08:00:00Z --end-time 2017-12-10T09:00:00Z --app liveApp0000 --stream liveStream0000 --fee free --scene porn --biz-region cn-shanghai --split-by liveApp0000,liveStream0000 --region cn-hangzhou",
     "legacyCli": "aliyun live DescribeLiveDetectPornData --region cn-hangzhou --App liveApp0000 --EndTime '2017-12-10T09:00:00Z' --DomainName 'example.com' --SplitBy 'liveApp0000,liveStream0000' --Fee free --StartTime '2017-12-10T08:00:00Z' --Region 'cn-shanghai' --Stream liveStream0000 --RegionId 'cn-hangzhou' --Scene porn"

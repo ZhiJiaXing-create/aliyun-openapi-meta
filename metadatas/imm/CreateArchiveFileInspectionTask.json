@@ -1,5 +1,6 @@
 {
   "name": "CreateArchiveFileInspectionTask",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "CredentialConfig",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "**如无特殊需求，请保持留空即可。**\n\n链式授权配置，非必填。更多信息，请参见[使用链式授权访问其他实体资源](~~465340~~)。",
+        "en": "**Leave this parameter empty if you do not have special requirements.**\n\nThe configuration for chained authorization. This parameter is not required. For more information, see [Use chained authorization to access resources of other entities](~~465340~~)."
+      }
     },
     {
       "name": "Notification",
       "position": "Query",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "消息通知配置，详细内容请单击Notification查看，异步通知消息格式请参见[异步通知消息格式](~~2743997~~)。\n\n>  智能媒体管理目前接口调用回调不支持指定回调地址，建议您使用MNS。\n>",
+        "en": "The notification configuration. For more information, see Notification. For the format of asynchronous notification messages, see [Asynchronous notification message format](~~2743997~~).\n\n> Currently, API callbacks in IMM do not support custom webhook addresses. Use MNS instead."
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "文件压缩密码。文件压缩时如果加密压缩时，查看压缩包内信息需要提供压缩密码。",
+        "en": "The password of the compressed file. If the file is encrypted, provide the password to inspect its contents."
+      }
     },
     {
       "name": "ProjectName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "项目名称，获取方式请参见[创建项目](~~478153~~)。",
+        "en": "The project name. For more information, see [Create a project](~~478153~~)."
+      }
     },
     {
       "name": "SourceURI",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "压缩文件存放的位置。\n\nOSS地址规则为oss://${Bucket}/${Object}，其中`${Bucket}`为和当前项目处于同一区域(Region)的OSS Bucket名称，`${Object}`为包含文件扩展名的文件完整路径。",
+        "en": "The location of the compressed file.\n\nThe Object Storage Service (OSS) URI must be in the oss\\://${Bucket}/${Object} format. In this format, `${Bucket}` is the name of the OSS bucket that is in the same region as the current project, and `${Object}` is the full path of the file, including the file name extension."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义信息，在异步消息通知中会为您返回，方便您系统内对消息通知进行关联处理。最大长度为2048字节。",
+        "en": "Custom information that is returned in the asynchronous notification message. You can use this information to associate the notification message with your services. The maximum length is 2,048 bytes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建压缩包预览解析任务",
+    "en": "CreateArchiveFileInspectionTask"
+  },
+  "descriptions": {
+    "zh": "> 接口公测中，如有任何使用问题，请加入钉钉群进行反馈，钉钉群号请参见[联系我们](~~84454~~)。\n* **请确保在使用该接口前，已充分了解智能媒体管理产品的收费方式和[价格](~~477042~~)**。\n><notice>异步任务不保证时效。></notice>\n* 文件数量限制：最多支持包含8万个文件的压缩包。\n\n* 文件大小限制：zip和rar格式最多支持200 GB，7z格式最多支持50 GB。\n\n*  该接口为异步接口，获取任务开始执行后，任务信息只保存7天，超过7天则无法再获取。调用[GetTask](~~478241~~)或[ListTasks](~~478242~~)接口获取返回的`TaskId`，查看任务信息。也可以通过设置[Notification](~~2743997~~)消息通知参数，通过消息通知获取任务信息。",
+    "en": "> This API is in public preview. If you have any questions, join the DingTalk group to provide feedback. For the DingTalk group number, see [Contact us](~~84454~~).\n\n- **Before using this API, make sure you understand the billing methods and [pricing](~~477042~~) of Intelligent Media Management (IMM)**.\n  ><notice>The completion time of asynchronous tasks is not guaranteed.></notice>\n\n- File count limit: A compressed file can contain a maximum of 80,000 files.\n\n- File size limit: The maximum size is 200 GB for ZIP and RAR files, and 50 GB for 7z files.\n\n- This is an asynchronous API. Task information is saved for 7 days after a task starts and is then deleted. To view the task information, call the [GetTask](~~478241~~) or [ListTasks](~~478242~~) operation with the returned `TaskId`. You can also set the [Notification](~~2743997~~) parameter to receive task information through notification messages."
+  },
   "example": {
     "unifiedCli": "aliyun imm create-archive-file-inspection-task --project-name test-project --credential-config example-string --password 123456 --user-data test-data --source-uri oss://bucket/test-object.zip --notification example-string --api-version 2020-09-30 --region cn-hangzhou",
     "legacyCli": "aliyun imm CreateArchiveFileInspectionTask --region cn-hangzhou --ProjectName 'test-project' --CredentialConfig 'example-string' --UserData 'test-data' --SourceURI 'oss://bucket/test-object.zip' --Notification 'example-string' --Password 123456"

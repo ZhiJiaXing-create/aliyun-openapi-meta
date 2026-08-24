@@ -1,5 +1,6 @@
 {
   "name": "CreateHostAccount",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,69 +9,120 @@
       "name": "HostAccountName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定新建主机账户的名称，最长支持128字符。",
+        "en": "The name of the new host account. The name can be up to 128 characters long."
+      }
     },
     {
       "name": "HostId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定要创建主机账户的主机ID。\n\n> 可通过调用[ListHosts](~~200665~~)接口获取该参数。",
+        "en": "The ID of the host for which you want to create a host account.\n\n> Call the [ListHosts](~~200665~~) operation to obtain the host ID."
+      }
     },
     {
       "name": "HostShareKeyId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "主机共享密钥ID。",
+        "en": "The ID of the shared key for the host."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定要创建主机账户的主机所在堡垒机的实例ID。\n> 可通过调用[DescribeInstances](~~153281~~)接口获取堡垒机实例ID。",
+        "en": "The ID of the Bastionhost instance where you want to create the host account.\n\n> Call the [DescribeInstances](~~153281~~) operation to obtain the instance ID."
+      }
     },
     {
       "name": "PassPhrase",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "定新建主机账户的私钥口令。\n\n> 主机账户协议ProtocolName为SSH时，您可以配置该参数。ProtocolName为RDP时，无需配置该参数。",
+        "en": "The passphrase for the private key of the new host account.\n\n> You can set this parameter only when ProtocolName is set to SSH. You do not need to set this parameter if ProtocolName is set to RDP."
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定新建主机账户的密码。",
+        "en": "The password of the new host account."
+      }
     },
     {
       "name": "PrivateKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定新建主机账户的私钥，即使用Base64编码后的字符串。\n\n> 主机账户协议ProtocolName为SSH时，该参数生效。ProtocolName为RDP时，无需配置该参数。支持同时为主机账户配置密码和私钥。在连接资产时，堡垒机会优先使用私钥进行连接。",
+        "en": "The private key of the new host account. The value is a Base64-encoded string.\n\n> This parameter is used only when ProtocolName is set to SSH. You do not need to set this parameter if ProtocolName is set to RDP. You can set both a password and a private key for the host account. When connecting to the asset, Bastionhost prioritizes the private key for the connection."
+      }
     },
     {
       "name": "PrivilegeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账户权限类型，不填时默认为Normal\n- **Privileged**：特权账户\n- **Normal**：普通账户\n>仅支持V3.2.47及以上的版本使用。",
+        "en": "The permission type of the account. If you do not set this parameter, the default value is Normal.\n\n- **Privileged**: privileged account\n\n- **Normal**: normal account\n\n> This parameter is supported only in Bastionhost V3.2.47 and later."
+      }
     },
     {
       "name": "ProtocolName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定新建主机账户的协议名称。\n<br>取值：\n- SSH\n- RDP",
+        "en": "The protocol of the new host account. <br>Valid values:<br>\n\n- SSH\n\n- RDP"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定要创建主机账户的主机所在堡垒机的地域ID。\n\n> 地域ID和地域名称的对应关系，请参见[地域和可用区](~~40654~~)。",
+        "en": "The region ID of the Bastionhost instance where you want to create the host account.\n\n> For more information about the mapping between region IDs and region names, see [Regions and zones](~~40654~~)."
+      }
     },
     {
       "name": "RotationMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账户改密模式，不填时默认为Self\n- **Privileged**：使用特权账户改密\n- **Self**：不使用特权账户改密\n>仅支持V3.2.47及以上的版本使用。",
+        "en": "The password change mode for the account. If you do not set this parameter, the default value is Self.\n\n- **Privileged**: Use a privileged account to change the password.\n\n- **Self**: Do not use a privileged account to change the password.\n\n> This parameter is supported only in Bastionhost V3.2.47 and later."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为指定主机创建主机账户",
+    "en": "CreateHostAccount"
+  },
   "example": {
     "unifiedCli": "aliyun yundun-bastionhost create-host-account --instance-id bastionhost-cn-st220aw0000 --biz-region-id cn-hangzhou --host-id 1 --protocol-name SSH --host-account-name accountname --password 123456 --biz-private-key LS0tLS1000000RCBSU0tLQ== --pass-phrase 123456 --host-share-key-id 1 --privilege-type Normal --rotation-mode Self --region cn-hangzhou",
     "legacyCli": "aliyun yundun-bastionhost CreateHostAccount --region cn-hangzhou --ProtocolName SSH --HostAccountName accountname --PrivateKey 'LS0tLS1000000RCBSU0tLQ==' --InstanceId 'bastionhost-cn-st220aw0000' --RotationMode Self --RegionId 'cn-hangzhou' --HostId 1 --PassPhrase 123456 --HostShareKeyId 1 --PrivilegeType Normal --Password 123456"

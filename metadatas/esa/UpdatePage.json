@@ -1,5 +1,6 @@
 {
   "name": "UpdatePage",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,70 @@
       "name": "Content",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "BASE64 编码后的页面内容，与 `ContentType` 保持一致。\n\n**编码方式**：\n1. 页面原文→ UTF-8 字节串\n2. 字节串→ 标准 BASE64 编码\n\n**示例**：`<html>hello page</html>` → `PGh0bWw+aGVsbG8gcGFnZTwvaHRtbD4=`\n\n> 完整大小上限以服务端自定义页面规范为准；不传时保持原页面内容。",
+        "en": "The BASE64-encoded page content, which must be consistent with `ContentType`.\n\n**Encoding method**:\n1. Convert the original page content to a UTF-8 byte string.\n2. Encode the byte string using standard BASE64 encoding.\n\n**Example**: `<html>hello page</html>` → `PGh0bWw+aGVsbG8gcGFnZTwvaHRtbD4=`\n\n> The maximum size limit is subject to the server-side custom page specification. If this parameter is not specified, the original page content is retained."
+      }
     },
     {
       "name": "ContentType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "页面内容的 MIME 类型，作为命中后返回客户端的 HTTP `Content-Type` 响应头。\n\n**常用取值**：\n- `text/html`：HTML 页面\n- `application/json`：JSON 响应\n\n> 完整支持取值以服务端为准；`Content` 的实际格式需与本字段匹配，不匹配可能导致浏览器渲染异常。",
+        "en": "The MIME type of the page content, which is returned to the client as the HTTP `Content-Type` response header when a rule is matched.\n\n**Common values**:\n- `text/html`: HTML page\n- `application/json`: JSON response\n\n> The complete set of supported values is subject to the server-side specification. The actual format of `Content` must match this field. A mismatch may cause browser rendering issues."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "页面描述信息（更新后），用于控制台列表中识别页面用途。为可选字段，不传时保持原描述不变。字段长度上限以服务端为准。",
+        "en": "The description of the page after the update. This is used to identify the purpose of the page in the console list. This is an optional field. If this parameter is not specified, the original description is retained. The maximum field length is subject to the server-side limit."
+      }
     },
     {
       "name": "Id",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自定义响应页面的ID，可通过调用[ListPages](~~2850223~~)接口获取。",
+        "en": "The ID of the custom response page. You can obtain this value by calling the [ListPages](~~2850223~~) operation."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "自定义响应页面的名称（更新后）。\n\n**命名建议**：字母/数字 + 下划线组合（如 `blocked_page_v2`），便于在规则中引用。字符集、长度上限、唯一性以服务端自定义页面命名规范为准；不传保持原名称。",
+        "en": "The name of the custom response page after the update.\n\n**Naming suggestion**: Use a combination of letters, digits, and underscores (such as `blocked_page_v2`) for easy reference in rules. The character set, maximum length, and uniqueness constraints are subject to the server-side naming conventions for custom pages. If this parameter is not specified, the original name is retained."
+      }
+    },
+    {
+      "name": "SiteIds",
+      "position": "Body",
+      "type": "Json",
+      "required": false,
+      "description": {
+        "zh": "绑定本页面的站点 ID 列表（更新后），使用全量覆盖语义。\n\n- 可通过 `ListSites` 获取站点 ID。\n- 传空列表 → 解除所有站点绑定。\n- 包含非本账号下站点 ID 会报 `InvalidParameter` 错误。",
+        "en": "The list of site IDs associated with this page after the update. This parameter uses full overwrite semantics.\n\n- You can obtain site IDs by calling the `ListSites` operation.\n- Passing an empty list dissociates all sites from the page.\n- Including a site ID that does not belong to your account returns an `InvalidParameter` error."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新自定义响应页面",
+    "en": "Update a custom response page"
+  },
   "example": {
     "unifiedCli": "aliyun esa update-page --id 50000001 --name example --description a_custom_deny_page --content-type text/html --content PGh0bWw+aGVsbG8gcGFnZTwvaHRtbD4= --site-ids 1 --region cn-hangzhou",
     "legacyCli": "aliyun esa UpdatePage --region cn-hangzhou --SiteIds '[1]' --Description a_custom_deny_page --ContentType 'text/html' --Content 'PGh0bWw+aGVsbG8gcGFnZTwvaHRtbD4=' --Id 50000001 --Name example"

@@ -1,5 +1,6 @@
 {
   "name": "CreateDBInstanceEndpoint",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该参数用于保证请求的幂等性，防止重复提交请求。参数值由客户端生成，保证在不同请求间唯一。\n\n该参数值由ASCII字符组成，最长不超过64个字符，不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "ConnectionStringPrefix",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "内网连接地址前缀。\n\n创建Endpoint的同时会自动创建一个内网连接地址，该参数表示内网连接地址的前缀。",
+        "en": "The prefix of the internal endpoint.\n\nWhen you create any type of endpoint, an internal endpoint is automatically created for the endpoint. This parameter specifies the prefix of the internal endpoint."
+      }
     },
     {
       "name": "DBInstanceEndpointDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义的Endpoint描述。",
+        "en": "The user-defined description of the endpoint."
+      }
     },
     {
       "name": "DBInstanceEndpointType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Endpoint类型，取值含义如下：\n\n- Primary：实例的读写Endpoint\n\n- Readonly：实例的只读Endpoint",
+        "en": "The endpoint type. Valid values:\n\n*   Primary: read/write endpoint of the instance\n*   Readonly: read-only endpoint of the instance"
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances查询。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "NodeItems",
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "Endpoint节点相关信息列表。",
+        "en": "The information about the endpoint."
+      },
       "sub_parameters": [
         {
           "name": "DBInstanceId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "实例ID。可调用DescribeDBInstances查询。",
+            "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+          }
         },
         {
           "name": "NodeId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "节点ID。",
+            "en": "The node ID."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点当前权重取值，按照该取值分配读流量。\n\n取值范围：0～100",
+            "en": "The weight of the node. Read requests are distributed based on the weight.\n\nValid values: 0 to 100."
+          }
         }
       ]
     },
@@ -64,33 +101,64 @@
       "name": "Port",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "内网连接端口号。创建内网连接支持自定义端口号。\n\n取值范围：3000～5999",
+        "en": "The port number of the internal endpoint. You can specify the port number for the internal endpoint.\n\nValid values: 3000 to 5999."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "内网连接的IP地址。",
+        "en": "The IP address of the internal endpoint."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。可调用DescribeDBInstanceAttribute获取。",
+        "en": "The resource group ID. You can call the DescribeDBInstanceAttribute operation to obtain the ID of the resource group."
+      }
     },
     {
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "内网连接的交换机ID。",
+        "en": "The vSwitch ID of the internal endpoint."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "内网连接的VPC ID。",
+        "en": "The VPC ID of the internal endpoint."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建实例的Endpoint",
+    "en": "CreateDBInstanceEndpoint"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n<props=\"china\">\n\n- RDS MySQL\n- RDS PostgreSQL\n\n</props>\n\n<props=\"intl\">RDS MySQL</props>\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n<props=\"china\">\n\n- RDS MySQL：[增加集群只读地址](~~464132~~)\n- RDS PostgreSQL：[增加集群只读地址](~~96788~~)\n\n</props>\n\n<props=\"intl\">\n\n[增加集群只读地址](~~464132~~)\n</props>",
+    "en": "### [](#)Supported database engines\n\nMySQL\n\n### [](#)References\n\n> Before you call this operation, carefully read the following documentation. Make sure that you fully understand the prerequisites and impacts for calling this operation.\n\n[Create a read-only endpoint for a cluster](~~464132~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds create-db-instance-endpoint --client-token 6000170000591aed949d0f0000 --db-instance-id rm-0000 --vpc-id vpc-xxxmmxjqqi0000 --vswitch-id vsw-bp1kqp0000 --private-ip-address 172.16.XX.XX --connection-string-prefix rm-0000-ro --port 3306 --db-instance-endpoint-type Readonly --db-instance-endpoint-description for_readonly_business --node-items DBInstanceId=rm-0000 NodeId=rn-xxxx-0000 Weight=50 --resource-group-id rg-acfmy0000 --region cn-hangzhou",
     "legacyCli": "aliyun rds CreateDBInstanceEndpoint --region cn-hangzhou --NodeItems '[{\"DBInstanceId\":\"rm-0000\",\"NodeId\":\"rn-xxxx-0000\",\"Weight\":50}]' --PrivateIpAddress '172.16.XX.XX' --VpcId 'vpc-xxxmmxjqqi0000' --ResourceGroupId 'rg-acfmy0000' --DBInstanceId 'rm-0000' --DBInstanceEndpointDescription for_readonly_business --VSwitchId 'vsw-bp1kqp0000' --Port 3306 --ClientToken 6000170000591aed949d0f0000 --ConnectionStringPrefix 'rm-0000-ro' --DBInstanceEndpointType Readonly"

@@ -1,5 +1,6 @@
 {
   "name": "UploadStreamByURL",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "Definition",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "视频流清晰度。\n\n取值，详情请参考:  [媒资参数说明-清晰度](~~124671~~)。",
+        "en": "The quality of the video stream.\n\nFor more information about valid values of this parameter, see [Parameters for media assets](~~124671~~)."
+      }
     },
     {
       "name": "FileExtension",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码流文件扩展名。\n\n\n扩展名请参见[概述](~~55396~~)中的音频和视频的支持文件格式。\n\n\n当该参数不为空时，会覆盖StreamURL地址中的文件扩展名。\n\n><notice>若StreamURL地址中不含文件扩展名，该参数必填。></notice>",
+        "en": "The file name extension of the transcoded stream.\n\nFor more information, see the Supported media file formats section in [Overview](~~55396~~).\n\nIf you set a value for this parameter, the file name extension specified in StreamURL is overwritten.\n\n>  This parameter is required if you do not specify a file name extension in StreamURL."
+      }
     },
     {
       "name": "HDRType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转码流HDR类型。取值：\n- HDR\n- HDR10\n- HLG\n- DolbyVision\n- HDRVivid\n- SDR+\n> - 大小写不敏感。\n> - 非HDR视频该参数为空即可。",
+        "en": "The HDR type of the transcoded stream. Valid values:\n\n*   HDR\n*   HDR10\n*   HLG\n*   DolbyVision\n*   HDRVivid\n*   SDR+\n\n> \n\n*   The HDR type of the transcoded stream is not case-sensitive.\n\n*   You can leave this parameter empty for non-HDR streams."
+      }
     },
     {
       "name": "MediaId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转码流对应的点播媒资ID。",
+        "en": "The media ID in ApsaraVideo VOD."
+      }
     },
     {
       "name": "StreamURL",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转码流文件URL。\n\n如果转码流的URL需要鉴权，需要在StreamURL中传入鉴权参数，并确保该URL可以通过公网访问。\n>URL可以通过控制台获取音视频的地址；也可以通过getplayinfo接口调用来获取音视频地址。",
+        "en": "The URL of the transcoded stream.\n\nIf URL authentication is required, you must pass authentication information in this parameter and make sure that the URL can be accessed over the Internet."
+      }
     },
     {
       "name": "UploadMetadata",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "上传媒体文件的元数据信息，为JSON字符串。\n- 更多信息，请参见下表**UploadMetadata**。",
+        "en": "Metadata information for uploading media files, in JSON string format.\n\nFor more information, please refer to the table below for UploadMetadata."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义参数。详情参见[UserData](~~86952~~)。\n> 此参数中消息回调的使用前提是需要在控制台配置HTTP回调地址和勾选对应的回调事件类型才能使用，否则回调设置不生效。控制台配置HTTP回调的操作，请参考[回调设置](~~86071~~)。",
+        "en": "The user-defined parameter. For more information, see the \"UserData: specifies the custom configurations for media upload\" section of the [Request parameters](~~86952~~) topic.\n\n>  The callback configurations you specify for this parameter take effect only after you specify the HTTP callback URL and select specific callback events in the ApsaraVideo VOD console. For more information about how to configure HTTP callback settings in the ApsaraVideo VOD console, see [Configure callback settings](~~86071~~)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通过URL上传转码流",
+    "en": "UploadStreamByURL"
+  },
+  "descriptions": {
+    "zh": "- **请确保在使用该接口前，已充分了解视频点播产品的收费方式和价格。媒资文件上传到视频点播中会产生存储费用，计费详情，请参见[媒资存储计费](~~188308#section_e97_xrp_mzz~~)。如果您已开通了存储传输加速，则上传媒资文件到视频点播时还将涉及上传加速费用，计费详情请参见[存储传输加速计费](~~188310#section_sta_zm2_tsv~~)。**\n- 该接口目前仅支持**上海**和**新加坡**地域使用。\n- 调用本接口上传外部存储的转码流文件并挂载到对应的点播媒资下。本接口支持的转码流HDR类型为HDR、HDR10、HLG、DolbyVision、HDRVivid和SDR+类型。\n- 您可以通过[获取URL上传信息](~~106830~~)接口来查询上传状态，上传完成后会收到[URL上传转码流完成](~~376427~~)的事件通知。",
+    "en": "*   **Make sure that you understand the billing method and price of ApsaraVideo VOD before you call this operation. You are charged storage fees after you upload media files to ApsaraVideo VOD. For more information, see [Billing of media asset storage](~~188308#section_e97\\_xrp_mzz~~). If you have activated the acceleration service, you are charged acceleration fees when you upload media files to ApsaraVideo VOD. For more information, see [Billing of acceleration traffic](~~188310#section_sta_zm2\\_tsv~~).**\n*   This operation is available only in the **China (Shanghai)** and **Singapore** regions.\n*   You can call this operation to upload transcoded streams to ApsaraVideo VOD from external storage. The following HDR types of transcoded streams are supported: HDR, HDR 10, HLG, Dolby Vision, HDR Vivid, and SDR+.\n*   You can call the [GetURLUploadInfos](~~106830~~) operation to query the upload status. After the upload is complete, the callback of the [UploadByURLComplete](~~376427~~) event is returned."
+  },
   "example": {
     "unifiedCli": "aliyun vod upload-stream-by-url --stream-url https://example.com/lesson-01.mp4 --media-id ca3a8f6e490000057b65806709586 --definition HD --file-extension mp4 --hdr-type HDR10 --user-data MessageCallback_:_CallbackURL_:_http://aliyundoc.com_,_Extend_:_localId_:_xxx_,_test_:_www --upload-metadata AddressMapping_:_1_,_CustomPath_:_test/xxx_,_CustomFileName_:_xxx.mp4_,_isOverwritePath_:_0 --region cn-hangzhou",
     "legacyCli": "aliyun vod UploadStreamByURL --region cn-hangzhou --MediaId ca3a8f6e490000057b65806709586 --HDRType HDR10 --UserData 'MessageCallback_:_CallbackURL_:_http://aliyundoc.com_,_Extend_:_localId_:_xxx_,_test_:_www' --FileExtension mp4 --Definition HD --UploadMetadata 'AddressMapping_:_1_,_CustomPath_:_test/xxx_,_CustomFileName_:_xxx.mp4_,_isOverwritePath_:_0' --StreamURL 'https://example.com/lesson-01.mp4'"

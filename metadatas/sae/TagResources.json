@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/tags",
@@ -8,27 +9,50 @@
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ResourceIds",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID。可填写多个资源ID，用英文逗号（,）分隔。当您未输入**Tags**参数时必填。",
+        "en": "The resource IDs. You can specify up to 50 resource IDs in a JSON array. This parameter is required unless you specify the **Tags** parameter."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型，仅支持`application`。",
+        "en": "The resource type. Only `application` is supported."
+      }
     },
     {
       "name": "Tags",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签键值对，当您未输入**ResourceIds**参数时必填。取值说明如下：\n- **key**：标签键，字符长度范围\\[1,128]。\n- **value**：标签值，字符长度范围\\[1,128]。\n\n区分大小写。如果指定多个标签，则会为指定资源同时创建并绑定多个标签。同一个资源上的同一个标签键只能对应一个标签值。如果您尝试添加已有标签键，则对应的标签值会更新为新值。\n\n不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+        "en": "The key-value pairs of the tags. This parameter is required unless you specify the **ResourceIds** parameter. The following rules apply:\n\n- **key**: The tag key. The key must be 1 to 128 characters in length.\n\n- **value**: The tag value. The value must be 1 to 128 characters in length.\n\nTags are case-sensitive. If you specify multiple tags, they are created and bound to the specified resources. For a single resource, each tag key must be unique. If you specify a tag key that already exists for a resource, the operation updates the existing tag value.\n\nA tag key cannot start with `aliyun` or `acs:` and cannot contain `http://` or `https://`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "给指定的资源打上标签",
+    "en": "TagResources"
+  },
   "example": {
     "unifiedCli": "aliyun sae tag-resources --biz-region-id cn-hangzhou --resource-type application --tags key_:_k1_,_value_:_v1 --resource-ids d42921c4-5433-4abd-8075-0e536f8b0000 --region cn-hangzhou",
     "legacyCli": "aliyun sae POST /tags --region cn-hangzhou --header \"Content-Type=application/x-www-form-urlencoded\" --body ResourceIds=d42921c4-5433-4abd-8075-0e536f8b0000&ResourceType=application&RegionId=cn-hangzhou&Tags=key_:_k1_,_value_:_v1"

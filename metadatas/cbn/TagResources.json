@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源实例所属地域ID。\n\n当资源类型为Cen和BandwidthPackage不需要填写，其余类型必填。",
+        "en": "The region ID of the resource.\n\nThis parameter is not required for resources of the Cen and BandwidthPackage types. It is required for all other resource types."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源列表。",
+        "en": "The list of resource IDs."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n\n**Cen**，表示云企业网实例。\n\n**BandwidthPackage**，表示带宽包实例。\n\n**TransitRouter**，表示转发路由器实例。\n\n**TransitRouterVpcAttachment**，表示Vpc连接实例。\n\n**TransitRouterVbrAttachment**，表示Vbr连接实例。\n\n**TransitRouterPeerAttachment**，表示跨地域连接实例。\n\n**TransitRouterVpnAttachment**，表示Vpn连接实例。\n\n**TransitRouterRouteTable**，表示路由表实例。\n\n**Flowlog**，表示Flowlog实例。\n\n**TransitRouterMulticastDomain**，表示组播域实例。",
+        "en": "The type of the resource. Valid values:\n\n**Cen**: a CEN instance.\n\n**BandwidthPackage**: a bandwidth plan.\n\n**TransitRouter**: a transit router instance.\n\n**TransitRouterVpcAttachment**: a VPC connection.\n\n**TransitRouterVbrAttachment**: a VBR connection.\n\n**TransitRouterPeerAttachment**: an inter-region connection.\n\n**TransitRouterVpnAttachment**: a VPN connection.\n\n**TransitRouterRouteTable**: a route table.\n\n**Flowlog**: a flow log.\n\n**TransitRouterMulticastDomain**: a multicast domain."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签键。\n\n支持输入多个标签键。**N**的取值范围：**1**~**20**。\n\n标签键最多支持64个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key.\n\nYou can enter multiple tag keys. The value of **N** ranges from **1** to **20**.\n\nThe tag key can be up to 64 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "标签值。\n\n每一个标签键对应一个标签值。**N**的取值范围：**1**~**20**。\n\n标签值最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value.\n\nEach tag key must have a tag value. The value of **N** ranges from **1** to **20**.\n\nThe tag value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为指定的实例创建并绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "- 标签由标签键和标签值组成。添加标签时，标签键和标签值为必填项。\n- 如果要为一个云企业网实例添加多个标签，则该实例下多个标签的标签键不能重复。\n- 一个云企业网实例最多可绑定20个标签。",
+    "en": "- A tag consists of a tag key and a tag value. Both the tag key and tag value are required.\n\n- If you attach multiple tags to a Cloud Enterprise Network (CEN) instance, the tag keys must be unique for that instance.\n\n- You can attach a maximum of 20 tags to a CEN instance."
+  },
   "example": {
     "unifiedCli": "aliyun cbn tag-resources --resource-type cen --resource-id cen-pfa6ugf3xl0qsd0000 --tag Value=TagValue Key=TagKey --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun cbn TagResources --region cn-hangzhou --ResourceId.1 'cen-pfa6ugf3xl0qsd0000' --Tag.1.Key TagKey --Tag.1.Value TagValue --ResourceType cen --RegionId 'cn-hangzhou'"

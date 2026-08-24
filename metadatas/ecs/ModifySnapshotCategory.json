@@ -1,5 +1,6 @@
 {
   "name": "ModifySnapshotCategory",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "Category",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "快照类型。\n\n- Archive：归档快照",
+        "en": "The snapshot type.\n\n- Archive: archive snapshot."
+      }
     },
     {
       "name": "RetentionDays",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "快照保留天数。起始时间为快照资源创建时间CreationTime。标准快照创建完成之后，必须至少已保留 14 天，才能进行归档。\n\n归档类型快照有保留时间限制，需要在归档类型中至少保留60天。计算归档快照保留时间时，需扣除标准快照已保留时间。不足60天删除归档快照会收取60天的归档存储费用，请参见[快照计费](~~56159~~)。\n\n取值范围[74，65536]\n\n>不填写该参数则表示永久保留。",
+        "en": "The number of days for which the snapshot is retained. The retention period starts from the snapshot creation time (CreationTime). A standard snapshot must have been retained for at least 14 days after creation before it can be archived.\n\nArchive snapshots must be retained for at least 60 days. When the retention period of an archive snapshot is calculated, the retention period of the standard snapshot is deducted. If an archive snapshot is deleted before 60 days, you are charged for 60 days of archive storage. For more information, see [Snapshot billing](~~56159~~).\n\nValid values: [74, 65536].\n\n> If you do not specify this parameter, the snapshot is permanently retained."
+      }
     },
     {
       "name": "SnapshotId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "快照ID。",
+        "en": "The snapshot ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改快照类型",
+    "en": "Modify snapshot type"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">\n**请确保在使用该接口前，已充分了解归档快照产品的收费方式和[价格](https://www.aliyun.com/price/product?#/disk/detail/disk)。**\n</props>\n\n- 归档快照不支持还原为标准快照。\n\n- 标准快照创建完成之后，必须至少已保留14天，才能进行归档。\n\n- 共享来的快照、云产品托管的快照、云盒内的快照不支持归档。",
+    "en": "<props=\"china\">\n**Before you call this operation, make sure that you fully understand the billing methods and [pricing](https://www.aliyun.com/price/product?#/disk/detail/disk) of archive snapshots.**\n</props>\n\n- Archive snapshots cannot be reverted to standard snapshots.\n\n- A standard snapshot must have been retained for at least 14 days after creation before it can be archived.\n\n- Shared snapshots, snapshots managed by cloud services, and snapshots in CloudBox cannot be archived."
+  },
   "example": {
     "unifiedCli": "aliyun ecs modify-snapshot-category --snapshot-id s-12300sd --category Archive --retention-days 100 --region cn-hangzhou",
     "legacyCli": "aliyun ecs ModifySnapshotCategory --region cn-hangzhou --SnapshotId 's-12300sd' --Category Archive --RetentionDays 100"

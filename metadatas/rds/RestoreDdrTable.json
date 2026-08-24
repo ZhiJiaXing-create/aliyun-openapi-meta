@@ -1,5 +1,6 @@
 {
   "name": "RestoreDdrTable",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,63 +9,114 @@
       "name": "BackupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跨地域备份集ID。可以通过接口DescribeCrossRegionBackups查询。\n>**RestoreType**=**0**时需要传入此参数。",
+        "en": "The cross-region backup set ID. You can call the DescribeCrossRegionBackups operation to query the IDs of the backup sets that are available to an instance.\n\n>  If you set the **RestoreType** parameter to **0**, you must also specify the BackupId parameter."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，要保证在不同请求间唯一，最大值不超过64个ASCII字符，且该参数值中不能包含非ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length."
+      }
     },
     {
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要恢复的已有实例ID。",
+        "en": "The source instance ID."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "目标地域ID，可以通过接口DescribeRegions查看地域ID。",
+        "en": "The region ID of the destination instance. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。",
+        "en": "The resource group ID."
+      }
     },
     {
       "name": "RestoreTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "恢复时间点恢复的时间，需要早于当前时间。格式：<i>yyyy-MM-dd</i>T<i>HH:mm:ss</i>Z（UTC时间）。\n\n>**RestoreType**=**1**时需要传入此参数。",
+        "en": "The point in time to which you want to restore data. The point in time that you specify must be earlier than the current time. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*T*HH:mm:ss*Z format. The time must be in UTC.\n\n> If **RestoreType** is set to **BackupTime**, you must specify this parameter."
+      }
     },
     {
       "name": "RestoreType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "恢复方式，取值：\n* **0**：基于备份集恢复，还需要传入参数**BackupId**。\n* **1**：基于时间点恢复，还需要传入参数**RestoreTime**、**SourceRegion**、**SourceDBInstanceName**。\n\n默认值：**0**。",
+        "en": "The method that is used to restore data. Valid values:\n\n*   **0**: restores data from a backup set. If you set this parameter to 0, you must also specify the **BackupSetId** parameter.\n*   **1**: restores data to a point in time. If you set this parameter to 1, you must also specify the **RestoreTime**, **SourceRegion**, and **SourceDBInstanceName** parameters.\n\nDefault value: **0**."
+      }
     },
     {
       "name": "SourceDBInstanceName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "基于时间点恢复的来源实例ID。\n>**RestoreType**=**1**时需要传入此参数。",
+        "en": "The ID of the source instance whose data you want to restore to a point in time.\n\n>  If you set the **RestoreType** parameter to **1**, you must also specify the SourceDBInstanceName parameter."
+      }
     },
     {
       "name": "SourceRegion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "基于时间点恢复的来源地域。\n>**RestoreType**=**1**时需要传入此参数。",
+        "en": "The region ID of the source instance if you want to restore data to a point in time.\n\n> : If you set **RestoreType** to **1**, you must also specify this parameter."
+      }
     },
     {
       "name": "TableMeta",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定恢复的库表。格式：\n```[{\"type\":\"db\",\"name\":\"<数据库1名称>\",\"newname\":\"<新数据库1名称>\",\"tables\":[{\"type\":\"table\",\"name\":\"<数据库1内的表1名称>\",\"newname\":\"<新的表1名称>\"},{\"type\":\"table\",\"name\":\"<数据库1内的表2名称>\",\"newname\":\"<新的表2名称>\"}]},{\"type\":\"db\",\"name\":\"<数据库2名称>\",\"newname\":\"<新数据库2名称>\",\"tables\":[{\"type\":\"table\",\"name\":\"<数据库2内的表3名称>\",\"newname\":\"<新的表3名称>\"},{\"type\":\"table\",\"name\":\"<数据库2内的表4名称>\",\"newname\":\"<新的表4名称>\"}]}]```",
+        "en": "The names of the databases and tables that you want to restore. The value is in the following format: `[{\"type\":\"db\",\"name\":\"<The name of Database 1 on the source instance>\",\"newname\":\"<The name of Database 1 on the destination instance>\",\"tables\":[{\"type\":\"table\",\"name\":\"<The name of Table 1 in Database 1 on the source instance>\",\"newname\":\"<The name of Table 1 in Database 1 on the destination instance>\"},{\"type\":\"table\",\"name\":\"<The name of Table 2 in Database 1 on the source instance>\",\"newname\":\"<The name of Table 2 in Database 1 on the destination instance>\"}]},{\"type\":\"db\",\"name\":\"<The name of Database 2 on the source instance>\",\"newname\":\"<The name of Database 2 on the destination instance>\",\"tables\":[{\"type\":\"table\",\"name\":\"<The name of Table 3 in Database 2 on the source instance>\",\"newname\":\"<The name of Table 3 in Database 2 on the destination instance>\"},{\"type\":\"table\",\"name\":\"<The name of Table 4 in Database 2 on the source instance>\",\"newname\":\"<The name of Table 4 in Database 2 on the destination instance>\"}]}]`"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "跨地域恢复数据到已有实例",
+    "en": "RestoreDdrTable"
+  },
+  "descriptions": {
+    "zh": "> 恢复前可以调用CheckCreateDdrDBInstance接口预检查某RDS实例是否可以用跨地域备份集进行跨地域恢复。\n\n### 适用引擎\nRDS MySQL\n\n### 相关功能文档\n><notice>使用该接口前，请仔细阅读功能文档，确保完全了解使用接口的前提条件及使用后造成的影响后，再进行操作。></notice>\n\n- [RDS MySQL跨地域备份](~~120824~~)\n- [RDS MySQL跨地域恢复](~~120875~~)",
+    "en": ">  Before restoration, you can call the CheckCreateDdrDBInstance operation to check whether a cross-region backup set can be used for cross-region restoration.\n\n### [](#)Supported database engines\n\nMySQL\n\n### [](#)References\n\n>  Before you call this operation, read the following topics and make sure that you fully understand the prerequisites and impacts of this operation.\n\n*   [Use the cross-region backup feature for an ApsaraDB RDS for MySQL instance](~~120824~~)\n*   [Restore the data of an ApsaraDB RDS for MySQL instance across regions](~~120875~~)"
+  },
   "example": {
     "unifiedCli": "aliyun rds restore-ddr-table --db-instance-id rm-bp0000 --biz-region-id cn-hangzhou --client-token ETnLKlblzczshOTUbOCz0000 --restore-type 0 --backup-id 279563 --restore-time 2020-04-25T16:00:00Z --source-region cn-beijing --source-db-instance-name rm-bp0000 --table-meta type_:_db_,_name_:_testdb1_,_newname_:_testdb1_,_tables_:_type_:_table_,_name_:_test1_,_newname_:_test1_backup_,_type_:_table_,_name_:_test2_,_newname_:_test2_backup --resource-group-id rg-acfmy0000 --region cn-hangzhou",
     "legacyCli": "aliyun rds RestoreDdrTable --region cn-hangzhou --ResourceGroupId 'rg-acfmy0000' --DBInstanceId 'rm-bp0000' --BackupId 279563 --RegionId 'cn-hangzhou' --TableMeta 'type_:_db_,_name_:_testdb1_,_newname_:_testdb1_,_tables_:_type_:_table_,_name_:_test1_,_newname_:_test1_backup_,_type_:_table_,_name_:_test2_,_newname_:_test2_backup' --ClientToken ETnLKlblzczshOTUbOCz0000 --RestoreType 0 --SourceRegion 'cn-beijing' --SourceDBInstanceName 'rm-bp0000' --RestoreTime '2020-04-25T16:00:00Z'"

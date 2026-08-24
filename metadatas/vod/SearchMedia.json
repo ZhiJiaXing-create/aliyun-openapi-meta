@@ -1,5 +1,6 @@
 {
   "name": "SearchMedia",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "Fields",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索结果中返回的媒资字段。\n\n默认只返回基本媒资字段，可指定返回更多媒资字段，请参见[使用示例](~~99179~~)。",
+        "en": "The media asset fields to return in the search results.\n\nBy default, only basic media asset fields are returned. You can specify more fields to return. For more information, see [Examples](~~99179~~)."
+      }
     },
     {
       "name": "Match",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "过滤条件。语法规则，请参见[搜索协议语法](~~86991~~)。",
+        "en": "The filter condition. For more information about the syntax, see [Search protocol syntax](~~86991~~)."
+      }
     },
     {
       "name": "PageNo",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当前页码。默认值为**1**。\n\n> 当本参数取值超过**200**时，建议同时设置ScrollToken参数。",
+        "en": "The page number. The default value is **1**.\n\n> If the value of this parameter exceeds **200**, we recommend that you also set the ScrollToken parameter."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页返回的数据条数。默认值为**10**，最大值为**100**。",
+        "en": "The number of data records to return on each page. The default value is **10**. The maximum value is **100**."
+      }
     },
     {
       "name": "ScrollToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "翻页标识。长度为32个字符。\n第一次执行搜索请求时不用设置本参数。搜索请求命中数据时，服务端会返回该参数值，用于记录当前搜索数据的位置地址。请记录返回的参数值，下一次搜索时按下述要求或建议设置本参数：\n- 当SearchType参数取值为**video**或**audio**，且需要遍历搜索条件命中的所有数据时，本参数必须设置。\n- 当PageNo参数取值超过**200**时，建议设置本参数优化搜索性能。",
+        "en": "The pagination token. It is a 32-character string.\nYou do not need to set this parameter for the first search request. The server-side returns this parameter to mark the current position in the search results. Record the returned value. For the next search, set this parameter as required or recommended:\n\n- If the SearchType parameter is set to **video** or **audio** and you need to traverse all data that meets the search criteria, you must set this parameter.\n\n- If the value of the PageNo parameter exceeds **200**, we recommend that you set this parameter to optimize search performance."
+      }
     },
     {
       "name": "SearchType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "搜索媒资数据类型。取值范围：\n\n- **video**（默认值）：视频。\n- **audio**：音频。\n- **image**：图片。\n- **attached**：辅助媒资。\n\n> 当本参数取值为**video**或**audio**，且需要遍历搜索条件命中的所有数据时，必须设置ScrollToken参数。",
+        "en": "The type of the media asset to search for. Valid values:\n\n- **video** (default): video.\n\n- **audio**: audio.\n\n- **image**: image.\n\n- **attached**: auxiliary media asset.\n\n> If this parameter is set to **video** or **audio** and you need to traverse all data that meets the search criteria, you must set the ScrollToken parameter."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序字段和排序顺序。多个使用半角逗号（,）分隔。取值：\n- **CreationTime:Desc**（默认值）：按创建时间倒序。\n- **CreationTime:Asc**：按创建时间升序。\n\n> - 排序字段示例：[排序字段](~~99179~~)。\n> - 获取搜索条件是前5000条的数据时，最多支持三个排序字段。\n> - 获取搜索条件是所有数据时，仅支持一个排序字段。",
+        "en": "The sorting field and order. Separate multiple values with commas (,). Valid values:\n\n- **CreationTime:Desc** (default): Sorts by creation time in descending order.\n\n- **CreationTime:Asc**: Sorts by creation time in ascending order.\n\n> * For more information about sorting fields, see [Sorting fields](~~99179~~).\n>\n> * When you retrieve the first 5,000 data records that meet the search criteria, you can specify up to three sorting fields.\n>\n> * When you retrieve all data that meets the search criteria, you can specify only one sorting field."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "搜索媒体信息",
+    "en": "SearchMedia"
+  },
+  "descriptions": {
+    "zh": "对于支持精确匹配和模糊查询的字段，采用其他查询手段时，其返回的结果都将遵循该字段所支持的查询方式，例如，如果一个字段仅支持模糊查询，则通过多值查询方法获取的结果也是基于模糊匹配返回的。\n\n获取命中数据条数限制说明如下：\n- 方法一：分页遍历\n\n    对于命中的搜索结果，您可以通过设置分页参数“PageNo”（页码）和“PageSize”（每页显示的记录数）来逐步遍历最多5000条数据。如果搜索结果超出了5000条，为了保证有效地遍历数据，请调整搜索条件以缩小结果范围。需要注意的是，此方法无法遍历完整数据集。若要遍历更多数据，请参考方法二。\n- 方法二：全量遍历（限音视频搜索）\n\n  此方法适用于视频和音频内容的搜索，支持遍历最多200万条的全部搜索结果。如果搜索结果数量超过200万条，您应该通过增加更多筛选条件来减少结果数量。使用此方法时，除了“PageNo”和“PageSize”，您还需使用“ScrollToken”参数实现分页。请注意，每次仅支持向后遍历最多100条记录。\n使用“PageSize”为20为例，以下是分页逻辑：\n    - 若“PageNo”为1，您可以查询接下来的最多5页数据。\n    - 若“PageNo”为2，您可以查询接下来的最多6页数据。\n\n请确保在搜索时合理设置分页参数，并根据结果集大小选择适当的遍历方法。若您翻页的数据将大于1000条时，为了您的查询更方便快捷我们推荐您使用方法2来进行数据处理。",
+    "en": "For fields that support both exact match and fuzzy query, the results for other query types are based on the supported query method. For example, if a field supports only fuzzy query, a multi-value query on that field also returns results based on a fuzzy match.\n\nThe limits on the number of search results that you can retrieve are as follows:\n\n- Method 1: Paging\n\n  You can traverse up to 5,000 search results by setting the PageNo (page number) and PageSize (number of records per page) parameters. If the number of search results exceeds 5,000, you must adjust the search conditions to narrow the result set. Note that this method cannot traverse the entire dataset. To traverse more data, see Method 2.\n\n- Method 2: Full traversal (for audio and video search only)\n\n  This method applies only to audio and video searches and supports traversing all search results, up to a maximum of 2 million records. If the number of search results exceeds 2 million, you must add more filter conditions to reduce the result set. When you use this method, you must use the ScrollToken parameter in addition to the PageNo and PageSize parameters for paging. Note that you can traverse a maximum of 100 records backward at a time.\n  The following example shows the paging logic when PageSize is set to 20:\n\n  - If PageNo is 1, you can query up to the next 5 pages of data.\n\n  - If PageNo is 2, you can query up to the next 6 pages of data.\n\nYou must set the paging parameters properly for your search and select the appropriate traversal method based on the size of the result set. To page through more than 1,000 records, use Method 2 for faster and more convenient data processing."
+  },
   "example": {
     "unifiedCli": "aliyun vod search-media --search-type video --fields Title,CoverURL --match field_=_value --sort-by CreationTime:Desc --page-no 1 --page-size 10 --scroll-token 24e0fba7188fae707e146esa540000 --region cn-hangzhou",
     "legacyCli": "aliyun vod SearchMedia --region cn-hangzhou --Fields 'Title,CoverURL' --PageSize 10 --ScrollToken 24e0fba7188fae707e146esa540000 --SortBy 'CreationTime:Desc' --PageNo 1 --SearchType video --Match 'field_=_value'"

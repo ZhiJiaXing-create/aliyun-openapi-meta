@@ -1,5 +1,6 @@
 {
   "name": "StartImagePipelineExecution",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多详情，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among requests. **The token can contain only ASCII characters and cannot exceed 64 characters in length.** For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "ImagePipelineId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像模板ID。",
+        "en": "The ID of the image template."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID. You can call the [DescribeRegions](~~25609~~) operation to query the most recent list of regions."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。N 的取值范围：1~20。一旦传入该值，则不允许为空字符串。最多支持 128 个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The key of tag N. Valid values of N: 1 to 20. The tag key cannot be an empty string. The tag key can be up to 128 characters in length and cannot start with `acs:` or `aliyun`. The tag key cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。N的取值范围：1~20。一旦传入该值，可以为空字符串。最多支持128个字符，不能以`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The value of tag N. Valid values of N: 1 to 20. The tag value can be an empty string. The tag value can be up to 128 characters in length. The tag value cannot start with `acs:` or contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -47,22 +72,45 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": ">该参数已废弃。",
+        "en": "> This parameter is deprecated."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": ">该参数已废弃。",
+            "en": "> This parameter is deprecated."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": ">该参数已废弃。",
+            "en": "> This parameter is deprecated."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "通过镜像模板执行构建镜像的任务",
+    "en": "StartImagePipelineExecution"
+  },
+  "descriptions": {
+    "zh": "- 镜像模板创建好之后，需要通过该接口执行构建镜像的任务，系统将根据镜像模板设置好的参数进行构建、分发、共享镜像。\n- 同一个镜像模板，同一时间只能执行一个构建镜像任务。取消构建镜像任务（CancelImagePipelineExecution）可同时执行多次，并且取消构建镜像任务和构建镜像任务之间互不干扰。\n- 执行镜像构建模板时，需要创建多台中转实例辅助构建镜像，中转实例为按量计费的ECS实例，将收取一定的费用。更多信息，请参见[按量付费](~~40653~~)。",
+    "en": "- After you create an image template, you can call the StartImagePipelineExecution operation to create a pipeline task. The system creates, copies, and shares images based on the parameters configured in the image template.\n\n- You can execute only one pipeline task for each image template."
+  },
   "example": {
     "unifiedCli": "aliyun ecs start-image-pipeline-execution --biz-region-id cn-hangzhou --template-tag Value=example-string Key=example-string --tag Value=TestValue Key=TestKey --image-pipeline-id ip-2ze5tsl5bp6nf2b30000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs StartImagePipelineExecution --region cn-hangzhou --Tag.1.Key TestKey --ImagePipelineId 'ip-2ze5tsl5bp6nf2b30000' --TemplateTag.1.Value 'example-string' --Tag.1.Value TestValue --TemplateTag.1.Key 'example-string' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

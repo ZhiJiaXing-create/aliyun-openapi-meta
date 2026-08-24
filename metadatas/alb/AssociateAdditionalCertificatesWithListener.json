@@ -1,5 +1,6 @@
 {
   "name": "AssociateAdditionalCertificatesWithListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "Certificates",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "扩展证书列表。",
+        "en": "The additional certificates."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** as the **ClientToken**. The **RequestId** is different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会为HTTPS和QUIC监听添加扩展证书。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false（默认值）**：发送正常请求，通过检查后返回HTTP `2xx`状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run, then performs the operation. If the request passes the check, a `2xx` HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听ID。\n\nHTTPS和QUIC监听有效。",
+        "en": "The listener ID. This parameter is valid only for HTTPS and QUIC listeners."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "关联扩展证书和监听",
+    "en": "AssociateAdditionalCertificatesWithListener"
+  },
+  "descriptions": {
+    "zh": "**AssociateAdditionalCertificatesWithListener**接口属于异步接口，即系统返回一个请求ID，但该扩展证书尚未添加成功，系统后台的添加任务仍在进行。您可以调用[GetListenerAttribute](~~2254865~~)查询扩展证书的添加状态：\n   - 当HTTPS和QUIC监听处于**Associating**状态时，表示扩展证书正在添加中。\n   - 当HTTPS和QUIC监听处于**Associated**状态时，表示扩展证书添加成功。",
+    "en": "**AssociateAdditionalCertificatesWithListener** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [](t2324519.xdita#)operation to query the status of the task:\n\n- If the HTTPS or QUIC listener is in the **Associating** state, the additional certificates are being associated.\n\n- If the HTTPS or QUIC listener is in the **Associated** state, the certificates are associated."
+  },
   "example": {
     "unifiedCli": "aliyun alb associate-additional-certificates-with-listener --listener-id lsn-5qnirjhpt000000 --certificates CertificateId=10110000-cn-hangzhou --client-token 5A2CFF0E-5718-45B5-9D4D-70B3F000000 --dry-run true --region cn-hangzhou",
     "legacyCli": "aliyun alb AssociateAdditionalCertificatesWithListener --region cn-hangzhou --DryRun true --Certificates.1.CertificateId '10110000-cn-hangzhou' --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B3F000000' --ListenerId 'lsn-5qnirjhpt000000' --method POST --force"

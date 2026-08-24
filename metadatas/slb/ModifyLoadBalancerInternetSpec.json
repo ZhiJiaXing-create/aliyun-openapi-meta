@@ -1,5 +1,6 @@
 {
   "name": "ModifyLoadBalancerInternetSpec",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AutoPay",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否是自动支付预付费公网实例的账单。取值：\n\n- **true**（默认值）：自动支付订单。\n- **false**：在订单中心进行支付。",
+        "en": "Specifies whether to automatically pay the subscription fee of the Internet-facing CLB instance. Valid values:\n\n- **true**: enables automatic payments. This is the default value.\n\n- **false**: disables automatic payment. You must complete the payment in Order Center."
+      }
     },
     {
       "name": "Bandwidth",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "按固定带宽计费方式的公网类型实例的带宽峰值。单位：Mbps。\n\n取值范围：**1**~**5000**（各地域的带宽峰值会有不同）。\n\n>按流量计费（即**InternetChargeType**取值为**paybytraffic**）的实例不需要指定该参数。",
+        "en": "The maximum bandwidth of the Internet-facing CLB instance that uses the pay-by-bandwidth metering method. Unit: Mbit/s.\n\nValid values: **1 to 5000**. The maximum bandwidth varies based on the region where the CLB instance is created.\\*\\*\\*\\*\n\n> You do not need to specify this parameter if you set **InternetChargeType** to **paybytraffic** (pay-by-data-transfer)."
+      }
     },
     {
       "name": "InternetChargeType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "公网类型实例的付费方式。取值：\n\n- **paybybandwidth**：按带宽计费。\n\n- **paybytraffic**：按流量计费 。",
+        "en": "The metering method of the Internet-facing CLB instance. Valid values:\n\n- **paybybandwidth**: pay-by-bandwidth\n\n- **paybytraffic**: pay-by-data-transfer"
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "负载均衡实例的ID。",
+        "en": "The ID of the CLB instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "传统型负载均衡实例的地域ID。\n\n您可以通过调用[DescribeRegions](~~27584~~)接口查询地域ID。",
+        "en": "The ID of the region where the CLB instance is deployed.\n\nYou can call the [DescribeRegions](~~27584~~) operation to query the most recent region list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改公网负载均衡实例的计费方式",
+    "en": "ModifyLoadBalancerInternetSpec"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">- 仅按规格计费实例支持调用ModifyLoadBalancerInternetSpec接口，按使用量计费实例不支持调用该接口。</props>\n\n- 如果只调整按带宽计费实例的带宽峰值，修改完成后，立即生效。\n\n- 如果涉及公网计费方式的变更（例如公网计费方式从按固定带宽变更为按流量），则所有变配会在次日00:00:00生效。",
+    "en": "## Description\n\n- If you modify only the maximum bandwidth of a pay-by-bandwidth CLB instance, the new bandwidth immediately takes effect.\n\n- If you modify the metering method (for example, switch from pay-by-bandwidth to pay-by-data-transfer), the new metering method and the other changes specified in the operation take effect at 00:00:00 the next day."
+  },
   "example": {
     "unifiedCli": "aliyun slb modify-load-balancer-internet-spec --biz-region-id cn-hangzhou --load-balancer-id lb-bp1b6c719dfa08ex000000 --internet-charge-type paybytraffic --bandwidth 10 --auto-pay false --api-version 2014-05-15 --region cn-hangzhou",
     "legacyCli": "aliyun slb ModifyLoadBalancerInternetSpec --region cn-hangzhou --Bandwidth 10 --LoadBalancerId 'lb-bp1b6c719dfa08ex000000' --RegionId 'cn-hangzhou' --AutoPay false --InternetChargeType paybytraffic"

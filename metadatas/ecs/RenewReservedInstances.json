@@ -1,5 +1,6 @@
 {
   "name": "RenewReservedInstances",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "AutoRenew",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否要自动续费。\n\n- true：自动续费。\n- false：不自动续费。\n\n默认值：false。",
+        "en": "Specifies whether to enable auto-renewal for the reserved instance. Valid values:\n\n- true\n\n- false\n\nDefault value: false."
+      }
     },
     {
       "name": "AutoRenewPeriod",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每次自动续费的时长，单位为月。当参数AutoRenew取值为true时，该参数才生效。\n\n<props=\"intl\">取值范围：12，36。默认值为12。</props>\n\n<props=\"china\">\n\n- PeriodUnit=Month， 取值范围：1，12，36，60。默认值为1。\n\n- PeriodUnit=Year，取值范围：12，36，60。默认值为12。\n\n</props>",
+        "en": "The auto-renewal duration. Unit: months. This parameter takes effect only when AutoRenew is set to true.\n\nValid values: 12 and 36. Default value: 12."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The **token** can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "Period",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买预留实例券的时长。\n\n<props=\"intl\">取值范围：1、3。</props>\n\n\n<props=\"china\">\n\n- 当`PeriodUnit`为`Year`时，取值范围：1、3、5。\n\n- 当`PeriodUnit`为`Month`时，取值范围：1。\n\n</props>\n\n\n默认值：1。",
+        "en": "The validity period of the reserved instance.\n\nValid values: 1 and 3.\n\nDefault value: 1."
+      }
     },
     {
       "name": "PeriodUnit",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "购买预留实例券的时长单位。\n\n<props=\"intl\">取值范围：Year。</props>\n\n<props=\"intl\">默认值：Year。</props>\n\n<props=\"china\">取值范围：Year、Month。</props>\n\n<props=\"china\">默认值：Month。</props>",
+        "en": "The unit of the validity period of the reserved instance.\n\nSet the value to Year."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预留实例券所属的地域ID。\n\n您可以调用[DescribeRegions](~~25609~~)获取最新的阿里云地域列表。",
+        "en": "The region ID of the reserved instance.\n\nYou can call the [DescribeRegions](~~25609~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ReservedInstanceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "预留实例券ID。",
+        "en": "The IDs of the reserved instances."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "续费预留实例券",
+    "en": "RenewReservedInstances"
+  },
+  "descriptions": {
+    "zh": "<props=\"china\">\n\n**请确保在使用该接口前，已充分了解预留实例券的收费方式和[价格](https://www.aliyun.com/price/product#/ecs/detail)。**\n\n</props>\n\n<props=\"intl\">\n\n**请确保在使用该接口前，已充分了解预留实例券的收费方式和[价格](https://www.alibabacloud.com/zh/pricing-calculator#/commodity/vm_intl)。**\n\n</props>\n\n- 预留实例券支持手动续费和自动续费两种续费方式，详细信息请参见[预留实例券续费说明](~~100371#53bfc50b78sta~~)。\n- 您可以调用[DescribeReservedInstances](~~100065~~)查询已购买的预留实例券。\n- 该接口支持开启自动续费，但不支持取消自动续费，您可以通过[ModifyReservedInstanceAutoRenewAttribute](~~2679786~~)取消自动续费。",
+    "en": "**Before you call this operation, make sure that you are familiar with the billing and [pricing](https://www.alibabacloud.com/zh/pricing-calculator#/commodity/vm_intl) of reserved instances.**\n\n- You can manually renew reserved instances or enable auto-renewal for reserved instances. For more information, see the [Renewal](~~100371#53bfc50b78sta~~) section of the \"Reserved instances\" topic.\n\n- You can call the [DescribeReservedInstances](~~100065~~) operation to query the reserved instances that you purchased.\n\n- You can call this operation to enable auto-renewal for reserved instances but cannot call this operation to disable auto-renewal for reserved instances. To disable auto-renewal for a reserved instance, call the [ModifyReservedInstanceAutoRenewAttribute](~~2679786~~) operation."
+  },
   "example": {
     "unifiedCli": "aliyun ecs renew-reserved-instances --reserved-instance-id ecsri-2ze53qonjqxg7r0000 --biz-region-id cn-hangzhou --period 1 --period-unit Year --client-token 123e4567-e89b-12d3-a456-426655440000 --auto-renew true --auto-renew-period 1 --region cn-hangzhou",
     "legacyCli": "aliyun ecs RenewReservedInstances --region cn-hangzhou --AutoRenewPeriod 1 --AutoRenew true --Period 1 --ReservedInstanceId.1 'ecsri-2ze53qonjqxg7r0000' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --PeriodUnit Year"

@@ -1,5 +1,6 @@
 {
   "name": "DissociateAdditionalCertificatesFromListener",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例ID。",
+        "en": "The ID of the GA instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among all requests. ClientToken can contain only ASCII characters.\n\n>  If you do not set this parameter, **ClientToken** is set to the value of **RequestId**. The value of **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "Domains",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "扩展证书绑定的域名。",
+        "en": "The domain name associated with the additional certificate.\n\nYou can specify up to 10 domain names in each request."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "监听实例ID。",
+        "en": "The ID of the listener."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速实例所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "将扩展证书与HTTPS监听解绑",
+    "en": "DissociateAdditionalCertificatesFromListener"
+  },
+  "descriptions": {
+    "zh": "- **DissociateAdditionalCertificatesFromListener**接口属于异步接口，即系统会先返回一个请求ID，但HTTPS监听和扩展证书并未解绑完成，系统后台的解绑任务仍在进行。您可以调用[DescribeListener](~~153254~~)查询监听的状态：\n    - 当监听处于**updating**状态时，表示HTTPS监听和扩展证书正在解绑中，在该状态下，您只能执行查询操作，不能执行其他操作。\n    - 当监听处于**active**状态时，表示HTTPS监听和扩展证书解绑完成。\n- **DissociateAdditionalCertificatesFromListener**接口不支持在同一个全球加速实例内并发为HTTPS监听解绑扩展证书。",
+    "en": "## Description\n\n*   **DissociateAdditionalCertificatesFromListener** is an asynchronous operation. After you send a request, the system returns a request ID, but this operation is still being performed in the system background. You can call the [DescribeListener](~~153254~~) operation to query the state of an HTTPS listener.\n\n    *   If the listener is in the **updating** state, it indicates that the additional certificate is being dissociated from the listener. In this case, you can perform only query operations.\n    *   If the listener is in the **active** state, it indicates that the additional certificate is dissociated from the listener.\n\n*   The **DissociateAdditionalCertificatesFromListener** operation cannot be repeatedly called for the same Global Accelerator (GA) instance with a specific period of time."
+  },
   "example": {
     "unifiedCli": "aliyun ga dissociate-additional-certificates-from-listener --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp1odcab8tmno0hdq0000 --listener-id lsr-bp1bpn0kn908w4nbw0000 --domains example.com --region cn-hangzhou",
     "legacyCli": "aliyun ga DissociateAdditionalCertificatesFromListener --region cn-hangzhou --Domains.1 'example.com' --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp1odcab8tmno0hdq0000' --ListenerId 'lsr-bp1bpn0kn908w4nbw0000'"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateLoadBalancerAddressTypeConfig",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,65 +9,116 @@
       "name": "AddressType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标网络类型。取值：\n\n- **Internet**：负载均衡具有公网IP地址，DNS域名被解析到公网IP，因此可以在公网环境访问。\n- **Intranet**：负载均衡只有私网IP地址，DNS域名被解析到私网IP，因此只能被负载均衡所在VPC的内网环境访问。",
+        "en": "The new network type. Valid values:\n\n*   **Internet**: The nodes of an Internet-facing NLB instance have public IP addresses. The DNS name of an Internet-facing NLB instance is publicly resolvable to the public IP addresses of the nodes. Therefore, Internet-facing NLB instances can route requests from clients over the Internet.\n*   **Intranet**: The nodes of an internal-facing NLB instance have only private IP addresses. The DNS name of an internal-facing NLB instance is publicly resolvable to the private IP addresses of the nodes. Therefore, internal-facing NLB instances can route requests only from clients with access to the virtual private cloud (VPC) for the NLB instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token used to ensure the idempotence of the request.\n\nYou can use the client to generate this value. Ensure that the value is unique among all requests. Only ASCII characters are allowed.\n\n>  If you do not specify this parameter, the value of **RequestId** is used.**** **RequestId** of each request is different."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会更新实例的网络类型。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Perform a dry run without actually making the request. Valid values are:\n\n*   **true**: Perform only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the check, an error message specifying the issue is returned. If the request passes, the `DryRunOperation` error code is returned.\n*   **false** (default): Check the request and perform the operation. If the request passes the check, a 2xx HTTP status code is returned, and the operation is performed."
+      }
     },
     {
       "name": "LoadBalancerId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网络型负载均衡实例ID。",
+        "en": "The ID of the NLB instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络型负载均衡实例所在的地域ID。 \n\n您可以通过调用[DescribeRegions](~~443657~~)接口获取地域ID。",
+        "en": "The region ID of the NLB instance.\n\nYou can call the [DescribeRegions](~~443657~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ZoneMappings",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "可用区及交换机映射列表，最多支持10个可用区。",
+        "en": "The mappings between zones and vSwitches. You can specify up to 10 zones."
+      },
       "sub_parameters": [
         {
           "name": "AllocationId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性公网IP实例ID。",
+            "en": "The ID of the elastic IP address (EIP)."
+          }
         },
         {
           "name": "EipType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "公网EIP的类型。取值：\n\n- **Common**：弹性公网IP，简称EIP。\n- **Anycast**：任播弹性公网IP，简称Anycast EIP。\n\n> **AddressType**配置为**Internet**时，需要配置该参数。",
+            "en": "The type of the EIP. Valid values:\n\n*   **Common**: an EIP\n*   **Anycast**: an Anycast EIP\n\n>  This parameter is required only if **AddressType** is set to **Internet**."
+          }
         },
         {
           "name": "VSwitchId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "可用区对应的交换机，每个可用区只能使用一台交换机和一个子网。",
+            "en": "The ID of the vSwitch in the zone. You can specify only one vSwitch (subnet) in each zone of an NLB instance."
+          }
         },
         {
           "name": "ZoneId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "网络型负载均衡实例的可用区ID。\n\n您可以通过调用[DescribeZones](~~443890~~)接口获取可用区ID对应的可用区信息。",
+            "en": "The zone ID of the NLB instance.\n\nYou can call the [DescribeZones](~~443890~~) operation to query the most recent zone list."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更网络类型配置",
+    "en": "UpdateLoadBalancerAddressTypeConfig"
+  },
+  "descriptions": {
+    "zh": "- 您已创建NLB实例，请参见[CreateLoadBalancer](~~445868~~)。\n- 您可以通过[GetLoadBalancerAttribute](~~445873~~)接口查询变更后NLB实例的**AddressType**取值。\n-  **UpdateLoadBalancerAddressTypeConfig**属于异步接口，即系统返回一个请求ID，但该NLB实例IPv4地址的网络类型尚未变更成功，系统后台的变更任务仍在进行。您可以调用[GetJobStatus](~~445904~~)查询IPv4地址网络类型变更状态：\n    - 当任务状态处于**Succeeded**时，表示实例IPv4地址的网络类型变更成功。\n    - 当任务状态处于**Processing**时，表示实例IPv4地址的网络类型变更中，在该状态下，您只能执行查询操作，不能执行其他操作。",
+    "en": "*   Make sure that an NLB instance is created. For more information, see [CreateLoadBalancer](~~445868~~).\n\n*   You can call the [GetLoadBalancerAttribute](~~445873~~) operation to query the **AddressType** value of an NLB instance after you change the network type.\n\n*   **UpdateLoadBalancerAddressTypeConfig** is an asynchronous operation. After a request is sent, the system returns a request ID and runs the task in the background. You can call the [GetJobStatus](~~445904~~) operation to query the task status:\n\n    *   If the task is in the **Succeeded** state, the network type of the IPv4 address of the NLB instance is changed.\n    *   If the task is in the **Processing** state, the network type of the IPv4 address of the NLB instance is being changed. In this case, you can perform only query operations."
+  },
   "example": {
     "unifiedCli": "aliyun nlb update-load-balancer-address-type-config --load-balancer-id nlb-83ckzc8d4xlp8o0000 --address-type Internet --zone-mappings ZoneId=cn-hangzhou-a VSwitchId=vsw-bp10ttov87felojcn0000 AllocationId=eip-bp1aedxso6u80u0qf0000 EipType=Common --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun nlb UpdateLoadBalancerAddressTypeConfig --region cn-hangzhou --ZoneMappings.1.EipType Common --ZoneMappings.1.ZoneId 'cn-hangzhou-a' --ZoneMappings.1.AllocationId 'eip-bp1aedxso6u80u0qf0000' --DryRun false --LoadBalancerId 'nlb-83ckzc8d4xlp8o0000' --RegionId 'cn-hangzhou' --AddressType Internet --ZoneMappings.1.VSwitchId 'vsw-bp10ttov87felojcn0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

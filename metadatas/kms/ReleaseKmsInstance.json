@@ -1,5 +1,6 @@
 {
   "name": "ReleaseKmsInstance",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "ForceDeleteWithoutBackup",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "KMS实例未备份的场景下是否强制释放。\n\n- true：强制释放。\n- false（默认值）：禁止释放。",
+        "en": "Specifies whether to forcibly release the KMS instance if it has not been backed up.\n\n- true: forcibly releases the instance.\n\n- false (default): does not release the instance."
+      }
     },
     {
       "name": "KmsInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "KMS实例ID。",
+        "en": "The ID of the KMS instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "释放KMS按量付费实例",
+    "en": "ReleaseKmsInstance"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 包年包月实例不支持手动释放，仅支持满足条件时退订，如需退订，请在控制台费用与成本-退订管理操作。详细介绍，请参见[退订说明](~~600418~~)。\n\n- 释放后该实例中的资源将全部释放，使用该实例中的所有密钥加密的资源将无法解密，凭据将无法获取。释放前请您确认已无数据使用密钥加密，凭据没有业务调用，避免影响您的业务。\n\n- 如果您的实例是KMS软件密钥管理实例，建议您在释放前对实例资源进行备份，备份后的资源可进行恢复。具体操作，请参见[备份管理](~~2357488~~)。\n\n- 释放按量付费实例后，由于计费周期为按天计费，次日12:00前会推送前一天账单。\n\n- 释放前建议您在控制台查看该KMS实例是否开启了删除保护，如果开启了删除保护，请先在控制台关闭删除保护后再释放。具体操作，请参见[管理KMS实例](~~604735~~)。",
+    "en": "- For information about the access policy that is required to allow a RAM user or RAM role to call this OpenAPI operation, see [Resource Access Management](~~2767210~~).\n\n- Subscription instances cannot be manually released. You can only unsubscribe from them under specific conditions. To unsubscribe, go to the Expenses and Costs page in the console and choose Unsubscribe. For more information, see [Unsubscription policy](~~600418~~).\n\n- After you release an instance, all resources in the instance are also released. Resources that are encrypted using keys in the instance cannot be decrypted, and credentials cannot be retrieved. Before you release an instance, make sure that no data is encrypted by the keys in the instance and no services call the credentials. This prevents service interruptions.\n\n- If your instance is a software key management instance, we recommend that you back up the resources of the instance before you release it. The backed-up resources can be recovered. For more information, see [Backup management](~~2357488~~).\n\n- The billing epoch is daily. Therefore, after you release a pay-as-you-go instance, the bill for the previous day is pushed before 12:00 on the next day.\n\n- Before you release a KMS instance, we recommend that you check whether deletion protection is enabled for the instance in the console. If deletion protection is enabled, disable it in the console before you release the instance. For more information, see [Manage a KMS instance](~~604735~~)."
+  },
   "example": {
     "unifiedCli": "aliyun kms release-kms-instance --kms-instance-id kst-hzz60000 --force-delete-without-backup false --region cn-hangzhou",
     "legacyCli": "aliyun kms ReleaseKmsInstance --region cn-hangzhou --KmsInstanceId 'kst-hzz60000' --ForceDeleteWithoutBackup false"

@@ -1,5 +1,6 @@
 {
   "name": "CreateWafRule",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,60 @@
       "name": "Config",
       "position": "Body",
       "type": "Json",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF 规则的具体配置（`WafRuleConfig` 数据结构），根据 Phase 阶段不同，必填字段不同：\n\n- `http_custom`：必填 `Expression`（匹配表达式）与 `Action`（匹配后动作）；建议下 `Name` 便于后续定位\n- `http_whitelist`：必填 `Expression`；命中后直接放行（无 Action）\n- `http_ratelimit`：必填 `Expression`、`RateLimit` 频控参数\n- `ip_access_rule`：必填 `Expression`（包含 IP 匹配）、`Action`\n\n> 完整字段定义以 `WafRuleConfig` 数据结构为准。字段缺失时服务返回 `InvalidParameter(400)` / `Rule.Config.Malformed`。",
+        "en": "The specific configuration of the WAF rule (`WafRuleConfig` data structure). The required fields vary depending on the Phase value:\n\n- `http_custom`: `Expression` (match expression) and `Action` (action upon match) are required. Setting `Name` is recommended for easier identification.\n- `http_whitelist`: `Expression` is required. Matched requests are allowed directly (no Action).\n- `http_ratelimit`: `Expression` and `RateLimit` (rate limiting parameters) are required.\n- `ip_access_rule`: `Expression` (containing IP match) and `Action` are required.\n\n> The complete field definitions are based on the `WafRuleConfig` data structure. If required fields are missing, the service returns `InvalidParameter(400)` / `Rule.Config.Malformed`."
+      }
     },
     {
       "name": "Phase",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF 规则运行阶段。本**单条创建接口**支持以下阶段（不支持 `http_anti_scan` 与 `http_bot`，这两个阶段请使用批量接口 `BatchCreateWafRules`）：\n- `http_whitelist`：白名单规则\n- `http_custom`：自定义规则\n- `http_managed`：托管规则\n- `http_ratelimit`：频次控制规则\n- `ip_access_rule`：IP 访问规则\n- `http_security_level_rule`：安全规则\n\n> 说明：`http_anti_scan` / `http_bot` 仅支持通过批量接口创建；本接口传入这两个取值会报错。",
+        "en": "The WAF rule execution phase. This **single-creation operation** supports the following phases (it does not support `http_anti_scan` or `http_bot`. For these two phases, use the batch operation `BatchCreateWafRules`):\n- `http_whitelist`: whitelist rule\n- `http_custom`: custom rule\n- `http_managed`: managed rule\n- `http_ratelimit`: rate limiting rule\n- `ip_access_rule`: IP access rule\n- `http_security_level_rule`: security rule\n\n> Note: `http_anti_scan` and `http_bot` can only be created through the batch operation. Passing these two values to this operation returns an error."
+      }
     },
     {
       "name": "RulesetId",
       "position": "Body",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF规则集的ID，可通过调用[ListWafRulesets](~~2878359~~)接口获取。",
+        "en": "The ID of the WAF ruleset. You can call the [ListWafRulesets](~~2878359~~) operation to obtain the ruleset ID."
+      }
     },
     {
       "name": "SiteId",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "站点ID，可通过调用[ListSites](~~2850189~~)接口获取。",
+        "en": "The site ID. You can call the [ListSites](~~2850189~~) operation to obtain the site ID."
+      }
     },
     {
       "name": "SiteVersion",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "站点配置的版本号。开启了配置版本管理的站点，可以通过该参数指定配置生效的站点版本，默认为版本0。",
+        "en": "The version number of the site configuration. For sites with version management enabled, you can use this parameter to specify the site version on which the configuration takes effect. The default value is 0."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建WAF规则",
+    "en": "Create a WAF rule"
+  },
   "example": {
     "unifiedCli": "aliyun esa create-waf-rule --site-id 1 --site-version 0 --phase http_custom --ruleset-id 10000001 --config example-string --region cn-hangzhou",
     "legacyCli": "aliyun esa CreateWafRule --region cn-hangzhou --SiteId 1 --RulesetId 10000001 --Phase http_custom --Config 'example-string' --SiteVersion 0"

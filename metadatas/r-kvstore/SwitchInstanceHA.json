@@ -1,5 +1,6 @@
 {
   "name": "SwitchInstanceHA",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,84 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID，可调用[DescribeInstances](~~473778~~)获取。",
+        "en": "The instance ID. You can call [DescribeInstances](~~473778~~) to query the instance ID."
+      }
     },
     {
       "name": "NodeId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据分片节点ID，您可以调用[DescribeRoleZoneInfo](~~473782~~)获取CustinsId参数，多个数据分片节点ID之间使用英文逗号（,）分隔，如需指定所有节点请输入`all`。\n> 当实例为集群或读写分离架构时，本参数才可用，且必填。",
+        "en": "The ID of the data shard node. You can call [DescribeRoleZoneInfo](~~473782~~) to obtain the CustinsId parameter. Separate multiple data shard node IDs with commas (,). To specify all nodes, enter `all`.\n> This parameter is available and required only when the instance uses the cluster or read/write splitting architecture."
+      }
+    },
+    {
+      "name": "SourceNodeId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "分片原 MASTER 节点的节点 ID",
+        "en": "The node ID of the original MASTER node in the shard."
+      }
     },
     {
       "name": "SwitchMode",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行时间，取值：\n* **0**：立即执行，默认值。\n* **1**：在可维护时间段执行。\n\n> 您可以调用[ModifyInstanceMaintainTime](~~473775~~)修改实例的可维护时间段。",
+        "en": "The execution time. Valid values:\n* **0**: immediately. This is the default value.\n* **1**: during the maintenance window.\n\n> You can call [ModifyInstanceMaintainTime](~~473775~~) to modify the maintenance window of the instance."
+      }
     },
     {
       "name": "SwitchType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "切换模式，取值：\n* **ReliabilityPriority (默认值)**：可靠性优先，确保主备同步无延迟时才执行主备切换，不会丢失数据。该模式在写入量较大且持续存在同步延迟的场景下，可能会造成主备切换失败。\n* **AvailablePriority**：可用性优先，不考虑主备延迟，立即执行主备切换，可能会丢失少量数据。\n\n\n> 您需要根据业务场景对数据、服务等方面的需求进行衡量，然后选取切换模式。",
+        "en": "The switchover mode. Valid values:\n* **ReliabilityPriority (default)**: Reliability is prioritized. The primary/secondary switchover is performed only when primary/secondary synchronization has no latency, which prevents data loss. In scenarios with heavy write workloads and persistent synchronization latency, this mode may cause the primary/secondary switchover to fail.\n* **AvailablePriority**: Availability is prioritized. The primary/secondary switchover is performed immediately regardless of primary/secondary latency, which may cause minor data loss.\n\n> Evaluate your business requirements for data integrity and service availability before selecting a switchover mode."
+      }
+    },
+    {
+      "name": "TargetNodeId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "切换后目标 MASTER 节点的节点 ID",
+        "en": "The node ID of the target MASTER node after the switchover."
+      }
+    },
+    {
+      "name": "TargetShardName",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "实例分片名",
+        "en": "The shard name of the instance."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "切换实例HA",
+    "en": "Switch instance HA"
+  },
+  "descriptions": {
+    "zh": "> 关于多可用区场景下的应用就近连接的详细说明，请参见[场景示例](~~164222~~)。\n\n调用本接口时，实例类型为高可用或双副本。\n\n调用本接口将产生下述影响：\n* 触发节点角色切换后，执行切换的数据节点将出现秒级的只读状态和连接闪断，请确保您的应用具备重连机制。\n* 实例处于切换中状态时，您将无法执行实例级别的操作（例如变更配置、迁移可用区等）。",
+    "en": "> For more information about nearest access for applications in multi-zone deployment scenarios, see [Scenario examples](~~164222~~).\n\nWhen you call this operation, the instance must be of the high-availability or dual-replica type.\n\nCalling this operation has the following impacts:\n* After a node role switchover is triggered, the data node being switched enters a read-only state for a few seconds and experiences a transient connection. Make sure that your application has a reconnection mechanism.\n* While the instance is in the switching state, you cannot perform instance-level operations such as configuration changes or zone migration."
+  },
   "example": {
     "unifiedCli": "aliyun r-kvstore switch-instance-ha --instance-id r-bp1zxszhcgatnx0000 --node-id 56000019,56000020 --switch-mode 0 --switch-type ReliabilityPriority --source-node-id 52717408 --target-node-id 52717403 --target-shard-name r-2zegk3jyxxxwixfo6c-db-1 --region cn-hangzhou",
     "legacyCli": "aliyun r-kvstore SwitchInstanceHA --region cn-hangzhou --SwitchType ReliabilityPriority --SourceNodeId 52717408 --TargetNodeId 52717403 --InstanceId 'r-bp1zxszhcgatnx0000' --NodeId '56000019,56000020' --TargetShardName 'r-2zegk3jyxxxwixfo6c-db-1' --SwitchMode 0"

@@ -1,5 +1,6 @@
 {
   "name": "ListUserBasicInfos",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "Marker",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当请求的返回结果被截断时，可以使用`Marker`获取从当前截断位置之后的内容。",
+        "en": "The `marker`. If part of a previous response is truncated, you can use this parameter to obtain the truncated part."
+      }
     },
     {
       "name": "MaxItems",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "返回结果的条数。当返回结果达到`MaxItems`限制被截断时，返回参数`IsTruncated`将等于`true`。 \n\n取值范围：1~1000。默认值：100。",
+        "en": "The number of entries to return. If a response is truncated because it reaches the value of `MaxItems`, the value of `IsTruncated` will be `true`.\n\nValid values: 1 to 1000. Default value: 100."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定查询的用户状态，支持active，freeze状态。指定全部状态时使用逗号拼接，如：active,freeze。未指定状态时默认指定active状态。\n使用Tag标签时，不支持指定status查询，默认查询全部状态的用户。",
+        "en": "The status of the RAM users that you want to query. Valid values: active, freeze, and active,freeze. If you set the value to active,freeze, RAM users in both active and freeze states are queried. If you leave the parameter empty, the value active is used by default. If the Tag parameter is specified, you cannot specify the Status parameter. In this case, RAM users in both states are queried."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。\n\nN的取值范围：1~20，N必须连续。",
+            "en": "The key of tag N.\n\nValid values of N: 1 to 20. N must be consecutive."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。\n\nN的取值范围：1~20，N必须连续。",
+            "en": "The value of tag N.\n\nValid values of N: 1 to 20. N must be consecutive."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询所有RAM用户的基本信息",
+    "en": "ListUserBasicInfos"
+  },
+  "descriptions": {
+    "zh": "您可以通过以下两个API查询所有RAM用户的信息，区别如下：\n\n- ListUsers：查询RAM用户的详细信息。\n- ListUserBasicInfos：查询RAM用户的基本信息，仅包括RAM用户登录名称`UserPrincipalName`、RAM用户显示名称`DisplayName`和RAM用户ID`UserId`。",
+    "en": "You can call the following API operations to query information about all RAM users:\n\n- ListUsers: queries the details of all RAM users.\n\n- ListUserBasicInfos: queries the basic information about all RAM users. The basic information includes only the logon names (`UserPrincipalName`), display names (`DisplayName`), and user IDs (`UserId`)."
+  },
   "example": {
     "unifiedCli": "aliyun ims list-user-basic-infos --marker EXAMPLE --max-items 100 --tag Value=alice Key=operator --status active --region cn-hangzhou",
     "legacyCli": "aliyun ims ListUserBasicInfos --region cn-hangzhou --Status active --Tag.1.Key operator --Tag.1.Value alice --Marker EXAMPLE --MaxItems 100"

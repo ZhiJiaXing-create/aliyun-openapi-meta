@@ -1,5 +1,6 @@
 {
   "name": "DisassociateResourceShare",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ResourceArns",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享资源ARN列表。\n\nN的取值范围：1~5，即每次最多移除5个共享资源。",
+        "en": "A list of the Alibaba Cloud Resource Names (ARNs) of the shared resources.\n\nYou can disassociate up to five shared resources in a single request."
+      }
     },
     {
       "name": "ResourceOwner",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享单元归属者。取值：\n\n- Self（默认值）：共享单元归属于当前账号。适用于资源目录内共享时，资源所有者移除共享资源或资源使用者场景。\n- OtherAccounts：共享单元归属于其他账号。适用于资源目录外共享时，资源使用者主动退出共享单元场景。",
+        "en": "The owner of the resource share. Valid values:\n\n- `Self` (default): The resource share is owned by the current account. Use this value when a resource owner disassociates shared resources or principals from a resource share within a Resource Directory.\n\n- `OtherAccounts`: The resource share is owned by another account. Use this value when a principal leaves a resource share that was created by an account outside your Resource Directory."
+      }
     },
     {
       "name": "ResourceShareId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "共享单元ID。",
+        "en": "The ID of the resource share."
+      }
     },
     {
       "name": "Resources",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源列表。",
+        "en": "A list of shared resources to disassociate from the resource share."
+      },
       "sub_parameters": [
         {
           "name": "ResourceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "共享资源ID。\n\nN的取值范围：1~5，即每次最多移除5个共享资源。\n\n> Resources.N.ResourceId与Resources.N.ResourceType成对出现，需要同时设置。",
+            "en": "The ID of the shared resource.\n\nYou can disassociate up to five shared resources in a single request.\n\n> The `Resources.N.ResourceId` and `Resources.N.ResourceType` parameters must be specified in pairs."
+          }
         },
         {
           "name": "ResourceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "共享资源类型。\n\nN的取值范围：1~5，即每次最多移除5个共享资源。\n\n支持共享的资源类型，请参见[支持资源共享的云服务](~~450526~~)。\n\n> Resources.N.ResourceId与Resources.N.ResourceType成对出现，需要同时设置。",
+            "en": "The type of the shared resource.\n\nYou can disassociate up to five shared resources in a single request.\n\nFor a list of supported resource types, see [Services that work with Resource Sharing](~~450526~~).\n\n> The `Resources.N.ResourceId` and `Resources.N.ResourceType` parameters must be specified in pairs."
+          }
         }
       ]
     },
@@ -46,9 +71,24 @@
       "name": "Targets",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源使用者。",
+        "en": "A list of principals to disassociate from the resource share."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "移除共享资源或资源使用者",
+    "en": "DisassociateResourceShare"
+  },
+  "descriptions": {
+    "zh": "- 资源所有者可以调用本API，移除共享资源或资源使用者。\n- 在资源目录外共享资源时，对于已加入共享的资源使用者，可以调用本API主动退出共享单元。更多信息，请参见[资源使用者退出共享单元](~~440614~~)。\n\n本文将提供一个示例，使用资源目录管理账号，在`cn-hangzhou`地域的共享单元`rs-6GRmdD3X****`中，移除资源使用者`172050525300****`，即停止对该资源使用者的共享。",
+    "en": "- A resource owner can call this API to remove shared resources or principals from a resource share.\n\n- A principal outside your resource directory can call this API to leave the resource share. For more information, see [Exit a resource share](~~440614~~).\n\nThis example shows how to use the management account of a resource directory to remove the principal `172050525300****` from the resource share `rs-6GRmdD3X****` in the `cn-hangzhou` region. This action stops the sharing of resources with that principal."
+  },
   "example": {
     "unifiedCli": "aliyun resourcesharing disassociate-resource-share --resource-share-id rs-6GRmdD3X0000 --resources ResourceId=vsw-bp183p93qs667muql0000 ResourceType=VSwitch --targets 1720505253000000 --resource-arns acs:vpc:cn-shanghai:1037554691870000:vswitch/vsw-uf62b11ue4m8oz2di0000 --resource-owner Self --region cn-hangzhou",
     "legacyCli": "aliyun resourcesharing DisassociateResourceShare --region cn-hangzhou --ResourceShareId 'rs-6GRmdD3X0000' --Targets.1 1720505253000000 --Resources.1.ResourceId 'vsw-bp183p93qs667muql0000' --ResourceOwner Self --ResourceArns.1 'acs:vpc:cn-shanghai:1037554691870000:vswitch/vsw-uf62b11ue4m8oz2di0000' --Resources.1.ResourceType VSwitch"

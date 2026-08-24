@@ -1,5 +1,6 @@
 {
   "name": "SetUserSsoSettings",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,60 @@
       "name": "AuthnSignAlgo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云SP支持的签名算法。取值：\n\n- rsa-sha256\n- rsa-sha1（默认值）",
+        "en": "The supported signature algorithm. Valid values:\n\n- rsa-sha256\n\n- rsa-sha1 (default)"
+      }
     },
     {
       "name": "AuxiliaryDomain",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "辅助域名。",
+        "en": "The auxiliary domain name."
+      }
     },
     {
       "name": "MetadataDocument",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "元数据文档。经过Base64编码。\n\n由支持SAML2.0协议的身份提供商提供。",
+        "en": "The metadata file, which is Base64-encoded.\n\nThe file is provided by an identity provider (IdP) that supports Security Assertion Markup Language (SAML) 2.0."
+      }
     },
     {
       "name": "SsoEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启RAM用户的SSO功能。取值：\n\n- true：开启。\n- false（默认值）：关闭。",
+        "en": "Specifies whether to enable SSO for the RAM user. Valid values:\n\n- true\n\n- false (default)"
+      }
     },
     {
       "name": "SsoLoginWithDomain",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当用户使用SAML SSO登录时，是否要求SAML Response的`<saml:NameID>`元素内容中包含域名（即在IdP侧指定的用于SSO登录匹配的用户名是否带有域名后缀）。\n\n- 该参数取值为`true`时，`<saml:NameID>`元素内容**必须**形如`username@domain`（即带有域名后缀），其中`domain`可以是默认的域名，也可以是域别名（若已设置）。\n- 该参数取值为`false`时，`<saml:NameID>`元素内容应当**仅有**`username`部分（即不带有域名后缀），**不得带有**`domain`部分。\n\n该参数默认取值为`true`。",
+        "en": "Specifies whether the SAML SSO requires a domain name in the `<saml:NameID>` element of the SAML response. If yes, the username specified by the IdP for SSO must have a domain name as the suffix.\n\n- If the value of the parameter is `true`, the `<saml:NameID>` element **must** be in the `username@domain` format. You can set `domain` to the default domain name or the configured domain alias.\n\n- If the value of the parameter is `false`, the `<saml:NameID>` element **must** be in the `username` format and **cannot** contain the `domain` suffix.\n\nThe default value is `true`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "设置用户SSO身份提供商信息",
+    "en": "SetUserSsoSettings"
+  },
   "example": {
     "unifiedCli": "aliyun ims set-user-sso-settings --metadata-document PD94bWwgdmVy0000 --sso-enabled true --auxiliary-domain example.com --sso-login-with-domain true --authn-sign-algo rsa-sha1 --region cn-hangzhou",
     "legacyCli": "aliyun ims SetUserSsoSettings --region cn-hangzhou --AuthnSignAlgo 'rsa-sha1' --MetadataDocument PD94bWwgdmVy0000 --SsoLoginWithDomain true --SsoEnabled true --AuxiliaryDomain 'example.com'"

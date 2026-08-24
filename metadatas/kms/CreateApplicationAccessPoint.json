@@ -1,5 +1,6 @@
 {
   "name": "CreateApplicationAccessPoint",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AuthenticationMethod",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "认证方式。目前仅支持ClientKey。",
+        "en": "The authentication method. Currently, only ClientKey is supported."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "描述信息。",
+        "en": "The description of the AAP."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用接入点名称。",
+        "en": "The name of the AAP."
+      }
     },
     {
       "name": "Policies",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "绑定的权限策略。\n\n>每个应用接入点最多允许绑定3个权限策略。",
+        "en": "The permission policy.\n\n> You can bind up to three permission policies to each AAP."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建应用接入点",
+    "en": "CreateApplicationAccessPoint"
+  },
+  "descriptions": {
+    "zh": "- RAM用户或RAM角色调用该OpenAPI需要被授予的权限策略详情，请参见[访问控制](~~2767210~~)。\n\n- 自建应用进行密码运算操作、获取凭据值前，需要通过应用身份凭证（ClientKey）访问KMS实例。创建应用接入点AAP和身份凭证（ClientKey）的整体流程如下：\n\n  1. 创建网络控制规则：设置允许访问KMS的私网IP或私网网段。更多信息，请参见[CreateNetworkRule](~~2539407~~)。\n  2. 创建权限策略：设置允许应用访问的密钥和凭据，并绑定网络控制规则。更多信息，请参见[CreatePolicy](~~2539454~~)。\n  3. 创建应用接入点：设置认证方式，并绑定权限策略。即本文介绍的内容。\n  4. 创建应用身份凭证（ClientKey）：设置ClientKey的加密口令、有效期，并绑定应用接入点。更多信息，请参见[CreateClientKey](~~2539509~~)。",
+    "en": "To perform cryptographic operations and retrieve secret values, self-managed applications must use a client key to access a Key Management Service (KMS) instance. The following process shows how to create a client key-based AAP:\n\n1.Create a network access rule: You can configure the private IP addresses or private CIDR blocks that are allowed to access KMS. For more information, see [CreateNetworkRule](~~2539407~~).\n\n2.Create a permission policy: You can configure the keys and secrets that are allowed to access and bind network access rules to the keys and secrets. For more information, see [CreatePolicy](~~2539454~~).\n\n3.Create an AAP: You can configure an authentication method and bind a permission policy to an AAP. This topic describes how to create an AAP.\n\n4.Create a client key: You can configure the encryption password and validity period of a client key and bind the client key to an AAP. For more information, see [CreateClientKey](~~2539509~~)."
+  },
   "example": {
     "unifiedCli": "aliyun kms create-application-access-point --name aap_test --description aap_description --authentication-method ClientKey --policies kst-hzz62ee817bvyyr5x0000.efkd_,_kst-hzz62ee817bvyyr5x0000.eyyp --region cn-hangzhou",
     "legacyCli": "aliyun kms CreateApplicationAccessPoint --region cn-hangzhou --Description aap_description --Policies 'kst-hzz62ee817bvyyr5x0000.efkd_,_kst-hzz62ee817bvyyr5x0000.eyyp' --AuthenticationMethod ClientKey --Name aap_test"

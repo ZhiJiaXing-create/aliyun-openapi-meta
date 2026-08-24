@@ -1,5 +1,6 @@
 {
   "name": "CreateGreyTagRoute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/pop/v1/sam/tagroute/greyTagRoute",
@@ -8,39 +9,74 @@
       "name": "AlbRules",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为配置好ALB网关路由的应用创建的灰度规则。",
+        "en": "The canary rules for an application that uses an ALB gateway route."
+      }
     },
     {
       "name": "AppId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用ID。",
+        "en": "The application ID."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则描述。不超过64个字符。",
+        "en": "The description of the canary rule. The description can be up to 64 characters long."
+      }
     },
     {
       "name": "DubboRules",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为Dubbo应用创建的灰度规则。当您的应用为Dubbo框架时必填，且无需填写**ScRules**参数。",
+        "en": "The canary rules for a Dubbo application. This parameter is required for Dubbo applications and cannot be used with the **ScRules** parameter."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则名称。支持以小写字母开头，以数字或小写字母结尾，仅可包含小写字母、中文字符、数字及短划线（-）。不超过64个字符。",
+        "en": "The name of the canary rule. The name can be up to 64 characters long and can contain only lowercase letters, digits, hyphens (-), and Chinese characters. It must start with a lowercase letter and end with a lowercase letter or a digit."
+      }
     },
     {
       "name": "ScRules",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为Spring Cloud应用创建的灰度规则。当您的应用为Spring Cloud框架时必填，且无需填写**DubboRules**参数。",
+        "en": "The canary rules for a Spring Cloud application. This parameter is required for Spring Cloud applications and cannot be used with the **DubboRules** parameter."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "CreateGreyTagRoute",
+    "en": "CreateGreyTagRoute"
+  },
+  "descriptions": {
+    "zh": "> 目前一个应用只能配置一条灰度规则。",
+    "en": "> You can currently configure only one canary rule per application."
+  },
   "example": {
     "unifiedCli": "aliyun sae create-grey-tag-route --app-id 7802c49a-67bc-4167-8369-9a9c003c0000 --name dubbo-echo --description Canary_Release_-_Regions --sc-rules condition_:_OR_,_items_:_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_param_,_value_:_true_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_cookie_,_value_:_true_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_header_,_value_:_true_,_path_:_/post-echo/hi --dubbo-rules condition_:_OR_,_group_:_DUBBO_,_items_:_cond_:_==_,_expr_:_.key1_,_index_:0,_operator_:_rawvalue_,_value_:_value1_,_cond_:_==_,_expr_:_.key2_,_index_:0,_operator_:_rawvalue_,_value_:_value2_,_methodName_:_echo_,_serviceName_:_com.alibaba.edas.boot.EchoService_,_version_:_1.0.0 --alb-rules condition_:_AND_,_items_:_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_sourceIp_,_value_:_127.0.0.1_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_cookie_,_value_:_true_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_header_,_value_:_true_,_path_:_/post-echo/hi --region cn-hangzhou",
     "legacyCli": "aliyun sae POST /pop/v1/sam/tagroute/greyTagRoute --region cn-hangzhou --AlbRules 'condition_:_AND_,_items_:_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_sourceIp_,_value_:_127.0.0.1_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_cookie_,_value_:_true_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_header_,_value_:_true_,_path_:_/post-echo/hi' --Description 'Canary_Release_-_Regions' --AppId '7802c49a-67bc-4167-8369-9a9c003c0000' --ScRules 'condition_:_OR_,_items_:_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_param_,_value_:_true_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_cookie_,_value_:_true_,_cond_:_==_,_name_:_grey_,_operator_:_rawvalue_,_type_:_header_,_value_:_true_,_path_:_/post-echo/hi' --DubboRules 'condition_:_OR_,_group_:_DUBBO_,_items_:_cond_:_==_,_expr_:_.key1_,_index_:0,_operator_:_rawvalue_,_value_:_value1_,_cond_:_==_,_expr_:_.key2_,_index_:0,_operator_:_rawvalue_,_value_:_value2_,_methodName_:_echo_,_serviceName_:_com.alibaba.edas.boot.EchoService_,_version_:_1.0.0' --Name 'dubbo-echo' --header \"Content-Type=application/json\""

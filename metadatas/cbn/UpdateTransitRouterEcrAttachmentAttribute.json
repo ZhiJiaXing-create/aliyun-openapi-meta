@@ -1,5 +1,6 @@
 {
   "name": "UpdateTransitRouterEcrAttachmentAttribute",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that ensures the idempotence of the request.\n\nYou can generate a token from your client, but you must ensure that it is unique across requests. The `ClientToken` can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the **RequestId** of the API request as the **ClientToken**."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次修改请求执行预检，包括权限、实例状态校验等。取值：\n\n- **false**（默认）：发送正常请求，通过检查后直接修改转发路由器实例的信息。\n- **true**：发送检查请求，只进行校验，不会修改转发路由器实例的信息。检查项包括是否填写了必需参数、请求格式等。如果检查不通过，则返回对应错误。如果检查通过，则返回对应请求ID。",
+        "en": "Specifies whether to perform a dry run to check for potential issues, including permissions and instance status. Valid values:\n\n- **false** (default): Sends a normal request. The system modifies the ECR attachment attributes if the request passes the check.\n\n- **true**: Sends a check request only. The system validates the request but does not modify the ECR attachment attributes. If the check fails, an error is returned. If the check passes, the system returns the request ID."
+      }
     },
     {
       "name": "OrderType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "网络实例的付费方。ECR连接的付费方暂不支持修改。",
+        "en": "The payer for the network instance. This operation does not support changing the payer for an ECR attachment."
+      }
     },
     {
       "name": "TransitRouterAttachmentDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ECR连接新的描述信息。\n\n描述可以为空或长度为1～256个字符，不能以http://或https://开头。",
+        "en": "The new description of the ECR attachment.\n\nThe description can be empty or 1 to 256 characters in length. It cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "TransitRouterAttachmentId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "ECR连接ID。",
+        "en": "The ID of the ECR attachment."
+      }
     },
     {
       "name": "TransitRouterAttachmentName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ECR连接的新名称。\n\n名称可以为空或长度为1～128个字符，不能以http://或https://开头。",
+        "en": "The new name of the ECR attachment.\n\nThe name can be empty or 1 to 128 characters in length. It cannot start with `http://` or `https://`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改转发路由器下ECR连接信息",
+    "en": "UpdateTransitRouterEcrAttachmentAttribute"
+  },
+  "descriptions": {
+    "zh": "UpdateTransitRouterEcrAttachmentAttribute接口属于异步接口，即系统会先返回一个RequestId，但该ECR连接并未修改完成，系统后台的修改任务仍在进行。您可以调用ListTransitRouterEcrAttachments接口查询ECR连接的状态。\n\n当ECR连接处于Modifying状态时，表示ECR连接正在修改中，在该状态下，您只能对ECR连接执行查询操作，不能执行其他操作。\n当ECR连接处于Attached状态时，表示ECR连接修改完成。",
+    "en": "`UpdateTransitRouterEcrAttachmentAttribute` is an asynchronous call. After you send a request, the system returns a request ID, but the ECR attachment is not modified immediately. The modification task runs in the background. You can call `ListTransitRouterEcrAttachments` to query the status of the ECR attachment.\n\nIf an ECR attachment is in the `Modifying` state, you can only query the attachment and cannot perform other operations on it. When the attachment enters the `Attached` state, the modification is complete."
+  },
   "example": {
     "unifiedCli": "aliyun cbn update-transit-router-ecr-attachment-attribute --client-token 123e4567-e89b-12d3-a456-426655440000 --transit-router-attachment-id tr-attach-r6g0m3epjehw570000 --transit-router-attachment-name nametest --transit-router-attachment-description desctest --dry-run false --order-type PayByCenOwner --region cn-hangzhou",
     "legacyCli": "aliyun cbn UpdateTransitRouterEcrAttachmentAttribute --region cn-hangzhou --TransitRouterAttachmentId 'tr-attach-r6g0m3epjehw570000' --OrderType PayByCenOwner --DryRun false --TransitRouterAttachmentName nametest --ClientToken '123e4567-e89b-12d3-a456-426655440000' --TransitRouterAttachmentDescription desctest"

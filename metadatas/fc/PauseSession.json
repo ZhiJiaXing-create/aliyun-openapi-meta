@@ -1,5 +1,6 @@
 {
   "name": "PauseSession",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "PUT",
   "pathPattern": "/2023-03-30/functions/[functionName]/sessions/[sessionId]/pause",
@@ -8,21 +9,44 @@
       "name": "functionName",
       "position": "Path",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Session 的函数名称",
+        "en": "The name of the function associated with the session."
+      }
     },
     {
       "name": "qualifier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要保存的会话 ID 关联的函数别名或版本信息",
+        "en": "The function alias or version associated with the session ID to save."
+      }
     },
     {
       "name": "sessionId",
       "position": "Path",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要保存的会话 ID 值",
+        "en": "The ID of the session to save."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "暂停会话",
+    "en": "Pause a session"
+  },
+  "descriptions": {
+    "zh": "暂停一个 Active 状态的会话，将其关联的执行环境状态持久化后释放计算资源。调用后，会话状态变为 Paused，此时该会话不再接受函数调用请求。该操作会保留会话的配置（如 SessionTTL）和 SessionID，可用于长时间任务的中断或开发环境的快照保存，实现成本优化与状态管理。适用于配置了 HEADER_FIELD 或 GENERATED_COOKIE 亲和类型以及会话隔离的自定义镜像函数。",
+    "en": "Pauses an active session by persisting the state of its associated runtime environment and then releasing compute resources. After the call, the session status changes to Paused, and the session no longer accepts function invocation requests. This operation retains the session configuration (such as SessionTTL) and SessionID. You can use this operation to interrupt long-running tasks or save snapshots of development environments for cost optimization and state management. This operation applies to custom image functions that are configured with the HEADER_FIELD or GENERATED_COOKIE affinity type and session isolation."
+  },
   "example": {
     "unifiedCli": "aliyun fc pause-session --function-name my-func --session-id test-session-id-1 --qualifier aliasName1 --region cn-hangzhou",
     "legacyCli": "aliyun fc PUT /2023-03-30/functions/my-func/sessions/test-session-id-1/pause --region cn-hangzhou --qualifier aliasName1 --header \"Content-Type=application/json\""

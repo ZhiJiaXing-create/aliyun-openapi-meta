@@ -1,5 +1,6 @@
 {
   "name": "InvokeFunction",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/2023-03-30/functions/[functionName]/invocations",
@@ -8,39 +9,70 @@
       "name": "body",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "函数调用参数",
+        "en": "Function invocation parameter"
+      }
     },
     {
       "name": "functionName",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "函数名称",
+        "en": "Function name"
+      }
     },
     {
       "name": "qualifier",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "函数版本或别名",
+        "en": "Function version or alias"
+      }
     },
     {
       "name": "x-fc-async-task-id",
       "position": "Header",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "异步任务 ID。您需要事先开启异步任务。\n\n> 建议您在使用 SDK 调用时设置与业务相关的 ID，方便对相关执行进行后续操作。例如，一个视频处理函数可以使用视频文件名作为调用 ID，通过该 ID 可以查看视频是否处理完成或终止视频的处理。该 ID 的命名规则只能以英文大小写字母或下划线（_）开头，由英文大小写字母、数字（0-9）、下划线（_）及短划线（-）组成，不超过 128 个字符。如果您未设置异步调用的 ID，系统则会自动生成一个 ID。",
+        "en": "Asynchronous task ID. Enable asynchronous tasks beforehand.\n\n> When using the SDK for invocation, set a business-related ID. This helps with subsequent operations on the execution. For example, a video processing function can use the video filename as the invocation ID. Use this ID to check if the video processing is complete or to stop it. The ID naming convention must start with an English letter (uppercase or lowercase) or an underscore (\\_). It can contain English letters (uppercase or lowercase), digits (0-9), underscores (\\_), and hyphens (-). The ID cannot exceed 128 characters. If you do not set an ID for asynchronous invocation, the system automatically generates one."
+      }
     },
     {
       "name": "x-fc-invocation-type",
       "position": "Header",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "函数调用类型。Sync或者Async。",
+        "en": "Function invocation type. Sync or Async."
+      }
     },
     {
       "name": "x-fc-log-type",
       "position": "Header",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "函数调用返回日志类型。None或者Tail。",
+        "en": "Log type returned by function invocation. None or Tail."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "调用函数",
+    "en": "InvokeFunction"
+  },
   "example": {
     "unifiedCli": "aliyun fc invoke-function --function-name my-func --qualifier LATEST --x-fc-invocation-type Sync --x-fc-log-type Tail --biz-body event --x-fc-async-task-id test-id --region cn-hangzhou",
     "legacyCli": "aliyun fc POST /2023-03-30/functions/my-func/invocations --region cn-hangzhou --qualifier LATEST --header \"x-fc-async-task-id=test-id\" --header \"x-fc-log-type=Tail\" --header \"x-fc-invocation-type=Sync\" --header \"Content-Type=application/json\" --body \"event\""

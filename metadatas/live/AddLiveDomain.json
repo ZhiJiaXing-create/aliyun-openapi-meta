@@ -1,5 +1,6 @@
 {
   "name": "AddLiveDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,55 +9,91 @@
       "name": "CheckUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "健康检测URL。",
+        "en": "The URL that is used for health checks."
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要接入直播的推流域名或播流域名。支持泛域名，以英文句号（.）开头。",
+        "en": "The ingest domain or streaming domain that you want to add. Wildcard domain names that start with a period (.) are supported."
+      }
     },
     {
       "name": "LiveDomainType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "域名业务类型。取值：\n\n- **liveVideo**：播流域名。如果选择DomainName（需要接入直播的域名）为播流域名时，则域名业务类型必须选择为liveVideo。\n- **liveEdge**：边缘推流域名。如果选择DomainName（需要接入直播的域名）为推流域名时，则域名业务类型必须选择为liveEdge。",
+        "en": "The type of the domain name. Valid values:\n\n- **liveVideo**: streaming domain. This value is required if you set the DomainName parameter to a streaming domain.\n\n- **liveEdge**: ingest domain. This value is required if you set the DomainName parameter to an ingest domain."
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "直播域名单元化信息。取值：\n\n- **cn-beijing**：北京。\n- **cn-shanghai**：上海。\n- **cn-shenzhen**：深圳。\n- **cn-qingdao**：青岛。\n- **ap-southeast-1**：新加坡。\n- **eu-central-1**：德国。\n- **ap-northeast-1**：东京。\n- **ap-southeast-5**：雅加达。\n\n>Region（直播域名单元化信息）与Scope（加速区域）之间不存在相互限制。",
+        "en": "The region in which the domain name resides. Valid values:\n\n- **cn-beijing**: China (Beijing)\n\n- **cn-shanghai**: China (Shanghai)\n\n- **cn-shenzhen**: China (Shenzhen)\n\n- **cn-qingdao**: China (Qingdao)\n\n- **ap-southeast-1**: Singapore\n\n- **eu-central-1**: Germany (Frankfurt)\n\n- **ap-northeast-1**: Japan (Tokyo)\n\n- **ap-southeast-5**: Indonesia (Jakarta)\n\n> Make sure that the settings of the Region and Scope parameters do not conflict with each other."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。关于资源组的更多信息，请参见[什么是资源组](~~2381067~~)。",
+        "en": "The ID of the resource group. For more information about resource groups, see [Resource groups](~~2381067~~)."
+      }
     },
     {
       "name": "Scope",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "加速区域。国际用户、中国站L3及以上用户设置有效。取值：\n\n- **domestic**（默认值）：中国内地。\n- **overseas**：海外及港澳台加速。\n- **global**：全球加速。",
+        "en": "The edge group. This parameter is applicable to users of level 3 or higher in mainland China and users outside mainland China. Valid values:\n\n- **domestic**: mainland China. This is the default value.\n\n- **overseas**: outside mainland China.\n\n- **global**: regions in and outside mainland China."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签健。",
+            "en": "The key of the tag."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The value of the tag."
+          }
         }
       ]
     },
@@ -64,9 +101,24 @@
       "name": "TopLevelDomain",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "顶级接入域。",
+        "en": "The top-level domain name."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加直播域名",
+    "en": "AddLiveDomain"
+  },
+  "descriptions": {
+    "zh": "- 添加直播域名之前，必须先开通视频直播服务。具体操作请参见[开通服务](~~195292~~)。\n- 添加新的域名时，必须先进行验证，再调用本接口添加域名。您可以选择DNS解析验证或文件验证。请参见[验证域名归属权](~~184466~~)。\n- 使用视频直播需要进行推流和播流，您需要分别添加推流域名和播流域名，一次只能提交一个域名。\n- 完成添加域名操作后，还需要对添加的域名进行CNAME解析，请参见[配置CNAME域名解析](~~84929~~)。\n\n- 在添加推流域名和播流域名后，您需要关联域名，才能使用视频直播服务，具体操作请参见[关联域名](~~199338~~)。\n\n><notice>从2019年2月19日起，通过AddLiveDomain添加的域名不支持中心推流的方式，通过CDN API添加的新域名同样不支持中心推流。请使用边缘推流添加一个推流域名（调用AddLiveDomain，业务类型为liveEdge），一个播流域名（调用AddLiveDomain，业务类型为liveVideo），并做关联（调用[AddLiveDomainMapping](~~2847792~~)），2019年2月19日之前添加的域名不受影响。\n></notice>\n\n## QPS限制\n本接口的单用户QPS限制为30次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "- You must activate ApsaraVideo Live before you add a domain name. For more information, see [Activate ApsaraVideo Live](~~195292~~).\n\n- ApsaraVideo Live verifies the ownership of a new domain name that you add. After the verification is passed, the domain name is added to ApsaraVideo Live. ApsaraVideo Live allows you to use a Domain Name System (DNS) record or a verification file to verify the ownership of a domain name. For more information, see [Verify the ownership of a domain name](~~184466~~).\n\n- To use ApsaraVideo Live to ingest and play streams, you must add an ingest domain and a streaming domain. You can add only one domain name at a time.\n\n- After you add a domain name, you must configure a CNAME record for the domain name. For more information, see [Add a CNAME record](~~84929~~).\n\n- After you add an ingest domain and a streaming domain, you must associate the streaming domain with the ingest domain. For more information, see [Associate a streaming domain with an ingest domain](~~199338~~).\n\n> From February 19, 2019, domain names that are added by calling the AddLiveDomain operation do not support live center ingest. Domain names that are added by using Alibaba Cloud CDN also do not support live center ingest. When you call the AddLiveDomain operation, you can set the LiveDomainType parameter to liveEdge to add an ingest domain that uses edge ingest or set the LiveDomainType parameter to liveVideo to add a streaming domain. You can associate a streaming domain with an ingest domain by calling the AddLiveDomainMapping operation. Domain names added before February 19, 2019, for which live center ingest was configured, are not affected.\n\n## [](#qps-)QPS limit\n\nYou can call this operation up to 30 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation."
+  },
   "example": {
     "unifiedCli": "aliyun live add-live-domain --live-domain-type liveVideo --domain-name example.aliyundoc.com --biz-region cn-beijing --check-url http://demo.aliyundoc.com/status.html --scope domestic --top-level-domain learn.aliyundoc.com --resource-group-id rg-aekzw000000 --tag Value=TestValue Key=TestKey --region cn-hangzhou",
     "legacyCli": "aliyun live AddLiveDomain --region cn-hangzhou --Tag.1.Key TestKey --CheckUrl 'http://demo.aliyundoc.com/status.html' --Scope domestic --ResourceGroupId 'rg-aekzw000000' --LiveDomainType liveVideo --DomainName 'example.aliyundoc.com' --Tag.1.Value TestValue --Region 'cn-beijing' --TopLevelDomain 'learn.aliyundoc.com'"

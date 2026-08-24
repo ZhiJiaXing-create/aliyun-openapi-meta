@@ -1,5 +1,6 @@
 {
   "name": "ListNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,69 +9,120 @@
       "name": "ClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待查询的集群ID。\n\n您可以通过调用[ListClusters](~~87116~~)获取集群ID。",
+        "en": "The ID of the cluster.\n\nYou can call the [ListClusters](~~87116~~) operation to query the cluster ID."
+      }
     },
     {
       "name": "Filter",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点状态过滤选项。\n\n取值格式为：{\"status\":\"node_status\"}，请将其中node_status替换为节点的状态。节点的取值范围为：\n\n- uninit：安装中\n- exception：异常\n- running：运行中\n- initing：初始化中\n- releasing：释放中\n- untracking：未加入集群\n- stopped：已停止",
+        "en": "The filter options of the node list.\n\nFormat: {\"status\":\"node_status\"}. Replace node_status with the node status. Valid values of node_status:\n\n*   uninit: The node is being installed.\n*   exception: An exception occurred on the node.\n*   running: The node is running.\n*   initing: The node is being initialized.\n*   releasing: The node is being released.\n*   untracking: The node is not added to the cluster.\n*   stopped: The node is stopped."
+      }
     },
     {
       "name": "HostName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点名称，支持模糊查询，支持MySQL的正则表达式。",
+        "en": "The name of the node. You can perform a fuzzy search. MySQL regular expressions are supported."
+      }
     },
     {
       "name": "HostNamePrefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "主机名前缀。查询具有指定前缀的节点。",
+        "en": "The prefix of the hostname. You can query nodes that have a specified prefix."
+      }
     },
     {
       "name": "HostNameSuffix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "主机名后缀。查询具有指定后缀的节点。",
+        "en": "The suffix of the hostname. You can query nodes that have a specified suffix."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "显示的页码，起始值为1。",
+        "en": "The number of the page to return. Pages start from page 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页显示的条数。取值范围：1~100\n\n默认值：10",
+        "en": "The number of entries to return on each page. Valid values: 1 to 100.\n\nDefault value: 10."
+      }
     },
     {
       "name": "PrivateIpAddress",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "私网IP地址。",
+        "en": "The private IP address of the node."
+      }
     },
     {
       "name": "Role",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点类型。取值范围：\n- Manager：管控节点\n- Login：登录节点\n- Compute：计算节点",
+        "en": "The type of the node. Valid values:\n\n*   Manager: management node\n*   Login: logon node\n*   Compute: compute node"
+      }
     },
     {
       "name": "Sequence",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点列表排序方式。取值范围：\n- Forward：正序排序。\n- Backward：逆序排序。\n\n默认值：Forward\n\n> 和SortBy同时使用，如SortBy设置为AddedTime，Sequence设置为Forward，表示按节点加入时间正序查询。",
+        "en": "The sorting method of the node list. Valid values:\n\n*   Forward: sorts the nodes in chronological order.\n*   Backward: sorts the nodes in reverse chronological order.\n\nDefault value: Forward.\n\n>  This parameter is used together with the SortBy parameter. If you set SortBy to AddedTime and set Sequence to Forward, nodes are queried in ascending order of time that they are added."
+      }
     },
     {
       "name": "SortBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点列表排序方式。取值范围：\n- AddedTime：按加入时间排序\n\n- HostName：按节点主机名称排序",
+        "en": "The sorting method of the node list. Valid values:\n\n*   AddedTime: sorts the nodes by the time that they are added.\n*   HostName: sorts the nodes by their host names."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询集群中节点列表",
+    "en": "ListNodes"
+  },
   "example": {
     "unifiedCli": "aliyun ehpc list-nodes --cluster-id ehpc-hz-FYUr320000 --role Manager --host-name test-HostName --page-number 1 --page-size 10 --sequence Forward --sort-by AddedTime --filter status_:_running --private-ip-address 172.16.00.00 --host-name-prefix compute --host-name-suffix 01 --api-version 2018-04-12 --region cn-hangzhou",
     "legacyCli": "aliyun ehpc ListNodes --region cn-hangzhou --Role Manager --HostNameSuffix 01 --PrivateIpAddress '172.16.00.00' --PageSize 10 --ClusterId 'ehpc-hz-FYUr320000' --PageNumber 1 --Filter 'status_:_running' --SortBy AddedTime --HostNamePrefix compute --Sequence Forward --HostName 'test-HostName'"

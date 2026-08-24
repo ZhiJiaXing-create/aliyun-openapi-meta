@@ -1,5 +1,6 @@
 {
   "name": "CancelUrlUploadJobs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "JobIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务ID列表，任务ID（JobId）可以通过[GetPlayInfo](~~56124~~)接口中返回的PlayInfo结构体中获取。\n- 最多支持10个ID。\n- 多个ID之间使用半角逗号（,）分隔。\n\n> JobIds和UploadUrls必须指定一个，二者同时传入时只处理JobIds。",
+        "en": "The IDs of the upload jobs. You can obtain the job IDs from PlayInfo in the response to the [GetPlayInfo](~~56124~~) operation.\n\n*   You can specify a maximum of 10 IDs.\n*   Separate multiple IDs with commas (,).\n\n>  You must specify either JobIds or UploadUrls. If you specify both the JobIds and UploadUrls parameters, only the value of the JobIds parameter takes effect."
+      }
     },
     {
       "name": "UploadUrls",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "上传源视频URL列表。多个URL之间使用半角逗号（,）分隔，最多支持10个。\n\n> - 使用前，先进行URL编码。\n> - JobIds和UploadUrls必须指定一个，二者同时传入时只处理JobIds。",
+        "en": "The upload URLs of source video files. Separate multiple URLs with commas (,). You can specify a maximum of 10 URLs.\n\n> *   You must encode the URLs before you use the URLs.\n> *   You must specify either JobIds or UploadUrls. If you specify both the JobIds and UploadUrls parameters, only the value of the JobIds parameter takes effect."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "取消URL上传任务",
+    "en": "CancelUrlUploadJobs"
+  },
+  "descriptions": {
+    "zh": "- 只能取消任务状态为**Pending**的URL上传任务，可通过[GetURLUploadInfos](~~106830~~)接口查询任务状态。\n- 已经开始执行的上传任务无法取消。\n- 请求参数 JobIds和UploadUrls必须指定一个，二者同时传入时只处理JobIds。",
+    "en": "*   You can cancel only URL-based upload jobs in the **Pending** state. You can query the status of a URL-based upload job by calling the [GetURLUploadInfos](~~106830~~) operation.\n*   You cannot cancel an upload job that already starts.\n*   You must specify either JobIds or UploadUrls. If you specify both parameters, only JobIds takes effect."
+  },
   "example": {
     "unifiedCli": "aliyun vod cancel-url-upload-jobs --job-ids 341c92e6c18dc435ee312536850000,0193d395194a83ad6ee2ef27a5b50000 --upload-urls http://www.example.aliyundoc.com/000/video01.mp4,http://www.example.aliyundoc.com/000/video02.mp4 --region cn-hangzhou",
     "legacyCli": "aliyun vod CancelUrlUploadJobs --region cn-hangzhou --UploadUrls 'http://www.example.aliyundoc.com/000/video01.mp4,http://www.example.aliyundoc.com/000/video02.mp4' --JobIds '341c92e6c18dc435ee312536850000,0193d395194a83ad6ee2ef27a5b50000'"

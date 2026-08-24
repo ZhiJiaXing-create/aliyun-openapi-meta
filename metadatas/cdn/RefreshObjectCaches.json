@@ -1,5 +1,6 @@
 {
   "name": "RefreshObjectCaches",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,54 @@
       "name": "Force",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否直接删除CDN节点上的缓存。默认为false。\n\n- **true**：直接删除CDN节点上的缓存。直接删除意味着立即将指定的缓存资源从CDN的所有节点上删除，下一个对该资源的请求将需要访问源服务器去获取最新版本的数据，然后重新进行缓存。这种方式可以确保一旦执行了删除操作后，所有后续请求都将获得最新的内容，适合于需要立即更新缓存内容的情况，例如紧急修复安全漏洞或者发布重要更新时。但需要注意的是，这可能会瞬间增加源服务器的压力，因为所有相关请求都需要访问源服务器。\n\n- **false**：对CDN节点上的缓存标记过期。将缓存资源标记为过期之后，下一个对该资源的请求到达时，CDN节点将会回源验证该资源的最新版本，若与当前缓存资源一致，则直接返回已缓存资源，若不一致，则回源拉取新资源返回给用户，并重新缓存该资源。这种方法的好处是它允许逐渐更新缓存中的内容，而不是立即全部清除，适用于需要平滑过渡的情况，可以减少由于直接删除大量缓存而可能导致源站压力增大。\n\n> 此参数生效范围：使用目录刷新、正则刷新、去参数刷新这三种刷新方式的时候可以生效。",
+        "en": "Specifies whether to directly delete the cache on CDN points of presence. Default value: false.\n\n- **true**: Directly deletes the cache on CDN points of presence. This means the specified cached resources are immediately removed from all CDN points of presence. The next request for the resource must access the origin server to retrieve the latest version, which is then cached again. This ensures that all subsequent requests return the latest content after the deletion. This option is suitable for scenarios that require immediate cache updates, such as emergency security vulnerability fixes or publishing critical updates. Note that this may temporarily increase the load on the origin server because all related requests need to access the origin server.\n\n- **false**: Marks the cache on CDN points of presence as expired. After a cached resource is marked as expired, the next request for the resource triggers the CDN point of presence to authenticate the latest version through origin fetch. If the version matches the current row cache, the cached resource is returned directly. If not, the latest resource is retrieved through origin fetch, returned to the user, and cached again. This method allows gradual cache updates instead of immediate full purge. It is suitable for scenarios that require smoothing transitions and reduces the increased origin server load that may result from deleting a large amount of cache at once.\n\n> This parameter takes effect only when you use folder refresh, regex-based refresh, or parameter-filtering refresh."
+      }
     },
     {
       "name": "ObjectPath",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "- 单次提交多个URL或多个目录时，使用换行符分隔。\n- 单次提交的任务中所有URL的域名个数总和需要在10个以内。",
+        "en": "- To commit multiple URLs or multiple folders at a time, separate them with line feed characters.\n- The total number of domain names across all URLs in a single committed node must not exceed 10."
+      }
     },
     {
       "name": "ObjectType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "刷新类型。取值范围：\n\n- **File**（默认值）：URL。\n- **Directory**：目录。\n- **Regex**：正则刷新。\n- **IgnoreParams**：去参数刷新。去参数指的是去除请求URL中`?`及`?`之后的参数，去参数刷新指的是用户先通过接口提交去参数后的URL，然后用户提交的待刷新URL将会与已缓存资源的URL进行去参数匹配，如果已缓存资源的URL去参数以后与待刷新URL匹配，那么CDN节点将对缓存资源执行刷新处理。\n\n> - URL刷新和目录刷新的功能说明请参考[刷新和预热资源](~~64936~~)。\n>- 文件刷新将直接删除节点上的资源，当有新请求时回源拉取新资源。其它刷新类型默认只刷新发生变更的资源，需要强制刷新请配置Force参数为true，详见Force参数说明。",
+        "en": "The refresh type. Valid values:\n\n- **File** (default): URL.\n- **Directory**: folder.\n- **Regex**: regex-based refresh.\n- **IgnoreParams**: parameter-filtering refresh. Parameter filtering removes the `?` and all characters after `?` from a request URL. In a parameter-filtering refresh, you commit a URL with parameters removed through the API. The committed URL is then matched against cached resource URLs after their parameters are removed. If a cached resource URL matches the committed URL after parameter filtering, the CDN point of presence executes a refresh on the cached resource.\n\n> - For the feature description of URL refresh and folder refresh, refer to [Refresh and prefetch resources](~~64936~~).\n> - A file refresh directly deletes the resource from the point of presence. When a new request arrives, the latest resource is retrieved through origin fetch. Other refresh types refresh only changed resources by default. To force a refresh, set the Force parameter to true. For more information, see the metric description of the Force parameter."
+      }
+    },
+    {
+      "name": "ReplicaTag",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "参数暂不可用。",
+        "en": "This parameter is not active."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "刷新缓存",
+    "en": "Refresh cache"
+  },
+  "descriptions": {
+    "zh": "- 请求方式：支持POST请求，参数用form表单显示。\n- 相关接口：刷新预热类接口包含[RefreshObjectCaches](~~91164~~)刷新接口和[PushObjectCache](~~91161~~)预热接口。\n- 单用户调用频率：50次/秒。\n- 如果您需要自动化刷新或预热，请参见[刷新预热自动化脚本](~~151829~~)。\n\n## 注意事项\n- 提交刷新任务并成功执行后，CDN节点上对应的缓存资源将会失效，当您再次发起访问请求时，节点会回源站拉取所需资源，并重新缓存在节点上，因此大批量提交刷新任务会清空较多缓存，导致回源带宽和请求突增，增加源站压力。\n- 刷新任务从提交到生效，大约需要5~6分钟，如果文件或者目录配置的缓存过期时间少于5分钟，您无需执行刷新操作，等待文件或者目录缓存超时更新即可。\n- 使用RAM用户来执行刷新或预热操作的，需要先获得授权，请参见[授予RAM用户刷新预热权限](~~260300~~)完成授权。\n\n### URL刷新配额\n- 默认情况下，一个账号每日最多可以提交10000条URL刷新和100个目录刷新，目录刷新包含子目录。如果您的阿里云账号的日带宽峰值大于200 Mbps，您可以参考<props=\"china\">[配额管理](~~256513~~)</props><props=\"intl\">[提交工单](https://account.alibabacloud.com/login/login.htm?oauth_callback=https%3A//ticket-intl.console.aliyun.com/%23/ticket/createIndex)</props>申请提升每日配额，阿里云将根据您业务的实际需求进行评估和配置。\n- 默认情况下，一个账号每日最多可以提交20个正则刷新、100个去参数刷新，如果您的阿里云账号的日带宽峰值大于10 Gbps，您可以通过<props=\"china\">[填写信息](https://page.aliyun.com/form/act2017566026/index.htm)</props><props=\"intl\">[提交工单](https://workorder-intl.console.aliyun.com/#/ticket/createIndex)</props>来申请提升每日配额。\n- 每次请求最多支持提交1000条URL刷新或者100个目录刷新或者1个正则刷新。\n- 单个域名每分钟最多支持提交10000条URL刷新。",
+    "en": "- Request method: POST requests are supported. Parameters are displayed in a form.\n- Related operations: The refresh and prefetch operations include the [RefreshObjectCaches](~~91164~~) refresh operation and the [PushObjectCache](~~91161~~) prefetch operation.\n- Maximum number of calls per user: 50 calls per second.\n- To automate refresh or prefetch tasks, refer to [Scripts for refresh and prefetch automation](~~151829~~).\n\n## Before you begin\n- After a refresh node is committed and successfully executed, the corresponding cached resources on CDN points of presence become invalid. When you send a new access request, the point of presence performs an origin fetch to retrieve the required resources and caches them again. Committing a large number of refresh nodes clears a large amount of cache, which causes spikes in origin fetch bandwidth and requests and increases the load on the origin server.\n- A refresh node takes about 5 to 6 minutes to take effect after it is committed. If the cache expiration time configured for a file or folder is less than 5 minutes, you do not need to perform a refresh operation. Wait for the file or folder cache to time out and update automatically.\n- To use a Resource Access Management (RAM) user to perform refresh or prefetch operations, obtain the required authorization first. Refer to [Grant refresh and prefetch permissions to a RAM user](~~260300~~) to complete the authorization.\n\n### URL refresh quota\n- By default, each account can commit up to 10,000 URL refresh requests and 100 folder refresh requests per day. Folder refresh includes subdirectories. If the daily peak bandwidth of your Alibaba Cloud account exceeds 200 Mbit/s, you can request a higher daily quota by referring to <props=\"china\">[Quota management](~~256513~~)</props><props=\"intl\">[submit a ticket](https://account.alibabacloud.com/login/login.htm?oauth_callback=https%3A//ticket-intl.console.aliyun.com/%23/ticket/createIndex)</props>. Alibaba Cloud evaluates and configures the quota based on your actual business requirements.\n- By default, each account can commit up to 20 regex-based refresh requests and 100 parameter-filtering refresh requests per day. If the daily peak bandwidth of your Alibaba Cloud account exceeds 10 Gbit/s, you can request a higher daily quota by <props=\"china\">[filling in the form](https://page.aliyun.com/form/act2017566026/index.htm)</props><props=\"intl\">[submitting a ticket](https://workorder-intl.console.aliyun.com/#/ticket/createIndex)</props>.\n- Each request can contain up to 1,000 URL refresh entries, 100 folder refresh entries, or 1 regex-based refresh entry.\n- A maximum of 10,000 URL refresh entries can be committed per minute for a single domain name."
+  },
   "example": {
     "unifiedCli": "aliyun cdn refresh-object-caches --object-path http://example.com/image/1.png_http://aliyundoc.com/image/2.png --object-type File --biz-force false --replica-tag false --region cn-hangzhou",
     "legacyCli": "aliyun cdn RefreshObjectCaches --region cn-hangzhou --ObjectType File --ObjectPath 'http://example.com/image/1.png_http://aliyundoc.com/image/2.png' --Force false --ReplicaTag false"

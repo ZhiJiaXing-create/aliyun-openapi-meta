@@ -1,5 +1,6 @@
 {
   "name": "DescribeSlowLogRecords",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "Asc",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否升序排序，默认为**true**。\n\n- **true**：是。\n- **false**：否。",
+        "en": "Specifies whether to sort the results in ascending order. The default value is **true**.\n\n- **true**: Sorts the results in ascending order.\n\n- **false**: Sorts the results in descending order."
+      }
     },
     {
       "name": "EndTime",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "结束时间。",
+        "en": "The end of the time range to query. The value must be a UNIX timestamp in milliseconds."
+      }
     },
     {
       "name": "Filters",
       "position": "Body",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "筛选条件列表。",
+        "en": "The list of filter conditions."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数。\n\n> 详情请参见补充说明。",
+            "en": "The filter key.\n\n> For details, refer to the supplementary information."
+          }
         },
         {
           "name": "Value",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤参数取值。",
+            "en": "The value for the filter key."
+          }
         }
       ]
     },
@@ -40,39 +61,74 @@
       "name": "InstanceId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例id。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "NodeId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点id。",
+        "en": "The node ID."
+      }
     },
     {
       "name": "OrderBy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "- **MySQL** \n  - QueryTimeSeconds：查询耗时（秒）。\n  - LockTimeSeconds：锁时间（秒）。\n  - RowsSent：配置行。\n  - RowsExamined：检查行。\n- **Redis**\n  - QueryTime：耗时。\n  - Timestamp：执行结束时间。\n- **MongoDB**\n  - QueryTime：耗时。\n  - Timestamp：执行结束时间。\n  - KeysExamined：已检查密匙。\n  - DocExamined：已检查文件。\n  - ReturnNum：返回行。\n\n<notice>RDS PostgreSQL、PolarDB PostgreSQL和SQLServer不支持排序。</notice>",
+        "en": "- **MySQL**\n\n  - QueryTimeSeconds: the query execution time in seconds.\n\n  - LockTimeSeconds: the lock duration in seconds.\n\n  - RowsSent: the number of rows sent.\n\n  - RowsExamined: the number of rows examined.\n\n- **Redis**\n\n  - QueryTime: the query execution time.\n\n  - Timestamp: the end time of the query execution.\n\n- **MongoDB**\n\n  - QueryTime: the query execution time.\n\n  - Timestamp: the end time of the query execution.\n\n  - KeysExamined: the number of keys examined.\n\n  - DocExamined: the number of documents scanned.\n\n  - ReturnNum: the number of rows returned.\n\n><notice>\n\nRDS for PostgreSQL, PolarDB for PostgreSQL, and SQL Server do not support sorting.\n\n></notice>"
+      }
     },
     {
       "name": "PageNumber",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，从1开始。",
+        "en": "The page number. Page numbering starts at 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页大小。",
+        "en": "The number of entries per page."
+      }
     },
     {
       "name": "StartTime",
       "position": "Body",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "起始时间。",
+        "en": "The start of the time range to query. The value must be a UNIX timestamp in milliseconds."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "慢日志记录查询",
+    "en": "DescribeSlowLogRecords"
+  },
+  "descriptions": {
+    "zh": "- `InstanceId` 为实例ID，必填参数。\n- `StartTime` 和 `EndTime` 为查询的时间范围，必填参数。\n- 可以通过设置 `PageNumber` 和 `PageSize` 来分页获取结果。\n- 支持通过 `OrderBy` 参数对结果进行排序，具体可排序字段请参考文档。\n- 使用 `Filters` 参数可以进一步细化查询条件，如按主机地址、SQL ID等过滤。\n<notice>某些数据库类型（如pg和polarPG）不支持特定的排序方式，请根据实际情况选择合适的参数。</notice>",
+    "en": "- `InstanceId` is the required instance ID.\n\n- `StartTime` and `EndTime` specify the required query time range.\n\n- Use `PageNumber` and `PageSize` to paginate the results.\n\n- Use `OrderBy` to sort the results. For a list of sortable fields, refer to the documentation.\n\n- Use `Filters` to refine query conditions, such as filtering by host address or SQL ID.\n\n\n  ><notice>\n\n  Some database types, such as RDS for PostgreSQL and PolarDB for PostgreSQL, do not support specific sorting methods. Select parameters compatible with your database type.\n\n  ></notice>"
+  },
   "example": {
     "unifiedCli": "aliyun das describe-slow-log-records --instance-id rm-8vbk4xz99su80000 --node-id pi-d9j9fe7wq7t9i0000 --start-time 1596177993000 --end-time 1634972640000 --page-number 1 --page-size 10 --filters Value=None Key=None --order-by QueryTimeSeconds --asc true --region cn-hangzhou",
     "legacyCli": "aliyun das DescribeSlowLogRecords --region cn-hangzhou --OrderBy QueryTimeSeconds --Asc true --Filters.1.Key None --EndTime 1634972640000 --PageSize 10 --InstanceId 'rm-8vbk4xz99su80000' --PageNumber 1 --Filters.1.Value None --NodeId 'pi-d9j9fe7wq7t9i0000' --StartTime 1596177993000"

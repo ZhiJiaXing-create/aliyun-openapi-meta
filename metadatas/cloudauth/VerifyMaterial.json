@@ -1,5 +1,6 @@
 {
   "name": "VerifyMaterial",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "BizId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "标识一次认证任务的唯一ID，不超过64字符。针对一次认证任务，系统支持无限次发起提交，直到最终认证通过，该任务完结。\n\n> 发起不同的认证任务时需要更换不同的BizId。",
+        "en": "The unique ID that identifies a verification task. The value can be up to 64 characters in length. For a single verification task, the system supports unlimited submissions until the verification is passed and the task is completed.\n\n> Use a different BizId for each new verification task."
+      }
     },
     {
       "name": "BizType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "使用实人认证服务的业务场景标识。请先参见[业务设置](~~127885~~)在控制台完成创建。",
+        "en": "The business scenario identifier for the ID Verification service. Create one in the console first. For more information, see [Business settings](~~127885~~)."
+      }
     },
     {
       "name": "FaceImageUrl",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "人像正面照图片的HTTP或HTTPS链接。",
+        "en": "The HTTP or HTTPS URL of the front-facing facial photo."
+      }
     },
     {
       "name": "IdCardBackImageUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "身份证国徽面图片的HTTP或HTTPS链接。",
+        "en": "The HTTP or HTTPS URL of the national emblem side of the ID card."
+      }
     },
     {
       "name": "IdCardFrontImageUrl",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "身份证人像面图片的HTTP或HTTPS链接。",
+        "en": "The HTTP or HTTPS URL of the portrait side of the ID card."
+      }
     },
     {
       "name": "IdCardNumber",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "身份证号。",
+        "en": "The ID card number."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "姓名。",
+        "en": "The name."
+      }
     },
     {
       "name": "UserId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "终端用户的ID，例如终端用户的账号ID。",
+        "en": "The ID of the end user, such as the account ID of the end user."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "实人认证方案纯服务端API",
+    "en": "Server-side only API for ID verification"
+  },
+  "descriptions": {
+    "zh": "接入准备：接入该API时，请确保已经完成相应的准备工作，具体请参见[服务端接入准备](~~127471~~)。\n\n请求方法：HTTPS POST和GET。\n\n接口描述：接入方服务端提交认证材料到实人认证服务进行核实比对，结果同步返回。\n\n适用范围：该接口仅适用于纯服务端接入的认证方案。\n\n上传图片地址说明：\n\n- HTTP或HTTPS地址：支持公网可访问的HTTP或HTTPS地址。例如，`http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`。\n- OSS地址：接入方的图片如果是本地文件，阿里云也提供相应的上传SDK，支持业务方将图片上传到实人认证服务指定的OSS bucket中，并获取相应的OSS地址后，作为接口的图片地址入参。如果您的业务需要使用上传SDK，请提交[工单](https://selfservice.console.aliyun.com/ticket/category/cloudauth/today)联系我们获取。\n\n图片限制说明：\n\n- 不支持本地图片的相对路径或绝对路径。\n- 单张图片大小请控制在2 M内，避免算法拉取超时。\n- 图片中人脸区域的大小至少64*64像素。\n- 单个请求的Body有8 M的大小限制，请计算好请求中所有图片和其他信息的大小，不要超限。",
+    "en": "Before you begin: Before calling this API, ensure that you have completed the required preparations. For more information, see [Server-side integration preparations](~~127471~~).\n\nRequest method: HTTPS POST and GET.\n\nOperation description: The caller's server submits verification materials to the ID Verification service for comparison and validation. The result is returned synchronously.\n\nApplicable scope: This operation is applicable only to server-side-only verification solutions.\n\nImage URL description:\n\n- HTTP or HTTPS URL: Publicly accessible HTTP or HTTPS URLs are supported. For example, `http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg`.\n- OSS URL: If the caller's images are local files, Alibaba Cloud provides an upload SDK that allows you to upload images to the OSS bucket designated by the ID Verification service and obtain the corresponding OSS URL to use as the image URL parameter. If your business requires the upload SDK, [submit a ticket](https://selfservice.console.aliyun.com/ticket/category/cloudauth/today) to contact us.\n\nImage restrictions:\n\n- Relative paths or absolute paths of local images are not supported.\n- Keep each image within 2 MB to avoid algorithm fetch timeouts.\n- The face area in the image must be at least 64 × 64 pixels.\n- The request body has an 8 MB size limit. Ensure that the total size of all images and other information in the request does not exceed this limit."
+  },
   "example": {
     "unifiedCli": "aliyun cloudauth verify-material --id-card-back-image-url http://image-demo.img-cn-hangzhou.aliyuncs.com/example3.jpg --face-image-url http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg --biz-type RPMinTest --biz-id 39ecf51e-2f81-4dc5-90ee-ff86125b0000 --name '张三' --id-card-number 023432189011230000 --id-card-front-image-url http://image-demo.img-cn-hangzhou.aliyuncs.com/example2.jpg --user-id 54sdj --api-version 2019-03-07 --region cn-hangzhou",
     "legacyCli": "aliyun cloudauth VerifyMaterial --region cn-hangzhou --IdCardNumber 023432189011230000 --UserId 54sdj --BizType RPMinTest --IdCardBackImageUrl 'http://image-demo.img-cn-hangzhou.aliyuncs.com/example3.jpg' --BizId '39ecf51e-2f81-4dc5-90ee-ff86125b0000' --FaceImageUrl 'http://image-demo.img-cn-hangzhou.aliyuncs.com/example.jpg' --IdCardFrontImageUrl 'http://image-demo.img-cn-hangzhou.aliyuncs.com/example2.jpg' --Name '张三'"

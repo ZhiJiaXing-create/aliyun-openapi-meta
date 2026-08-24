@@ -1,5 +1,6 @@
 {
   "name": "ListApplications",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,90 @@
       "name": "AppVersions",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用的业务服务版本号。支持多选，以\",\"分割；输入All，输出所有版本数据。默认只输出稳定版版本号的关联数据。",
+        "en": "The version number of the application. Separate multiple version numbers with commas (,). If you want to query data of all versions of applications, specify All for this parameter. By default, only data of applications in the stable versions are queried."
+      }
     },
     {
       "name": "ClusterNames",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用集群名。支持多选，以\",\"分割；输入All，查询用户名下所有集群的应用列表；默认查询全量。",
+        "en": "The name of the application cluster. Separate multiple names with commas (,). If you want to query applications of all clusters in your account, specify All for this parameter. Default value: All."
+      }
     },
     {
       "name": "Level",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "应用边缘资源的区域统计级别。枚举类型，取值范围：\n\n- National：全国\n- Big：大区\n- Middle：省级\n- Small：城市\n- RegionId：边缘节点\n\n默认National。",
+        "en": "The region level by which edge resources of the application are collected. The value is of the enumeration type. Valid values:\n\n- National: Chinese mainland\n\n- Big: area\n\n- Middle: province\n\n- Small: city\n\n- RegionId: edge node\n\nDefault value: National."
+      }
     },
     {
       "name": "MaxDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询终止时间，格式\"2006-01-02\"；默认无时间限制。",
+        "en": "The end of the time range to query. Specify the time in the 2006-01-02 format. By default, the time range to query is not restricted."
+      }
     },
     {
       "name": "MinDate",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询起始时间，格式\"2006-01-02\"；默认无时间限制。",
+        "en": "The beginning of the time range to query. Specify the time in the 2006-01-02 format. By default, the time range to query is not restricted."
+      }
     },
     {
       "name": "OutAppInfoParams",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否输出统计资源实例/容器Pod等维度的信息。Json的字符串格式。默认输出所有信息。",
+        "en": "Specifies whether to return other information about the application, such as statistics on resource instances and pods. The value must be a JSON string. By default, all information is returned."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，起始值为1，导出全部信息时可不传入。",
+        "en": "The page number. Pages start from page 1. This parameter is optional if you want to return the push status of all data files."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时设置的每页行数，导出全部时可不传入。",
+        "en": "The number of entries per page. This parameter is optional if you want to return all information about the applications."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "获取应用列表",
+    "en": "ListApplications"
+  },
   "example": {
     "unifiedCli": "aliyun ens list-applications --cluster-names poc,pre --app-versions v1,v2 --level National --out-app-info-params appInfo_:true,_detailStat_:_true,_appVersionStat_:_true,_districtStat_:true_,_instanceStat_:_true,_podCountStat_:_true --page-number 1 --page-size 10 --min-date 2022-02-15 --max-date 2022-02-20 --region cn-hangzhou",
     "legacyCli": "aliyun ens ListApplications --region cn-hangzhou --AppVersions 'v1,v2' --MaxDate '2022-02-20' --PageSize 10 --PageNumber 1 --ClusterNames 'poc,pre' --Level National --MinDate '2022-02-15' --OutAppInfoParams 'appInfo_:true,_detailStat_:_true,_appVersionStat_:_true,_districtStat_:true_,_instanceStat_:_true,_podCountStat_:_true'"

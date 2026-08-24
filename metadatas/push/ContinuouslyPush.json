@@ -1,5 +1,6 @@
 {
   "name": "ContinuouslyPush",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "AppKey",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "AppKey信息。",
+        "en": "AppKey information."
+      }
     },
     {
       "name": "MessageId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "消息ID。\n\n调用Push接口，设置Target为TBD，调用后获得的MessageId。它代表了一个已经保存到推送系统的消息。",
+        "en": "Message ID.\n\nObtain this MessageId by calling the Push API with Target set to TBD. It represents a message already saved in the push system."
+      }
     },
     {
       "name": "Target",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "推送目标：\n\n- **DEVICE**：根据设备推送\n- **ACCOUNT**：根据账号推送\n- **ALIAS**：根据别名推送\n\n持续推送只支持这3种目标类型。",
+        "en": "Push target:\n\n- **DEVICE**: Push by device\n\n- **ACCOUNT**: Push by account\n\n- **ALIAS**: Push by alias\n\nContinuous push supports only these three target types."
+      }
     },
     {
       "name": "TargetValue",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "根据Target来设定，多个值使用逗号分隔，超过限制需要分多次推送。\n\n- Target=DEVICE，值如`deviceid1,deviceid2`（最多支持1000个）。\n- Target=ACCOUNT，值如`account1,account2`（最多支持1000个）。\n- Target=ALIAS，值如`alias1,alias2`（最多支持1000个）。",
+        "en": "Specify values based on Target. Separate multiple values with commas. If you exceed the limit, split the push into multiple calls.\n\n- Target=DEVICE: values such as `deviceid1,deviceid2` (up to 1,000 supported).\n\n- Target=ACCOUNT: values such as `account1,account2` (up to 1,000 supported).\n\n- Target=ALIAS: values such as `alias1,alias2` (up to 1,000 supported)."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "持续推送",
+    "en": "ContinuouslyPush"
+  },
+  "descriptions": {
+    "zh": "本接口是用于解决[Push高级推送接口](~~2249916~~)中，无论是按设备推、按账号推、按别名推，在单次调用中都存在目标个数上限的问题。\n\n- 使用持续推送意味着业务场景是要往大量设备上，发送同一条消息。这时候，应当合理调用持续推送接口，每次调用，聚合一组设备进行推送（目前按设备推、按账号推、按别名推，单次推送目标个数上限是1000）。我们会限制在同一个 MessageId 上推送的总次数为10000 。如确实需要更高限额，请联系技术支持评估具体场景。\n\n- 使用这个接口前，需要调用Push接口，将Target设置为TBD（To Be Determined），填入消息内容，调用获得该消息在推送系统中的MessageId。然后，可以基于这个MessageId，重复调用此接口，指定不同的目标组，将此消息推送到这些目标上。\n\n- 调用Push接口设置目标为TBD获得MessageId后，这个消息默认会在推送系统保存24个小时，过期之前，可以随时使用本接口进行指定目标推送。过期后不再允许推送。超出总次数上限后不再允许推送。\n\n- 每次调用本接口指定设备时，消息都是立即推出，不支持设置定时推送。",
+    "en": "This API addresses the limitations of the [Push Advanced Push API](~~2249916~~), where push-by-device, push-by-account, and push-by-alias operations each have a maximum target count per single call.\n\n- You can use continuous push when your scenario requires sending the same message to many devices. In this case, you can call the continuous push API repeatedly, each time specifying a group of targets for aggregation (the current limit is 1,000 targets per call for device, account, or alias pushes). The total number of pushes for the same MessageId is restricted to 10,000. If you need a higher limit, contact technical support to evaluate your specific scenario.\n\n- Before using this API, you must first call the Push API with Target set to TBD (To Be Determined) and include your message content. This returns a MessageId from the push system. You can then use this MessageId to repeatedly call the continuous push API, specifying different target groups to deliver the same message.\n\n- After calling the Push API with Target set to TBD and obtaining a MessageId, the message is stored in the push system for 24 hours by default. You can use this API to push to specified targets at any time before expiration. Pushes are not allowed after expiration or after reaching the total push limit.\n\n- Each call to this API sends the message immediately. Scheduled pushes are not supported."
+  },
   "example": {
     "unifiedCli": "aliyun push continuously-push --app-key 23267207 --message-id 500131 --target DEVICE --target-value a692961a92534047ad36250000 --region cn-hangzhou",
     "legacyCli": "aliyun push ContinuouslyPush --region cn-hangzhou --Target DEVICE --TargetValue a692961a92534047ad36250000 --AppKey 23267207 --MessageId 500131"

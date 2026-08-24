@@ -1,5 +1,6 @@
 {
   "name": "UpdateConsumerOffset",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,31 +9,51 @@
       "name": "ConsumerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Consumer Group 名称。\n\n- 只能包含字母、数字、短横线（-）、下划线（_）。\n- 长度限制在 **3-64** 个字符，多于 **64** 个字符将被自动截取。\n- 一旦创建后不能再修改。",
+        "en": "Consumer Group name.\n\n- Can only contain letters, numbers, hyphens (-), and underscores (\\_).\n\n- Length must be **3-64** characters. If more than **64** characters are provided, they will be automatically truncated.\n\n- Cannot be modified once created."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例 ID。",
+        "en": "Instance ID."
+      }
     },
     {
       "name": "Offsets",
       "position": "Query",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "当resetType为offset时，用于设置消费者组对于某一主题下各个分区的消费位点。",
+        "en": "When resetType is offset, this parameter is used to set the consumer offset for each partition of a topic for the consumer group."
+      },
       "sub_parameters": [
         {
           "name": "Offset",
           "position": "Query",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "分区位点。",
+            "en": "Partition offset."
+          }
         },
         {
           "name": "Partition",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "分区ID。",
+            "en": "Partition ID."
+          }
         }
       ]
     },
@@ -40,27 +61,54 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Group所属实例的地域ID。",
+        "en": "Region ID of the instance to which the Group belongs."
+      }
     },
     {
       "name": "ResetType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "重置消费者组消费位点的类型，支持以下两种：\n\n- **timestamp**（默认）\n- **offset**",
+        "en": "Type of consumer group offset reset, supporting the following two types:\n\n- **timestamp** (default)\n\n- **offset**"
+      }
     },
     {
       "name": "Time",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "传入的时间参数，格式为Unix时间戳，单位为毫秒。\n参数范围应**小于0**或**在消费位点的保留时间范围内**，仅在resetType为timestamp时作用生效。\n\n- 若希望重置为最新的消费位点，请传入-1。\n\n- 若希望重置为最早的消费位点，请传入-2。",
+        "en": "Time parameter in Unix timestamp format, in milliseconds.\nThe parameter range should be **less than 0** or **within the retention period of the consumer offset**. This parameter only takes effect when resetType is timestamp.\n\n- To reset to the latest consumer offset, pass -1.\n\n- To reset to the earliest consumer offset, pass -2."
+      }
     },
     {
       "name": "Topic",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "Topic 的名称。\n\n- 只能包含字母、数字、下划线（_）和短横线（-）。\n- 长度为 **3-64** 个字符，多于 **64** 个字符将被自动截取。\n- 一旦创建后不能再修改。\n\n**若需针对当前消费者所订阅的所有主题设置消费位点，请传入空字符串。**",
+        "en": "Topic name.\n\n- Can only contain letters, numbers, underscores (\\_), and hyphens (-).\n\n- Length must be **3-64** characters. If more than **64** characters are provided, they will be automatically truncated.\n\n- Cannot be modified once created.\n\n**To set the consumer offset for all topics subscribed by the current consumer, pass an empty string.**"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重置消费者组的消费位点",
+    "en": "UpdateConsumerOffset"
+  },
+  "descriptions": {
+    "zh": "此接口用于重置指定消费组的消费位点，支持以timestamp和offset的方式重置消费者组的消费位点。通过传入不同参数的组合可以实现如下功能：\n- 支持从最新位点开始消费，将消费位点指定到最新的位置（支持所有主题和单一主题）。\n- 支持从指定时间点的位点开始消费，输入时间格式，从指定时间点的位点开始消费（支持所有主题和单一主题）。\n- 支持按分区消费位点进行重置，输入目标分区ID和消费位点，从指定的分区和位点开始消费（支持单一主题）。",
+    "en": "This operation resets the consumer offset of a specified consumer group. You can reset the consumer offset by timestamp or by a specific offset value. Using different parameter combinations, you can perform the following tasks:\n\n- Consume messages from the latest offset by setting the consumer offset to the latest position. This is supported for a single topic or all topics.\n\n- Consume messages from the offset of a specified time point by providing a timestamp. This is supported for a single topic or all topics.\n\n- Reset the consumer offset for a specific partition by providing the target partition ID and consumer offset. This is supported only for a single topic."
+  },
   "example": {
     "unifiedCli": "aliyun alikafka update-consumer-offset --instance-id alikafka_post-cn-mp91inkw0000 --topic topic_name --biz-region-id cn-hangzhou --consumer-id kafka-test --reset-type timestamp --time -1 --offsets Partition=0 Offset=1 --api-version 2019-09-16 --region cn-hangzhou",
     "legacyCli": "aliyun alikafka UpdateConsumerOffset --region cn-hangzhou --InstanceId 'alikafka_post-cn-mp91inkw0000' --ConsumerId 'kafka-test' --ResetType timestamp --Time '-1' --RegionId 'cn-hangzhou' --Topic topic_name --Offsets '[{\"Partition\":0,\"Offset\":1}]'"

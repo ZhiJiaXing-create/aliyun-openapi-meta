@@ -1,5 +1,6 @@
 {
   "name": "CreateFile",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。",
+        "en": "The ID of the file system."
+      }
     },
     {
       "name": "Owner",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "便携账号ID。\n限制：长度16位字符串，支持数字和英文小写字母。",
+        "en": "The ID of the portable account. The ID must be a 16-digit string. The string can contain digits and lowercase letters."
+      }
     },
     {
       "name": "OwnerAccessInheritable",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "共享目录文件。\n取值：\n- false（默认值）：不共享目录权限。\n- true：共享目录权限。\n> - 当Type=Directory并且Owner不为空时，该参数生效。\n> - 目录带有可继承的Owner权限。该目录下创建的子目录和子文件，即使是其他人创建的，这个Owner都具有读写权限。",
+        "en": "Specifies whether to share the directory. Valid values:\n\n*   false (default): does not share the directory.\n*   true: shares the directory.\n\n> *   This parameter takes effect only if the Type parameter is set to Directory and the Owner parameter is not empty.\n> *   The permissions on a directory can be inherited by the owner. The owner has read and write permissions on the subdirectories and subfiles created in the directory, even if they are created by others."
+      }
     },
     {
       "name": "Path",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "指定目录或文件的绝对路径，必须以正斜线（/）开头和结尾，长度为2~1024。",
+        "en": "The absolute path of the directory or file. The path must start and end with a forward slash (/) and must be 2 to 1024 characters in length."
+      }
     },
     {
       "name": "Type",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "对象类型。取值：\n\n- File：文件。\n- Directory：目录。",
+        "en": "The type of the object. Valid values:\n\n*   File\n*   Directory"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建目录或者文件",
+    "en": "CreateFile"
+  },
+  "descriptions": {
+    "zh": "- 该接口只对部分用户开放。\n\n- 仅支持通用型NAS并且已开启访问控制的SMB协议类型文件系统。",
+    "en": "*   This operation is only available to some users.\n*   This operation supports only General-purpose NAS file systems that use the Server Message Block (SMB) protocol and have Resource Access Management (RAM) enabled."
+  },
   "example": {
     "unifiedCli": "aliyun nas create-file --file-system-id 1ca4040000 --path /test/ --type File --owner 378cc7630f260000 --owner-access-inheritable false --region cn-hangzhou",
     "legacyCli": "aliyun nas CreateFile --region cn-hangzhou --Path '/test/' --Type File --Owner 378cc7630f260000 --FileSystemId 1ca4040000 --OwnerAccessInheritable false"

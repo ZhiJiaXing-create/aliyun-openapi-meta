@@ -1,5 +1,6 @@
 {
   "name": "ListTagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,47 +9,86 @@
       "name": "Lang",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置请求和接收消息的语言类型，默认为**zh**。取值：\n- **zh**：中文\n- **en**：英文",
+        "en": "The language of the request and response. Default value: **zh**. Valid values:\n\n- **zh**: Chinese\n\n- **en**: English"
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "下一个查询开始Token。",
+        "en": "The token used to start the next query."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源id。",
+        "en": "The resource ID."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n- **DOMAIN**：域名",
+        "en": "The resource type. Valid value:\n\n- **DOMAIN**: domain name"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签键值对数组。",
+        "en": "An array of tag key-value pairs."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签键。",
+            "en": "The tag key."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标签值。",
+            "en": "The tag value."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "标签查询资源",
+    "en": "ListTagResources"
+  },
+  "descriptions": {
+    "zh": "- 请求中至少指定参数ResourceId.N或Tag.N（Tag.N.Key与Tag.N.Value），以确定检索对象。\n- Tag.N是资源的标签，由一个键值对组成。仅指定Tag.N.Key时，则返回该标签键关联的所有标签值。仅指定Tag.N.Value会报错。\n- 如果您同时指定Tag.N和ResourceId.N筛选标签，则ResourceId.N必须满足所有输入的标签键值对。\n- 如果您同时指定多个标签键值对，返回结果为同时包含被指定的多个键值对的资源。",
+    "en": "- To specify the objects to retrieve, your request must contain at least one of the following parameters: `ResourceId.N` or `Tag.N` (which consists of Tag.N.Key and Tag.N.Value).\n\n- Tag.N is a resource tag that consists of a key-value pair. If you specify only Tag.N.Key, all tag values associated with that tag key are returned. An error occurs if you specify only Tag.N.Value.\n\n- If you specify both Tag.N and ResourceId.N to filter resources, only the resources that are specified by ResourceId.N and match all the specified tag key-value pairs are returned.\n\n- If you specify multiple tag key-value pairs, only the resources that have all the specified key-value pairs are returned."
+  },
   "example": {
     "unifiedCli": "aliyun alidns list-tag-resources --lang en --resource-type DOMAIN --next-token 4698691 --tag Value=abcd Key=abcd --resource-id example.com --region cn-hangzhou",
     "legacyCli": "aliyun alidns ListTagResources --region cn-hangzhou --ResourceId.1 'example.com' --Tag.1.Key abcd --NextToken 4698691 --Tag.1.Value abcd --Lang en --ResourceType DOMAIN"

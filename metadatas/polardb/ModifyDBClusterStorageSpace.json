@@ -1,5 +1,6 @@
 {
   "name": "ModifyDBClusterStorageSpace",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "AutoUseCoupon",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否自动使用优惠券，取值：\n* true（默认）：使用优惠券。\n* false：不使用优惠券。",
+        "en": "Specifies whether to automatically use a coupon. Valid values:\n\n- `true` (default): A coupon is automatically used.\n\n- `false`: A coupon is not used."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，保证在不同请求间唯一，大小写敏感、长度不超过64个ASCII字符。",
+        "en": "A client-generated token that ensures the idempotence of the request. The token must be unique for each request, case-sensitive, and a maximum of 64 ASCII characters in length."
+      }
     },
     {
       "name": "CloudProvider",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所属的云服务商",
+        "en": "Specifies the cloud provider of the instance."
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "PlannedEndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行目标定时任务的最晚时间。格式为`YYYY-MM-DDThh:mm:ssZ（UTC）`。\n>- 最晚时间需晚于开始时间的30分钟或以上。\n>- 若设置了`PlannedStartTime`但未指定该参数，执行目标任务的最晚时间默认为`开始时间+30分钟`。例如当设置`PlannedStartTime`为`2021-01-14T09:00:00Z`且该参数留空时，目标任务最晚将于`2021-01-14T09:30:00Z`开始执行。",
+        "en": "Specifies the latest time to start the scheduled task. Specify the time in UTC in the `YYYY-MM-DDThh:mm:ssZ` format.\n\n> - The latest start time must be at least 30 minutes later than the earliest start time.\n>\n> - If you specify `PlannedStartTime` but not this parameter, the latest start time is `PlannedStartTime + 30 minutes` by default. For example, if you set `PlannedStartTime` to `2021-01-14T09:00:00Z` and leave this parameter empty, the task starts no later than `2021-01-14T09:30:00Z`."
+      }
     },
     {
       "name": "PlannedStartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "开始执行定时（即在目标时间段内执行）升级配置任务的最早时间。格式为`YYYY-MM-DDThh:mm:ssZ（UTC）`。\n> - 仅当`ModifyType`取值为`Upgrade`时，该参数生效。\n>- 开始时间的取值范围为未来24小时内的任意时间点。例如当前时间为`2021-01-14T09:00:00Z`，此处允许填入的开始时间范围为`2021-01-14T09:00:00Z`~`2021-01-15T09:00:00Z`。\n>- 若该参数留空，默认立即执行升级配置任务。",
+        "en": "Specifies the earliest time to start the scheduled task. Specify the time in UTC in the `YYYY-MM-DDThh:mm:ssZ` format.\n\n> - This parameter takes effect only when `ModifyType` is set to `Upgrade`.\n>\n> - The start time can be a point in time within the next 24 hours. For example, if the current time is `2021-01-14T09:00:00Z`, you can set the start time to a value that is between `2021-01-14T09:00:00Z` and `2021-01-15T09:00:00Z`.\n>\n> - If you leave this parameter empty, the task runs immediately."
+      }
     },
     {
       "name": "PromotionCode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "优惠券编号，不填时使用默认优惠券",
+        "en": "Specifies the promotion code. If you do not specify this parameter, the system uses the default coupon."
+      }
     },
     {
       "name": "StorageSpace",
       "position": "Query",
       "type": "Long",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "变更后的存储空间。单位：GB。\n> PolarDB MySQL标准版的存储空间取值范围：20~32000。",
+        "en": "Specifies the new storage space. Unit: GB.\n\n> For PolarDB for MySQL Standard Edition clusters, the storage space must be between 20 GB and 32,000 GB."
+      }
     },
     {
       "name": "SubCategory",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "集群子系列。取值范围如下：\n\n- **normal_exclusive**：独享规格\n- **normal_general**：通用规格",
+        "en": "Specifies the subcategory of the cluster. Valid values:\n\n- **normal\\_exclusive**: dedicated\n\n- **normal\\_general**: general-purpose"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "变更企业版按空间计费集群和标准版集群的存储空间",
+    "en": "ModifyDBClusterStorageSpace"
+  },
+  "descriptions": {
+    "zh": "> 暂不支持对PolarDB PostgreSQL版集群进行存储空间的缩容操作。",
+    "en": "> You cannot scale down the storage space of PolarDB for PostgreSQL clusters."
+  },
   "example": {
     "unifiedCli": "aliyun polardb modify-db-cluster-storage-space --db-cluster-id pc-0000000000000 --storage-space 50 --client-token 6000170000591aed949d0f54a343f1a4233c1e7d1c5c000000 --planned-start-time 2021-01-14T09:00:00Z --planned-end-time 2021-01-14T09:30:00Z --sub-category normal_general --cloud-provider ENS --auto-use-coupon true --promotion-code 727xxxxxx934 --region cn-hangzhou",
     "legacyCli": "aliyun polardb ModifyDBClusterStorageSpace --region cn-hangzhou --StorageSpace 50 --AutoUseCoupon true --CloudProvider ENS --PromotionCode 727xxxxxx934 --DBClusterId 'pc-0000000000000' --PlannedStartTime '2021-01-14T09:00:00Z' --SubCategory normal_general --ClientToken 6000170000591aed949d0f54a343f1a4233c1e7d1c5c000000 --PlannedEndTime '2021-01-14T09:30:00Z'"

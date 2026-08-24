@@ -1,5 +1,6 @@
 {
   "name": "CreateScalingGroup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -9,24 +10,40 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "ALB服务器组的相关信息集合。",
+        "en": "The information collection of ALB server groups."
+      },
       "sub_parameters": [
         {
           "name": "AlbServerGroupId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "ALB服务器组ID。\n\nN为ALB服务器组的编号。一个伸缩组支持关联的ALB服务器组数量有限，如需查看或手动申请提升配额值，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)。",
+            "en": "The ID of the ALB server group.\n\nN is the sequence number of the ALB server group. The number of ALB server groups that can be associated with a single scaling group is limited. To view or request an increase in the quota value, go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas)."
+          }
         },
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性伸缩将实例添加到ALB服务器组后，实例使用的端口号，取值范围：1~65535。\n\nN为ALB服务器组的编号。\n\n> 如果N相同，Port不同，系统会默认向伸缩组关联多个不同Port的该ALB服务器组。",
+            "en": "The port number used by the instance after Auto Scaling adds the instance to the ALB server group. Valid values: 1 to 65535.\n\nN is the sequence number of the ALB server group.\n\n> If N is the same but Port is different, the system will associate multiple ALB server groups with different Ports to the scaling group by default."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性伸缩将实例添加到ALB服务器组后，实例作为后端服务器的权重。权重越高，实例将被分配到越多的访问请求。如果权重为0，则实例不会收到访问请求。取值范围：0~100。\n\nN为ALB服务器组的编号。",
+            "en": "The weight of the instance as a backend server after Auto Scaling adds the instance to the ALB server group. A higher weight results in more access requests being distributed to the instance. If the weight is 0, the instance does not receive any access requests. Valid values: 0 to 100.\n\nN is the sequence number of the ALB server group."
+          }
         }
       ]
     },
@@ -34,79 +51,131 @@
       "name": "AllocationStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量分配策略，决定了伸缩组如何选择可用的实例规格类型满足容量。容量分布策略同时对按量和抢占式容量生效（仅当`MultiAZPolicy`参数取值为`COMPOSABLE`策略时生效）。取值范围：\n\n- priority：按照配置的实例规格的顺序创建实例。\n- lowestPrice：按照实例规格单位vCpu价格从低到高创建实例。\n\n默认值：priority。",
+        "en": "The capacity allocation strategy that determines how the scaling group selects available instance types to meet capacity requirements. The capacity distribution strategy applies to both pay-as-you-go and preemptible capacity (only takes effect when the `MultiAZPolicy` parameter is set to `COMPOSABLE`). Valid values:\n\n- priority: Instances are created in the order of configured instance types.\n- lowestPrice: Instances are created in order of unit vCPU price from lowest to highest.\n\nDefault value: priority."
+      }
     },
     {
       "name": "AutoRebalance",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启伸缩组自动均衡，仅当可用区均衡伸缩组开启了BalancedOnly才生效。取值范围：\n- false：不开启伸缩组自动均衡。\n- true：开启伸缩组自动均衡时，伸缩组会自动检测可用区见容量，当可用区容量不均衡时，会主动进行可用区扩缩，进行可用区容量再均衡。\n\n默认值: false。",
+        "en": "Specifies whether to enable automatic rebalancing for the scaling group. This parameter only takes effect when BalancedOnly is enabled for the zone-balanced scaling group. Valid values:\n- false: Disables automatic rebalancing for the scaling group.\n- true: When enabled, the scaling group automatically monitors the capacity across zones. When the capacity becomes unbalanced across zones, it proactively scales in and out to rebalance the capacity across zones.\n\nDefault value: false."
+      }
     },
     {
       "name": "AzBalance",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组的容量是否在多个可用区间均衡分布（仅当`MultiAZPolicy`参数取值为`COMPOSABLE`策略时生效），取值范围：\n- true：伸缩组的容量在多个可用区间均衡分布。\n- false：伸缩组的容量不在多个可用区间均衡分布。\n\n默认值：false。",
+        "en": "Specifies whether to evenly distribute the capacity of the scaling group across multiple zones (only takes effect when the `MultiAZPolicy` parameter is set to `COMPOSABLE`). Valid values:\n- true: The capacity of the scaling group is evenly distributed across multiple zones.\n- false: The capacity of the scaling group is not evenly distributed across multiple zones.\n\nDefault value: false."
+      }
     },
     {
       "name": "BalanceMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "可用区均衡模式，仅当开启可用区均衡模式时生效。取值范围：\n \n- BalancedBestEffort：\n当某可用区资源创建失败时，会降级至其他可用区，保障资源的尽力交付。\n\n- BalancedOnly：\n当某可用区资源创建失败时，不会降级至其他可用区，扩容活动部分成功，避免资源在不同可用区过度不均衡。\n\n默认值：BalancedBestEffort。",
+        "en": "The zone balancing mode. This parameter only takes effect when zone balancing is enabled. Valid values:\n\n- BalancedBestEffort: When resource creation fails in a zone, it falls back to other zones to ensure best-effort resource delivery.\n\n- BalancedOnly: When resource creation fails in a zone, it does not fall back to other zones. The scale-out activity partially succeeds, avoiding excessive imbalance of resources across zones.\n\nDefault value: BalancedBestEffort."
+      }
     },
     {
       "name": "CapacityOptions",
       "position": "Query",
       "type": "Struct",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "容量选项。",
+        "en": "The capacity options."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nGenerate a unique parameter value from your client, ensuring that the value is unique across different requests. Only ASCII characters are supported. The value cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "CompensateWithOnDemand",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "当`MultiAZPolicy`取值为`COST_OPTIMIZED`时，如果因价格、库存等原因无法创建足够的抢占式实例，是否允许自动尝试创建按量实例满足ECS实例数量要求。取值范围：\n\n- true：允许。\n- false：不允许。\n\n默认值：true。",
+        "en": "When `MultiAZPolicy` is set to `COST_OPTIMIZED`, specifies whether to allow automatic creation of pay-as-you-go instances to meet the ECS instance quantity requirement when preemptible instances cannot be created due to price, inventory, or other reasons. Valid values:\n\n- true: Allowed.\n- false: Not allowed.\n\nDefault value: true."
+      }
     },
     {
       "name": "ContainerGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "ECI实例ID，即容器组ID。",
+        "en": "The ID of the ECI instance, i.e., the container group ID."
+      }
     },
     {
       "name": "CustomPolicyARN",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义缩容策略Function函数ARN。仅当RemovalPolicies配置第一个移除策略为CustomPolicy时生效。",
+        "en": "The ARN of the custom scale-in policy Function. This parameter only takes effect when the first removal policy in RemovalPolicies is configured as CustomPolicy."
+      }
     },
     {
       "name": "DBInstance",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "伸缩组关联的数据库列表。",
+        "en": "The list of databases associated with the scaling group."
+      },
       "sub_parameters": [
         {
           "name": "AttachMode",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "伸缩组与数据库关联方式。取值范围：\n\n- SecurityIp ：修改IP白名单模式，通过将扩容实例自动添加到数据库IP白名单（目前仅RDS数据库支持）。\n- SecurityGroup：安全组模式，通过将伸缩配置安全组添加至数据库安全组白名单，实现安全组下实例数据库访问。",
+            "en": "The association mode between the scaling group and the database. Valid values:\n\n- SecurityIp: IP whitelist mode. The IP addresses of scaled-out instances are automatically added to the database IP whitelist (currently only supported for RDS databases).\n- SecurityGroup: Security group mode. The security group from the scaling configuration is added to the database security group whitelist, enabling instances in the security group to access the database."
+          }
         },
         {
           "name": "DBInstanceId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据库实例ID。",
+            "en": "The ID of the database instance."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "数据库类型。取值范围：\n\n- RDS。\n- Redis。\n- MongoDB。\n\n默认值：RDS。",
+            "en": "The type of the database. Valid values:\n\n- RDS.\n- Redis.\n- MongoDB.\n\nDefault value: RDS."
+          }
         }
       ]
     },
@@ -114,79 +183,131 @@
       "name": "DBInstanceIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "RDS实例ID。取值可以是由多台RDS实例ID组成一个JSON数组，ID之间用半角逗号（,）隔开。 \n\n<props=\"china\">单个伸缩组可以关联的RDS实例总数和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**单个伸缩组可以关联的RDS实例总数**对应的配额值。</props>\n\n<props=\"intl\">单个伸缩组可以关联的RDS实例总数和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**单个伸缩组可以关联的RDS实例总数**对应的配额值。</props>\n\n<props=\"partner\">单个伸缩组可以关联的RDS实例总数和弹性伸缩使用情况有关，请前往配额中心查看**单个伸缩组可以关联的RDS实例总数**对应的配额值。</props>",
+        "en": "The IDs of RDS instances. The value can be a JSON array of multiple RDS instance IDs, separated by commas (,).\n\n<props=\"china\">The total number of RDS instances that can be associated with a single scaling group depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Total number of RDS instances that can be associated with a single scaling group**.</props>\n\n<props=\"intl\">The total number of RDS instances that can be associated with a single scaling group depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Total number of RDS instances that can be associated with a single scaling group**.</props>\n\n<props=\"partner\">The total number of RDS instances that can be associated with a single scaling group depends on your Auto Scaling usage. Go to Quota Center to view the quota value for **Total number of RDS instances that can be associated with a single scaling group**.</props>"
+      }
     },
     {
       "name": "DefaultCooldown",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "一次伸缩活动（添加或移出实例）结束后的一段冷却时间。取值范围：0~86400，单位：秒。\n\n冷却时间内，该伸缩组不执行其它的伸缩活动，仅针对云监控报警任务触发的伸缩活动有效。  \n\n默认值：300。",
+        "en": "The cooldown period after a scaling activity (adding or removing instances) ends. Valid values: 0 to 86400. Unit: seconds.\n\nDuring the cooldown period, the scaling group does not execute any other scaling activities. This only applies to scaling activities triggered by CloudMonitor alarm tasks.\n\nDefault value: 300."
+      }
     },
     {
       "name": "DesiredCapacity",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组内ECS实例的期望数量，伸缩组会自动将ECS实例数量维持在期望实例数。取值不得大于MaxSize，且不得小于MinSize。",
+        "en": "The expected number of ECS instances in the scaling group. The scaling group automatically maintains the number of ECS instances at the desired capacity. The value must not be greater than MaxSize or less than MinSize."
+      }
     },
     {
       "name": "GroupDeletionProtection",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启伸缩组删除保护。取值范围：\n\n- true：开启伸缩组删除保护，此时不能删除该伸缩组。\n- false：关闭伸缩组删除保护。\n\n默认值：false。",
+        "en": "Specifies whether to enable deletion protection for the scaling group. Valid values:\n\n- true: Enables deletion protection for the scaling group. The scaling group cannot be deleted.\n- false: Disables deletion protection for the scaling group.\n\nDefault value: false."
+      }
     },
     {
       "name": "GroupType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组管理的实例类型。取值范围：\n\n- ECS：伸缩组内管理的伸缩实例为ECS实例。\n\n- ECI：伸缩组内管理的伸缩实例为ECI实例。\n\n默认值：ECS。",
+        "en": "The type of instances managed by the scaling group. Valid values:\n\n- ECS: The instances managed in the scaling group are ECS instances.\n- ECI: The instances managed in the scaling group are ECI instances.\n\nDefault value: ECS."
+      }
     },
     {
       "name": "HealthCheckType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组的健康检查方式。取值范围：\n\n- NONE：不做健康检查。\n- ECS：对伸缩组内的实例做健康检查（ECS类型和ECI类型的伸缩组均使用本取值开启实例健康检查）。\n- LOAD_BALANCER: 根据负载均衡（暂不支持CLB负载均衡类型）健康检查结果判断实例健康状态。\n\n\n默认值：ECS。\n\n> 如果需要同时开启实例健康检查和负载均衡健康检查，请使用`HealthCheckTypes`参数。",
+        "en": "The health check mode of the scaling group. Valid values:\n\n- NONE: No health check is performed.\n- ECS: Health checks are performed on instances in the scaling group (both ECS-type and ECI-type scaling groups use this value to enable instance health checks).\n- LOAD_BALANCER: Instance health status is determined based on load balancer health check results (CLB load balancer type is currently not supported).\n\nDefault value: ECS.\n\n> To enable both instance health checks and load balancer health checks simultaneously, use the `HealthCheckTypes` parameter."
+      }
     },
     {
       "name": "HealthCheckTypes",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组的健康检查方式。\n> 使用此参数可以设置多个值，开启多个健康检查选项。如果设置了`HealthCheckType`参数，则本参数将被忽略。",
+        "en": "The health check modes of the scaling group.\n> This parameter allows setting multiple values to enable multiple health check options. If the `HealthCheckType` parameter is set, this parameter is ignored."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例的ID。创建伸缩组时，将从指定的实例获取所需的配置信息，并自动创建伸缩配置。",
+        "en": "The ID of the instance. When creating a scaling group, the required configuration information is obtained from the specified instance, and a scaling configuration is automatically created."
+      }
     },
     {
       "name": "LaunchTemplateId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板ID，用于指定伸缩组从实例启动模板获取启动配置信息。",
+        "en": "The ID of the launch template from which the scaling group obtains launch configuration information."
+      }
     },
     {
       "name": "LaunchTemplateOverride",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "启动模板信息。",
+        "en": "The launch template override information."
+      },
       "sub_parameters": [
         {
           "name": "InstanceType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "当您需要伸缩组按照实例规格容量进行伸缩时，请同时指定本参数和LaunchTemplateOverride.N.WeightedCapacity。\n\n本参数用于指定实例规格，会覆盖启动模板中的实例规格。您可以指定N个本参数，扩展启动模板支持N个实例规格。N的取值范围：1~20。\n> 仅当LaunchTemplateId参数指定了启动模板时，本参数生效。\n\nInstanceType的取值范围：在售的ECS实例规格，请参见[实例规格族](~~25378~~)。",
+            "en": "When you need the scaling group to scale based on instance type capacity, specify both this parameter and LaunchTemplateOverride.N.WeightedCapacity.\n\nThis parameter specifies the instance type and overrides the instance type in the launch template. You can specify N values for this parameter to extend the launch template to support N instance types. Valid values of N: 1 to 20.\n> This parameter only takes effect when the LaunchTemplateId parameter specifies a launch template.\n\nValid values of InstanceType: ECS instance types that are available for purchase. For more information, see [Instance families](~~25378~~)."
+          }
         },
         {
           "name": "SpotPriceLimit",
           "position": "Query",
           "type": "Float",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "本参数用于指定实例启动模板覆盖规格（即`LaunchTemplateOverride.N.InstanceType`）的竞价价格上限。您可以指定N个该参数，扩展启动模板支持N个实例规格。N的取值范围：1~20。\n>仅当`LaunchTemplateId`参数指定了启动模板时，该参数才生效。",
+            "en": "The maximum bid price for the instance type specified in the launch template override (`LaunchTemplateOverride.N.InstanceType`). You can specify N values for this parameter to extend the launch template to support N instance types. Valid values of N: 1 to 20.\n> This parameter only takes effect when the `LaunchTemplateId` parameter specifies a launch template."
+          }
         },
         {
           "name": "WeightedCapacity",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "当您需要伸缩组按照实例规格容量进行伸缩时，在指定LaunchTemplateOverride.N.InstanceType后，再指定本参数。两个参数一一对应，N需要保持一致。\n\n本参数用于指定实例规格的权重，即实例规格的单台实例在伸缩组中表示的容量大小。权重越大，满足期望容量所需的本实例规格的实例数量越少。\n\n由于每个实例规格的vCPU个数、内存大小等性能指标会有差异，您可以根据自身需求，给不同的实例规格配置不同的权重。\n\n 例如：\n\n- 当前容量：0。\n- 期望容量：6。\n- ecs.c5.xlarge规格容量：4。\n\n为满足期望容量，伸缩组将为用户扩容2台ecs.c5.xlarge实例。\n\n>扩容时伸缩组的容量不得超过最大容量（MaxSize）与实例规格的最大权重之和。\n\nWeightedCapacity的取值范围：1~500。",
+            "en": "When you need the scaling group to scale based on instance type capacity, after specifying LaunchTemplateOverride.N.InstanceType, also specify this parameter. The two parameters correspond one-to-one, and N must be consistent.\n\nThis parameter specifies the weight of the instance type, i.e., the capacity size that a single instance of this type represents in the scaling group. A higher weight means fewer instances of this type are needed to meet the desired capacity.\n\nSince performance metrics such as the number of vCPUs and memory size vary across instance types, you can configure different weights for different instance types based on your needs.\n\nExample:\n\n- Current capacity: 0.\n- Desired capacity: 6.\n- ecs.c5.xlarge capacity: 4.\n\nTo meet the desired capacity, the scaling group will scale out 2 ecs.c5.xlarge instances.\n\n> During scale-out, the capacity of the scaling group must not exceed the sum of the maximum capacity (MaxSize) and the maximum weight of the instance types.\n\nValid values of WeightedCapacity: 1 to 500."
+          }
         }
       ]
     },
@@ -194,49 +315,81 @@
       "name": "LaunchTemplateVersion",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例启动模板的版本。取值范围： \n         \n- 固定的模板版本号。\n- Default：始终使用模板默认版本。\n- Latest：始终使用模板最新版本。",
+        "en": "The version of the launch template. Valid values:\n\n- A fixed template version number.\n- Default: always uses the default version of the template.\n- Latest: always uses the latest version of the template."
+      }
     },
     {
       "name": "LifecycleHook",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "生命周期挂钩信息。",
+        "en": "The lifecycle hook information."
+      },
       "sub_parameters": [
         {
           "name": "DefaultResult",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "等待状态结束后的下一步动作。取值范围：\n\n- CONTINUE：继续响应弹性扩张活动或者继续响应弹性收缩活动。\n- ABANDON：直接释放弹性扩张活动创建出来的ECS实例或者直接将弹性收缩活动中的ECS实例从伸缩组移除。\n\n当伸缩组发生弹性收缩活动（SCALE_IN）并触发多个生命周期挂钩时，DefaultResult取值为ABANDON的生命周期挂钩触发的等待状态结束时，会提前结束其它对应的等待状态。其他情况下，下一步动作均以最后一个结束等待状态的下一步动作为准。\n\n默认值：CONTINUE。",
+            "en": "The action to take after the wait state ends. Valid values:\n\n- CONTINUE: continues to respond to the scale-out activity or continues to respond to the scale-in activity.\n- ABANDON: directly releases the ECS instance created during the scale-out activity, or directly removes the ECS instance from the scaling group during the scale-in activity.\n\nWhen a scale-in activity (SCALE_IN) triggers multiple lifecycle hooks, and the wait state of a lifecycle hook with DefaultResult set to ABANDON ends, all other corresponding wait states are ended early. In other cases, the action is determined by the last lifecycle hook whose wait state ends.\n\nDefault value: CONTINUE."
+          }
         },
         {
           "name": "HeartbeatTimeout",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生命周期挂钩为伸缩组活动设置的等待时间，等待状态超时后会执行下一步动作。取值范围：30~21600，单位：秒。\n\n创建了生命周期挂钩后，您可以调用[RecordLifecycleActionHeartbeat](~~73846~~)延长ECS实例的等待时间，也可以调用[CompleteLifecycleAction](~~73847~~)提前结束伸缩活动的等待状态。\n\n默认值：600。",
+            "en": "The wait time set by the lifecycle hook for the scaling group activity. After the wait state times out, the next action is executed. Valid values: 30 to 21600. Unit: seconds.\n\nAfter creating a lifecycle hook, you can call [RecordLifecycleActionHeartbeat](~~73846~~) to extend the wait time of the ECS instance, or call [CompleteLifecycleAction](~~73847~~) to end the wait state of the scaling activity early.\n\nDefault value: 600."
+          }
         },
         {
           "name": "LifecycleHookName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生命周期挂钩名称，指定后不支持修改，未指定时默认与生命周期挂钩ID相同。",
+            "en": "The name of the lifecycle hook. Once specified, it cannot be modified. If not specified, the default value is the same as the lifecycle hook ID."
+          }
         },
         {
           "name": "LifecycleTransition",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生命周期挂钩适用的伸缩活动类型，取值范围：\n\n- SCALE_OUT：伸缩组弹性扩张活动。\n- SCALE_IN：伸缩组弹性收缩活动。\n\n> 若伸缩组指定生命周期挂钩，此参数必选，其他相关参数可选。",
+            "en": "The type of scaling activity to which the lifecycle hook applies. Valid values:\n\n- SCALE_OUT: scale-out activity of the scaling group.\n- SCALE_IN: scale-in activity of the scaling group.\n\n> If a lifecycle hook is specified for the scaling group, this parameter is required. Other related parameters are optional."
+          }
         },
         {
           "name": "NotificationArn",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "生命周期挂钩通知对象标识符，支持轻量消息队列（原 MNS）的队列或主题，参数取值格式：acs:ess:{region}:{account-id}:{resource-relative-id}。\n\n- region：伸缩组所在的地域。\n- account-id：阿里云账号ID。\n\n例如：\n\n- MNS队列：acs:ess:{region}:{account-id}:queue/{queuename}。\n- MNS主题：acs:ess:{region}:{account-id}:topic/{topicname}。",
+            "en": "The identifier of the notification object for the lifecycle hook. Supports queues or topics of Simple Message Queue (formerly MNS). The parameter value format is: acs:ess:{region}:{account-id}:{resource-relative-id}.\n\n- region: the region where the scaling group resides.\n- account-id: the Alibaba Cloud account ID.\n\nExamples:\n\n- MNS queue: acs:ess:{region}:{account-id}:queue/{queuename}.\n- MNS topic: acs:ess:{region}:{account-id}:topic/{topicname}."
+          }
         },
         {
           "name": "NotificationMetadata",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "伸缩活动的等待状态的固定字符串信息。参数长度不能超过128个字符。弹性伸缩每次推送消息到通知对象时，会同时发送您预先指定的NotificationMetadata参数值，便于管理和标记不同类别的通知信息。当您同时指定了NotificationArn参数时，NotificationMetadata参数方可生效。",
+            "en": "The fixed string information for the wait state of the scaling activity. The parameter value cannot exceed 128 characters in length. Each time Auto Scaling sends a message to the notification object, it also sends the pre-specified NotificationMetadata parameter value, which facilitates managing and identifying different categories of notification information. This parameter only takes effect when the NotificationArn parameter is also specified."
+          }
         }
       ]
     },
@@ -245,18 +398,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "负载均衡CLB（原SLB）配置列表。",
+        "en": "The list of CLB (formerly SLB) configurations."
+      },
       "sub_parameters": [
         {
           "name": "LoadBalancerId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "负载均衡CLB（原SLB）实例的ID。",
+            "en": "The ID of the CLB (formerly SLB) instance."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性伸缩将实例添加到负载均衡CLB（原SLB）服务器组后，实例作为后端服务器的权重。权重越高，实例将被分配到越多的访问请求。如果权重为0，则实例不会收到访问请求。\n\n取值范围：0~100。",
+            "en": "The weight of the instance as a backend server after Auto Scaling adds the instance to the CLB (formerly SLB) server group. A higher weight results in more access requests being distributed to the instance. If the weight is 0, the instance does not receive any access requests.\n\nValid values: 0 to 100."
+          }
         }
       ]
     },
@@ -264,115 +429,191 @@
       "name": "LoadBalancerIds",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "传统型负载均衡CLB（原SLB）实例ID。取值可以是由多台CLB实例ID组成一个JSON数组，ID之间用半角逗号（,）隔开。\n\n<props=\"china\">单个伸缩组可以关联的CLB总数和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**单个伸缩组可以关联的负载均衡实例总数**对应的配额值。</props>\n\n<props=\"intl\">单个伸缩组可以关联的CLB总数和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**单个伸缩组可以关联的负载均衡实例总数**对应的配额值。</props>\n\n<props=\"partner\">单个伸缩组可以关联的CLB总数和弹性伸缩使用情况有关，请前往配额中心查看**单个伸缩组可以关联的负载均衡实例总数**对应的配额值。</props>",
+        "en": "The IDs of Classic Load Balancer (CLB, formerly SLB) instances. The value can be a JSON array of multiple CLB instance IDs, separated by commas (,).\n\n<props=\"china\">The total number of CLB instances that can be associated with a single scaling group depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Total number of load balancer instances that can be associated with a single scaling group**.</props>\n\n<props=\"intl\">The total number of CLB instances that can be associated with a single scaling group depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Total number of load balancer instances that can be associated with a single scaling group**.</props>\n\n<props=\"partner\">The total number of CLB instances that can be associated with a single scaling group depends on your Auto Scaling usage. Go to Quota Center to view the quota value for **Total number of load balancer instances that can be associated with a single scaling group**.</props>"
+      }
     },
     {
       "name": "MaxInstanceLifetime",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例在伸缩组中存活的最大时间。单位为秒。\n\n取值范围：`[86400, Integer.maxValue]`。\n\n默认值：null。\n>ECI类型的伸缩组或停机不收费的伸缩组不支持设置该参数。",
+        "en": "The maximum time that an instance can survive in the scaling group. Unit: seconds.\n\nValid values: `[86400, Integer.maxValue]`.\n\nDefault value: null.\n> This parameter is not supported for ECI-type scaling groups or scaling groups with the stop-and-no-charge feature enabled."
+      }
     },
     {
       "name": "MaxSize",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组内实例台数的最大值，当伸缩组内实数大于`MaxSize`的值时，弹性伸缩会自动移出实例。 \n\n<props=\"china\">MaxSize的取值范围和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**单个伸缩组可以设置的组内最大实例数**对应的配额值。</props>\n\n<props=\"intl\">MaxSize的取值范围和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**单个伸缩组可以设置的组内最大实例数**对应的配额值。</props>\n\n<props=\"partner\">MaxSize的取值范围和弹性伸缩使用情况有关，请前往配额中心查看**单个伸缩组可以设置的组内最大实例数**对应的配额值。</props>\n\n如果**单个伸缩组可以设置的组内最大实例数**对应的配额值为2000，则`MaxSize`的取值范围为0~2000。",
+        "en": "The maximum number of instances in the scaling group. When the number of instances in the scaling group is greater than the value of `MaxSize`, Auto Scaling automatically removes instances.\n\n<props=\"china\">The value range of MaxSize depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Maximum number of instances that can be set for a single scaling group**.</props>\n\n<props=\"intl\">The value range of MaxSize depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Maximum number of instances that can be set for a single scaling group**.</props>\n\n<props=\"partner\">The value range of MaxSize depends on your Auto Scaling usage. Go to Quota Center to view the quota value for **Maximum number of instances that can be set for a single scaling group**.</props>\n\nIf the quota value for **Maximum number of instances that can be set for a single scaling group** is 2000, the value range of `MaxSize` is 0 to 2000."
+      }
     },
     {
       "name": "MinSize",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组内实例台数的最小值，当伸缩组内实例数小于`MinSize`的值时，弹性伸缩会自动创建实例。 \n\n> `MinSize`的值必须小于或等于`MaxSize`的值。",
+        "en": "The minimum number of instances in the scaling group. When the number of instances in the scaling group is less than the value of `MinSize`, Auto Scaling automatically creates instances.\n\n> The value of `MinSize` must be less than or equal to the value of `MaxSize`."
+      }
     },
     {
       "name": "MultiAZPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "多可用区伸缩组ECS实例扩缩容策略。取值范围： \n         \n- PRIORITY：先指定的虚拟交换机（VSwitchIds.N）优先级最高。弹性伸缩优先在优先级最高的交换机所在可用区尝试扩缩容，如果无法扩缩容，则自动在下一优先级的交换机所在可用区进行扩缩容。  \n- COST_OPTIMIZED：扩容时弹性伸缩按vCPU单价从低到高尝试创建ECS实例，缩容时按vCPU单价从高到低尝试移出ECS实例。当伸缩配置设置了抢占式计费方式的多实例规格时，优先创建对应抢占式实例。您可以继续通过CompensateWithOnDemand参数指定当抢占式实例由于库存等原因无法创建时，是否自动尝试以按量付费的方式创建。 \n\n    > COST_OPTIMIZED仅在伸缩配置设置了多实例规格或者选用了抢占式实例的情况下生效。 \n- BALANCE：在伸缩组指定的多可用区之间均匀分配ECS实例。如果由于库存不足等原因可用区之间变得不平衡，您可以通过API [RebalanceInstance](~~71516~~)平衡资源。  \n- COMPOSABLE：是一种组合策略，您可以根据需要自主组合上述多可用区伸缩组ECS实例的扩缩容策略。或者进一步指定参数，对伸缩组的容量进行更精细地控制。\n\n默认值：PRIORITY。",
+        "en": "The ECS instance scaling policy for the multi-zone scaling group. Valid values:\n\n- PRIORITY: The vSwitch specified first (VSwitchIds.N) has the highest priority. Auto Scaling preferentially attempts to scale in the zone of the highest-priority vSwitch. If scaling cannot be performed, it automatically attempts to scale in the zone of the next highest-priority vSwitch.\n- COST_OPTIMIZED: During scale-out, Auto Scaling attempts to create ECS instances in order of vCPU unit price from lowest to highest. During scale-in, it attempts to remove ECS instances in order of vCPU unit price from highest to lowest. When the scaling configuration specifies multiple instance types with preemptible billing, preemptible instances are created first. You can use the CompensateWithOnDemand parameter to specify whether to automatically create pay-as-you-go instances when preemptible instances cannot be created due to insufficient inventory or other reasons.\n\n    > COST_OPTIMIZED only takes effect when the scaling configuration specifies multiple instance types or uses preemptible instances.\n- BALANCE: ECS instances are evenly distributed across the multiple zones specified by the scaling group. If zones become unbalanced due to insufficient inventory, you can call the [RebalanceInstance](~~71516~~) API to rebalance resources.\n- COMPOSABLE: A composite policy that allows you to combine the above multi-zone scaling group ECS instance scaling policies as needed, or further specify parameters for more granular control over the scaling group capacity.\n\nDefault value: PRIORITY."
+      }
     },
     {
       "name": "OnDemandBaseCapacity",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组所需要按量实例个数的最小值，取值范围：0~1000。当按量实例个数少于该值时，将优先创建按量实例。 \n\n当`MultiAZPolicy`参数取值为`COMPOSABLE`策略时，默认值为0。",
+        "en": "The minimum number of pay-as-you-go instances required in the scaling group. Valid values: 0 to 1000. When the number of pay-as-you-go instances is less than this value, pay-as-you-go instances are created first.\n\nWhen the `MultiAZPolicy` parameter is set to `COMPOSABLE`, the default value is 0."
+      }
     },
     {
       "name": "OnDemandPercentageAboveBaseCapacity",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组满足最小按量实例数（OnDemandBaseCapacity）要求后，超出的实例中按量实例应占的比例，取值范围：0～100。\n\n当`MultiAZPolicy`参数取值为`COMPOSABLE`策略时，默认值为100。",
+        "en": "The percentage of pay-as-you-go instances among the excess instances after the minimum number of pay-as-you-go instances (OnDemandBaseCapacity) is met. Valid values: 0 to 100.\n\nWhen the `MultiAZPolicy` parameter is set to `COMPOSABLE`, the default value is 100."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "伸缩组所属的地域ID。更多信息，请参见[地域与可用区](~~40654~~)。",
+        "en": "The region ID of the scaling group. For more information, see [Regions and zones](~~40654~~)."
+      }
     },
     {
       "name": "RemovalPolicy.1",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定实例移出策略的第一段筛选策略。不允许与RemovalPolicy.2和RemovalPolicy.3取值相同。取值范围：\n\n- OldestInstance：移出最早加入伸缩组的ECS实例。\n- NewestInstance：移出最新加入伸缩组的ECS实例。\n- OldestScalingConfiguration：移出最早伸缩配置创建的ECS实例。\n- CustomPolicy：基于自定义缩容策略Function函数移除ECS实例。\n\nOldestScalingConfiguration中提到的伸缩配置泛指组内实例配置信息来源，包括伸缩配置和启动模板。CustomPolicy仅支持设置为首位移出策略，当指定CustomPolicy需同时指定CustomPolicyARN参数。\n\n> 伸缩组移出ECS实例还受伸缩组的扩缩容策略（MultiAZPolicy）影响。更多信息，请参见[设置移出实例的组合策略](~~254822~~)。",
+        "en": "The first-stage filter policy for instance removal. It cannot have the same value as RemovalPolicy.2 or RemovalPolicy.3. Valid values:\n\n- OldestInstance: removes the instance that was earliest added to the scaling group.\n- NewestInstance: removes the instance that was most recently added to the scaling group.\n- OldestScalingConfiguration: removes the instance created from the earliest scaling configuration.\n- CustomPolicy: removes ECS instances based on a custom scale-in policy Function.\n\nThe scaling configuration mentioned in OldestScalingConfiguration refers to the source of instance configuration information within the group, including scaling configurations and launch templates. CustomPolicy can only be set as the first removal policy. When specifying CustomPolicy, the CustomPolicyARN parameter must also be specified.\n\n> The removal of ECS instances from a scaling group is also affected by the scaling group's multi-zone scaling policy (MultiAZPolicy). For more information, see [Set combination policies for instance removal](~~254822~~)."
+      }
     },
     {
       "name": "RemovalPolicy.2",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定实例移出策略的第二段筛选策略，不允许与RemovalPolicy.1和RemovalPolicy.3取值相同。取值范围：\n\n- OldestInstance：移出最早加入伸缩组的ECS实例。\n- NewestInstance：移出最新加入伸缩组的ECS实例。\n- OldestScalingConfiguration：移出最早伸缩配置创建的ECS实例。\n\n> 伸缩组移出ECS实例还受伸缩组的扩缩容策略（MultiAZPolicy）影响。更多信息，请参见[设置移出实例的组合策略](~~254822~~)。",
+        "en": "The second-stage filter policy for instance removal. It cannot have the same value as RemovalPolicy.1 or RemovalPolicy.3. Valid values:\n\n- OldestInstance: removes the instance that was earliest added to the scaling group.\n- NewestInstance: removes the instance that was most recently added to the scaling group.\n- OldestScalingConfiguration: removes the instance created from the earliest scaling configuration.\n\n> The removal of ECS instances from a scaling group is also affected by the scaling group's multi-zone scaling policy (MultiAZPolicy). For more information, see [Set combination policies for instance removal](~~254822~~)."
+      }
     },
     {
       "name": "RemovalPolicy.3",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定实例移出策略的第三段筛选策略，不允许与RemovalPolicy.1和RemovalPolicy.2取值相同。取值范围：\n\n- OldestInstance：移出最早加入伸缩组的ECS实例。\n- NewestInstance：移出最新加入伸缩组的ECS实例。\n- OldestScalingConfiguration：移出最早伸缩配置创建的ECS实例。\n\n> 伸缩组移出ECS实例还受伸缩组的扩缩容策略（MultiAZPolicy）影响。更多信息，请参见[设置移出实例的组合策略](~~254822~~)。",
+        "en": "The third-stage filter policy for instance removal. It cannot have the same value as RemovalPolicy.1 or RemovalPolicy.2. Valid values:\n\n- OldestInstance: removes the instance that was earliest added to the scaling group.\n- NewestInstance: removes the instance that was most recently added to the scaling group.\n- OldestScalingConfiguration: removes the instance created from the earliest scaling configuration.\n\n> The removal of ECS instances from a scaling group is also affected by the scaling group's multi-zone scaling policy (MultiAZPolicy). For more information, see [Set combination policies for instance removal](~~254822~~)."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "新创建的伸缩组所属的资源组ID。\n>将新创建的伸缩组归属到指定的资源组中。如果不指定该参数，则归属为默认资源组。",
+        "en": "The ID of the resource group to which the newly created scaling group belongs.\n> The newly created scaling group is assigned to the specified resource group. If this parameter is not specified, the scaling group is assigned to the default resource group."
+      }
     },
     {
       "name": "ScalingGroupName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "伸缩组的名称，同一地域下伸缩组名称唯一。\n\n长度为2~64个英文或中文字符，以数字、大小写英文字母或中文开头，可以包含数字、下划线（_）、短划线（-）和半角句号（.）。\n\n默认值为ScalingGroupId的值。",
+        "en": "The name of the scaling group. The name must be unique within the same region.\n\nThe name must be 2 to 64 characters in length and can contain letters, digits, underscores (_), hyphens (-), and periods (.). It must start with a digit, letter, or Chinese character.\n\nDefault value: the value of ScalingGroupId."
+      }
     },
     {
       "name": "ScalingPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定伸缩组的回收模式。取值范围： \n\n- recycle：伸缩组的回收模式为停机回收模式。  \n- release：伸缩组的回收模式为释放模式。\n- forcerelease：伸缩组的回收模式为强制释放模式。\n\n    >选择`forcerelease`后，在弹性收缩活动中系统会强制释放`运行中`（Running）的实例。强制释放实例相当于断电操作，会导致该实例内存以及存储中的临时数据被擦除，数据无法恢复，请您谨慎选择。\n\n- forcerecycle：伸缩组的回收模式为强制停机回收模式。\n\n    >选择`forcerecycle`后，在弹性收缩活动中系统会强制关机`运行中`（Running）的实例。强制关机相当于断电操作，会导致该实例内存以及存储中的临时数据被擦除，数据无法恢复，请您谨慎选择。\n\nScalingPolicy指定伸缩组的回收模式，但实例被移出伸缩组时的具体动作，由RemoveInstances的RemovePolicy参数决定，更多信息，请参见[RemoveInstances](~~25955~~)。",
+        "en": "The reclaim mode of the scaling group. Valid values:\n\n- recycle: The reclaim mode of the scaling group is stop and reclaim mode.\n- release: The reclaim mode of the scaling group is release mode.\n- forcerelease: The reclaim mode of the scaling group is force release mode.\n\n    > After selecting `forcerelease`, the system will forcibly release `Running` instances during scale-in activities. Force releasing an instance is equivalent to a power-off operation, which will erase temporary data in the instance's memory and storage. Data cannot be recovered. Please use this option with caution.\n\n- forcerecycle: The reclaim mode of the scaling group is force stop and reclaim mode.\n\n    > After selecting `forcerecycle`, the system will forcibly shut down `Running` instances during scale-in activities. Force shutdown is equivalent to a power-off operation, which will erase temporary data in the instance's memory and storage. Data cannot be recovered. Please use this option with caution.\n\nScalingPolicy specifies the reclaim mode of the scaling group, but the specific action when an instance is removed from the scaling group is determined by the RemovePolicy parameter of RemoveInstances. For more information, see [RemoveInstances](~~25955~~)."
+      }
     },
     {
       "name": "ServerGroup",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "负载均衡服务器组的相关信息集合。\n>不支持同时在`AlbServerGroups`和`ServerGroups`中设置相同的服务器组信息。",
+        "en": "The information collection of load balancer server groups.\n> Setting the same server group information in both `AlbServerGroups` and `ServerGroups` simultaneously is not supported."
+      },
       "sub_parameters": [
         {
           "name": "Port",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性伸缩将实例添加到服务器组后，实例使用的端口号。取值范围：1~65535。\n\n> ALB和NLB类型负载均衡该参数为必填参数，GWLB类型负载均衡不能设置该参数且默认值为6081。",
+            "en": "The port number used by the instance after Auto Scaling adds the instance to the server group. Valid values: 1 to 65535.\n\n> This parameter is required for ALB and NLB type load balancers. This parameter cannot be set for GWLB type load balancers, and the default value is 6081."
+          }
         },
         {
           "name": "ServerGroupId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "服务器组的ID。",
+            "en": "The ID of the server group."
+          }
         },
         {
           "name": "Type",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "服务器组类型。取值范围：\n\n- ALB：表示应用型负载均衡（Application Load Balancer）。\n- NLB：表示网络型负载均衡（Network Load Balancer）。\n- GWLB: 网关型负载均衡 GWLB（Gateway Load Balancer）。",
+            "en": "The type of the server group. Valid values:\n\n- ALB: Application Load Balancer.\n- NLB: Network Load Balancer.\n- GWLB: Gateway Load Balancer."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "弹性伸缩将实例添加到服务器组后，实例作为后端服务器的权重。取值范围：0~100。\n\n权重越高，实例将被分配到越多的访问请求。如果权重为0，则实例不会收到访问请求。\n\n> ALB和NLB类型负载均衡该参数为必填参数，GWLB类型负载均衡不能设置该参数。",
+            "en": "The weight of the instance as a backend server after Auto Scaling adds the instance to the server group. Valid values: 0 to 100.\n\nA higher weight results in more access requests being distributed to the instance. If the weight is 0, the instance does not receive any access requests.\n\n> This parameter is required for ALB and NLB type load balancers. This parameter cannot be set for GWLB type load balancers."
+          }
         }
       ]
     },
@@ -380,49 +621,81 @@
       "name": "SpotAllocationStrategy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "抢占式容量分布策略。您可以通过该参数单独指定抢占式容量的分布策略（仅当`MultiAZPolicy`参数取值为`COMPOSABLE`策略时生效）。取值范围：\n\n- priority：按照配置的实例规格的顺序创建实例。\n- lowestPrice：按照实例规格单位vCpu价格从低到高创建实例。\n\n默认值：priority。",
+        "en": "The preemptible capacity distribution strategy. You can use this parameter to separately specify the distribution strategy for preemptible capacity (only takes effect when the `MultiAZPolicy` parameter is set to `COMPOSABLE`). Valid values:\n\n- priority: Instances are created in the order of configured instance types.\n- lowestPrice: Instances are created in order of unit vCPU price from lowest to highest.\n\nDefault value: priority."
+      }
     },
     {
       "name": "SpotInstancePools",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定可用实例规格的个数，伸缩组将按成本最低的多个规格均衡创建抢占式实例。取值范围：1~10。\n\n当`MultiAZPolicy`参数取值为`COMPOSABLE`策略时，默认值为2。",
+        "en": "The number of available instance types. The scaling group creates preemptible instances evenly across multiple types with the lowest cost. Valid values: 1 to 10.\n\nWhen the `MultiAZPolicy` parameter is set to `COMPOSABLE`, the default value is 2."
+      }
     },
     {
       "name": "SpotInstanceRemedy",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启补齐抢占式实例。开启后，当收到抢占式实例将被回收的系统消息时，伸缩组将尝试创建新的实例，替换掉将被回收的抢占式实例。",
+        "en": "Specifies whether to enable supplementing preemptible instances. When enabled, if a system message is received indicating that a preemptible instance will be reclaimed, the scaling group will attempt to create a new instance to replace the preemptible instance that is about to be reclaimed."
+      }
     },
     {
       "name": "StopInstanceTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "缩容流程中等待ECS实例停机成功的超时时间，单位为秒。\n取值范围：30~240。\n\n> - 该参数仅在 ScalingPolicy = release 模式下的缩容流程里生效。  \n- 如果设置了该参数，系统会最长等待StopInstanceTimeout时间将实例停机成功，超时后无论实例是否成功停机都会继续缩容。  \n- 如果没有设置该参数，系统会长时间等待实例停机成功，只有实例停机成功后才继续缩容，停机失败时，缩容流程会回滚，缩容失败。",
+        "en": "The timeout period for waiting for ECS instances to stop during the scale-in process. Unit: seconds.\nValid values: 30 to 240.\n\n> - This parameter only takes effect during the scale-in process when ScalingPolicy is set to release mode.\n- If this parameter is set, the system waits up to StopInstanceTimeout seconds for the instance to stop successfully. After the timeout, the scale-in continues regardless of whether the instance has successfully stopped.\n- If this parameter is not set, the system waits indefinitely for the instance to stop successfully. The scale-in continues only after the instance has successfully stopped. If the instance fails to stop, the scale-in process rolls back and fails."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "伸缩组的标签信息集合。",
+        "en": "The tag information collection of the scaling group."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "伸缩组的标签键。",
+            "en": "The tag key of the scaling group."
+          }
         },
         {
           "name": "Propagate",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "标识该标签是否为可传播标签，取值范围：\n- true：伸缩组上的标签只会传播到新创建的实例上，而不会传播到已经在伸缩组中运行的实例上。\n- false：伸缩组上的标签不会传播到实例上。\n\n默认值：false。",
+            "en": "Specifies whether the tag is a propagatable tag. Valid values:\n- true: The tag on the scaling group is only propagated to newly created instances, and is not propagated to instances already running in the scaling group.\n- false: The tag on the scaling group is not propagated to instances.\n\nDefault value: false."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "伸缩组的标签值。",
+            "en": "The tag value of the scaling group."
+          }
         }
       ]
     },
@@ -431,18 +704,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "伸缩组关联虚拟服务器组的信息集合。",
+        "en": "The information collection of vServer groups associated with the scaling group."
+      },
       "sub_parameters": [
         {
           "name": "LoadBalancerId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "虚拟服务器组所属传统型负载均衡CLB（原SLB）实例的ID。\n\n更多信息，请参见[AttachVServerGroups](~~98983~~)。",
+            "en": "The ID of the CLB (formerly SLB) instance to which the vServer group belongs.\n\nFor more information, see [AttachVServerGroups](~~98983~~)."
+          }
         },
         {
           "name": "VServerGroupAttribute",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "后端服务器组属性。",
+            "en": "The backend server group attributes."
+          }
         }
       ]
     },
@@ -450,15 +735,34 @@
       "name": "VSwitchId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "虚拟交换机的ID。指定后，伸缩组的网络类型为专有网络。\n\n> 当伸缩组未指定VSwitchId或VSwitchIds.N参数时，伸缩组的网络类型默认为经典网络。",
+        "en": "The ID of the vSwitch. After this parameter is specified, the network type of the scaling group is VPC.\n\n> When neither the VSwitchId nor VSwitchIds.N parameter is specified for the scaling group, the network type of the scaling group defaults to classic network."
+      }
     },
     {
       "name": "VSwitchIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "一台或多台虚拟交换机的ID。如果您使用了VSwitchIds参数，VSwitchId参数将被忽略。指定后，伸缩组的网络类型为专有网络。\n\n指定多台虚拟交换机时：\n\n- 所属的VPC必须相同。\n\n- 所属的可用区可以不同。\n\n- 虚拟交换机的优先级按照数字升序排序，1表示最高优先级。当优先级较高的虚拟交换机所在可用区无法创建ECS实例时，自动选择下一优先级的虚拟交换机创建ECS实例。\n\n> 当伸缩组未指定VSwitchId或VSwitchIds参数时，伸缩组的网络类型默认为经典网络。",
+        "en": "The IDs of one or more vSwitches. If you use the VSwitchIds parameter, the VSwitchId parameter is ignored. After this parameter is specified, the network type of the scaling group is VPC.\n\nWhen multiple vSwitches are specified:\n\n- They must belong to the same VPC.\n- They can belong to different zones.\n- The priority of vSwitches is sorted in ascending numerical order, with 1 indicating the highest priority. When an ECS instance cannot be created in the zone of the highest-priority vSwitch, the next highest-priority vSwitch is automatically selected.\n\n> When neither the VSwitchId nor VSwitchIds parameter is specified for the scaling group, the network type of the scaling group defaults to classic network."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个伸缩组",
+    "en": "Create a scaling group"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n伸缩组是具有相同应用场景的ECS实例的集合。 \n\n<props=\"china\">一个地域下支持创建的伸缩组数量和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**伸缩组总数**对应的配额值。</props>\n\n<props=\"intl\">一个地域下支持创建的伸缩组数量和弹性伸缩使用情况有关，请前往[配额中心](https://quotas.console.aliyun.com/products/ess/quotas)查看**伸缩组总数**对应的配额值。</props>\n\n<props=\"partner\">一个地域下支持创建的伸缩组数量和弹性伸缩使用情况有关，请前往配额中心查看**伸缩组总数**对应的配额值。</props>\n\n\n伸缩组创建成功后不会立即生效。您需要先调用[EnableScalingGroup](~~25939~~)接口启用伸缩组，伸缩组才能触发伸缩活动和执行伸缩规则。  \n\n伸缩组、关联的传统型负载均衡CLB（原SLB）实例和关联的RDS实例必须在同一个地域。更多信息，请参见[地域与可用区](~~40654~~)。  \n\n如果您为伸缩组关联了CLB实例，伸缩组会自动将加入伸缩组的ECS实例添加到CLB实例的后端服务器组。您可以指定ECS实例需要加入的服务器组，支持默认服务器组和虚拟服务器，具体说明如下：\n\n>如果您同时指定了默认服务器组和多个虚拟服务器组，ECS实例会同时添加至这些服务器组中。\n\n- 默认服务器组：用来接收前端请求的ECS实例，如果监听没有设置虚拟服务器组或主备服务器组，默认将请求转发至默认服务器组中的ECS实例。\n- 虚拟服务器组：当您需要将不同的请求转发到不同的后端服务器上，或着需要通过域名和URL进行请求转发时，可以选择使用虚拟服务器组。\n\nECS实例在加入CLB实例的后端服务器组后，权重默认为50。CLB实例需要满足以下条件： \n\n- 该CLB实例的状态必须是active，您可以调用[DescribeLoadBalancers](~~27582~~)接口查看指定CLB实例的状态。  \n\n- 该CLB实例配置的所有监听端口必须开启健康检查，否则伸缩组创建失败。 \n\n如果您为伸缩组关联了应用型负载均衡ALB服务器组、网络型负载均衡NLB服务器组或网关型负载均衡GWLB服务器组，伸缩组会自动将加入伸缩组的ECS实例添加为ALB服务器组、NLB服务器组或GWLB服务器组的后端服务器，处理ALB实例、NLB实例或GWLB实例分发的访问请求。您可以指定多个ALB服务器组、NLB服务器组或GWLB服务器组，但服务器组必须与伸缩组属于同一个VPC。更多信息，请参见[AttachAlbServerGroups](~~266800~~)或[AttachServerGroups](~~600535~~)。\n\n\n如果您为伸缩组关联了RDS实例，伸缩组会自动将加入伸缩组的ECS实例的内网IP添加到RDS实例的访问白名单。RDS实例需要满足以下条件： \n\n- 该RDS实例的状态必须是Running，您可以调用[DescribeDBInstances](~~26232~~)接口查看指定RDS实例的状态。\n\n- 该RDS实例访问白名单的IP数不能超过上限值。更多信息，请参见RDS文档[设置白名单](~~43185~~)。\n\n如果伸缩组的`MultiAZPolicy`设置为`COST_OPTIMIZED`：\n\n- 当指定OnDemandBaseCapacity、OnDemandPercentageAboveBaseCapacity和SpotInstancePools参数时，即指定成本优化策略下的实例分配方式，在扩缩容时将优先满足该实例分配方式。\n\n- 当不指定OnDemandBaseCapacity、OnDemandPercentageAboveBaseCapacity或SpotInstancePools参数时，成本优化策略下将仅按照成本最低的方式进行实例创建。（在此模式下，不支持通过弹性保障服务或容量预定服务创建实例）\n\n如果您为伸缩组设置了可传播标签，即`Tag.N.Propagate`为`true`时：\n\n- 伸缩组上的标签只会传播到新创建的实例上，而不会传播到已经在伸缩组中运行的实例上。\n- 如果您在伸缩配置中指定了实例标签，并且选择将伸缩组的标签传播到该实例，则所有标签都会同时存在。\n- 如果伸缩配置中的标签和伸缩组中的可传播标签指定了相同的标签键，则优先使用伸缩配置中的标签值。",
+    "en": "## API Description\n\nA scaling group is a collection of ECS instances with the same application scenario.\n\n<props=\"china\">The number of scaling groups that can be created in a region depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Total number of scaling groups**.</props>\n\n<props=\"intl\">The number of scaling groups that can be created in a region depends on your Auto Scaling usage. Go to [Quota Center](https://quotas.console.aliyun.com/products/ess/quotas) to view the quota value for **Total number of scaling groups**.</props>\n\n<props=\"partner\">The number of scaling groups that can be created in a region depends on your Auto Scaling usage. Go to Quota Center to view the quota value for **Total number of scaling groups**.</props>\n\n\nA scaling group does not take effect immediately after it is created. You must first call the [EnableScalingGroup](~~25939~~) API to enable the scaling group before it can trigger scaling activities and execute scaling rules.\n\nThe scaling group, associated CLB (formerly SLB) instances, and associated RDS instances must be in the same region. For more information, see [Regions and zones](~~40654~~).\n\nIf you associate a CLB instance with the scaling group, the scaling group automatically adds the ECS instances that join the scaling group to the backend server group of the CLB instance. You can specify the server groups to which the ECS instances are added, including the default server group and vServer groups, as described below:\n\n> If you specify both the default server group and multiple vServer groups, the ECS instances are added to all these server groups simultaneously.\n\n- Default server group: receives frontend requests. If a listener does not have a vServer group or primary/secondary server group configured, requests are forwarded to the ECS instances in the default server group by default.\n- vServer group: When you need to forward different requests to different backend servers, or need to forward requests based on domain names and URLs, you can use vServer groups.\n\nAfter an ECS instance is added to the backend server group of a CLB instance, the default weight is 50. The CLB instance must meet the following conditions:\n\n- The CLB instance must be in the active state. You can call the [DescribeLoadBalancers](~~27582~~) API to view the status of a specified CLB instance.\n\n- Health checks must be enabled for all listener ports configured on the CLB instance. Otherwise, the scaling group creation fails.\n\nIf you associate ALB server groups, NLB server groups, or GWLB server groups with the scaling group, the scaling group automatically adds the ECS instances that join the scaling group as backend servers to the ALB, NLB, or GWLB server groups to process access requests distributed by the ALB, NLB, or GWLB instances. You can specify multiple ALB, NLB, or GWLB server groups, but the server groups must belong to the same VPC as the scaling group. For more information, see [AttachAlbServerGroups](~~266800~~) or [AttachServerGroups](~~600535~~).\n\n\nIf you associate an RDS instance with the scaling group, the scaling group automatically adds the private IP addresses of the ECS instances that join the scaling group to the whitelist of the RDS instance. The RDS instance must meet the following conditions:\n\n- The RDS instance must be in the Running state. You can call the [DescribeDBInstances](~~26232~~) API to view the status of a specified RDS instance.\n\n- The number of IPs in the whitelist of the RDS instance must not exceed the upper limit. For more information, see the RDS documentation [Configure a whitelist](~~43185~~).\n\nIf the `MultiAZPolicy` of the scaling group is set to `COST_OPTIMIZED`:\n\n- When the OnDemandBaseCapacity, OnDemandPercentageAboveBaseCapacity, and SpotInstancePools parameters are specified, the instance allocation method under the cost optimization strategy is defined. During scaling, this instance allocation method is prioritized.\n\n- When the OnDemandBaseCapacity, OnDemandPercentageAboveBaseCapacity, or SpotInstancePools parameters are not specified, the cost optimization strategy only creates instances in the most cost-effective manner. (In this mode, creating instances through Elasticity Assurance or Capacity Reservation is not supported.)\n\nIf you set propagatable tags for the scaling group, i.e., `Tag.N.Propagate` is set to `true`:\n\n- Tags on the scaling group are only propagated to newly created instances, and are not propagated to instances already running in the scaling group.\n- If you specify instance tags in the scaling configuration and also choose to propagate the scaling group tags to the instance, all tags coexist.\n- If the propagatable tag in the scaling group and the tag in the scaling configuration specify the same tag key, the tag value in the scaling configuration takes precedence."
+  },
   "example": {
     "unifiedCli": "aliyun ess create-scaling-group --scaling-group-name scalinggroup0000 --launch-template-id lt-m5e3ofjr1zn1aw70000 --launch-template-version Default --instance-id i-28wt40000 --biz-region-id cn-hangzhou --min-size 2 --max-size 20 --default-cooldown 300 --load-balancer-ids lb-bp1u7etiogg38yvwz0000_,_lb-bp168cqrux9ai9l7f0000_,_lb-bp1jv3m9zvj22ufxp0000 --db-instance-ids rm-bp142f86de0t70000_,_rm-bp18l1z42ar4o0000_,_rm-bp1lqr97h4aqk0000 --removal-policy-1 OldestScalingConfiguration --removal-policy-2 OldestInstance --removal-policy-3 NewestInstance --vswitch-id vsw-bp14zolna43z266bq0000 --multi-az-policy PRIORITY --health-check-type ECS --scaling-policy recycle --client-token 123e4567-e89b-12d3-a456-426655440000 --on-demand-base-capacity 30 --on-demand-percentage-above-base-capacity 20 --spot-instance-remedy true --compensate-with-on-demand true --spot-instance-pools 5 --desired-capacity 5 --group-deletion-protection true --group-type ECS --container-group-id eci-uf6fonnghi50u3740000 --vswitchids vsw-bp14zolna43z266bq0000 --lifecycle-hook LifecycleHookName=lifecyclehook0000 NotificationArn=acs:ess:cn-hangzhou:1111111111:queue/queue2 LifecycleTransition=SCALE_OUT HeartbeatTimeout=600 NotificationMetadata=Test DefaultResult=CONTINUE --vserver-group '[{\"LoadBalancerId\":\"lb-bp1u7etiogg38yvwz0000\",\"VServerGroupAttribute\":[{\"VServerGroupId\":\"rsp-bp1443g770000\",\"Port\":22,\"Weight\":100}]}]' --tag Value=Finance Propagate=false Key=Department --launch-template-override WeightedCapacity=4 SpotPriceLimit=0.025 InstanceType=ecs.c5.xlarge --alb-server-group AlbServerGroupId=sgp-ddwb0y0g6y9bjm0000 Port=22 Weight=100 --server-group Type=ALB Port=22 ServerGroupId=sgp-5yc3bd9lfyh00000 Weight=100 --az-balance false --allocation-strategy priority --spot-allocation-strategy lowestPrice --max-instance-lifetime 1 --custom-policy-arn acs:fc:cn-zhangjiakou:161456880000:services/ess_custom_terminate_policy.LATEST/functions/ess_custom_terminate_policy_name --resource-group-id rg-1230000 --load-balancer-config LoadBalancerId=147b46d767c-cn-qingdao-cm50000 Weight=10 --health-check-types ECS --db-instance Type=RDS AttachMode=SecurityIp DBInstanceId=rm-m5eqju85s45mu0000 --stop-instance-timeout 60 --capacity-options OnDemandBaseCapacity=30 CompensateWithOnDemand=true OnDemandPercentageAboveBaseCapacity=20 SpotAutoReplaceOnDemand=false PriceComparisonMode=PricePerUnit --balance-mode BalancedBestEffort --auto-rebalance false --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess CreateScalingGroup --region cn-hangzhou --SpotInstanceRemedy true --ServerGroup.1.ServerGroupId 'sgp-5yc3bd9lfyh00000' --HealthCheckTypes.1 ECS --ResourceGroupId 'rg-1230000' --DesiredCapacity 5 --CapacityOptions.PriceComparisonMode PricePerUnit --VServerGroup.1.VServerGroupAttribute.1.VServerGroupId 'rsp-bp1443g770000' --OnDemandBaseCapacity 30 --CapacityOptions.OnDemandBaseCapacity 30 --Tag.1.Key Department --LifecycleHook.1.HeartbeatTimeout 600 --LaunchTemplateOverride.1.InstanceType 'ecs.c5.xlarge' --InstanceId 'i-28wt40000' --CapacityOptions.CompensateWithOnDemand true --VSwitchId 'vsw-bp14zolna43z266bq0000' --LoadBalancerIds 'lb-bp1u7etiogg38yvwz0000_,_lb-bp168cqrux9ai9l7f0000_,_lb-bp1jv3m9zvj22ufxp0000' --SpotInstancePools 5 --LaunchTemplateId 'lt-m5e3ofjr1zn1aw70000' --CustomPolicyARN 'acs:fc:cn-zhangjiakou:161456880000:services/ess_custom_terminate_policy.LATEST/functions/ess_custom_terminate_policy_name' --ScalingGroupName scalinggroup0000 --LoadBalancerConfig.1.LoadBalancerId '147b46d767c-cn-qingdao-cm50000' --DBInstance.1.Type RDS --DefaultCooldown 300 --VSwitchIds.1 'vsw-bp14zolna43z266bq0000' --GroupType ECS --LaunchTemplateOverride.1.SpotPriceLimit '0.025' --Tag.1.Value Finance --LaunchTemplateVersion Default --MultiAZPolicy PRIORITY --LifecycleHook.1.NotificationMetadata Test --ServerGroup.1.Port 22 --DBInstanceIds 'rm-bp142f86de0t70000_,_rm-bp18l1z42ar4o0000_,_rm-bp1lqr97h4aqk0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --HealthCheckType ECS --LifecycleHook.1.LifecycleHookName lifecyclehook0000 --AutoRebalance false --CapacityOptions.SpotAutoReplaceOnDemand false --CompensateWithOnDemand true --VServerGroup.1.VServerGroupAttribute.1.Weight 100 --AlbServerGroup.1.Port 22 --OnDemandPercentageAboveBaseCapacity 20 --LifecycleHook.1.LifecycleTransition SCALE_OUT --RemovalPolicy.1 OldestScalingConfiguration --RemovalPolicy.3 NewestInstance --RemovalPolicy.2 OldestInstance --AllocationStrategy priority --DBInstance.1.AttachMode SecurityIp --LoadBalancerConfig.1.Weight 10 --SpotAllocationStrategy lowestPrice --AlbServerGroup.1.AlbServerGroupId 'sgp-ddwb0y0g6y9bjm0000' --Tag.1.Propagate false --LaunchTemplateOverride.1.WeightedCapacity 4 --VServerGroup.1.VServerGroupAttribute.1.Port 22 --ScalingPolicy recycle --DBInstance.1.DBInstanceId 'rm-m5eqju85s45mu0000' --ServerGroup.1.Type ALB --GroupDeletionProtection true --MaxSize 20 --LifecycleHook.1.DefaultResult CONTINUE --MinSize 2 --AzBalance false --CapacityOptions.OnDemandPercentageAboveBaseCapacity 20 --AlbServerGroup.1.Weight 100 --BalanceMode BalancedBestEffort --LifecycleHook.1.NotificationArn 'acs:ess:cn-hangzhou:1111111111:queue/queue2' --ContainerGroupId 'eci-uf6fonnghi50u3740000' --RegionId 'cn-hangzhou' --ServerGroup.1.Weight 100 --VServerGroup.1.LoadBalancerId 'lb-bp1u7etiogg38yvwz0000' --MaxInstanceLifetime 1 --StopInstanceTimeout 60 --method POST --force"

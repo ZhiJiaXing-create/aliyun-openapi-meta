@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "ClientToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system automatically uses the request ID as the client token.\\*\\*\\*\\*\\*\\*\\*\\* The request ID may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会创建并绑定标签。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接进行操作。",
+        "en": "Specifies whether to perform only a dry run, without performing the actual request. Valid values:\n\n- **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "私网连接实例所在的地域ID。\n\n您可以通过调用[DescribeRegions](~~120468~~)接口查询地域ID。",
+        "en": "The region ID of the PrivateLink instance.\n\nYou can call the [DescribeRegions](~~120468~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Body",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID列表。最多支持50个资源ID。",
+        "en": "The resource IDs. Up to 50 resource IDs are supported."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n\n- **vpcendpoint**：终端节点。                                \n\n- **vpcendpointservice**：终端节点服务。",
+        "en": "The type of resource. Valid values:\n\n- **vpcendpoint**: endpoint\n\n- **vpcendpointservice**: endpoint service"
+      }
     },
     {
       "name": "Tag",
       "position": "Body",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags to add to the resources."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为指定的资源列表统一创建并绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "> 单个实例最多可绑定20条标签。绑定标签前，阿里云会校验资源已有标签数量，超过限制值会返回报错信息。",
+    "en": "> You can add up to 20 tags to an instance. Before you add tags to a resource, Alibaba Cloud checks the number of existing tags of the resource. If the maximum number is reached, an error message is returned."
+  },
   "example": {
     "unifiedCli": "aliyun privatelink tag-resources --resource-id ep-ba16baebdf35641a10000 --tag Value=FinanceJoshua Key=FinanceDept --resource-type vpcendpoint --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --biz-region-id cn-hangzhou --region cn-hangzhou",
     "legacyCli": "aliyun privatelink TagResources --region cn-hangzhou --ResourceId.1 'ep-ba16baebdf35641a10000' --Tag.1.Key FinanceDept --Tag.1.Value FinanceJoshua --DryRun false --ResourceType vpcendpoint --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --method POST --force"

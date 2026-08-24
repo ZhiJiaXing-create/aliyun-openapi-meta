@@ -1,5 +1,6 @@
 {
   "name": "CreateDataFlow",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,25 +9,41 @@
       "name": "AutoRefreshInterval",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自动更新间隔时间，每隔该时间间隔，CPFS通用版检查目录内是否存在数据更新，如果有数据更新，启动自动更新任务，单位：分钟。\n\n取值范围：10~525600，默认值：10。\n> 当文件系统类型为CPFS通用版时，本参数生效。",
+        "en": "The auto-refresh interval. CPFS General-purpose checks the directory for data updates at this interval. If data updates exist, an auto-refresh task is started. Unit: minutes.\n\nValid values: 10 to 525600. Default value: 10.\n> This parameter takes effect only when the file system type is CPFS General-purpose."
+      }
     },
     {
       "name": "AutoRefreshPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自动更新策略，源端数据更新以后，数据更新导入到CPFS通用版的策略。\n\n- None（默认值）：源端的数据更新不自动导入CPFS通用版，用户可通过数据流动任务导入源端的数据更新。\n- ImportChanged：源端的数据更新自动导入CPFS通用版。\n> 当文件系统类型为CPFS通用版时，本参数生效。",
+        "en": "The auto-refresh policy. Specifies the policy for importing data updates from the source storage to CPFS General-purpose after the source data is updated. Valid values:\n\n- None (default): Data updates in the source storage are not automatically imported to CPFS General-purpose. You can import data updates from the source storage by using a data flow task.\n- ImportChanged: Data updates in the source storage are automatically imported to CPFS General-purpose.\n> This parameter takes effect only when the file system type is CPFS General-purpose."
+      }
     },
     {
       "name": "AutoRefreshs",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "自动更新配置信息集合。\n> 当文件系统类型为CPFS通用版时，本参数生效。",
+        "en": "The auto-refresh configuration collection.\n> This parameter takes effect only when the file system type is CPFS General-purpose."
+      },
       "sub_parameters": [
         {
           "name": "RefreshPath",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "自动更新目录，CPFS通用版注册源端存储的数据修改事件，检查该目录下的源端数据是否发生更新并自动导入更新的数据。\n\n默认为空，源端存储的任何数据更新不会自动导入 CPFS通用版，需要通过手动任务导入更新。\n\n限制：\n\n- 长度为2~1024个字符。\n- 使用UTF-8编码。\n- 必须以正斜线（/）开头和结尾。\n- 该目录必须是CPFS通用版上的已有目录，且必须位于该数据流动的Fileset目录中。",
+            "en": "The auto-refresh directory. CPFS General-purpose registers data modification events from the source storage and checks whether the source data in this directory has been updated, then automatically imports the updated data.\n\nThe default value is empty, which means that data updates in the source storage are not automatically imported to CPFS General-purpose. You must manually create a task to import updates.\n\nLimits:\n\n- The path must be 2 to 1024 characters in length.\n- UTF-8 encoding is used.\n- The path must start and end with a forward slash (/).\n- The directory must be an existing directory in the CPFS General-purpose file system and must be located within the Fileset directory of the data flow."
+          }
         }
       ]
     },
@@ -34,63 +51,114 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，从您的客户端生成一个参数值，确保不同请求间该参数值唯一。\n\nClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。\n\n> 若用户未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "Ensures the idempotence of the request. Generate a parameter value from your client to ensure that the value is unique across different requests.\n\nClientToken supports only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~).\n\n> If you do not specify this parameter, the system automatically uses the RequestId of the API request as the ClientToken. The RequestId may differ for each API request."
+      }
     },
     {
       "name": "Description",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据流动的描述。 \n\n限制：\n\n- 长度为2~128个英文或中文字符。\n- 必须以大小写字母或中文开头，不能以`http://`和`https://`开头。\n- 可以包含数字、半角冒号（:）、下划线（_）或者短划线（-）。",
+        "en": "The description of the data flow.\n\nLimits:\n\n- The description must be 2 to 128 characters in length.\n- The description must start with a letter.\n- The description cannot start with `http://` or `https://`.\n- The description can contain digits, colons (:), underscores (_), and hyphens (-)."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检。\n\n预检操作会帮助您检查参数有效性、校验库存等，并不会实际创建实例，也不会产生费用。\n\n取值：\n\n- true：发送检查请求，不会创建实例。检查项包括是否填写了必需参数、请求格式、业务限制和NAS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回200 HttpCode，但FileSystemId为空。\n- false（默认）：发送正常请求，通过检查后直接创建实例。",
+        "en": "Specifies whether to perform a dry run for this create request.\n\nA dry run checks parameter validity and resource availability without actually creating the instance or incurring charges.\n\nValid values:\n\n- true: Sends a dry run request without creating the instance. The check items include required parameters, request format, business limits, and NAS inventory. If the check fails, the corresponding error is returned. If the check succeeds, HTTP status code 200 is returned, but FileSystemId is empty.\n- false (default): Sends a normal request and creates the instance after the check is passed."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。\n\n- CPFS通用版：必须以`cpfs-`开头，例如cpfs-125487\\*\\*\\*\\*。\n\n- CPFS智算版：必须以`bmcpfs-`开头，例如bmcpfs-0015\\*\\*\\*\\*。",
+        "en": "The file system ID.\n\n- CPFS General-purpose: must start with `cpfs-`, such as cpfs-125487\\*\\*\\*\\*.\n\n- CPFS for Lingjun: must start with `bmcpfs-`, such as bmcpfs-0015\\*\\*\\*\\*."
+      }
     },
     {
       "name": "FileSystemPath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "CPFS智算版文件系统内的目录。限制如下。\n- 必须以/开头和结尾。\n\n- 该目录必须是CPFS智算版上的已有目录。\n\n- 长度为1~1023个字符之间。\n\n- 使用UTF-8编码。\n\n> 当文件系统类型为CPFS智算版时，本参数必填。",
+        "en": "The directory in the CPFS for Lingjun file system. Limits:\n- The path must start and end with a forward slash (/).\n\n- The directory must be an existing directory in the CPFS for Lingjun file system.\n\n- The path must be 1 to 1023 characters in length.\n\n- UTF-8 encoding is used.\n\n> This parameter is required when the file system type is CPFS for Lingjun."
+      }
     },
     {
       "name": "FsetId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "Fileset ID。\n> 当文件系统类型为CPFS通用版时，该参数必填。",
+        "en": "The Fileset ID.\n> This parameter is required when the file system type is CPFS General-purpose."
+      }
     },
     {
       "name": "SourceSecurityType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端存储的安全保护类型，如果源端存储必须通过安全保护访问，请指定源端存储的安全保护类型。取值：\n\n- 无（默认值）：表示源端存储不需要通过安全保护方式访问。\n- SSL：通过SSL证书保护访问。",
+        "en": "The security protection type of the source storage. If the source storage must be accessed through security protection, specify the security protection type. Valid values:\n\n- None (default): The source storage does not require security protection for access.\n- SSL: Access is protected by an SSL certificate."
+      }
     },
     {
       "name": "SourceStorage",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "源端存储的访问地址。格式：`<storage type>://[<account id>:]<path>`。\n\n其中：\n\n- storage type：目前只支持oss。\n- account id：可选参数，源端存储所属账号的UID。使用跨账号的OSS时，该参数必填。\n- path：OSS的Bucket名称。限制如下。\n\n    - 仅支持小写字母、数字和短划线（-）且必须以小写字母或者数字开头和结尾。\n\n    - 最长为128个字符。\n\n    - 使用UTF-8编码。\n\n> - OSS Bucket必须为在该地域已存在的Bucket。\n> - 仅CPFS智算版2.6.0及以上版本支持 account id 参数。",
+        "en": "The access address of the source storage. Format: `<storage type>://[<account id>:]<path>`.\n\nWhere:\n\n- storage type: only oss is supported.\n- account id: optional. The UID of the account that owns the source storage. This parameter is required when you use cross-account OSS.\n- path: the name of the OSS bucket. Limits:\n\n    - Only lowercase letters, digits, and hyphens (-) are supported. The name must start and end with a lowercase letter or digit.\n\n    - The maximum length is 128 characters.\n\n    - UTF-8 encoding is used.\n\n> - The OSS bucket must be an existing bucket in the region.\n> - The account id parameter is supported only by CPFS for Lingjun 2.6.0 and later."
+      }
     },
     {
       "name": "SourceStoragePath",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "源端存储Bucket内的访问路径。限制如下。\n\n   - 必须以/开头和结尾。\n\n- 区分大小写。\n\n- 长度为1~1023个字符之间。\n\n- 使用UTF-8编码。\n\n> 当文件系统类型为CPFS智算版时，本参数必填。",
+        "en": "The access path within the source storage bucket. Limits:\n\n   - The path must start and end with a forward slash (/).\n\n- The path is case-sensitive.\n\n- The path must be 1 to 1023 characters in length.\n\n- UTF-8 encoding is used.\n\n> This parameter is required when the file system type is CPFS for Lingjun."
+      }
     },
     {
       "name": "Throughput",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据流动的传输带宽上限，单位：MB/s 。取值： \n\n- 600\n- 1200\n- 1500\n\n> 数据流动的传输带宽必须小于文件系统的IO带宽。\n> 当文件系统类型为CPFS通用版时，该参数必填。",
+        "en": "The maximum transfer bandwidth of the data flow. Unit: MB/s. Valid values: \n\n- 600\n- 1200\n- 1500\n\n> The transfer bandwidth of the data flow must be less than the I/O bandwidth of the file system.\n> This parameter is required when the file system type is CPFS General-purpose."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建数据流动",
+    "en": "Create a data flow"
+  },
+  "descriptions": {
+    "zh": "- 本接口适用于以下产品：\n\n| 产品 | 文件系统ID格式 | 支持数据流动的最低版本 |\n|------|----------------|------------------------|\n| **CPFS通用版** | 以 `cpfs-` 开头，例如 cpfs-125487**** | 2.2.0 及以上 |\n| **CPFS智算版** | 以 `bmcpfs-` 开头，例如 bmcpfs-0015**** | 2.4.0 及以上 |\n> ：CPFS通用版和CPFS智算版共用同一套API，但在参数取值和功能支持上有所区别。请根据您使用的产品类型参考相应章节。\n\n- 基础操作\n    - CPFS通用版、CPFS智算版文件系统状态为运行中时，才能创建数据流动。\n    - 一个CPFS通用版或CPFS智算版文件系统最多允许创建 **10 个**数据流动。\n    - 创建数据流动一般耗时 2～5 分钟，您可通过 [DescribeDataFlows](~~336901~~) 检查数据流动创建是否完成。\n\n- 权限\n\n    创建数据流动时，文件存储CPFS会获取`AliyunServiceRoleForNasOssDataflow`和`AliyunServiceRoleForNasEventNotification`两个服务关联角色。更多信息，请参见[CPFS服务关联角色](~~185138~~)。\n\n- CPFS通用版使用说明\n\n     本章节适用于文件系统ID以 `cpfs-` 开头的CPFS通用版。\n  - 计费\n\n    - 创建数据流动将按照数据流动带宽计费。更多信息，请参见[CPFS通用版计费说明](~~111858~~)。\n    - 使用自动更新（AutoRefresh）时，需要通过EventBridge收集源端OSS存储的对象修改事件，事件将产生费用。更多信息，请参见[EventBridge计费说明](~~163752~~)。\n\n  - 数据流动规格\n      - 数据流动带宽（Throughput）支持600 MB/s、1200 MB/s和1500 MB/s三种规格。数据流动带宽是指该数据流动进行导入或导出数据时能达到的最大传输带宽。\n    - 创建一个数据流动，会消耗1个文件存储CPFS通用版挂载点使用的vSwitch IP地址，请您确保该vSwitch IP资源充足。\n    - 库存查询：当设置DryRun为true时，可校验创建该规格的数据流动的资源是否满足。\n\n  - Fileset\n    - 数据流动的目的端是CPFS通用版文件系统中的Fileset。Fileset是CPFS通用版文件系统中一种新的目录树结构，是在父文件系统中的一个小型文件系统，拥有独立的inode空间和管理能力。\n    -  创建数据流动时该Fileset必须已存在，且不能与其他Fileset嵌套。一个Fileset上只能创建一个数据流动，对应一个源端存储。\n    - Fileset内的文件数量上限是100万，如果从OSS Bucket导入的文件数量超过上限，创建新文件会报错`no space`。\n   > 如果Fileset中已存在数据，创建数据流动后，Fileset内的已有数据会被清空，替换为OSS端同步过来的数据。\n\n  - 自动更新\n    -  配置自动更新（AutoRefresh）后，当源端存储数据发生变化时，变化的元数据会自动同步到CPFS通用版文件系统，变化的数据会在用户访问文件时按需加载，或者启动数据流动任务加载数据。\n    -  自动更新依赖EventBridge收集源端OSS存储的对象修改事件。需要先[开通EventBridge服务](~~182246~~)。\n    -  自动更新的作用范围是prefix，由参数RefreshPath指定。一个数据流动最多可配置5个自动更新目录。\n    -  自动更新间隔（AutoRefreshInterval）指CPFS通用版设置的自动更新时间，检查源端OSS Bucket该prefix内是否存在数据更新，如果有数据更新则启动自动更新任务。当OSS源端的对象修改事件频率超过CPFS通用版数据流动处理能力时，自动更新任务会堆积，元数据更新会延迟，数据流动的状态为`Misconfigured`，您可以提升数据流动规格，或者降低OSS修改频率来解决。\n    -  在文件存储CPFS通用版数据流动对prefix配置自动更新时，会在用户侧创建事件总线，并创建源端OSS Bucket的prefix的事件规则。当源端OSS Bucket的prefix内发生对象修改后，会在EventBridge中产生OSS事件，由CPFS通用版数据流动处理。\n     > 文件存储CPFS通用版在EventBridge创建的事件总线、事件规则带有`Create for cpfs auto refresh`的描述，事件总线、事件规则都不能修改或删除，否则自动更新无法正常工作。\n\n  -  源端存储\n     -  源端存储仅支持OSS。数据流动的源端存储（SourceStorage）必须是OSS Bucket。\n     -  CPFS通用版数据流动支持加密和非加密两种方式访问OSS。选择加密（SSL）方式访问OSS时，需确认OSS Bucket的传输加密支持加密访问方式。\n     -  如果多个CPFS通用版的数据流动、或者同一个文件存储CPFS通用版的多个数据流动的源端存储是同一个OSS Bucket，为了防止多个文件存储CPFS通用版向同一个源导出数据产生数据冲突，需要该OSS Bucket开启版本控制。\n     -  不支持跨地域的OSS数据流动，OSS Bucket必须与CPFS通用版文件系统在同一个地域。\n       > 创建数据流动前，您需要先给源端OSS Bucket设置标签（key: cpfs-dataflow, value: true），以便CPFS通用版数据流动访问该Bucket的数据。在数据流动的使用过程中，不能删除和修改该标签，否则CPFS通用版数据流动无法访问Bucket的数据。\n\n- CPFS智算版使用说明\n\n     本章节适用于文件系统ID以 `bmcpfs-` 开头的CPFS智算版。\n\n  -  源端存储\n      -  源端存储仅支持OSS。数据流动的源端存储（SourceStorage）必须是OSS Bucket。\n      -  CPFS智算版数据流动支持加密和非加密两种方式访问OSS。选择加密（SSL）方式访问OSS时，需确认OSS Bucket的传输加密支持加密访问方式。\n      -  如果多个CPFS智算版的数据流动、或者同一个CPFS智算版的多个数据流动的源端存储是同一个OSS Bucket，为了防止多个CPFS智算版向同一个源导出数据产生数据冲突，需要该OSS Bucket开启版本控制。\n      -  不支持跨地域的OSS数据流动，OSS Bucket必须与CPFS智算版文件系统在同一个地域。\n     - CPFS智算版2.6.0及以上版本支持使用跨账号OSS进行数据流动的创建。\n     - 只有在使用跨账号的OSS时，需要设置account id参数。\n     - 使用跨账号的OSS时，需要先进行账号授权。具体授权请参考[跨账号数据流动授权](~~2713462~~)。\n       > 创建数据流动前，您需要先给源端OSS Bucket设置标签（key: cpfs-dataflow, value: true），以便CPFS智算版数据流动访问该Bucket的数据。在数据流动的使用过程中，不能删除和修改该标签，否则CPFS智算版数据流动无法访问Bucket的数据。\n\n  - 数据流动对文件系统的限制\n\n    - 在数据流动关联的文件系统路径中，不可对非空目录执行重命名操作，否则报错Permission Denied或者目录非空。\n     - 目录、文件名中的特殊字符需要谨慎使用，支持大小写字母、数字、感叹号（！）、短划线（-）、下划线（_）、半角句号（.）、星号（*）和半角圆括号（()）。\n    - 不支持超长路径，数据流动支持的路径最大长度是1023字符。\n\n  - 数据流动导入限制\n\n    - Symlink类型的文件导入到CPFS智算版后，会转变为包含数据的普通文件，并丢失Symlink信息。\n    - 如果OSS Bucket存在多个版本，则只复制最新的版本。\n    - 不支持长度大于255字节的文件名或子目录名。\n  - 数据流动导出限制\n\n    - Symlink类型的文件在同步到OSS后，不会同步Symlink所指向的文件，而是会变成一个普通的无数据空白对象。\n    - Hardlink类型的文件仅作为普通文件同步到OSS。\n    - Socket、Device、Pipe类型的文件导出到OSS Bucket时，会变成一个普通的无数据空白对象。\n    - 不支持长度大于1023字符的目录路径。",
+    "en": "- This operation applies to the following products:\n\n| Product | File system ID format | Minimum version that supports data flows |\n|------|----------------|------------------------|\n| **CPFS General-purpose** | Starts with `cpfs-`, such as cpfs-125487\\*\\*\\*\\* | 2.2.0 and later |\n| **CPFS for Lingjun** | Starts with `bmcpfs-`, such as bmcpfs-0015\\*\\*\\*\\* | 2.4.0 and later |\n> CPFS General-purpose and CPFS for Lingjun share the same set of API operations, but differ in parameter values and feature support. Refer to the corresponding section based on the product type you use.\n\n- Basic operations\n    - You can create a data flow only when the CPFS General-purpose or CPFS for Lingjun file system is in the Running state.\n    - A maximum of **10** data flows can be created for a single CPFS General-purpose or CPFS for Lingjun file system.\n    - Creating a data flow typically takes 2 to 5 minutes. You can call [DescribeDataFlows](~~336901~~) to check whether the data flow is created.\n\n- Permissions.\n\n    When you create a data flow, Cloud Parallel File Storage associates the `AliyunServiceRoleForNasOssDataflow` and `AliyunServiceRoleForNasEventNotification` service-linked roles. For more information, see [CPFS service-linked roles](~~185138~~).\n\n- CPFS General-purpose usage notes.\n\n     This section applies to CPFS General-purpose file systems whose IDs start with `cpfs-`.\n  - Billing\n\n    - Creating a data flow incurs charges based on the data flow bandwidth. For more information, see [CPFS General-purpose billing](~~111858~~).\n    - When you use auto-refresh (AutoRefresh), EventBridge collects object modification events from the source OSS storage, which incurs fees. For more information, see [EventBridge billing](~~163752~~).\n\n  - Data flow specifications\n      - The data flow bandwidth (Throughput) supports three specifications: 600 MB/s, 1200 MB/s, and 1500 MB/s. The data flow bandwidth refers to the maximum transfer bandwidth that the data flow can achieve during data import or export.\n    - Creating a data flow consumes one vSwitch IP address used by the Cloud Parallel File Storage General-purpose mount target. Make sure that sufficient vSwitch IP resources are available.\n    - Inventory check: When DryRun is set to true, you can verify whether the resources required to create a data flow of the specified specification are available.\n\n  - Fileset\n    - The destination of a data flow is a Fileset in the CPFS General-purpose file system. A Fileset is a new directory tree structure in the CPFS General-purpose file system. It is a small file system within the parent file system that has an independent inode space and management capability.\n    - The Fileset must already exist when you create a data flow, and it cannot be nested with other Filesets. Only one data flow can be created on a Fileset, corresponding to one source storage.\n    - The maximum number of files in a Fileset is 1 million. If the number of files imported from an OSS bucket exceeds this limit, creating new files returns a `no space` error.\n   > If data already exists in the Fileset, the existing data in the Fileset is cleared and replaced with data synchronized from OSS after the data flow is created.\n\n  - Auto-refresh\n    - After auto-refresh (AutoRefresh) is configured, when data in the source storage changes, the changed metadata is automatically synchronized to the Cloud Parallel File Storage General-purpose file system. The changed data is loaded on demand when a user accesses the file, or loaded by starting a data flow task to load data.\n    - Auto-refresh relies on EventBridge to collect object modification events from the source OSS storage. You must first [activate EventBridge](~~182246~~).\n    - The scope of automatic synchronization is a prefix, specified by the RefreshPath parameter. A maximum of 5 auto-refresh folders can be configured for a data flow.\n    - The auto-refresh interval (AutoRefreshInterval) specifies the interval at which Cloud Parallel File Storage General-purpose checks whether data updates exist in the specified prefix of the source OSS bucket. If data updates exist, an automatic synchronization task is started. When the frequency of object modification events in the source OSS exceeds the processing capacity of the Cloud Parallel File Storage General-purpose data flow, automatic synchronization tasks accumulate, metadata updates are delayed, and the data flow status changes to `Misconfigured`. You can resolve this issue by upgrading the data flow specification or reducing the OSS modification frequency.\n    - When automatic synchronization is configured for a prefix in a Cloud Parallel File Storage General-purpose data flow, an event bus is created on the user side, and an event rule is created for the prefix of the source OSS bucket. When an object modification occurs in the prefix of the source OSS bucket, an OSS event is generated in EventBridge and processed by the Cloud Parallel File Storage General-purpose data flow.\n     > The event bus and event rules created by Cloud Parallel File Storage General-purpose in EventBridge have the description `Create for cpfs auto refresh`. Do not modify or delete the event bus or event rules. Otherwise, auto-refresh does not work properly. The data flow status changes to Normal only when auto-refresh is working properly.\n\n  - Source storage\n     - Only OSS is supported as source storage. The source storage (SourceStorage) of a data flow must be an OSS bucket.\n     - Cloud Parallel File Storage General-purpose data flows support both encrypted and non-encrypted access to OSS. When you select encrypted (SSL) access to OSS, confirm that the encryption in transit settings of the OSS bucket support encrypted access.\n     - If data flows of multiple Cloud Parallel File Storage General-purpose file systems, or multiple data flows of the same Cloud Parallel File Storage General-purpose file system, use the same OSS bucket as the source storage, enable versioning for the OSS bucket to prevent data conflicts when multiple Cloud Parallel File Storage General-purpose file systems export data to the same source. This procedure is required to avoid conflicts during the process.\n     - Cross-region OSS data flows are not supported. The OSS bucket must be in the same region as the Cloud Parallel File Storage General-purpose file system.\n       > Before creating a data flow, set a tag (key: cpfs-dataflow, value: true) on the source OSS bucket so that the Cloud Parallel File Storage General-purpose data flow can access the data in the bucket. Do not delete or modify this tag while the data flow is in use. Otherwise, the Cloud Parallel File Storage General-purpose data flow cannot access the data in the bucket.\n\n- CPFS for Lingjun usage notes.\n\n     This section applies to CPFS for Lingjun file systems whose IDs start with `bmcpfs-`.\n\n  - Source storage\n      - Only OSS is supported as source storage. The source storage (SourceStorage) of a data flow must be an OSS bucket.\n      - CPFS for Lingjun data flows support both encrypted and non-encrypted access to OSS. When you select encrypted (SSL) access to OSS, make sure that the encryption in transit of the OSS bucket supports encrypted access.\n      - If data flows of multiple CPFS for Lingjun file systems, or multiple data flows of the same CPFS for Lingjun file system, use the same OSS bucket as the source storage, enable versioning for the OSS bucket to prevent data conflicts when multiple CPFS for Lingjun file systems export data to the same source.\n      - Cross-region OSS data flows are not supported. The OSS bucket must be in the same region as the CPFS for Lingjun file system.\n     - CPFS for Lingjun 2.6.0 and later support creating data flows with cross-account OSS.\n     - The account ID parameter is required only when you use cross-account OSS.\n     - When you use cross-account OSS, authorize the account first. For more information, see [Cross-account data flow authorization](~~2713462~~).\n       > Before creating a data flow, set a tag (key: cpfs-dataflow, value: true) on the source OSS bucket so that the CPFS for Lingjun data flow can access the data in the bucket. Do not delete or modify this tag while the data flow is in use. Otherwise, the CPFS for Lingjun data flow cannot access the data in the bucket.\n\n  - Data flow restrictions on file systems.\n\n    - In the file system path associated with a data flow, you cannot rename a non-empty directory. Otherwise, a Permission Denied or directory not empty error is returned.\n     - Use special characters in directory and file names with caution. The following characters are supported: uppercase and lowercase letters, digits, exclamation marks (!), hyphens (-), underscores (_), periods (.), asterisks (*), and parentheses (()).\n    - Excessively long paths are not supported. The maximum path length supported by data flows is 1023 characters.\n\n  - Data flow import restrictions.\n\n    - After symlink files are imported to CPFS for Lingjun, they are converted to regular files that contain data, and the symlink information is lost.\n    - If the OSS bucket has multiple versions, only the latest version is copied.\n    - File names or subdirectory names longer than 255 bytes are not supported.\n  - Data flow export restrictions\n\n    - After symlink files are synchronized to OSS, the files pointed to by the symlinks are not synchronized. Instead, the symlinks become regular empty objects with no data.\n    - Hardlink files are synchronized to OSS as regular files only.\n    - Socket, Device, and Pipe files become regular empty objects with no data when exported to an OSS bucket.\n    - Directory paths longer than 1023 characters are not supported."
+  },
   "example": {
     "unifiedCli": "aliyun nas create-data-flow --file-system-id cpfs-099394bd928c0000 --fset-id fset-1902718ea0ae0000 --source-storage oss://1783210333790000:bucket-01 --source-security-type SSL --throughput 600 --description Bucket01_DataFlow --auto-refreshs RefreshPath=/prefix1/prefix2/ --auto-refresh-policy None --auto-refresh-interval 10 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --source-storage-path /prefix/ --file-system-path /path/ --region cn-hangzhou",
     "legacyCli": "aliyun nas CreateDataFlow --region cn-hangzhou --FsetId 'fset-1902718ea0ae0000' --FileSystemPath '/path/' --Description Bucket01_DataFlow --DryRun false --Throughput 600 --AutoRefreshInterval 10 --SourceStorage 'oss://1783210333790000:bucket-01' --SourceStoragePath '/prefix/' --SourceSecurityType SSL --FileSystemId 'cpfs-099394bd928c0000' --AutoRefreshPolicy None --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AutoRefreshs.1.RefreshPath '/prefix1/prefix2/'"

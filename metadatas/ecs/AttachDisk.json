@@ -1,5 +1,6 @@
 {
   "name": "AttachDisk",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "Bootable",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否作为系统盘挂载。取值范围：\n\n- true：是。\n\n- false：否。\n\n默认值：false。\n\n> 设置为`Bootable=true`时，目标ECS实例必须处于无系统盘状态。",
+        "en": "Specifies whether to attach the disk as a system disk. Valid values:\n\n- true: The disk is attached as a system disk.\n\n- false: The disk is not attached as a system disk.\n\nDefault value: false.\n\n> If you set `Bootable=true`, the destination ECS instance must have no system disk attached."
+      }
     },
     {
       "name": "DeleteWithInstance",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "释放实例时，该磁盘是否随实例一起释放。取值范围：\n\n- true：释放。\n- false：不释放。磁盘会转换成按量付费数据盘而被保留下来。\n\n默认值：false。\n\n设置该参数时，您需要注意：\n\n- 将`DeleteWithInstance`置为`false`后，一旦ECS实例被安全控制，即`OperationLocks`中标记了`\"LockReason\" : \"security\"`，释放ECS实例时会忽略磁盘的该属性，被同时释放。\n\n- 若您需要挂载的目标磁盘为`弹性临时盘`，则必须将`DeleteWithInstance`参数设置为`true`。\n\n- 开启多重挂载特性的云盘，不支持设置该参数。",
+        "en": "Specifies whether to release the disk when the instance is released. Valid values:\n\n- true: The disk is released together with the instance.\n- false: The disk is not released together with the instance. The disk is retained as a pay-as-you-go data disk.\n\nDefault value: false.\n\nWhen you set this parameter, take note of the following items:\n\n- If you set `DeleteWithInstance` to `false` and the ECS instance is locked for security reasons, meaning that `OperationLocks` contains `\"LockReason\" : \"security\"`, this parameter is ignored when the instance is released, and the disk is released together with the instance.\n\n- If the disk to be attached is an `elastic ephemeral disk`, you must set `DeleteWithInstance` to `true`.\n\n- Disks with the multi-attach feature enabled do not support this parameter."
+      }
     },
     {
       "name": "Device",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "磁盘设备名称。\n\n> 该参数即将被弃用，为提高兼容性，建议您尽量使用其他参数标识磁盘。",
+        "en": "The device name of the disk.\n\n> This parameter will be deprecated soon. To improve compatibility, use other parameters to identify the disk."
+      }
     },
     {
       "name": "DiskId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待挂载的磁盘ID。磁盘（`DiskId`）和实例（`InstanceId`）必须在同一个可用区。\n\n> 支持挂载数据盘和系统盘，相关约束条件请参见上文接口说明部分。",
+        "en": "The ID of the disk to be attached. The disk (`DiskId`) and the instance (`InstanceId`) must be in the same zone.\n\n> Both data disks and system disks can be attached. For related constraints, see the operation description section above."
+      }
     },
     {
       "name": "Force",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否是强制挂载请求。取值范围：\n\n- true：是。\n- false：否。\n\n默认值：false。\n\n\n> 当前仅 ESSD 同城冗余类型（cloud_regional_disk_auto）支持设置该字段为 true。",
+        "en": "Specifies whether to forcefully attach the disk. Valid values:\n\n- true: Forcefully attaches the disk.\n- false: Does not forcefully attach the disk.\n\nDefault value: false.\n\n\n> Currently, only regional ESSDs (cloud_regional_disk_auto) support setting this parameter to true."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "待挂载ECS实例的ID。",
+        "en": "The ID of the ECS instance to which you want to attach the disk."
+      }
     },
     {
       "name": "KeyPairName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "挂载系统盘时，为Linux系统ECS实例绑定的SSH密钥对的名称。\n\n- Windows Server系统：不支持SSH密钥对。即使填写了该参数，只执行`Password`的配置。\n\n- Linux系统：密码登录方式会被初始化成禁止。",
+        "en": "The name of the SSH key pair that is bound to the Linux ECS instance when you attach a system disk.\n\n- Windows Server instances: SSH key pairs are not supported. Even if this parameter is specified, only the `Password` configuration takes effect.\n\n- Linux instances: The password-based logon method is disabled by default."
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "挂载系统盘时，设置实例的用户名密码，仅对administrator和root用户名生效，其他用户名不生效。长度为8至30个字符，必须同时包含大小写英文字母、数字和特殊符号中的三类字符。特殊符号可以是：\n\n```\n()`~!@#$%^&*-_+=|{}[]:;'<>,.?/\n```\n其中，Windows实例不能以斜线号（/）为密码首字符。\n\n> 如果传入`Password`参数，建议您使用HTTPS协议发送请求，避免密码泄露。",
+        "en": "The password that is set for the instance when you attach a system disk. The password is effective only for the administrator and root usernames and is not effective for other usernames. The password must be 8 to 30 characters in length and must contain at least three of the following character types: uppercase letters, lowercase letters, digits, and special characters. The following special characters are supported:\n\n```\n()`~!@#$%^&*-_+=|{}[]:;'<>,.?/\n```\nFor Windows instances, the password cannot start with a forward slash (/).\n\n> If you specify the `Password` parameter, send the request over HTTPS to prevent password leaks."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为实例挂载磁盘",
+    "en": "Attach a disk to an instance"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，您需要注意：\n- 实例和磁盘必须在同一个可用区。\n- 磁盘的状态必须为**待挂载**（`Available`）。 \n- 挂载数据盘时：\n\n    - 目标ECS实例必须处于**运行中**（`Running`）或者**已停止**（`Stopped`）状态。 \n    - 如果是您单独购买的磁盘，计费方式必须是按量付费。\n    - 从ECS实例上卸载的系统盘作为数据盘挂载时，不限制计费方式。 \n    - 弹性临时盘一旦卸载，只能重新挂载至其原始实例。\n\n- 挂载系统盘时：\n\n    - 目标ECS实例必须是卸载该系统盘时的源实例。\n    - 目标ECS实例必须处于**已停止**（`Stopped`）状态。 \n    - 您必须设置实例登录凭证。\n    - 弹性临时盘不支持挂载为系统盘。\n    - 更多关于挂载系统盘的信息，请参见[卸载或挂载系统盘](~~146752~~)。\n\n- 查询ECS实例信息时，如果返回数据中包含`{\"OperationLocks\": {\"LockReason\" : \"security\"}}`，则禁止一切操作。\n\n<props=\"china\">\n- 开启多重挂载特性的云盘，只能挂载到支持NVMe协议的实例上。 \n   更多信息，请参见[ESSD云盘支持NVMe](~~256487~~)以及[使用多重挂载功能](~~262105~~)。\n</props>",
+    "en": "When you call this operation, take note of the following items:\n- The instance and the disk must be in the same zone.\n- The disk must be in the **Available** (`Available`) state. \n- When you attach a data disk:\n\n    - The destination ECS instance must be in the **Running** (`Running`) or **Stopped** (`Stopped`) state. \n    - If the disk is separately purchased, the billing method must be pay-as-you-go.\n    - A system disk that was uninstalled from an ECS instance can be attached as a data disk without billable methods restrictions. \n    - An elastic ephemeral disk that has been detached can only be re-attached to its original instance.\n\n- When you attach a system disk:\n\n    - The destination ECS instance must be the original instance from which the system disk was detached.\n    - The destination ECS instance must be in the **Stopped** (`Stopped`) state. \n    - You must specify the logon credential for the instance.\n    - Elastic ephemeral disks cannot be attached as system disks.\n    - For more information about attaching system disks, see [Detach or attach a system disk](~~146752~~).\n\n- When you query ECS instance information, if the response contains `{\"OperationLocks\": {\"LockReason\" : \"security\"}}`, all operations are prohibited.\n\n<props=\"china\">\n- A disk with the multi-attach attribute enabled can only be attached to instances that support the NVMe protocol. \n   For more information, see [Standard SSDs that support NVMe](~~256487~~) and [Use the multi-attach feature](~~262105~~).\n</props>"
+  },
   "example": {
     "unifiedCli": "aliyun ecs attach-disk --instance-id i-bp1dq5lozx5f4pmd0000 --disk-id d-bp1j4l5axzdy6ftk0000 --device testDeviceName --delete-with-instance false --bootable false --password 'EcsV587!' --biz-key-pair-name KeyPairTestName --biz-force false --region cn-hangzhou",
     "legacyCli": "aliyun ecs AttachDisk --region cn-hangzhou --KeyPairName KeyPairTestName --InstanceId 'i-bp1dq5lozx5f4pmd0000' --Force false --Device testDeviceName --DeleteWithInstance false --Bootable false --DiskId 'd-bp1j4l5axzdy6ftk0000' --Password 'EcsV587!'"

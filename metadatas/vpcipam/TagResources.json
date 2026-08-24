@@ -1,5 +1,6 @@
 {
   "name": "TagResources",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,41 +9,76 @@
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源所属的地域ID。",
+        "en": "The region ID of the resource."
+      }
     },
     {
       "name": "ResourceId",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID列表。",
+        "en": "The IDs of the resources."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。取值：\n\n- **IPAM**：表示资源类型为IPAM。\n- **IPAMSCOPE**：表示资源类型为IPAM作用范围。\n- **IPAMPOOL**：表示资源类型为IPAM地址池。",
+        "en": "The resource type. Valid values:\n\n*   **IPAM**\n*   **IPAMSCOPE**\n*   **IPAMPOOL**"
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The tags to add to the resources."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。一旦传入该值，则不允许为空字符串。\n\n最多支持64个字符，必须以字母或中文开头，可包含数字、半角句号（.）、下划线（_）和短划线（-），不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key. You can specify at most 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 64 characters in length and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-). It cannot start with a `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。一旦传入该值，可以为空字符串。\n\n最多支持128个字符，不能包含`http://`或者`https://`。",
+            "en": "The tag value. You can specify at most 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and can contain letters, digits, periods (.), underscores (\\_), and hyphens (-). It cannot start with a `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为IPAM资源创建并绑定标签",
+    "en": "TagResources"
+  },
+  "descriptions": {
+    "zh": "### 使用说明\n标签是您为实例分配的标记，每个标签都由一对键值对（Key-Value）组成。标签的使用说明如下：\n\n- 一个实例上的每条标签的标签键（Key）必须唯一。\n- 不支持未绑定实例的空标签存在，标签必须绑定在实例上。\n- 单个实例最多可绑定20条标签。绑定标签前，阿里云会校验资源已有标签数量。超过限制值后返回报错信息。",
+    "en": "### [](#)Usage notes\n\nTags are used to classify instances. Each tag consists of a key-value pair. Before you use tags, take note of the following items:\n\n*   Each tag key that is added to an instance must be unique.\n*   You cannot create tags without adding them to instances. All tags must be added to instances.\n*   You can add at most 20 tags to each instance. Before you add a tag to an instance, the system automatically checks the number of existing tags. An error message is returned if the maximum number of tags is reached."
+  },
   "example": {
     "unifiedCli": "aliyun vpcipam tag-resources --biz-region-id cn-hangzhou --resource-id ipam-uq5dcfc2eqhpf40000 --resource-type IPAM --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpcipam TagResources --region cn-hangzhou --ResourceId.1 'ipam-uq5dcfc2eqhpf40000' --Tag.1.Key FinanceDept --Tag.1.Value FinanceJoshua --ResourceType IPAM --RegionId 'cn-hangzhou'"

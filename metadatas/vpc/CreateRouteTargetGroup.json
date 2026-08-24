@@ -1,5 +1,6 @@
 {
   "name": "CreateRouteTargetGroup",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。说明 若您未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters. If you do not specify this parameter, the system automatically uses the RequestId value as the ClientToken value. The RequestId value is different for each API request."
+      }
     },
     {
       "name": "ConfigMode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由目标组的配置模式，支持模式如下：\n\n- **Active-Standby**: 主备模式。",
+        "en": "The configuration mode of the route target group. Valid values:\n\n- **Active-Standby**: active/standby mode."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由目标组所属的地域ID。您可以通过调用DescribeRegions接口获取地域ID。",
+        "en": "The region ID of the route target group. You can call the DescribeRegions operation to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源组ID。\n\n关于资源组的更多信息，请参见[什么是资源组](~~2381067~~)。",
+        "en": "The resource group ID.\n\nFor more information about resource groups, see [What is a resource group?](~~2381067~~)."
+      }
     },
     {
       "name": "RouteTargetGroupDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由目标组的描述信息。\n描述长度为1～256个字符，不能以http://或https://开头。",
+        "en": "The description of the route target group.\nThe description must be 1 to 256 characters in length and cannot start with http:// or https://."
+      }
     },
     {
       "name": "RouteTargetGroupName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由目标组的名称。\n\n名称长度为1～128个字符，不能以http://或https://开头。",
+        "en": "The name of the route target group.\n\nThe name must be 1 to 128 characters in length and cannot start with http:// or https://."
+      }
     },
     {
       "name": "RouteTargetMemberList",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "路由目标组的成员列表。\n\n主备模式下，对路由目标组成员有如下限制：\n\n1. 路由目标组成员数量必须为2\n2. 路由目标组成员必须属于不同可用区",
+        "en": "The member list of the route target group.\n\nIn active/standby mode, the following limits apply to route target group members:\n\n1. The number of route target group members must be 2.\n2. The route target group members must be in different zones."
+      },
       "sub_parameters": [
         {
           "name": "MemberId",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "路由目标组成员实例ID。",
+            "en": "The instance ID of the route target group member."
+          }
         },
         {
           "name": "MemberType",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "路由目标组的成员类型。\n\n当前支持的类型：\n\n- **GatewayLoadBalancerEndpoint**\n\n主备模式下，路由目标组所有成员的类型必须相同。",
+            "en": "The member type of the route target group.\n\nSupported type:\n\n- **GatewayLoadBalancerEndpoint**\n\nIn active/standby mode, all members of the route target group must be of the same type."
+          }
         },
         {
           "name": "Weight",
           "position": "Query",
           "type": "Integer",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "路由目标组成员的权重值。取值：\n\n- **100**：表示成员为主实例。\n- **0**：表示成员为备实例。\n\n权重值仅支持在创建时设置，不支持修改。",
+            "en": "The weight of the route target group member. Valid values:\n\n- **100**: The member is the active instance.\n- **0**: The member is the standby instance.\n\nThe weight can only be set during creation and cannot be modified."
+          }
         }
       ]
     },
@@ -71,18 +112,30 @@
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源的标签。",
+        "en": "The tags of the resource."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。如需传入该值，则不能输入空字符串。\n\n一个标签键最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key of the resource. You can specify up to 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。如需传入该值，可以输入空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value of the resource. You can specify up to 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length and cannot start with `aliyun` or `acs:`. It cannot contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -90,9 +143,24 @@
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "路由目标组所属的VPC的ID。",
+        "en": "The ID of the VPC to which the route target group belongs."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建路由目标组",
+    "en": "Create a route target group"
+  },
+  "descriptions": {
+    "zh": "- **CreateRouteTargetGroup**接口属于异步接口，即系统会返回一个实例ID，但该路由目标组实例尚未创建完成，系统后台的创建任务仍在进行。您可以调用**ListRouteTargetGroup**查询路由目标组的创建状态：\n    - 当路由目标组处于**Pending**状态时，表示路由目标组创建中。\n    - 当路由目标组处于**Available**、**Unavailable**、**Switched**、**Abnormal**状态时，表示路由目标组创建完成。\n\n- **主备模式**：创建路由目标组时，需配置位于不同可用区、类型一致的主备实例。\n\n- **主实例**：权重为100。正常情况下承载所有流量，在健康检查正常时生效。\n\n- **备实例**：权重为0。主实例故障后接管流量，作为容灾备份。",
+    "en": "- **CreateRouteTargetGroup** is an asynchronous operation. After you invoke this operation, the system returns an instance ID, but the route target group instance is not yet created. The creation node continues in the background. You can invoke **ListRouteTargetGroup** to query the creation status of the routing target group:\n    - If the routing target group is in the **Pending** state, the routing target group is being created.\n    - If the routing target group is in the **Available**, **Unavailable**, **Switched**, or **Abnormal** state, the routing target group is created.\n\n- **Active/standby pattern**: When you create a routing target group, configure primary and secondary instances that are in different zones and of the same type.\n\n- **Primary instance**: The weight is 100. The primary instance handles all traffic under normal conditions and takes effect when health checks are successful.\n\n- **Secondary instance**: The weight is 0. The secondary instance takes over traffic when the primary instance fails and serves as disaster recovery and backup."
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-route-target-group --vpc-id vpc-xxxx --route-target-group-name myRouteTargetGroupName --route-target-group-description myRouteTargetGroupDescription --route-target-member-list MemberId=ep-xxxx MemberType=GatewayLoadBalancerEndpoint Weight=100 --config-mode Active-Standby --biz-region-id cn-hangzhou --resource-group-id rg-acfmxazffggds0000 --client-token 0c593ea1-3bea-11e9-b96b-88e9fe60000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateRouteTargetGroup --region cn-hangzhou --RouteTargetMemberList.1.MemberId 'ep-xxxx' --Tag.1.Key FinanceDept --RouteTargetGroupDescription myRouteTargetGroupDescription --RouteTargetMemberList.1.MemberType GatewayLoadBalancerEndpoint --VpcId 'vpc-xxxx' --ResourceGroupId 'rg-acfmxazffggds0000' --RouteTargetMemberList.1.Weight 100 --Tag.1.Value FinanceJoshua --ConfigMode 'Active-Standby' --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe60000' --RouteTargetGroupName myRouteTargetGroupName"

@@ -1,5 +1,6 @@
 {
   "name": "DeleteDiskReplicaPair",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that is used to ensure the idempotency of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~)."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系中主盘所属的地域ID。您可以调用[DescribeDiskReplicaPairs](~~354206~~)查询存量异步复制关系的地域信息。",
+        "en": "The region ID of the primary disk in the replication pair. You can call the [DescribeDiskReplicaPairs](~~354206~~) operation to query the region information of replication pairs."
+      }
     },
     {
       "name": "ReplicaPairId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "异步复制关系的ID。",
+        "en": "The ID of the replication pair."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除云盘异步复制关系",
+    "en": "DeleteDiskReplicaPair"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 异步复制功能支持的地域请参见[云盘异步复制概述](~~314563~~)。\n\n- 当异步复制关系处于**已停止**（`stopped`）、**失效**（`invalid`）或者**故障切换完成**（`failovered`）状态时支持删除。删除异步复制时仅删除复制关系，主盘与从盘对应的云盘资源保留。\n\n- 必须在主盘所在地域进行删除操作，异步复制关系被删除后，主盘与从盘受限的功能将被解除。例如，从盘可以进行挂载、读写以及扩容等操作。",
+    "en": "## [](#)Usage notes\n\n*   For information about the regions in which async replication is available, see [Overview](~~314563~~).\n*   Only replication pairs that are in the **Stopped** (`stopped`), **Invalid** (`invalid`), or **Failovered** (`failovered`) state can be deleted. This operation deletes only replication pairs. The primary and secondary disks in the deleted replication pairs are retained.\n*   To delete a replication pair, you must call this operation in the region where the primary disk is located. After the replication pair is deleted, the functionality limits are lifted from the primary and secondary disks. For example, you can attach the secondary disk, resize the disk, or read data from or write data to the disk."
+  },
   "example": {
     "unifiedCli": "aliyun ebs delete-disk-replica-pair --biz-region-id cn-hangzhou --replica-pair-id pair-cn-dsa0000 --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun ebs DeleteDiskReplicaPair --region cn-hangzhou --RegionId 'cn-hangzhou' --ReplicaPairId 'pair-cn-dsa0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

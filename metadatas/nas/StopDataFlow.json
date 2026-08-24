@@ -1,5 +1,6 @@
 {
   "name": "StopDataFlow",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性，从您的客户端生成一个参数值，确保不同请求间该参数值唯一。\n\nClientToken只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。\n\n> 若用户未指定，则系统自动使用API请求的RequestId作为ClientToken标识。每次API请求的RequestId可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests.\n\nThe token can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~).\n\n>  If you do not specify this parameter, the system automatically uses the request ID as the client token. The request ID may be different for each request."
+      }
     },
     {
       "name": "DataFlowId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "数据流动ID。",
+        "en": "The ID of the dataflow."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否对此次创建请求执行预检。\n\n预检操作会帮助您检查参数有效性、校验库存等，并不会实际创建实例，也不会产生费用。\n\n取值：\n\n- true：发送检查请求，不会创建实例。检查项包括是否填写了必需参数、请求格式、业务限制和NAS库存。如果检查不通过，则返回对应错误。如果检查通过，则返回200 HttpCode，但FileSystemId为空。\n- false（默认值）：发送正常请求，通过检查后直接创建实例。",
+        "en": "Specifies whether to perform a dry run.\n\nDuring the dry run, the system checks whether the request parameters are valid and whether the requested resources are available. During the dry run, no fileset quota is canceled and no fee is incurred.\n\nValid value:\n\n*   true: performs a dry run. The system checks the required parameters, request syntax, service limits, and available Apsara File Storage NAS (NAS) resources. Otherwise, an error message is returned. If the request passes the dry run, the HTTP status code 200 is returned. No value is returned for the FileSystemId parameter.\n*   false (default): performs a dry run and sends the request. If the request passes the dry run, the fileset quota is canceled."
+      }
     },
     {
       "name": "FileSystemId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "文件系统ID。",
+        "en": "The ID of the file system."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "停用数据流动",
+    "en": "StopDataFlow"
+  },
+  "descriptions": {
+    "zh": "- 该接口仅适用于CPFS文件系统。\n- 仅CPFS 2.2.0及以上版本支持数据流动。您可以在控制台文件系统详情页面查看版本信息。\n- 只能停用`Running（正常）`状态的数据流动。\n- 停用后，不可在数据流动上创建数据流动任务。如果配置了自动更新，源端发生的数据更新也不会同步到CPFS上。\n- 停用后，由于资源被回收，数据流动带宽将不再计费，但重新启动数据流动可能因为库存不足导致启动失败。\n- 停用数据流动一般耗时2～5分钟，您可通过[DescribeDataFlows](~~2402271~~)查询数据流动状态。",
+    "en": "- 该接口仅适用于CPFS文件系统。\n- 仅CPFS 2.2.0及以上版本支持数据流动。您可以在控制台文件系统详情页面查看版本信息。\n- 只能停用`Running（正常）`状态的数据流动。\n- 停用后，不可在数据流动上创建数据流动任务。如果配置了自动更新，源端发生的数据更新也不会同步到CPFS上。\n- 停用后，由于资源被回收，数据流动带宽将不再计费，但重新启动数据流动可能因为库存不足导致启动失败。\n- 停用数据流动一般耗时2～5分钟，您可通过[DescribeDataFlows](~~2402271~~)查询数据流动状态。"
+  },
   "example": {
     "unifiedCli": "aliyun nas stop-data-flow --file-system-id cpfs-099394bd928c0000 --data-flow-id df-194433a5be310000 --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --region cn-hangzhou",
     "legacyCli": "aliyun nas StopDataFlow --region cn-hangzhou --DryRun false --FileSystemId 'cpfs-099394bd928c0000' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --DataFlowId 'df-194433a5be310000'"

@@ -1,5 +1,6 @@
 {
   "name": "CreateLifecycleHook",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DefaultResult",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "等待状态结束后的下一步动作。取值范围：\n\n- CONTINUE：继续响应弹性扩张活动或者继续响应弹性收缩活动。\n- ABANDON：直接释放弹性扩张活动创建出来的ECS实例或者直接将弹性收缩活动中的ECS实例从伸缩组移除。\n- ROLLBACK：针对弹性收缩活动，会拒绝释放ECS实例，进行回滚；针对弹性扩张活动，会直接释放创建出来的ECS实例，效果同`ABANDON`一样。\n\n当伸缩组发生弹性收缩活动（SCALE_IN）并触发多个生命周期挂钩时，如果一个生命周期挂钩的`DefaultResult`取值为`ABANDON`或`ROLLBACK`，且该挂钩等待状态结束时，会提前将其他生命周期挂钩对应的等待状态提前结束。其他情况下，下一步动作均以最后一个结束等待状态的下一步动作为准。\n\n默认值：CONTINUE。",
+        "en": "The action to take after the wait state ends. Valid values:\n\n- CONTINUE: continues to response to the scale-out or scale-down activity.\n- ABANDON: releases the ECS instances that are created during the scale-out activity, or removes the ECS instances from the scaling group during the scale-down activity.\n- ROLLBACK: for a scale-down activity, the system deny the release of ECS instances and performs a rollback. For a scale-out activity, the system releases the created ECS instances, which has the same effect as ABANDON.\n\nWhen a scale-down activity (SCALE_IN) triggers multiple lifecycle hooks in a scaling group, if the DefaultResult of one lifecycle hook is set to ABANDON or ROLLBACK and the wait state of that hook ends, the wait states of the other lifecycle hooks end early. In other cases, the action to take is determined by the last lifecycle hook whose wait state ends.\n\nDefault value: CONTINUE."
+      }
     },
     {
       "name": "HeartbeatTimeout",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期挂钩为伸缩组活动设置的等待时间，等待状态超时后会执行下一步动作。取值范围：30~21600，单位：秒。\n\n创建了生命周期挂钩后，您可以调用[RecordLifecycleActionHeartbeat](~~73846~~)延长ECS实例的等待时间，也可以调用[CompleteLifecycleAction](~~73847~~)提前结束伸缩活动的等待状态。\n\n默认值：600。",
+        "en": "The wait period that the lifecycle hook sets for the scaling group activity. After the wait state times out, the next action is performed. Valid values: 30 to 21600. Unit: seconds.\n\nAfter a lifecycle hook is created, you can call [RecordLifecycleActionHeartbeat](~~73846~~) to extend the wait period of an ECS instance, or call [CompleteLifecycleAction](~~73847~~) to end the wait state of a scaling activity early.\n\nDefault value: 600."
+      }
     },
     {
       "name": "LifecycleHookName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期挂钩的名称。不能与当前伸缩组其他生命周期挂钩重名，长度为2~64个英文或中文字符，以数字、大小写字母或中文开头，可包含数字、下划线（_）、短划线（-）和半角句号（.）。\n\n默认值为LifecycleHookId的值。",
+        "en": "The name of the lifecycle hook. The name must be unique within the scaling group. The name must be 2 to 64 characters in length and can contain letters, digits, underscores (\\_), hyphens (-), and periods (.). The name must start with a letter, digit, or Chinese character.\n\nDefault value: the value of LifecycleHookId."
+      }
     },
     {
       "name": "LifecycleTransition",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "生命周期挂钩适用的伸缩活动类型。取值范围：\n\n- SCALE_OUT：伸缩组弹性扩张活动。\n- SCALE_IN：伸缩组弹性收缩活动。",
+        "en": "The type of scaling activity to which the lifecycle hook applies. Valid values:\n\n- SCALE_OUT: scale-out activity of the scaling group.\n- SCALE_IN: scale-down activity of the scaling group."
+      }
     },
     {
       "name": "NotificationArn",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期挂钩通知对象标识符，不设置本参数表示不发送通知，设置本参数时支持以下通知方式：\n\n- MNS队列，参数取值格式：`acs:mns:{region-id}:{account-id}:queue/{queuename}`。\n- MNS主题，参数取值格式：`acs:mns:{region-id}:{account-id}:topic/{topicname}`。\n- OOS模板，参数取值格式：`acs:oos:{region-id}:{account-id}:template/{templatename}`。\n- 事件总线 ，参数取值格式：`acs:eventbridge:{region-id}:{account-id}:eventbus/default`。\n\n参数格式中的变量含义如下：\n\n- region-id：伸缩组所在的地域的ID。\n- account-id：阿里云账号ID，不支持RAM用户的账号ID。\n- queuename：MNS队列的名称。\n- topicname：MNS主题的名称。\n- templatename：OOS模板的名称。",
+        "en": "The Alibaba Cloud Resource Name (ARN) of the notification recipient of the lifecycle hook. If this parameter is not set, no notification is sent. The following notification methods are supported when you set this parameter:\n\n- MNS queue. The value is in the format of `acs:mns:{region-id}:{account-id}:queue/{queuename}`.\n- MNS topic. The value is in the format of `acs:mns:{region-id}:{account-id}:topic/{topicname}`.\n- OOS template. The value is in the format of `acs:oos:{region-id}:{account-id}:template/{templatename}`.\n- EventBridge. The value is in the format of `acs:eventbridge:{region-id}:{account-id}:eventbus/default`.\n\nThe variables in the format have the following meanings:\n\n- region-id: the region ID of the scaling group.\n- account-id: the Alibaba Cloud account ID. The account ID of a Resource Access Management (RAM) user is not supported.\n- queuename: the name of the MNS queue.\n- topicname: the name of the MNS topic.\n- templatename: the name of the OOS template."
+      }
     },
     {
       "name": "NotificationMetadata",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "生命周期挂钩暂停伸缩活动时推送给`NotificationArn`（通知对象）的通知信息，便于管理和标记不同类别的通知信息。必须同时指定`NotificationArn`。参数长度不能超过4096个字符。\n\n如果`NotificationArn`指定为OOS模板，包括公共模板或者自定义模板，则`NotificationMetadata`必须指定为JSON字符串，且与OOS模板的参数相符。\n\n例如，`{\"dbInstanceId\": \"dds-bp17661e0135****\",  \"modifyMode\": \"Append\"}`，`dbInstanceId`和`modifyMode`为OOS模板中已定义的参数。OOS模板的部分参数有默认值，`NotificationMetadata`必须指定无默认值的参数，指定有默认值的参数时会覆盖原默认值，但以下参数请保持默认值，用于在伸缩活动运行时获取相关信息：\n\n- regionId：伸缩活动执行的地域，默认为${regionId}。\n\n- instanceIds：伸缩活动关联的实例列表，默认为${instanceIds}。\n\n- lifecycleHookId：生命周期挂钩ID，默认为${lifecycleHookId}。\n\n- lifecycleActionToken：伸缩活动的等待状态标识符，用于提前结束当前的挂起活动，默认为${lifecycleActionToken}。\n\n- scalingGroupId：伸缩活动所属的伸缩组ID，默认为${scalingGroupId}。\n\n- lifecycleActionResult：生命周期挂钩等待状态结束后的下一步动作，用于在OOS模板执行失败时提前结束当前的挂起活动，当`DefaultResult`为`ROLLBACK`时，参数值默认为`ROLLBACK`，其余情况默认为`ABANDON`。\n>- 您可以根据需要设置`lifecycleActionResult`的值来覆盖当前默认值，取值范围为ABANDON、CONTINUE、ROLLBACK、${lifecycleActionResult}。其中，`${lifecycleActionResult}`表示lifecycleActionResult的值和DefaultResult保持一致。\n- 您可以在[OOS控制台](https://oos.console.aliyun.com/)获取对应模板的参数的详细信息。",
+        "en": "The notification information that is pushed to NotificationArn (the notification recipient) when the lifecycle hook suspends a scaling activity. This parameter helps you manage and tag notification information of different categories. You must also specify NotificationArn. The value can be up to 4,096 characters in length.\n\nIf NotificationArn is set to an OOS template, including a public template or a custom template, NotificationMetadata must be set to a JSON string that matches the parameters of the OOS template.\n\nFor example, `{\"dbInstanceId\": \"dds-bp17661e0135****\",  \"modifyMode\": \"Append\"}`, where `dbInstanceId` and `modifyMode` are parameters defined in the OOS template. Some parameters of the OOS template have default values. NotificationMetadata must specify parameters that do not have default values. If you specify parameters that have default values, the specified values overwrite the original default values. However, keep the default values for the following parameters, which are used to retrieve relevant information during scaling activities:\n\n- regionId: the region where the scaling activity is performed. Default value: ${regionId}.\n\n- instanceIds: the list of instances associated with the scaling activity. Default value: ${instanceIds}.\n\n- lifecycleHookId: the lifecycle hook ID. Default value: ${lifecycleHookId}.\n\n- lifecycleActionToken: the identifier of the wait state for the scaling activity, which is used to end the current suspended activity early. Default value: ${lifecycleActionToken}.\n\n- scalingGroupId: the ID of the scaling group to which the scaling activity belongs. Default value: ${scalingGroupId}.\n\n- lifecycleActionResult: the action to take after the lifecycle hook wait state ends, which is used to end the current suspended activity early when the OOS template fails. When DefaultResult is set to ROLLBACK, the default value is ROLLBACK. In other cases, the default value is ABANDON.\n>- You can set the value of lifecycleActionResult to overwrite the current default value. Valid values: ABANDON, CONTINUE, ROLLBACK, and ${lifecycleActionResult}. ${lifecycleActionResult} indicates that the value of lifecycleActionResult is consistent with the value of DefaultResult.\n- You can obtain detailed information about the parameters of the corresponding template in the [OOS console](https://oos.console.aliyun.com/)."
+      }
     },
     {
       "name": "ScalingGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "目标伸缩组的ID。",
+        "en": "The ID of the scaling group."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为伸缩组创建一个或多个生命周期挂钩",
+    "en": "Create one or more lifecycle hooks for a scaling group"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n\n- 一个伸缩组最多可以创建6个生命周期挂钩。创建了生命周期挂钩的伸缩组，在发生伸缩活动时，生命周期挂钩会暂停伸缩活动一段时间，具体等待时长可以通过HeartbeatTimeout参数指定。您可以在等待期间进行初始化ECS实例配置、获取ECS实例数据等操作。\n\n- 弹性扩张活动时，ECS实例添加至RDS实例白名单后进入等待状态，等待状态结束后再加入SLB实例后端服务器组。弹性收缩活动时，ECS实例从SLB实例后端服务器组移出后进入等待状态，等待状态结束后再从RDS实例白名单移出。\n\n- 生命周期挂钩可以配置通知方式，支持MNS主题、MNS队列和OOS模板。如果配置OOS模板，您需要为OOS服务创建RAM角色。具体操作，请参见[为OOS服务设置RAM权限](~~120810~~)。\n\n> 如果伸缩组有存量的ECS实例，且配置的OOS模板用于加入或移出除RDS外的其他云数据库白名单，则您必须手动将存量的ECS实例加入云数据库的白名单。",
+    "en": "## Operation description\n\n- A scaling group can have a maximum of 6 lifecycle hooks. When a scaling activity occurs in a scaling group that has lifecycle hooks, the lifecycle hooks pause the scaling activity for an epoch. You can specify the wait epoch by using the HeartbeatTimeout parameter. During the wait epoch, you can perform operations such as initialization of ECS instance configurations and retrieving ECS instance data.\n\n- During a scale-out activity, ECS instances enter the wait state after they are added to the RDS instance whitelist, and are added to the backend server group of the SLB instance after the wait state ends. During a scale-down activity, ECS instances enter the wait state after they are removed from the backend server group of the SLB instance, and are removed from the RDS instance whitelist after the wait state ends.\n\n- You can configure notification methods for lifecycle hooks. The supported notification methods include MNS topics, MNS queues, and OOS templates. If you configure an OOS template, create a RAM role for the OOS service. For more information, see [Settings RAM permissions for OOS](~~120810~~).\n\n> If the scaling group has existing ECS instances and the configured OOS template is used to add or remove instances from the whitelist of a database other than RDS, you must manually add the existing ECS instances to the whitelist of the database."
+  },
   "example": {
     "unifiedCli": "aliyun ess create-lifecycle-hook --scaling-group-id asg-bp1eyv4qn8ssgv430000 --lifecycle-hook-name lifecyclehook0000 --lifecycle-transition SCALE_OUT --default-result CONTINUE --heartbeat-timeout 600 --notification-metadata Test_lifecycle_hook. --notification-arn acs:mns:cn-beijing:1614568843400000:queue/modifyLifecycleHo0000 --api-version 2014-08-28 --region cn-hangzhou",
     "legacyCli": "aliyun ess CreateLifecycleHook --region cn-hangzhou --LifecycleHookName lifecyclehook0000 --NotificationArn 'acs:mns:cn-beijing:1614568843400000:queue/modifyLifecycleHo0000' --ScalingGroupId 'asg-bp1eyv4qn8ssgv430000' --LifecycleTransition SCALE_OUT --HeartbeatTimeout 600 --NotificationMetadata 'Test_lifecycle_hook.' --DefaultResult CONTINUE"

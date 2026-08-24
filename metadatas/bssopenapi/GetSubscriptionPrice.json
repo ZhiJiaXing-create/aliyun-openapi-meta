@@ -1,5 +1,6 @@
 {
   "name": "GetSubscriptionPrice",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定询价的实例 ID，升级场景必须设置，用于获取实例升级前配置。",
+        "en": "The instance ID for which you want to query the price. This parameter is required for upgrades (when `OrderType` is set to `Upgrade`) to obtain the pre-upgrade configuration of the instance."
+      }
     },
     {
       "name": "ModuleList",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "计价模块列表。",
+        "en": "The list of pricing modules."
+      },
       "sub_parameters": [
         {
           "name": "Config",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个计价模块的配置，n的取值范围为（1~50），格式：“AA:aa,BB:bb”，其中AA,BB分别为计价模块属性标识，aa,bb分别为计价模块属性的属性值。",
+            "en": "The configuration of the pricing module. n is an integer from 1 to 50. The value must be in the \"AA:aa,BB:bb\" format. In this format, `AA` and `BB` are property identifiers of the pricing module, and `aa` and `bb` are their corresponding property values."
+          }
         },
         {
           "name": "ModuleCode",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个计价模块的模块标识。",
+            "en": "The pricing module code."
+          }
         },
         {
           "name": "ModuleStatus",
           "position": "Query",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅在订单类型为Upgrade（升级）时需要，表示此次询价模块变更状态。\n取值范围：\n- 1：新增。\n- 2：变更，升级场景如果计价模块的配置发生变化需要显示指定此状态值。\n\n默认值：1。",
+            "en": "This parameter is required only when `OrderType` is set to `Upgrade`. It specifies the change status of the pricing module. Valid values:\n\n- 1: Added.\n\n- 2: Changed. If the configuration of a pricing module changes in an upgrade scenario, you must explicitly set this parameter to this value.\n\nDefault value: 1."
+          }
         },
         {
           "name": "Tag",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅在某些产品的升级变配中需要，代表指定资源的标识。例如：对于磁盘的变配，用Tag标识具体磁盘对应的Id。",
+            "en": "This parameter is required only for upgrades or downgrades of some products. It specifies the identifier of a specific resource. For example, if you change disk specifications, you can use this parameter to specify the disk ID."
+          }
         }
       ]
     },
@@ -46,51 +71,94 @@
       "name": "OrderType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "订单类型。取值范围：\n- NewOrder：新购。\n- Renewal：续费。\n- Upgrade：升级。",
+        "en": "The order type. Valid values:\n\n- `NewOrder`: a new purchase.\n\n- `Renewal`: a renewal.\n\n- `Upgrade`: an upgrade."
+      }
     },
     {
       "name": "ProductCode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "产品代码。",
+        "en": "The product code."
+      }
     },
     {
       "name": "ProductType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品类型，是否必输以具体产品的询价文档为准。",
+        "en": "The product type. Whether this parameter is required depends on the pricing documentation of the specific product."
+      }
     },
     {
       "name": "Quantity",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数量。",
+        "en": "The quantity."
+      }
     },
     {
       "name": "Region",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例所属的Region ID（地域ID）。",
+        "en": "The region ID."
+      }
     },
     {
       "name": "ServicePeriodQuantity",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务时长。",
+        "en": "The subscription duration."
+      }
     },
     {
       "name": "ServicePeriodUnit",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "服务时长单位。取值范围：\n- Year：年。\n- Month：月。",
+        "en": "The unit of the subscription duration. Valid values:\n\n- Year\n\n- Month"
+      }
     },
     {
       "name": "SubscriptionType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "订阅类型。取值类型：Subscription（预付费）。",
+        "en": "The subscription type. The value is fixed as `Subscription`."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "预付费产品询价服务",
+    "en": "GetSubscriptionPrice"
+  },
+  "descriptions": {
+    "zh": "1. 调用QueryProductList获取产品code,参见[查询产品信息](~~95984~~)。\n2. 调用DescribePricingModule接口获取产品的配置参数，参见[查询产品模块信息](~~96469~~)。\n3. 根据查询到的产品配置参数调用本接口获取预付费产品的价格。\n4. 按照DescribePricingModule接口返回的config去拼接ModuleList下面的Config。不能有遗漏，否则询价会出错",
+    "en": "1. Call QueryProductList to get the product code. For more information, see [Query product information](~~95984~~).\n\n2. Call DescribePricingModule to get the configuration parameters for the product. For more information, see [Query product module information](~~96469~~).\n\n3. Call this operation with the retrieved configuration parameters to query the price of the subscription product.\n\n4. Use the configuration returned by DescribePricingModule to build the Config parameter within ModuleList. You must include all values; otherwise, the price query will fail."
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi get-subscription-price --service-period-unit Year --subscription-type Subscription --product-code ecs --order-type NewOrder --service-period-quantity 1 --product-type ecs --biz-region cn-hangzhou --instance-id i-khkjhxxxxxxxxx --quantity 1 --module-list ModuleCode=PackageCode Config=PackageCode:version_1 ModuleStatus=1 Tag=213213123 --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi GetSubscriptionPrice --region cn-hangzhou --ProductCode ecs --InstanceId 'i-khkjhxxxxxxxxx' --ModuleList.1.Config 'PackageCode:version_1' --ProductType ecs --Quantity 1 --ModuleList.1.Tag 213213123 --ServicePeriodUnit Year --SubscriptionType Subscription --OrderType NewOrder --ServicePeriodQuantity 1 --ModuleList.1.ModuleCode PackageCode --ModuleList.1.ModuleStatus 1 --Region 'cn-hangzhou'"

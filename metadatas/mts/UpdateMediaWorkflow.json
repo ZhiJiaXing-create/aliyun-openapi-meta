@@ -1,5 +1,6 @@
 {
   "name": "UpdateMediaWorkflow",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,27 +9,54 @@
       "name": "MediaWorkflowId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要更新的媒体工作流ID，可以通过**MPS控制台** > **工作流管理** > **工作流设置**获取。",
+        "en": "The ID of the media workflow that you want to update. To obtain the ID of the media workflow, you can log on to the **ApsaraVideo Media Processing (MPS) console** and choose **Workflows** > **Workflow Settings** in the left-side navigation pane."
+      }
     },
     {
       "name": "Name",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "媒体工作流名称。\n\n- 不能为空串。\n- 同一账号下的工作流名称不可重复。\n- 不超过 64 个字符。\n- UTF-8 编码。",
+        "en": "The media workflow Name.\n\n- Cannot Be Empty.\n- The workflow Name must be unique within the same Account.\n- Must not exceed 64 characters.\n- UTF-8 encoding."
+      }
     },
     {
       "name": "Topology",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "更新的媒体工作流拓扑结构。JSON对象，包括活动列表及活动依赖。 \n\n> OSS的地域需要与当前MPS所在地域保持一致。",
+        "en": "The new topology of the media workflow. The value is a JSON object that contains the activity list and activity dependencies.\n\n> The Object Storage Service (OSS) bucket must reside in the same region as your MPS service."
+      }
     },
     {
       "name": "TriggerMode",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "触发模式。 取值：\n- OssAutoTrigger：自动触- 发。\n- NotInAuto：不自动触发。",
+        "en": "The trigger mode. Valid values:\n- OssAutoTrigger: Automatically triggered.\n- NotInAuto: Not automatically triggered."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新媒体工作流的拓扑结构",
+    "en": "Update the topology of a media workflow"
+  },
+  "descriptions": {
+    "zh": "- 本接口用于更新媒体工作流的拓扑结构。如需更新媒体工作流触发模式，请参见[更新媒体工作流触发模式](~~70372~~)。\n- 删除或停用工作流后，工作流将无法使用。此时，如果上传文件至工作流指定的Bucket路径中，也不会自动触发工作流执行。\n\n<props=\"china\">\n><notice>删除或停用工作流后，不会影响已经提交的任务。如果提交任务后删除或停用工作流，已经进入处理排队中的任务将无法取消，会正常执行并收取对应的费用。\n></notice></props>\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "- This API is used to update the topology of a media workflow. To update the trigger mode of a media workflow, see [Update the trigger mode of a media workflow](~~70372~~).\n- After a workflow is deleted or disabled, it becomes unavailable. In this case, uploading files to the specified OSS bucket path of the workflow will not automatically trigger the workflow execution.\n\n<props=\"china\">\n><notice>Deleting or disabling a workflow does not affect jobs that have already been submitted. If you delete or disable a workflow after submitting jobs, those jobs already in the processing queue cannot be canceled and will execute normally, incurring the corresponding fees.\n></notice></props>\n\n## Queries per second (QPS) limit\nThe QPS limit for this API is 100 queries per second (QPS) per user. If this limit is exceeded, API calls will be subject to rate limiting, which may impact your business. Call this API appropriately. For more information, see [QPS limits](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts update-media-workflow --media-workflow-id 6307eb0d3f85477882d205aa040f0000 --topology Activities_:_Act-Start_:_Parameters_:_PipelineId_:_130266f58161436a80bf07cb12c80000_,_InputFile_:_Bucket_:_example-bucket-0000_,_Location_:_cn-shanghai_,_Type_:_Start_,_Act-Report_:_Parameters_:_,_Type_:_Report_,_Act-Transcode-M3U8_:_Parameters_:_Outputs_:_Object_:_transcode/_ObjectPrefix_FileName_,_TemplateId_:_957d1719ee85ed6527b90cf627260000_,_OutputBucket_:_example-bucket-0000_,_OutputLocation_:_cn-shanghai_,_Type_:_Transcode_,_Dependencies_:_Act-Start_:_Act-Transcode-M3U8_,_Act-Report_:_,_Act-Transcode-M3U8_:_Act-Report --name mediaworkflow-example --trigger-mode OssAutoTrigger --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts UpdateMediaWorkflow --region cn-hangzhou --MediaWorkflowId 6307eb0d3f85477882d205aa040f0000 --Topology 'Activities_:_Act-Start_:_Parameters_:_PipelineId_:_130266f58161436a80bf07cb12c80000_,_InputFile_:_Bucket_:_example-bucket-0000_,_Location_:_cn-shanghai_,_Type_:_Start_,_Act-Report_:_Parameters_:_,_Type_:_Report_,_Act-Transcode-M3U8_:_Parameters_:_Outputs_:_Object_:_transcode/_ObjectPrefix_FileName_,_TemplateId_:_957d1719ee85ed6527b90cf627260000_,_OutputBucket_:_example-bucket-0000_,_OutputLocation_:_cn-shanghai_,_Type_:_Transcode_,_Dependencies_:_Act-Start_:_Act-Transcode-M3U8_,_Act-Report_:_,_Act-Transcode-M3U8_:_Act-Report' --TriggerMode OssAutoTrigger --Name 'mediaworkflow-example'"

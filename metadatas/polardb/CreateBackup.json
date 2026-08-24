@@ -1,5 +1,6 @@
 {
   "name": "CreateBackup",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,40 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止重复提交请求。由客户端生成该参数值，保证在不同请求间唯一，大小写敏感、不超过64个ASCII字符。",
+        "en": "The client token that is used to ensure the idempotence of the request. You can use the client to generate the token, but make sure that the token is unique among different requests. The token is case-sensitive and can contain only ASCII characters. The token can be up to 64 characters in length."
+      }
+    },
+    {
+      "name": "Comment",
+      "position": "Query",
+      "type": "String",
       "required": false
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为PolarDB集群创建全量快照备份",
+    "en": "Create a full snapshot backup for a polarDB cluster"
+  },
+  "descriptions": {
+    "zh": "> * 每个集群最多可以同时存在3个手动创建的备份。\n> * 若出现错误提示`Exceeding the daily backup times of this DB cluster`，表明您的集群中已存在3个手动创建的备份，请[删除备份](~~98101~~)后再使用该接口。\n> * 调用该接口后，会在后台创建备份任务，若数据量较大，花费的时间可能较长，请耐心等待。",
+    "en": "> * Each cluster can have up to three manually created backups at the same time.\n> * If the error message `Exceeding the daily backup times of this DB cluster` is returned, three manually created backups already exist in your cluster. [Delete backups](~~98101~~) before you call this operation.\n> * After you call this operation, a backup task is created in the background. If the data volume is large, the backup may take a long time. Wait until the backup is complete."
+  },
   "example": {
     "unifiedCli": "aliyun polardb create-backup --db-cluster-id pc-0000000000000 --client-token 6000170000591aed949d0f54a343f1a4233c1e7d1c5c000000 --region cn-hangzhou",
     "legacyCli": "aliyun polardb CreateBackup --region cn-hangzhou --Comment 'example-string' --DBClusterId 'pc-0000000000000' --ClientToken 6000170000591aed949d0f54a343f1a4233c1e7d1c5c000000"

@@ -1,5 +1,6 @@
 {
   "name": "CreateJob",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,71 +9,121 @@
       "name": "DependencyPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "依赖策略。",
+        "en": "The security policy."
+      }
     },
     {
       "name": "DeploymentPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "资源部署策略。",
+        "en": "The resource deployment policy."
+      }
     },
     {
       "name": "JobDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "作业描述。",
+        "en": "The description of the job."
+      }
     },
     {
       "name": "JobName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "作业名称。长度为 2~64 个字符，支持英文、中文和数字。可以包含短划线（-）和下划线（_）。",
+        "en": "The name of the job. The name must be 2 to 64 characters in length. It can contain letters, digits, hyphens (-), and underscores (\\_)."
+      }
     },
     {
       "name": "JobScheduler",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "作业调度器类型。\n- HPC\n- K8S\n\n默认值：HPC"
+      }
     },
     {
       "name": "SecurityPolicy",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "安全策略。",
+        "en": "The job scheduler type.\n\n- HPC\n\n- K8S\n\nDefault value: HPC"
+      }
     },
     {
       "name": "Tasks",
       "position": "Query",
       "type": "Json",
       "required": true,
+      "description": {
+        "zh": "任务列表，当前仅支持1个任务。",
+        "en": "The list of tasks. Currently, only one task is supported."
+      },
       "sub_parameters": [
         {
           "name": "ExecutorPolicy",
           "position": "Query",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务执行策略。",
+            "en": "The execution policy for the task."
+          }
         },
         {
           "name": "TaskName",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务名称。长度为 2~32个字符，支持英文、中文和数字。可以包含短划线（-）和下划线（_）。",
+            "en": "The name of the task. The name must be 2 to 32 characters in length. It can contain letters, digits, hyphens (-), and underscores (\\_)."
+          }
         },
         {
           "name": "TaskSpec",
           "position": "Query",
           "type": "Struct",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "任务规格详情。",
+            "en": "The details of the task specifications."
+          }
         },
         {
           "name": "TaskSustainable",
           "position": "Query",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否是长时间运行的作业。\n-   true： 后台服务作业。\n-   false： 批处理作业。\n\n默认值：false",
+            "en": "Specifies whether the job is a long-running job.\n\n- true: The job is a background service job.\n\n- false: The job is a batch job.\n\nThe default value is false."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建作业",
+    "en": "CreateJob"
+  },
   "example": {
     "unifiedCli": "aliyun ehpcinstant create-job --job-name testjob --job-description Demo --tasks '[{\"TaskName\":\"task0\",\"TaskSpec\":{\"TaskExecutor\":[{\"Container\":{\"EnvironmentVars\":[{\"Value\":\"/usr/local/bin\",\"Name\":\"PATH\"}],\"WorkingDir\":\"/usr/local/\",\"ImageRegistryOptions\":\"ImageRegistryType_:_https_,_ImageRegistryServer_:_xxx_,_ImageRegistryUserName_:_xxx_,_ImageRegistryPassword_:_xxx\",\"AppId\":\"ci-vm-32k6LXAi3cOG\",\"Command\":[\"sleep\"],\"Arg\":[\"60s\"],\"Image\":\"registry-vpc.cn-hangzhou.aliyuncs.com/ehpc/hpl:latest\"},\"VM\":{\"Script\":\"ZWNobyBoZWxsbyBlY3Mh\",\"PrologScript\":\"ZWNobyBoZWxsbyBlY3Mh\",\"AppId\":\"ci-vm-9jc58Pm5Leky\",\"Image\":\"m-xxxx\",\"Password\":\"EHPC@1234\"}}],\"Resource\":{\"Cores\":2.0,\"EnableHT\":true,\"Memory\":4.0,\"Disks\":[{\"Type\":\"System\",\"Size\":40}],\"HostNamePrefix\":\"compute\",\"InstanceTypes\":[\"ecs.c7a.8xlarge\"]},\"VolumeMount\":[{\"MountPath\":\"/mnt\",\"ReadOnly\":false,\"VolumeDriver\":\"alicloud/nas\",\"MountOptions\":\"server_:_xxxxx-xxxxx.cn-heyuan.nas.aliyuncs.com_,_vers_:_3_,_path_:_/data_,_options_:_nolock,tcp,noresvport\"}],\"RetryPolicy\":{\"RetryCount\":5,\"ExitCodeActions\":[{\"Action\":\"Retry\",\"ExitCode\":1}]}},\"ExecutorPolicy\":{\"ArraySpec\":{\"IndexStart\":0,\"IndexEnd\":9,\"IndexStep\":1},\"MaxCount\":1},\"TaskSustainable\":true}]' --deployment-policy '{\"AllocationSpec\":\"Dedicated\",\"Priority\":1,\"Network\":{\"EnableExternalIpAddress\":true,\"Vswitch\":[\"vsw-xxxx\"]},\"Pool\":\"compute\",\"Level\":\"General\",\"Tag\":[{\"Value\":\"TestValue\",\"Key\":\"TestKey\"}]}' --job-scheduler HPC --security-policy '{\"SecurityGroup\":{\"SecurityGroupIds\":[\"sg-xxxxxxxxxxxxxxx\"]}}' --dependency-policy '{\"JobDependency\":[{\"Type\":\"AfterSucceeded\",\"JobId\":\"job-bjxxxxxxxxxxxx\"}]}' --region cn-hangzhou",
     "legacyCli": "aliyun ehpcinstant CreateJob --region cn-hangzhou --JobScheduler HPC --JobDescription Demo --Tasks '[{\"TaskName\":\"task0\",\"TaskSpec\":{\"TaskExecutor\":[{\"Container\":{\"EnvironmentVars\":[{\"Value\":\"/usr/local/bin\",\"Name\":\"PATH\"}],\"WorkingDir\":\"/usr/local/\",\"ImageRegistryOptions\":\"ImageRegistryType_:_https_,_ImageRegistryServer_:_xxx_,_ImageRegistryUserName_:_xxx_,_ImageRegistryPassword_:_xxx\",\"AppId\":\"ci-vm-32k6LXAi3cOG\",\"Command\":[\"sleep\"],\"Arg\":[\"60s\"],\"Image\":\"registry-vpc.cn-hangzhou.aliyuncs.com/ehpc/hpl:latest\"},\"VM\":{\"Script\":\"ZWNobyBoZWxsbyBlY3Mh\",\"PrologScript\":\"ZWNobyBoZWxsbyBlY3Mh\",\"AppId\":\"ci-vm-9jc58Pm5Leky\",\"Image\":\"m-xxxx\",\"Password\":\"EHPC@1234\"}}],\"Resource\":{\"Cores\":2.0,\"EnableHT\":true,\"Memory\":4.0,\"Disks\":[{\"Type\":\"System\",\"Size\":40}],\"HostNamePrefix\":\"compute\",\"InstanceTypes\":[\"ecs.c7a.8xlarge\"]},\"VolumeMount\":[{\"MountPath\":\"/mnt\",\"ReadOnly\":false,\"VolumeDriver\":\"alicloud/nas\",\"MountOptions\":\"server_:_xxxxx-xxxxx.cn-heyuan.nas.aliyuncs.com_,_vers_:_3_,_path_:_/data_,_options_:_nolock,tcp,noresvport\"}],\"RetryPolicy\":{\"RetryCount\":5,\"ExitCodeActions\":[{\"Action\":\"Retry\",\"ExitCode\":1}]}},\"ExecutorPolicy\":{\"ArraySpec\":{\"IndexStart\":0,\"IndexEnd\":9,\"IndexStep\":1},\"MaxCount\":1},\"TaskSustainable\":true}]' --DependencyPolicy '{\"JobDependency\":[{\"Type\":\"AfterSucceeded\",\"JobId\":\"job-bjxxxxxxxxxxxx\"}]}' --SecurityPolicy '{\"SecurityGroup\":{\"SecurityGroupIds\":[\"sg-xxxxxxxxxxxxxxx\"]}}' --JobName testjob --DeploymentPolicy '{\"AllocationSpec\":\"Dedicated\",\"Priority\":1,\"Network\":{\"EnableExternalIpAddress\":true,\"Vswitch\":[\"vsw-xxxx\"]},\"Pool\":\"compute\",\"Level\":\"General\",\"Tag\":[{\"Value\":\"TestValue\",\"Key\":\"TestKey\"}]}'"

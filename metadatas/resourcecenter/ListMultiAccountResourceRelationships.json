@@ -1,5 +1,6 @@
 {
   "name": "ListMultiAccountResourceRelationships",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,43 +9,71 @@
       "name": "MaxResults",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页的最大数据条数。\n\n取值范围：1~500。\n\n默认值：20。",
+        "en": "The maximum number of entries per page.\n\nValid values: 1 to 500.\n\nDefault value: 20."
+      }
     },
     {
       "name": "NextToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询返回结果下一页的令牌。",
+        "en": "The pagination token that is used in the next request to retrieve a new page of results."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源地域ID。",
+        "en": "The region ID of the resource."
+      }
     },
     {
       "name": "RelatedResourceFilter",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "相关资源过滤条件。",
+        "en": "The filter conditions for resources associated with the resource."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件键。取值见下方`支持的过滤参数`。",
+            "en": "The key of the filter condition. For more information, see `Supported filter parameters`."
+          }
         },
         {
           "name": "MatchType",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "匹配方式。",
+            "en": "The matching method."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "过滤条件值。",
+            "en": "The values of the filter condition."
+          }
         }
       ]
     },
@@ -52,21 +81,44 @@
       "name": "ResourceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源ID。",
+        "en": "The ID of the resource."
+      }
     },
     {
       "name": "ResourceType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "资源类型。",
+        "en": "The type of the resource."
+      }
     },
     {
       "name": "Scope",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "搜索的账号范围。取值： \n- 资源目录ID，表示搜索管理账号和所有成员中的资源。更多信息，请参见[GetResourceDirectory](~~159995~~)。\n- Root资源夹ID，表示搜索Root资源夹及子资源夹下的所有成员中的资源。更多信息，请参见[ListFoldersForParent](~~159997~~)。\n- 资源夹ID，表示搜索指定资源夹下所有成员中的资源。更多信息，请参见[ListFoldersForParent](~~159997~~)。\n- 成员ID，表示搜索指定成员中的资源。更多信息，请参见[ListAccounts](~~160016~~)。",
+        "en": "The search scope. Valid values:\n\n*   ID of a resource directory: Resources within the management account and all members of the resource directory are searched. You can call the [GetResourceDirectory](~~159995~~) operation to query the ID.\n*   ID of the Root folder: Resources within all members in the Root folder and the subfolders of the Root folder are searched. You can call the [ListFoldersForParent](~~159997~~) operation to query the ID.\n*   ID of a folder: Resources within all members in the folder are searched. You can call the [ListFoldersForParent](~~159997~~) operation to query the ID.\n*   ID of a member: Resources within the member are searched. You can call the [ListAccounts](~~160016~~) operation to query the ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询多账号的资源关系",
+    "en": "ListMultiAccountResourceRelationships"
+  },
+  "descriptions": {
+    "zh": "- 如果您使用的是RAM用户账号或者RAM角色，需要被授予ListMultiAccountResourceRelationships接口的权限才能执行跨账号资源关系查询操作。更多信息，请参见[RAM用户使用资源中心](~~600556~~)。\n- ListMultiAccountResourceRelationships接口默认最多返回20条数据，您可以通过指定`MaxResults`参数调整最大返回条目数。\n- 如果返回结果中不存在`NextToken`，则表示没有更多数据。否则，表示还有更多数据。如果想要查询后续页，需要将 ListMultiAccountResourceRelationships 接口的`NextToken`参数设置为上一次返回结果中获取到的`NextToken` 。如果未输入`NextToken`参数，查询时默认返回第一页的数据。\n- 通过设置一个或多个过滤条件，可以精确资源的查询范围。支持的过滤参数以及匹配方式见下文。多个过滤条件之间是逻辑与`AND`的关系，只有同时满足所有过滤条件的资源才会被返回。每个过滤条件内部是逻辑或`OR`的关系，只要满足任意一个过滤条件值的资源都会被返回。",
+    "en": "*   Before you use a RAM user or a RAM role to call the operation, you must make sure that the RAM user or RAM role is granted the required permissions. For more information, see [Grant a RAM user the permissions to use Resource Center](~~600556~~).\n*   By default, the operation returns up to 20 entries. You can configure the `MaxResults` parameter to specify the maximum number of entries to return.\n*   If the response does not contain the `NextToken` parameter, all entries are returned. Otherwise, more entries exist. If you want to obtain the entries, you can call the operation again to initiate another query request. In the request, set the `NextToken` parameter to the value of `NextToken` in the last response of the operation. If you do not configure the `NextToken` parameter, entries on the first page are returned by default.\n*   You can specify one or more filter conditions to narrow the search. For more information about supported filter parameters and matching methods, see the Supported filter parameters section. Multiple filter conditions have logical `AND` relations. Only resources that meet all filter conditions are returned. The values of a filter condition have logical `OR` relations. Resources that meet any value of the filter condition are returned."
+  },
   "example": {
     "unifiedCli": "aliyun resourcecenter list-multi-account-resource-relationships --scope rd-r40000 --biz-region-id cn-hangzhou --resource-type ACS::ACK::Cluster --resource-id m-eb3hji0000 --related-resource-filter '[{\"MatchType\":\"Equals\",\"Value\":[\"cn-shanghai\"],\"Key\":\"RelatedResourceRegionId\"}]' --next-token eyJzZWFyY2hBZnRlcnMiOlsiMTAwMTU2Nzk4MTU1OSJd0000 --max-results 10 --region cn-hangzhou",
     "legacyCli": "aliyun resourcecenter ListMultiAccountResourceRelationships --region cn-hangzhou --Scope 'rd-r40000' --NextToken eyJzZWFyY2hBZnRlcnMiOlsiMTAwMTU2Nzk4MTU1OSJd0000 --RelatedResourceFilter.1.Key RelatedResourceRegionId --ResourceId 'm-eb3hji0000' --RelatedResourceFilter.1.MatchType Equals --MaxResults 10 --RelatedResourceFilter.1.Value.1 'cn-shanghai' --ResourceType 'ACS::ACK::Cluster' --RegionId 'cn-hangzhou'"

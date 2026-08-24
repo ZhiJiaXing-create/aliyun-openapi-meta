@@ -1,5 +1,6 @@
 {
   "name": "CreatePolicyV2",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,95 +9,166 @@
       "name": "PolicyDescription",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略描述。",
+        "en": "The description of the backup policy."
+      }
     },
     {
       "name": "PolicyName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略名称。",
+        "en": "The name of the backup policy."
+      }
     },
     {
       "name": "PolicyType",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "策略类型，支持：\n- **STANDARD**：通用备份策略，支持备份除ECS整机备份以外的数据源。\n- **UDM_ECS_ONLY**：整机备份策略，仅支持备份ECS整机。\n\n若未指定策略类型，云备份服务将按照策略规则中是否指定备份库自动设置策略类型：\n- 策略规则中指定备份库：**STANDARD**\n- 策略规则中未指定备份库：**UDM_ECS_ONLY**",
+        "en": "The type of the backup policy. Valid values:\n\n- **STANDARD**: A standard backup policy. It supports data sources other than ECS instance backup.\n\n- **UDM\\_ECS\\_ONLY**: A backup policy that supports only ECS instance backups.\n\nIf you do not specify this parameter, Cloud Backup automatically sets the policy type based on whether a backup vault is specified in the policy rules:\n\n- If a backup vault is specified in the rules, the policy type is set to **STANDARD**.\n\n- If no backup vault is specified in the rules, the policy type is set to **UDM\\_ECS\\_ONLY**."
+      }
     },
     {
       "name": "Rules",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "策略规则列表。",
+        "en": "The list of policy rules."
+      },
       "sub_parameters": [
         {
           "name": "BackupType",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**RuleType**取值为**BACKUP**时，需要配置该参数。备份类型。取值为**COMPLETE**，表示全量备份。",
+            "en": "This parameter is required only when **RuleType** is set to **BACKUP**. The backup type. The value **COMPLETE** specifies a full backup."
+          }
         },
         {
           "name": "DataSourceFilters",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**RuleType**取值为**TAG**时，需要配置该参数。数据源过滤规则。",
+            "en": "This parameter is required only when **RuleType** is set to **TAG**. The filter rules for data sources."
+          }
         },
         {
           "name": "Immutable",
           "position": "FormData",
           "type": "Boolean",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**PolicyType**为**UDM_ECS_ONLY**时，该字段有效。表示是否开启备份锁定。",
+            "en": "Valid only when **PolicyType** is set to **UDM\\_ECS\\_ONLY**. Specifies whether to enable backup lock for the backups."
+          }
         },
         {
           "name": "KeepLatestSnapshots",
           "position": "FormData",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "是否开启保留至少一个备份版本。\n- 0 - 不保留\n- 1 - 保留",
+            "en": "Specifies whether to permanently retain at least one backup version. Valid values:\n\n- `0`: Do not retain.\n\n- `1`: Retain."
+          }
         },
         {
           "name": "ReplicationRegionId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**RuleType**取值为**REPLICATION**时，需要配置该参数。复制的目标地域ID。",
+            "en": "This parameter is required only when **RuleType** is set to **REPLICATION**. The ID of the destination region for replication."
+          }
         },
         {
           "name": "Retention",
           "position": "FormData",
           "type": "Long",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**RuleType**取值为**BACKUP**，**TRANSITION**或**REPLICATION**时，需要配置该参数。\n- **RuleType**取值为**BACKUP**：备份保留时间，优先级低于**RuleType**=**TRANSITION**的规则的Retention，最小值为1，最大值为364635，单位为天。\n- **RuleType**取值为**TRANSITION**：备份保留时间，最小值为1，最大值为364635，单位为天。\n- **RuleType**取值为**REPLICATION**：异地备份保留时间，最小值为1，最大值为364635，单位为天。",
+            "en": "This parameter is required only when **RuleType** is set to **BACKUP**, **TRANSITION**, or **REPLICATION**. The retention period in days.\n\n- If **RuleType** is **BACKUP**: The backup retention period. A `Retention` parameter in a **TRANSITION** rule overrides this setting. The value must be between 1 and 364635.\n\n- If **RuleType** is **TRANSITION**: The backup retention period. The value must be between 1 and 364635.\n\n- If **RuleType** is **REPLICATION**: The retention period for cross-region backups. The value must be between 1 and 364635."
+          }
         },
         {
           "name": "RetentionRules",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**RuleType**取值为**TRANSITION**时，需要配置该参数。特殊保留规则。",
+            "en": "This parameter is required only when **RuleType** is set to **TRANSITION**. The advanced retention rules."
+          }
         },
         {
           "name": "RuleType",
           "position": "FormData",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "规则类型，每一个策略需要至少有一个**BACKUP**类型规则，有且仅有一个**TRANSITION**类型规则：\n- **BACKUP**：备份规则。\n- **TRANSITION**：生命周期规则。\n- **REPLICATION**：复制规则。\n- **TAG**: 标签关联资源规则。",
+            "en": "The type of the rule. Each policy requires at least one **BACKUP** rule and exactly one **TRANSITION** rule. Valid values:\n\n- **BACKUP**: A backup rule.\n\n- **TRANSITION**: A lifecycle rule.\n\n- **REPLICATION**: A replication rule.\n\n- **TAG**: A rule to associate data sources with the policy by using tags."
+          }
         },
         {
           "name": "Schedule",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**RuleType**取值为**BACKUP**时，需要配置该参数。备份定时设置。可选格式：\n- `I|{startTime}|{interval}`：表示从{startTime}开始每隔{interval}的时间执行一次备份任务。例如`I|1631685600|P1D`表示从2021-09-15 14:00:00开始每隔一天备份一次。\n\n  * startTime：备份起始时间，UNIX时间，单位为秒。\n  * interval： ISO8601时间间隔。例如：`PT1H`表示间隔一小时。`P1D`表示间隔一天。\n- `C|{startTime}|{crontab}`：表示从{startTime}开始根据{crontab}表达式执行备份任务。例如`C|1631685600|0 0 2 ? * 3,5,7`表示从2021-09-15 14:00:00开始每周二, 周四和周六的02:00:00执行备份。\n  * startTime：备份起始时间，UNIX时间，单位为秒。\n  * crontab： crontab表达式。例如：`0 0 2 ? * 3,5,7`表示每周二, 周四和周六的02:00:00。\n\n不会补偿已过去时间的备份任务。如果上一次备份任务没有完成，不会触发下一次备份任务。",
+            "en": "This parameter is required only when **RuleType** is set to **BACKUP**. The backup schedule. Valid formats:\n\n- `I|{startTime}|{interval}`: Runs a backup job at the specified interval starting from {startTime}. For example, `I|1631685600|P1D` runs a backup job every day, starting from 2021-09-15 14:00:00.\n\n  - startTime: The backup start time in UNIX time, in seconds.\n\n  - interval: The backup interval in ISO 8601 format. For example, `PT1H` specifies an interval of 1 hour. `P1D` specifies an interval of 1 day.\n\n- `C|{startTime}|{crontab}`: Runs a backup job based on the specified crontab expression starting from {startTime}. For example, `C|1631685600|0 0 2 ? * 3,5,7` runs a backup job at 02:00:00 on every Tuesday, Thursday, and Saturday, starting from 2021-09-15 14:00:00.\n\n  - startTime: The backup start time in UNIX time, in seconds.\n\n  - crontab: A crontab expression. For example, `0 0 2 ? * 3,5,7` specifies 02:00:00 on every Tuesday, Thursday, and Saturday.\n\nMissed backup jobs are not run retroactively. If a backup job is still running, the next scheduled job is not triggered."
+          }
         },
         {
           "name": "TagFilters",
           "position": "FormData",
           "type": "RepeatList",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当**RuleType**取值为**TAG**时，需要配置该参数。资源标签过滤规则。",
+            "en": "This parameter is required only when **RuleType** is set to **TAG**. The filter rules for resource tags."
+          }
         },
         {
           "name": "VaultId",
           "position": "FormData",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "仅当RuleType取值为BACKUP时，需要配置该参数。备份库ID。",
+            "en": "This parameter is required only when RuleType is set to BACKUP. The ID of the backup vault."
+          }
         }
       ]
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建策略",
+    "en": "CreatePolicyV2"
+  },
+  "descriptions": {
+    "zh": "备份策略记录了备份所需的信息。备份策略执行后会产生备份任务，记载备份进度与备份结果。如果备份任务成功，会产生一个备份快照。可以使用备份快照创建恢复任务。\n\n- 一个备份策略支持多种数据源，支持NAS备份/OSS备份/ECS整机备份/ECS文件备份/本地文件备份/TableStore备份/CPFS备份。\n\n- 一个备份策略仅支持单个固定时间间隔的备份周期策略。\n\n- 一个备份策略仅能向一个备份仓库进行备份。",
+    "en": "A backup policy configures your backups. When a policy runs, it initiates a backup job to track its progress and outcome. A successful backup job creates a snapshot that you can use to create a restore job.\n\n- A backup policy supports multiple data sources, including NAS backup, OSS backup, ECS instance backup, ECS file backup, on-premises file backup, Tablestore backup, and CPFS backup.\n\n- A backup policy can have only one backup schedule with a fixed interval.\n\n- A backup policy backs up data to a single backup vault."
+  },
   "example": {
     "unifiedCli": "aliyun hbr create-policy-v2 --policy-name Daily_local_backup_+_remote_backup --policy-type STANDARD --policy-description Back_up_once_at_10:00_AM_every_day,_with_offsite_backup_to_Shanghai. --rules '[{\"Immutable\":true,\"KeepLatestSnapshots\":1,\"Schedule\":\"I_1648647166_P1D\",\"TagFilters\":[{\"Operator\":\"EQUAL\",\"Value\":\"prod\",\"Key\":\"env\"}],\"BackupType\":\"COMPLETE\",\"RuleType\":\"BACKUP\",\"DataSourceFilters\":[{\"SourceType\":\"UDM_ECS\",\"DataSourceIds\":[\"已废弃。\"]}],\"Retention\":7,\"RetentionRules\":[{\"AdvancedRetentionType\":\"YEARLY\",\"WhichSnapshot\":1,\"Retention\":730}],\"VaultId\":\"v-0001000000000000aseg\",\"ReplicationRegionId\":\"cn-shanghai\"}]' --region cn-hangzhou",
     "legacyCli": "aliyun hbr CreatePolicyV2 --region cn-hangzhou --PolicyType STANDARD --PolicyDescription 'Back_up_once_at_10:00_AM_every_day,_with_offsite_backup_to_Shanghai.' --PolicyName 'Daily_local_backup_+_remote_backup' --Rules '[{\"Immutable\":true,\"KeepLatestSnapshots\":1,\"Schedule\":\"I_1648647166_P1D\",\"TagFilters\":[{\"Operator\":\"EQUAL\",\"Value\":\"prod\",\"Key\":\"env\"}],\"BackupType\":\"COMPLETE\",\"RuleType\":\"BACKUP\",\"DataSourceFilters\":[{\"SourceType\":\"UDM_ECS\",\"DataSourceIds\":[\"已废弃。\"]}],\"Retention\":7,\"RetentionRules\":[{\"AdvancedRetentionType\":\"YEARLY\",\"WhichSnapshot\":1,\"Retention\":730}],\"VaultId\":\"v-0001000000000000aseg\",\"ReplicationRegionId\":\"cn-shanghai\"}]'"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyDefenseResourceXff",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,67 +9,111 @@
       "name": "AcwCookieStatus",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跟踪cookie开关状态。\n\n- **0**：表示关闭。\n\n- **1（默认）**：表示开启。",
+        "en": "The status of the tracking cookie.\n\n- **0**: Disabled.\n\n- **1 (default)**: Enabled."
+      }
     },
     {
       "name": "AcwSecureStatus",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "跟踪cookie的secure属性状态。\n\n- **0（默认）**：表示关闭。\n\n- **1**：表示开启。",
+        "en": "The status of the secure attribute of the tracking cookie.\n\n- **0 (default)**: Disabled.\n\n- **1**: Enabled."
+      }
     },
     {
       "name": "AcwV3SecureStatus",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "滑块cookie的secure属性状态。\n\n- **0（默认）**：表示关闭。\n\n- **1**：表示开启。",
+        "en": "The status of the secure attribute of the slider CAPTCHA cookie.\n\n- **0 (default)**: Disabled.\n\n- **1**: Enabled."
+      }
     },
     {
       "name": "CustomHeaders",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定Header字段列表。\n\n> 取指定Header字段中的第一个IP作为客户端源IP，避免XFF伪造，输入多个Header时按顺序依次尝试取源IP，如果第一个取不到则取第二个，依次类推，如果所有指定Header都取不到，则取X-Forwarded-For中第一个IP",
+        "en": "The custom header fields.\n\n> The first IP address in the specified header field is used as the client source IP address to prevent X-Forwarded-For (XFF) spoofing. If multiple headers are specified, they are tried in sequence to obtain the source IP address. If the first header does not contain an IP address, the system tries the second header, and so on. If no IP address is found in any of the specified headers, the system uses the first IP address in the X-Forwarded-For header."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF实例ID。\n\n> 您可以通过调用[DescribeInstance](~~433756~~)接口查看当前WAF实例ID。",
+        "en": "The ID of the WAF instance.\n\n> You can call the [DescribeInstance](~~433756~~) operation to query the ID of the current WAF instance."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "WAF实例所属地域。取值：\n\n- **cn-hangzhou**：表示中国内地。\n\n- **ap-southeast-1**：表示非中国内地。",
+        "en": "The region of the WAF instance. Valid values:\n\n- **cn-hangzhou**: The Chinese mainland.\n\n- **ap-southeast-1**: Outside the Chinese mainland."
+      }
     },
     {
       "name": "Resource",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "防护对象名称。",
+        "en": "The name of the protected object."
+      }
     },
     {
       "name": "ResourceManagerResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "阿里云资源组ID。",
+        "en": "The ID of the Alibaba Cloud resource group."
+      }
     },
     {
       "name": "ResponseHeaders",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "响应头参数",
+        "en": "The response header parameters."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定的自定义响应头的键。",
+            "en": "Specifies the key for a custom response header."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "指定的自定义响应头的值。",
+            "en": "Specifies the value for a custom response header."
+          }
         }
       ]
     },
@@ -76,9 +121,20 @@
       "name": "XffStatus",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "WAF前是否开启七层代理（高防/CDN等）。取值：\n\n- **0（默认）**：未开启。\n\n- **1**：开启。",
+        "en": "Specifies whether a Layer 7 proxy is deployed in front of WAF. Layer 7 proxies include Anti-DDoS Proxy and Alibaba Cloud CDN. Valid values:\n\n- **0 (default)**: No.\n\n- **1**: Yes."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "修改防护对象的客户端IP和cookie设置",
+    "en": "ModifyDefenseResourceXff"
+  },
   "example": {
     "unifiedCli": "aliyun waf-openapi modify-defense-resource-xff --xff-status 0 --instance-id waf_v2_public_cn-wwo0000ek07 --custom-headers x-forwarded-for --resource alb-4pxu81fgagx3h6y0000-alb --acw-cookie-status 0 --acw-secure-status 0 --acw-v3-secure-status 0 --biz-region-id cn-hangzhou --response-headers Value=Header-Value Key=Header-Key --resource-manager-resource-group-id rg-acfm2ki0000miwq --api-version 2021-10-01 --region cn-hangzhou",
     "legacyCli": "aliyun waf-openapi ModifyDefenseResourceXff --region cn-hangzhou --ResourceManagerResourceGroupId 'rg-acfm2ki0000miwq' --InstanceId 'waf_v2_public_cn-wwo0000ek07' --ResponseHeaders.1.Key 'Header-Key' --XffStatus 0 --CustomHeaders.1 'x-forwarded-for' --Resource 'alb-4pxu81fgagx3h6y0000-alb' --AcwV3SecureStatus 0 --ResponseHeaders.1.Value 'Header-Value' --AcwCookieStatus 0 --RegionId 'cn-hangzhou' --AcwSecureStatus 0"

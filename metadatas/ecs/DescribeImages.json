@@ -1,5 +1,6 @@
 {
   "name": "DescribeImages",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ActionType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像需要被使用到的场景。取值范围：\n\n- CreateEcs（默认）：创建实例。\n- ChangeOS：更换系统盘/更换操作系统。",
+        "en": "The scenario in which the image is used. Valid values:\n\n- CreateEcs (default): instance creation.\n- ChangeOS: replacement of the system disk or operating system."
+      }
     },
     {
       "name": "Architecture",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像的体系架构。取值范围：\n\n- i386。\n- x86_64。\n- arm64。",
+        "en": "The architecture of the image. Valid values:\n\n- i386.\n- x86_64.\n- arm64."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。\n         \n- true：发送检查请求，不会查询资源状况。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码DryRunOperation。  \n- false：发送正常请求，通过检查后返回2XX HTTP状态码并直接查询资源状况。 \n\n默认值：false。",
+        "en": "Specifies whether to perform only a dry run.\n         \n- true: Sends a dry run request without querying resource status. The system checks whether your AccessKey pair is valid, whether Resource Access Management (RAM) user authorization is granted, and whether the required parameters are specified. If the check fails, the corresponding error is returned. If the check succeeds, the DryRunOperation error code is returned.  \n- false: Sends a normal request. After the check succeeds, a 2XX HTTP status code is returned and the resource status is queried. \n\nDefault value: false."
+      }
     },
     {
       "name": "Filter",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "查询资源时的筛选条件列表。",
+        "en": "The list of filter conditions for querying resources."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "查询资源时的筛选键。取值范围：\n\n- 当该参数取值为`CreationStartTime`时，可以查询在指定时间点（`Filter.N.Value`）后创建的资源信息。\n- 当该参数取值为`CreationEndTime`时，可以查询在指定时间点（`Filter.N.Value`）前创建的资源信息。\n- 当该参数取值为`NetworkType`时，可以查询指定网络类型的资源信息。\n- 当该参数取值为`CpuOnlineUpgrade`、`CpuOnlineDowngrade`、`MemoryOnlineUpgrade`、`MemoryOnlineDowngrade`中的任何一个值时，可以查询指定镜像的CPU或内存的热插拔支持情况。\n\n默认值：null。",
+            "en": "The filter key for querying resources. Valid values:\n\n- When this parameter is set to `CreationStartTime`, you can query resources created after the specified time point (`Filter.N.Value`).\n- When this parameter is set to `CreationEndTime`, you can query resources created before the specified time point (`Filter.N.Value`).\n- When this parameter is set to `NetworkType`, you can query resources of the specified network type.\n- When this parameter is set to any of `CpuOnlineUpgrade`, `CpuOnlineDowngrade`, `MemoryOnlineUpgrade`, or `MemoryOnlineDowngrade`, you can query the CPU or memory hot-plugging support of the specified image.\n\nDefault value: null."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "查询资源时的筛选值。\n- 当（`Filter.N.Key`）为`CreationStartTime`或`CreationEndTime`时，格式为：`yyyy-MM-ddTHH:mmZ`，采用 UTC+0 时区。\n- 当（`Filter.N.Key`）为`NetworkType`时，可以指定网络类型的值有：`vpc`、`classic`等。\n\n- 当（`Filter.N.Key`）取值为`CpuOnlineUpgrade`、`CpuOnlineDowngrade`、`MemoryOnlineUpgrade`、`MemoryOnlineDowngrade`时，该值可以取`supported`或`unsupported`。\n\n默认值：null。",
+            "en": "The filter value for querying resources.\n- When `Filter.N.Key` is set to `CreationStartTime` or `CreationEndTime`, the format is `yyyy-MM-ddTHH:mmZ`, using the UTC+0 time zone.\n- When `Filter.N.Key` is set to `NetworkType`, valid network type values include `vpc` and `classic`.\n\n- When `Filter.N.Key` is set to `CpuOnlineUpgrade`, `CpuOnlineDowngrade`, `MemoryOnlineUpgrade`, or `MemoryOnlineDowngrade`, the value can be `supported` or `unsupported`.\n\nDefault value: null."
+          }
         }
       ]
     },
@@ -46,133 +71,221 @@
       "name": "ImageFamily",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像族系名称，查询镜像时可通过设置该参数来过滤当前族系对应的镜像。\n\n默认值：空。\n> 阿里云官方镜像关联的镜像族系信息请参见[公共镜像概述](~~108393~~)。",
+        "en": "The name of the image family. You can set this parameter to filter images that belong to the specified image family.\n\nDefault value: empty.\n> For information about image families associated with Alibaba Cloud official images, see [Overview of public images](~~108393~~)."
+      }
     },
     {
       "name": "ImageId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像ID。\n\n<details>\n<summary>镜像ID的命名规则</summary>\n\n- 公共镜像：以操作系统版本号、架构、语言和发布日期命名。例如，Windows Server 2008 R2企业版、64位英文系统的镜像ID为win2008r2_64_ent_sp1_en-us_40G_alibase_20190318.vhd。\n\n- 自定义镜像、共享镜像、云市场镜像、社区镜像的镜像：以m开头。\n\n</details>",
+        "en": "The image ID.\n\n<details>\n<summary>Naming conventions for image IDs</summary>\n\n- Public images: Named by operating system version, architecture, language, and release date. For example, the image ID for Windows Server 2008 R2 Enterprise Edition, 64-bit English system is win2008r2_64_ent_sp1_en-us_40G_alibase_20190318.vhd.\n\n- Custom images, shared images, Alibaba Cloud Marketplace images, and community images: Start with m.\n\n</details>"
+      }
     },
     {
       "name": "ImageName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像名称。支持模糊搜索。",
+        "en": "The image name. Fuzzy search is supported."
+      }
     },
     {
       "name": "ImageOwnerAlias",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像来源。取值范围：\n\n- system：阿里云官方提供的，且不是通过云市场发布的镜像，和控制台中的“公共镜像”概念不同。\n- self：您创建的自定义镜像。\n- others：包含共享镜像（其他阿里云用户直接共享给您的镜像）和社区镜像（任意阿里云用户将其自定义镜像完全公开共享后的镜像）。您需要注意：\n    - 查找社区镜像时，IsPublic必须为true。\n    - 查找共享镜像时，IsPublic需要设置为false或者不传值。\n- marketplace：阿里云或者第三方供应商ISV在云市场发布的镜像，需要和ECS一起购买。请自行留意云市场镜像的收费详情。\n\n默认值：空。\n\n>空表示返回取值为system、self以及others的结果。",
+        "en": "The source of the image. Valid values:\n\n- system: Public images provided by Alibaba Cloud that are not published through Alibaba Cloud Marketplace. This is different from the concept of \"public images\" in the console.\n- self: Custom images that you created.\n- others: Includes shared images (images directly shared by other Alibaba Cloud users) and community images (custom images that are fully shared by any Alibaba Cloud user). Note the following:\n    - To query community images, IsPublic must be set to true.\n    - To query shared images, IsPublic must be set to false or left empty.\n- marketplace: Images published by Alibaba Cloud or third-party independent software vendors (ISVs) in Alibaba Cloud Marketplace. These images must be purchased together with ECS. Check the billing details of Alibaba Cloud Marketplace images.\n\nDefault value: empty.\n\n> An empty value indicates that images with the system, self, and others values are returned."
+      }
     },
     {
       "name": "ImageOwnerId",
       "position": "Query",
       "type": "Long",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像所属的阿里云账号ID。该参数仅在查询共享镜像以及社区镜像时生效。",
+        "en": "The Alibaba Cloud account ID of the image owner. This parameter takes effect only when you query shared images or community images."
+      }
     },
     {
       "name": "InstanceType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "为指定的实例规格查询可以使用的镜像。",
+        "en": "The instance type for which you want to query available images."
+      }
     },
     {
       "name": "IsPublic",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否查询已发布的社区镜像。取值范围：\n\n- true：查询已发布的社区镜像。当您指定该参数值为true时，ImageOwnerAlias必须为others。\n- false：查询除社区镜像的其他镜像类型，具体以ImageOwnerAlias参数值为准。\n\n默认值：false。",
+        "en": "Specifies whether to query published community images. Valid values:\n\n- true: Queries published community images. When you set this parameter to true, ImageOwnerAlias must be set to others.\n- false: Queries image types other than community images. The specific types depend on the ImageOwnerAlias parameter value.\n\nDefault value: false."
+      }
     },
     {
       "name": "IsSupportCloudinit",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像是否支持cloud-init。",
+        "en": "Specifies whether the image supports cloud-init."
+      }
     },
     {
       "name": "IsSupportIoOptimized",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像是否可以运行在I/O优化实例上。",
+        "en": "Specifies whether the image can run on I/O optimized instances."
+      }
     },
     {
       "name": "OSType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像的操作系统类型。取值范围：\n\n- windows。\n- linux。",
+        "en": "The operating system type of the image. Valid values:\n\n- windows.\n- linux."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像资源列表的页码。\n\n起始值：1。\n\n默认值：1。",
+        "en": "The page number of the resources.\n\nStart value: 1.\n\nDefault value: 1."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "分页查询时设置的每页行数。\n\n最大值：100。\n\n默认值：10。",
+        "en": "The number of entries per page for paging.\n\nMaximum value: 100.\n\nDefault value: 10."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。",
+        "en": "The region ID of the image. You can call [DescribeRegions](~~25609~~) to query the most recent region list."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "自定义镜像所在的企业资源组ID。使用该参数过滤资源时，资源数量不能超过1000个。\n\n>不支持默认资源组过滤。",
+        "en": "The ID of the resource group to which the custom image belongs. When you use this parameter to filter resources, the resource count cannot exceed 1,000.\n\n> Filtering by the default resource group is not supported."
+      }
     },
     {
       "name": "ShowExpired",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "订阅型镜像是否已经超过使用期限。",
+        "en": "Specifies whether the subscription image has expired."
+      }
     },
     {
       "name": "SnapshotId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "根据某一快照ID创建的自定义镜像。",
+        "en": "The ID of the snapshot used to create the custom image."
+      }
     },
     {
       "name": "Status",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "查询指定状态的镜像，如果不配置此参数，默认只返回Available状态的镜像。取值范围：\n\n- Creating：镜像正在创建中。\n- Waiting：多任务排队中。\n- Available（默认）：您可以使用的镜像。\n- UnAvailable：您不能使用的镜像。\n- CreateFailed：创建失败的镜像。\n- Deprecated：已弃用的镜像。\n\n默认值：Available。当前参数支持同时取多个值，值之间以半角逗号（,）隔开。",
+        "en": "The status of the image. If you do not specify this parameter, only images in the Available state are returned by default. Valid values:\n\n- Creating: The image is being created.\n- Waiting: The image is waiting in a multi-task queue.\n- Available (default): The image is available for use.\n- UnAvailable: The image is unavailable.\n- CreateFailed: The image failed to be created.\n- Deprecated: The image is deprecated.\n\nDefault value: Available. This parameter supports multiple values at the same time, separated by commas (,)."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "The list of tags."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签键。N的取值范围：1~20。\n\n使用一个标签过滤资源，查询到该标签下的资源数量不能超过1000个；使用多个标签过滤资源，查询到同时绑定了多个标签的资源数量不能超过1000个。如果资源数量超过1000个，请使用[ListTagResources](~~110425~~)接口进行查询。",
+            "en": "The tag key of the image. Valid values of N: 1 to 20.\n\nWhen you use a single tag to filter resources, the resource count with this tag cannot exceed 1,000. When you use multiple tags to filter resources, the resource count of resources that are attached to all specified tags cannot exceed 1,000. If the resource count exceeds 1,000, call the [ListTagResources](~~110425~~) operation."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签值。N的取值范围：1~20。",
+            "en": "The tag value of the image. Valid values of N: 1 to 20."
+          }
         },
         {
           "name": "key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签键。\n\n>该参数即将被弃用，为提高兼容性，建议您使用另一个`Tag.N.Key`参数。",
+            "en": "The tag key of the image.\n\n> This parameter will be deprecated. To improve compatibility, use Tag.N.Key instead."
+          }
         },
         {
           "name": "value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "镜像的标签值。\n\n>该参数即将被弃用，为提高兼容性，建议您使用另一个`Tag.N.Value`参数。",
+            "en": "The tag value of the image.\n\n> This parameter will be deprecated. To improve compatibility, use Tag.N.Value instead."
+          }
         }
       ]
     },
@@ -180,9 +293,24 @@
       "name": "Usage",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像是否已经运行在ECS实例中。取值范围：\n\n- instance：镜像处于运行状态，有ECS实例使用。\n- none：镜像处于闲置状态，暂无ECS实例使用。",
+        "en": "Specifies whether the image is running on ECS instances. Valid values:\n\n- instance: The image is in use. ECS instances are created from this image.\n- none: The image is idle. No ECS instances are created from this image."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询镜像资源",
+    "en": "Query image resources"
+  },
+  "descriptions": {
+    "zh": "- 您可以查询的镜像资源包括您的自定义镜像、阿里云提供的公共镜像、云市场镜像以及其他阿里云用户主动共享给您的共享镜像。\n- 支持分页查询，查询结果包括可使用的镜像资源的总数和当前页的镜像资源。每页的数量默认为10条。\n- 通过阿里云CLI调用API时，不同数据类型的请求参数取值必须遵循格式要求。更多信息，请参见[CLI参数格式说明](~~110340~~)。\n- 当查询阿里云官方提供的镜像或共享镜像（ImageOwnerAlias指定system或others）时，本次请求可忽略RAM鉴权规则。更多信息，请参见[鉴权规则](~~25497~~)。",
+    "en": "- Image resources that you can query include your custom images, public images provided by Alibaba Cloud, Alibaba Cloud Marketplace images, and shared images that other Alibaba Cloud users have shared with you.\n- Paging is supported. The query results include the total number of available image resources and the image resources on the current page. The default number of entries per page is 10.\n- When you invoke an API operation by using Cloud Assistant CLI, request parameters of different data types must comply with format requirements. For more information, see [CLI parameter format](~~110340~~).\n- When you query images provided by Alibaba Cloud or shared images (ImageOwnerAlias is set to system or others), the request can bypass RAM authentication rules. For more information, see [Authentication rules](~~25497~~)."
+  },
   "example": {
     "unifiedCli": "aliyun ecs describe-images --biz-region-id cn-hangzhou --status Available --image-id m-bp1g7004ksh0oeuc0000 --show-expired false --snapshot-id s-bp17ot2q7x72ggtw0000 --image-name testImageName --image-family hangzhou-daily-update --image-owner-alias self --instance-type ecs.g5.large --is-support-io-optimized true --is-support-cloudinit true --os-type linux --architecture i386 --page-number 1 --page-size 10 --usage instance --dry-run false --action-type CreateEcs --resource-group-id rg-bp67acfmxazb4p0000 --tag Value=TestValue key=example-string --filter Value=2017-12-05T22:40Z Key=CreationStartTime --is-public false --image-owner-id 201693514356660000 --region cn-hangzhou",
     "legacyCli": "aliyun ecs DescribeImages --region cn-hangzhou --ImageOwnerAlias self --ActionType CreateEcs --PageSize 10 --ResourceGroupId 'rg-bp67acfmxazb4p0000' --DryRun false --ShowExpired false --PageNumber 1 --IsPublic false --ImageId 'm-bp1g7004ksh0oeuc0000' --InstanceType 'ecs.g5.large' --Tag.1.key 'example-string' --Status Available --Usage instance --Architecture i386 --ImageOwnerId 201693514356660000 --Filter.1.Value '2017-12-05T22:40Z' --ImageFamily 'hangzhou-daily-update' --IsSupportIoOptimized true --Filter.1.Key CreationStartTime --IsSupportCloudinit true --SnapshotId 's-bp17ot2q7x72ggtw0000' --ImageName testImageName --OSType linux --Tag.1.Value TestValue --RegionId 'cn-hangzhou'"

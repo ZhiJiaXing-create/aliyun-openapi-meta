@@ -1,5 +1,6 @@
 {
   "name": "DescribeVodDomainMax95BpsData",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "Cycle",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "95 带宽峰值周期，默认值为 day。取值：\n\n- day：按日查询95 峰值。\n\n- month：按月查询95 峰值。",
+        "en": "The cycle to query the 95th percentile bandwidth data. Valid values:\n\n- day (default)\n\n- month"
+      }
     },
     {
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "需要查询的加速域名。若参数为空，默认返回所有加速域名合并后的数据。\n\n\n> 不支持批量域名查询",
+        "en": "The domain name to be queried for acceleration. If the parameter is empty, the data merged from all accelerated domain names will be returned by default.\n\n> Batch domain name queries are not supported."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取结束时间点。日期格式按照 ISO8601 表示法，并使用 UTC 时间，格式为 yyyy-MM-ddTHH:mm:ssZ。\n\n\n> 结束时间需大于起始时间。",
+        "en": "End time point. The date format follows the ISO8601 representation and uses UTC time, in the format yyyy-MM-dd'T'HH:mm:ssZ."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取起始时间点。日期格式按照 ISO8601 表示法，并使用 UTC 时间，格式为 yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "Start time point. The date format follows the ISO8601 representation and uses UTC time, in the format yyyy-MM-dd'T'HH:mm:ssZ."
+      }
     },
     {
       "name": "TimePoint",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "获取数据起始时间点。日期格式按照 ISO8601 表示法，并使用 UTC 时间，格式为 yyyy-MM-ddTHH:mm:ssZ。",
+        "en": "The start time point for getting the data. The date format follows the ISO8601 representation and uses UTC time, in the format yyyy-MM-dd'T'HH:mm:ssZ."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查询95带宽峰值",
+    "en": "DescribeVodDomainMax95BpsData"
+  },
+  "descriptions": {
+    "zh": "**分三种方式查询：**\n\n- 当同时指定StartTime 和 EndTime 时，若 EndTime 与 StartTime 差值在 24 小时内，则查询 StartTime 所在当天的 95 峰值，否则查询 StartTime 所在月份的 95 峰值。\n\n- 当同时指定TimePoint 和 Cycle 时，返回 TimePoint 所在周期的 95 峰值。\n\n- 当指定StartTime 和 EndTime 时，若额外指定了 Cycle，可以返回查询范围内所有指定 cycle 对应的 95 峰值。\n\n当这三种方式都不指定时，默认返回过去 24 小时的 95 峰值。\n\n\n- 数据最大查询跨度：90天\n\n- 数据最小查询粒度：1天\n\n- 数据最大查询范围：90天\n\n- 单用户调用频率：100次/秒。\n\n- 获取数据单位：bit/s。",
+    "en": "**Query methods**\n\n- If you specify both StartTime and EndTime, the system queries the 95th percentile peak value for the day on which StartTime falls if the difference between EndTime and StartTime is within 24 hours. Otherwise, the system queries the 95th percentile peak value for the month on which StartTime falls.\n\n- If you specify both TimePoint and Cycle, the system returns the 95th percentile peak value for the cycle in which TimePoint falls.\n\n- If you specify StartTime and EndTime, and additionally specify Cycle, the system can return the 95th percentile peak values corresponding to all specified cycles within the query range.\n\nIf none of these three methods are specified, the 95th percentile peak value for the past 24 hours is returned by default.\n\n- Maximum query span: 90 days\n\n- Minimum query granularity: 1 day\n\n- Maximum query range: 90 days\n\n- Maximum queries per second: 100 per user.\n\n- Data unit: bit/s."
+  },
   "example": {
     "unifiedCli": "aliyun vod describe-vod-domain-max-95-bps-data --domain-name example.com --start-time 2017-01-11T12:00:00Z --end-time 2017-01-12T13:00:00Z --time-point 2017-12-21T10:00:00Z --cycle month --region cn-hangzhou",
     "legacyCli": "aliyun vod DescribeVodDomainMax95BpsData --region cn-hangzhou --EndTime '2017-01-12T13:00:00Z' --DomainName 'example.com' --StartTime '2017-01-11T12:00:00Z' --TimePoint '2017-12-21T10:00:00Z' --Cycle month"

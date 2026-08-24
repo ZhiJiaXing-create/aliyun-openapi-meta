@@ -1,5 +1,6 @@
 {
   "name": "CreateMaskingRules",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DBInstanceName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID",
+        "en": "instance ID"
+      }
     },
     {
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名称",
+        "en": "Database name"
+      }
     },
     {
       "name": "DefaultAlgo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "默认加密或脱敏算法名称",
+        "en": "Name of the default encryption or masking algorithm"
+      }
     },
     {
       "name": "MaskingAlgo",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则算法，可选多个，脱敏算法可以额外添加参数。格式：{name：算法1}，{name：算法2，params：{加密位置，加密位数}}",
+        "en": "Rule algorithm. Multiple algorithms can be selected. Masking Algorithm can include additional parameters. Format: {name: algorithm1}, {name: algorithm2, params: {encryption position, number of encrypted characters}}"
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID",
+        "en": "Region ID"
+      }
     },
     {
       "name": "RuleConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "规则配置，JSON字符串格式，包含数据库、表、列的匹配规则",
+        "en": "Rule configuration, in JSON string format, containing matching rules for databases, tables, and columns"
+      }
     },
     {
       "name": "RuleName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则名称（一次仅支持输入一个规则名称）",
+        "en": "Rule Name (only one rule name is supported per request)"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建加密或脱敏规则",
+    "en": "Create an Encryption or Desensitization Rule"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- 在使用此接口前，请确保已在 DAS 安全中心 开通列加密服务。\n- 如果在调用接口时收到错误信息ColumnEncryptionErrorCode.NOT_PURCHASED，请前往 DAS（数据库自治服务）安全中心 购买并开通列加密服务后再使用。",
+    "en": "## Request Description\n- Before using this API, ensure that you have enabled the column encryption service in DAS Security Center.\n- If you receive the error message ColumnEncryptionErrorCode.NOT_PURCHASED when invoking the API, go to the DAS (Database Autonomy Service) Security Center to purchase and enable the column encryption service before using it again."
+  },
   "example": {
     "unifiedCli": "aliyun rds create-masking-rules --rule-name rulename1 --masking-algo name_:_aes-128-gcm_,_name_:_sm4-128-gcm --default-algo aes-128-gcm --rule-config '{\"Databases\":[\"testdb\"],\"Columns\":[\"a\"],\"Tables\":[\"testtb\"]}' --db-instance-name rm-t4n8t18o300000d5 --biz-region-id cn-hangzhou --db-name testdb --region cn-hangzhou",
     "legacyCli": "aliyun rds CreateMaskingRules --region cn-hangzhou --DefaultAlgo 'aes-128-gcm' --DBName testdb --RuleConfig '{\"Databases\":[\"testdb\"],\"Columns\":[\"a\"],\"Tables\":[\"testtb\"]}' --RegionId 'cn-hangzhou' --RuleName rulename1 --MaskingAlgo 'name_:_aes-128-gcm_,_name_:_sm4-128-gcm' --DBInstanceName 'rm-t4n8t18o300000d5'"

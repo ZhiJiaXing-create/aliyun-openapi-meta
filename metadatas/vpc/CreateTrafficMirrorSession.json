@@ -1,5 +1,6 @@
 {
   "name": "CreateTrafficMirrorSession",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,61 +9,101 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must ensure that the value is unique among all requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system uses **RequestId** as **ClientToken**. **RequestId** might be different for each API request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会创建镜像会话。检查项包括是否填写了必需参数、请求格式和限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后直接创建镜像会话。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n*   **true**: performs a dry run. The system checks the required parameters, request format, and limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and sends the request. If the request passes the dry run, the operation is performed."
+      }
     },
     {
       "name": "Enabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否开启流量会话，取值：\n\n- **false**（默认值）：不开启流量会话。\n\n- **true**：开启流量会话。",
+        "en": "Specifies whether to enable the traffic mirror session. Valid values:\n\n*   **false** (default): does not enable the traffic mirror session.\n*   **true**: enables the traffic mirror session."
+      }
     },
     {
       "name": "PacketLength",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定被镜像的原始报文长度（不包含VXLAN报文长度），默认值**1500**，取值范围：**64**～**8500**，单位：字节。\n- 该参数的大小会影响镜像目的收到的报文长度，详情请参见[流量镜像概述](~~207513~~)中的镜像报文长度和MTU限制。\n\n- 该参数仅在部分地域可用，详情请参见[创建和管理流量镜像](~~207514~~)中的镜像报文长度参数描述。",
+        "en": "The maximum transmission unit.\n\nValid values: **64 to 9600**. Default value: **1500**."
+      }
     },
     {
       "name": "Priority",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像会话的优先级，取值范围为**1**~**32766**。\n数字越小，优先级越高。同一账号在同一个地域创建的镜像会话优先级不能重复。",
+        "en": "The priority of the traffic mirror session. Valid values: **1** to **32766**.\n\nA smaller value indicates a higher priority. You cannot specify identical priorities for traffic mirror sessions that are created in the same region by using the same account."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像会话的所属地域ID。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。关于流量镜像支持的地域，请参见[流量镜像概述](~~207513~~)。",
+        "en": "The ID of the region to which the traffic mirror session belongs. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list. For more information about regions that support traffic mirror, see [Overview of traffic mirror](~~207513~~)."
+      }
     },
     {
       "name": "ResourceGroupId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流量镜像所属的资源组ID。",
+        "en": "The ID of the resource group to which the mirrored traffic belongs."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "资源的标签。",
+        "en": "The tag of the resource."
+      },
       "sub_parameters": [
         {
           "name": "Key",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签键。最多支持输入20个标签键。如需传入该值，则不能输入空字符串。\n\n一个标签键最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag key. You can specify at most 20 tag keys. The tag key cannot be an empty string.\n\nThe tag key can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "资源的标签值。最多支持输入20个标签值。如需传入该值，可以输入空字符串。\n\n最多支持128个字符，不能以`aliyun`和`acs:`开头，不能包含`http://`或者`https://`。",
+            "en": "The tag value. You can specify at most 20 tag values. The tag value can be an empty string.\n\nThe tag value can be up to 128 characters in length. It cannot start with `aliyun` or `acs:`, and cannot contain `http://` or `https://`."
+          }
         }
       ]
     },
@@ -70,45 +111,84 @@
       "name": "TrafficMirrorFilterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流量镜像筛选条件的实例ID。",
+        "en": "The ID of the filter."
+      }
     },
     {
       "name": "TrafficMirrorSessionDescription",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像会话的描述信息。\n\n描述长度为1～256个字符，不能以`http://`或`https://`开头。",
+        "en": "The description of the traffic mirror session.\n\nThe description must be 1 to 256 characters in length and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "TrafficMirrorSessionName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "镜像会话的名称。\n\n名称长度为1～128个字符，不能以`http://`或`https://`开头。",
+        "en": "The name of the traffic mirror session.\n\nThe name must be 1 to 128 characters in length, and cannot start with `http://` or `https://`."
+      }
     },
     {
       "name": "TrafficMirrorSourceIds",
       "position": "Query",
       "type": "RepeatList",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像源的实例ID，目前支持弹性网卡作为镜像源。其中**N**的默认值为**1**，即一个镜像会话只支持添加一个镜像源。",
+        "en": "The ID of the traffic mirror source. You can specify only an elastic network interface (ENI) as the traffic mirror source. The default value of **N** is **1**, which indicates that you can add only one traffic mirror source to a traffic mirror session."
+      }
     },
     {
       "name": "TrafficMirrorTargetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像目的的实例ID，目前支持弹性网卡和私网负载均衡实例作为镜像目的。",
+        "en": "The ID of the traffic mirror destination. You can specify only an elastic network interface (ENI) or a Server Load Balancer (SLB) instance as a traffic mirror destination."
+      }
     },
     {
       "name": "TrafficMirrorTargetType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "镜像目的类型，取值：\n\n- **NetworkInterface**：弹性网卡。\n\n- **SLB**：私网负载均衡实例。",
+        "en": "The type of the traffic mirror destination. Valid values:\n\n*   **NetworkInterface**: an ENI\n*   **SLB**: an SLB instance"
+      }
     },
     {
       "name": "VirtualNetworkId",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定VNI（VXLAN Network Identifier），用来区分不同的镜像流量，取值范围为**0**~**16777215**。\n\n您可以通过VNI在镜像目的区分不同会话的镜像流量。您可以自定义VNI的值，也可以由系统随机分配该值。如果由系统随机分配该值，请不传该参数。",
+        "en": "The VXLAN network identifier (VNI). Valid values: **0** to **16777215**.\n\nYou can use VNIs to identify mirrored traffic from different sessions at the traffic mirror destination. You can specify a custom VNI or use a random VNI allocated by the system. If you want the system to randomly allocate a VNI, do not enter a value."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建流量镜像会话",
+    "en": "CreateTrafficMirrorSession"
+  },
+  "descriptions": {
+    "zh": "**CreateTrafficMirrorSession**接口属于异步接口，即系统返回一个实例ID，但该镜像会话尚未创建成功，系统后台的创建任务仍在进行。您可以调用[ListTrafficMirrorSessions](~~261367~~)查询镜像会话的创建状态：\n- 当镜像会话处于**Creating**状态时，表示镜像会话正在创建中。\n- 当镜像会话处于**Created**状态时，表示镜像会话创建完成。",
+    "en": "**CreateTrafficMirrorSession**接口属于异步接口，即系统返回一个实例ID，但该镜像会话尚未创建成功，系统后台的创建任务仍在进行。您可以调用[ListTrafficMirrorSessions](~~261367~~)查询镜像会话的创建状态：\n- 当镜像会话处于**Creating**状态时，表示镜像会话正在创建中。\n- 当镜像会话处于**Created**状态时，表示镜像会话创建完成。"
+  },
   "example": {
     "unifiedCli": "aliyun vpc create-traffic-mirror-session --traffic-mirror-session-description This_is_a_trafficmirrorsession. --traffic-mirror-session-name test --client-token 0c593ea1-3bea-11e9-b96b-88e9fe630000 --dry-run false --traffic-mirror-target-id eni-j6c8znm5l1yt4sox0000 --traffic-mirror-target-type NetworkInterface --traffic-mirror-filter-id tmf-j6cmls82xnc86vtpe0000 --virtual-network-id 1 --priority 1 --enabled false --packet-length 1500 --traffic-mirror-source-ids eni-j6c2fp57q8rr47rp0000 --biz-region-id cn-hangzhou --resource-group-id rg-bp67acfmxazb4ph0000 --tag Value=FinanceJoshua Key=FinanceDept --region cn-hangzhou",
     "legacyCli": "aliyun vpc CreateTrafficMirrorSession --region cn-hangzhou --TrafficMirrorTargetId 'eni-j6c8znm5l1yt4sox0000' --Tag.1.Key FinanceDept --ResourceGroupId 'rg-bp67acfmxazb4ph0000' --VirtualNetworkId 1 --Priority 1 --PacketLength 1500 --DryRun false --Enabled false --TrafficMirrorSourceIds.1 'eni-j6c2fp57q8rr47rp0000' --TrafficMirrorFilterId 'tmf-j6cmls82xnc86vtpe0000' --Tag.1.Value FinanceJoshua --TrafficMirrorSessionDescription 'This_is_a_trafficmirrorsession.' --TrafficMirrorSessionName test --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe630000' --TrafficMirrorTargetType NetworkInterface"

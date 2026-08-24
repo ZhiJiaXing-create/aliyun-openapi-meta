@@ -1,5 +1,6 @@
 {
   "name": "CreateRule",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,57 +9,104 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n由客户端生成该参数值，要保证在不同请求间唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token used to ensure request idempotence.\n\nThe client must generate a unique token for each request. The token can contain only ASCII characters.\n\n> If you do not specify this parameter, the system uses the **RequestId** of the API request as the **ClientToken**. Each API request has a unique **RequestId**."
+      }
     },
     {
       "name": "Direction",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "转发规则的方向。取值：\n\n- **Request**（默认值）：请求类型，对从客户端发送到ALB的报文进行条件匹配并进行相应的处理。\n\n- **Response**：响应类型，对从后端服务器组返回到ALB的报文进行条件匹配并进行相应的处理。\n\n> 基础版的ALB实例不支持**Response**类型。",
+        "en": "The direction in which the forwarding rule is applied. Valid values:\n\n- **Request** (default): The rule matches and processes requests sent from the client to the ALB instance.\n\n- **Response**: The rule matches and processes responses returned from server groups to the ALB instance.\n\n> Basic ALB instances do not support the **Response** type."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会创建转发规则。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n\n- **false**（默认值）：发送正常请求，通过检查后返回`HTTP 2xx`状态码并直接进行操作。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: Performs a dry run. The system checks for potential issues, such as required parameters, request format, and service limits, without creating the forwarding rule. If the check fails, the system returns an error. If the check passes, the system returns the `DryRunOperation` error code.\n\n- **false** (default): Sends a normal request. If the check passes, the system performs the operation and returns an `HTTP 2xx` status code."
+      }
     },
     {
       "name": "ListenerId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "应用型负载均衡实例监听ID。",
+        "en": "The ID of the listener."
+      }
     },
     {
       "name": "Priority",
       "position": "Query",
       "type": "Integer",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "规则优先级，取值范围：**1~10000**。值越小表示优先级越高。\n\n> 同一个监听内规则优先级必须唯一。",
+        "en": "The priority of the rule. Valid values: **1** to **10000**. A smaller value indicates a higher priority.\n\n> The priority of each forwarding rule within the same listener must be unique."
+      }
     },
     {
       "name": "RuleActions",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发规则动作列表。",
+        "en": "A list of actions for the forwarding rule."
+      }
     },
     {
       "name": "RuleConditions",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发规则条件列表。",
+        "en": "A list of conditions for the forwarding rule."
+      }
     },
     {
       "name": "RuleName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "转发规则名称。 \n- 长度为2\\~128个英文或中文字符。\n- 必须以字母、中文或数字开头，可包含数字、半角句号（.）、下划线（_）、短划线（-）和空格。",
+        "en": "The name of the forwarding rule.\n\n- The length must be 2 to 128 English or Chinese characters.\n\n- The name must start with a letter, a Chinese character, or a number, and can contain numbers, periods (.), underscores (\\_), hyphens (-), and spaces."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "标签列表。",
+        "en": "Tag list."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建转发规则",
+    "en": "CreateRule"
+  },
+  "descriptions": {
+    "zh": "调用该接口创建转发规则时，请注意以下事项：\n- 配置**Redirect**转发动作时，除了**HttpCode**参数外，其余参数不能全部配置为默认值。\n- 同一个转发规则配置多个转发动作时，**Rewrite**转发动作必须配置**ForwardGroup**的动作类型。\n\n- **CreateRule**接口属于异步接口，即系统返回一个实例ID，但该转发规则尚未创建成功，系统后台的创建任务仍在进行。您可以调用[ListRules](~~214379~~)查询转发规则的创建状态：\n    - 当转发规则处于**Provisioning**状态时，表示转发规则正在创建中。\n    - 当转发规则处于**Available**状态时，表示转发规则创建成功。\n\n-  一条转发规则最多支持添加的条件数（**RuleConditions**）和动作数（**RuleActions**）如下：\n    - 条件数：基础版5条，标准版10条，WAF增强版10条。\n    - 动作数：基础版3条，标准版5条，WAF增强版5条。",
+    "en": "When calling this operation to create a forwarding rule, note the following:\n\n- When you configure the **Redirect** action, you must set at least one parameter other than **HttpCode** to a non-default value.\n\n- If you specify a **Rewrite** action together with other actions in a forwarding rule, you must also specify a **ForwardGroup** action.\n\n- The **CreateRule** operation is asynchronous. After you send a request, the system returns a request ID and runs the creation task in the background. The forwarding rule is not created immediately. To query its status, call the [ListRules](~~214379~~) operation:\n\n  - If a forwarding rule is in the **Provisioning** state, the rule is being created.\n\n  - If a forwarding rule is in the **Available** state, the rule has been created successfully.\n\n- A forwarding rule has the following limits for conditions (**RuleConditions**) and actions (**RuleActions**):\n\n  - **Conditions**: 5 for a basic Application Load Balancer (ALB) instance, 10 for a standard ALB instance, and 10 for a WAF-enabled ALB instance.\n\n  - **Actions**: 3 for a basic ALB instance, 5 for a standard ALB instance, and 5 for a WAF-enabled ALB instance."
+  },
   "example": {
     "unifiedCli": "aliyun alb create-rule --listener-id lsn-l16uo9y000000 --client-token 5A2CFF0E-5718-45B5-9D4D-70B000000 --dry-run false --priority 10 --direction Request --rule-actions '[{\"Order\":1,\"FixedResponseConfig\":{\"HttpCode\":\"200\",\"ContentType\":\"text/plain\",\"Content\":\"dssacav\"},\"Type\":\"ForwardGroup\",\"RedirectConfig\":{\"Path\":\"/test\",\"HttpCode\":\"301\",\"Query\":\"query\",\"Port\":\"10\",\"Host\":\"host\",\"Protocol\":\"HTTP\"},\"CorsConfig\":{\"AllowCredentials\":\"on\",\"ExposeHeaders\":[\"test_123\"],\"AllowOrigin\":[\"http://example.com\"],\"AllowHeaders\":[\"test_123\"],\"MaxAge\":1000,\"AllowMethods\":[\"GET\"]},\"ForwardGroupConfig\":{\"ServerGroupStickySession\":{\"Timeout\":100,\"Enabled\":false},\"ServerGroupTuples\":[{\"ServerGroupId\":\"sgp-k86c1ov501id6p0000\",\"Weight\":100}]},\"RemoveHeaderConfig\":{\"Key\":\"test\"},\"InsertHeaderConfig\":{\"ValueType\":\"UserDefined\",\"Value\":\"UserDefined\",\"Key\":\"key\"},\"RewriteConfig\":{\"Path\":\"/tsdf\",\"Query\":\"query\",\"Host\":\"www.example.com\"},\"TrafficLimitConfig\":{\"PerIpQps\":80,\"QPS\":100},\"TrafficMirrorConfig\":{\"MirrorGroupConfig\":{\"ServerGroupTuples\":[\"sgp-00mkgijak0w4qgz90000\"]},\"TargetType\":\"ForwardGroupMirror\"}}]' --rule-conditions '[{\"MethodConfig\":{\"Values\":[\"PUT\"]},\"PathConfig\":{\"Values\":[\"/test\"]},\"Type\":\"Host\",\"ResponseHeaderConfig\":{\"Values\":[\"50006\"],\"Key\":\"test\"},\"HostConfig\":{\"Values\":[\"www.example.edu\"]},\"QueryStringConfig\":{\"Values\":[{\"Value\":\"test\",\"Key\":\"test\"}]},\"CookieConfig\":{\"Values\":[{\"Value\":\"test\",\"Key\":\"test\"}]},\"ResponseStatusCodeConfig\":{\"Values\":[\"test\"]},\"HeaderConfig\":{\"Values\":[\"5006\"],\"Key\":\"Port\"},\"SourceIpConfig\":{\"Values\":[\"192.168.0.0/32\"]}}]' --rule-name rule-doc --tag Value=product Key=env --region cn-hangzhou",
     "legacyCli": "aliyun alb CreateRule --region cn-hangzhou --RuleConditions.1.CookieConfig.Values.1.Value test --RuleConditions.1.ResponseStatusCodeConfig.Values.1 test --RuleActions.1.RedirectConfig.Path '/test' --DryRun false --RuleActions.1.FixedResponseConfig.Content dssacav --RuleConditions.1.Type Host --RuleActions.1.CorsConfig.MaxAge 1000 --RuleActions.1.Type ForwardGroup --RuleActions.1.ForwardGroupConfig.ServerGroupTuples.1.Weight 100 --RuleActions.1.RedirectConfig.HttpCode 301 --RuleActions.1.RedirectConfig.Protocol HTTP --RuleName 'rule-doc' --RuleActions.1.CorsConfig.AllowOrigin.1 'http://example.com' --RuleActions.1.RewriteConfig.Path '/tsdf' --RuleConditions.1.QueryStringConfig.Values.1.Key test --Tag.1.Key env --RuleActions.1.RedirectConfig.Port 10 --RuleActions.1.InsertHeaderConfig.Value UserDefined --Priority 10 --RuleConditions.1.SourceIpConfig.Values.1 '192.168.0.0/32' --RuleActions.1.CorsConfig.AllowCredentials on --RuleActions.1.CorsConfig.ExposeHeaders.1 test_123 --RuleActions.1.ForwardGroupConfig.ServerGroupTuples.1.ServerGroupId 'sgp-k86c1ov501id6p0000' --RuleActions.1.RedirectConfig.Host host --RuleActions.1.Order 1 --Tag.1.Value product --RuleActions.1.InsertHeaderConfig.Key key --RuleActions.1.InsertHeaderConfig.ValueType UserDefined --ClientToken '5A2CFF0E-5718-45B5-9D4D-70B000000' --RuleActions.1.ForwardGroupConfig.ServerGroupStickySession.Timeout 100 --RuleActions.1.RewriteConfig.Host 'www.example.com' --RuleActions.1.RewriteConfig.Query query --RuleConditions.1.MethodConfig.Values.1 PUT --RuleConditions.1.HostConfig.Values.1 'www.example.edu' --Direction Request --RuleActions.1.FixedResponseConfig.ContentType 'text/plain' --RuleConditions.1.ResponseHeaderConfig.Values.1 50006 --RuleActions.1.TrafficMirrorConfig.MirrorGroupConfig.ServerGroupTuples.1 'sgp-00mkgijak0w4qgz90000' --RuleConditions.1.HeaderConfig.Key Port --RuleConditions.1.CookieConfig.Values.1.Key test --RuleActions.1.RedirectConfig.Query query --RuleActions.1.TrafficLimitConfig.QPS 100 --RuleActions.1.CorsConfig.AllowHeaders.1 test_123 --RuleConditions.1.HeaderConfig.Values.1 5006 --RuleActions.1.TrafficMirrorConfig.TargetType ForwardGroupMirror --RuleActions.1.RemoveHeaderConfig.Key test --RuleConditions.1.ResponseHeaderConfig.Key test --RuleActions.1.CorsConfig.AllowMethods.1 GET --RuleActions.1.FixedResponseConfig.HttpCode 200 --RuleActions.1.TrafficLimitConfig.PerIpQps 80 --RuleActions.1.ForwardGroupConfig.ServerGroupStickySession.Enabled false --RuleConditions.1.PathConfig.Values.1 '/test' --RuleConditions.1.QueryStringConfig.Values.1.Value test --ListenerId 'lsn-l16uo9y000000' --method POST --force"

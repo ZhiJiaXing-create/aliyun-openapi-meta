@@ -1,0 +1,106 @@
+{
+  "name": "ApplyResourceAccessPermission",
+  "deprecated": false,
+  "protocol": "HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ApplyContents",
+      "position": "Body",
+      "type": "Json",
+      "required": true,
+      "description": {
+        "zh": "资源权限申请内容列表",
+        "en": "The list of resource permission application contents."
+      },
+      "sub_parameters": [
+        {
+          "name": "AccessTypes",
+          "position": "FormData",
+          "type": "RepeatList",
+          "required": true,
+          "description": {
+            "zh": "申请的权限列表。\n\n**注意**：不同层级资源支持权限的申请类型不同，统一受[ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).isValidLeaf和accessTypeRestrictions和authMethodAccessTypes 约束。\n\n附：[ResourceSchema国际站说明文档](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)",
+            "en": "The list of permissions to apply for.\n\n**Note**: Different resource levels support different permission types. They are uniformly constrained by [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).isValidLeaf, accessTypeRestrictions, and authMethodAccessTypes.\n\nAppendix: [ResourceSchema documentation for international site](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)"
+          }
+        },
+        {
+          "name": "AuthMethod",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "授权方式。当前只有SEVERLESS_STARROCKS支持指定授权方式：ranger、starrocksManager。\n\n**注意**：不同资源支持的授权方式不同，统一受[ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).authMethods 约束。\n\n附：[ResourceSchema国际站说明文档](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)",
+            "en": "The authorization method. Currently, only SEVERLESS_STARROCKS supports specifying the authorization method: ranger or starrocksManager.\n\n**Note**: Different resources support different authorization methods, which are uniformly constrained by [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).authMethods.\n\nAppendix: [ResourceSchema documentation for international site](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)"
+          }
+        },
+        {
+          "name": "ExpirationTime",
+          "position": "FormData",
+          "type": "Long",
+          "required": false,
+          "description": {
+            "zh": "权限到期时间，毫秒时间戳",
+            "en": "The permission expiration time, in milliseconds timestamp."
+          }
+        },
+        {
+          "name": "Grantee",
+          "position": "FormData",
+          "type": "Struct",
+          "required": true,
+          "description": {
+            "zh": "授权主体描述。\n\n**注意**： 系统支持的授权主体类型受[ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).authPrincipal 约束。\n\n附：[ResourceSchema国际站说明文档](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)",
+            "en": "The grantee description.\n\n**Note**: The supported grantee types are constrained by [ResourceSchema](https://help.aliyun.com/zh/dataworks/developer-reference/resourceschema-template-instructions).authPrincipal.\n\nAppendix: [ResourceSchema documentation for international site](https://www.alibabacloud.com/help/zh/dataworks/developer-reference/resourceschema-template-instructions)"
+          }
+        },
+        {
+          "name": "Resource",
+          "position": "FormData",
+          "type": "Struct",
+          "required": false,
+          "description": {
+            "zh": "资源描述。",
+            "en": "The resource description."
+          }
+        }
+      ]
+    },
+    {
+      "name": "ClientToken",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "幂等参数。用于避免多次调用导致操作重复。",
+        "en": "The idempotency parameter. Used to prevent duplicate operations caused by multiple calls."
+      }
+    },
+    {
+      "name": "Reason",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "申请理由",
+        "en": "The reason for the application."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "发起资源访问权限申请",
+    "en": "Submit a Resource Access Permission Application"
+  },
+  "descriptions": {
+    "zh": "## 请求说明\n- **Reason**：申请理由，必须提供。\n- **ApplyContents**：包含多个资源权限申请内容，每个内容包括资源描述（Resource）、授权主体描述（Grantee）、权限类型（AccessTypes）和权限到期时间（ExpirationTime）。单次最大限制400条。\n- **Resource**：资源描述，需要指定资源解析依赖的ResourceSchema.name和version，以及资源元数据MetaData。\n- **Grantee**：授权主体描述，需要指定授权主体类型（PrincipalType）和主体ID（PrincipalId）。\n- **AccessTypes**：权限类型列表，支持多种权限组合。\n- **ExpirationTime**：权限到期时间，以毫秒时间戳形式提供。\n- **AuthMethod**：可选参数，指定授权方式，默认使用系统内置的默认授权方式。\n- **ClientToken**：客户端令牌，用于防止重复请求，非必填项。\n\n请确保所有必填字段都已正确填写，并且符合相应的约束条件。例如，`Resource`中的`DefVersion`和`MetaData`应与所选`DefSchema`相匹配。",
+    "en": "## Request Description\n- **Reason**: The reason for the application. This parameter is required.\n- **ApplyContents**: Contains multiple resource permission application contents, each including the resource description (Resource), grantee description (Grantee), permission types (AccessTypes), and permission expiration time (ExpirationTime). The maximum limit per request is 400 entries.\n- **Resource**: The resource description. You need to specify the ResourceSchema.name and version that the resource parsing depends on, as well as the resource metadata MetaData.\n- **Grantee**: The grantee description. You need to specify the grantee type (PrincipalType) and the principal ID (PrincipalId).\n- **AccessTypes**: The list of permission types. Multiple permission combinations are supported.\n- **ExpirationTime**: The permission expiration time, provided as a milliseconds timestamp.\n- **AuthMethod**: An optional parameter that specifies the authorization method. The system uses the built-in default authorization method if not specified.\n- **ClientToken**: The client token used to prevent duplicate requests. This parameter is optional.\n\nEnsure all required fields are filled in correctly and comply with the corresponding constraints. For example, `DefVersion` and `MetaData` in `Resource` should match the selected `DefSchema`."
+  },
+  "example": {
+    "unifiedCli": "aliyun dataworks-public apply-resource-access-permission --reason '业务发展需要' --apply-contents '[{\"Grantee\":{\"PrincipalId\":\"ROLE_32237475848545\",\"PrincipalType\":\"RamRole\"},\"Resource\":{\"DefSchema\":\"MaxCompute\",\"DefVersion\":\"v1.0.0\",\"MetaData\":{\"key\":\"example-string\"}},\"ExpirationTime\":1785835708000,\"AccessTypes\":[\"select\"],\"AuthMethod\":\"ranger\"}]' --client-token ABFUOEUOTRTRJKE --api-version 2024-05-18 --region cn-hangzhou",
+    "legacyCli": "aliyun dataworks-public ApplyResourceAccessPermission --region cn-hangzhou --ApplyContents '[{\"Grantee\":{\"PrincipalId\":\"ROLE_32237475848545\",\"PrincipalType\":\"RamRole\"},\"Resource\":{\"DefSchema\":\"MaxCompute\",\"DefVersion\":\"v1.0.0\",\"MetaData\":{\"key\":\"example-string\"}},\"ExpirationTime\":1785835708000,\"AccessTypes\":[\"select\"],\"AuthMethod\":\"ranger\"}]' --ClientToken ABFUOEUOTRTRJKE --Reason '业务发展需要'"
+  }
+}

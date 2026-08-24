@@ -1,5 +1,6 @@
 {
   "name": "DeleteLiveEdgeTransfer",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,15 +9,34 @@
       "name": "DomainName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "推流域名。一个域名只有一个直播转推配置。",
+        "en": "The ingest domain. You can set only one stream relay configuration for an ingest domain."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "地域ID。",
+        "en": "Region ID."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除直播转推配置",
+    "en": "Delete live stream edge transfer configuration"
+  },
+  "descriptions": {
+    "zh": "调用DeleteLiveEdgeTransfer只会删除针对某一域名的直播边缘转推配置，对已经按照该配置进行的直播转推没有影响。以下为典型场景示例：\n\n| 场景        | 分析           | 结果   |\n| -------------- | -------------- | ------ |\n| 1. 调用SetLiveEdgeTransfer配置直播边缘转推后进行推流，过程中调用DeleteLiveEdgeTransfer删除配置。      | 推流时直播边缘转推配置存在。        | 推流不受影响，直播转推不会中断。  |\n| 2. 推流过程中调用DeleteLiveEdgeTransfer删除直播边缘转推配置，中断推流再重新推流。       | 重新推流时直播边缘转推配置已不存在。       |   不会启动直播边缘转推。  |\n| 3. 调用DeleteLiveEdgeTransfer后才开始直播推流。 | 此时直播边缘转推配置不存在。      |    不会启动直播边缘转推。  |\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。",
+    "en": "Calling DeleteLiveEdgeTransfer only deletes the live stream edge transfer configuration for a specific domain name. It does not affect any ongoing live stream transfers that were already initiated based on that configuration. The following are typical scenario examples:\n\n| Scenario        | Analysis           | Result   |\n| -------------- | -------------- | ------ |\n| 1. After calling SetLiveEdgeTransfer to configure live stream edge transfer and starting stream ingest, call DeleteLiveEdgeTransfer to delete the configuration during the ingest process.      | The live stream edge transfer configuration exists at the time of stream ingest.        | Stream ingest is unaffected, and live stream edge transfer will not break.  |\n| 2. During stream ingest, call DeleteLiveEdgeTransfer to delete the live stream edge transfer configuration, then stop and restart the stream ingest.       | The live stream edge transfer configuration no longer exists when stream ingest restarts.       | Live stream edge transfer will not start.  |\n| 3. Start live stream ingest only after calling DeleteLiveEdgeTransfer. | The live stream edge transfer configuration does not exist at this point.      | Live stream edge transfer will not start.  |\n\n## Queries per second (QPS) limit  \nThe per-user QPS limit for this API is 100 queries per second. If you exceed this limit, your API calls will be rate-limited, which may impact your business. Please invoke the API appropriately."
+  },
   "example": {
     "unifiedCli": "aliyun live delete-live-edge-transfer --biz-region-id cn-hangzhou --domain-name demo.aliyundoc.com --region cn-hangzhou",
     "legacyCli": "aliyun live DeleteLiveEdgeTransfer --region cn-hangzhou --DomainName 'demo.aliyundoc.com' --RegionId 'cn-hangzhou'"

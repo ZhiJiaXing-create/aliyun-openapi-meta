@@ -1,0 +1,70 @@
+{
+  "name": "ResetSystem",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "GET|POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "ClientToken",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "保证请求幂等性。从您的客户端生成一个参数值，确保不同请求间该参数值唯一。**ClientToken**只支持ASCII字符，且不能超过64个字符。更多信息，请参见[如何保证幂等性](~~25693~~)。",
+        "en": "The client token that you want to use to ensure the idempotence of the request. You can use the client to generate the token, but you must make sure that the token is unique among different requests. The **token** can contain only ASCII characters and cannot exceed 64 characters in length. For more information, see [Ensure idempotence](~~25693~~)"
+      }
+    },
+    {
+      "name": "ImageId",
+      "position": "Query",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "目标镜像ID。如果不输入目标镜像ID，默认为重置当前镜像。",
+        "en": "The ID of the destination image. If you do not specify this parameter, the current image is reset."
+      }
+    },
+    {
+      "name": "InstanceId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "指定的轻量应用服务器的实例ID。",
+        "en": "The ID of the simple application server."
+      }
+    },
+    {
+      "name": "LoginCredentials",
+      "position": "Query",
+      "type": "Struct",
+      "required": false,
+      "description": {
+        "zh": "登录凭证信息。",
+        "en": "The information about the logon credentials."
+      }
+    },
+    {
+      "name": "RegionId",
+      "position": "Query",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "地域ID。您可以调用[ListRegions](~~189315~~)查询可用地域。",
+        "en": "The region ID. You can call the [ListRegions](~~189315~~) operation to query the most recent region list."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "重置系统",
+    "en": "ResetSystem"
+  },
+  "descriptions": {
+    "zh": "重置系统可以重新安装服务器的应用或者操作系统，达到重新初始化服务器的目的。重置系统有两种选择，重置当前系统和重置为其他镜像。\n\n重置系统包括以下两种方式：\n\n- 重置当前系统：不改变当前镜像，重新安装操作系统。\n\n- 重置为其他镜像：选择阿里云提供的其他镜像或者您创建的自定义镜像，重新安装操作系统。\n\n### 注意事项\n\n- 重置系统或更换镜像会清除轻量应用服务器上的磁盘数据，请您根据需要做好数据备份。\n\n- 重置系统或更换镜像后，可能会导致监控失效。如果监控出现问题，您可以手动安装云监控插件。\n\n    -   远程连接服务器安装：具体操作，请参见[为阿里云主机手动安装插件](~~183482~~)。\n\n    - 使用命令助手安装：具体操作，请参见[使用命令助手](~~438681~~)，安装云监控的命令，您可以从[使用命令助手](~~438681~~)文档的常用命令中获取。 \n\n### 使用限制\n\n- 重置系统或更换镜像前创建的快照会保留，但无法通过重置前创建的快照回滚磁盘。\n\n- 含有数据盘数据的自定义镜像创建的轻量应用服务器，不支持重置系统。\n\n- 选择自定义镜像重置系统时：\n\n    -   仅支持选择与当前服务器同一地域下的自定义镜像。\n\n    - 不支持选择当前服务器对应的自定义镜像。如果您有恢复服务器数据的需求，可以使用当前服务器对应的快照回滚磁盘数据。\n\n    - 非中国内地地域不支持Windows Server系统和Linux系统互相切换，即Windows系统的自定义镜像无法重置Linux服务器；Linux系统的自定义镜像无法重置Windows服务器。仅支持Windows Server不同版本之间或Linux不同发行版本之间的更换。\n\n    - 云盘存在以下限制：\n\n        - 当自定义镜像中包含系统盘与数据盘，但待重置服务器中只挂载了系统盘，没有挂载数据盘时，您无法使用该自定义镜像重置系统。\n\n        - 当自定义镜像中包含的系统盘容量比待重置系统的服务器中系统盘容量大时，您无法直接使用该自定义镜像重置系统。\n\n        - 当服务器中系统盘容量大于等于自定义镜像中系统盘容量时，即可使用该自定义镜像重置系统。您可以为待重置系统的服务器升级配置，将服务器中系统盘容量升级。具体操作，请参见升级配置。\n\n        - 当自定义镜像中包含的数据盘容量比待重置系统的服务器中数据盘容量大时，您无法使用该自定义镜像重置系统。",
+    "en": "You can reset a simple application server to re-install its applications or operating system and re-initialize the server. You can reset a simple application server by resetting the current system or changing the image.\n\n- Reset the current system: You can re-install the operating system without changing the image.\n\n- Change the image: You can select another Alibaba Cloud image or a custom image to re-install the operating system.\n\n### [](#)Precautions\n\n- Resetting the system or changing the image of a simple application server clears the disk data on the server. Back up the data as needed.\n\n- After you reset a simple application server, monitoring may fail. In this case, you can use one of the following methods to install the CloudMonitor agent on the server:\n\n  - Connect to the server: For more information, see [Manually install the CloudMonitor agent for C++ on an ECS instance](~~183482~~).\n\n  - Use Command Assistant: For more information, see [Use Command Assistant](~~438681~~). You can obtain the command that can be used to install CloudMonitor from the \"Common commands\" section of the [Use Command Assistant](~~438681~~) topic.\n\n### [](#)Limits\n\n- Snapshots that are created before the reset are retained, but the snapshots cannot be used to restore the disks of the server.\n\n- You cannot reset simple application servers that were created from custom images that contain data of data disks.\n\n- If you reset a simple application server by replacing the existing image with a custom image, the following limits apply:\n\n  - The custom image must reside in the same region as the current server.\n\n  - The custom image cannot be created based on the current server. If you want to restore the data on the server, you can use a snapshot of the server to restore disk data.\n\n  - If your simple application server resides in a region outside the Chinese mainland, you cannot switch the operating system of the server between Windows Server and Linux. You cannot use a Windows Server custom image to reset a Linux simple application server. Similarly, you cannot use a Linux custom image to reset a Windows Server simple application server. You can switch the operating systems of simple application servers only between Windows Server versions or between Linux distributions.\n\n  - The following limits apply to the disks attached to the simple application server:\n\n    - If the custom image contains a system disk and a data disk but only a system disk is attached to the simple application server, you cannot use the custom image to reset the simple application server.\n\n    - If the system disk size of the custom image is greater than the system disk size of the simple application server, you cannot directly use the custom image to reset the simple application server.\n\n    - Only if the system disk size of the simple application server is greater than or equal to the system disk size of the custom image, you can use the custom image to reset the simple application server. To increase the system disk size of your server, you can upgrade the server configuration. For more information, see Upgrade a simple application server.\n\n    - If the data disk size of the custom image is greater than the data disk size of the simple application server, you cannot use the custom image to reset the simple application server."
+  }
+}

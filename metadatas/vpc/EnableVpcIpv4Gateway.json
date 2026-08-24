@@ -1,5 +1,6 @@
 {
   "name": "EnableVpcIpv4Gateway",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n- **true**：发送检查请求，不会激活IPv4网关。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后返回HTTP 2xx状态码并直接激活IPv4网关。",
+        "en": "Specifies whether to perform a dry run, without performing the actual request. Valid values:\n\n*   **true**: performs only a dry run. The system checks the request for potential issues, including missing parameter values, incorrect request syntax, and service limits. If the request fails the dry run, an error code is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n*   **false** (default): performs a dry run and performs the actual request. If the request passes the dry run, a 2xx HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "Ipv4GatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要激活的IPv4网关的实例ID。",
+        "en": "The ID of the IPv4 gateway that you want to activate."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "IPv4网关所在地域ID。\n\n您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region ID of the IPv4 gateway.\n\nYou can call the [DescribeRegions](~~36063~~) operation to query the most recent list of regions."
+      }
     },
     {
       "name": "RouteTableList",
       "position": "Query",
       "type": "RepeatList",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "路由表列表。系统会为路由表列表中的路由表添加一条0.0.0.0/0指向IPv4网关的路由条目。",
+        "en": "A list of route tables. The system adds a 0.0.0.0/0 route that points to the IPv4 gateway to the route tables."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "激活IPv4网关",
+    "en": "EnableVpcIpv4Gateway"
+  },
+  "descriptions": {
+    "zh": "- **EnableVpcIpv4Gateway**接口属于异步接口，即系统会先返回一个**RequestId**，但该IPv4网关实例并未激活完成，系统后台的激活任务仍在进行。您可以调用[GetIpv4GatewayAttribute](~~407670~~)查询IPv4网关实例的状态。\n\n    - 当IPv4网关实例处于**Activating**状态时，表示正在激活中。\n\n    - 当IPv4网关实例处于**Created**状态时，表示激活完成。\n\n- **EnableVpcIpv4Gateway**接口不支持并发激活同一个IPv4网关。",
+    "en": "## [](#)Description\n\n*   **EnableVpcIpv4Gateway** is an asynchronous operation. After a request is sent, the system returns a **request ID** and runs the task in the background. You can call the [GetIpv4GatewayAttribute](~~407670~~) operation to query the status of an IPv4 gateway.\n\n    *   If the IPv4 gateway is in the **Activating** state, the IPv4 gateway is being activated.\n    *   If the IPv4 gateway is in the **Created** state, the IPv4 gateway is activated.\n\n*   You cannot repeatedly call the **EnableVpcIpv4Gateway** operation to activate an IPv4 gateway within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc enable-vpc-ipv4-gateway --ipv4-gateway-id ipv4gw-5tsp9lumsxoqizvq20000 --biz-region-id cn-hangzhou --dry-run false --client-token 123e4567-e89b-12d3-a456-426655440000 --route-table-list vtb-5ts0ohchwkp3dydt20000 --region cn-hangzhou",
     "legacyCli": "aliyun vpc EnableVpcIpv4Gateway --region cn-hangzhou --Ipv4GatewayId 'ipv4gw-5tsp9lumsxoqizvq20000' --RouteTableList.1 'vtb-5ts0ohchwkp3dydt20000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000'"

@@ -1,5 +1,6 @@
 {
   "name": "ModifyInstance",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用于保证请求的幂等性，防止请求重复提交。",
+        "en": "The client token that is used to ensure the idempotence of the request."
+      }
     },
     {
       "name": "InstanceId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "变更配置的实例ID。",
+        "en": "The ID of the instance whose configuration you want to change."
+      }
     },
     {
       "name": "ModifyType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "变配类型，取值\n- Upgrade：升级。\n- Downgrade：降级。",
+        "en": "The type of configuration change. Valid values:\n\n- Upgrade\n\n- Downgrade"
+      }
     },
     {
       "name": "Parameter",
       "position": "Query",
       "type": "RepeatList",
       "required": false,
+      "description": {
+        "zh": "参数列表。",
+        "en": "The list of parameters. You can specify up to 100 parameters."
+      },
       "sub_parameters": [
         {
           "name": "Code",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个模块属性code配置，n的取值范围为（1~100），如有多个模块属性参数，按照n=1,2,3…n的形式拼接多个参数。\n\n> 只设置需要变更配置的模块属性信息，如A,B两个属性中，只有A需要变更配置，则只传A属性相关即可。",
+            "en": "The code of the module property.\n\n> Specify only the module properties that you want to change. For example, if you have two properties, A and B, and you only want to change property A, pass only the information related to property A."
+          }
         },
         {
           "name": "Value",
           "position": "Query",
           "type": "String",
-          "required": true
+          "required": true,
+          "description": {
+            "zh": "第n个模块属性value配置，n的取值范围为（1~100）。",
+            "en": "The value of the module property."
+          }
         }
       ]
     },
@@ -46,21 +71,40 @@
       "name": "ProductCode",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "产品代码。",
+        "en": "The product code."
+      }
     },
     {
       "name": "ProductType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "产品类型。",
+        "en": "The product type."
+      }
     },
     {
       "name": "SubscriptionType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "付费类型，取值：\n- Subscription：预付费。\n- PayAsYouGo：后付费。",
+        "en": "The billing method. Valid values:\n\n- Subscription: subscription.\n\n- PayAsYouGo: pay-as-you-go."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "实例变更服务",
+    "en": "ModifyInstance"
+  },
   "example": {
     "unifiedCli": "aliyun bssopenapi modify-instance --product-code rds --product-type rds --subscription-type Subscription --modify-type Upgrade --instance-id rm-akjhkdsjhfskjfhd --client-token JAKSJFHFAKJSF --parameter Value=test Code=test --api-version 2017-12-14 --region cn-hangzhou",
     "legacyCli": "aliyun bssopenapi ModifyInstance --region cn-hangzhou --SubscriptionType Subscription --ModifyType Upgrade --Parameter.1.Value test --ProductCode rds --InstanceId 'rm-akjhkdsjhfskjfhd' --ProductType rds --ClientToken JAKSJFHFAKJSF --Parameter.1.Code test"

@@ -1,5 +1,6 @@
 {
   "name": "SubmitAnalysisJob",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AnalysisConfig",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "模板分析作业配置，根据您的实际需要按需设置。更多参数信息请参见[参数详情](~~29253~~)。",
+        "en": "The job configurations. Set this parameter as required. For more information, see the \"AnalysisConfig\" section of the [Parameter details](~~29253~~) topic."
+      }
     },
     {
       "name": "Input",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "作业输入，JSON对象。需在OSS控制台Bucket授权页面将Bucket读权限授权给媒体转码服务。更多信息请参见[参数详情](~~29253~~)。\n\n> OSS的地域需要与当前MPS所在地域保持一致。",
+        "en": "The input information about the preset template analysis job to be submitted. The value must be a JSON object. You must log on to the Object Storage Service (OSS) console to grant the read permissions on the specified OSS bucket to MPS. For more information, see the \"Input\" section of the [Parameter details](~~29253~~) topic.\n\n> The OSS bucket must reside in the same region as your MPS service."
+      }
     },
     {
       "name": "PipelineId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "管道ID，可以通过**MPS控制台**>**全局设置**>**管道**查看。如果需要异步通知，须保证此管道绑定了可用的消息主题。",
+        "en": "The ID of the MPS queue to which the job is submitted. To view the ID of the MPS queue, log on to the **MPS console** and choose **Global Settings** > **Pipelines** in the left-side navigation pane. If you want to enable asynchronous notifications, make sure that the MPS queue is bound to a Message Service (MNS) topic."
+      }
     },
     {
       "name": "Priority",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "任务在其对应管道内的转码优先级。\n\n- 取值范围：**\\[1,10\\]**，10为最高优先级。\n- 默认值：**6**。",
+        "en": "The priority of the job in the MPS queue to which the job is submitted.\n\n*   Valid values: **1 to 10**. A value of 10 indicates the highest priority.\n*   Default value: **6**."
+      }
     },
     {
       "name": "UserData",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "用户自定义数据，可以使用中英文、数字、中划线（-）等，不能以特殊字符开头，最大长度1024个字节。",
+        "en": "The custom data. The custom data can contain letters, digits, and hyphens (-), and can be up to 1,024 bytes in length. The custom data cannot start with a special character."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "提交预置模板分析作业",
+    "en": "SubmitAnalysisJob"
+  },
+  "descriptions": {
+    "zh": "- 通过本接口提交作业以后，媒体处理服务会对输入文件进行智能分析，推荐出适合输入文件的预置模板，可通过[查询模板分析作业](~~29224~~)接口得到模板分析作业结果，也可使用异步通知机制。\n- 预置模板分析的结果只保留半个月（从得到结果时算起），半个月后将被删除。如果半个月后再使用推荐的预置模板提交作业将返回转码作业失败，失败的错误码为：`AnalysisResultNotFound`。\n\n## QPS限制\n本接口的单用户QPS限制为100次/秒。超过限制，API调用会被限流，这可能会影响您的业务，请合理调用。更多信息，请参见[QPS限制](~~342832~~)。",
+    "en": "*   After you call the SubmitAnalysisJob operation to submit a preset template analysis job, ApsaraVideo Media Processing (MPS) intelligently analyzes the input file of the job and recommends a suitable preset template. You can call the [QueryAnalysisJobList](~~29224~~) operation to query the analysis result or enable asynchronous notifications to receive the analysis result.\n*   The analysis result is retained only for two weeks after it is generated. The analysis result is deleted after two weeks. If you use the recommended preset template in a transcoding job after two weeks, the job fails, and the `AnalysisResultNotFound` error code is returned.\n\n### QPS limit\n\nYou can call this operation up to 100 times per second per account. Requests that exceed this limit are dropped and you will experience service interruptions. We recommend that you take note of this limit when you call this operation. For more information, see [QPS limit](~~342832~~)."
+  },
   "example": {
     "unifiedCli": "aliyun mts submit-analysis-job --input Bucket_:_example-bucket_,_Location_:_oss-cn-hangzhou_,_Object_:_example.flv --analysis-config QualityControl_:_RateQuality_:25,_MethodStreaming_:_network --user-data testid-001 --pipeline-id bb558c1cc25b45309aab5be44d190000 --priority 10 --api-version 2014-06-18 --region cn-hangzhou",
     "legacyCli": "aliyun mts SubmitAnalysisJob --region cn-hangzhou --Input 'Bucket_:_example-bucket_,_Location_:_oss-cn-hangzhou_,_Object_:_example.flv' --UserData 'testid-001' --AnalysisConfig 'QualityControl_:_RateQuality_:25,_MethodStreaming_:_network' --Priority 10 --PipelineId bb558c1cc25b45309aab5be44d190000"

@@ -1,5 +1,6 @@
 {
   "name": "UpdateSpeech",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,51 +9,94 @@
       "name": "EnableSoundCode",
       "position": "Body",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否启用声码。\n\n><notice> 如果传入了**true**，必须传入参数**SoundCodeConfig**，否则调用会失败。\n></notice>",
+        "en": "Specifies whether to enable the sound code.\n\n><notice> If **true** is passed, the **SoundCodeConfig** parameter must also be provided; otherwise, the invocation will fail.\n></notice>"
+      }
     },
     {
       "name": "IotInstanceId",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "实例ID。您可在物联网平台控制台的**实例概览**页面，查看当前实例的**ID**。\n\n><notice>\n- 若有ID值，必须传入该**ID**值，否则调用会失败。\n- 若无**实例概览**页面或**ID**值，则无需传入。\n\n></notice>\n\n实例的更多信息，请参见[实例概述](~~356505~~)。",
+        "en": "Instance ID. You can view the **ID** of your current instance on the **Instance Overview** page in the IoT Platform console.\n\n><notice>\n- If an ID exists, you must pass this **ID**; otherwise, the invocation will fail.\n- If the **Instance Overview** page or **ID** does not exist, you do not need to pass this parameter.\n\n></notice>\n\nFor more information about instances, see [Instance Overview](~~356505~~)."
+      }
     },
     {
       "name": "ProjectCode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "项目ID，是项目的唯一标识，您可以通过[项目管理控制台](https://iot.console.aliyun.com/things-service/projects)获取项目ID。",
+        "en": "The project ID, which is the UUID of the project. You can obtain the project ID from the [Project Management Console](https://iot.console.aliyun.com/things-service/projects)."
+      }
     },
     {
       "name": "SoundCodeConfig",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "声码配置，包含字段如下：\n\n\n- **SoundCodeContent**：声码营销内容，例如商品的详情地址等。\n\n- **AdditionalDuration**：语料播放结束后的声码播放时长，单位为秒，取值范围为1～15。",
+        "en": "Sound code configuration, which includes the following fields:\n\n\n- **SoundCodeContent**: Marketing content of the sound code, such as the product detail URL.\n\n- **AdditionalDuration**: Playback duration of the sound code after the corpus finishes playing, in seconds. Valid values: 1–15."
+      }
     },
     {
       "name": "SpeechCode",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "语料ID，该参数可通过调用[QuerySpeechList](~~217576~~)查询。",
+        "en": "Corpus ID. You can obtain this parameter by calling [QuerySpeechList](~~217576~~)."
+      }
     },
     {
       "name": "SpeechRate",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "播报速度，默认值为0，取值范围：-500~500。",
+        "en": "The speech rate. The default value is 0, and the valid range is -500 to 500."
+      }
     },
     {
       "name": "Voice",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "更新创建语料时设置的语料播报声音，可以选择的声音类型通过[GetSpeechVoice](~~217887~~)进行查询，填入返回参数中**VoiceList**中**Value**的值。",
+        "en": "The voice used for speech synthesis when updating or creating corpus. You can query available voice types by calling [GetSpeechVoice](~~217887~~) and specify the **Value** from the **VoiceList** in the response."
+      }
     },
     {
       "name": "Volume",
       "position": "Body",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "音量大小，默认值为50，取值范围：0~100。",
+        "en": "Volume level. Default value: 50. Valid values: 0–100."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更新语料",
+    "en": "Update Corpus"
+  },
+  "descriptions": {
+    "zh": "## QPS限制\n单个阿里云账号调用该接口的每秒请求数（QPS）最大限制为20。\n> 单个阿里云账号下的所有RAM用户共享该阿里云账号的配额。",
+    "en": "## Queries per second (QPS) limit  \nThe maximum queries per second (QPS) for a single Alibaba Cloud account calling this API is 20.  \n> All Resource Access Management (RAM) users under a single Alibaba Cloud account share the quota of that Alibaba Cloud account."
+  },
   "example": {
     "unifiedCli": "aliyun iot update-speech --voice Siyue --speech-code VlKzbj3XIZ0000CeIHH6vR82JNCSzk00 --iot-instance-id iot_instc_pu0000_c0-v6400000000 --speech-rate 0 --volume 50 --project-code 4de2c36700008c585e599200 --sound-code-config AdditionalDuration=3 SoundCodeContent=www.taobao.com --enable-sound-code true --api-version 2018-01-20 --region cn-hangzhou",
     "legacyCli": "aliyun iot UpdateSpeech --region cn-hangzhou --SoundCodeConfig '{\"AdditionalDuration\":3,\"SoundCodeContent\":\"www.taobao.com\"}' --IotInstanceId 'iot_instc_pu0000_c0-v6400000000' --Volume 50 --EnableSoundCode true --SpeechCode VlKzbj3XIZ0000CeIHH6vR82JNCSzk00 --ProjectCode 4de2c36700008c585e599200 --Voice Siyue --SpeechRate 0"

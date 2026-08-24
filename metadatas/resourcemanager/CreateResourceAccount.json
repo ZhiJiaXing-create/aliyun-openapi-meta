@@ -1,5 +1,6 @@
 {
   "name": "CreateResourceAccount",
+  "deprecated": false,
   "protocol": "HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,39 +9,74 @@
       "name": "AccountNamePrefix",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "账号名称前缀。置空则系统随机生成。\n\n<props=\"china\">长度范围：2~50个字符或汉字。</props>\n\n<props=\"intl\">长度范围：2~37个字符。</props>\n\n格式：允许输入英文字母、数字和特殊字符`_.-`，必须以英文字母或数字开头和结尾，且不能输入连续的特殊字符`_.-`。\n\n完整账号名称的格式为<AccountNamePrefix>@<ResourceDirectoryId>.aliyunid.com，例如：`alice@rd-3G****.aliyunid.com`\n\n账号名称在资源目录内必须唯一。",
+        "en": "The prefix for the Alibaba Cloud account name of the member. If you leave this parameter empty, the system randomly generates a prefix.\n\nThe prefix must be 2 to 37 characters in length.\n\nThe prefix can contain letters, digits, and special characters but cannot contain consecutive special characters. The prefix must start with a letter or digit and end with a letter or digit. Valid special characters include underscores (`_`), periods (`.`), and hyphens (-).\n\nThe complete Alibaba Cloud account name of a member is in the @.aliyunid.com format, such as `alice@rd-3G****.aliyunid.com`.\n\nEach name must be unique in the resource directory."
+      }
     },
     {
       "name": "DisplayName",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "成员显示名称。\n\n长度范围：2~50个字符或汉字。\n\n格式：允许输入汉字、英文字母、数字、下划线（_）、半角句号（.）、短划线（-）和空格。\n\n成员显示名称在资源目录内必须唯一。",
+        "en": "The display name of the member.\n\nThe name must be 2 to 50 characters in length.\n\nThe name can contain letters, digits, underscores (\\_), periods (.), hyphens (-), and spaces.\n\nThe name must be unique in the resource directory."
+      }
     },
     {
       "name": "ParentFolderId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "父资源夹ID。",
+        "en": "The ID of the parent folder."
+      }
     },
     {
       "name": "PayerAccountId",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "结算账号ID。置空则采用新创建的成员自主结算。",
+        "en": "The ID of the billing account. If you leave this parameter empty, the newly created member is used as its billing account."
+      }
     },
     {
       "name": "ResellAccountType",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "成员的身份类型。取值：\n\n- resell（默认值）：分销账号。创建的成员将自动与您的分销商建立分销关系，同时您需要使用管理账号为新成员付款。\n- non_resell ：非分销账号。创建的成员为阿里云普通账号，与您当前的分销商无关联关系，该账号直接从阿里云购买资源，需自主付款。\n\n> 该参数仅支持国际站分销客户。",
+        "en": "The identity type of the member. Valid values:\n\n*   resell (default): The member is an account for a reseller. A relationship is automatically established between the member and the reseller. The management account of the resource directory must be used as the billing account of the member.\n*   non_resell: The member is not an account for a reseller. The member is an account that is not associated with a reseller. You can directly use the account to purchase Alibaba Cloud resources. The member is used as its own billing account.\n\n>  This parameter is available only for resellers at the international site (alibabacloud.com)."
+      }
     },
     {
       "name": "Tag",
       "position": "Query",
       "type": "Array",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "成员的标签。",
+        "en": "The tag of the member."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建资源账号类型的成员",
+    "en": "CreateResourceAccount"
+  },
+  "descriptions": {
+    "zh": "在资源目录内，成员作为资源容器，是一种资源分组单位。成员通常用于指代一个项目或应用，每个成员中的资源相对其他成员中的资源是物理隔离的。",
+    "en": "A member serves as a container for resources and is also an organizational unit in a resource directory. A member indicates a project or application. The resources of different members are isolated."
+  },
   "example": {
     "unifiedCli": "aliyun resourcemanager create-resource-account --display-name Dev --parent-folder-id fd-r23M550000 --payer-account-id 123233440000 --account-name-prefix alice --tag Value=v1 Key=k1 --resell-account-type resell --api-version 2020-03-31 --region cn-hangzhou",
     "legacyCli": "aliyun resourcemanager CreateResourceAccount --region cn-hangzhou --Tag.1.Key k1 --PayerAccountId 123233440000 --Tag.1.Value v1 --DisplayName Dev --ResellAccountType resell --ParentFolderId 'fd-r23M550000' --AccountNamePrefix alice --method POST --force"

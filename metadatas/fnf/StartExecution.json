@@ -1,5 +1,6 @@
 {
   "name": "StartExecution",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "CallbackFnFTaskToken",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流程执行结束后回调**TaskToken**相关任务。",
+        "en": "The token of a task to be called back after the flow execution is complete."
+      }
     },
     {
       "name": "ExecutionName",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行名称，在同一流程内唯一。取值说明如下：\n\n- 首字母必须为英文字母（a~z）、（A~Z）或下划线（_）。\n- 支持英文字符（a~z）或（A~Z）、数字（0~9）、下划线（_）和短划线（-）。\n- 区分大小写。\n- 长度为1~128个字符。",
+        "en": "The name of the execution. The name must be unique within the same flow. The name must meet the following requirements:\n\n- It must start with a letter (a-z or A-Z) or an underscore (\\_).\n\n- It can contain letters (a-z or A-Z), digits (0-9), underscores (\\_), and hyphens (-).\n\n- It is case-sensitive.\n\n- It must be 1 to 128 characters in length."
+      }
     },
     {
       "name": "FlowName",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "开始执行的流程名称。",
+        "en": "The name of the flow to execute."
+      }
     },
     {
       "name": "Input",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行的输入，为JSON对象格式。",
+        "en": "The input for the execution. The input must be in the JSON object format."
+      }
     },
     {
       "name": "Qualifier",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "指定流程版本或别名",
+        "en": "The version or alias of the flow."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "异步调用开始一个流程的执行",
+    "en": "StartExecution"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n- 流程必须已经存在，当前仅支持 Standard 执行模式的流程。\n- 如果没有指定执行名称，则服务会自动生成执行名称并开始执行。\n- 如果有同名执行正在进行，则不会开始新的执行，直接返回正在进行中的同名执行。\n- 如果同名执行已经结束（成功或者失败），则会返回`ExecutionAlreadyExists`。\n- 如果没有同名执行，则开始新的执行。",
+    "en": "## Description\n\n- The specified flow must exist and be in Standard execution mode.\n\n- If an execution name is not specified, the service automatically generates one and starts the execution.\n\n- If an execution with the same name is already in progress, a new execution is not started. Instead, the system returns the details of the ongoing execution.\n\n- If an execution with the same name has already completed, the system returns an `ExecutionAlreadyExists` error, regardless of whether the execution succeeded or failed.\n\n- If no execution with the same name exists, a new execution starts."
+  },
   "example": {
     "unifiedCli": "aliyun fnf start-execution --flow-name my_flow_name --execution-name my_exec_name --input key_:_value --callback-fn-f-task-token 12 --qualifier 1 --region cn-hangzhou",
     "legacyCli": "aliyun fnf StartExecution --region cn-hangzhou --ExecutionName my_exec_name --Input 'key_:_value' --FlowName my_flow_name --CallbackFnFTaskToken 12 --Qualifier 1"

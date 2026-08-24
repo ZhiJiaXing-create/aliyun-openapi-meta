@@ -1,5 +1,6 @@
 {
   "name": "TempModifyDBNode",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -14,31 +15,51 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "该参数用于保证请求的幂等性。由客户端生成该参数值，保证在不同请求间该参数值的唯一性。该参数区分大小写、长度不超过64个ASCII字符。",
+        "en": "A client token to ensure the idempotence of the request. Generate a unique token for each request. The token is case-sensitive and can be up to 64 ASCII characters in length."
+      }
     },
     {
       "name": "DBClusterId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "集群ID。",
+        "en": "The cluster ID."
+      }
     },
     {
       "name": "DBNode",
       "position": "Query",
       "type": "RepeatList",
       "required": true,
+      "description": {
+        "zh": "升配/新增节点的信息。",
+        "en": "The information about the nodes to upgrade or add."
+      },
       "sub_parameters": [
         {
           "name": "TargetClass",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "升配/新增节点的规格。\n\n> - 新增节点时，节点规格需要与原有节点规格保持一致。\n> - 原有集群节点规格请参见[DescribeDBClusters](~~98094~~)。",
+            "en": "The specifications of the node to upgrade or add.\n\n> - When you add a node, the node specifications must be the same as the specifications of the existing nodes.\n>\n> - For more information about the specifications of existing cluster nodes, see [DescribeDBClusters](~~98094~~)."
+          }
         },
         {
           "name": "ZoneId",
           "position": "Query",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "新增节点的可用区。需要与原有节点保持一致。",
+            "en": "The zone for the new node. The zone must be the same as the zone of the existing nodes."
+          }
         }
       ]
     },
@@ -46,13 +67,21 @@
       "name": "ModifyType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "变更类型。当前取值固定为**TempUpgrade**。",
+        "en": "The modification type. The value is fixed to **TempUpgrade**."
+      }
     },
     {
       "name": "OperationType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "操作类型。取值：\n\n- **Modify**：临时升配\n- **Add**：临时加节点",
+        "en": "The operation type. Valid values:\n\n- **Modify**: temporary upgrade\n\n- **Add**: temporarily add a node"
+      }
     },
     {
       "name": "PromotionCode",
@@ -64,9 +93,20 @@
       "name": "RestoreTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "临时升配还原时间。格式为YYYY-MM-DD hh:mm:ss。\n\n> 还原时间不能早于当前时间往后推1小时，不能晚于集群到期时间的前1天。",
+        "en": "The time to revert the temporary upgrade. The format is YYYY-MM-DD hh:mm:ss.\n\n> The revert time must be at least 1 hour later than the current time. It must also be at least 1 day before the cluster expires."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为集群临时升配或增加节点",
+    "en": "TempModifyDBNode"
+  },
   "example": {
     "unifiedCli": "aliyun polardb temp-modify-db-node --client-token 6000170000591aed949d0f500000000000000000000 --db-cluster-id pc-xxxxxxxxxx --operation-type Modify --modify-type TempUpgrade --db-node ZoneId=cn-hangzhou-i TargetClass=polar.mysql.x4.medium --restore-time 2021-09-23_18:16:00 --auto-use-coupon true --promotion-code 727xxxxxx934 --region cn-hangzhou",
     "legacyCli": "aliyun polardb TempModifyDBNode --region cn-hangzhou --DBNode.1.ZoneId 'cn-hangzhou-i' --ModifyType TempUpgrade --AutoUseCoupon true --PromotionCode 727xxxxxx934 --DBClusterId 'pc-xxxxxxxxxx' --DBNode.1.TargetClass 'polar.mysql.x4.medium' --OperationType Modify --ClientToken 6000170000591aed949d0f500000000000000000000 --RestoreTime '2021-09-23_18:16:00'"

@@ -1,5 +1,6 @@
 {
   "name": "DeleteTransitRouterMulticastDomain",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,21 +9,44 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。",
+        "en": "A client token that is used to ensure the idempotence of the request.\n\nGenerate a token on your client to make sure that it is unique among different requests. The token can contain only ASCII characters."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求。取值：\n\n- **true**：发送检查请求，不会删除组播域。检查项包括是否填写了必需参数、请求格式、业务限制等。如果检查不通过，则返回对应错误。如果检查通过，则返回错误码`DryRunOperation`。\n- **false**（默认值）：发送正常请求，通过检查后直接删除组播域。",
+        "en": "Specifies whether to perform a dry run. Valid values:\n\n- **true**: performs a dry run. The system checks the required parameters, request format, and service limits. If the request fails the dry run, an error message is returned. If the request passes the dry run, the `DryRunOperation` error code is returned.\n\n- **false** (default): performs a normal request. If the request passes the check, the multicast domain is deleted."
+      }
     },
     {
       "name": "TransitRouterMulticastDomainId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "组播域ID。",
+        "en": "The ID of the multicast domain."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "删除组播域",
+    "en": "DeleteTransitRouterMulticastDomain"
+  },
+  "descriptions": {
+    "zh": "删除组播域前，请确保满足以下条件：\n\n- 组播域未绑定任何交换机。具体操作，请参见[DisassociateTransitRouterMulticastDomain](~~429774~~)。\n- 组播域下不存在组播源和组播成员。具体操作，请参见[DeregisterTransitRouterMulticastGroupSources](~~429776~~)和[DeregisterTransitRouterMulticastGroupMembers](~~429779~~)。\n- 组播域未作为组播成员被关联至其他组播域。您可以在其他组播域中删除组播成员，解除其他组播域和当前组播域的关联关系。具体操作，请参见[DeregisterTransitRouterMulticastGroupMembers](~~429779~~)。\n- 调用接口时请确保输入的参数值无误。如果您输入的参数有误调用接口后仍然会返回RequestId，但不会删除组播域。",
+    "en": "Before you delete a multicast domain, ensure that the following requirements are met:\n\n- The multicast domain is not associated with any vSwitch. For more information, see [DisassociateTransitRouterMulticastDomain](~~429774~~).\n\n- No multicast source or member exists in the multicast domain. For more information, see [DeregisterTransitRouterMulticastGroupSources](~~429776~~) and [DeregisterTransitRouterMulticastGroupMembers](~~429779~~).\n\n- The multicast domain is not associated with another multicast domain as a member. To disassociate the domains, delete the member from the other multicast domain. For more information, see [DeregisterTransitRouterMulticastGroupMembers](~~429779~~).\n\n- Ensure that you enter the correct parameter values when you call the operation. If you enter an incorrect parameter value, a request ID is returned, but the multicast domain is not deleted."
+  },
   "example": {
     "unifiedCli": "aliyun cbn delete-transit-router-multicast-domain --client-token 123e4567-e89b-12d3-a456-42660000 --transit-router-multicast-domain-id tr-mcast-domain-40cwj0rgzgdtam0000 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun cbn DeleteTransitRouterMulticastDomain --region cn-hangzhou --TransitRouterMulticastDomainId 'tr-mcast-domain-40cwj0rgzgdtam0000' --DryRun false --ClientToken '123e4567-e89b-12d3-a456-42660000'"

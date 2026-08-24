@@ -1,5 +1,6 @@
 {
   "name": "ReplaceVpcDhcpOptionsSet",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**可能不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the value, but you must make sure that it is unique among different requests. The client token can contain only ASCII characters.\n\n>  If you do not set this parameter, the system uses **RequestId** as **ClientToken**. **RequestId** may be different for each API request."
+      }
     },
     {
       "name": "DhcpOptionsSetId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要更改的DHCP选项集的ID。",
+        "en": "The ID of the new DHCP options set."
+      }
     },
     {
       "name": "DryRun",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否只预检此次请求，取值：\n\n- **true**：发送检查请求，不会更改DHCP选项集与VPC的关联。检查项包括AccessKey是否有效、RAM用户的授权情况和是否填写了必需参数。如果检查不通过，则返回对应错误。如果检查通过，会返回错误码DryRunOperation。\n\n- **false**（默认值）：发送正常请求，通过检查后返回2XX HTTP状态码并直接更改DHCP选项集与VPC的关联。",
+        "en": "Specifies whether to check the request without performing the operation. Valid values:\n\n*   **true**: checks the request without performing the operation. The system checks whether your AccessKey pair is valid, whether the Resource Access Management (RAM) user is authorized, and whether the required parameters are set. If the request fails to pass the check, the corresponding error message is returned. If the request passes the check, the DryRunOperation error code is returned.\n*   **false** (default): sends the request. If the request passes the check, a 2XX HTTP status code is returned and the operation is performed."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "DHCP选项集所在的地域。您可以通过调用[DescribeRegions](~~36063~~)接口获取地域ID。",
+        "en": "The region to which the DHCP options set belongs. You can call the [DescribeRegions](~~36063~~) operation to query the most recent region list."
+      }
     },
     {
       "name": "VpcId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "要更改关联的VPC的ID。",
+        "en": "The ID of the associated VPC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "更改DHCP选项集与VPC的关联",
+    "en": "ReplaceVpcDhcpOptionsSet"
+  },
+  "descriptions": {
+    "zh": "- **ReplaceVpcDhcpOptionsSet**接口属于异步接口，即系统返回一个请求ID，但该DHCP选项集尚未更改成功，系统后台的更改任务仍在进行。您可以调用[DescribeVpcAttribute](~~94565~~)查询DHCP选项集的更改状态：\n    - 当DHCP选项集处于**Pending**状态时，表示DHCP选项集正在更改中。\n    - 当DHCP选项集处于**InUse**状态时，表示DHCP选项集更改成功。\n- **ReplaceVpcDhcpOptionsSet**接口不支持针对同一个VPC中并发更改关联的DHCP选项集。",
+    "en": "*   The **ReplaceVpcDhcpOptionsSet** operation is asynchronous. After you send the request, the system returns a request ID. However, the operation is still being performed in the system background. You can call the [DescribeVpcAttribute](~~94565~~) operation to query the status of a DHCP options set:\n\n    *   If the DHCP options set is in the **Pending** state, the DHCP options set is being replaced.\n    *   If the DHCP options set is in the **InUse** state, the DHCP options set is replaced.\n\n*   You cannot repeatedly call the **ReplaceVpcDhcpOptionsSet** operation to replace the DHCP options set associated with a VPC within the specified period of time."
+  },
   "example": {
     "unifiedCli": "aliyun vpc replace-vpc-dhcp-options-set --biz-region-id cn-hangzhou --dhcp-options-set-id dopt-o6w0df4epg9zo8isy0000 --vpc-id vpc-dsferghthth0000 --client-token 0c593ea1-3bea-11e9-b96b-88e9fe637760 --dry-run false --region cn-hangzhou",
     "legacyCli": "aliyun vpc ReplaceVpcDhcpOptionsSet --region cn-hangzhou --DhcpOptionsSetId 'dopt-o6w0df4epg9zo8isy0000' --VpcId 'vpc-dsferghthth0000' --DryRun false --RegionId 'cn-hangzhou' --ClientToken '0c593ea1-3bea-11e9-b96b-88e9fe637760'"

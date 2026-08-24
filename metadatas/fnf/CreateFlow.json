@@ -1,5 +1,6 @@
 {
   "name": "CreateFlow",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "",
@@ -8,37 +9,61 @@
       "name": "Definition",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流程定义，遵循Flow Definition Language (FDL)语法标准。考虑到向前兼容，当系统支持两种规范的流程定义规范。\n\n> \n> 以上流程定义示例中Name：my_flow_name是指流程名称，需和入参Name保持一致",
+        "en": "The definition of the flow. It must comply with the Flow Definition Language (FDL) syntax. For forward compatibility, the system supports two versions of the flow definition specification.\n\n> In the example flow definitions, Name: my\\_flow\\_name refers to the flow name and must be the same as the Name input parameter."
+      }
     },
     {
       "name": "Description",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流程描述。",
+        "en": "The description of the flow."
+      }
     },
     {
       "name": "Environment",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "配置 Flow 执行期间可以访问的环境信息",
+        "en": "The environment context that the flow can access during execution."
+      }
     },
     {
       "name": "ExecutionMode",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "执行模式，枚举类型，可以是Express和Standard；考虑到向前兼容，空串等价于Standard 执行模式。",
+        "en": "The execution mode. This is an enumeration type. Valid values are Express and Standard. For forward compatibility, an empty string is treated as the Standard execution mode."
+      }
     },
     {
       "name": "ExternalStorageLocation",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "外部存储位置。",
+        "en": "The external storage location."
+      }
     },
     {
       "name": "Name",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流程名称。该名称在同一地域内唯一，创建后不可修改。取值说明如下：\n\n- 支持英文字符（a~z）或（A~Z）、数字（0~9）、下划线（_）和短划线（-）。\n- 首字母必须为英文字母（a~z）、（A~Z）或下划线（_）。\n- 区分大小写。\n- 长度为1~128个字符。",
+        "en": "The name of the flow. The name must be unique within the same region and cannot be changed after the flow is created. The name must meet the following requirements:\n\n- It can contain letters (a to z and A to Z), digits (0 to 9), underscores (\\_), and hyphens (-).\n\n- It must start with a letter or an underscore (\\_).\n\n- It is case-sensitive.\n\n- It must be 1 to 128 characters in length."
+      }
     },
     {
       "name": "ResourceGroupId",
@@ -50,15 +75,34 @@
       "name": "RoleArn",
       "position": "Body",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "流程执行依赖的授权角色资源描述符信息。用于在执行流程时，Serverless 工作流服务扮演该角色（AssumeRole）操作相关的流程资源。",
+        "en": "The resource descriptor for the role that the flow relies on for execution. When the flow runs, Serverless Workflow assumes this role (AssumeRole) to operate on related flow resources."
+      }
     },
     {
       "name": "Type",
       "position": "Body",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "流程类型，取值：**FDL**。",
+        "en": "The type of the flow. The value must be **FDL**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "创建一个流程",
+    "en": "CreateFlow"
+  },
+  "descriptions": {
+    "zh": "## 接口说明\n- 每个用户所能创建的流程个数受资源限制（详见[使用限制](~~122093~~)），如果您有特殊需求，可以提工单进行调整。\n- 流程在用户级别是按照名称来区分的，即单一账号下不可以存在同名流程。",
+    "en": "## Description\n\n- The number of flows that each user can create is subject to resource limits. For more information, see [Limits](~~122093~~). If you have special requirements, submit a ticket to request a limit adjustment.\n\n- Flows are uniquely identified by name within an account. Therefore, you cannot create multiple flows with the same name under a single account."
+  },
   "example": {
     "unifiedCli": "aliyun fnf create-flow --name my_flow_name --definition 'Legacy_version:_type:_flow_version:_v1_name:_my_flow_name_steps:_ -_type:_pass_ name:_mypass_New_version:_Type:_StateMachine_SpecVersion:_v1_Name:_my_flow_name_StartAt:_my_state_States:_ -_Type:_Pass_ Name:_my_state_ End:_true' --description my_test_flow --type FDL --role-arn acs:ram:_region_:_accountID_:_role --external-storage-location /path --execution-mode Standard --environment '{\"Variables\":[{\"Description\":\"description\",\"Value\":\"value\",\"Name\":\"key\"}]}' --resource-group-id example-string --region cn-hangzhou",
     "legacyCli": "aliyun fnf CreateFlow --region cn-hangzhou --Type FDL --Description my_test_flow --ResourceGroupId 'example-string' --Definition 'Legacy_version:_type:_flow_version:_v1_name:_my_flow_name_steps:_ -_type:_pass_ name:_mypass_New_version:_Type:_StateMachine_SpecVersion:_v1_Name:_my_flow_name_StartAt:_my_state_States:_ -_Type:_Pass_ Name:_my_state_ End:_true' --Environment '{\"Variables\":[{\"Description\":\"description\",\"Value\":\"value\",\"Name\":\"key\"}]}' --ExecutionMode Standard --ExternalStorageLocation '/path' --RoleArn 'acs:ram:_region_:_accountID_:_role' --Name my_flow_name"

@@ -1,5 +1,6 @@
 {
   "name": "ValidateShrinkNodes",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "POST",
   "pathPattern": "/openapi/instances/[InstanceId]/validate-shrink-nodes",
@@ -8,43 +9,71 @@
       "name": "InstanceId",
       "position": "Path",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。",
+        "en": "The instance ID."
+      }
     },
     {
       "name": "body",
       "position": "Body",
       "type": "Json",
       "required": false,
+      "description": {
+        "zh": "请求体。",
+        "en": "The request body."
+      },
       "sub_parameters": [
         {
           "name": "host",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点的IP地址。",
+            "en": "The IP address of the node."
+          }
         },
         {
           "name": "hostName",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "云原生ACK架构集群的节点名称，可调用[ListAllNode](~~183958~~)接口获取。",
+            "en": "The node name of the cloud-native ACK-based cluster. You can call the [ListAllNode](~~183958~~) operation to obtain the node name."
+          }
         },
         {
           "name": "nodeType",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点类型，可选值：\n\n- WORKER：热节点\n- WORKER_WARM：冷节点",
+            "en": "The node type. Valid values:\n\n- WORKER: hot node\n- WORKER_WARM: warm node"
+          }
         },
         {
           "name": "port",
           "position": "Body",
           "type": "Integer",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "节点的访问端口号。",
+            "en": "The access port number of the node."
+          }
         },
         {
           "name": "zoneId",
           "position": "Body",
           "type": "String",
-          "required": false
+          "required": false,
+          "description": {
+            "zh": "实例节点所在的可用区ID。例如，上海可用区C为cn-shanghai-c。",
+            "en": "The zone ID of the node in the instance. For example, the zone ID of China (Shanghai) Zone C is cn-shanghai-c."
+          }
         }
       ]
     },
@@ -52,21 +81,40 @@
       "name": "count",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "节点数量。",
+        "en": "The number of nodes."
+      }
     },
     {
       "name": "ignoreStatus",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "是否忽略集群健康状态：\n\n- true：忽略\n- false（默认）：不忽略",
+        "en": "Specifies whether to ignore the cluster health status.\n\n- true: ignores the cluster health status.\n- false (default): does not ignore the cluster health status."
+      }
     },
     {
       "name": "nodeType",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "需要缩容的节点类型，可选值：\n\n- WORKER：热节点\n- WORKER_WARM：冷节点",
+        "en": "The type of nodes to scale in. Valid values:\n\n- WORKER: hot node\n- WORKER_WARM: warm node"
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "校验缩节点",
+    "en": "ValidateShrinkNodes"
+  },
   "example": {
     "unifiedCli": "aliyun elasticsearch validate-shrink-nodes --instance-id es-cn-nif1q9o8r00080000 --node-type WORKER --ignore-status false --count 2 --biz-body hostName=es-cn-pl32xxxxxxx-data-f-1 port=9200 host=192.168.xx.xx zoneId=cn-shanghai-c nodeType=WORKER --api-version 2017-06-13 --region cn-hangzhou",
     "legacyCli": "aliyun elasticsearch POST /openapi/instances/es-cn-nif1q9o8r00080000/validate-shrink-nodes --region cn-hangzhou --count 2 --nodeType WORKER --ignoreStatus false --header \"Content-Type=application/json\" --body [{\"hostName\":\"es-cn-pl32xxxxxxx-data-f-1\",\"port\":9200,\"host\":\"192.168.xx.xx\",\"zoneId\":\"cn-shanghai-c\",\"nodeType\":\"WORKER\"}]"

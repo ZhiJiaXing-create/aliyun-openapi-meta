@@ -1,5 +1,6 @@
 {
   "name": "CreateBasicEndpoints",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "AcceleratorId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例ID。",
+        "en": "The ID of the basic GA instance."
+      }
     },
     {
       "name": "ClientToken",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "客户端Token，用于保证请求的幂等性。\n\n从您的客户端生成一个参数值，确保不同请求间该参数值唯一。ClientToken只支持ASCII字符。\n\n> 若您未指定，则系统自动使用API请求的**RequestId**作为**ClientToken**标识。每次API请求的**RequestId**不一样。",
+        "en": "The client token that is used to ensure the idempotence of the request.\n\nYou can use the client to generate the token, but you must make sure that the token is unique among different requests. The token can contain only ASCII characters.\n\n>  If you do not specify this parameter, the system automatically uses the **request ID** as the **client token**. The **request ID** may be different for each request."
+      }
     },
     {
       "name": "EndpointGroupId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点组ID。",
+        "en": "The ID of the endpoint group."
+      }
     },
     {
       "name": "Endpoints",
       "position": "Query",
       "type": "Array",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "基础型全球加速实例的终端节点列表。",
+        "en": "The endpoints."
+      }
     },
     {
       "name": "RegionId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "全球加速所在的地域ID，仅取值**cn-hangzhou**。",
+        "en": "The ID of the region where the GA instance is deployed. Set the value to **cn-hangzhou**."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "为基础型全球加速实例批量创建终端节点",
+    "en": "CreateBasicEndpoints"
+  },
+  "descriptions": {
+    "zh": "- **CreateBasicEndpoints**接口属于异步接口，即系统会先返回一个请求ID，但终端节点未批量创建完成，系统后台的批量创建任务仍在进行。您可以调用[ListBasicEndpoints](~~466831~~)查询终端节点的状态： \n       - 当存在终端节点状态为**init**时，表示终端节点批量创建任务未完成，在该状态下，您只能执行查询操作，不能执行其他操作。\n       - 当所有终端节点状态为**active**时，表示终端节点已批量创建完成。\n- **CreateBasicEndpoints**接口不支持在同一个基础型全球加速实例内并发批量创建终端节点。",
+    "en": "*   **CreateBasicEndpoints** is an asynchronous operation. After you call this operation, the system returns a request ID and runs the task in the background. You can call the [ListBasicEndpoints](~~466831~~) operation to query the status of endpoints. - If one or more endpoints are in the **init** state, it indicates that the endpoints are being created. In this case, you can continue to perform query operations on the endpoints. If all endpoints are in the **active** state, it indicates that the endpoints are created.\n*   You cannot call the **CreateBasicEndpoints** operation again on the same GA instance before the previous operation is complete."
+  },
   "example": {
     "unifiedCli": "aliyun ga create-basic-endpoints --biz-region-id cn-hangzhou --client-token 123e4567-e89b-12d3-a456-426655440000 --accelerator-id ga-bp17frjjh0udz4qz0000 --endpoint-group-id epg-bp1dmlohjjz4kqaun0000 --endpoints EndpointZoneId=cn-hangzhou-g EndpointType=ENI EndpointSubAddressType=primary EndpointSubAddress=172.16.XX.XX Name=ep01 EndpointAddress=eni-bp1a05txelswuj8g0000 --region cn-hangzhou",
     "legacyCli": "aliyun ga CreateBasicEndpoints --region cn-hangzhou --Endpoints.1.EndpointZoneId 'cn-hangzhou-g' --Endpoints.1.EndpointSubAddressType primary --EndpointGroupId 'epg-bp1dmlohjjz4kqaun0000' --Endpoints.1.EndpointSubAddress '172.16.XX.XX' --Endpoints.1.EndpointAddress 'eni-bp1a05txelswuj8g0000' --Endpoints.1.Name ep01 --RegionId 'cn-hangzhou' --ClientToken '123e4567-e89b-12d3-a456-426655440000' --AcceleratorId 'ga-bp17frjjh0udz4qz0000' --Endpoints.1.EndpointType ENI --method POST --force"

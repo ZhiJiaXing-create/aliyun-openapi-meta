@@ -1,5 +1,6 @@
 {
   "name": "SetGatewayADInfo",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,33 +9,64 @@
       "name": "GatewayId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "网关ID。",
+        "en": "The ID of the gateway."
+      }
     },
     {
       "name": "IsEnabled",
       "position": "Query",
       "type": "Boolean",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "设置AD服务器的开关。可能值：\n\n- true：设置AD服务器信息。\n\n- false（默认）：清理AD服务器信息。\n\n ><notice>\n\n- 需要开启AD时，所有参数都必填。\n- 需要关闭AD时，只需要指定IsEnabled为false即可。\n\n></notice>",
+        "en": "Specifies whether to enable the AD server. Valid values:\n\n- true: enables the AD server.\n- false (default): purges the AD server information.\n\n><notice>\n\n- If you want to enable the AD server, all parameters are required.\n- If you want to disable the AD server, you only need to set IsEnabled to false.\n\n</notice>"
+      }
     },
     {
       "name": "Password",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接AD服务器的密码。可能值：\n\n- enabled为false，请忽略该字段。\n\n- enabled为true，该字段必传。",
+        "en": "The password that is used to connect to the AD server. Valid values:\n\n- If IsEnabled is set to false, you can leave this parameter empty.\n- If IsEnabled is set to true, this parameter is required."
+      }
     },
     {
       "name": "ServerIp",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "AD服务器的IP。可能值：\n- enabled为false，请忽略该字段。\n\n- enabled为true，该字段必传，并输入有效的IP，只能由数字和半角句号（.）组成。",
+        "en": "The IP address of the AD server. Valid values:\n\n- If IsEnabled is set to false, you can leave this parameter empty.\n- If IsEnabled is set to true, this parameter is required. You must enter a valid IP address that consists of digits and periods (.)."
+      }
     },
     {
       "name": "Username",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "连接AD服务器的用户名。可能值：\n\n- enabled为false，请忽略该字段。\n\n- enabled为true，该字段必传。",
+        "en": "The username that is used to connect to the AD server. Valid values:\n\n- If IsEnabled is set to false, you can leave this parameter empty.\n- If IsEnabled is set to true, this parameter is required."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "添加或清除AD服务器信息",
+    "en": "SetGatewayADInfo"
+  },
+  "descriptions": {
+    "zh": "调用该接口时，您需要注意：\n\n- 如果您要添加一个AD服务器，请确保该AD服务信息有效，并可以被网关的DNS解析访问，您可以通过SetGateWayDNS接口设置云存储网关的DNS。\n\n- 如果您要添加一个AD服务器信息，且已经存在一个AD服务器信息，那么原来的AD服务器信息会被新的AD服务器信息覆盖。\n\n- 如果您要清除AD服务器信息，请把enabled参数设置为false。",
+    "en": "When you call this operation, note the following:\n\n- If you want to add an AD server, ensure that the AD server information is valid and the gateway can access the AD server using its DNS. You can call the SetGatewayDNS operation to set the DNS for the Cloud Storage Gateway.\n- If you add AD server information and information for another AD server already exists, the new information overwrites the existing information.\n- To purge the AD server information, set the IsEnabled parameter to false."
+  },
   "example": {
     "unifiedCli": "aliyun sgw set-gateway-ad-info --gateway-id gw-000eg44nmxbsfwbv0000 --username ale0000 --password 120000 --server-ip 12.12.x.x --is-enabled true --region cn-hangzhou",
     "legacyCli": "aliyun sgw SetGatewayADInfo --region cn-hangzhou --Username ale0000 --IsEnabled true --ServerIp '12.12.x.x' --GatewayId 'gw-000eg44nmxbsfwbv0000' --Password 120000"

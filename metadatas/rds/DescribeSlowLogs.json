@@ -1,5 +1,6 @@
 {
   "name": "DescribeSlowLogs",
+  "deprecated": false,
   "protocol": "HTTP|HTTPS",
   "method": "GET|POST",
   "pathPattern": "",
@@ -8,45 +9,84 @@
       "name": "DBInstanceId",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "实例ID。可调用DescribeDBInstances获取。",
+        "en": "The instance ID. You can call the DescribeDBInstances operation to query the instance ID."
+      }
     },
     {
       "name": "DBName",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "数据库名称。",
+        "en": "The name of the database."
+      }
     },
     {
       "name": "EndTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询结束日期，不能小于查询开始日期，与查询开始日期间隔不超过31天。格式：<i>yyyy-MM-dd</i>Z（UTC时间）。\n\n> 当查询结束日期与查询开始日期相同时，默认从查询开始日期的08:00开始，最多查询24小时的慢日志统计情况。",
+        "en": "The end of the time range to query. The end time must be later than the start time. The time span between the start time and the end time cannot exceed 31 days. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*Z format. The time must be in UTC.\n\n>  If the end date of the query is the same as the start date of the query, you can query the logs that are generated at 08:00 on the start date of the query. You can query the slow logs within a maximum time range of 24 hours."
+      }
     },
     {
       "name": "PageNumber",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "页码，取值：大于0且不超过Integer的最大值。\n\n默认值：**1**。",
+        "en": "The page number. Pages start from 1.\n\nDefault value: **1**."
+      }
     },
     {
       "name": "PageSize",
       "position": "Query",
       "type": "Integer",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "每页记录数，取值：**30**~**100**。默认值：**30**。",
+        "en": "The number of entries per page. Valid values: **30** to **100**. Default value: **30**."
+      }
     },
     {
       "name": "SortKey",
       "position": "Query",
       "type": "String",
-      "required": false
+      "required": false,
+      "description": {
+        "zh": "排序依据，取值：\n* **TotalExecutionCounts**：总执行次数最多\n* **TotalQueryTimes**：总执行时间最多\n* **TotalLogicalReads**：总逻辑读最多\n* **TotalPhysicalReads**：总物理读最多\n\n>仅SQL Server 2008 R2实例支持本参数。",
+        "en": "The dimension based on which the system sorts the entries to return. Valid values:\n\n*   **TotalExecutionCounts**: The system sorts the entries to return based on the number of times that SQL statements are executed.\n*   **TotalQueryTimes**: The system sorts the entries to return based on the total execution duration.\n*   **TotalLogicalReads**: The system sorts the entries to return based on the total number of logical reads.\n*   **TotalPhysicalReads**: The system sorts the entries to return based on the total number of physical reads.\n\n> This parameter is supported only for instances that run SQL Server 2008 R2."
+      }
     },
     {
       "name": "StartTime",
       "position": "Query",
       "type": "String",
-      "required": true
+      "required": true,
+      "description": {
+        "zh": "查询开始日期，格式：<i>yyyy-MM-dd</i>Z（UTC时间）。",
+        "en": "The beginning of the time range to query. Specify the time in the ISO 8601 standard in the *yyyy-MM-dd*Z format. The time must be in UTC."
+      }
     }
   ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "查看慢日志统计情况",
+    "en": "DescribeSlowLogs"
+  },
+  "descriptions": {
+    "zh": "### 适用引擎\n\n- RDS MySQL\n  > MySQL 5.7基础版暂不支持。\n- RDS SQL Server\n  > 仅支持SQL Server 2008 R2版本。\n- RDS MariaDB\n\n### 注意事项\n- 慢日志统计非实时采集，可能会有6~8小时的延迟。\n- 如果返回结果为空，请检查StartTime和EndTime配置是否符合UTC格式要求，如果满足，则表示该时间段内无慢日志。\n- 2024年09月01日起，由于SQL的模板化算法优化，调用本接口时，**SQLHash**字段的值将发生变更。详情请参见[【通知】SQL模板化算法优化](~~2845725~~)。",
+    "en": "### [](#)Supported database engines\n\n*   MySQL\n\n    **\n\n    **Note** This operation is not supported for RDS instances that run MySQL 5.7 on RDS Basic Edition.\n\n*   SQL Server\n\n    **\n\n    **Note** This operation is supported only for RDS instances that run SQL Server 2008 R2.\n\n*   MariaDB\n\n### [](#)Prerequisites\n\n*   Slow query logs are not collected in real time and may show a latency of 6 to 8 hours.\n*   If the return result is empty, check whether the StartTime and EndTime parameters are in UTC. If yes, no slow logs are generated within the specified time range.\n*   Starting from September 01, 2024, the template algorithm for slow queries is optimized. When you call the operation, you must change the value of the **SQLHASH** parameter. For more information, see [\\[Notice\\] Optimization of the template algorithm for slow queries](~~2845725~~)."
+  },
   "example": {
     "unifiedCli": "aliyun rds describe-slow-logs --db-instance-id rm-uf6wjk50000 --start-time 2011-05-01Z --end-time 2011-05-30Z --db-name RDS_MySQL --sort-key TotalExecutionCounts --page-size 30 --page-number 1 --region cn-hangzhou",
     "legacyCli": "aliyun rds DescribeSlowLogs --region cn-hangzhou --EndTime '2011-05-30Z' --PageSize 30 --DBInstanceId 'rm-uf6wjk50000' --PageNumber 1 --StartTime '2011-05-01Z' --DBName RDS_MySQL --SortKey TotalExecutionCounts"

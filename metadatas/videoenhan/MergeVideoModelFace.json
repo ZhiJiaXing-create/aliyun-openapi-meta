@@ -1,0 +1,112 @@
+{
+  "name": "MergeVideoModelFace",
+  "deprecated": false,
+  "protocol": "HTTP|HTTPS",
+  "method": "POST",
+  "pathPattern": "",
+  "parameters": [
+    {
+      "name": "AddWatermark",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否添加水印。取值范围如下：\n\n- True（默认）：添加水印。\n- False：不添加水印。",
+        "en": "Specifies whether to add a watermark. Valid values:\n\n- True (default): Add a watermark.\n- False: Do not add a watermark."
+      }
+    },
+    {
+      "name": "Enhance",
+      "position": "Body",
+      "type": "Boolean",
+      "required": false,
+      "description": {
+        "zh": "是否开启人脸美颜增强。取值范围如下：\n\n- False（默认）：不开启人脸美颜增强。\n- True：开启人脸美颜增强。",
+        "en": "Specifies whether to enable face beauty enhancement. Valid values:\n\n- False (default): Disable face beauty enhancement.\n- True: Enable face beauty enhancement."
+      }
+    },
+    {
+      "name": "FaceImageURL",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "替换后的人脸参考图像URL地址（TemplateId为单人脸时不可为空）。**FaceImageURL**仅为单人视频场景时使用，此时无需输入**MergeInfos**字段。\n当前仅支持上海地域的OSS链接，如何生成URL请参见[文件URL处理](~~155645~~)。\n\n输入限制：\n- 图像格式：JPEG、JPG、PNG。\n- 图像分辨率：大于等于128×128像素，小于等于4000×4000像素。\n- 图像大小：不大于20 MB。\n- URL地址不能包含中文字符。",
+        "en": "The URL of the reference face image for replacement (cannot be empty when TemplateId is for a single face). **FaceImageURL** is only used for single-person video scenarios, and there is no need to input the **MergeInfos** field.\nCurrently, only OSS links in the Shanghai region are supported. For how to generate a URL, see [File URL Processing](~~155645~~).\n\nInput limits:\n- Image format: JPEG, JPG, PNG.\n- Image resolution: Greater than or equal to 128×128 pixels, less than or equal to 4000×4000 pixels.\n- Image size: No larger than 20 MB.\n- The URL cannot contain Chinese characters."
+      }
+    },
+    {
+      "name": "MergeInfos",
+      "position": "Body",
+      "type": "RepeatList",
+      "required": false,
+      "description": {
+        "zh": "融合参数，模板视频的人脸信息及待融合的用户人脸图片（TemplateId为多人脸时不可为空）。\n\n> - **MergeInfos**仅为多人视频场景时使用，需确保用户添加模板时**VideoScene**参数传入了`multi`值，其中传入的**TemplateFaceID**需要与添加模版时返回的**FaceInfos**里的**TemplateFaceID**一一对应。\n- 同时传入**FaceImageURL**和**MergeInfos**，以**TemplateId**为单/多人脸为准，过滤另一个入参。",
+        "en": "The merge parameters, including the face information of the template video and the user face images to be merged (cannot be empty when TemplateId is for multiple faces).\n\n> - **MergeInfos** is only used for multi-person video scenarios. Make sure that the **VideoScene** parameter was set to `multi` when the user added the template. The **TemplateFaceID** values passed in must correspond one-to-one with the **TemplateFaceID** values in the **FaceInfos** returned when the template was added.\n- If both **FaceImageURL** and **MergeInfos** are passed in, the one used depends on whether the **TemplateId** is for a single or multiple faces. The other input parameter is filtered out."
+      },
+      "sub_parameters": [
+        {
+          "name": "ImageURL",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "该人脸待替换的图像URL。当前仅支持上海地域的OSS链接，如何生成URL请参见[文件URL处理](~~155645~~)。",
+            "en": "The image URL of the face to be replaced. Currently, only OSS links in the Shanghai region are supported. For how to generate a URL, see [File URL Processing](~~155645~~)."
+          }
+        },
+        {
+          "name": "TemplateFaceID",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "多脸模板对应的某个人脸的子ID。需要先在[视频人脸融合模板增加](~~468904~~)接口中获取（传入多个TemplateFaceID时，不可重复）。\n\n> 同时传入**TemplateFaceID**和**TemplateFaceURL**时，**TemplateFaceID**优先。",
+            "en": "The sub-ID of a specific face in the multi-face template. You need to obtain this from the [AddFaceVideoTemplate](~~468904~~) API first (when passing in multiple TemplateFaceID values, they cannot be duplicated).\n\n> When both **TemplateFaceID** and **TemplateFaceURL** are passed in, **TemplateFaceID** takes priority."
+          }
+        },
+        {
+          "name": "TemplateFaceURL",
+          "position": "FormData",
+          "type": "String",
+          "required": false,
+          "description": {
+            "zh": "多脸模板对应的某个人脸的图像URL。此情况允许用户自己使用第三方检测模块抽帧进行人脸识别后获取相应的人脸图像。",
+            "en": "The image URL of a specific face in the multi-face template. This allows users to use third-party detection modules to extract frames for face recognition and obtain the corresponding face images."
+          }
+        }
+      ]
+    },
+    {
+      "name": "TemplateId",
+      "position": "Body",
+      "type": "String",
+      "required": true,
+      "description": {
+        "zh": "视频人脸模板的模板ID。",
+        "en": "The template ID of the video face template."
+      }
+    },
+    {
+      "name": "WatermarkType",
+      "position": "Body",
+      "type": "String",
+      "required": false,
+      "description": {
+        "zh": "水印类型。取值范围如下：\n\n- EN（默认）：英文水印。\n- CN：中文水印。",
+        "en": "The watermark type. Valid values:\n\n- EN (default): English watermark.\n- CN: Chinese watermark."
+      }
+    }
+  ],
+  "security": [
+    "AK"
+  ],
+  "title": {
+    "zh": "模版视频人脸融合",
+    "en": "Template Video Face Fusion"
+  },
+  "descriptions": {
+    "zh": "## 功能描述\n在获得用户授权的前提下，视频人脸融合可以精准地定位视频中的人脸，将用户上传的目标人脸照片与另一个人的人脸形象进行面部融合，达到换脸的感官效果。 \n模板视频人脸融合是基于用户预先上传创建的模版，通过输入一张待融合人脸图像，将图像人脸融合进指定的模板视频中。使用该方式需要提前创建好模板视频（AddFaceVideoTemplate），其处理效率高于通用视频人脸融合方式。\n适用场景：\n- 有固定数量的模板视频进行融合的场景。\n- 同时支持视频中有一张脸和多张脸的场景，支持选脸和多脸融合。\n\n为保证生成内容的安全合法，请勿使用公众人物或涉及敏感信息的图像或视频进行融合，同时，本服务也会在合成结果的左下角处添加**Generated by AI**的水印内容，效果如下图所示。\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20230213/ezcg/MergeVideoModelFace.png)\n\n> - 您可以进入[在线咨询](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2)获取在线人工帮助。\n- 阿里云视觉智能开放平台视觉AI能力API接入、接口使用或问题咨询等，请通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们。\n\n## 应用场景\n- 影视后期制作：在影视后期制作时，因为某些原因需要替换演员，通过视频人脸融合技术，可利用前期拍摄素材进行处理，让前期视频素材中的人物看起来是新的演员在表演，可以为制片方节省大量的重新拍摄成本。\n- 娱乐性短视频制作：用户可以将自己的人脸和已获授权的合法视频中的人物人脸进行融合，生成趣味性视频。\n- 虚拟试衣制作：在婚纱摄影、民族服饰、汉服、仿妆等试衣场景，通过视频人脸融合技术进行服饰虚拟试穿。\n- 电商数字人直播：在电商卖货带货直播场景，通过网红脸ID换脸实现数字人直播带货、虚拟人换脸。\n\n## 特色优势\n- 高保真、低违和效果：融合后的人脸保留了替换者人脸身份信息的视觉特征，而融入被替换者人脸中又无违和感，融合效果自然。\n- 表情肤色一致性：融合后的人脸最大限度保留被替换者的面目表情、肤色一致性。\n- 支持复杂人脸角度：支持模板人脸偏侧一定角度，融合后的结果真实稳定。\n- 支持多人脸指定换脸：支持视频中含有多张人脸，并指定每个脸与不同的用户脸进行融合，可应用在全家福、婚纱摄影、多人角色创作等多人互动场景。\n\n## 接入指引\n1. 注册阿里云账号：打开[阿里云官网](https://www.aliyun.com)，在阿里云官网右上角，单击**立即注册**，按照操作提示完成账号注册。\n2. 开通能力：请确保您已开通[视频生产服务](https://vision.aliyun.com/videoenhan)，若未开通服务请[立即开通](https://common-buy.aliyun.com/?commodityCode=viapi_videoenhan_public_cn#/open)。本能力仅限企业认证用户开通。实名认证操作方法请参见[实名认证](https://help.aliyun.com/document_detail/428525.html)。\n\n><notice>于2024年7月17日及以后开通该能力的用户可直接调用，不需提交申请。\n2024年7月17日之前开通该服务的用户如需调用，可通过钉钉群（23109592）加入阿里云视觉智能开放平台咨询群联系我们添加到白名单。\n></notice>\n\n\n3. 创建AccessKey：请确保您已[创建AccessKey](~~175144~~)，如果您使用的是子账号AccessKey，您需要给子账号赋予AliyunVIAPIFullAccess权限，具体操作，请参见[RAM授权](~~145025~~)。\n4. 在线调试（可选）：您可以通过[OpenAPI Explorer](https://next.api.aliyun.com/api/videoenhan/2020-03-20/MergeVideoModelFace?lang=JAVA)在线调试能力，查看完整的调用示例代码及SDK依赖信息，也可以下载完整的工程。\n5. 前提条件：先通过[视频人脸融合模板增加接口](~~468904~~)（AddFaceVideoTemplate）添加视频模板获取模板ID（TemplateId），再使用已上传视频对应的模板ID和待融合人脸图像进行请求。\n6. 开发接入步骤：    \n- 在[SDK总览](~~145033~~)中选择您要接入使用的SDK语言。\n- 在对应语言的SDK文档中找到AI类目为视频生产（videoenhan）类目的SDK包进行安装。\n- 参考文档中提供的示例代码进行适当修改后调用。\n\n7. 示例代码：该能力常用语言的示例代码，请参见[模板视频人脸融合示例代码](~~602484~~)。\n8. 客户端直接调用：该能力常用的客户端调用方式包括以下几种。\n- [Web前端直接调用](~~467779~~)\n- [小程序场景下直接调用](~~467780~~)\n- [Android端直接调用](~~467781~~)\n- [iOS端直接调用](~~467782~~)\n\n## 输入限制\n- 图像格式：JPEG、JPG、PNG。\n- 图像分辨率：大于等于128×128像素，小于等于4000×4000像素。\n- 图像大小：不大于20 MB。\n- URL地址不能包含中文字符。\n\n## 入参说明\n**MergeInfos**指融合参数，模板视频的人脸信息及待融合的用户人脸图片（**TemplateId**为多人脸时不可为空）。\n- **MergeInfos**仅为多人视频场景时使用，需确保用户添加模板时**VideoScene**参数传入了`multi`值，其中传入的**TemplateFaceID**需要与添加模版时返回的**FaceInfos**里的**TemplateFaceID**一一对应。\n- 同时传入**FaceImageURL**和**MergeInfos**，以**TemplateId**为单/多人脸为准，过滤另一个入参。\n\n## 图像质量建议\n- 要求保证图像中的人脸清晰。图像中人脸尺寸建议大于64×64像素，人脸区域建议不大于全图区域的2/3。\n- 建议图像中人脸五官区域轮廓完整，无明显遮挡。人脸融合算法支持人脸偏侧一定角度，在偏侧角度不超过30度的情况下能取得更佳效果。\n- 对于多人脸视频场景，系统会自动识别出整个视频中的不同人物ID，建议视频中的人物不要出现角度过大的转动以及明显遮挡的情况，否则识别出的人物ID个数可能不准确。\n\n推荐图像示例：\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/jris/MergeImageFacetuijian.png)\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20230609/otnv/MergeVideoModelFacetuijian.png)\n\n不推荐图像示例：\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/rkbx/MergeImageFacebutuijian.png)\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20230609/jcgb/MergeVideoModelFacebutuijian.png)\n\n## 调用步骤\n该能力为异步能力，需分两步进行调用。\n第一步调用MergeVideoModelFace接口提交任务，请求成功后，得到一个任务ID。\n第二步调用[GetAsyncJobResult](~~159423~~)接口查询结果，根据任务ID查询任务执行状态和结果。如果任务还在处理中，可稍等一段时间后再进行查询。当同一个任务还未处理完时，建议不要重复提交任务。\n\n## 计费说明\n关于模板视频人脸融合的计费方式及报价，请参见[计费介绍](~~202487~~)。\n\n> 下方调试接口为付费接口。",
+    "en": "## Feature Description\nWith user authorization, video face fusion can precisely locate faces in videos and perform facial fusion between the target face photo uploaded by the user and another person's face, achieving a face-swapping visual effect.\nTemplate video face fusion is based on templates pre-uploaded and created by users. By inputting a face image to be merged, the image face is fused into the specified template video. This method requires creating the template video (AddFaceVideoTemplate) in advance, and its processing efficiency is higher than the general video face fusion method.\nApplicable scenarios:\n- Scenarios with a fixed number of template videos for fusion.\n- Supports both single-face and multi-face scenarios in videos, with support for face selection and multi-face fusion.\n\nTo ensure the safety and legality of generated content, do not use images or videos of public figures or those involving sensitive information for fusion. Additionally, this service will add a **Generated by AI** watermark in the lower-left corner of the synthesized result, as shown in the image below.\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20230213/ezcg/MergeVideoModelFace.png)\n\n> - You can visit [Online Consultation](https://www.aliyun.com/core/online-consult?from=aZgW6LJHr2) to get online human assistance.\n- For API access, interface usage, or consultation on Alibaba Cloud Visual Intelligence Open Platform visual AI capabilities, please join the Alibaba Cloud Visual Intelligence Open Platform consultation group through DingTalk group (23109592) to contact us.\n\n## Application Scenarios\n- Film and television post-production: During post-production, when actors need to be replaced for certain reasons, video face fusion technology can be used to process previously shot footage, making the characters in the earlier video footage appear to be performed by new actors, saving producers significant reshooting costs.\n- Entertainment short video production: Users can fuse their own faces with the faces of characters in authorized and legal videos to generate entertaining videos.\n- Virtual try-on production: In try-on scenarios such as wedding photography, ethnic clothing, Hanfu, and makeup simulation, video face fusion technology is used for virtual clothing try-on.\n- E-commerce digital human live streaming: In e-commerce live streaming scenarios, face swapping with influencer face IDs enables digital human live streaming and virtual human face swapping.\n\n## Key Advantages\n- High-fidelity, low-incongruity effect: The fused face retains the visual characteristics of the replacement face's identity information while blending naturally into the replaced face without any sense of incongruity.\n- Expression and skin tone consistency: The fused face maximally preserves the facial expressions and skin tone consistency of the replaced person.\n- Support for complex face angles: Supports template faces tilted at certain angles, with realistic and stable fusion results.\n- Support for multi-face specified swapping: Supports videos containing multiple faces, with each face specified to be fused with different user faces, applicable in multi-person interactive scenarios such as family portraits, wedding photography, and multi-character creation.\n\n## Access Guide\n1. Register an Alibaba Cloud account: Go to the [Alibaba Cloud official website](https://www.aliyun.com), click **Register Now** in the upper-right corner, and follow the prompts to complete account registration.\n2. Activate the service: Make sure you have activated the [Video Production service](https://vision.aliyun.com/videoenhan). If you have not activated the service, please [activate it now](https://common-buy.aliyun.com/?commodityCode=viapi_videoenhan_public_cn#/open). This capability is only available for enterprise-verified users. For real-name verification instructions, see [Real-name Verification](https://help.aliyun.com/document_detail/428525.html).\n\n><notice>Users who activated this capability on or after July 17, 2024 can call it directly without submitting an application.\nUsers who activated this service before July 17, 2024, if they need to call it, can join the Alibaba Cloud Visual Intelligence Open Platform consultation group through DingTalk group (23109592) to contact us for whitelist addition.\n></notice>\n\n\n3. Create an AccessKey: Make sure you have [created an AccessKey](~~175144~~). If you are using a RAM user AccessKey, you need to grant the AliyunVIAPIFullAccess permission to the RAM user. For details, see [RAM Authorization](~~145025~~).\n4. Online debugging (optional): You can debug the capability online through [OpenAPI Explorer](https://next.api.aliyun.com/api/videoenhan/2020-03-20/MergeVideoModelFace?lang=JAVA), view complete sample code and SDK dependency information, or download the complete project.\n5. Prerequisites: First, add a video template through the [AddFaceVideoTemplate](~~468904~~) API to obtain a template ID (TemplateId), then use the template ID corresponding to the uploaded video and the face image to be merged to make a request.\n6. Development access steps:    \n- Select the SDK language you want to use in the [SDK Overview](~~145033~~).\n- Find and install the SDK package under the AI category of Video Production (videoenhan) in the corresponding language SDK documentation.\n- Refer to the sample code provided in the documentation, make appropriate modifications, and then call the API.\n\n7. Sample code: For sample code in commonly used languages for this capability, see [Template Video Face Fusion Sample Code](~~602484~~).\n8. Direct client-side calls: The commonly used client-side calling methods for this capability include the following.\n- [Direct Web Frontend Call](~~467779~~)\n- [Direct Call in Mini Program Scenarios](~~467780~~)\n- [Direct Android Call](~~467781~~)\n- [Direct iOS Call](~~467782~~)\n\n## Input Limits\n- Image format: JPEG, JPG, PNG.\n- Image resolution: Greater than or equal to 128×128 pixels, less than or equal to 4000×4000 pixels.\n- Image size: No larger than 20 MB.\n- The URL cannot contain Chinese characters.\n\n## Input Parameter Description\n**MergeInfos** refers to the merge parameters, including the face information of the template video and the user face images to be merged (cannot be empty when **TemplateId** is for multiple faces).\n- **MergeInfos** is only used for multi-person video scenarios. Make sure that the **VideoScene** parameter was set to `multi` when the user added the template. The **TemplateFaceID** values passed in must correspond one-to-one with the **TemplateFaceID** values in the **FaceInfos** returned when the template was added.\n- If both **FaceImageURL** and **MergeInfos** are passed in, the one used depends on whether the **TemplateId** is for a single or multiple faces. The other input parameter is filtered out.\n\n## Image Quality Recommendations\n- Ensure that the face in the image is clear. The recommended face size in the image should be greater than 64×64 pixels, and the face area should not exceed 2/3 of the total image area.\n- It is recommended that the facial features in the image have complete contours without obvious occlusion. The face fusion algorithm supports faces tilted at certain angles, and better results can be achieved when the tilt angle does not exceed 30 degrees.\n- For multi-face video scenarios, the system will automatically identify different person IDs throughout the entire video. It is recommended that characters in the video avoid excessive head rotation and obvious occlusion; otherwise, the number of identified person IDs may be inaccurate.\n\nRecommended image examples:\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/jris/MergeImageFacetuijian.png)\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20230609/otnv/MergeVideoModelFacetuijian.png)\n\nNot recommended image examples:\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20221114/rkbx/MergeImageFacebutuijian.png)\n![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/file-manage-files/zh-CN/20230609/jcgb/MergeVideoModelFacebutuijian.png)\n\n## Calling Steps\nThis capability is asynchronous and requires a two-step calling process.\nStep 1: Call the MergeVideoModelFace API to submit a task. After a successful request, you will receive a task ID.\nStep 2: Call the [GetAsyncJobResult](~~159423~~) API to query results. Query the task execution status and results based on the task ID. If the task is still being processed, wait for a while before querying again. When the same task has not been completed, it is recommended not to resubmit the task.\n\n## Billing Description\nFor information about the billing method and pricing of template video face fusion, see [Billing Overview](~~202487~~).\n\n> The debugging interface below is a paid interface."
+  }
+}
